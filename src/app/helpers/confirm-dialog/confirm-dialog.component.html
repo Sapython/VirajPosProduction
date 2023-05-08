@@ -1,0 +1,8 @@
+<section>
+    <h1>{{modelData.title}}</h1>
+    <p *ngIf="modelData.message">{{modelData.message}}</p>
+    <div class="actions">
+        <button mat-stroked-button color="primary" (click)="dialogRef.close(false)">{{modelData.buttons[0]}}</button>
+        <button mat-flat-button color="primary" (click)="dialogRef.close(true)">{{modelData.buttons[1]}}</button>
+    </div>
+</section>

@@ -1,0 +1,242 @@
+<section *ngIf="!moveKotSelectedTable">
+    <div class="close">
+        <viraj-button [extraLarge]="true" type="icon" (vclick)="this.dialogRef.close()"><i class="ri-close-fill"></i></viraj-button>
+    </div>
+    <div class="title">
+        <div class="legends">
+            <div class="legend">
+                <span></span>
+                <p>Empty Table</p>
+            </div>
+            <div class="legend">
+                <span></span>
+                <p>Late Running Table</p>
+            </div>
+            <div class="legend">
+                <span></span>
+                <p>Finalized</p>
+            </div>
+            <div class="legend">
+                <span></span>
+                <p>Active KOT Table</p>
+            </div>
+        </div>
+        <div class="actions">
+            <button class="moveKotButton" [ngClass]="{'active':moveKotMode}" (click)="moveKotMode=!moveKotMode">
+                <span></span>
+                <p>Move KOT/Item</p>
+            </button>
+            <!-- <button class="editTable">
+                Edit Table
+            </button> -->
+        </div>
+    </div>
+    <p>{{this.dataProvider.currentMenu?.type}}</p>
+    <h2>Table</h2>
+    <ng-container *ngIf="moveKotMode">
+        <div class="modes">
+            <mat-button-toggle-group [value]="this.dataProvider.currentMenu?.type" color="primary" (change)="switchMode($event)" name="fontStyle" aria-label="Font Style">
+                <mat-button-toggle color="primary" value="dineIn" *ngIf="this.dataProvider.activeModes[0]">
+                    <ng-container>Dine In</ng-container>
+                </mat-button-toggle>
+                <mat-button-toggle color="primary" value="takeaway" *ngIf="this.dataProvider.activeModes[1]">
+                    <ng-container>Takeaway</ng-container>
+                </mat-button-toggle>
+                <mat-button-toggle color="primary" value="online" *ngIf="this.dataProvider.activeModes[2]">
+                    <ng-container>Online</ng-container>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+            
+            <mat-button-toggle-group [value]="this.dataProvider.currentMenu?.type" color="primary" (change)="switchTableSize($event)" name="fontStyle" aria-label="Font Style">
+                <mat-button-toggle color="primary" value="dineIn" *ngIf="this.dataProvider.activeModes[0]">
+                    <ng-container>Small</ng-container>
+                </mat-button-toggle>
+                <mat-button-toggle color="primary" value="takeaway" *ngIf="this.dataProvider.activeModes[1]">
+                    <ng-container>Medium</ng-container>
+                </mat-button-toggle>
+                <mat-button-toggle color="primary" value="online" *ngIf="this.dataProvider.activeModes[2]">
+                    <ng-container>Large</ng-container>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+            
+        </div>
+        <div class="tables">
+            <button class="table" [ngClass]="{'active':table.status=='occupied','disabled':table.status!='occupied','late':this.dataProvider.tableTimeOutTime <= table.minutes,'finalized':table.bill?.stage=='finalized','medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}"  matRipple [matRippleDisabled]="table.status!='occupied'" *ngFor="let table of tables" (click)="moveKot(table,$event)">
+                <p class="name">Table {{table.name}}</p>
+                <p class="cost" *ngIf="table.bill?.billing?.grandTotal"><strong>{{table.bill?.billing?.grandTotal | currency:'INR'}}</strong></p>
+                <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">{{ table.timeSpent }}</p>
+                <!-- <p class="time">{{table.occupiedStart.toDate() | date}}</p> -->
+                <!-- <div class="actions" *ngIf="table.status == 'occupied'">
+                    <viraj-button [minimalPadding]="true" type="icon" (vclick)="printTable(table,$event)"><i class="ri-printer-fill"></i></viraj-button>
+                    <viraj-button [minimalPadding]="true" type="icon" (vclick)="openTable(table,$event)"><i class="ri-eye-fill"></i></viraj-button>
+                </div> -->
+            </button>
+            <button class="table" [ngClass]="{'active':table.status=='occupied','disabled':table.status!='occupied','late':this.dataProvider.tableTimeOutTime <= table.minutes,'finalized':table.bill?.stage=='finalized','medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}" matRipple [matRippleDisabled]="table.status!='occupied'" *ngFor="let table of this.dataProvider.tokens" (click)="moveKot(table,$event)">
+                <p class="name">Token {{table.name}}</p>
+                <p class="cost" *ngIf="table.bill?.billing?.grandTotal"><strong>{{table.bill?.billing?.grandTotal | currency:'INR'}}</strong></p>
+                <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">{{ table.timeSpent }}</p>
+                <!-- <p class="time">{{table.occupiedStart.toDate() | date}}</p> -->
+                <!-- <div class="actions" *ngIf="table.status == 'occupied'">
+                    <viraj-button [minimalPadding]="true" type="icon" (vclick)="printTable(table,$event)"><i class="ri-printer-fill"></i></viraj-button>
+                    <viraj-button [minimalPadding]="true" type="icon" (vclick)="openTable(table,$event)"><i class="ri-eye-fill"></i></viraj-button>
+                </div> -->
+            </button>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="!moveKotMode">
+        <div class="modes">
+            <mat-button-toggle-group [value]="this.dataProvider.currentMenu?.type" color="primary" (change)="switchMode($event)" name="fontStyle" aria-label="Font Style">
+                <mat-button-toggle color="primary" value="dineIn" *ngIf="this.dataProvider.activeModes[0]">
+                    <ng-container>Dine In</ng-container>
+                </mat-button-toggle>
+                <mat-button-toggle color="primary" value="takeaway" *ngIf="this.dataProvider.activeModes[1]">
+                    <ng-container>Takeaway</ng-container>
+                </mat-button-toggle>
+                <mat-button-toggle color="primary" value="online" *ngIf="this.dataProvider.activeModes[2]">
+                    <ng-container>Online</ng-container>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+            <mat-button-toggle-group [value]="this.dataProvider.currentTableSize" color="primary" (change)="switchTableSize($event)" name="fontStyle" aria-label="Font Style">
+                <mat-button-toggle color="primary" value="small">
+                    <ng-container>Small</ng-container>
+                </mat-button-toggle>
+                <mat-button-toggle color="primary" value="medium">
+                    <ng-container>Medium</ng-container>
+                </mat-button-toggle>
+                <mat-button-toggle color="primary" value="large">
+                    <ng-container>Large</ng-container>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+        </div>
+        <div class="tableWrapper" *ngIf="this.dataProvider.billingMode=='dineIn'">
+            <div class="groupedTables" *ngFor="let tableGroup of this.dataProvider.groupedTables|keyvalue">
+                <div class="heading">
+                    <h2>{{tableGroup.key}}</h2>
+                </div>
+                <div class="tables">
+                    <button class="table" [ngClass]="{'active':table.status=='occupied','late':this.dataProvider.tableTimeOutTime <= table.minutes,'finalized':table.bill?.stage=='finalized','medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}" *ngFor="let table of tableGroup.value" matRipple (click)="openTable(table,$event)">
+                        <p class="name">{{table.name}}</p>
+                        <p class="cost" *ngIf="table.bill?.billing?.grandTotal"><strong>{{table.bill?.billing?.grandTotal | currency:'INR'}}</strong></p>
+                        <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">{{ table.timeSpent }}</p>
+                        <!-- <p class="time">{{table.occupiedStart.toDate() | date}}</p> -->
+                        <!-- <div class="actions" *ngIf="table.status == 'occupied'">
+                            <viraj-button [minimalPadding]="true" type="icon" (click)="printTable(table,$event)"><i class="ri-printer-fill"></i></viraj-button>
+                            <viraj-button [minimalPadding]="true" type="icon" (click)="openTable(table,$event)"><i class="ri-eye-fill"></i></viraj-button>
+                        </div> -->
+                    </button>
+                    <button class="table empty" (click)="addTable(tableGroup.key)" [ngClass]="{'medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}" *ngIf="this.dataProvider.getAccess(['admin','manager'])">
+                        <mat-icon>add</mat-icon>
+                        <p>Add New {{tableGroup.key}}</p>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="tableWrapper" *ngIf="this.dataProvider.billingMode=='takeaway'">
+            <div class="tables" >
+                <button class="table empty" (click)="addToken()" [ngClass]="{'medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}">
+                    <mat-icon>add</mat-icon>
+                    <p>Add New Token</p>
+                </button>
+                <button class="table" [ngClass]="{'active':table.status=='occupied','late':this.dataProvider.tableTimeOutTime <= table.minutes,'finalized':table.bill?.stage=='finalized','medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}"  matRipple *ngFor="let table of this.dataProvider.tokens" (click)="openTable(table,$event)">
+                    <p class="name">Token {{table.name}}</p>
+                    <p class="cost" *ngIf="table.bill?.billing?.grandTotal"><strong>{{table.bill?.billing?.grandTotal | currency:'INR'}}</strong></p>
+                    <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">{{ table.timeSpent }}</p>
+                    <!-- <p class="time">{{table.occupiedStart.toDate() | date}}</p> -->
+                    <!-- <div class="actions" *ngIf="table.status == 'occupied'">
+                        <viraj-button [minimalPadding]="true" type="icon" color="primary" (click)="printTable(table,$event)"><i class="ri-printer-fill"></i></viraj-button>
+                        <viraj-button [minimalPadding]="true" type="icon" color="primary" (click)="openTable(table,$event)"><i class="ri-eye-fill"></i></viraj-button>
+                    </div> -->
+                </button>
+            </div>
+        </div>
+        <div class="tableWrapper" *ngIf="this.dataProvider.billingMode=='online'">
+            <div class="tables">
+                <button class="table" [ngClass]="{'active':table.status=='occupied','late':this.dataProvider.tableTimeOutTime <= table.minutes,'finalized':table.bill?.stage=='finalized','medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}"  matRipple *ngFor="let table of this.dataProvider.onlineTokens" (click)="openTable(table,$event)">
+                    <p class="name">Token {{table.name}}</p>
+                    <p class="cost" *ngIf="table.bill?.billing?.grandTotal"><strong>{{table.bill?.billing?.grandTotal | currency:'INR'}}</strong></p>
+                    <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">{{ table.timeSpent }}</p>
+                    <!-- <p class="time">{{table.occupiedStart.toDate() | date}}</p> -->
+                    <div class="actions" *ngIf="table.status == 'occupied'">
+                        <viraj-button [minimalPadding]="true" type="icon" color="primary" (click)="printTable(table,$event)"><i class="ri-printer-fill"></i></viraj-button>
+                        <viraj-button [minimalPadding]="true" type="icon" color="primary" (click)="openTable(table,$event)"><i class="ri-eye-fill"></i></viraj-button>
+                    </div>
+                </button>
+                <button class="table empty" [ngClass]="{'medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}" (click)="addOnlineToken()" >
+                    <mat-icon>add</mat-icon>
+                    <p>Add New Token</p>
+                </button>
+            </div>
+        </div>
+    </ng-container>
+</section>
+<section *ngIf="moveKotSelectedTable" class="moveKot">
+    <div class="close">
+        <viraj-button [extraLarge]="true" type="icon" (vclick)="this.dialogRef.close()"><i class="ri-close-fill"></i></viraj-button>
+    </div>
+    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+        <mat-tab label="Table Wise">
+            <div class="tableWise">
+                <div class="from">
+                    <h2>From</h2>
+                    <div class="tables">
+                        <button class="table" [disabled]="table.status!='occupied' || this.transferTableWise.toTable?.id == table.id" [ngClass]="{'active':table.status=='occupied','highlight':this.transferTableWise.fromTable?.id == table.id,'medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}"  matRipple [matRippleDisabled]="table.status!='occupied' || this.transferTableWise.toTable?.id == table.id" *ngFor="let table of tables" (click)="this.transferTableWise.fromTable = table;">
+                            <p class="name">Table {{table.name}}</p>
+                            <p class="cost" *ngIf="table.bill?.billing?.grandTotal"><strong>{{table.bill?.billing?.grandTotal | currency:'INR'}}</strong></p>
+                            <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">{{ table.timeSpent }}</p>
+                        </button>
+                    </div>
+                </div>
+                <div class="to">
+                    <h2>To</h2>
+                    <div class="tables">
+                        <button class="table" [disabled]="table.status!='occupied' || this.transferTableWise.fromTable?.id == table.id" [ngClass]="{'active':table.status=='occupied','highlight':this.transferTableWise.toTable?.id == table.id,'medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}"  matRipple [matRippleDisabled]="table.status!='occupied' || this.transferTableWise.fromTable?.id == table.id" *ngFor="let table of tables" (click)="this.transferTableWise.toTable = table;">
+                            <p class="name">Table {{table.name}}</p>
+                            <p class="cost" *ngIf="table.bill?.billing?.grandTotal"><strong>{{table.bill?.billing?.grandTotal | currency:'INR'}}</strong></p>
+                            <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">{{ table.timeSpent }}</p>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="actions">
+                <button mat-stroked-button color="primary" (click)="cancel()">Cancel</button>
+                <button mat-flat-button color="primary" (click)="merge()">Merge</button>
+                <button mat-flat-button color="primary" (click)="exchange()">Exchange</button>
+            </div>
+        </mat-tab>
+        <mat-tab label="KOT Wise">
+            <div class="kotWise">
+                <div class="kotSpan">
+                    <h2>KOTs</h2>
+                    <div class="kots">
+                        <div class="kot" *ngFor="let kot of moveKotSelectedTable?.bill?.kots">
+                            <div class="heading" *ngIf="moveKotSelectedTable">
+                                <span>
+                                    <mat-checkbox color="primary" [checked]="kot.allSelected" [indeterminate]="kot.someSelected" (change)="kot.selectAll($event)"></mat-checkbox>
+                                    <p>KOT No: <strong>{{kot.id}}</strong></p>
+                                    <p>{{moveKotSelectedTable.type=='table' ? 'Table' : 'Token'}}: <strong>{{moveKotSelectedTable?.name}}</strong></p>
+                                    <p>Time: <strong>{{moveKotSelectedTable.timeSpent}}</strong></p>
+                                </span>
+                            </div>
+                            <ol>
+                                <li *ngFor="let item of kot.products">
+                                    <mat-checkbox [(ngModel)]="item.selected" (change)="kot.checkAll()" color="primary"></mat-checkbox>
+                                    {{item.name | titlecase}} <span>{{item.quantity}} x {{item.price | currency:'INR'}}</span>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                <div class="tablesSpan">
+                    <h2>Tables</h2>
+                    <div class="tables">
+                        <button class="table" [disabled]="moveKotSelectedTable.id  == table.id" [ngClass]="{'active':table.status=='occupied','disabled':table.status!='occupied','medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}"  matRipple [matRippleDisabled]="table.status!='occupied'" *ngFor="let table of tables" (click)="moveSelectedKots(table,$event)">
+                            <p class="name">Table {{table.name}}</p>
+                            <p class="cost" *ngIf="table.bill?.billing?.grandTotal"><strong>{{table.bill?.billing?.grandTotal | currency:'INR'}}</strong></p>
+                            <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">{{ table.timeSpent }}</p>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</section>

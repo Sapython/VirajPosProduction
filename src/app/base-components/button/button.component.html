@@ -1,0 +1,24 @@
+<button
+  mat-ripple
+  type="button"
+  name="virajButton"
+  ngDefaultControl
+  [matRippleColor]="type == 'icon' ? 'rgba(var(--Viraj-primary-rgb),0.3)' : ''"
+  [ngClass]="{
+    solid: type == 'solid',
+    outline: type == 'outline',
+    icon: type == 'icon',
+    animated: animated,
+    small: small,
+    large: large,
+    extraLarge: extraLarge,
+    minimalPadding: minimalPadding,
+    smallIcon:iconSize == 'small',
+    mediumIcon:iconSize == 'medium',
+    largeIcon:iconSize == 'large'
+  }"
+  (click)="this.vclick.emit($event)"
+  [disabled]="disabled"
+>
+  <ng-content></ng-content>
+</button>

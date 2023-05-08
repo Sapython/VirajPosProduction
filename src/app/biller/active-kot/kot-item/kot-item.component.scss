@@ -1,0 +1,185 @@
+section {
+    display: flex;
+    .border{
+        background: white;
+        overflow: hidden;
+        min-width: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+    .main {
+        display: grid;
+        align-items: center;
+        grid-template-columns: 0.5fr 4fr 3.4fr;
+        padding: 10px;
+        border-left: 5px solid white;
+        border-bottom: 1px solid #ccc;
+        gap: 10px;
+        .veg {
+            // vegetarian sign
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #2BA063;
+            border-radius: 4px;
+            width: 20px;
+            height: 20px;
+
+            span {
+                width: 10px;
+                height: 10px;
+                border-radius: 10px;
+                background: #2BA063;
+            }
+            &.non{
+                border: 2px solid rgba(115, 17, 17, 0.688);
+                span{
+                    background: rgba(115, 17, 17, 0.688);
+                }
+            }
+        }
+
+        .info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            p {
+                margin: 0px;
+            }
+
+            p.name {
+                font-size: var(--Viraj-font-large);
+                overflow: hidden;
+                word-break: break-all;
+            }
+
+            p.price {
+                color: rgb(131, 131, 131);
+            }
+        }
+
+        .more {
+            display: flex;
+            flex-direction: column;
+
+            .actions {
+                display: grid;
+                gap: 10px;
+                margin-bottom: 5px;
+                align-items: center;
+                grid-template-columns: 1fr 1fr 0.7fr 0.7fr;
+                select {
+                    width: 80px;
+                    border: 1px solid #BEBEBE;
+                    padding: 5px;
+                    text-align: center;
+                    background: white;
+                    border-radius: 4px;
+                    font-size: var(--Viraj-font-large);
+                    box-shadow: var(--Viraj-shadow-light);
+                }
+
+                .quantity {
+                    display: grid;
+                    grid-template-columns: 1fr 1.5fr 1fr;
+                    gap: 5px;
+
+                    input {
+                        width: 20px;
+                        border: none;
+                        text-align: center;
+                        font-size: var(--Viraj-font-large);
+                    }
+
+                    // button {
+                    //     border: none;
+                    //     width: 32px;
+                    //     height: 32px;
+                    //     background: var(--Viraj-primary);
+                    //     color: white;
+                    //     border-radius: 4px;
+                    //     display: flex;
+                    //     justify-content: center;
+                    //     align-items: center;
+                    //     box-shadow: var(--Viraj-shadow-light);
+                    // }
+
+                    // button[disabled] {
+                    //     background: #ccc;
+                    // }
+                }
+
+                .iconButton {
+                    border: none;
+                    width: 32px;
+                    height: 32px;
+                    color: var(--Viraj-primary);
+                    background: white;
+                    border-radius: 4px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+            }
+
+            .infoStatement {
+                display: flex;
+                gap: 20px;
+                font-size: var(--Viraj-font-medium);
+                strong {
+                    color: var(--Viraj-success);
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width:1650px) {
+    .main{
+        grid-template-areas: "veg info info" "veg more more";
+        .veg{
+            grid-area: veg;
+        }
+        .info{
+            grid-area: info;
+            display: grid !important;
+            grid-template-columns: 3fr 1fr;
+        }
+        .more{
+            grid-area: more;
+        }
+    }
+}
+@media screen and (max-width:1366px) {
+    .main{
+        padding: 2px !important;
+    }
+    .actions{
+        select{
+            padding: 3px !important;
+            width: 50px !important;
+        }
+    }
+    .veg{
+        width: 15px !important;
+        height: 15px !important;
+        span{
+            width: 7px !important;
+            height: 7px !important;
+        }
+    }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}

@@ -6,12 +6,19 @@ import { APP_CONFIG } from '../environments/environment';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  animations: [
+    fadeInDownOnEnterAnimation(),
+    fadeOutUpOnLeaveAnimation(),
+  ],
 })
 export class AppComponent {
   constructor(
     private electronService: ElectronService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    public dataProvider: DataProvider,
+    private dataService: GetDataService,
+    private printingService: PrintingService
   ) {
     this.translate.setDefaultLang('en');
     console.log('APP_CONFIG', APP_CONFIG);

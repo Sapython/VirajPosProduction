@@ -1,13 +1,73 @@
-import {app, BrowserWindow, screen} from 'electron';
+import { app, BrowserWindow, screen,ipcMain } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
+import * as child_process from 'child_process';
+// require('update-electron-app')({
+//   repo: 'swayambhu-innovations/Packages',
+// });
 
 let win: BrowserWindow = null;
 const args = process.argv.slice(1),
-  serve = args.some(val => val === '--serve');
+  serve = args.some((val) => val === '--serve');
+
+// custom code starts
+function run_script(command, args, event, callback) {
+  var child = child_process.spawn(command, args, {
+    shell: true,
+  });
+  // You can also use a variable to save the output for when the script closes later
+  child.on('error', (error) => {
+    event.sender.send('printDataComplete', { stage: 'error', error });
+  });
+
+  child.stdout.setEncoding('utf8');
+  child.stdout.on('data', (data) => {
+    //Here is the output
+    data = data.toString();
+    console.log(data);
+    event.sender.send('printDataComplete', { stage: 'stderr', data });
+  });
+
+  child.stderr.setEncoding('utf8');
+  child.stderr.on('data', (data) => {
+    // Return some data to the renderer process with the mainprocess-response ID
+    // win.webContents.send('mainprocess-response', data);
+    //Here is the output from the command
+    data = data.toString();
+    console.log(data);
+    event.sender.send('printDataComplete', { stage: 'stdout', data });
+  });
+
+  child.on('close', (code) => {
+    //Here you can get the exit code of the script
+    console.log(`child process exited with code ${code}`);
+    event.sender.send('printDataComplete', { stage: 'closed', code });
+  });
+  if (typeof callback === 'function') callback();
+}
+
+function printData(event, data, printer) {
+  console.log('Will Print: ', data, printer);
+  fs.writeFile('printableData.txt', data, (err) => {
+    if (err) {
+      console.error(err);
+    }
+    // file written successfully
+    console.log('File Written Successfully');
+    run_script(
+      'RawPrint.exe',
+      [printer, path.join(__dirname, 'printableData.txt')],
+      event,
+      function () {
+        console.log('Done Printing (main)');
+      }
+    );
+  });
+}
+
+// custom code ends
 
 function createWindow(): BrowserWindow {
-
   const size = screen.getPrimaryDisplay().workAreaSize;
 
   // Create the browser window.
@@ -18,8 +78,9 @@ function createWindow(): BrowserWindow {
     height: size.height,
     webPreferences: {
       nodeIntegration: true,
-      allowRunningInsecureContent: (serve),
-      contextIsolation: false,  // false if you want to run e2e test with Spectron
+      allowRunningInsecureContent: serve,
+      contextIsolation: false, // false if you want to run e2e test with Spectron
+      preload: path.join(__dirname, "preload.js"),
     },
   });
 
@@ -34,7 +95,7 @@ function createWindow(): BrowserWindow {
     let pathIndex = './index.html';
 
     if (fs.existsSync(path.join(__dirname, '../dist/index.html'))) {
-       // Path when running electron in local folder
+      // Path when running electron in local folder
       pathIndex = '../dist/index.html';
     }
 
@@ -54,6 +115,16 @@ function createWindow(): BrowserWindow {
 }
 
 try {
+  // custom IPC triggers 
+  ipcMain.on("getPrinters", async (event, arg) => {
+    let res = win.webContents.getPrintersAsync();
+    console.log("Main printers", res);
+    event.returnValue = await res;
+  });
+  ipcMain.on("printData", async (event, arg) => {
+    console.log("GOT", arg, arg.data, arg.printer);
+    let res = printData(event, arg.data, arg.printer);
+  });
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
@@ -76,7 +147,6 @@ try {
       createWindow();
     }
   });
-
 } catch (e) {
   // Catch Error
   // throw e;

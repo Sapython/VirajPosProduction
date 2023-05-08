@@ -1,50 +1,278 @@
-/* You can add global styles to this file, and also import other style files */
-html, body {
-  margin: 0;
-  padding: 0;
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+// Plus imports for other components in your app.
 
-  height: 100%;
-  font-family: Arial, Helvetica, sans-serif;
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+@import url('remixicon/fonts/remixicon.css');
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+
+// The warn palette is optional (defaults to red).
+// $Viraj-warn: mat.define-palette(mat.$red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$viraj-palette: (
+  50: #fadbd3,
+  100: #fbcabd,
+  200: #fdb19e,
+  300: #fe997f,
+  400: #f87554,
+  500: #fb7250,
+  600: #FF5E35,
+  700: #f85228,
+  800: #fb4619,
+  900: #ff4112,
+  contrast: (
+   50: rgba(black, 0.87),
+   100: rgba(black, 0.87),
+   200: rgba(black, 0.87),
+   300: white,
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+ )
+  );
+$Viraj-primary: mat.define-palette($viraj-palette);
+$Viraj-accent: mat.define-palette($viraj-palette, 200, 100, 400);
+$Viraj-theme: mat.define-light-theme(
+  (color: (primary: $Viraj-primary,
+    accent: $Viraj-accent,
+    foreground: $viraj-palette,
+  ))
+);
+
+  // Include theme styles for core and each component used in your app.
+  // Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($Viraj-theme);
+
+/* You can add global styles to this file, and also import other style files */
+:root {
+  --Viraj-primary: #FF5E35;
+  --Viraj-primary-hover: #dc5331;
+  --Viraj-primary-hover-rgb: 255, 154, 129;
+  --Viraj-primary-rgb: 255, 94, 53;
+  --Viraj-primary: #FF5E35;
+  --Viraj-accent: #FFC220;
+  --Viraj-accent-hover: #FFB20F;
+  --Viraj-primary-tint: #FF5E35;
+  --Viraj-primary-shade: #FFE1C2;
+  --Viraj-primary-text: #962E40;
+  --Viraj-success: #038943;
+  --Viraj-background: white;
+  --Viraj-font: 'Lato', sans-serif;
+  --Viraj-font-bold: 'Lato', sans-serif;
+  --Viraj-font-regular: 'Lato', sans-serif;
+  --Viraj-font-light: 'Lato', sans-serif;
+  --Viraj-font-small: 12px;
+  --Viraj-font-medium: 14px;
+  --Viraj-font-large: 16px;
+  --Viraj-font-xlarge: 18px;
+  --Viraj-font-xxlarge: 20px;
+  --Viraj-font-xxxlarge: 22px;
+  --Viraj-font-xxxxlarge: 24px;
+  --Viraj-icon-small: 28px;
+  --Viraj-icon-medium: 24px;
+  --Viraj-icon-large: 26px;
+  --Viraj-icon-xlarge: 30px;
+  --Viraj-button-small: 14px;
+  --Viraj-button-medium: 18px;
+  --Viraj-button-medium: 18px;
+  --Viraj-button-medium: 24px;
+  --Viraj-border-default: 2px solid #ccc;
+  --Viraj-border-radius: 4px;
+  --Viraj-border-radius-large: 7px;
+  --Viraj-border-radius-xlarge: 14px;
+  --Viraj-shadow-light: 4px 1px 16px rgba(22, 22, 22, 0.1);
+  --Viraj-shadow-medium: 0px 4px 8px rgba(0, 0, 0, 0.25);
+  --Viraj-shadow-heavy: 0px 8px 16px rgba(0, 0, 0, 0.25);
 }
 
-/* CAN (MUST) BE REMOVED ! Sample Global style */
-.container {
+html,
+body {
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+}
 
-  background: url(./assets/background.jpg) no-repeat center fixed;
-  -webkit-background-size: cover; /* pour anciens Chrome et Safari */
-  background-size: cover; /* version standardisée */
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: var(--Viraj-font);
+}
+.button {
+  border: none;
+  padding: 15px;
+  background: white;
+  font-size: var(--Viraj-font-large);
+  font-weight: 600;
+  cursor: pointer;
+}
+button[mat-flat-button],button[mat-raised-button]{
+  color:white !important;
+}
 
-  .title {
-    color: white;
-    margin: 0;
-    padding: 50px 20px;
-  }
+.stroked{
+  border: 2px solid var(--Viraj-primary);
+  border-radius: 8px;
+  padding: 8px 15px;
+  color:var(--Viraj-primary);
+  background: white;
+  font-size: var(--Viraj-font-large);
+  font-weight: 600;
+}
 
-  a {
-    color: #fff !important;
-    text-transform: uppercase;
-    text-decoration: none;
-    background: #ed3330;
-    padding: 20px;
-    border-radius: 5px;
-    display: inline-block;
-    border: none;
-    transition: all 0.4s ease 0s;
 
-    &:hover {
-      background: #fff;
-      color: #ed3330 !important;
-      letter-spacing: 1px;
-      -webkit-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
-      -moz-box-shadow: 0px 5px 40px -10px rgba(0,0,0,0.57);
-      box-shadow: 5px 40px -10px rgba(0,0,0,0.57);
-      transition: all 0.4s ease 0s;
+.mat-button-toggle-checked {
+  background-color: var(--Viraj-primary);
+  color: #ffffff !important;
+}
+.mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background .mdc-checkbox__checkmark,.mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background .mdc-checkbox__mixedmark{
+  color:white !important;
+  border-color:white !important;
+}
+@media screen and (max-width: 1366px) {
+  :root{
+    --Viraj-font-small: 8px;
+    --Viraj-font-medium: 10.5px;
+    --Viraj-font-large: 12px;
+    --Viraj-font-xlarge: 14px;
+    --Viraj-font-xxlarge: 16px;
+    --Viraj-font-xxxlarge: 18px;
+    --Viraj-font-xxxxlarge: 20px;
+    --Viraj-icon-small: 10px;
+    --Viraj-icon-medium: 18px;
+    --Viraj-icon-large: 24px;
+    --Viraj-button-small: 6px;
+    h1{
+      font-size: var(--Viraj-font-xxxlarge);
+    }
+    h2{
+      font-size: var(--Viraj-font-xxlarge);
+    }
+    h3{
+      font-size: var(--Viraj-font-xlarge);
+    }
+    h4{
+      font-size: var(--Viraj-font-large);
+    }
+    h5{
+      font-size: var(--Viraj-font-medium);
+    }
+    h6{
+      font-size: var(--Viraj-font-small);
+    }
+    p{
+      font-size: var(--Viraj-font-medium);
+    }
+    td{
+      font-size: var(--Viraj-font-medium);
+      img{
+        width: 20px;
+      }
+    }
+    label{
+      font-size: var(--Viraj-font-medium);
+    }
+    // i[class^="ri-"]{
+    //   font-size: 12px;
+    // }
+    .mat-button-toggle-button{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .mat-button-toggle-label-content{
+        line-height: 35px !important;
+        padding: 0px 4px;
+        font-size: var(--Viraj-font-medium);
+      }
+    }
+    --mdc-switch-handle-width: 12px;
+    --mdc-switch-handle-height: 12px;
+    --mdc-switch-track-width:25px;
+    --mdc-switch-track-height:9px;
+    --mdc-switch-unselected-icon-size:10px;
+    --mdc-switch-selected-icon-size:10px;
+    .mat-mdc-tab.mdc-tab{
+      font-size: var(--Viraj-font-medium);
+      height: 30px !important;
+    }
+    mat-tab-header{
+      font-size: var(--Viraj-font-xlarge);
     }
   }
 }
+i[class^="ri-"]{
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+}
+// jdiv#jvlabelWrap{
+//   display: none;
+// }
+// jdiv[class*=copy_],jdiv[class*=chatCopyright_]{
+//   display: none;
+// }
+/* hide the original widget - that there were no two labels on the screen*/
+#jvlabelWrap{
+	display: none;
+}
 
+// /* the default style - for offline messages if no one is online */
+// #jivo_custom_widget{
+// 	position: fixed;
+// 	left: -3px;
+// 	top: 30%;
+// 	width: 35px;
+// 	z-index: 300000;
+// 	cursor: pointer;
+
+// 	height: 170px;
+// 	background-image: url(/jivosite/images/jivo_widget_offline.png);
+// }
+
+// /* when you hover the label should be shifted to the right by 3px */
+// #jivo_custom_widget:hover{
+// 	left:0;
+// }
+
+// /* if there are operators online - show other label*/
+// #jivo_custom_widget.jivo_online{
+// 	height: 215px;
+// 	background-image: url(/jivosite/images/jivo_widget_online.png);
+// }
+.table{
+  width: 100%;
+  border-collapse: collapse;
+  thead{
+      position: sticky;
+      top: 0;
+      background: white;
+      tr{
+          padding: 15px;
+          border: 1px solid #ddd;
+          background: white;
+          th{
+              padding: 10px;
+              border: 1px solid #ddd;
+          }
+      }
+  }
+  tbody{
+      tr{
+          td{
+              padding: 10px;
+              border: 1px solid #ddd;
+          }
+      }
+  }
+}

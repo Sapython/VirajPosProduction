@@ -1,0 +1,43 @@
+<section>
+    <h1>Split Bill</h1>
+    <div class="kotWise">
+        <div class="kotSpan">
+            <h2>KOTs</h2>
+            <div class="kots">
+                <div class="kot" *ngFor="let kot of this.allKots">
+                    <div class="heading">
+                        <span>
+                            <mat-checkbox color="primary" [checked]="kot.allSelected" [indeterminate]="kot.someSelected" (change)="selectAll($event,kot)"></mat-checkbox>
+                            <p>KOT No: <strong>{{kot.id}}</strong></p>
+                        </span>
+                    </div>
+                    <ol>
+                        <li *ngFor="let item of kot.products">
+                            <mat-checkbox [(ngModel)]="item.selected" (change)="checkAll($event,kot,item)" color="primary"></mat-checkbox>
+                            {{item.name | titlecase}} <span>{{item.quantity}} x {{item.price | currency:'INR'}}</span>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <div class="bills">
+            <h2>Bills</h2>
+            <div class="newBills">
+                <div class="bill" *ngFor="let item of splittedItems">
+                    <strong>Total: {{item.grandTotal}} </strong>
+                    <strong>Products: {{item.products.length}} </strong>
+                    <ol>
+                        <li *ngFor="let prod of item.products">
+                            {{prod.name}} x {{prod.quantity}} <span> <strong>{{(prod.price * prod.quantity) | currency:'INR'}}</strong> </span>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+            <div class="actions">
+                <button mat-flat-button color="primary" (click)="splitBill()">Split</button>
+                <button mat-flat-button color="primary" (click)="saveSplittedBill()">Save</button>
+                <button mat-flat-button color="primary" (click)="splitBill()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</section>

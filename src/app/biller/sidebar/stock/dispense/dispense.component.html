@@ -1,0 +1,99 @@
+<main *ngIf="mode=='list'">
+    <mat-tab-group [(selectedIndex)]="activeTab">
+        <mat-tab label="Dispersion of Stock">
+            <section>
+                <mat-form-field appearance="outline">
+                    <mat-label>Search Term</mat-label>
+                    <input type="text" matInput>
+                </mat-form-field>
+                <table [cellSpacing]="0">
+                    <thead>
+                        <tr>
+                            <td>Name</td>
+                            <td>Price</td>
+                            <td>OB</td>
+                            <td>CB</td>
+                            <td>Issued</td>
+                            <td>Unit</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of items">
+                            <td>{{item.name}}</td>
+                            <td>{{item.price | currency:'INR'}}</td>
+                            <td>{{item.openingBalance | number}}</td>
+                            <td>{{item.closingBalance | number}}</td>
+                            <td><input type="number" (input)="calculatePricing()" [(ngModel)]="item.issued" [ngModelOptions]="{standalone:true}"></td>
+                            <td>{{item.unit}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h4 class="quotedPrice">Total Price of dispersion stock <strong>{{totalDispersionPrice | currency:'INR'}}</strong></h4>
+                <button mat-flat-button color="primary" class="alignCenter">Request To Admin</button>
+            </section>
+        </mat-tab>
+        <mat-tab label="Dispersion Request By Admin">
+            <section>
+                <p>{{totalUnapproved}} Pending Request</p>
+                <div class="pending">
+                    <ng-container *ngFor="let request of requests">
+                        <div class="request" matRipple (click)="openPending(request)" *ngIf="!request.approved">
+                            <p>{{request.title}}</p>
+                            <span>
+                                <p>{{request.amount | currency:'INR'}}</p>
+                                <button mat-icon-button><mat-icon>chevron_right</mat-icon></button>
+                            </span>
+                        </div>
+                    </ng-container>
+                </div>
+                <p>{{totalApproved}} Completed Request</p>
+                <div class="approved">
+                    <ng-container *ngFor="let request of requests">
+                        <div class="request" matRipple (click)="openApproved(request)" *ngIf="request.approved">
+                            <p>{{request.title}}</p>
+                            <span>
+                                <p>{{request.amount | currency:'INR'}}</p>
+                                <button mat-icon-button><mat-icon>chevron_right</mat-icon></button>
+                            </span>
+                        </div>
+                    </ng-container>
+                </div>
+            </section>
+        </mat-tab>
+    </mat-tab-group>
+</main>
+
+<main *ngIf="mode == 'pending' || mode == 'approved'" class="form">
+    <div class="row">
+        <button mat-icon-button (click)="mode = 'list'">
+            <mat-icon>arrow_back</mat-icon>
+        </button>
+        <h2>Viewing {{recevingForm.value.title}}</h2>
+    </div>
+    <form [formGroup]="recevingForm" (ngSubmit)="submit()">
+        <mat-form-field appearance="outline">
+            <mat-label>Title</mat-label>
+            <input type="text" formControlName="title" matInput [disabled]="mode == 'approved'">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Party Name</mat-label>
+            <input type="text" formControlName="party" matInput [disabled]="mode == 'approved'">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Amount</mat-label>
+            <input type="number" formControlName="amount" matInput [disabled]="mode == 'approved'">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Description</mat-label>
+            <textarea type="text" formControlName="description" matInput [disabled]="mode == 'approved'"></textarea>
+        </mat-form-field>
+        <div class="actions">
+            <button mat-stroked-button color="primary" [disabled]="mode == 'approved'">
+                Reject
+            </button>
+            <button mat-flat-button color="primary" [disabled]="mode == 'approved'">
+                Accept
+            </button>
+        </div>
+    </form>
+</main>

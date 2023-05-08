@@ -1,0 +1,28 @@
+<section [@shakeOnEnter] [@zoomOutOnLeave]>
+    <h2>Apply discount</h2>
+    <p>Applying to item <strong>{{product?.name}}</strong></p>
+    <mat-button-toggle-group name="mode" [(ngModel)]="type" #mode>
+        <mat-button-toggle value="percentage">Percent</mat-button-toggle>
+        <mat-button-toggle value="amount">Flat</mat-button-toggle>
+    </mat-button-toggle-group>
+    <mat-form-field appearance="outline" *ngIf="type=='percentage'">
+        <mat-label>Percentage</mat-label>
+        <input type="number" matInput [(ngModel)]="value">
+    </mat-form-field>
+    <mat-form-field appearance="outline" *ngIf="type=='amount'">
+        <mat-label>Flat</mat-label>
+        <input type="number" matInput [(ngModel)]="value">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>Reason</mat-label>
+        <input type="text" matInput [(ngModel)]="reason"/>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input type="text" matInput [(ngModel)]="password"/>
+      </mat-form-field>
+    <div class="actions">
+        <button mat-stroked-button (click)="dialogRef.close()">Cancel</button>
+        <button mat-raised-button color="primary" (click)="submit()">Apply</button>
+    </div>
+</section>

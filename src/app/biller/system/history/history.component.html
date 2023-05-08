@@ -1,0 +1,62 @@
+<section>
+    <div class="heading">
+      <h2>History</h2>
+      <mat-form-field appearance="outline">
+        <mat-label>Choose a date</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker"
+          (dateChange)="getReport()"
+          [(ngModel)]="selectedDate"
+        />
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Search Bill No</mat-label>
+        <input type="text" matInput (input)="numberSearchSubject.next(numberSearch.value)" #numberSearch>
+      </mat-form-field>
+    </div>
+    <hr />
+    <div class="bills">
+      <div class="bill" *ngFor="let bill of bills">
+        <table class="main">
+          <tr>
+            <td>Bill No</td>
+            <td>{{bill.billNo}}</td>
+          </tr>
+          <tr>
+            <td>Table No</td>
+            <td>{{bill.table}}</td>
+          </tr>
+          <tr>
+            <td>Total</td>
+            <td>{{bill.billing.grandTotal | currency:'INR'}}</td>
+          </tr>
+          <tr>
+            <td><button mat-flat-button color="primary" (click)="reprintBill(bill)">Reprint Bill</button></td>
+            <td><button mat-flat-button color="primary" (click)="bill.kotVisible = !bill.kotVisible">See Kots</button></td>
+          </tr>
+        </table>
+        <div *ngIf="bill.kotVisible" [@slideInDownOnEnter] [@slideOutUpOnLeave]>
+          <hr>
+          <table>
+            <tr>
+              <th>Kot No</th>
+              <th>Products</th>
+              <th>#</th>
+            </tr>
+            <tr *ngFor="let kot of bill.kots">
+              <td>{{kot.id}}</td>
+              <td>{{kot.products.length}}</td>
+              <td><button (click)="reprintKot(kot,bill)"><i class="ri-printer-fill"></i></button></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+</section>
+  

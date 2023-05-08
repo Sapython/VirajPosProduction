@@ -1,7 +1,7 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Component, Inject, Input } from '@angular/core';
 import { Subject } from 'rxjs/internal/Subject';
-import { Product } from 'src/app/biller/constructors';
+import { Product } from '../../../../biller/constructors';
 import Fuse from 'fuse.js';
 import { debounceTime } from 'rxjs/operators';
 @Component({

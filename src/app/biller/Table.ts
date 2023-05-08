@@ -173,7 +173,7 @@ export class Table implements TableConstructor {
         instance.type = object.type;
         return instance;
       } else {
-        console.log("bill does not exist",object.bill, {...bill.data(),id:bill.id});
+        console.log("bill does not exist",object.bill);
         console.log("bill",bill);
         console.log("object",object);
         alert("bill does not exist")

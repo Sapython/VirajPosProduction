@@ -1,11 +1,11 @@
 import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { Component, Inject, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
-import { Product } from 'src/app/biller/constructors';
-import { DatabaseService } from 'src/app/services/database.service';
-import { Ingredient } from 'src/app/structures/general.structure';
+import { Product } from '../../../../biller/constructors';
+import { DatabaseService } from '../../../../services/database.service';
+import { Ingredient } from '../../../../structures/general.structure';
 import Fuse from 'fuse.js';
-import { AlertsAndNotificationsService } from 'src/app/services/alerts-and-notification/alerts-and-notifications.service';
+import { AlertsAndNotificationsService } from '../../../../services/alerts-and-notification/alerts-and-notifications.service';
 @Component({
   selector: 'app-product-costing',
   templateUrl: './product-costing.component.html',

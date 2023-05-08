@@ -1,7 +1,7 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ConfirmDialogComponent } from 'src/app/helpers/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '../../../../helpers/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-receive-stock',

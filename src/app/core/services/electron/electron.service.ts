@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 // If you import a module but never use any of the imported values other than as TypeScript types,
 // the resulting javascript file will look as if you never imported the module at all.
-import { ipcRenderer, webFrame } from 'electron';
+import { ipcRenderer, webFrame, contextBridge } from 'electron';
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
 
@@ -20,7 +20,7 @@ export class ElectronService {
     if (this.isElectron) {
       this.ipcRenderer = window.require('electron').ipcRenderer;
       this.webFrame = window.require('electron').webFrame;
-
+      
       this.fs = window.require('fs');
 
       this.childProcess = window.require('child_process');
@@ -43,7 +43,15 @@ export class ElectronService {
       // * A NodeJS's dependency imported with TS module import (ex: import { Dropbox } from 'dropbox') CAN only be present
       // in `dependencies` of `package.json (root folder)` because it is loaded during build phase and does not need to be
       // in the final bundle. Reminder : only if not used in Electron's Main process (app folder)
-
+      ipcRenderer.send("printData", {
+        data: "Hello World",
+        printer: "EPSON TM-T82 Receipt5",
+      });
+      ipcRenderer.on("printDataComplete", (event, data) => {
+        console.log("Done Printing", data);
+        // printData(event,data,printer)
+      });
+      contextBridge.exposeInMainWorld("printing", {printData: this.printData});
       // If you want to use a NodeJS 3rd party deps in Renderer process,
       // ipcRenderer.invoke can serve many common use cases.
       // https://www.electronjs.org/docs/latest/api/ipc-renderer#ipcrendererinvokechannel-args
@@ -52,5 +60,20 @@ export class ElectronService {
 
   get isElectron(): boolean {
     return !!(window && window.process && window.process.type);
+  }
+
+  printData(data:any, printer:string) {
+    ipcRenderer.send("printData", { data, printer });
+    console.log("Sent data");
+    var promiseResolve, promiseReject;
+    var promise = new Promise(function (resolve, reject) {
+      promiseResolve = resolve;
+      promiseReject = reject;
+    });
+    ipcRenderer.on("printDataComplete", (event, data) => {
+      console.log("Done Printing", data);
+      promiseResolve(data);
+    });
+    return promise;
   }
 }

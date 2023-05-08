@@ -1,7 +1,7 @@
 import { DialogRef } from '@angular/cdk/dialog';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { DataProvider } from 'src/app/provider/data-provider.service';
+import { DataProvider } from '../../../provider/data-provider.service';
 
 @Component({
   selector: 'app-add-discount',

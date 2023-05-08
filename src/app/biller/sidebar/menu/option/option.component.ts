@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { elementAt } from 'rxjs';
-import { Product } from 'src/app/biller/constructors';
-import { Category } from 'src/app/structures/general.structure';
+import { Product } from '../../../../biller/constructors';
+import { Category } from '../../../../structures/general.structure';
 
 @Component({
   selector: 'app-option',

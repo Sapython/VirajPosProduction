@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import Fuse from 'fuse.js';
-import { DataProvider } from 'src/app/provider/data-provider.service';
-import { Category } from 'src/app/structures/general.structure';
+import { DataProvider } from '../../provider/data-provider.service';
+import { Category } from '../../structures/general.structure';
 import { Product } from '../constructors';
 
 @Component({

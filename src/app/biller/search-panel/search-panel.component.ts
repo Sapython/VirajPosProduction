@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { debounce, debounceTime, Subject, Subscription } from 'rxjs';
 import Fuse from 'fuse.js';
-import { DataProvider } from 'src/app/provider/data-provider.service';
+import { DataProvider } from '../../provider/data-provider.service';
 import { Dialog } from '@angular/cdk/dialog';
 import { TableComponent } from '../table/table.component';
-import { DatabaseService } from 'src/app/services/database.service';
+import { DatabaseService } from '../../services/database.service';
 @Component({
   selector: 'app-search-panel',
   templateUrl: './search-panel.component.html',

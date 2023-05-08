@@ -1,6 +1,6 @@
 import { Component, OnChanges, SimpleChanges } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { DataProvider } from 'src/app/provider/data-provider.service';
+import { DataProvider } from '../../provider/data-provider.service';
 import { Product } from '../constructors';
 import { Kot } from '../Kot';
 import { fadeInLeftOnEnterAnimation, fadeInOnEnterAnimation, fadeInRightOnEnterAnimation, fadeOutLeftOnLeaveAnimation, fadeOutOnLeaveAnimation, fadeOutRightOnLeaveAnimation, slideInLeftOnEnterAnimation, slideOutRightOnLeaveAnimation, zoomInOnEnterAnimation, zoomOutOnLeaveAnimation } from 'angular-animations';

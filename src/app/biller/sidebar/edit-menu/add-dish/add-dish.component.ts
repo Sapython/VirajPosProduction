@@ -1,8 +1,8 @@
 import { DialogRef } from '@angular/cdk/dialog';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { DataProvider } from 'src/app/provider/data-provider.service';
-import { DatabaseService } from 'src/app/services/database.service';
+import { DataProvider } from '../../../../provider/data-provider.service';
+import { DatabaseService } from '../../../../services/database.service';
 
 @Component({
   selector: 'app-add-dish',

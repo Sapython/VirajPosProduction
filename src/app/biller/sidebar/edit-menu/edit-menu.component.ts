@@ -1,18 +1,18 @@
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { Component, OnInit } from '@angular/core';
 import { Subject, debounceTime, firstValueFrom } from 'rxjs';
-import { DataProvider } from 'src/app/provider/data-provider.service';
-import { Category } from 'src/app/structures/general.structure';
+import { DataProvider } from '../../../provider/data-provider.service';
+import { Category } from '../../../structures/general.structure';
 import { AddDishComponent } from './add-dish/add-dish.component';
 import { AddNewCategoryComponent } from './add-new-category/add-new-category.component';
 import { SelectRecipeComponent } from './select-recipe/select-recipe.component';
 import { Product } from '../../constructors';
-import { DatabaseService, Menu } from 'src/app/services/database.service';
-import { AlertsAndNotificationsService } from 'src/app/services/alerts-and-notification/alerts-and-notifications.service';
+import { DatabaseService, Menu } from '../../../services/database.service';
+import { AlertsAndNotificationsService } from '../../../services/alerts-and-notification/alerts-and-notifications.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProductCostingComponent } from './product-costing/product-costing.component';
 import { AddMenuComponent } from './add-menu/add-menu.component';
-import { PrintingService } from 'src/app/services/printing.service';
+import { PrintingService } from '../../../services/printing.service';
 
 import Fuse from 'fuse.js';
 import { SelectCategoryComponent } from './select-category/select-category.component';

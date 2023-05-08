@@ -15,7 +15,41 @@ import { HomeModule } from './home/home.module';
 import { DetailModule } from './detail/detail.module';
 
 import { AppComponent } from './app.component';
-
+import { DialogModule } from '@angular/cdk/dialog';
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { provideAuth, getAuth } from '@angular/fire/auth';
+import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+import { provideStorage, getStorage } from '@angular/fire/storage';
+import { provideFunctions, getFunctions } from '@angular/fire/functions';
+import { provideMessaging, getMessaging } from '@angular/fire/messaging';
+import { providePerformance, getPerformance } from '@angular/fire/performance';
+import {
+  provideRemoteConfig,
+  getRemoteConfig,
+} from '@angular/fire/remote-config';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { DBConfig, NgxIndexedDBModule } from 'ngx-indexed-db';
+import { BaseComponentsModule } from './base-components/base-components.module';
+import { DataProvider } from './provider/data-provider.service';
+import { AlertsAndNotificationsService } from './services/alerts-and-notification/alerts-and-notifications.service';
+import { AuthService } from './services/auth.service';
+import { DatabaseService } from './services/database.service';
+import { GetDataService } from './services/get-data.service';
+import {
+  provideAnalytics,
+  getAnalytics,
+  ScreenTrackingService,
+  UserTrackingService,
+} from '@angular/fire/analytics';
+import { APP_CONFIG } from '../environments/environment';
 // AoT requires an exported function for factories
 const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new TranslateHttpLoader(http, './assets/i18n/', '.json');
 
@@ -91,13 +125,13 @@ const dbConfig: DBConfig = {
     CoreModule,
     AppRoutingModule,
     AppRoutingModule,
-    BrowserAnimationsModule,
+    SharedModule,
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
     MatSliderModule,
     MatButtonModule,
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideFirebaseApp(() => initializeApp(APP_CONFIG.firebase)),
     provideAnalytics(() => getAnalytics()),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
@@ -112,7 +146,7 @@ const dbConfig: DBConfig = {
     MatButtonToggleModule,
     MatProgressSpinnerModule,
     MatNativeDateModule,
-    DialogModule
+    DialogModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

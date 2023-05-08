@@ -4,6 +4,7 @@ import { PageNotFoundComponent } from './shared/components';
 
 import { HomeRoutingModule } from './home/home-routing.module';
 import { DetailRoutingModule } from './detail/detail-routing.module';
+import { AuthGuard } from './guards/auth-guard.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },

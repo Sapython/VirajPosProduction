@@ -2,12 +2,12 @@ import { Dialog } from '@angular/cdk/dialog';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { SettingsComponent } from '../settings/settings.component';
 import { ChatComponent } from './chat/chat.component';
-import { DataProvider } from 'src/app/provider/data-provider.service';
+import { DataProvider } from '../../provider/data-provider.service';
 import { HistoryComponent } from './history/history.component';
 import { slideInDownOnEnterAnimation, slideOutUpOnLeaveAnimation } from 'angular-animations';
-import { AuthService } from 'src/app/services/auth.service';
-import { ConfirmDialogComponent } from 'src/app/helpers/confirm-dialog/confirm-dialog.component';
-import { DialogComponent } from 'src/app/base-components/dialog/dialog.component';
+import { AuthService } from '../../services/auth.service';
+import { ConfirmDialogComponent } from '../../helpers/confirm-dialog/confirm-dialog.component';
+import { DialogComponent } from '../../base-components/dialog/dialog.component';
 declare var jivo_api:any;
 @Component({
   selector: 'app-system',

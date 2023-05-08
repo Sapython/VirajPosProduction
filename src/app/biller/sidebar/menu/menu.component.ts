@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, OnInit, ViewContainerRef } from '@angular/core';
 import { debounceTime, firstValueFrom, Subject } from 'rxjs';
-import { Category, RootCategory, ViewCategory } from 'src/app/structures/general.structure';
+import { Category, RootCategory, ViewCategory } from '../../../structures/general.structure';
 import { Dialog } from '@angular/cdk/dialog'
-import { DataProvider } from 'src/app/provider/data-provider.service';
-import { DatabaseService } from 'src/app/services/database.service';
+import { DataProvider } from '../../../provider/data-provider.service';
+import { DatabaseService } from '../../../services/database.service';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { StockListComponent } from './stock-list/stock-list.component';
 declare var Hammer:any;

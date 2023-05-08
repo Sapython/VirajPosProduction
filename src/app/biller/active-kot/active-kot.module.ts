@@ -5,7 +5,7 @@ import { KotItemComponent } from './kot-item/kot-item.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { BaseComponentsModule } from 'src/app/base-components/base-components.module';
+import { BaseComponentsModule } from '../../base-components/base-components.module';
 import { MergedProductsPipe } from './merged-products.pipe';
 import { MatMenuModule } from '@angular/material/menu';
 import { LineDiscountComponent } from './kot-item/line-discount/line-discount.component';

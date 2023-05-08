@@ -1,9 +1,9 @@
 import { Component, Inject } from '@angular/core';
 import { zoomOutOnLeaveAnimation, shakeOnEnterAnimation } from 'angular-animations';
 import { DIALOG_DATA, Dialog, DialogRef } from '@angular/cdk/dialog';
-import { Product } from 'src/app/biller/constructors';
-import { DialogComponent } from 'src/app/base-components/dialog/dialog.component';
-import { DataProvider } from 'src/app/provider/data-provider.service';
+import { Product } from '../../../../biller/constructors';
+import { DialogComponent } from '../../../../base-components/dialog/dialog.component';
+import { DataProvider } from '../../../../provider/data-provider.service';
 @Component({
   selector: 'app-line-discount',
   templateUrl: './line-discount.component.html',

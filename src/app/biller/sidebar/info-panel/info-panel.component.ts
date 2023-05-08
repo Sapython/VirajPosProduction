@@ -1,11 +1,11 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { AfterViewInit, Component, ElementRef, OnChanges, OnInit } from '@angular/core';
 import { debounceTime, Subject, Subscription } from 'rxjs';
-import { DataProvider } from 'src/app/provider/data-provider.service';
+import { DataProvider } from '../../../provider/data-provider.service';
 import { SalesSummaryComponent } from './sales-summary/sales-summary.component';
 import { OrderSummaryComponent } from './order-summary/order-summary.component';
 import { UpgradeComponent } from './upgrade/upgrade.component';
-import { environment } from 'src/environments/environment';
+import { APP_CONFIG } from '../../../../environments/environment';
 declare var Hammer:any;
 @Component({
   selector: 'app-info-panel',
@@ -25,7 +25,7 @@ export class InfoPanelComponent implements OnInit,OnChanges, AfterViewInit{
       this.isOpen = false;
       this.isSalesOpen = false;
     })
-    this.version = environment.appVersion
+    this.version = APP_CONFIG.appVersion
     console.log("this.el.nativeElement",this.el.nativeElement.offsetHeight);
     this.height = this.el.nativeElement.offsetHeight;
   }

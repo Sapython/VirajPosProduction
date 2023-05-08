@@ -1,7 +1,11 @@
 import { Component } from '@angular/core';
 import { ElectronService } from './core/services';
-import { TranslateService } from '@ngx-translate/core';
+// import { TranslateService } from '@ngx-translate/core';
 import { APP_CONFIG } from '../environments/environment';
+import { fadeInDownOnEnterAnimation, fadeOutUpOnLeaveAnimation } from 'angular-animations';
+import { DataProvider } from './provider/data-provider.service';
+import { GetDataService } from './services/get-data.service';
+import { PrintingService } from './services/printing.service';
 
 @Component({
   selector: 'app-root',
@@ -15,12 +19,12 @@ import { APP_CONFIG } from '../environments/environment';
 export class AppComponent {
   constructor(
     private electronService: ElectronService,
-    private translate: TranslateService,
+    // private translate: TranslateService,
     public dataProvider: DataProvider,
     private dataService: GetDataService,
     private printingService: PrintingService
   ) {
-    this.translate.setDefaultLang('en');
+    // this.translate.setDefaultLang('en');
     console.log('APP_CONFIG', APP_CONFIG);
 
     if (electronService.isElectron) {

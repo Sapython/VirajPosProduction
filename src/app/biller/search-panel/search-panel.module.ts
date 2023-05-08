@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { TableModule } from '../table/table.module';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FormsModule } from '@angular/forms';
-import { BaseComponentsModule } from 'src/app/base-components/base-components.module';
+import { BaseComponentsModule } from '../../base-components/base-components.module';
 
 
 

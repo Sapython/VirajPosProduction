@@ -1,4 +1,4 @@
-import { environment } from "src/environments/environment";
+import { APP_CONFIG } from "../../environments/environment";
 import { Bill } from "./Bill";
 
 export interface PrintConstructor{
@@ -19,19 +19,19 @@ export class Print implements PrintConstructor {
     }
     
     printBill(bill: Bill): Promise<Response> {
-        return fetch(environment.printerServerUrl+'/printBill',this.getOptions({bill:bill}))
+        return fetch(APP_CONFIG.printerServerUrl+'/printBill',this.getOptions({bill:bill}))
     }
     
     printKot(bill: Bill): Promise<Response> {
-        return fetch(environment.printerServerUrl+'/printKot',this.getOptions({bill:bill}))
+        return fetch(APP_CONFIG.printerServerUrl+'/printKot',this.getOptions({bill:bill}))
     }
 
     printEditedKot(bill: Bill): Promise<Response> {
-        return fetch(environment.printerServerUrl+'/printEditedKot',this.getOptions({bill:bill}))
+        return fetch(APP_CONFIG.printerServerUrl+'/printEditedKot',this.getOptions({bill:bill}))
     }
 
     printCancelledKot(bill: Bill): Promise<Response> {
-        return fetch(environment.printerServerUrl+'/printCancelledKot',this.getOptions({bill:bill}))
+        return fetch(APP_CONFIG.printerServerUrl+'/printCancelledKot',this.getOptions({bill:bill}))
     }
 
 }

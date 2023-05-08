@@ -1,6 +1,6 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Component, Inject } from '@angular/core';
-import { Category } from 'src/app/structures/general.structure';
+import { Category } from '../../../../structures/general.structure';
 
 @Component({
   selector: 'app-select-category',

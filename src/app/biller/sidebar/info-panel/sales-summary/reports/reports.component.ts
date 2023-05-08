@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { BillConstructor, KotConstructor, Product, TableConstructor } from 'src/app/biller/constructors';
-import { DatabaseService } from 'src/app/services/database.service';
+import { BillConstructor, KotConstructor, Product, TableConstructor } from '../../../../../biller/constructors';
+import { DatabaseService } from '../../../../../services/database.service';
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 

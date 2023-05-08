@@ -2,9 +2,6 @@ import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { Component, Inject } from '@angular/core';
 import { Bill } from '../../Bill';
 import { KotConstructor, Product } from '../../constructors';
-import { Kot } from '../../Kot';
-import { DataProvider } from 'src/app/provider/data-provider.service';
-import { DatabaseService } from 'src/app/services/database.service';
 import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({

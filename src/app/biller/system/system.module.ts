@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { DialogModule } from '@angular/cdk/dialog';
 import { ChatComponent } from './chat/chat.component';
-import { BaseComponentsModule } from 'src/app/base-components/base-components.module';
+import { BaseComponentsModule } from '../../base-components/base-components.module';
 import { HistoryComponent } from './history/history.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';

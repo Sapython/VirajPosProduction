@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { DataProvider } from 'src/app/provider/data-provider.service';
+import { DataProvider } from '../../../../provider/data-provider.service';
 
 @Component({
   selector: 'app-receiving',

@@ -2,13 +2,12 @@ import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { DataProvider } from 'src/app/provider/data-provider.service';
+import { DataProvider } from '../../../provider/data-provider.service';
 import { SplitBillComponent } from '../split-bill/split-bill.component';
-import { DatabaseService } from 'src/app/services/database.service';
-import { Bill } from '../../Bill';
+import { DatabaseService } from '../../../services/database.service';
 import { BillConstructor, Product, Tax } from '../../constructors';
 import { Discount } from '../../settings/settings.component';
-import { PrintingService } from 'src/app/services/printing.service';
+import { PrintingService } from '../../../services/printing.service';
 
 const taxes:Tax[] = [
   {

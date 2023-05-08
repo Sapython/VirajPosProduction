@@ -2,8 +2,8 @@ import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { DialogComponent } from 'src/app/base-components/dialog/dialog.component';
-import { DataProvider } from 'src/app/provider/data-provider.service';
+import { DialogComponent } from '../../../base-components/dialog/dialog.component';
+import { DataProvider } from '../../../provider/data-provider.service';
 
 @Component({
   selector: 'app-cancel',

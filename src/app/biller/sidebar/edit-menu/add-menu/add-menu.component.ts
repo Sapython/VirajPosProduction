@@ -1,12 +1,12 @@
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Product } from 'src/app/biller/constructors';
+import { Product } from '../../../../biller/constructors';
 import { AddDishComponent } from '../add-dish/add-dish.component';
 import { SelectRecipeComponent } from '../select-recipe/select-recipe.component';
-import { DatabaseService } from 'src/app/services/database.service';
-import { DataProvider } from 'src/app/provider/data-provider.service';
-import { AlertsAndNotificationsService } from 'src/app/services/alerts-and-notification/alerts-and-notifications.service';
+import { DatabaseService } from '../../../../services/database.service';
+import { DataProvider } from '../../../../provider/data-provider.service';
+import { AlertsAndNotificationsService } from '../../../../services/alerts-and-notification/alerts-and-notifications.service';
 import { AddNewCategoryComponent } from '../add-new-category/add-new-category.component';
 
 @Component({

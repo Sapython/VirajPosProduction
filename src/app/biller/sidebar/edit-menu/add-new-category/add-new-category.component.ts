@@ -4,9 +4,9 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 // import fuse
 import Fuse from 'fuse.js';
 import { debounceTime } from 'rxjs';
-import { DataProvider } from 'src/app/provider/data-provider.service';
-import { AlertsAndNotificationsService } from 'src/app/services/alerts-and-notification/alerts-and-notifications.service';
-import { DatabaseService } from 'src/app/services/database.service';
+import { DataProvider } from '../../../../provider/data-provider.service';
+import { AlertsAndNotificationsService } from '../../../../services/alerts-and-notification/alerts-and-notifications.service';
+import { DatabaseService } from '../../../../services/database.service';
 @Component({
   selector: 'app-add-new-category',
   templateUrl: './add-new-category.component.html',

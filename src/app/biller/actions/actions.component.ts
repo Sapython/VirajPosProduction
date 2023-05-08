@@ -1,6 +1,6 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { DataProvider } from 'src/app/provider/data-provider.service';
+import { DataProvider } from '../../provider/data-provider.service';
 import { AddDiscountComponent } from './add-discount/add-discount.component';
 import { CancelComponent } from './cancel/cancel.component';
 import { NonChargeableComponent } from './non-chargeable/non-chargeable.component';

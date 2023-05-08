@@ -4,10 +4,10 @@ import { Timestamp } from '@angular/fire/firestore';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { debounceTime, firstValueFrom } from 'rxjs';
-import { DataProvider } from 'src/app/provider/data-provider.service';
-import { AlertsAndNotificationsService } from 'src/app/services/alerts-and-notification/alerts-and-notifications.service';
-import { DatabaseService } from 'src/app/services/database.service';
-import { environment } from 'src/environments/environment';
+import { DataProvider } from '../../provider/data-provider.service';
+import { AlertsAndNotificationsService } from '../../services/alerts-and-notification/alerts-and-notifications.service';
+import { DatabaseService } from '../../services/database.service';
+import { APP_CONFIG } from '../../../../src/environments/environment';
 import { AddDiscountComponent } from './add-discount/add-discount.component';
 declare var window:any;
 
@@ -18,7 +18,7 @@ declare var window:any;
 })
 export class SettingsComponent {
   // global vars
-  version:string = environment.appVersion;
+  version:string = APP_CONFIG.appVersion;
   serverVersion:string = window.pywebview || 'N/A';
   account:string = this.dataProvider.currentFirebaseUser?.uid || 'N/A';
   discounts:Discount[] = []

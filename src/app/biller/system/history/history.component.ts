@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { DatabaseService } from 'src/app/services/database.service';
 import { BillConstructor, TableConstructor, KotConstructor, Product } from '../../constructors';
 import { Subject, debounceTime } from 'rxjs';
 import Fuse from 'fuse.js';
-import { PrintingService } from 'src/app/services/printing.service';
+import { PrintingService } from '../../../services/printing.service';
+import { DatabaseService } from '../../../services/database.service';
 @Component({
   selector: 'app-history',
   templateUrl: './history.component.html',

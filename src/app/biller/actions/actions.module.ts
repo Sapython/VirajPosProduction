@@ -13,7 +13,7 @@ import { AddDiscountComponent } from './add-discount/add-discount.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDialogModule } from '@angular/material/dialog';
 import { NonChargeableComponent } from './non-chargeable/non-chargeable.component';
-import { BaseComponentsModule } from 'src/app/base-components/base-components.module';
+import { BaseComponentsModule } from '../../base-components/base-components.module';
 import { ActiveKotModule } from '../active-kot/active-kot.module';
 import { SplitBillComponent } from './split-bill/split-bill.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';

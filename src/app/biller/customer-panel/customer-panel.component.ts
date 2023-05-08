@@ -2,7 +2,7 @@ import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { Component, Inject, Input } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { debounceTime } from 'rxjs';
-import { DataProvider } from 'src/app/provider/data-provider.service';
+import { DataProvider } from '../../provider/data-provider.service';
 
 @Component({
   selector: 'app-customer-panel',

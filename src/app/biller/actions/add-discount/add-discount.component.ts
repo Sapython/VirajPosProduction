@@ -5,8 +5,8 @@ import { debounceTime } from 'rxjs';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Discount } from '../../settings/settings.component';
 import { Timestamp } from '@angular/fire/firestore';
-import { DataProvider } from 'src/app/provider/data-provider.service';
-import { DialogComponent } from 'src/app/base-components/dialog/dialog.component';
+import { DataProvider } from '../../../provider/data-provider.service';
+import { DialogComponent } from '../../../base-components/dialog/dialog.component';
 
 @Component({
   selector: 'app-add-discount',

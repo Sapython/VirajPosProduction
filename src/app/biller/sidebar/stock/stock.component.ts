@@ -4,7 +4,7 @@ import { debounceTime, Subject } from 'rxjs';
 import { CloseInComponent } from './close-in/close-in.component';
 import { DispenseComponent } from './dispense/dispense.component';
 import { ReceiveStockComponent } from './receive-stock/receive-stock.component';
-import { DataProvider } from 'src/app/provider/data-provider.service';
+import { DataProvider } from '../../../provider/data-provider.service';
 import { StockValuationComponent } from './stock-valuation/stock-valuation.component';
 import { CashCounterComponent } from './cash-counter/cash-counter.component';
 declare var Hammer:any;

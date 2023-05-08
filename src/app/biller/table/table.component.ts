@@ -1,13 +1,13 @@
 import { DialogRef } from '@angular/cdk/dialog';
 import { Component, OnInit } from '@angular/core';
 import { Timestamp } from '@angular/fire/firestore';
-import { DataProvider } from 'src/app/provider/data-provider.service';
-import { AlertsAndNotificationsService } from 'src/app/services/alerts-and-notification/alerts-and-notifications.service';
-import { DatabaseService } from 'src/app/services/database.service';
+import { DataProvider } from '../../provider/data-provider.service';
+import { AlertsAndNotificationsService } from '../../services/alerts-and-notification/alerts-and-notifications.service';
+import { DatabaseService } from '../../services/database.service';
 import { Product, TableConstructor } from '../constructors';
 import { Kot } from '../Kot';
 import { Table } from '../Table';
-import { PrintingService } from 'src/app/services/printing.service';
+import { PrintingService } from '../../services/printing.service';
 import { group } from 'console';
 
 @Component({

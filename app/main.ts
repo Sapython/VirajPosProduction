@@ -56,7 +56,7 @@ function printData(event, data, printer) {
     console.log('File Written Successfully');
     run_script(
       'RawPrint.exe',
-      [printer, path.join(__dirname, dataPath+'printableData.txt')],
+      [printer,dataPath+'printableData.txt'],
       event,
       function () {
         console.log('Done Printing (main)');

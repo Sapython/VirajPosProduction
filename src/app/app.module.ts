@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, ErrorHandler, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { CoreModule } from './core/core.module';
@@ -46,6 +46,9 @@ import { AlertsAndNotificationsService } from './services/alerts-and-notificatio
 import { GetDataService } from './services/get-data.service';
 import { OnboardingService } from './onboarding.service';
 import { PrintingService } from './services/printing.service';
+
+import * as Sentry from "@sentry/angular-ivy";
+import { Router } from '@angular/router';
 
 // AoT requires an exported function for factories
 const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>
@@ -176,7 +179,23 @@ const dbConfig: DBConfig = {
     AlertsAndNotificationsService,
     GetDataService,
     OnboardingService,
-    PrintingService
+    PrintingService,
+    {
+      provide: ErrorHandler,
+      useValue: Sentry.createErrorHandler({
+        showDialog: true,
+      }),
+    },
+    {
+      provide: Sentry.TraceService,
+      deps: [Router],
+    },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: () => () => {},
+      deps: [Sentry.TraceService],
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent],
 })

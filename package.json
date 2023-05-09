@@ -1,11 +1,11 @@
 {
   "name": "angular-electron",
-  "version": "12.0.0",
-  "description": "Angular 15 with Electron 22 (Typescript + SASS + Hot Reload)",
-  "homepage": "https://github.com/maximegris/angular-electron",
+  "version": "0.1.5",
+  "description": "Viraj POS system.",
+  "homepage": "https://virajworld.in/",
   "author": {
-    "name": "Maxime GRIS",
-    "email": "maxime.gris@gmail.com"
+    "name": "Shreeva",
+    "email": "create@shreeva.com"
   },
   "keywords": [
     "angular",
@@ -24,6 +24,7 @@
   "main": "app/main.js",
   "private": true,
   "scripts": {
+    "prebuild": "npm --no-git-tag-version version patch",
     "postinstall": "electron-builder install-app-deps",
     "ng": "ng",
     "start": "npm-run-all -p electron:serve ng:serve",
@@ -57,6 +58,7 @@
     "@angular/platform-browser": "15.1.5",
     "@angular/platform-browser-dynamic": "15.1.5",
     "@angular/router": "15.1.5",
+    "@sentry/angular-ivy": "7.51.2",
     "angular-animations": "0.11.0",
     "chart.js": "4.3.0",
     "fuse.js": "6.6.2",

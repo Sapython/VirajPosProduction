@@ -43,7 +43,12 @@ function run_script(command, args, event, callback) {
 
 function printData(event, data, printer) {
   console.log('Will Print: ', data, printer);
-  fs.writeFile('printableData.txt', data, (err) => {
+  var home = require("os").homedir();
+  var dataPath = home + '/Documents/somefolderwhichexists/';
+  if (!fs.existsSync(dataPath)){
+    fs.mkdirSync(dataPath, { recursive: true });
+  }
+  fs.writeFile(dataPath+'printableData.txt', data, (err) => {
     if (err) {
       console.error(err);
     }
@@ -51,7 +56,7 @@ function printData(event, data, printer) {
     console.log('File Written Successfully');
     run_script(
       'RawPrint.exe',
-      [printer, path.join(__dirname, 'printableData.txt')],
+      [printer, path.join(__dirname, dataPath+'printableData.txt')],
       event,
       function () {
         console.log('Done Printing (main)');

@@ -12,7 +12,10 @@ import { Dialog } from '@angular/cdk/dialog';
 import { DialogComponent } from '../base-components/dialog/dialog.component';
 declare var window: any;
 declare var printing: any;
-declare var EscPosEncoder: any;
+// @ts-ignore
+import * as EscPosEncoder from '../esc-pos-encoder.umd'
+console.log(EscPosEncoder);
+// declare var EscPosEncoder: any;
 var debugMode = true;
 @Injectable({
   providedIn: 'root',
@@ -729,7 +732,7 @@ export class PrintingService {
       .h2(billdata.note)
       .terms(billdata.notes)
       .reviewQr(billdata.id)
-      .end();
+      .end('');
     return result;
   }
 
@@ -759,7 +762,7 @@ export class PrintingService {
       .hr()
       .itemTable(kotData.products)
       .hr()
-      .end();
+      .end('');
   }
 }
 

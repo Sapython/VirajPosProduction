@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "target": "angular-electron",
+    "target": "virajpos",
     "public": "dist",
     "ignore": [
       "**/.*"

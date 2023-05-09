@@ -2,7 +2,7 @@
   "targets": {
     "fbms-shreeva-demo": {
       "hosting": {
-        "angular-electron": [
+        "virajpos": [
           "fbms-shreeva-demo"
         ]
       }

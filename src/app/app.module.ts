@@ -25,8 +25,8 @@ import {
   ScreenTrackingService,
   UserTrackingService,
 } from '@angular/fire/analytics';
-import { provideAuth, getAuth } from '@angular/fire/auth';
-import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+import { provideAuth, getAuth, indexedDBLocalPersistence } from '@angular/fire/auth';
+import { provideFirestore, getFirestore, enableMultiTabIndexedDbPersistence, enableIndexedDbPersistence } from '@angular/fire/firestore';
 import { providePerformance, getPerformance } from '@angular/fire/performance';
 import { provideStorage, getStorage } from '@angular/fire/storage';
 import { DialogModule } from '@angular/cdk/dialog';
@@ -166,8 +166,16 @@ const dbConfig: DBConfig = {
     BrowserAnimationsModule,
     provideFirebaseApp(() => initializeApp(APP_CONFIG.firebase)),
     provideAnalytics(() => getAnalytics()),
-    provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore()),
+    provideAuth(() => {
+      let auth = getAuth();
+      auth.setPersistence(indexedDBLocalPersistence);
+      return auth;
+    }),
+    provideFirestore(() => {
+      let fs = getFirestore();
+      enableIndexedDbPersistence(fs);
+      return fs
+    }),
     providePerformance(() => getPerformance()),
     provideStorage(() => getStorage()),
   ],

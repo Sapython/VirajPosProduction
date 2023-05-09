@@ -11,9 +11,10 @@ import { Discount } from '../biller/settings/settings.component';
 import { Dialog } from '@angular/cdk/dialog';
 import { DialogComponent } from '../base-components/dialog/dialog.component';
 declare var window: any;
-declare var printing: any;
+// declare var printing: any;
 // @ts-ignore
 import * as EscPosEncoder from '../esc-pos-encoder.umd'
+import { ElectronService } from '../core/services';
 console.log(EscPosEncoder);
 // declare var EscPosEncoder: any;
 var debugMode = true;
@@ -21,10 +22,10 @@ var debugMode = true;
   providedIn: 'root',
 })
 export class PrintingService {
-  constructor(private dataprovider: DataProvider,private dialog:Dialog) {
-    setTimeout(() => {
-      this.test();
-    }, 5000);
+  constructor(private dataprovider: DataProvider,private dialog:Dialog,private printing:ElectronService) {
+    // setInterval(() => {
+    //   this.test();
+    // }, 5000);
   }
 
   test() {
@@ -196,12 +197,12 @@ export class PrintingService {
     };
     let data = this.getBillCode(billdata)
     console.log(data)
-    // printing.printData(data,'POS-80C');
+    this.printing.printData(data,'POS-80C');
     console.log("Send new data");
   }
 
   getPrinters() {
-    if (!debugMode && !printing) return;
+    if (!debugMode && !this.printing) return;
     return Promise.resolve(['POS-80C']);
     // return window.pywebview.api.getPrinters();
   }
@@ -221,7 +222,7 @@ export class PrintingService {
       | 'reprintKot'
       | 'online'
   ) {
-    if (!debugMode && !printing) return;
+    if (!debugMode && !this.printing) return;
     let businessDetails = {
       name: this.dataprovider.currentBusiness?.hotelName,
       address: this.dataprovider.currentBusiness?.address,
@@ -280,12 +281,13 @@ export class PrintingService {
       console.log('printing', printer, groupedProducts[printer]);
       data.products = groupedProducts[printer];
       let result = this.getKotCode(data);
-      printing.printData(result, printer);
+      console.log("got kot code",result);
+      this.printing.printData(result, printer);
     });
   }
 
   deleteKot(tableNo: string, orderNo: string, products: Product[], id: string) {
-    if (!debugMode && !printing) return;
+    if (!debugMode && !this.printing) return;
     let businessDetails = {
       name: this.dataprovider.currentBusiness?.hotelName,
       address: this.dataprovider.currentBusiness?.address,
@@ -343,13 +345,13 @@ export class PrintingService {
       console.log('printing', printer, groupedProducts[printer]);
       data.products = groupedProducts[printer];
       let result = this.getKotCode(data);
-      printing.printData(result, printer);
+      this.printing.printData(result, printer);
     });
     // return window.pywebview.api.print(data['mode'], data, printerConfig);
   }
 
   printBill(bill: Bill) {
-    if (!debugMode && !printing) return;
+    if (!debugMode && !this.printing) return;
     let businessDetails = {
       name: this.dataprovider.currentBusiness?.hotelName,
       address: this.dataprovider.currentBusiness?.address,
@@ -414,11 +416,11 @@ export class PrintingService {
       const dialog = this.dialog.open(DialogComponent,{data:{title:'No printer found for printing bill.',description:'Please select a printer in settings panel.',buttons:['Ok'],primary:[0]}})
       return
     }
-    return printing.printData(data,this.dataprovider.currentBusiness?.billerPrinter);
+    return this.printing.printData(data,this.dataprovider.currentBusiness?.billerPrinter);
   }
 
   reprintBill(bill: BillConstructor) {
-    if (!debugMode && !printing) return;
+    if (!debugMode && !this.printing) return;
     let businessDetails = {
       name: this.dataprovider.currentBusiness?.hotelName,
       address: this.dataprovider.currentBusiness?.address,
@@ -498,12 +500,12 @@ export class PrintingService {
       const dialog = this.dialog.open(DialogComponent,{data:{title:'No printer found for printing bill.',description:'Please select a printer in settings panel.',buttons:['Ok'],primary:[0]}})
       return
     }
-    return printing.printData(data,this.dataprovider.currentBusiness?.billerPrinter);
+    return this.printing.printData(data,this.dataprovider.currentBusiness?.billerPrinter);
     // return window.pywebview.api.print('reprintBill', billdata, printerConfig);
   }
 
   reprintKot(kot: KotConstructor, table: string, billNo: string) {
-    if (!debugMode && !printing) return;
+    if (!debugMode && !this.printing) return;
     let businessDetails = {
       name: this.dataprovider.currentBusiness?.hotelName,
       address: this.dataprovider.currentBusiness?.address,
@@ -564,7 +566,7 @@ export class PrintingService {
       console.log('printing', printer, groupedProducts[printer]);
       kotdata.products = groupedProducts[printer];
       let result = this.getKotCode(kotdata);
-      printing.printData(result, printer);
+      this.printing.printData(result, printer);
     });
   }
 
@@ -626,7 +628,7 @@ export class PrintingService {
       businessDetails: businessDetails,
     };
     console.log('printing data', kotdata, printerConfig);
-    if (!debugMode && !printing) return;
+    if (!debugMode && !this.printing) return;
     if(this.dataprovider.currentBusiness?.billerPrinter){
       const dialog = this.dialog.open(DialogComponent,{data:{title:'No printer found for printing bill.',description:'Please select a printer in settings panel.',buttons:['Ok'],primary:[0]}})
       return
@@ -650,7 +652,7 @@ export class PrintingService {
       console.log('printing', printer, groupedProducts[printer]);
       kotdata.products = groupedProducts[printer];
       let result = this.getKotCode(kotdata);
-      printing.printData(result, printer);
+      this.printing.printData(result, printer);
     });
     // return window.pywebview.api.print('editedKot', kotdata, printerConfig);
   }
@@ -763,6 +765,7 @@ export class PrintingService {
       .itemTable(kotData.products)
       .hr()
       .end('');
+    return result;
   }
 }
 

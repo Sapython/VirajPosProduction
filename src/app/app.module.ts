@@ -45,6 +45,7 @@ import { AuthService } from './services/auth.service';
 import { AlertsAndNotificationsService } from './services/alerts-and-notification/alerts-and-notifications.service';
 import { GetDataService } from './services/get-data.service';
 import { OnboardingService } from './onboarding.service';
+import { PrintingService } from './services/printing.service';
 
 // AoT requires an exported function for factories
 const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>
@@ -174,7 +175,8 @@ const dbConfig: DBConfig = {
     AuthService,
     AlertsAndNotificationsService,
     GetDataService,
-    OnboardingService
+    OnboardingService,
+    PrintingService
   ],
   bootstrap: [AppComponent],
 })

@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "fbms-shreeva-demo": {
+      "hosting": {
+        "angular-electron": [
+          "fbms-shreeva-demo"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "fbms-shreeva-demo"
+  }
+}

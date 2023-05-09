@@ -1,0 +1,494 @@
+<main>
+  <h1>{{ onboardingService.stage }}</h1>
+  <section [@zoomInOnEnter] [@zoomOutOnLeave] *ngIf="onboardingService.stage == 'noUser'">
+    <img src="assets/viraj.png" alt="Viraj" />
+    <h1>Welcome to <strong>Viraj</strong></h1>
+    <form
+      [formGroup]="loginForm"
+      (ngSubmit)="login()"
+      *ngIf="dataProvider.isAuthStateAvaliable"
+    >
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input
+          matInput
+          formControlName="email"
+          type="email"
+          placeholder="Email"
+          required
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          formControlName="password"
+          type="password"
+          placeholder="Password"
+          required
+        />
+      </mat-form-field>
+      <button mat-flat-button color="primary" [disabled]="!loginForm.valid">
+        Login
+      </button>
+      <viraj-button
+        color="primary"
+        (click)="onboardingService.stage = 'onboardingStep1'"
+        >Create an account</viraj-button
+      >
+    </form>
+    <div *ngIf="!dataProvider.isAuthStateAvaliable" class="center">
+      <mat-spinner></mat-spinner>
+    </div>
+  </section>
+  <section [@zoomInOnEnter] [@zoomOutOnLeave]
+    *ngIf="
+      onboardingService.stage == 'userExists' ||
+      onboardingService.stage == 'virajReady'
+    "
+  >
+    <h3>Logged in with {{ this.dataProvider.currentUser?.email }}</h3>
+    <ng-container *ngIf="onboardingService.stage == 'userExists'">
+      <p>Please wait we are preparing <strong>Viraj</strong></p>
+      <div class="center">
+        <mat-spinner [diameter]="30"></mat-spinner>
+      </div>
+      <p class="textCenter">{{ onboardingService.loadingSteps | async }}</p>
+    </ng-container>
+    <ng-container *ngIf="onboardingService.stage == 'virajReady'">
+      <p>Viraj is ready to use</p>
+      <viraj-button mat-flat-button color="primary" routerLink="../biller"
+        >Continue To Viraj</viraj-button
+      >
+    </ng-container>
+  </section>
+  <section [@zoomInOnEnter] [@zoomOutOnLeave]
+    class="multipleBusiness"
+    *ngIf="onboardingService.stage == 'multipleBusiness'"
+  >
+    <h1>Choose a business</h1>
+    <p>
+      These are all accounts available on
+      <strong>{{ this.dataProvider.currentUser?.email }}</strong>
+    </p>
+    <div class="businessWrapper">
+      <div
+        class="business"
+        (click)="setDefaultAccount(business)"
+        *ngFor="let business of this.dataProvider.currentUser?.business"
+      >
+        <h5>{{ business.name }}</h5>
+        <p class="address">{{ business.address }}</p>
+        <div class="account">
+          <span class="user">
+            <i class="ri-user-3-fill"></i>
+            <div [class]="'badge ' + business.access">
+              {{ business.access.accessLevel | titlecase}}
+            </div>
+            <span>{{ business.joiningDate.toDate() | date }}</span>
+          </span>
+          <span> #{{ business.businessId }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section [@zoomInOnEnter] [@zoomOutOnLeave]
+    *ngIf="
+      onboardingService.stage == 'onboardingStep1' ||
+      onboardingService.stage == 'onboardingStep2' ||
+      onboardingService.stage == 'onboardingStep3'
+    "
+    class="onboarding"
+  >
+    <!-- <p>onboarding</p> -->
+    <mat-stepper>
+      <mat-step label="Welcome">
+        <div>
+          <h1>Welcome to <strong>Viraj</strong></h1>
+          <p>The restaurant <strong>standard</strong> for modern age.</p>
+          <h3>Let's get started</h3>
+          <h3></h3>
+          <button color="primary" mat-flat-button matStepperNext>
+            Become a part
+          </button>
+        </div>
+      </mat-step>
+      <mat-step label="Register">
+        <div>
+          <h1>Let's get started</h1>
+          <form
+            [formGroup]="onboardingBusinessForm"
+            class="onboarding"
+            (ngSubmit)="saveBusinessDetails()"
+          >
+            <mat-form-field appearance="outline">
+              <mat-label>Business Name</mat-label>
+              <input
+                type="text"
+                matInput
+                formControlName="name"
+                #buisnessName
+              />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Address</mat-label>
+              <input type="text" matInput formControlName="address" />
+            </mat-form-field>
+            <div class="upload" (click)="picker.click()">
+              <input type="file" hidden #picker (change)="chooseFile($event)" />
+              <ng-container *ngIf="!logoFile">
+                <p>Upload Logo</p>
+              </ng-container>
+              <div
+                *ngIf="logoFile"
+                class="avatar"
+                [ngClass]="{ uploaded: logoFile }"
+              >
+                <img [src]="logoString" />
+                <p>{{ buisnessName.value | titlecase }}</p>
+              </div>
+            </div>
+            <mat-form-field appearance="outline">
+              <mat-label>Phone</mat-label>
+              <input type="tel" matInput formControlName="phone" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Email</mat-label>
+              <input type="email" matInput formControlName="email" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>FSSAI</mat-label>
+              <input type="text" matInput formControlName="fssai" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>GST</mat-label>
+              <input type="text" matInput formControlName="gst" />
+            </mat-form-field>
+            <button
+              color="primary"
+              [disabled]="!onboardingBusinessForm.valid"
+              mat-flat-button
+              matStepperNext
+            >
+              Continue
+            </button>
+          </form>
+        </div>
+      </mat-step>
+      <mat-step label="Security">
+        <form [formGroup]="securityForm" class="securityForm">
+          <h1>Security</h1>
+          <p>Viraj is ...</p>
+          <mat-form-field appearance="outline">
+            <mat-label>Account Password</mat-label>
+            <input
+              type="password"
+              formControlName="password"
+              matInput
+              #accPassword
+            />
+            <mat-error
+              *ngIf="
+                securityForm.controls['password'].errors &&
+                securityForm.controls['password'].errors['required']
+              "
+            >
+              Please enter a password
+            </mat-error>
+            <mat-error
+              *ngIf="
+                securityForm.controls['password'].errors &&
+                securityForm.controls['password'].errors['minlength']
+              "
+            >
+              Password must be at least 8 characters long.
+            </mat-error>
+            <mat-error *ngIf="!(accConfirmPassword.value == accPassword.value)">
+              Password don't match.
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Confirm Account Password</mat-label>
+            <input
+              type="password"
+              formControlName="confirmPassword"
+              matInput
+              #accConfirmPassword
+            />
+            <mat-error
+              *ngIf="
+                securityForm.controls['confirmPassword'].errors &&
+                securityForm.controls['confirmPassword'].errors['required']
+              "
+            >
+              Please enter a password
+            </mat-error>
+            <mat-error
+              *ngIf="
+                securityForm.controls['confirmPassword'].errors &&
+                securityForm.controls['confirmPassword'].errors['minlength']
+              "
+            >
+              Password must be at least 8 characters long.
+            </mat-error>
+            <mat-error *ngIf="!(accConfirmPassword.value == accPassword.value)">
+              Password don't match.
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Biller Pin</mat-label>
+            <input
+              type="password"
+              formControlName="billerPin"
+              matInput
+              #billerPin
+            />
+            <mat-error
+              *ngIf="
+                securityForm.controls['billerPin'].errors &&
+                securityForm.controls['billerPin'].errors['required']
+              "
+            >
+              Please enter a password
+            </mat-error>
+            <mat-error
+              *ngIf="
+                securityForm.controls['billerPin'].errors &&
+                securityForm.controls['billerPin'].errors['minlength']
+              "
+            >
+              Password must be at least 6 characters long.
+            </mat-error>
+            <mat-error *ngIf="!(confirmBillerPin.value == billerPin.value)">
+              Pin don't match.
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Confirm Biller Pin</mat-label>
+            <input
+              type="password"
+              formControlName="confirmBillerPin"
+              matInput
+              #confirmBillerPin
+            />
+            <mat-error
+              *ngIf="
+                securityForm.controls['confirmBillerPin'].errors &&
+                securityForm.controls['confirmBillerPin'].errors['required']
+              "
+            >
+              Please enter a password
+            </mat-error>
+            <mat-error
+              *ngIf="
+                securityForm.controls['confirmBillerPin'].errors &&
+                securityForm.controls['confirmBillerPin'].errors['minlength']
+              "
+            >
+              Password must be at least 6 characters long.
+            </mat-error>
+            <mat-error *ngIf="!(confirmBillerPin.value == billerPin.value)">
+              Pin don't match.
+            </mat-error>
+          </mat-form-field>
+          <button
+            color="primary"
+            mat-flat-button
+            [disabled]="!securityForm.valid"
+            matStepperNext
+          >
+            Continue
+          </button>
+        </form>
+      </mat-step>
+      <mat-step label="Accounts">
+        <div>
+          <h1>Account</h1>
+          <p>
+            Viraj is a <strong>multi-user</strong> platform. You can add your
+            team members and assign them roles.
+          </p>
+          <button
+            mat-fab
+            color="primary"
+            (click)="accounts.push({ email: '', access: '' })"
+          >
+            <mat-icon>add</mat-icon>
+          </button>
+          <div class="accounts">
+            <div class="account" *ngFor="let account of accounts">
+              <mat-form-field appearance="outline">
+                <mat-label>Email</mat-label>
+                <input type="text" matInput [(ngModel)]="account.email" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Access</mat-label>
+                <mat-select
+                  placeholder="Access Level"
+                  [(ngModel)]="account.access"
+                  name="access"
+                >
+                  <mat-option
+                    *ngFor="let access of this.dataProvider.accessLevels"
+                    [value]="access"
+                  >
+                    {{ access }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <button mat-flat-button color="primary" matStepperNext>
+            Continue
+          </button>
+        </div>
+      </mat-step>
+      <mat-step label="Menu">
+        <form [formGroup]="addNewMenuForm">
+          <div class="modes">
+            <mat-slide-toggle
+              [(ngModel)]="this.dataProvider.activeModes[0]"
+              [ngModelOptions]="{ standalone: true }"
+              [checked]="true"
+              [disabled]="twoModeDeactived && this.dataProvider.activeModes[0]"
+              >Dine In</mat-slide-toggle
+            >
+            <mat-slide-toggle
+              [(ngModel)]="this.dataProvider.activeModes[1]"
+              [ngModelOptions]="{ standalone: true }"
+              [checked]="true"
+              [disabled]="twoModeDeactived && this.dataProvider.activeModes[1]"
+              >Takeaway</mat-slide-toggle
+            >
+            <mat-slide-toggle
+              [(ngModel)]="this.dataProvider.activeModes[2]"
+              [ngModelOptions]="{ standalone: true }"
+              [checked]="true"
+              [disabled]="twoModeDeactived && this.dataProvider.activeModes[2]"
+              >Online</mat-slide-toggle
+            >
+          </div>
+          <mat-form-field appearance="outline">
+            <mat-label>Menu Name</mat-label>
+            <input type="text" matInput formControlName="name" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Menu Description</mat-label>
+            <textarea
+              type="text"
+              matInput
+              formControlName="description"
+            ></textarea>
+          </mat-form-field>
+          <button
+            color="primary"
+            [disabled]="!addNewMenuForm.valid"
+            mat-flat-button
+            matStepperNext
+          >
+            Continue
+          </button>
+        </form>
+      </mat-step>
+      <mat-step label="Dishes">
+        <h1>Dishes</h1>
+        <p>
+          Add dishes to your menu. You can add dishes from our existing products
+          databank.
+        </p>
+        <viraj-button (vclick)="openDishes()">Select Dishes</viraj-button>
+        <hr />
+        <div class="tableContainer">
+          <table
+            class="uk-table uk-table-divider uk-table-striped uk-table-hover uk-table-middle uk-table-small"
+          >
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Price</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of selectedProducts">
+                <td>
+                  <mat-checkbox
+                    [(ngModel)]="item.selected"
+                    [ngModelOptions]="{ standalone: true }"
+                    >{{ item.name }}</mat-checkbox
+                  >
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    [ngModelOptions]="{ standalone: true }"
+                    [(ngModel)]="item.price"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <button mat-flat-button color="primary" matStepperNext>Continue</button>
+      </mat-step>
+      <mat-step label="Categories">
+        <div class="heading">
+          <h3>Menu Categories</h3>
+          <button
+            type="button"
+            mat-stroked-button
+            color="primary"
+            (click)="openCategoryDialog()"
+          >
+            Add Category
+          </button>
+        </div>
+        <ol class="categories">
+          <li *ngFor="let category of rootCategories" class="categoryCard">
+            <h4>{{ category.name }}</h4>
+            <ol class="categoryProducts">
+              <li *ngFor="let item of category.products">
+                <mat-checkbox
+                  [(ngModel)]="item.selected"
+                  [ngModelOptions]="{ standalone: true }"
+                  >{{ item.name }}</mat-checkbox
+                >
+              </li>
+            </ol>
+          </li>
+        </ol>
+        <button mat-flat-button color="primary" matStepperNext>Continue</button>
+      </mat-step>
+      <mat-step label="Complete">
+        <h1>Completed</h1>
+        <p>
+          All the steps are done now. Press <strong>onboard me</strong> to
+          register yourself.
+        </p>
+        <p>You can go back to steps to check the details.</p>
+        <hr />
+        <viraj-button
+          *ngIf="!this.onboardingStarted"
+          type="solid"
+          [animated]="true"
+          (vclick)="completeOnboarding()"
+          [extraLarge]="true"
+          >Onboard Me</viraj-button
+        >
+        <ng-container *ngIf="this.onboardingStarted">
+          <h3><strong>Please wait</strong></h3>
+          <p class="textCenter">{{ loginStage | async }}</p>
+          <div class="center">
+            <mat-spinner mode="indeterminate"> </mat-spinner>
+          </div>
+        </ng-container>
+      </mat-step>
+    </mat-stepper>
+  </section>
+  <!-- <section *ngIf="onboardingService.stage=='userExists'">
+    </section> -->
+  <!-- <section *ngIf="dataProvider.loggedIn">
+        <img src="assets/viraj.png" alt="Viraj">
+        <h1>Viraj Login</h1>
+        <viraj-button mat-flat-button color="primary" routerLink="../biller">Continue To Viraj</viraj-button>
+    </section> -->
+</main>

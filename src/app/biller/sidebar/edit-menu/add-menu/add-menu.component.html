@@ -1,0 +1,72 @@
+<section>
+  <h2>Add Menu</h2>
+  <form [formGroup]="addNewMenuForm" (ngSubmit)="addNewMenu()">
+    <mat-horizontal-stepper>
+      <mat-step label="Step 1">
+        <div class="col">
+          <mat-form-field appearance="outline">
+            <mat-label>Menu Name</mat-label>
+            <input type="text" matInput formControlName="name" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Menu Description</mat-label>
+            <textarea type="text" matInput formControlName="description"></textarea>
+          </mat-form-field>
+        </div>
+      </mat-step>
+      <mat-step label="Step 2">
+        <div class="col">
+          <viraj-button (vclick)="openDishes()">Select Dishes</viraj-button>
+          <div class="tableContainer">
+            <table
+              class="uk-table uk-table-divider uk-table-striped uk-table-hover uk-table-middle uk-table-small"
+            >
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of selectedProducts">
+                  <td>
+                    <mat-checkbox [(ngModel)]="item.selected" [ngModelOptions]="{standalone: true}">{{
+                      item.name
+                    }}</mat-checkbox>
+                  </td>
+                  <td>
+                    <input type="number" [ngModelOptions]="{standalone: true}" [(ngModel)]="item.price" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </mat-step>
+      <mat-step label="Step 3">
+        <div class="heading">
+          <h3>Menu Categories</h3>
+          <button type="button" mat-stroked-button color="primary" (click)="openCategoryDialog()">
+            Add Category
+          </button>
+        </div>
+        <ol class="categories">
+          <li *ngFor="let category of rootCategories" class="categoryCard">
+            <h4>{{category.name}}</h4>
+            <ol class="categoryProducts">
+              <li *ngFor="let item of category.products">
+                <mat-checkbox [(ngModel)]="item.selected" [ngModelOptions]="{standalone: true}">{{
+                  item.name
+                }}</mat-checkbox>
+              </li>
+            </ol>
+          </li>
+        </ol>
+      </mat-step>
+    </mat-horizontal-stepper>
+    <div class="actions">
+      <button type="submit" color="primary" mat-flat-button>Save</button>
+      <button type="button" (click)="close()" mat-stroked-button>Cancel</button>
+    </div>
+  </form>
+</section>

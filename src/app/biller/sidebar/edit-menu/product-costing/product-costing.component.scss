@@ -1,0 +1,36 @@
+section{
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    .tableContainer{
+        max-height: 50vh;
+        overflow-y: scroll;
+        table{
+            width: 100%;
+            border-collapse: collapse;
+            thead{
+                position: sticky;
+                top: 0;
+                background: white;
+                tr{
+                    th{
+                        padding: 15px;
+                        border: 1px solid #ddd;
+                        background: white;
+                        border: 1px solid #ddd;
+                    }
+                }
+            }
+            tbody{
+                tr{
+                    td{
+                        padding: 10px;
+                        border: 1px solid #ddd;
+                    }
+                }
+            }
+        }
+    }
+}

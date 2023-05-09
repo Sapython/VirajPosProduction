@@ -1,0 +1,6 @@
+<section>
+    <ng-container *ngFor="let item of searchVisible ? this.searchResults : products">
+        <app-product-card (click)="selectProduct(item)" [category]="item.category.name" [productName]="item.name" [price]="item.price" *ngIf="item.visible"></app-product-card>
+    </ng-container>
+    <div></div>
+</section>

@@ -1,0 +1,20 @@
+<section matRipple *ngIf="dataProvider.clientHeight >= 717">
+    <p>Dispense</p>
+    <span class="approved" *ngIf="dataProvider.clientHeight>=896">
+        <p>{{approved}}</p>
+        <p>Approved</p>
+    </span>
+    <span class="pending" *ngIf="dataProvider.clientHeight>=896">
+        <p>{{pending}}</p>
+        <p>Pending</p>
+    </span>
+    <i class="ri-arrow-right-s-line"></i>
+</section>
+<viraj-button color="warn" *ngIf="dataProvider.clientHeight < 717 && pending > 0">
+    <!-- <mat-icon>south</mat-icon> -->
+    {{pending}}
+</viraj-button>
+<viraj-button color="primary" *ngIf="dataProvider.clientHeight < 717 && pending == 0">
+    <!-- <mat-icon>south</mat-icon> -->
+    {{approved}}
+</viraj-button>

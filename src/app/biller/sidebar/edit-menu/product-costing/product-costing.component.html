@@ -1,0 +1,56 @@
+<section>
+    <mat-button-toggle-group (valueChange)="mode = $event" value="recipe">
+        <mat-button-toggle value="recipe">Recipe Based</mat-button-toggle>
+        <mat-button-toggle value="cost">Food Cost</mat-button-toggle>
+        <mat-button-toggle value="smart">Smart Recipe</mat-button-toggle>
+    </mat-button-toggle-group>
+    <ng-container *ngIf="mode=='recipe'">
+      <h1>Recipe Based Setting</h1>
+      <mat-form-field apperance="outline">
+        <mat-label>Search ...</mat-label>
+        <input type="text" matInput (input)="search.next(searchInput.value)" #searchInput>
+      </mat-form-field>
+      <div class="tableContainer">
+        <table class="uk-table uk-table-divider uk-table-striped uk-table-hover uk-table-middle uk-table-small">
+          <thead>
+            <tr>
+              <th>Ingredient</th>
+              <th>Quantity</th>
+              <th>Cost Per Kg</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let ingredient of filteredIngredients">
+              <td><mat-slide-toggle [(ngModel)]="ingredient.checked" (change)="sortNow()">{{ingredient.name}}</mat-slide-toggle></td>
+              <td>{{ingredient.quantity | roundOff}} {{ingredient.unit}}</td>
+              <td>{{ingredient.ratePerUnit | currency:'INR'}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <mat-spinner diameter="40" *ngIf="filteredIngredients.length > 0" style="margin: 0 auto;" mode="indeterminate">
+        </mat-spinner>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="mode=='smart'">
+      <h1>Recipe Based Setting</h1>
+      <div class="recipeCard" *ngFor="let recipe of recipeResult">
+        <p class="price">{{recipe.cost | currency:'INR'}}</p>
+        <p class="name">{{recipe.name | titlecase}}</p>
+        <p class="servings"><i class="ri-user-fill"></i> {{recipe.serving}}</p>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="mode=='cost'">
+      <h1>Food Cost Setting</h1>
+      <p>Drag this slider to set your food cost.</p>
+      <div class="row">
+        <mat-slider min="0" [max]="data.price" step="1" showTickMarks discrete>
+          <input matSliderThumb [(ngModel)]="cost">
+        </mat-slider>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Cost</mat-label>
+          <input matInput type="number" min="0" [max]="data.price" step="10" value="0" [(ngModel)]="cost">
+        </mat-form-field>
+      </div>
+    </ng-container>
+</section>

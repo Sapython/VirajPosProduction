@@ -16,16 +16,118 @@ import { DetailModule } from './detail/detail.module';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { APP_CONFIG } from '../environments/environment';
-import { provideAnalytics,getAnalytics,ScreenTrackingService,UserTrackingService } from '@angular/fire/analytics';
-import { provideAuth,getAuth } from '@angular/fire/auth';
-import { provideFirestore,getFirestore } from '@angular/fire/firestore';
-import { providePerformance,getPerformance } from '@angular/fire/performance';
-import { provideStorage,getStorage } from '@angular/fire/storage';
+import { DBConfig, NgxIndexedDBModule } from 'ngx-indexed-db';
+import {
+  provideAnalytics,
+  getAnalytics,
+  ScreenTrackingService,
+  UserTrackingService,
+} from '@angular/fire/analytics';
+import { provideAuth, getAuth } from '@angular/fire/auth';
+import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+import { providePerformance, getPerformance } from '@angular/fire/performance';
+import { provideStorage, getStorage } from '@angular/fire/storage';
+import { DialogModule } from '@angular/cdk/dialog';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { BaseComponentsModule } from './base-components/base-components.module';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSliderModule } from '@angular/material/slider';
+import { DataProvider } from './provider/data-provider.service';
+import { AuthService } from './services/auth.service';
+import { AlertsAndNotificationsService } from './services/alerts-and-notification/alerts-and-notifications.service';
+import { GetDataService } from './services/get-data.service';
+import { OnboardingService } from './onboarding.service';
 
 // AoT requires an exported function for factories
-const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new TranslateHttpLoader(http, './assets/i18n/', '.json');
+const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>
+  new TranslateHttpLoader(http, './assets/i18n/', '.json');
+const dbConfig: DBConfig = {
+  name: 'Viraj',
+  version: 2,
+  objectStoresMeta: [
+    {
+      store: 'business',
+      storeConfig: { keyPath: 'id', autoIncrement: true },
+      storeSchema: [
+        { name: 'userId', keypath: 'userId', options: { unique: false } },
+        { name: 'email', keypath: 'email', options: { unique: false } },
+        {
+          name: 'businessId',
+          keypath: 'businessId',
+          options: { unique: false },
+        },
+        { name: 'access', keypath: 'access', options: { unique: false } },
+      ],
+    },
+    {
+      store: 'device',
+      storeConfig: { keyPath: 'id', autoIncrement: true },
+      storeSchema: [
+        { name: 'deviceId', keypath: 'deviceId', options: { unique: true } },
+      ],
+    },
+    {
+      // for TableConstructor
+      store: 'tables',
+      storeConfig: { keyPath: 'id', autoIncrement: true },
+      storeSchema: [
+        { name: 'id', keypath: 'id', options: { unique: false } },
+        { name: 'tableNo', keypath: 'tableNo', options: { unique: false } },
+        { name: 'bill', keypath: 'bill', options: { unique: false } },
+        {
+          name: 'maxOccupancy',
+          keypath: 'maxOccupancy',
+          options: { unique: false },
+        },
+        { name: 'name', keypath: 'name', options: { unique: false } },
+        {
+          name: 'occupiedStart',
+          keypath: 'occupiedStart',
+          options: { unique: false },
+        },
+        { name: 'billPrice', keypath: 'billPrice', options: { unique: false } },
+        { name: 'status', keypath: 'status', options: { unique: false } },
+        { name: 'type', keypath: 'type', options: { unique: false } },
+      ],
+    },
+    {
+      store: 'categories',
+      storeConfig: { keyPath: 'id', autoIncrement: true },
+      storeSchema: [
+        { name: 'id', keypath: 'id', options: { unique: true } },
+        { name: 'name', keypath: 'name', options: { unique: false } },
+        { name: 'products', keypath: 'products', options: { unique: false } },
+        {
+          name: 'averagePrice',
+          keypath: 'averagePrice',
+          options: { unique: false },
+        },
+      ],
+    },
+    {
+      store: 'recommendedCategories',
+      storeConfig: { keyPath: 'id', autoIncrement: true },
+      storeSchema: [
+        { name: 'id', keypath: 'id', options: { unique: true } },
+        { name: 'name', keypath: 'name', options: { unique: false } },
+        { name: 'products', keypath: 'products', options: { unique: false } },
+        {
+          name: 'averagePrice',
+          keypath: 'averagePrice',
+          options: { unique: false },
+        },
+      ],
+    },
+  ],
+};
 
 @NgModule({
   declarations: [AppComponent],
@@ -38,12 +140,24 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new Transl
     HomeModule,
     DetailModule,
     AppRoutingModule,
+    MatSnackBarModule,
+    BaseComponentsModule,
+    MatButtonToggleModule,
+    MatProgressSpinnerModule,
+    MatNativeDateModule,
+    DialogModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule,
+    MatSliderModule,
+    MatButtonModule,
+    NgxIndexedDBModule.forRoot(dbConfig),
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
         useFactory: httpLoaderFactory,
-        deps: [HttpClient]
-      }
+        deps: [HttpClient],
+      },
     }),
     BrowserAnimationsModule,
     provideFirebaseApp(() => initializeApp(APP_CONFIG.firebase)),
@@ -51,11 +165,17 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new Transl
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     providePerformance(() => getPerformance()),
-    provideStorage(() => getStorage())
+    provideStorage(() => getStorage()),
   ],
   providers: [
-    ScreenTrackingService,UserTrackingService
+    ScreenTrackingService,
+    UserTrackingService,
+    DataProvider,
+    AuthService,
+    AlertsAndNotificationsService,
+    GetDataService,
+    OnboardingService
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

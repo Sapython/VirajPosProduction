@@ -11,5 +11,6 @@ export const APP_CONFIG = {
     measurementId: 'G-LHHR6JB0XN',
   },
   production: true,
-  environment: 'PROD'
+  environment: 'PROD',
+  appVersion: require('../../package.json').version,
 };

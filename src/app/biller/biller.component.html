@@ -1,0 +1,33 @@
+<main>
+    <app-sidebar></app-sidebar>
+    <section class="mainPanel" [ngClass]="{smartMode:dataProvider.smartMode}">
+        <app-search-panel></app-search-panel>
+        <app-products-panel [ngClass]="{smartMode:dataProvider.smartMode}"></app-products-panel>
+        <section class="smartSection" *ngIf="dataProvider.smartMode && this.dataProvider.clientWidth > 1150">
+            <app-recommended></app-recommended>
+            <app-emergency></app-emergency>
+        </section>
+        <section class="smartSection" *ngIf="dataProvider.smartMode && this.dataProvider.clientWidth < 1150">
+            <mat-tab-group >
+                <mat-tab label="Recommendations">
+                    <app-recommended></app-recommended>
+                </mat-tab>
+                <mat-tab label="Alerts">
+                    <app-emergency></app-emergency>
+                </mat-tab>
+            </mat-tab-group>
+        </section>
+    </section>
+    <section class="action">
+        <app-system></app-system>
+        <app-active-kot [ngClass]="{'active':dataProvider.moreActions,'smartMode':!dataProvider.smartMode,'expanded':dataProvider.clientHeight < 890,'noSmartExpanded':dataProvider.clientHeight < 890}"></app-active-kot>
+        <app-actions></app-actions>
+        <!-- <p>{{dataProvider.clientHeight}}</p> -->
+        <ng-container *ngIf="dataProvider.clientHeight >= 890">
+            <app-customer-panel [padding]="false" [ngClass]="{'smartMode':!dataProvider.smartMode}"></app-customer-panel>
+        </ng-container>
+        <!-- <ng-container *ngIf="dataProvider.clientHeight < 890">
+            <button class="customer" (click)="addCustomerInfo()">Add Customer Info</button>
+        </ng-container> -->
+    </section>
+</main>

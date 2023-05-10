@@ -1,6 +1,5 @@
-<section>
+<section [ngClass]="{'align':(products.length > 5 || searchResults.length > 5)}">
     <ng-container *ngFor="let item of searchVisible ? this.searchResults : products">
-        <app-product-card (click)="selectProduct(item)" [category]="item.category.name" [productName]="item.name" [price]="item.price" *ngIf="item.visible"></app-product-card>
+        <app-product-card (click)="selectProduct(item)" [category]="item.category.name" [productName]="item.name" [veg]="item.type == 'veg'" [price]="item.price" *ngIf="item.visible"></app-product-card>
     </ng-container>
-    <div></div>
 </section>

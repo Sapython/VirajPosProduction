@@ -101,6 +101,9 @@ export class Bill implements BillConstructor {
     // this.updated.pipe(debounceTime(100)).subscribe(() => {
 
     // })
+    this.updated.subscribe(()=>{
+      this.dataProvider.queueUpdate.next()
+    })
     this.updated.pipe(debounceTime(10000)).subscribe(async (data) => {
       if (!data) {
         let data = this.toObject();
@@ -148,6 +151,23 @@ export class Bill implements BillConstructor {
           products.push(product);
         }
       })
+    })
+    return products;
+  }
+
+  get allFinalProducts(){
+    let products:Product[] = []
+    this.kots.forEach((kot) => {
+      if (kot.stage == 'finalized'){
+        kot.products.forEach((product) => {
+          let index = products.findIndex((item) => item.id === product.id);
+          if(index !== -1){
+            products[index].quantity += product.quantity;
+          } else {
+            products.push(product);
+          }
+        })
+      }
     })
     return products;
   }
@@ -228,9 +248,9 @@ export class Bill implements BillConstructor {
     this.updated.next();
   }
 
-  addProduct(product: Product) {
+  async addProduct(product: Product) {
     if (this.stage == 'finalized' && this.mode == 'takeaway'){
-      let reactiveReason = prompt('Please enter reason for adding product');
+      let reactiveReason = await this.dataProvider.prompt('Please enter reason for adding product')
       if (reactiveReason){
         this.reactivateKotReasons.push(reactiveReason);
         this.stage = 'active';

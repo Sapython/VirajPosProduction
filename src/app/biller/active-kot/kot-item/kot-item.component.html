@@ -1,4 +1,4 @@
-<section *ngIf="product" [matMenuTriggerFor]="menu">
+<section *ngIf="product" [matMenuTriggerFor]="manageKot ? menu : null">
   <div class="border" (mouseenter)="showKotNo=true" (mouseleave)="showKotNo=false" [ngStyle]="{background:this.kotNoColors[kotNo % this.kotNoColors.length].color,padding:showKotNo ? '10px' : '0px'}">
     <p *ngIf="showKotNo" [ngStyle]="{'color':this.kotNoColors[kotNo % this.kotNoColors.length].contrast}">{{kotId}}</p>
   </div>
@@ -19,7 +19,7 @@
           </option>
         </select>
         <div class="quantity">
-          <viraj-button [minimalPadding]="true" iconSize="small" [disabled]="(dataProvider.manageKot==true && !editMode)" (vclick)="product.quantity = product.quantity + 1;this.dataProvider.currentBill?.calculateBill()">
+          <viraj-button [minimalPadding]="true" iconSize="small" [disabled]="(dataProvider.manageKot==true && !editMode)" (vclick)="increase($event)">
             <i class="ri-add-fill"></i>
           </viraj-button>
           <input

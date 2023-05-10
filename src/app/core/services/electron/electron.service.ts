@@ -58,6 +58,11 @@ export class ElectronService {
     return !!(window && window.process && window.process.type);
   }
 
+  getPrinters(){
+    if (!this.isElectron) return;
+    return this.ipcRenderer.sendSync("getPrinters");
+  }
+
   printData(data:any, printer:string) {
     if (!data || !printer){
       const dialog = this.dialog.open(DialogComponent,{data:{title:'Error',description:'No Data or Printer Selected'}});

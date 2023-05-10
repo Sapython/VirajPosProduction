@@ -1,8 +1,9 @@
-## <small>0.1.14 (2023-05-09)</small>
+## <small>0.1.16 (2023-05-10)</small>
 
 * Added firebase and material ([5a8afcf](https://github.com/swayambhu-innovations/VirajPosProduction/commit/5a8afcf))
 * Added new targets. ([96a916c](https://github.com/swayambhu-innovations/VirajPosProduction/commit/96a916c))
 * Added sentry tracking. ([937dd51](https://github.com/swayambhu-innovations/VirajPosProduction/commit/937dd51))
+* Builder config change ([7c6b92a](https://github.com/swayambhu-innovations/VirajPosProduction/commit/7c6b92a))
 * Changed gitignore for umd files ([274c5b3](https://github.com/swayambhu-innovations/VirajPosProduction/commit/274c5b3))
 * Changed some bg images. ([ebb856e](https://github.com/swayambhu-innovations/VirajPosProduction/commit/ebb856e))
 * Fixed esc pos encoder loader ([c409324](https://github.com/swayambhu-innovations/VirajPosProduction/commit/c409324))

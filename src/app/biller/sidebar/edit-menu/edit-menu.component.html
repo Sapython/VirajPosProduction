@@ -273,6 +273,7 @@
                       mode.productVisibilityChanged = true; product.updated = true
                     "
                   ></mat-slide-toggle>
+                  <viraj-button (click)="mode.editRecipe(product,mode.selectedMenuId)"></viraj-button>
                   <!-- <viraj-button
                     *ngIf="mode.currentType == 'all'"
                     (vclick)="mode.openProductCosting(product)"

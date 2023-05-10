@@ -4,6 +4,7 @@ section{
     border-radius: 5px;
     min-height: 70vh;
     width: 80vw;
+    overflow-y: auto;
     .heading{
       display: flex;
       justify-content: space-between;
@@ -12,7 +13,6 @@ section{
       display: flex;
       flex-wrap: wrap;
       gap:20px;
-      padding: 30px;
       justify-content: space-evenly;
       .report{
         width: 250px;
@@ -202,4 +202,13 @@ section{
         }
       }
     }
+}
+@media screen and (max-width:1366px){
+  .reports{
+    gap:10px;
+    .report{
+      width: 150px !important;
+      height: 150px !important;
+    }
+  }
 }

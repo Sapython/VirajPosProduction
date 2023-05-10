@@ -33,8 +33,10 @@ export class ActiveKotComponent implements OnChanges {
   actionSheetExpanded: boolean = false;
   constructor(public dataProvider: DataProvider) {
     this.dataProvider.billAssigned.subscribe(() => {
+      console.log("this.dataProvider.currentBill",this.dataProvider.currentBill);
       this.generateLabels();
       if (this.dataProvider.currentBill) {
+        this.kots = this.dataProvider.currentBill.kots.filter((kot)=>kot.stage == 'active') || []
         this.activeKotSubscription.unsubscribe();
         this.activeKotSubscription =
           this.dataProvider.currentBill.updated.subscribe((bill: any) => {
@@ -43,7 +45,6 @@ export class ActiveKotComponent implements OnChanges {
               this.activeKotSubscription.unsubscribe();
               return;
             }
-            // console.log("GENO 1");
             if (this.dataProvider.currentBill.kots) {
               this.allKot = this.dataProvider.currentBill.kots;
               let activeKot = this.dataProvider.currentBill.kots.find(
@@ -62,7 +63,6 @@ export class ActiveKotComponent implements OnChanges {
               }
               // console.log("GENO 3",this.kots);
             } else {
-              // console.log("GENO 2", this.dataProvider.currentBill.kots);
               this.kots = [];
             }
           });

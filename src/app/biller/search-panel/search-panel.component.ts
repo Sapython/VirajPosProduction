@@ -104,7 +104,7 @@ export class SearchPanelComponent implements OnInit {
   }
 
   selectTable(){
-    const dialog = this.dialog.open(TableComponent)
+    this.dataProvider.openTableView.next(true)
   }
 
   switchMode(mode:any){

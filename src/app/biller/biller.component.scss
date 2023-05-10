@@ -63,6 +63,7 @@ main{
             border-radius: var(--Viraj-border-radius);
             box-shadow: var(--Viraj-shadow-light);
             padding: 1px;
+            overflow-y: scroll;
             animation: slideFromTop 0.5s ease-in-out;
             // &.smartMode{
             //     height: calc(100vh - 320px);

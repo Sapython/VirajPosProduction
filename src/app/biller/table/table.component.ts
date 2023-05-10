@@ -88,10 +88,9 @@ export class TableComponent implements OnInit {
     }
   }
 
-  addTable(groupName:string){
+  async addTable(groupName:string){
     let index = this.dataProvider.tables.length + 1;
-    var tableName:string|null = '';
-    tableName = prompt('Enter table name',groupName);
+    let tableName = await this.dataProvider.prompt('Enter table name',{value:groupName})
     if (!tableName) {
       return;
     }

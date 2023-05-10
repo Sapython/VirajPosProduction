@@ -8,7 +8,11 @@ import { SlideButtonComponent } from './slide-toggle/slide-button/slide-button.c
 import { SlideButtonDirective } from './slide-toggle/slide-button.directive';
 import { RoundOffPipe } from './round-off.pipe';
 import { DialogComponent } from './dialog/dialog.component';
-
+import { PromptComponent } from './prompt/prompt.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 
 
 @NgModule({
@@ -19,18 +23,25 @@ import { DialogComponent } from './dialog/dialog.component';
     SlideButtonComponent,
     SlideButtonDirective,
     RoundOffPipe,
-    DialogComponent
+    DialogComponent,
+    PromptComponent,
   ],
   imports: [
     CommonModule,
-    MatRippleModule
+    MatRippleModule,
+    MatInputModule,
+    MatFormFieldModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatButtonModule
   ],
   exports:[
     ButtonComponent,
     IconButtonComponent,
     SlideToggleComponent,
     SlideButtonDirective,
-    RoundOffPipe
+    RoundOffPipe,
+    PromptComponent
   ]
 })
 export class BaseComponentsModule { }

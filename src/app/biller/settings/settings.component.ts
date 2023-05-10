@@ -1,5 +1,5 @@
 import { Dialog } from '@angular/cdk/dialog';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Timestamp } from '@angular/fire/firestore';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
@@ -9,6 +9,7 @@ import { AlertsAndNotificationsService } from '../../services/alerts-and-notific
 import { DatabaseService } from '../../services/database.service';
 import { APP_CONFIG } from '../../../../src/environments/environment';
 import { AddDiscountComponent } from './add-discount/add-discount.component';
+import { ElectronService } from '../../core/services';
 declare var window:any;
 
 @Component({
@@ -16,7 +17,7 @@ declare var window:any;
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss']
 })
-export class SettingsComponent {
+export class SettingsComponent implements OnInit {
   // global vars
   version:string = APP_CONFIG.appVersion;
   serverVersion:string = window.pywebview || 'N/A';
@@ -55,7 +56,7 @@ export class SettingsComponent {
     return this.modes.filter((mode)=>!mode).length >= 2
   }
 
-  constructor(private indexedDb:NgxIndexedDBService,private alertify:AlertsAndNotificationsService,public dataProvider:DataProvider,private databaseService:DatabaseService,private dialog:Dialog) {
+  constructor(private indexedDb:NgxIndexedDBService,private alertify:AlertsAndNotificationsService,public dataProvider:DataProvider,private databaseService:DatabaseService,private dialog:Dialog, private electronService:ElectronService) {
     this.viewSettings.patchValue(localStorage.getItem('viewSettings')?JSON.parse(localStorage.getItem('viewSettings')!):{})
     this.viewSettings.valueChanges.pipe(debounceTime(1000)).subscribe((data)=>{
       localStorage.setItem('viewSettings',JSON.stringify(data))
@@ -98,22 +99,20 @@ export class SettingsComponent {
   
   ngOnInit(): void {
     this.getDiscounts();
-    this.indexedDb.getAll('categories').subscribe((data)=>{
-      this.categories = data.map((cat:any)=> {return {...cat,selected:false,indeterminate:false,products:cat.products.map((product:any)=>{return JSON.parse(JSON.stringify({name:product.name,id:product.id,selected:false}))})}});
-      console.log("category data",this.categories);
-    })
-    let settings:any =JSON.parse(localStorage.getItem('printerSettings') || '{}');
-    if (!settings['port']){
-      this.alertify.presentToast("Please set printer settings first")
-      return
-    }
-    fetch('http://192.168.29.125:'+settings['port']+'/getPrinters',{method:'GET'}).then(res=>res.json()).then(res=>{
-      console.log("PRINTERS",res)
-      this.printers = res.printers
-    })
-    if (localStorage.getItem('printerSettings')){
-      this.settingsForm.patchValue(JSON.parse(localStorage.getItem('printerSettings')!))
-    }
+    // this.indexedDb.getAll('categories').subscribe((data)=>{
+    //   this.categories = data.map((cat:any)=> {return {...cat,selected:false,indeterminate:false,products:cat.products.map((product:any)=>{return JSON.parse(JSON.stringify({name:product.name,id:product.id,selected:false}))})}});
+    //   console.log("category data",this.categories);
+    // })
+    // let settings:any =JSON.parse(localStorage.getItem('printerSettings') || '{}');
+    // if (!settings['port']){
+    //   this.alertify.presentToast("Please set printer settings first")
+    //   return
+    // }
+    console.log("this.electronService.getPrinters()",this.electronService.getPrinters());
+    this.printers = this.electronService.getPrinters();
+    // if (localStorage.getItem('printerSettings')){
+    //   this.settingsForm.patchValue(JSON.parse(localStorage.getItem('printerSettings')!))
+    // }
     // this.dataProvider.currentProject.printerConifgs.forEach((config:any)=>{
     //   // this.configs.push({printerControl:new FormControl(config.printer,[Validators.required]),categoryControl:new FormControl(config.category,[Validators.required])})
     // })

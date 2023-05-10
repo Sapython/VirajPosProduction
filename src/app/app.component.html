@@ -1,1 +1,20 @@
-<router-outlet></router-outlet>
+<div
+  class="offlineBar"
+  [@fadeInDownOnEnter]
+  [@fadeOutUpOnLeave]
+  *ngIf="this.dataProvider.offline || this.dataProvider.updating"
+  [ngClass]="{ online: this.dataProvider.backOnline | async, updating:this.dataProvider.updating }"
+>
+    <ng-container *ngIf="!this.dataProvider.updating">
+        System is currently offline !!!
+    </ng-container>
+    <ng-container *ngIf="this.dataProvider.updating">
+        Syncing Online !!!
+    </ng-container>
+</div>
+<div class="overlay" *ngIf="dataProvider.loading">
+  <mat-spinner diameter="70" mode="indeterminate"> </mat-spinner>
+</div>
+<main>
+  <router-outlet #outlet="outlet"></router-outlet>
+</main>

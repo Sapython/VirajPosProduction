@@ -687,7 +687,7 @@ export class PrintingService {
         ],
         [
           ['Date: ' + billdata.date, 'Time: ' + billdata.time],
-          ['Token: ' + billdata.tokenNo, 'Bill: ' + billdata.billNo],
+          ['Token: ' + billdata.orderNo, 'Bill: ' + billdata.billNo],
           ['Cashier: ' + billdata.cashierName, 'Mode: ' + billdata.mode],
         ]
       )
@@ -758,7 +758,7 @@ export class PrintingService {
         ],
         [
           ['Date: ' + kotData.date, 'Time: ' + kotData.time],
-          ['Token: ' + kotData.tokenNo, 'Table No: ' + kotData.table],
+          ['Token: ' + kotData.orderNo, 'Table No: ' + kotData.table],
         ]
       )
       .hr()

@@ -11,6 +11,7 @@ import {
   query,
   serverTimestamp,
   setDoc,
+  Timestamp,
   updateDoc,
   where,
 } from '@angular/fire/firestore';
@@ -262,6 +263,17 @@ export class DatabaseService {
     );
   }
 
+  updateRecipe(recipe:any,menuId:string){
+    recipe.quantity = 1;
+    recipe.selected = false;
+    delete recipe.instruction
+    delete recipe.lineDiscount
+    recipe.createdDate = Timestamp.now()
+    return updateDoc(
+      doc(this.firestore,'business/'+this.dataProvider.businessId+'/menus/'+menuId+'/products/'+recipe.id),{...recipe}
+    )
+  }
+
   updateBill(bill: any) {
     return setDoc(
       doc(this.firestore, 'business/'+this.dataProvider.businessId+'/bills', bill.id),
@@ -360,11 +372,16 @@ export class DatabaseService {
     );
   }
 
-  getBillsByDay(date: any) {
-    let maxTime = new Date(date);
-    maxTime.setHours(23, 59, 59, 999);
+  getBillsByDay(date: Date,endDate?:Date) {
     let minTime = new Date(date);
     minTime.setHours(0, 0, 0, 0);
+    if (endDate){
+      var maxTime = new Date(endDate);
+      maxTime.setHours(23, 59, 59, 999);
+    } else {
+      var maxTime = new Date(date);
+      maxTime.setHours(23, 59, 59, 999);
+    }
     return getDocs(
       query(
         collection(this.firestore, 'business/'+this.dataProvider.businessId+'/bills'),

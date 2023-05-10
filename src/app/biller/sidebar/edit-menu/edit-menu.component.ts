@@ -16,6 +16,7 @@ import { PrintingService } from '../../../services/printing.service';
 
 import Fuse from 'fuse.js';
 import { SelectCategoryComponent } from './select-category/select-category.component';
+import { ElectronService } from '../../../core/services';
 @Component({
   selector: 'app-edit-menu',
   templateUrl: './edit-menu.component.html',
@@ -54,7 +55,7 @@ export class EditMenuComponent implements OnInit {
   // modeConfigs:ModeConfig[] = []
 
   currentType:'recommended'|'root'|'view'|'all' = 'all';
-  constructor(private dialog:Dialog,public dataProvider:DataProvider,private databaseService:DatabaseService,private alertify:AlertsAndNotificationsService,private dialogRef:DialogRef,private printingService:PrintingService){
+  constructor(private dialog:Dialog,public dataProvider:DataProvider,private databaseService:DatabaseService,private alertify:AlertsAndNotificationsService,private dialogRef:DialogRef,private electronService:ElectronService){
     // this.searchSubject.pipe(debounceTime(500)).subscribe((searchString)=>{
     //   if (searchString){
     //     let res = this.fuseInstance.search(searchString);
@@ -86,14 +87,8 @@ export class EditMenuComponent implements OnInit {
   };
 
   async ngOnInit(): Promise<void> {
-    try{
-      this.printers = await this.printingService.getPrinters() || []
-      if (this.printers.length == 0){
-        this.printers.push("Basic Printer")
-      }
-    } catch (e){
-      this.printers = ["Basic Printer"]
-    }
+    this.printers = await this.electronService.getPrinters() || []
+    // this.printers.push("No Printer")
   }
 
   // addNewCategory(){
@@ -202,6 +197,9 @@ export class ModeConfig {
   async getProducts(){
     if(this.selectedMenu){
       let data = await this.databaseService.getProductsByMenu(this.selectedMenu);
+      // data.forEach((doc)=>{
+      //   this.databaseService.updateRecipe({id:doc.id,type:doc.data().type.replace('\r','')},this.selectedMenuId)
+      // })
       this.products = data.docs.map((doc)=>{return {...doc.data(),id:doc.id} as Product});
       console.log("this.products",this.products);
       this.allProductsCategory.products = this.products;
@@ -443,7 +441,7 @@ export class ModeConfig {
   };
 
   addRecipe(menuId:string){
-    let dialog = this.dialog.open(AddDishComponent)
+    let dialog = this.dialog.open(AddDishComponent,{data:{mode:'add'}})
     firstValueFrom(dialog.closed).then(async (data:any)=>{
       if (data){
         const categoryDialog = this.dialog.open(SelectCategoryComponent, {data:{mainCategories:this.mainCategories,viewCategories:this.viewCategories}})
@@ -482,11 +480,32 @@ export class ModeConfig {
       }
     })
   };
+  async editRecipe(product:Product,menuId:string){
+    try {
+      let dialog = this.dialog.open(AddDishComponent,{data:{mode:'edit',product}})
+      let data = await firstValueFrom(dialog.closed)
+      if (data){
+        this.alertify.presentToast("Recipe Updated Successfully");
+      }
+    } catch (error) {
+      this.alertify.presentToast("Recipe Updated Failed");
+    } finally {
+      this.dataProvider.loading = false;
+    }
+  }
 
   updatePrinter(selectedCategory:Category){
     console.log("selectedCategory",selectedCategory);
     if(this.selectedMenu){
-      this.databaseService.setPrinter(this.selectedMenu,selectedCategory)
+      this.dataProvider.loading = true;
+      this.databaseService.setPrinter(this.selectedMenu,selectedCategory).then((data:any)=>{
+        this.alertify.presentToast("Printer Updated Successfully");
+        // console.log("selectedCategory",selectedCategory);
+      }).catch((err)=>{
+        this.alertify.presentToast('Some error occurred','error')
+      }).finally(()=>{
+        this.dataProvider.loading = false;
+      })
     } else {
       this.alertify.presentToast("Please Select Menu")
     }

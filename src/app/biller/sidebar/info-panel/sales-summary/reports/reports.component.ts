@@ -3,6 +3,8 @@ import { BillConstructor, KotConstructor, Product, TableConstructor } from '../.
 import { DatabaseService } from '../../../../../services/database.service';
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { DataProvider } from '../../../../../provider/data-provider.service';
 
 @Component({
   selector: 'app-reports',
@@ -10,7 +12,7 @@ import autoTable from 'jspdf-autotable'
   styleUrls: ['./reports.component.scss'],
 })
 export class ReportsComponent implements OnInit {
-  constructor(private databaseService: DatabaseService) {}
+  constructor(private databaseService: DatabaseService,private dataProvider:DataProvider) {}
   selectedDate:Date = new Date();
 
   // Reports
@@ -40,121 +42,127 @@ export class ReportsComponent implements OnInit {
   tables:TableConstructor[] = []
   loading:boolean = false;
   reportMode:'billWise'|'kotWise'|'itemWise'|'discounted'|'ncBills'|'takeawayBills'|'onlineBills' | 'daySummary' | false = false;
+  range = new FormGroup({
+    start: new FormControl<Date | null>(null,[Validators.required]),
+    end: new FormControl<Date | null>(null),
+  });
   ngOnInit(): void {
   }
 
   getReport(){
-    if (this.reportMode == 'billWise'){
-      this.loading = true;
-      this.databaseService.getBillsByDay(this.selectedDate).then((bills) => {
-        console.log("bills",bills.docs);
-        this.bills = bills.docs.map((doc) => {
-          return {...doc.data(),id:doc.id} as BillConstructor;
-        })
-        this.loading = false;
-      });
-    } else if (this.reportMode == 'kotWise'){
-      this.loading = true;
-      this.databaseService.getBillsByDay(this.selectedDate).then((bills) => {
-        let localBills = bills.docs.map((doc) => {
-          return {...doc.data(),id:doc.id} as BillConstructor;
-        })
-        console.log("bills",localBills);
-        let kotReport = localBills.map((bill)=>{
-          return bill.kots.map((kot)=>{
-            return {...kot,billNo:bill.billNo!,grandTotal: kot.products.reduce((a, b) => a + (b['price'] || 0), 0)}
+    if(this.range.valid){
+      if (this.reportMode == 'billWise'){
+        this.loading = true;
+        this.databaseService.getBillsByDay(this.range.value.start,this.range.value.end).then((bills) => {
+          console.log("bills",bills.docs);
+          this.bills = bills.docs.map((doc) => {
+            return {...doc.data(),id:doc.id} as BillConstructor;
           })
-        })
-        this.kots = kotReport.flat()
-        console.log("kotReport",kotReport,);
-        this.loading = false;
-      });
-    } else if (this.reportMode == 'itemWise'){
-      this.loading = true;
-      this.databaseService.getBillsByDay(this.selectedDate).then((bills) => {
-        let localBills = bills.docs.map((doc) => {
-          return {...doc.data(),id:doc.id} as BillConstructor;
-        })
-        console.log("bills",localBills);
-        let kotReport = localBills.map((bill)=>{
-          return bill.kots.map((kot)=>{
-            return kot.products.map((product)=>{
-              return {...product,billNo:bill.billNo!,kotNo:kot.id,grandTotal: kot.products.reduce((a, b) => a + (b['price'] || 0), 0)}
+          this.loading = false;
+        });
+      } else if (this.reportMode == 'kotWise'){
+        this.loading = true;
+        this.databaseService.getBillsByDay(this.range.value.start,this.range.value.end).then((bills) => {
+          let localBills = bills.docs.map((doc) => {
+            return {...doc.data(),id:doc.id} as BillConstructor;
+          })
+          console.log("bills",localBills);
+          let kotReport = localBills.map((bill)=>{
+            return bill.kots.map((kot)=>{
+              return {...kot,billNo:bill.billNo!,grandTotal: kot.products.reduce((a, b) => a + (b['price'] || 0), 0)}
             })
           })
-        })
-        let productReport = kotReport.flat().flat()
-        console.log("productReport",productReport);
-        this.products = productReport.reduce((a, b) => {
-          let index = a.findIndex((res)=>res.id == b.id)
-          if (index == -1){
-            return [...a,{...b,bills:b.billNo,kots:b.kotNo,quantity:1,amount:b.price}]
-          } else {
-            return [...a.slice(0,index),{...a[index],bills:a[index].bills+','+b.billNo,kots:a[index].kots+','+b.kotNo,quantity:a[index].quantity+1,amount:a[index].amount+b.price},...a.slice(index+1)]
+          this.kots = kotReport.flat()
+          console.log("kotReport",kotReport,);
+          this.loading = false;
+        });
+      } else if (this.reportMode == 'itemWise'){
+        this.loading = true;
+        this.databaseService.getBillsByDay(this.range.value.start,this.range.value.end).then((bills) => {
+          let localBills = bills.docs.map((doc) => {
+            return {...doc.data(),id:doc.id} as BillConstructor;
+          })
+          console.log("bills",localBills);
+          let kotReport = localBills.map((bill)=>{
+            return bill.kots.map((kot)=>{
+              return kot.products.map((product)=>{
+                return {...product,billNo:bill.billNo!,kotNo:kot.id,grandTotal: kot.products.reduce((a, b) => a + (b['price'] || 0), 0)}
+              })
+            })
+          })
+          let productReport = kotReport.flat().flat()
+          console.log("productReport",productReport);
+          this.products = productReport.reduce((a, b) => {
+            let index = a.findIndex((res)=>res.id == b.id)
+            if (index == -1){
+              return [...a,{...b,bills:b.billNo,kots:b.kotNo,quantity:1,amount:b.price}]
+            } else {
+              return [...a.slice(0,index),{...a[index],bills:a[index].bills+','+b.billNo,kots:a[index].kots+','+b.kotNo,quantity:a[index].quantity+1,amount:a[index].amount+b.price},...a.slice(index+1)]
+            }
+          },[] as productReport[])
+          console.log("productReport",this.products);
+          this.loading = false;
+        });
+      } else if (this.reportMode == 'discounted'){
+        this.loading = true;
+        this.databaseService.getBillsByDay(this.range.value.start,this.range.value.end).then((bills) => {
+          this.discountedBills = bills.docs.map((doc) => {
+            return {...doc.data(),id:doc.id} as BillConstructor;
+          }).filter((res)=>res.billing.discount.length > 0)
+          this.loading = false;
+        });
+      } else if (this.reportMode == 'ncBills'){
+        this.loading = true;
+        this.databaseService.getBillsByDay(this.range.value.start,this.range.value.end).then((bills) => {
+          this.ncBills = bills.docs.map((doc) => {
+            return {...doc.data(),id:doc.id} as BillConstructor;
+          }).filter((res)=>res.nonChargeableDetail)
+          this.loading = false;
+        });
+      } else if (this.reportMode =='takeawayBills'){
+        this.loading = true;
+        this.databaseService.getBillsByDay(this.range.value.start,this.range.value.end).then((bills) => {
+          this.takeawayBills = bills.docs.map((doc) => {
+            return {...doc.data(),id:doc.id} as BillConstructor;
+          }).filter((res)=>res.mode=='takeaway')
+          this.loading = false;
+        });
+      } else if (this.reportMode =='onlineBills'){
+        this.loading = true;
+        this.databaseService.getBillsByDay(this.range.value.start,this.range.value.end).then((bills) => {
+          this.onlineBills = bills.docs.map((doc) => {
+            return {...doc.data(),id:doc.id} as BillConstructor;
+          }).filter((res)=>res.mode=='online')
+          this.loading = false;
+        });
+      } else if (this.reportMode == 'daySummary'){
+        this.loading = true;
+        this.databaseService.getBillsByDay(this.range.value.start,this.range.value.end).then((bills) => {
+          let localBills = bills.docs.map((doc) => {
+            return {...doc.data(),id:doc.id} as BillConstructor;
+          })
+          this.daySummary = {
+            totalBills:localBills.length,
+            totalAmount:localBills.reduce((acc,res)=>acc + res.billing.grandTotal,0),
+            totalDiscount:localBills.reduce((acc,res)=>acc + res.billing.discount.reduce((a, b) => a + (b.totalAppliedDiscount || 0), 0),0),
+            totalTax:localBills.reduce((acc,res)=>acc + res.billing.totalTax,0),
+            totalKots:localBills.map((res)=>res.kots.length).reduce((a, b) => a + b, 0),
+            totalProducts:localBills.map((res)=>res.kots.map((res)=>res.products.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0),
+            totalDiscountedBills:localBills.filter((res)=>res.billing.discount.length > 0).length,
+            totalDiscountedAmount:localBills.filter((res)=>res.billing.discount.length > 0).reduce((acc,res)=>acc + res.billing.grandTotal,0),
+            totalNcBills:localBills.filter((res)=>res.nonChargeableDetail).length,
+            totalNcAmount:localBills.filter((res)=>res.nonChargeableDetail).reduce((acc,res)=>acc + res.billing.grandTotal,0),
+            totalTakeawayBills:localBills.filter((res)=>res.mode=='takeaway').length,
+            totalTakeawayAmount:localBills.filter((res)=>res.mode=='takeaway').reduce((acc,res)=>acc + res.billing.grandTotal,0),
+            totalOnlineBills:localBills.filter((res)=>res.mode=='online').length,
+            totalOnlineAmount:localBills.filter((res)=>res.mode=='online').reduce((acc,res)=>acc + res.billing.grandTotal,0),
           }
-        },[] as productReport[])
-        console.log("productReport",this.products);
-        this.loading = false;
-      });
-    } else if (this.reportMode == 'discounted'){
-      this.loading = true;
-      this.databaseService.getBillsByDay(this.selectedDate).then((bills) => {
-        this.discountedBills = bills.docs.map((doc) => {
-          return {...doc.data(),id:doc.id} as BillConstructor;
-        }).filter((res)=>res.billing.discount.length > 0)
-        this.loading = false;
-      });
-    } else if (this.reportMode == 'ncBills'){
-      this.loading = true;
-      this.databaseService.getBillsByDay(this.selectedDate).then((bills) => {
-        this.ncBills = bills.docs.map((doc) => {
-          return {...doc.data(),id:doc.id} as BillConstructor;
-        }).filter((res)=>res.nonChargeableDetail)
-        this.loading = false;
-      });
-    } else if (this.reportMode =='takeawayBills'){
-      this.loading = true;
-      this.databaseService.getBillsByDay(this.selectedDate).then((bills) => {
-        this.takeawayBills = bills.docs.map((doc) => {
-          return {...doc.data(),id:doc.id} as BillConstructor;
-        }).filter((res)=>res.mode=='takeaway')
-        this.loading = false;
-      });
-    } else if (this.reportMode =='onlineBills'){
-      this.loading = true;
-      this.databaseService.getBillsByDay(this.selectedDate).then((bills) => {
-        this.onlineBills = bills.docs.map((doc) => {
-          return {...doc.data(),id:doc.id} as BillConstructor;
-        }).filter((res)=>res.mode=='online')
-        this.loading = false;
-      });
-    } else if (this.reportMode == 'daySummary'){
-      this.loading = true;
-      this.databaseService.getBillsByDay(this.selectedDate).then((bills) => {
-        let localBills = bills.docs.map((doc) => {
-          return {...doc.data(),id:doc.id} as BillConstructor;
-        })
-        this.daySummary = {
-          totalBills:localBills.length,
-          totalAmount:localBills.reduce((acc,res)=>acc + res.billing.grandTotal,0),
-          totalDiscount:localBills.reduce((acc,res)=>acc + res.billing.discount.reduce((a, b) => a + (b.totalAppliedDiscount || 0), 0),0),
-          totalTax:localBills.reduce((acc,res)=>acc + res.billing.totalTax,0),
-          totalKots:localBills.map((res)=>res.kots.length).reduce((a, b) => a + b, 0),
-          totalProducts:localBills.map((res)=>res.kots.map((res)=>res.products.length).reduce((a, b) => a + b, 0)).reduce((a, b) => a + b, 0),
-          totalDiscountedBills:localBills.filter((res)=>res.billing.discount.length > 0).length,
-          totalDiscountedAmount:localBills.filter((res)=>res.billing.discount.length > 0).reduce((acc,res)=>acc + res.billing.grandTotal,0),
-          totalNcBills:localBills.filter((res)=>res.nonChargeableDetail).length,
-          totalNcAmount:localBills.filter((res)=>res.nonChargeableDetail).reduce((acc,res)=>acc + res.billing.grandTotal,0),
-          totalTakeawayBills:localBills.filter((res)=>res.mode=='takeaway').length,
-          totalTakeawayAmount:localBills.filter((res)=>res.mode=='takeaway').reduce((acc,res)=>acc + res.billing.grandTotal,0),
-          totalOnlineBills:localBills.filter((res)=>res.mode=='online').length,
-          totalOnlineAmount:localBills.filter((res)=>res.mode=='online').reduce((acc,res)=>acc + res.billing.grandTotal,0),
-        }
-        this.loading = false;
-      });
-
-    } else {
-      this.reportMode = false
+          this.loading = false;
+        });
+  
+      } else {
+        this.reportMode = false
+      }
     }
   }
 
@@ -163,7 +171,8 @@ export class ReportsComponent implements OnInit {
     // Select rows from table_id
     var rows = document.querySelectorAll('table#report-table tr');
     // Construct csv
-    var csv = [];
+    let baseData = ['Date:',(new Date()).toLocaleString(),'User Id:',this.dataProvider.currentUser.userId,'User Name:',this.dataProvider.currentUser.name]
+    var csv = [baseData.join(separator)];
     for (var i = 0; i < rows.length; i++) {
         var row = [], cols:any = rows[i].querySelectorAll('td, th');
         for (var j = 0; j < cols.length; j++) {

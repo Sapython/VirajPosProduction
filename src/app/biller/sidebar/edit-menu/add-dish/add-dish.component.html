@@ -38,7 +38,7 @@
         </div> -->
         <div class="actions">
             <button mat-stroked-button (click)="cancel()" type="button" color="primary">Cancel</button>
-            <button mat-flat-button type="submit" color="primary">Add New Product</button>
+            <button mat-flat-button type="submit" color="primary">{{this.data.mode == 'add' ?  'Add New' : 'Update'}} Product</button>
         </div>
     </form>
 </section>

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signOut, User, UserCredential } from '@angular/fire/auth';
+import { Auth, createUserWithEmailAndPassword, onAuthStateChanged, signInWithCredential, signInWithCustomToken, signOut, User, UserCredential } from '@angular/fire/auth';
 import { arrayUnion, collection, Firestore, getDocs, query, serverTimestamp, setDoc, updateDoc, where } from '@angular/fire/firestore';
 import { signInWithEmailAndPassword } from '@firebase/auth';
 import { doc, getDoc, Timestamp } from '@firebase/firestore';
@@ -46,10 +46,11 @@ export class AuthService {
         }
       }
     );
-    onAuthStateChanged(this.auth, (user) => {
+    onAuthStateChanged(this.auth, async (user) => {
       this.dataProvider.isAuthStateAvaliable = false;
       // console.log('this.localUserId', this.localUserId);
       if (user) {
+        window.localStorage.setItem('signInToken',await user.getIdToken())
         if (user.uid == this.localUserId && this.localUserData) {
           this.dataProvider.loggedIn = true;
           this.dataProvider.currentFirebaseUser = user;
@@ -105,6 +106,18 @@ export class AuthService {
         //   }
         // })
       } else {
+        alert("No user")
+        if (window.localStorage.getItem('signInToken')){
+          alert("Has local user")
+          try{
+            await signInWithCustomToken(this.auth,window.localStorage.getItem('signInToken'))
+          } catch (e){
+            console.log("LOCAL SIGN IN ERROR",e);
+            
+            alert("Error when signing local")
+          }
+          return
+        }
         this.dataProvider.isAuthStateAvaliable = true;
         this.dataProvider.loggedIn = false;
         this.dataProvider.currentUser = undefined;

@@ -25,7 +25,7 @@ import {
   ScreenTrackingService,
   UserTrackingService,
 } from '@angular/fire/analytics';
-import { provideAuth, getAuth, indexedDBLocalPersistence } from '@angular/fire/auth';
+import { provideAuth, getAuth, indexedDBLocalPersistence, browserLocalPersistence } from '@angular/fire/auth';
 import { provideFirestore, getFirestore, enableMultiTabIndexedDbPersistence, enableIndexedDbPersistence } from '@angular/fire/firestore';
 import { providePerformance, getPerformance } from '@angular/fire/performance';
 import { provideStorage, getStorage } from '@angular/fire/storage';
@@ -168,12 +168,11 @@ const dbConfig: DBConfig = {
     provideAnalytics(() => getAnalytics()),
     provideAuth(() => {
       let auth = getAuth();
-      auth.setPersistence(indexedDBLocalPersistence);
+      auth.setPersistence(browserLocalPersistence);
       return auth;
     }),
     provideFirestore(() => {
       let fs = getFirestore();
-      enableIndexedDbPersistence(fs);
       return fs
     }),
     providePerformance(() => getPerformance()),

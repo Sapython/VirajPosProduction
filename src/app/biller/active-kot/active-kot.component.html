@@ -20,6 +20,7 @@
 </div>
 <section #kotListElement>
   <div
+    class="normalKotView"
     *ngIf="!dataProvider.kotViewVisible && !dataProvider.allProducts"
     [@zoomInOnEnter]
     [@zoomOutOnLeave]
@@ -64,11 +65,14 @@
           [kotId]="kot.id"
           [kotNo]="i"
           [product]="item"
+          [manageKot]="true"
+          (lineDiscounted)="this.dataProvider.currentBill?.calculateBill()"
+          (lineCancelled)="this.dataProvider.currentBill?.lineCancelled(item,$event,kots[0])"
           [editMode]="kot.editMode"
           [quantity]="item.quantity"
           [productName]="item.name"
           (lineDiscounted)="this.dataProvider.currentBill?.calculateBill()"
-          [nonVeg]="false"
+          [nonVeg]="item.type == 'non-veg'"
           [price]="item.price"
           *ngFor="let item of kot.products"
         ></app-kot-item>
@@ -87,13 +91,11 @@
         [kotId]="kots[0].id"
         (delete)="delete(item)"
         [product]="item"
-        (lineDiscounted)="this.dataProvider.currentBill?.calculateBill()"
-        (lineCancelled)="this.dataProvider.currentBill?.lineCancelled(item,$event,kots[0])"
         [kotNo]="activeKotIndex"
         [info]="item.instruction || null"
         [quantity]="item.quantity"
         [productName]="item.name"
-        [nonVeg]="false"
+        [nonVeg]="item.type == 'non-veg'"
         [price]="item.price"
         *ngFor="let item of kots[0].products; let i = index"
       ></app-kot-item>
@@ -110,11 +112,10 @@
         [kotId]="this.dataProvider.currentBill?.editKotMode?.kot?.id || ''"
         [product]="item"
         (delete)="delete(item)"
-        (lineDiscounted)="this.dataProvider.currentBill?.calculateBill()"
         [kotNo]="this.dataProvider.currentBill?.editKotMode?.kotIndex || 0"
         [quantity]="item.quantity"
         [productName]="item.name"
-        [nonVeg]="false"
+        [nonVeg]="item.type == 'non-veg'"
         [price]="item.price"
         *ngFor="
           let item of this.dataProvider.currentBill?.editKotMode?.newKot;

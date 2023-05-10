@@ -1,8 +1,9 @@
-import { DialogRef } from '@angular/cdk/dialog';
-import { Component } from '@angular/core';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataProvider } from '../../../../provider/data-provider.service';
 import { DatabaseService } from '../../../../services/database.service';
+import { Product } from '../../../constructors';
 
 @Component({
   selector: 'app-add-dish',
@@ -19,10 +20,15 @@ export class AddDishComponent {
     name: new FormControl('',Validators.required),
     price: new FormControl('',Validators.required),
     type: new FormControl('',Validators.required),
-    variants: new FormControl(this.variants),
+    // variants: new FormControl(this.variants),
   });
 
-  constructor(private databaseService:DatabaseService,private dataProvider:DataProvider,private dialogRef:DialogRef) { }
+  constructor(private dialogRef:DialogRef,@Inject(DIALOG_DATA) public data:{mode:'add'|'edit',product?:Product}) {
+    if(data.mode == 'edit') {
+      this.newDishForm.patchValue(data.product)
+      console.log(this.newDishForm.value);
+    }
+  }
 
   addVariant(){
     this.variants.push({variantName:'',price:0});

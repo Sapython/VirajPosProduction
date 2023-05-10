@@ -22,11 +22,11 @@ export class AlertsAndNotificationsService {
     sound: boolean = true
   ) {
     this.snackbar.open(message, action, { duration: duration });
-    if (sound && type === 'info') {
-      this.playAudio('toast');
-    } else if (sound && type === 'error') {
-      this.playAudio('errorToast');
-    }
+    // if (sound && type === 'info') {
+    //   this.playAudio('toast');
+    // } else if (sound && type === 'error') {
+    //   this.playAudio('errorToast');
+    // }
   }
 
   constructor(private snackbar: MatSnackBar) {

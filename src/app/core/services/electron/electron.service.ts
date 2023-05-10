@@ -60,7 +60,7 @@ export class ElectronService {
 
   getPrinters(){
     if (!this.isElectron) return;
-    return this.ipcRenderer.sendSync("getPrinters");
+    return this.ipcRenderer.sendSync("getPrinters").map((printer:any)=>{printer.name});
   }
 
   printData(data:any, printer:string) {

@@ -71,6 +71,7 @@ export class SettingsComponent implements OnInit {
   }
 
   updateBillPrinter(value:string){
+    this.dataProvider.currentBusiness!.billerPrinter = value;
     this.databaseService.updateBusiness({billerPrinter:value,businessId:this.dataProvider.currentBusiness?.businessId!}).then(()=>{
       this.alertify.presentToast("Printer updated successfully")
     }).catch((err)=>{

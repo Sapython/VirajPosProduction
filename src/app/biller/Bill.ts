@@ -90,7 +90,6 @@ export class Bill implements BillConstructor {
     id: string,
     table: Table,
     mode: 'dineIn' | 'takeaway' | 'online',
-    device: Device,
     billerUser: User,
     menu:Menu,
     private dataProvider: DataProvider,
@@ -125,7 +124,6 @@ export class Bill implements BillConstructor {
     this.mode = mode;
     this.customerInfo = {};
     this.menu = menu;
-    this.device = device;
     this.table = table;
     this.user = billerUser;
     this.billNo = billNo;
@@ -864,7 +862,6 @@ export class Bill implements BillConstructor {
       billNo: this.billNo || null,
       orderNo: this.orderNo || null,
       mode: this.mode,
-      device: this.device,
       kots: this.kotWithoutFunctions,
       billing: this.billing,
       stage: this.stage,
@@ -902,7 +899,6 @@ export class Bill implements BillConstructor {
       let instance = new Bill(object.id,
         table,
         object.mode,
-        object.device,
         object.user,
         dataprovider.currentMenu?.selectedMenu,
         dataprovider,

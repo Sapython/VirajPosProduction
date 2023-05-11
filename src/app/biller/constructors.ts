@@ -29,7 +29,6 @@ export interface BillConstructor {
   customerInfo: CustomerInfo;
   billingMode: 'cash' | 'card' | 'upi' | 'nonChargeable';
   mode: 'dineIn' | 'takeaway' | 'online';
-  device: DeviceConstructor;
   user: UserConstructor;
   kots: KotConstructor[];
   table: TableConstructor;

@@ -45,7 +45,9 @@ export class AuthService {
           console.log('Local login not found');
         }
       }
-    );
+    ).catch((err)=>{
+      console.log("Local login error",err);
+    });
     onAuthStateChanged(this.auth, async (user) => {
       this.dataProvider.isAuthStateAvaliable = false;
       // console.log('this.localUserId', this.localUserId);
@@ -106,17 +108,18 @@ export class AuthService {
         //   }
         // })
       } else {
-        alert("No user")
+        alert("No user");
         if (window.localStorage.getItem('signInToken')){
-          alert("Has local user")
+          alert("Has local user");
           try{
-            await signInWithCustomToken(this.auth,window.localStorage.getItem('signInToken'))
+            indexedDB.open('firebaseLocalStorageDb',1).onsuccess = async (event:any)=>{
+              await signInWithCustomToken(this.auth,window.localStorage.getItem('signInToken'));
+              return;
+            }
           } catch (e){
             console.log("LOCAL SIGN IN ERROR",e);
-            
             alert("Error when signing local")
           }
-          return
         }
         this.dataProvider.isAuthStateAvaliable = true;
         this.dataProvider.loggedIn = false;
@@ -159,7 +162,9 @@ export class AuthService {
           };
         }
       }
-    );
+    ).catch((err)=>{
+      console.log("Error",err);
+    });
 
   }
 
@@ -172,16 +177,16 @@ export class AuthService {
   }
 
   addCurrentUserOnLocal(user: UserRecord) {
-    this.dbService
-      .add('business', {
-        userId: user.userId,
-        businessId: user.business[0],
-        access: user.business[0].access.accessLevel,
-        email: user.email,
-      })
-      .subscribe((res) => {
-        console.log('Added for local login', res);
-      });
+    // this.dbService
+    //   .add('business', {
+    //     userId: user.userId,
+    //     businessId: user.business[0],
+    //     access: user.business[0].access.accessLevel,
+    //     email: user.email,
+    //   })
+    //   .subscribe((res) => {
+    //     console.log('Added for local login', res);
+    //   });
   }
 
   async checkbusiness(

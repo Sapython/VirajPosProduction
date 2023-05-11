@@ -258,7 +258,7 @@ export class Table implements TableConstructor {
       return;
     }
     if (this.status === 'available') {
-      if (this.dataProvider.currentUser && this.dataProvider.currentDevice) {
+      if (this.dataProvider.currentUser) {
         let user: UserConstructor = {
           id: this.dataProvider.currentUser.userId,
           name: this.dataProvider.currentUser?.name,
@@ -282,7 +282,6 @@ export class Table implements TableConstructor {
           this.generateId(),
           this,
           mode,
-          this.dataProvider.currentDevice,
           user,
           this.dataProvider.currentMenu?.selectedMenu,
           this.dataProvider,
@@ -294,9 +293,7 @@ export class Table implements TableConstructor {
         this.updated.next();
         return this.bill;
       } else {
-        if (!this.dataProvider.currentDevice) {
-          throw new Error('No device is selected');
-        } else if (!this.dataProvider.currentUser) {
+        if (!this.dataProvider.currentUser) {
           console.log(
             'this.dataProvider.currentUser ',
             this.dataProvider.currentUser

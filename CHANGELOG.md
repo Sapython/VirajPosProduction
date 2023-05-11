@@ -1,13 +1,15 @@
-## <small>0.1.20 (2023-05-10)</small>
+## <small>0.1.23 (2023-05-10)</small>
 
 * Added firebase and material ([5a8afcf](https://github.com/swayambhu-innovations/VirajPosProduction/commit/5a8afcf))
 * Added new targets. ([96a916c](https://github.com/swayambhu-innovations/VirajPosProduction/commit/96a916c))
 * Added sentry tracking. ([937dd51](https://github.com/swayambhu-innovations/VirajPosProduction/commit/937dd51))
+* Added service worker ([95bd6dc](https://github.com/swayambhu-innovations/VirajPosProduction/commit/95bd6dc))
 * Builder config change ([7c6b92a](https://github.com/swayambhu-innovations/VirajPosProduction/commit/7c6b92a))
 * Changed gitignore for umd files ([274c5b3](https://github.com/swayambhu-innovations/VirajPosProduction/commit/274c5b3))
 * Changed some bg images. ([ebb856e](https://github.com/swayambhu-innovations/VirajPosProduction/commit/ebb856e))
 * Fixed bugs ([d50769d](https://github.com/swayambhu-innovations/VirajPosProduction/commit/d50769d))
 * Fixed esc pos encoder loader ([c409324](https://github.com/swayambhu-innovations/VirajPosProduction/commit/c409324))
+* Fixed printer naming ([40fb838](https://github.com/swayambhu-innovations/VirajPosProduction/commit/40fb838))
 * Fixed printing bugs ([68775e9](https://github.com/swayambhu-innovations/VirajPosProduction/commit/68775e9))
 * Initial commit ([72a5882](https://github.com/swayambhu-innovations/VirajPosProduction/commit/72a5882))
 * Initialized Viraj with no fs errors. ([7c15e3c](https://github.com/swayambhu-innovations/VirajPosProduction/commit/7c15e3c))

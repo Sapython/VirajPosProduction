@@ -79,6 +79,7 @@ function createWindow(): BrowserWindow {
       allowRunningInsecureContent: serve,
       contextIsolation: false, // false if you want to run e2e test with Spectron
     },
+    autoHideMenuBar: true,
   });
 
   if (serve) {
@@ -99,6 +100,11 @@ function createWindow(): BrowserWindow {
     const url = new URL(path.join('file:', __dirname, pathIndex));
     win.loadURL(url.href);
   }
+  win.webContents.on("did-fail-load", () => {
+    console.log("did-fail-load");
+    win.loadURL(path.join("file://", __dirname, "../dist/index.html"));
+    // REDIRECT TO FIRST WEBPAGE AGAIN
+  });
 
   // Emitted when the window is closed.
   win.on('closed', () => {

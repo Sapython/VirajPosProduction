@@ -258,7 +258,7 @@ export class PrintingService {
     };
     console.log('printing data', data, printerConfig);
     if(!this.dataprovider.currentBusiness?.billerPrinter){
-      const dialog = this.dialog.open(DialogComponent,{data:{title:'No printer found for printing bill.',description:'Please select a printer in settings panel.',buttons:['Ok'],primary:[0]}})
+      const dialog = this.dialog.open(DialogComponent,{data:{title:'No printer found for printing kot.',description:'Please select a printer in settings panel.',buttons:['Ok'],primary:[0]}})
       return
     }
     // group products by printer
@@ -323,7 +323,7 @@ export class PrintingService {
       }),
     };
     if(this.dataprovider.currentBusiness?.billerPrinter){
-      const dialog = this.dialog.open(DialogComponent,{data:{title:'No printer found for printing bill.',description:'Please select a printer in settings panel.',buttons:['Ok'],primary:[0]}})
+      const dialog = this.dialog.open(DialogComponent,{data:{title:'No printer found for printing kot.',description:'Please select a printer in settings panel.',buttons:['Ok'],primary:[0]}})
       return
     }
     let groupedProducts: any = {};
@@ -375,7 +375,7 @@ export class PrintingService {
           instruction: product.instruction,
           quantity: product.quantity,
           price: product.price,
-          total: product.price * product.quantity,
+          amount: product.price * product.quantity,
         };
       }),
       date: new Date().toLocaleDateString(),
@@ -408,6 +408,7 @@ export class PrintingService {
       billNo: bill.billNo,
       orderNo: bill.orderNo,
       notes: [],
+      customerDetail: bill.customerInfo,
       businessDetails: businessDetails,
     };
     console.log('printing data', billdata, printerConfig);
@@ -544,7 +545,7 @@ export class PrintingService {
     };
     console.log('printing data', kotdata, printerConfig);
     if(this.dataprovider.currentBusiness?.billerPrinter){
-      const dialog = this.dialog.open(DialogComponent,{data:{title:'No printer found for printing bill.',description:'Please select a printer in settings panel.',buttons:['Ok'],primary:[0]}})
+      const dialog = this.dialog.open(DialogComponent,{data:{title:'No printer found for printing kot.',description:'Please select a printer in settings panel.',buttons:['Ok'],primary:[0]}})
       return
     }
     let groupedProducts: any = {};
@@ -630,7 +631,7 @@ export class PrintingService {
     console.log('printing data', kotdata, printerConfig);
     if (!debugMode && !this.printing) return;
     if(this.dataprovider.currentBusiness?.billerPrinter){
-      const dialog = this.dialog.open(DialogComponent,{data:{title:'No printer found for printing bill.',description:'Please select a printer in settings panel.',buttons:['Ok'],primary:[0]}})
+      const dialog = this.dialog.open(DialogComponent,{data:{title:'No printer found for printing kot.',description:'Please select a printer in settings panel.',buttons:['Ok'],primary:[0]}})
       return
     }
     let groupedProducts: any = {};
@@ -658,6 +659,7 @@ export class PrintingService {
   }
 
   getBillCode(billdata: any) {
+    console.log("billdata.businessDetails.name",billdata.businessDetails.name);
     let encoder = new customEncoder({ width: 48 });
     let result = encoder
       .initPrint()
@@ -731,7 +733,7 @@ export class PrintingService {
         ]
       )
       .hr()
-      .h2(billdata.note)
+      .lineIf(billdata.note,'left','Note:')
       .terms(billdata.notes)
       .reviewQr(billdata.id)
       .end('');

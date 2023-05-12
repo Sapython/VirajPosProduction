@@ -12,7 +12,7 @@ function run_script(command, args, event, callback) {
   });
   // You can also use a variable to save the output for when the script closes later
   child.on('error', (error) => {
-    event.sender.send('printDataComplete', { stage: 'error', error });
+    event.sender.send('printDataComplete', { stage: 'error', error, command, args });
   });
 
   child.stdout.setEncoding('utf8');
@@ -20,7 +20,7 @@ function run_script(command, args, event, callback) {
     //Here is the output
     data = data.toString();
     console.log(data);
-    event.sender.send('printDataComplete', { stage: 'stderr', data });
+    event.sender.send('printDataComplete', { stage: 'stderr', data, command, args });
   });
 
   child.stderr.setEncoding('utf8');
@@ -30,13 +30,13 @@ function run_script(command, args, event, callback) {
     //Here is the output from the command
     data = data.toString();
     console.log(data);
-    event.sender.send('printDataComplete', { stage: 'stdout', data });
+    event.sender.send('printDataComplete', { stage: 'stdout', data, command, args });
   });
 
   child.on('close', (code) => {
     //Here you can get the exit code of the script
     console.log(`child process exited with code ${code}`);
-    event.sender.send('printDataComplete', { stage: 'closed', code });
+    event.sender.send('printDataComplete', { stage: 'closed', code, command, args });
   });
   if (typeof callback === 'function') callback();
 }

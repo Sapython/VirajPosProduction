@@ -10,6 +10,7 @@ import { DataProvider } from '../provider/data-provider.service';
 import { BusinessRecord, UserBusiness, UserRecord } from '../structures/user.structure';
 import { AlertsAndNotificationsService } from './alerts-and-notification/alerts-and-notifications.service';
 import { Router } from '@angular/router';
+import { ElectronService } from '../core/services';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +24,8 @@ export class AuthService {
     private dbService: NgxIndexedDBService,
     private fs: Firestore,
     private router:Router,
-    private alertify: AlertsAndNotificationsService
+    private alertify: AlertsAndNotificationsService,
+    private electronService:ElectronService
   ) {
     this.setupDevice()
     firstValueFrom(this.dbService.getByKey('business', 1)).then(
@@ -108,19 +110,28 @@ export class AuthService {
         //   }
         // })
       } else {
-        alert("No user");
-        if (window.localStorage.getItem('signInToken')){
-          alert("Has local user");
-          try{
-            indexedDB.open('firebaseLocalStorageDb',1).onsuccess = async (event:any)=>{
-              await signInWithCustomToken(this.auth,window.localStorage.getItem('signInToken'));
-              return;
-            }
-          } catch (e){
-            console.log("LOCAL SIGN IN ERROR",e);
-            alert("Error when signing local")
+        console.log('No auth state found, 9452',this.electronService.getAuth());
+        let token = this.electronService.getAuth();
+        if (token){
+          this.dataProvider.loading = true;
+          try {
+            this.signInWithCustomToken(token);
+          } catch (error) {
+            this.alertify.presentToast("Error when signing in with token");
+          } finally {
+            this.dataProvider.loading = false;
           }
         }
+        // alert("No user");
+        // if (window.localStorage.getItem('signInToken')){
+        //   // alert("Has local user");
+        //   try{
+            // await signInWithCustomToken(this.auth,window.localStorage.getItem('signInToken'));
+        //   } catch (e){
+            // console.log("LOCAL SIGN IN ERROR",e);
+            // alert("Error when signing local")
+        //   }
+        // }
         this.dataProvider.isAuthStateAvaliable = true;
         this.dataProvider.loggedIn = false;
         this.dataProvider.currentUser = undefined;
@@ -174,6 +185,12 @@ export class AuthService {
 
   getUser(uid: string) {
     return getDoc(doc(this.fs, 'users/' + uid));
+  }
+
+  signInWithCustomToken(token: string) {
+    window.localStorage.setItem('signInToken',token)
+    this.electronService.setAuth(token);
+    return signInWithCustomToken(this.auth,token)
   }
 
   addCurrentUserOnLocal(user: UserRecord) {
@@ -261,7 +278,7 @@ export class AuthService {
       image:user.photoURL || '',
       name:user.displayName || '',
       lastLogin:Timestamp.now(),
-      userId:user.uid
+      username:user.uid
     }
     return setDoc(doc(this.fs,'users/'+user.uid),userRecord)
   }

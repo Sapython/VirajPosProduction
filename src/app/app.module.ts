@@ -25,10 +25,10 @@ import {
   ScreenTrackingService,
   UserTrackingService,
 } from '@angular/fire/analytics';
-import { provideAuth, getAuth, indexedDBLocalPersistence, browserLocalPersistence } from '@angular/fire/auth';
-import { provideFirestore, getFirestore, enableMultiTabIndexedDbPersistence, enableIndexedDbPersistence } from '@angular/fire/firestore';
+import { provideAuth, getAuth, indexedDBLocalPersistence, browserLocalPersistence, connectAuthEmulator } from '@angular/fire/auth';
+import { provideFirestore, getFirestore, enableMultiTabIndexedDbPersistence, enableIndexedDbPersistence, connectFirestoreEmulator } from '@angular/fire/firestore';
 import { providePerformance, getPerformance } from '@angular/fire/performance';
-import { provideStorage, getStorage } from '@angular/fire/storage';
+import { provideStorage, getStorage, connectStorageEmulator } from '@angular/fire/storage';
 import { DialogModule } from '@angular/cdk/dialog';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -50,6 +50,7 @@ import { PrintingService } from './services/printing.service';
 import * as Sentry from "@sentry/angular-ivy";
 import { Router } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { connectFunctionsEmulator, getFunctions, provideFunctions } from '@angular/fire/functions';
 
 // AoT requires an exported function for factories
 const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>
@@ -141,8 +142,8 @@ const dbConfig: DBConfig = {
     FormsModule,
     HttpClientModule,
     CoreModule,
-    SharedModule,
-    HomeModule,
+    // SharedModule,
+    // HomeModule,
     DetailModule,
     AppRoutingModule,
     MatSnackBarModule,
@@ -169,21 +170,33 @@ const dbConfig: DBConfig = {
     provideAnalytics(() => getAnalytics()),
     provideAuth(() => {
       let auth = getAuth();
-      auth.setPersistence(browserLocalPersistence);
+      // connectAuthEmulator(auth, 'http://127.0.0.1:9099');
+      // auth.setPersistence(browserLocalPersistence);
       return auth;
     }),
     provideFirestore(() => {
       let fs = getFirestore();
+      // connectFirestoreEmulator(fs, '127.0.0.1', 8080);
       return fs
     }),
     providePerformance(() => getPerformance()),
-    provideStorage(() => getStorage()),
+    provideStorage(() => {
+      let storageRef = getStorage();
+      // connectStorageEmulator(storageRef, 'localhost', 9199);
+      return storageRef;
+    }),
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: !isDevMode(),
       // Register the ServiceWorker as soon as the application is stable
       // or after 30 seconds (whichever comes first).
       registrationStrategy: 'registerWhenStable:30000'
     }),
+    provideFunctions(() => {
+      let functions = getFunctions();
+      // useEmulator('localhost', 5001);
+      connectFunctionsEmulator(functions, 'localhost', 5001);
+      return functions;
+    })
   ],
   providers: [
     ScreenTrackingService,

@@ -54,6 +54,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import { AddMenuComponent } from './edit-menu/add-menu/add-menu.component';
 import { SelectCategoryComponent } from './edit-menu/select-category/select-category.component'; 
 import {MatRadioModule} from '@angular/material/radio'; 
+import {DragDropModule} from '@angular/cdk/drag-drop'; 
 
 @NgModule({
   declarations: [
@@ -113,7 +114,8 @@ import {MatRadioModule} from '@angular/material/radio';
     MatButtonToggleModule,
     MatProgressSpinnerModule,
     MatDatepickerModule,
-    MatRadioModule
+    MatRadioModule,
+    DragDropModule
   ],
   exports:[SidebarComponent,AddDishComponent,AddNewCategoryComponent,SelectRecipeComponent]
 })

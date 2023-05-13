@@ -9,6 +9,8 @@ export interface Category {
     updated?:boolean;
     printer?:string;
     loading?:boolean;
+    order?:number;
+    productOrders?:string[];
 }
 export interface RootCategory {
     id:string;

@@ -40,5 +40,6 @@ export class AppComponent {
 
     // console.log('EscPosEncoder', EscPosEncoder);
   }
+
 }
 

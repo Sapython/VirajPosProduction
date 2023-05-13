@@ -89,6 +89,7 @@ export interface Product {
   visible:boolean;
   updated?:boolean;
   lineDiscount?:Discount;
+  order?:number;
 }
 
 interface Variant {

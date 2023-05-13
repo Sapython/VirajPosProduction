@@ -1,4 +1,4 @@
-<main>
+<main [ngClass]="{'withBar':this.dataProvider.offline || this.dataProvider.updating}">
     <app-sidebar></app-sidebar>
     <section class="mainPanel" [ngClass]="{smartMode:dataProvider.smartMode}">
         <app-search-panel></app-search-panel>

@@ -37,8 +37,15 @@ main{
     display: grid;
     grid-template-columns: 1.3fr 3fr 2fr;
     gap:10px;
-    height: 100vh;
+    height: 100%;
     overflow-y: hidden;
+    transition: height 0.5s ease-in-out;
+    &.withBar{
+        height: calc(100vh - 30px);
+        @media screen and (max-width:1366px){
+            height: calc(100vh - 20px);
+        }
+    }
     section.mainPanel{
         // display: flex;
         // flex-direction: column;

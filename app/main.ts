@@ -2,7 +2,8 @@ import { app, BrowserWindow, screen, ipcMain } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as child_process from 'child_process';
-
+import * as Store from 'electron-store';
+const store = new Store();
 let win: BrowserWindow = null;
 const args = process.argv.slice(1),serve = args.some((val) => val === '--serve');
 
@@ -124,6 +125,26 @@ function createWindow(): BrowserWindow {
     console.log("GOT", arg, arg.data, arg.printer);
     let res = printData(event, arg.data, arg.printer);
   });
+  ipcMain.on("saveAuth", async (event, arg) => {
+    try {
+      console.log("GOT", arg, );
+      store.set('token', arg);
+      event.returnValue = true;
+      console.log("Succes saveAuth");
+    } catch (error) {
+      event.returnValue = false;
+      console.log("Save auth",error);
+    }
+  });
+  ipcMain.on("getAuth", async (event, arg) => {
+    try {
+      event.returnValue = store.get('token');
+      console.log("Success getAuth", event.returnValue);
+    } catch (error) {
+      event.returnValue = false;
+      console.log("Get auth",error);
+    }
+  })
 
   return win;
 }

@@ -83,4 +83,14 @@ export class ElectronService {
     return promise;
   }
 
+  setAuth(token:string){
+    if (!this.isElectron) return;
+    this.ipcRenderer.sendSync("saveAuth", token);
+  }
+
+  getAuth(){
+    if (!this.isElectron) return;
+    return this.ipcRenderer.sendSync("getAuth");
+  }
+
 }

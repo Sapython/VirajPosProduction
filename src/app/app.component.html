@@ -1,4 +1,8 @@
-<div
+<div class="overlay" *ngIf="dataProvider.loading">
+  <mat-spinner diameter="70" mode="indeterminate"> </mat-spinner>
+</div>
+<main>
+  <div
   class="offlineBar"
   [@fadeInDownOnEnter]
   [@fadeOutUpOnLeave]
@@ -12,9 +16,5 @@
         Syncing Online !!!
     </ng-container>
 </div>
-<div class="overlay" *ngIf="dataProvider.loading">
-  <mat-spinner diameter="70" mode="indeterminate"> </mat-spinner>
-</div>
-<main>
   <router-outlet #outlet="outlet"></router-outlet>
 </main>

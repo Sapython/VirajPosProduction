@@ -110,3 +110,19 @@ section{
         border-radius: 0px 0px 20px 20px;
     }
 }
+.product{
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+    height: 50px;
+    background: white;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+    .pricing{
+        display: flex;
+        align-items: center;
+        gap:20px;
+        strong{
+            color:var(--Viraj-success);
+        }
+    }
+}

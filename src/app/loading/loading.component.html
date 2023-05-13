@@ -9,14 +9,20 @@
       *ngIf="dataProvider.isAuthStateAvaliable"
     >
       <mat-form-field appearance="outline">
-        <mat-label>Email</mat-label>
+        <mat-label>Username</mat-label>
         <input
           matInput
-          formControlName="email"
+          formControlName="username"
           type="email"
           placeholder="Email"
+          (input)="checkUsername.next(username.value)"
+          #username
           required
         />
+        <mat-hint *ngIf="userNameAvailable=='unavailable' && username.value && !checkingUsername">Username already exists</mat-hint>
+        <mat-hint *ngIf="userNameAvailable=='available' && username.value && !checkingUsername" class="success"><strong>Great</strong> you can use this username</mat-hint>
+        <mat-hint *ngIf="userNameAvailable=='invalid' && username.value && !checkingUsername" class="error"><strong>Invalid</strong> you cannot use this username</mat-hint>
+        <mat-spinner *ngIf="checkingUsername" matSuffix [diameter]="18" style="float: right; margin-left: 8px"></mat-spinner>
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>Password</mat-label>
@@ -28,8 +34,11 @@
           required
         />
       </mat-form-field>
-      <button mat-flat-button color="primary" [disabled]="!loginForm.valid">
+      <button mat-flat-button color="primary" (click)="mode='login'" [disabled]="!loginForm.valid">
         Login
+      </button>
+      <button mat-flat-button color="primary" (click)="mode='signup'" [disabled]="!loginForm.valid">
+        Signup
       </button>
       <viraj-button
         color="primary"
@@ -47,7 +56,7 @@
       onboardingService.stage == 'virajReady'
     "
   >
-    <h3>Logged in with {{ this.dataProvider.currentUser?.email }}</h3>
+    <h3>Logged in with {{ this.dataProvider.currentUser?.username }}</h3>
     <ng-container *ngIf="onboardingService.stage == 'userExists'">
       <p>Please wait we are preparing <strong>Viraj</strong></p>
       <div class="center">
@@ -57,8 +66,11 @@
     </ng-container>
     <ng-container *ngIf="onboardingService.stage == 'virajReady'">
       <p>Viraj is ready to use</p>
-      <viraj-button mat-flat-button color="primary" routerLink="../biller"
+      <viraj-button color="primary" routerLink="../biller"
         >Continue To Viraj</viraj-button
+      >
+      <viraj-button color="primary" type="outline" (click)="logout()"
+        >Logout</viraj-button
       >
     </ng-container>
   </section>

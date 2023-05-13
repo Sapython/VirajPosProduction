@@ -260,7 +260,7 @@ export class Table implements TableConstructor {
     if (this.status === 'available') {
       if (this.dataProvider.currentUser) {
         let user: UserConstructor = {
-          id: this.dataProvider.currentUser.userId,
+          id: this.dataProvider.currentUser.username,
           name: this.dataProvider.currentUser?.name,
           access: '',
           image: this.dataProvider.currentUser?.image,

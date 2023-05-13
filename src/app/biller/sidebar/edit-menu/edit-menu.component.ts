@@ -12,7 +12,7 @@ import { AlertsAndNotificationsService } from '../../../services/alerts-and-noti
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProductCostingComponent } from './product-costing/product-costing.component';
 import { AddMenuComponent } from './add-menu/add-menu.component';
-import { PrintingService } from '../../../services/printing.service';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 
 import Fuse from 'fuse.js';
 import { SelectCategoryComponent } from './select-category/select-category.component';
@@ -122,6 +122,7 @@ export class ModeConfig {
   viewCategories:Category[] =[];
   mainCategories:Category[] = [];
   categoryUpdated:boolean;
+  productsUpdated:boolean;
   currentType:'recommended'|'root'|'view'|'all';
   selectedCategory:Category|undefined;
   type:'dineIn'|'takeaway'|'online'|undefined;
@@ -240,6 +241,39 @@ export class ModeConfig {
         } as Category
       });
       console.log("this.viewCategories",this.viewCategories);
+      // sort by order
+      this.viewCategories.sort((a,b)=>{
+        if (a.order && b.order){
+          return b.order - a.order;
+        } else if (a.order){
+          return 1;
+        } else if (b.order){
+          return -1;
+        } else {
+          return 0;
+        }
+      })
+      // sort all products by productOrder
+      this.viewCategories.forEach((cat)=>{
+        // sort by cat.productOrders
+        cat.products.sort((a,b)=>{
+          if (cat.productOrders){
+            let aOrder = cat.productOrders.indexOf(a.id);
+            let bOrder = cat.productOrders.indexOf(b.id);
+            if (aOrder != -1 && bOrder != -1){
+              return aOrder - bOrder;
+            } else if (aOrder != -1){
+              return -1;
+            } else if (bOrder != -1){
+              return 1;
+            } else {
+              return 0;
+            }
+          } else {
+            return 0;
+          }
+        })
+      })
     }
   }
 
@@ -283,11 +317,13 @@ export class ModeConfig {
       this.alertify.presentToast("No Valid Menu Selected");
     }
   };
+
   selectCategory(cat:Category){
     this.selectedCategory = cat;
     this.categoryUpdated = false;
     this.fuseInstance.setCollection(this.selectedCategory.products);
   };
+
   addViewCategory(){
     const dialog = this.dialog.open(AddNewCategoryComponent, {data:{products:this.products}})
     dialog.closed.subscribe((data:any)=>{
@@ -297,6 +333,15 @@ export class ModeConfig {
       this.getViewCategories();
     })
   };
+
+  reorderViewCategory(event: any) {
+    moveItemInArray(this.viewCategories, event.previousIndex, event.currentIndex);
+    this.viewCategories.forEach((cat,index)=>{
+      cat.order = index;
+      cat.updated = true;
+    })
+  }
+
   disableAll(){
     if(this.selectedCategory){
       this.selectedCategory.products.forEach((product)=>{
@@ -308,6 +353,7 @@ export class ModeConfig {
       this.alertify.presentToast("No Valid Category")
     }
   };
+
   enableAll(){
     if(this.selectedCategory){
       this.selectedCategory.products.forEach((product)=>{
@@ -319,6 +365,7 @@ export class ModeConfig {
       this.alertify.presentToast("No Valid Category")
     }
   };
+
   recommendationSave(id:string){
     if (this.selectedMenu){
       console.log("this.products",this.products);
@@ -462,6 +509,7 @@ export class ModeConfig {
       this.dataProvider.loading = false;
     });
   };
+
   selectRecipe(){
     const dialog = this.dialog.open(SelectRecipeComponent, {data:this.products})
     dialog.closed.subscribe((data:any)=>{
@@ -480,6 +528,7 @@ export class ModeConfig {
       }
     })
   };
+
   async editRecipe(product:Product,menuId:string){
     try {
       let dialog = this.dialog.open(AddDishComponent,{data:{mode:'edit',product}})
@@ -492,6 +541,14 @@ export class ModeConfig {
     } finally {
       this.dataProvider.loading = false;
     }
+  }
+
+  reorderProduct(event: any) {
+    moveItemInArray(this.selectedCategory.products, event.previousIndex, event.currentIndex);
+    this.selectedCategory.productOrders = this.selectedCategory.products.map((product:Product)=>{
+      return product.id;
+    })
+    this.selectedCategory.updated = true;
   }
 
   updatePrinter(selectedCategory:Category){

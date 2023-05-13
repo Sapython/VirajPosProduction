@@ -52,6 +52,12 @@ main {
 
             mat-form-field {
                 width: 70%;
+                .success{
+                    color:var(--Viraj-success)
+                }
+                .error{
+                    color:var(--Viraj-danger)
+                }
             }
         }
 

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataProvider } from '../provider/data-provider.service';
 import { AlertsAndNotificationsService } from '../services/alerts-and-notification/alerts-and-notifications.service';
@@ -10,13 +10,14 @@ import { Product, TableConstructor } from '../biller/constructors';
 import { AddDishComponent } from '../biller/sidebar/edit-menu/add-dish/add-dish.component';
 import { SelectRecipeComponent } from '../biller/sidebar/edit-menu/select-recipe/select-recipe.component';
 import { AddNewCategoryComponent } from '../biller/sidebar/edit-menu/add-new-category/add-new-category.component';
-import { Subject } from 'rxjs';
-import { UserCredential } from '@angular/fire/auth';
+import { Subject, debounceTime } from 'rxjs';
+import { UserCredential, signInWithCustomToken } from '@angular/fire/auth';
 import { BusinessRecord, UserBusiness } from '../structures/user.structure';
 import { Timestamp, serverTimestamp } from '@angular/fire/firestore';
 import { DialogComponent } from '../base-components/dialog/dialog.component';
 import { zoomInOnEnterAnimation, zoomOutOnLeaveAnimation } from 'angular-animations';
-
+import { httpsCallable } from "firebase/functions";
+import { Functions } from '@angular/fire/functions';
 @Component({
   selector: 'app-loading',
   templateUrl: './loading.component.html',
@@ -24,10 +25,21 @@ import { zoomInOnEnterAnimation, zoomOutOnLeaveAnimation } from 'angular-animati
   animations:[zoomInOnEnterAnimation(),zoomOutOnLeaveAnimation()]
 })
 export class LoadingComponent {
+
   loginForm: FormGroup = new FormGroup({
-    email: new FormControl(''),
+    username: new FormControl(''),
     password: new FormControl(''),
   });
+
+  checkUsernameFunction = httpsCallable(this.functions, 'userNameAvailable');
+  signUpWithUserAndPassword = httpsCallable(this.functions, 'signUpWithUserAndPassword');
+  signInWithUserAndPassword = httpsCallable(this.functions, 'signInWithUserAndPassword');
+
+  mode:'signup'|'login' = 'login';
+  checkingUsername:boolean = false;
+  userNameAvailable:'invalid'|'available'|'unavailable'|'checking' = 'checking';
+  checkUsername:Subject<string> = new Subject<string>();
+  // auth functions above
 
   onboardingBusinessForm:FormGroup = new FormGroup({
     name:new FormControl('',[Validators.required]),
@@ -75,8 +87,31 @@ export class LoadingComponent {
     private alertify:AlertsAndNotificationsService,
     public onboardingService:OnboardingService,
     private databaseService: DatabaseService,
-    private dialog:Dialog
-  ) {}
+    private dialog:Dialog,
+    private functions: Functions
+  ) {
+    this.checkUsername.subscribe((value)=>{
+      this.checkingUsername = true;
+    })
+    this.checkUsername.pipe(debounceTime(1000)).subscribe((value)=>{
+      this.checkingUsername = true;
+      this.checkUsernameFunction({username:value}).then((result)=>{
+        console.log(result.data);
+        this.checkingUsername = false;
+        this.userNameAvailable = result.data['stage'];
+      }).catch((error)=>{
+        console.log(error);
+        this.checkingUsername = false;
+        this.userNameAvailable = 'invalid';
+      })
+    })
+  }
+
+  customLogin(){
+  }
+
+  customSignup(){
+  }
 
   openDishes() {
     // open dishes dialog
@@ -129,28 +164,95 @@ export class LoadingComponent {
       }
       reader.readAsDataURL(this.logoFile);
     }
-
   }
 
   saveBusinessDetails(){
   }
 
-  login() {
-    this.authService
-      .loginWithEmailPassword(
-        this.loginForm.value.email,
-        this.loginForm.value.password
-      )
-      .then((data) => {
-        console.log(data.user);
-        this.alertify.presentToast("Logged In with "+this.loginForm.value.email)
+  logout(){
+    const confirmDialog = this.dialog.open(DialogComponent,{data:{title:'Logout',message:'Are you sure you want to logout?'}});
+    confirmDialog.closed.subscribe(result=>{
+      console.log(result);
+      if(result){
+        this.authService.logout();
+      }
+    })
+  }
+
+  signup(){
+    console.log(this.loginForm.value);
+    
+    if (this.loginForm.invalid) {
+      this.alertify.presentToast('Invalid form details.');
+      return;
+    }
+    this.signUpWithUserAndPassword({
+      username:this.loginForm.value.username,
+      password:this.loginForm.value.password,
+      business:{
+        access:{
+          accessLevel:'admin',
+          lastUpdated:Timestamp.now(),
+          updatedBy:'system'
+        },
+        address:'Sardar Patel Marg, beside JK Palace, Civil Lines, Prayagraj, Uttar Pradesh 211001',
+        businessId:'46r0a1zlta7hyb077scig9',
+        joiningDate:Timestamp.now(),
+        name:'Momos Castle',
+      }
+    }).then((result)=>{
+      console.log(result.data);
+      this.authService.signInWithCustomToken(result.data['token']).then((data)=>{
+        console.log(data);
+        this.alertify.presentToast("Signed Up with "+this.loginForm.value.username)
       }).catch((error)=>{
-        if(error.message){
-          this.alertify.presentToast(error.message)
-        } else {
-          this.alertify.presentToast("Some Error Occured")
-        }
-      });
+        console.log(error);
+        this.alertify.presentToast("Some Error Occured")
+      })
+    }).catch((error)=>{
+      console.log(error);
+    })
+  }
+
+  login() {
+    if (this.mode == 'signup') {
+      this.signup();
+      return;
+    }
+    this.dataProvider.loading = true;
+    this.signInWithUserAndPassword({
+      username:this.loginForm.value.username,
+      password:this.loginForm.value.password,
+    }).then((result)=>{
+      console.log(result.data);
+      this.authService.signInWithCustomToken(result.data['token']).then((data)=>{
+        console.log(data);
+        this.alertify.presentToast("Logged In with "+this.loginForm.value.username)
+      }).catch((error)=>{
+        console.log(error);
+        this.alertify.presentToast(error)
+      })
+    }).catch((error)=>{
+      console.log(error);
+      this.alertify.presentToast(error)
+    }).finally(()=>{
+      this.dataProvider.loading = false;
+    })
+    // this.authService
+    //   .loginWithEmailPassword(
+    //     this.loginForm.value.username,
+    //     this.loginForm.value.password
+    //   )
+    //   .then((data) => {
+    //     console.log(data.user);
+    //     this.alertify.presentToast("Logged In with "+this.loginForm.value.email)
+    //   }).catch((error)=>{
+    //     if(error.message){
+    //       this.alertify.presentToast(error.message)
+    //     } else {
+    //       this.alertify.presentToast("Some Error Occured")
+    //     }
+    //   });
   }
 
   setImage(event: any) {

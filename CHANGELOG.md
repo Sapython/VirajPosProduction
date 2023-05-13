@@ -1,4 +1,4 @@
-## <small>0.1.23 (2023-05-10)</small>
+## <small>0.1.24 (2023-05-13)</small>
 
 * Added firebase and material ([5a8afcf](https://github.com/swayambhu-innovations/VirajPosProduction/commit/5a8afcf))
 * Added new targets. ([96a916c](https://github.com/swayambhu-innovations/VirajPosProduction/commit/96a916c))
@@ -8,6 +8,7 @@
 * Changed gitignore for umd files ([274c5b3](https://github.com/swayambhu-innovations/VirajPosProduction/commit/274c5b3))
 * Changed some bg images. ([ebb856e](https://github.com/swayambhu-innovations/VirajPosProduction/commit/ebb856e))
 * Fixed bugs ([d50769d](https://github.com/swayambhu-innovations/VirajPosProduction/commit/d50769d))
+* Fixed critical issues related to bill printing. ([9a0021d](https://github.com/swayambhu-innovations/VirajPosProduction/commit/9a0021d))
 * Fixed esc pos encoder loader ([c409324](https://github.com/swayambhu-innovations/VirajPosProduction/commit/c409324))
 * Fixed printer naming ([40fb838](https://github.com/swayambhu-innovations/VirajPosProduction/commit/40fb838))
 * Fixed printing bugs ([68775e9](https://github.com/swayambhu-innovations/VirajPosProduction/commit/68775e9))
@@ -17,9 +18,13 @@
 * Update app.module.ts ([39703b6](https://github.com/swayambhu-innovations/VirajPosProduction/commit/39703b6))
 * Update branding.component.scss ([1a4cf7d](https://github.com/swayambhu-innovations/VirajPosProduction/commit/1a4cf7d))
 * Update electron.service.ts ([cb7717c](https://github.com/swayambhu-innovations/VirajPosProduction/commit/cb7717c))
+* Update main.ts ([dd69570](https://github.com/swayambhu-innovations/VirajPosProduction/commit/dd69570))
+* Update main.ts ([793e019](https://github.com/swayambhu-innovations/VirajPosProduction/commit/793e019))
+* Update main.ts ([8371d87](https://github.com/swayambhu-innovations/VirajPosProduction/commit/8371d87))
 * Update main.ts ([973d7d3](https://github.com/swayambhu-innovations/VirajPosProduction/commit/973d7d3))
 * Update main.ts ([04c4b58](https://github.com/swayambhu-innovations/VirajPosProduction/commit/04c4b58))
 * Update printing.service.ts ([6de2f74](https://github.com/swayambhu-innovations/VirajPosProduction/commit/6de2f74))
+* Update settings.component.ts ([9ae7232](https://github.com/swayambhu-innovations/VirajPosProduction/commit/9ae7232))
 * Updated node package name. ([6d43d95](https://github.com/swayambhu-innovations/VirajPosProduction/commit/6d43d95))
 
 

@@ -8,55 +8,69 @@
               Add New Menu
             </button>
             <mat-select
-            placeholder="Menu"
-            [(ngModel)]="mode.selectedMenuId"
-            (selectionChange)="mode.updateMenu()"
-            name="menu"
-          >
-            <mat-option *ngFor="let menu of this.dataProvider.allMenus" [value]="menu.id">
-              {{ menu.name }}
-            </mat-option>
-          </mat-select>
-          <div class="categories">
-            <span>Product List</span>
-            <app-category-card [full]="true"
-              (click)="
-                mode.selectCategory(mode.allProductsCategory);
-                mode.currentType = 'all'
-              "
-              [category]="mode.allProductsCategory"
-            ></app-category-card>
-            <span>Recommended</span>
-            <app-category-card [full]="true"
-              *ngFor="let category of mode.recommendedCategories"
-              (click)="
-                mode.selectCategory(category);
-                mode.currentType = 'recommended'
-              "
-              [category]="category"
-            ></app-category-card>
-            <span
-              >View Categories<viraj-button
-                type="icon"
-                (vclick)="mode.addViewCategory()"
-                ><i class="ri-add-box-fill"></i></viraj-button
-            ></span>
-            <app-category-card [full]="true"
-              *ngFor="let category of mode.viewCategories"
-              (click)="
-                mode.selectCategory(category); mode.currentType = 'view'
-              "
-              [category]="category"
-            ></app-category-card>
-            <span>Main Categories</span>
-            <app-category-card [full]="true"
-              *ngFor="let category of mode.mainCategories"
-              (click)="
-                mode.selectCategory(category); mode.currentType = 'root'
-              "
-              [category]="category"
-            ></app-category-card>
-          </div>
+              placeholder="Menu"
+              [(ngModel)]="mode.selectedMenuId"
+              (selectionChange)="mode.updateMenu()"
+              name="menu"
+            >
+              <mat-option
+                *ngFor="let menu of this.dataProvider.allMenus"
+                [value]="menu.id"
+              >
+                {{ menu.name }}
+              </mat-option>
+            </mat-select>
+            <div class="categories">
+              <span>Product List</span>
+              <app-category-card
+                [full]="true"
+                (click)="
+                  mode.selectCategory(mode.allProductsCategory);
+                  mode.currentType = 'all'
+                "
+                [category]="mode.allProductsCategory"
+              ></app-category-card>
+              <span>Recommended</span>
+              <app-category-card
+                [full]="true"
+                *ngFor="let category of mode.recommendedCategories"
+                (click)="
+                  mode.selectCategory(category);
+                  mode.currentType = 'recommended'
+                "
+                [category]="category"
+              ></app-category-card>
+              <span
+                >View Categories<viraj-button
+                  type="icon"
+                  (vclick)="mode.addViewCategory()"
+                  ><i class="ri-add-box-fill"></i></viraj-button
+              ></span>
+              <div
+                cdkDropList
+                class="example-list"
+                (cdkDropListDropped)="mode.reorderViewCategory($event)"
+              >
+                <app-category-card
+                  [full]="true"
+                  cdkDrag
+                  *ngFor="let category of mode.viewCategories"
+                  (click)="
+                    mode.selectCategory(category); mode.currentType = 'view'
+                  "
+                  [category]="category"
+                ></app-category-card>
+              </div>
+              <span>Main Categories</span>
+              <app-category-card
+                [full]="true"
+                *ngFor="let category of mode.mainCategories"
+                (click)="
+                  mode.selectCategory(category); mode.currentType = 'root'
+                "
+                [category]="category"
+              ></app-category-card>
+            </div>
           </div>
           <div class="main" *ngIf="mode.selectedCategory">
             <div class="title">
@@ -76,10 +90,18 @@
                 />
               </mat-form-field>
               <ng-container class="actions">
-                <button mat-stroked-button color="primary" (click)="mode.disableAll()">
+                <button
+                  mat-stroked-button
+                  color="primary"
+                  (click)="mode.disableAll()"
+                >
                   Disable All
                 </button>
-                <button mat-stroked-button color="primary" (click)="mode.enableAll()">
+                <button
+                  mat-stroked-button
+                  color="primary"
+                  (click)="mode.enableAll()"
+                >
                   Enable All
                 </button>
                 <button
@@ -92,8 +114,15 @@
                   Add Recipe
                 </button>
                 <mat-menu #menu="matMenu">
-                  <button mat-menu-item (click)="mode.addRecipe(mode.selectedMenuId)">New Dish</button>
-                  <button mat-menu-item (click)="mode.selectRecipe()">Old Dish</button>
+                  <button
+                    mat-menu-item
+                    (click)="mode.addRecipe(mode.selectedMenuId)"
+                  >
+                    New Dish
+                  </button>
+                  <button mat-menu-item (click)="mode.selectRecipe()">
+                    Old Dish
+                  </button>
                   <button mat-menu-item>Upload From Excel</button>
                   <button mat-menu-item (click)="mode.getExcelFormat()">
                     Get Excel Format
@@ -103,7 +132,7 @@
                   <mat-slide-toggle
                     color="primary"
                     [(ngModel)]="mode.selectedCategory.enabled"
-                    (change)="mode.selectedCategory.updated= true;"
+                    (change)="mode.selectedCategory.updated = true"
                   ></mat-slide-toggle>
                 </span>
               </ng-container>
@@ -114,12 +143,14 @@
                 <mat-select
                   [(ngModel)]="mode.selectedCategory.printer"
                   (selectionChange)="mode.updatePrinter(mode.selectedCategory)"
-                  name="printer">
-                  <mat-option>
-                    Select
-                  </mat-option>
-                  <mat-option [value]="printer" *ngFor="let printer of printers">
-                    {{printer}}
+                  name="printer"
+                >
+                  <mat-option> Select </mat-option>
+                  <mat-option
+                    [value]="printer"
+                    *ngFor="let printer of printers"
+                  >
+                    {{ printer }}
                   </mat-option>
                 </mat-select>
               </mat-form-field>
@@ -234,7 +265,11 @@
                   </mat-form-field>
                   <mat-form-field appearance="outline">
                     <mat-label>Maximum date (Optional)</mat-label>
-                    <input matInput [matDatepicker]="picker" formControlName="max" />
+                    <input
+                      matInput
+                      [matDatepicker]="picker"
+                      formControlName="max"
+                    />
                     <mat-hint>MM/DD/YYYY</mat-hint>
                     <mat-datepicker-toggle
                       matIconSuffix
@@ -254,31 +289,46 @@
             </div>
             <div class="productList">
               <p>Total {{ mode.selectedCategory.products.length }} Products</p>
-              <mat-spinner mode="indeterminate" *ngIf="mode.selectedCategory.loading"></mat-spinner>
+              <mat-spinner
+                mode="indeterminate"
+                *ngIf="mode.selectedCategory.loading"
+              ></mat-spinner>
               <div
-                class="product"
-                *ngFor="
-                  let product of mode.filteredProducts.length > 0
-                    ? mode.filteredProducts
-                    : mode.selectedCategory.products
-                "
+                class="productList"
+                cdkDropList
+                (cdkDropListDropped)="mode.reorderProduct($event)"
               >
-                <p>{{ product.name }}</p>
-                <div class="pricing">
-                  <strong>{{ product.price | currency : "INR" }}</strong>
-                  <mat-slide-toggle
-                    checked
-                    [(ngModel)]="product.visible"
-                    (toggleChange)="
-                      mode.productVisibilityChanged = true; product.updated = true
-                    "
-                  ></mat-slide-toggle>
-                  <viraj-button (click)="mode.editRecipe(product,mode.selectedMenuId)"></viraj-button>
-                  <!-- <viraj-button
-                    *ngIf="mode.currentType == 'all'"
-                    (vclick)="mode.openProductCosting(product)"
-                    >Costing</viraj-button
-                  > -->
+                <div
+                  cdkDrag
+                  class="product"
+                  *ngFor="
+                    let product of mode.filteredProducts.length > 0
+                      ? mode.filteredProducts
+                      : mode.selectedCategory.products
+                  "
+                >
+                  <p>{{ product.name }}</p>
+                  <div class="pricing">
+                    <strong>{{ product.price | currency : "INR" }}</strong>
+                    <mat-slide-toggle
+                      checked
+                      [(ngModel)]="product.visible"
+                      (toggleChange)="
+                        mode.productVisibilityChanged = true;
+                        product.updated = true
+                      "
+                    ></mat-slide-toggle>
+                    <viraj-button
+                      (click)="mode.editRecipe(product, mode.selectedMenuId)"
+                    >
+                      <i class="ri-pencil-fill"></i>
+                    </viraj-button>
+                    <!-- <viraj-button
+                      *ngIf="mode.currentType == 'all'"
+                      (vclick)="mode.openProductCosting(product)"
+                      >Costing</viraj-button
+                    > -->
+                  </div>
                 </div>
               </div>
             </div>

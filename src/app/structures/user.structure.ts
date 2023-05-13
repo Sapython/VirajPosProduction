@@ -3,7 +3,7 @@ import { Device } from "../biller/Device";
 
 export interface UserRecord{
     name:string;
-    userId:string;
+    username:string;
     email:string;
     image:string;
     lastLogin:Timestamp;

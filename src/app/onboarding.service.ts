@@ -171,10 +171,14 @@ export class OnboardingService {
     })
     docData(doc(this.firestore,'business',business.businessId,'settings','settings')).subscribe((res)=>{
       // console.log("Settings Changed",res);
+      this.dataProvider.currentSettings = res;
       this.dataProvider.billToken = res['billTokenNo'];
       this.dataProvider.kotToken = res['kitchenTokenNo'];
       this.dataProvider.ncBillToken = res['ncBillTokenNo'] || 0;
+      this.dataProvider.customBillNote = res['customBillNote'] || '';
       this.dataProvider.tableTimeOutTime = res['tableTimeOutTime'] || 45;
+      this.dataProvider.billNoSuffix = res['billNoSuffix'] || '';
+      this.dataProvider.optionalTax = res['optionalTax'] || false;
       this.dataProvider.takeawayToken = res['takeawayTokenNo'] || 0;
       this.dataProvider.onlineTokenNo = res['onlineTokenNo'] || 0;
       this.dataProvider.orderTokenNo = res['orderTokenNo'] || 0;

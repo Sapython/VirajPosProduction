@@ -20,7 +20,7 @@ declare var jivo_api:any;
 })
 export class SystemComponent {
   @Input() businessName: string = this.dataProvider.currentBusiness?.hotelName || '';
-  @Input() currentUser: string = this.dataProvider.currentUser?.email || '';
+  @Input() currentUser: string = this.dataProvider.currentUser?.username || '';
   @Input() accessLevel: string = this.dataProvider.currentAccessLevel;
   @Output() logout: EventEmitter<any> = new EventEmitter<any>();
   @Output() support: EventEmitter<any> = new EventEmitter<any>();

@@ -1,6 +1,10 @@
 <main>
   <h1>{{ onboardingService.stage }}</h1>
-  <section [@zoomInOnEnter] [@zoomOutOnLeave] *ngIf="onboardingService.stage == 'noUser'">
+  <section
+    [@zoomInOnEnter]
+    [@zoomOutOnLeave]
+    *ngIf="onboardingService.stage == 'noUser'"
+  >
     <img src="assets/viraj.png" alt="Viraj" />
     <h1>Welcome to <strong>Viraj</strong></h1>
     <form
@@ -19,10 +23,38 @@
           #username
           required
         />
-        <mat-hint *ngIf="userNameAvailable=='unavailable' && username.value && !checkingUsername">Username already exists</mat-hint>
-        <mat-hint *ngIf="userNameAvailable=='available' && username.value && !checkingUsername" class="success"><strong>Great</strong> you can use this username</mat-hint>
-        <mat-hint *ngIf="userNameAvailable=='invalid' && username.value && !checkingUsername" class="error"><strong>Invalid</strong> you cannot use this username</mat-hint>
-        <mat-spinner *ngIf="checkingUsername" matSuffix [diameter]="18" style="float: right; margin-left: 8px"></mat-spinner>
+        <mat-hint
+          *ngIf="
+            userNameAvailable == 'unavailable' &&
+            username.value &&
+            !checkingUsername
+          "
+          >Username already exists</mat-hint
+        >
+        <mat-hint
+          *ngIf="
+            userNameAvailable == 'available' &&
+            username.value &&
+            !checkingUsername
+          "
+          class="success"
+          ><strong>Great</strong> you can use this username</mat-hint
+        >
+        <mat-hint
+          *ngIf="
+            userNameAvailable == 'invalid' &&
+            username.value &&
+            !checkingUsername
+          "
+          class="error"
+          ><strong>Invalid</strong> you cannot use this username</mat-hint
+        >
+        <mat-spinner
+          *ngIf="checkingUsername"
+          matSuffix
+          [diameter]="18"
+          style="float: right; margin-left: 8px"
+        ></mat-spinner>
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>Password</mat-label>
@@ -34,10 +66,20 @@
           required
         />
       </mat-form-field>
-      <button mat-flat-button color="primary" (click)="mode='login'" [disabled]="!loginForm.valid">
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="mode = 'login'"
+        [disabled]="!loginForm.valid"
+      >
         Login
       </button>
-      <button mat-flat-button color="primary" (click)="mode='signup'" [disabled]="!loginForm.valid">
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="mode = 'signup'"
+        [disabled]="!loginForm.valid"
+      >
         Signup
       </button>
       <viraj-button
@@ -50,7 +92,20 @@
       <mat-spinner></mat-spinner>
     </div>
   </section>
-  <section [@zoomInOnEnter] [@zoomOutOnLeave]
+  <section
+    [@zoomInOnEnter]
+    [@zoomOutOnLeave]
+    *ngIf="onboardingService.stage == 'businessError'"
+  >
+    <h3>Logged in with {{ this.dataProvider.currentUser?.username }}</h3>
+    <p>There is some serious issue with your business account. Please call our support to get your account fixed.</p>
+    <viraj-button color="primary" type="outline" (click)="logout()"
+      >Logout</viraj-button
+    >
+  </section>
+  <section style="z-index: 9;"
+    [@zoomInOnEnter]
+    [@zoomOutOnLeave]
     *ngIf="
       onboardingService.stage == 'userExists' ||
       onboardingService.stage == 'virajReady'
@@ -74,14 +129,16 @@
       >
     </ng-container>
   </section>
-  <section [@zoomInOnEnter] [@zoomOutOnLeave]
+  <section
+    [@zoomInOnEnter]
+    [@zoomOutOnLeave]
     class="multipleBusiness"
     *ngIf="onboardingService.stage == 'multipleBusiness'"
   >
     <h1>Choose a business</h1>
     <p>
       These are all accounts available on
-      <strong>{{ this.dataProvider.currentUser?.email }}</strong>
+      <strong>{{ this.dataProvider.currentUser?.username }}</strong>
     </p>
     <div class="businessWrapper">
       <div
@@ -95,7 +152,7 @@
           <span class="user">
             <i class="ri-user-3-fill"></i>
             <div [class]="'badge ' + business.access">
-              {{ business.access.accessLevel | titlecase}}
+              {{ business.access.accessLevel | titlecase }}
             </div>
             <span>{{ business.joiningDate.toDate() | date }}</span>
           </span>
@@ -104,7 +161,9 @@
       </div>
     </div>
   </section>
-  <section [@zoomInOnEnter] [@zoomOutOnLeave]
+  <section
+    [@zoomInOnEnter]
+    [@zoomOutOnLeave]
     *ngIf="
       onboardingService.stage == 'onboardingStep1' ||
       onboardingService.stage == 'onboardingStep2' ||
@@ -167,6 +226,15 @@
             <mat-form-field appearance="outline">
               <mat-label>Email</mat-label>
               <input type="email" matInput formControlName="email" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Username</mat-label>
+              <input
+                type="text"
+                matInput
+                formControlName="username"
+                #newuserName
+              />
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>FSSAI</mat-label>
@@ -323,15 +391,15 @@
           <button
             mat-fab
             color="primary"
-            (click)="accounts.push({ email: '', access: '' })"
+            (click)="accounts.push({ username: '', access: '' })"
           >
             <mat-icon>add</mat-icon>
           </button>
           <div class="accounts">
             <div class="account" *ngFor="let account of accounts">
               <mat-form-field appearance="outline">
-                <mat-label>Email</mat-label>
-                <input type="text" matInput [(ngModel)]="account.email" />
+                <mat-label>Username</mat-label>
+                <input type="text" matInput [(ngModel)]="account.username" />
               </mat-form-field>
               <mat-form-field appearance="outline">
                 <mat-label>Access</mat-label>
@@ -496,11 +564,4 @@
       </mat-step>
     </mat-stepper>
   </section>
-  <!-- <section *ngIf="onboardingService.stage=='userExists'">
-    </section> -->
-  <!-- <section *ngIf="dataProvider.loggedIn">
-        <img src="assets/viraj.png" alt="Viraj">
-        <h1>Viraj Login</h1>
-        <viraj-button mat-flat-button color="primary" routerLink="../biller">Continue To Viraj</viraj-button>
-    </section> -->
 </main>

@@ -11,7 +11,7 @@ import { AddDishComponent } from '../biller/sidebar/edit-menu/add-dish/add-dish.
 import { SelectRecipeComponent } from '../biller/sidebar/edit-menu/select-recipe/select-recipe.component';
 import { AddNewCategoryComponent } from '../biller/sidebar/edit-menu/add-new-category/add-new-category.component';
 import { Subject, debounceTime } from 'rxjs';
-import { UserCredential, signInWithCustomToken } from '@angular/fire/auth';
+import { UserCredential, signInWithCustomToken, user } from '@angular/fire/auth';
 import { BusinessRecord, UserBusiness } from '../structures/user.structure';
 import { Timestamp, serverTimestamp } from '@angular/fire/firestore';
 import { DialogComponent } from '../base-components/dialog/dialog.component';
@@ -45,7 +45,8 @@ export class LoadingComponent {
     name:new FormControl('',[Validators.required]),
     address:new FormControl('',[Validators.required]),
     phone:new FormControl('',[Validators.required]),
-    email:new FormControl('',[Validators.required]),
+    email:new FormControl('',[Validators.required,Validators.email]),
+    username:new FormControl('',[Validators.required]),
     fssai:new FormControl(''),
     gst:new FormControl(''),
   })
@@ -63,9 +64,9 @@ export class LoadingComponent {
   });
   onboardingStarted:boolean = false;
 
-  accounts:{email:string,access:string}[] = [
+  accounts:{username:string,access:string}[] = [
     {
-      email:"",
+      username:"",
       access:"",
     }
   ]
@@ -186,10 +187,18 @@ export class LoadingComponent {
       this.alertify.presentToast('Invalid form details.');
       return;
     }
-    this.signUpWithUserAndPassword({
-      username:this.loginForm.value.username,
-      password:this.loginForm.value.password,
-      business:{
+    // this.signUpWithUserAndPassword({
+      
+    // }).then((result)=>{
+    //   console.log(result.data);
+      
+    // }).catch((error)=>{
+    //   console.log(error);
+    // })
+    this.authService.signUpWithUserAndPassword(
+      this.loginForm.value.username,
+      this.loginForm.value.password,
+      {
         access:{
           accessLevel:'admin',
           lastUpdated:Timestamp.now(),
@@ -199,18 +208,13 @@ export class LoadingComponent {
         businessId:'46r0a1zlta7hyb077scig9',
         joiningDate:Timestamp.now(),
         name:'Momos Castle',
-      }
-    }).then((result)=>{
-      console.log(result.data);
-      this.authService.signInWithCustomToken(result.data['token']).then((data)=>{
-        console.log(data);
-        this.alertify.presentToast("Signed Up with "+this.loginForm.value.username)
-      }).catch((error)=>{
-        console.log(error);
-        this.alertify.presentToast("Some Error Occured")
-      })
+      },
+    ).then((data)=>{
+      console.log(data);
+      this.alertify.presentToast("Signed Up with "+this.loginForm.value.username)
     }).catch((error)=>{
       console.log(error);
+      this.alertify.presentToast("Some Error Occured")
     })
   }
 
@@ -334,22 +338,23 @@ export class LoadingComponent {
     // this.onboardingService.stage = 'virajGettingReady';
     // this.databaseService.setSettings() 
     // generate alphanumeric id
-    let email = this.onboardingBusinessForm.value.email;
+    let username = this.onboardingBusinessForm.value.username;
     let password = this.securityForm.value.password;
     this.loginStage.next('Checking Account')
     let id = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     if(this.logoFile){
       var logo = await this.databaseService.upload('business/'+id,this.logoFile)
     }
-    this.authService.userExists(email).then((exists)=>{
-      if(exists.docs.length > 0){
+    this.authService.userExists(username).then((doc)=>{
+      if(doc.exists()){
         this.loginStage.next('Account Exists')
-        this.authService.loginWithEmailPassword(email,password).then((data)=>{
+        console.log('signing in',username,password);
+        this.authService.signInWithUserAndPassword(username,password).then((data)=>{
           this.loginStage.next('Logged In')
           this.onboard(data,id,logo)
         }).catch((error)=>{
           this.loginStage.next('Error Logging In')
-          this.alertify.presentToast(error.message,'error')
+          this.alertify.presentToast(error,'error')
           // this.onboardingService.stage = 'onboardingStep3'
         })
       } else {
@@ -361,6 +366,7 @@ export class LoadingComponent {
           billerPin:this.securityForm.value.billerPin,
           devices:[],
           modes:this.dataProvider.activeModes,
+          username:this.onboardingBusinessForm.value.username,
           email:this.onboardingBusinessForm.value.email,
           fssai:this.onboardingBusinessForm.value.fssai,
           gst:this.onboardingBusinessForm.value.gst,
@@ -371,14 +377,26 @@ export class LoadingComponent {
           phone:this.onboardingBusinessForm.value.phone,
           users:[{
             access:'admin',
-            email:this.onboardingBusinessForm.value.email,
+            username:this.onboardingBusinessForm.value.username,
             lastUpdated:Timestamp.fromDate(new Date()),
             updatedBy:'system',
           }],
         }
         this.loginStage.next('Creating Account')
-        this.authService.createAccount(email,password,data).then((data)=>{
+        console.log("Signing Up",username,password);
+        this.authService.signUpWithUserAndPassword(username,password,{
+          access:{
+            accessLevel:'admin',
+            lastUpdated:Timestamp.fromDate(new Date()),
+            updatedBy:'system',
+          },
+          address:this.onboardingBusinessForm.value.address,
+          businessId:id,
+          joiningDate:Timestamp.fromDate(new Date()),
+          name:this.onboardingBusinessForm.value.name,
+        },data.email,data.phone).then((data)=>{
           this.loginStage.next('Account Created')
+          console.log("FINAL DATA",data);
           this.onboard(data,id,logo)
         }).catch((error)=>{
           this.loginStage.next('Error Creating Account')
@@ -415,7 +433,7 @@ export class LoadingComponent {
         joiningDate:Timestamp.fromDate(new Date()),
         name:this.onboardingBusinessForm.value.name,
       }
-      console.log('userBusiness', userBusiness);
+      console.log('userBusiness', userBusiness,user);
       this.loginStage.next('Adding user account')
       let userBusinessRes = await this.authService.addBusinessAccount(user,userBusiness)
       console.log('userBusinessRes', userBusinessRes);
@@ -427,6 +445,7 @@ export class LoadingComponent {
         modes:this.dataProvider.activeModes,
         billerPin:this.securityForm.value.billerPin,
         devices:[],
+        username:this.onboardingBusinessForm.value.username,
         email:this.onboardingBusinessForm.value.email,
         fssai:this.onboardingBusinessForm.value.fssai,
         gst:this.onboardingBusinessForm.value.gst,
@@ -437,7 +456,7 @@ export class LoadingComponent {
         phone:this.onboardingBusinessForm.value.phone,
         users:[{
           access:'admin',
-          email:this.onboardingBusinessForm.value.email,
+          username:this.onboardingBusinessForm.value.username,
           lastUpdated:Timestamp.fromDate(new Date()),
           updatedBy:'system',
         }],
@@ -486,6 +505,9 @@ export class LoadingComponent {
           onlineSales:0,
           password:this.securityForm.value.billerPin,
           tableTimeOutTime:45,
+          billNoSuffix:'',
+          customBillNote:'',
+          optionalTax:false,
           modes:this.dataProvider.activeModes,
           dineInMenu: this.dataProvider.activeModes[0] ? {
             description: this.addNewMenuForm.value.description,
@@ -510,7 +532,7 @@ export class LoadingComponent {
       let accountRef = await Promise.all(this.accounts.map((account)=>{
         return this.databaseService.addAccount({
           access:account.access,
-          email:account.email,
+          username:account.username,
           lastUpdated:Timestamp.fromDate(new Date()),
           updatedBy:'system',
         },id)

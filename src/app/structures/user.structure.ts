@@ -2,10 +2,7 @@ import { Timestamp } from "@angular/fire/firestore";
 import { Device } from "../biller/Device";
 
 export interface UserRecord{
-    name:string;
     username:string;
-    email:string;
-    image:string;
     lastLogin:Timestamp;
     business:UserBusiness[];
 }
@@ -22,6 +19,7 @@ export interface BusinessRecord{
     hotelLogo:string;
     address:string;
     phone:string;
+    username:string;
     email:string;
     image:string;
     modes:boolean[],
@@ -43,9 +41,9 @@ export interface Access {
     "admin";
 }
 export interface Member{
-    email:string;
     access:string;
     updatedBy:string;
     lastUpdated:Timestamp;
     new?:boolean;
+    username:string;
 }

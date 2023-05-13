@@ -400,17 +400,28 @@ export class PrintingService {
           type: discount.type,
         };
       }),
+      billNoSuffix:this.dataprovider.billNoSuffix,
       subtotal: bill.billing.subTotal,
       totalQuantity: bill.totalProducts(),
-      cashierName: this.dataprovider.currentUser?.name,
+      cashierName: this.dataprovider.currentUser?.username,
       mode: 'bill',
       table: bill.table.name,
       billNo: bill.billNo,
       orderNo: bill.orderNo,
       notes: [],
+      note:this.dataprovider.customBillNote,
       customerDetail: bill.customerInfo,
       businessDetails: businessDetails,
     };
+    if (this.dataprovider.optionalTax){
+      var totalTax = Number(this.dataprovider.currentSettings.cgst) + Number(this.dataprovider.currentSettings.sgst)
+      if (typeof(totalTax) == 'number'){
+        // reduce totalPrice of products by totalTax percentage
+        billdata.products.forEach((product: any) => {
+          product.amount = product.amount - ((product.amount/100) * totalTax)
+        })
+      }
+    }
     console.log('printing data', billdata, printerConfig);
     let data = this.getBillCode(billdata);
     if(this.dataprovider.currentBusiness?.billerPrinter){
@@ -462,6 +473,7 @@ export class PrintingService {
           total: product.price * product.quantity,
         };
       }),
+      billNoSuffix:this.dataprovider.billNoSuffix,
       date: new Date().toLocaleDateString(),
       time: new Date().toLocaleTimeString(),
       grandTotal: bill.billing.grandTotal,
@@ -486,8 +498,9 @@ export class PrintingService {
       }),
       subtotal: bill.billing.subTotal,
       totalQuantity: totalQuantity,
-      cashierName: this.dataprovider.currentUser?.name,
+      cashierName: this.dataprovider.currentUser?.username,
       mode: 'bill',
+      note:this.dataprovider.customBillNote,
       table: bill.table,
       billNo: bill.billNo,
       orderNo: bill.orderNo,
@@ -536,7 +549,7 @@ export class PrintingService {
       }),
       date: new Date().toLocaleDateString(),
       time: new Date().toLocaleTimeString(),
-      cashierName: this.dataprovider.currentUser?.name,
+      cashierName: this.dataprovider.currentUser?.username,
       mode: 'kot',
       table: table,
       orderNo: billNo,
@@ -621,7 +634,7 @@ export class PrintingService {
       products: products,
       date: new Date().toLocaleDateString(),
       time: new Date().toLocaleTimeString(),
-      cashierName: this.dataprovider.currentUser?.name,
+      cashierName: this.dataprovider.currentUser?.username,
       mode: 'editedKot',
       orderNo: billNo,
       table: table,
@@ -689,7 +702,7 @@ export class PrintingService {
         ],
         [
           ['Date: ' + billdata.date, 'Time: ' + billdata.time],
-          ['Token: ' + billdata.orderNo, 'Bill: ' + billdata.billNo],
+          ['Token: ' + billdata.orderNo, 'Bill: ' + (billdata.billNoSuffix ? billdata.billNoSuffix : '')+ billdata.billNo],
           ['Cashier: ' + billdata.cashierName, 'Mode: ' + billdata.mode],
         ]
       )

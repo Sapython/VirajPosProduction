@@ -79,6 +79,14 @@ export class SettingsComponent implements OnInit {
     })
   }
 
+  updateSettings(data:any){
+    this.databaseService.updateRootSettings(data,this.dataProvider.currentBusiness?.businessId!).then(()=>{
+      this.alertify.presentToast("Settings updated successfully")
+    }).catch((err)=>{
+      this.alertify.presentToast("Error while updating settings")
+    })
+  }
+
   getDiscounts(){
     this.loadingDiscount = true;
     this.databaseService.getDiscounts().then((res:any)=>{
@@ -129,9 +137,9 @@ export class SettingsComponent implements OnInit {
   addAccount(){
     this.dataProvider.currentBusiness?.users.push({
       access:'waiter',
-      email:'',
+      username:'',
       lastUpdated:Timestamp.now(),
-      updatedBy:this.dataProvider.currentUser?.name || 'user',
+      updatedBy:this.dataProvider.currentUser?.username || 'user',
       new:true,
     })
   }

@@ -43,10 +43,8 @@ export interface BillConstructor {
 }
 
 export interface UserConstructor {
-  id: string;
-  name: string;
+  username: string;
   access: string;
-  image: string;
 }
 
 export interface Billing {

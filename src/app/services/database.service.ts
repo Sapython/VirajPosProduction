@@ -209,6 +209,28 @@ export class DatabaseService {
     //   }
     //   this.dataProvider.currentMenu = this.dataProvider.menus[0];
     // })
+
+    // MENU COPIER
+    // getDocs(collection(this.firestore,'/business/46r0a1zlta7hyb077scig9/menus/Vj26EdBp971m06o7D9bd/products')).then((res)=>{
+    //   res.forEach((document)=>{
+    //     setDoc(doc(this.firestore,'/business/t73tctq4kwdvbux2h22h6/menus/BKEPVUhtCXXL7YNrvUqx/products/'+document.id),document.data())
+    //   })
+    // })
+    // getDocs(collection(this.firestore,'/business/46r0a1zlta7hyb077scig9/menus/Vj26EdBp971m06o7D9bd/recommededCategories')).then((res)=>{
+    //   res.forEach((document)=>{
+    //     setDoc(doc(this.firestore,'/business/t73tctq4kwdvbux2h22h6/menus/BKEPVUhtCXXL7YNrvUqx/recommededCategories/'+document.id),document.data())
+    //   })
+    // })
+    // getDocs(collection(this.firestore,'/business/46r0a1zlta7hyb077scig9/menus/Vj26EdBp971m06o7D9bd/rootCategories')).then((res)=>{
+    //   res.forEach((document)=>{
+    //     setDoc(doc(this.firestore,'/business/t73tctq4kwdvbux2h22h6/menus/BKEPVUhtCXXL7YNrvUqx/rootCategories/'+document.id),document.data())
+    //   })
+    // })
+    // getDocs(collection(this.firestore,'/business/46r0a1zlta7hyb077scig9/menus/Vj26EdBp971m06o7D9bd/viewCategories')).then((res)=>{
+    //   res.forEach((document)=>{
+    //     setDoc(doc(this.firestore,'/business/t73tctq4kwdvbux2h22h6/menus/BKEPVUhtCXXL7YNrvUqx/viewCategories/'+document.id),document.data())
+    //   })
+    // })
   }
 
   getMenuData(){

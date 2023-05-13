@@ -31,6 +31,9 @@ export class DataProvider {
           : { smartView: false }
       ).smartView;
     }, 2000);
+    window.alert = (message: string) => {
+      this.confirm('Alert',[0],{description:message,buttons:['ok'],primary:[0]});
+    };
     window.addEventListener('resize', () => {
       this.clientWidth = window.innerWidth;
       this.clientHeight = window.innerHeight;
@@ -81,6 +84,10 @@ export class DataProvider {
   public onlineSales: number = 0;
   public nonChargeableSales: number = 0;
   public tableTimeOutTime: number = 45;
+  public billNoSuffix: string = '';
+  public optionalTax: boolean = false;
+  public currentSettings:any;
+  public customBillNote:string = '';
 
   // public access
   public discounts: Discount[] = [];
@@ -153,7 +160,7 @@ export class DataProvider {
   public get currentAccessLevel() {
     if (this.currentBusiness) {
       let user = this.currentBusiness.users.find((user) => {
-        return user.email == this.currentUser?.email;
+        return user.username == this.currentUser?.username;
       });
       if (user) {
         return user.access;
@@ -168,7 +175,7 @@ export class DataProvider {
   public getAccess(level: string | string[]) {
     if (this.currentBusiness && this.currentUser) {
       let user = this.currentBusiness.users.find((user) => {
-        return user.email == this.currentUser?.email;
+        return user.username == this.currentUser?.username;
       });
       if (user) {
         if (Array.isArray(level)) {
@@ -183,6 +190,7 @@ export class DataProvider {
       return false;
     }
   }
+  
 
   public async prompt(
     title: string,

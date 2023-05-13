@@ -171,7 +171,7 @@ export class ReportsComponent implements OnInit {
     // Select rows from table_id
     var rows = document.querySelectorAll('table#report-table tr');
     // Construct csv
-    let baseData = ['Date:',(new Date()).toLocaleString(),'User Id:',this.dataProvider.currentUser.username,'User Name:',this.dataProvider.currentUser.name]
+    let baseData = ['Date:',(new Date()).toLocaleString(),'User Id:',this.dataProvider.currentUser.username,'User Name:',this.dataProvider.currentUser.username]
     var csv = [baseData.join(separator)];
     for (var i = 0; i < rows.length; i++) {
         var row = [], cols:any = rows[i].querySelectorAll('td, th');

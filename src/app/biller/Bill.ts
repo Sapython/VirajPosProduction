@@ -97,13 +97,14 @@ export class Bill implements BillConstructor {
     private printingService:PrintingService,
     billNo?: string
   ) {
-    // this.updated.pipe(debounceTime(100)).subscribe(() => {
-
-    // })
+    taxes[0].amount = Number(this.dataProvider.currentSettings.sgst)
+    taxes[2].amount = Number(this.dataProvider.currentSettings.cgst)
     this.updated.subscribe(()=>{
       this.dataProvider.queueUpdate.next()
     })
     this.updated.pipe(debounceTime(10000)).subscribe(async (data) => {
+      taxes[0].amount = Number(this.dataProvider.currentSettings.sgst)
+      taxes[1].amount = Number(this.dataProvider.currentSettings.cgst)
       if (!data) {
         let data = this.toObject();
         // console.log('updating bill', data);

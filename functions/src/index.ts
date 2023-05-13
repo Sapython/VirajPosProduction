@@ -31,6 +31,26 @@ export const userNameAvailable = functions.https.onCall(async (request, response
     }
 })
 
+export const updateUser = functions.https.onCall(async (request, response) => {
+    let data:any =  {
+        displayName:request.username,
+    }
+    if (request.email){
+        console.log("updating email");
+        data.email = request.email
+        data.emailVerified = false
+    }
+    if (request.phone) {
+        if (!request.phone.startsWith('+91')) {
+            request.phone = '+91' + request.phone
+        }
+        console.log("updating phone");
+        data.phoneNumber = request.phone
+    }
+    data.password = request.password
+    return await auth.updateUser(request.username,data)
+})
+
 export const signUpWithUserAndPassword = functions.https.onCall(async (request, response) => {
     // check all the types of variables used
     // validations for all the fields
@@ -78,6 +98,9 @@ export const signUpWithUserAndPassword = functions.https.onCall(async (request, 
         if (typeof(request.business) !== 'object' || !request.business.access || !request.business.address || !request.business.businessId || !request.business.joiningDate || !request.business.name) {
             throw new HttpsError('invalid-argument', 'Business is invalid');
         }
+        // request.business.joiningDate.nanoseconds, request.business.joiningDate.seconds
+        request.business.joiningDate = new Timestamp(request.business.joiningDate.seconds, request.business.joiningDate.nanoseconds)
+        request.business.access.lastUpdated = new Timestamp(request.business.access.lastUpdated.seconds, request.business.access.lastUpdated.nanoseconds)
         additonalClaims['business'] = [request.business]
     } else {
         throw new HttpsError('invalid-argument', 'Business is required');
@@ -97,18 +120,21 @@ export const signUpWithUserAndPassword = functions.https.onCall(async (request, 
     let hash = await subtle.digest("SHA-512", new TextEncoder().encode(password));
     console.log("generated password hash");
     // create custom token
+    console.log("trying creating custom token");
     let stringHash = new TextDecoder().decode(hash)
     let authReq = await auth.createCustomToken(uidDoc.id,{
         username: uidDoc.id,
         ...additonalClaims
     })
-    additonalClaims['providerId'] = 'custom';
     console.log("created custom token");
+    // console.log("trying updating email",request.email);
+    
+    additonalClaims['providerId'] = 'custom';
+    console.log("updated custom token");
     // store username and password hash in firestore
     await firestore.doc('authData/' + uidDoc.id).set({
         username: uidDoc.id,
         password: stringHash,
-        salt,
         ...additonalClaims
     })
     await firestore.doc('users/' + uidDoc.id).set({

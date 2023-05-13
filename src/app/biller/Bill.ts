@@ -98,7 +98,7 @@ export class Bill implements BillConstructor {
     billNo?: string
   ) {
     taxes[0].amount = Number(this.dataProvider.currentSettings.sgst)
-    taxes[2].amount = Number(this.dataProvider.currentSettings.cgst)
+    taxes[1].amount = Number(this.dataProvider.currentSettings.cgst)
     this.updated.subscribe(()=>{
       this.dataProvider.queueUpdate.next()
     })

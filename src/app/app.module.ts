@@ -194,7 +194,7 @@ const dbConfig: DBConfig = {
     provideFunctions(() => {
       let functions = getFunctions();
       // useEmulator('localhost', 5001);
-      connectFunctionsEmulator(functions, 'localhost', 5001);
+      // connectFunctionsEmulator(functions, 'localhost', 5001);
       return functions;
     })
   ],

@@ -43,6 +43,7 @@ export class Bill implements BillConstructor {
   customerInfo: CustomerInfo;
   reactivateKotReasons: string[] = []
   device: Device;
+  optionalTax:boolean = false;
   mode: 'dineIn' | 'takeaway' | 'online';
   menu:Menu;
   kots: Kot[] = [];
@@ -97,6 +98,7 @@ export class Bill implements BillConstructor {
     private printingService:PrintingService,
     billNo?: string
   ) {
+    this.optionalTax = this.dataProvider.optionalTax;
     taxes[0].amount = Number(this.dataProvider.currentSettings.sgst)
     taxes[1].amount = Number(this.dataProvider.currentSettings.cgst)
     this.updated.subscribe(()=>{
@@ -404,7 +406,15 @@ export class Bill implements BillConstructor {
     // calculate sub total
     if (this.dataProvider.optionalTax){
       this.billing.subTotal = allProducts.reduce((acc, cur) => {
-        return acc + ((cur.taxedPrice || 0) * cur.quantity);
+        if (cur.lineDiscount){
+          if (cur.lineDiscount.type == 'amount'){
+            return acc + (((cur.taxedPrice || 0) * cur.quantity) - cur.lineDiscount.value);
+          } else {
+            return acc + (((cur.taxedPrice || 0) * cur.quantity) - ((cur.taxedPrice || 0) * cur.quantity * cur.lineDiscount.value / 100));
+          }
+        } else {
+          return acc + ((cur.taxedPrice || 0) * cur.quantity);
+        }
       },0)
     } else {
       this.billing.subTotal = allProducts.reduce((acc, cur) => {
@@ -412,7 +422,18 @@ export class Bill implements BillConstructor {
       },0)
     }
     let unTaxedSubTotal = allProducts.reduce((acc, cur) => {
-      return acc + (cur.price * cur.quantity);
+      if (cur.lineDiscount){
+        if (cur.lineDiscount.type == 'amount'){
+          cur.lineDiscount.totalAppliedDiscount = cur.lineDiscount.value;
+          return acc + ((cur.price * cur.quantity) - cur.lineDiscount.value);
+        } else {
+          let discountValue = (cur.price * cur.quantity * cur.lineDiscount.value / 100)
+          cur.lineDiscount.totalAppliedDiscount = discountValue;
+          return acc + ((cur.price * cur.quantity) - discountValue);
+        }
+      } else {
+        return acc + (cur.price * cur.quantity);
+      }
     },0)
     console.log('sub total', this.billing.subTotal);
     // calculate totalApplicable discount
@@ -675,15 +696,15 @@ export class Bill implements BillConstructor {
         return;
       }
     }
-    this.stage = 'finalized';
-    let data = this.toObject();
-    this.databaseService.updateBill(data);
-
-    this.updated.next();
+    // this.stage = 'finalized';
+    // let data = this.toObject();
+    // this.databaseService.updateBill(data);
     this.printBill()
-    if(this.dataProvider.showTableOnBillAction){
-      this.dataProvider.openTableView.next(true);
-    }
+
+    // this.updated.next();
+    // if(this.dataProvider.showTableOnBillAction){
+    //   this.dataProvider.openTableView.next(true);
+    // }
   }
   setInstruction(){
     this.instruction = prompt('Enter instruction') || ''
@@ -765,7 +786,9 @@ export class Bill implements BillConstructor {
   }
 
   deleteKot(kot: Kot) {
-    this.printingService.deleteKot(this.table.tableNo.toString(),this.orderNo || '',kot.products,kot.id)
+    kot.stage = 'cancelled';
+    this.updated.next();
+    this.printingService.deleteKot(this.table.tableNo.toString(),this.orderNo || '',kot.products,kot.id);
   }
 
   printKot(kot:Kot,mode:'firstChargeable'|'cancelledKot'|'editedKot'|'runningNonChargeable'|'runningChargeable'|'firstNonChargeable'|'reprintKot'|'online'){
@@ -950,6 +973,7 @@ export class Bill implements BillConstructor {
       billNo: this.billNo || null,
       orderNo: this.orderNo || null,
       mode: this.mode,
+      optionalTax: this.optionalTax,
       kots: this.kotWithoutFunctions,
       billing: this.billing,
       stage: this.stage,
@@ -1003,6 +1027,7 @@ export class Bill implements BillConstructor {
       instance.billingMode = object.billingMode;
       instance.nonChargeableDetail = object.nonChargeableDetail;
       instance.customerInfo = object.customerInfo;
+      instance.optionalTax = object.optionalTax || false;
       // create kots classes from objects and add them to the bill
       object.kots.forEach((kot) => {
         console.log("Creating kot",kot);

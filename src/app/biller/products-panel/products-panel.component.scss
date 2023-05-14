@@ -21,7 +21,13 @@ section{
     top: 0px;
     background: white;
     z-index: 9;
-    mat-form-field{
+    input{
         width: 100%;
+        height: 40px;
+        border: none;
+        font-size: var(--Viraj-font-large);
+        border-bottom: 1px solid #ccc;
+        background: white;
+        padding: 5px 20px;
     }
 }

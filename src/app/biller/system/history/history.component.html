@@ -37,22 +37,22 @@
             <td>{{bill.billing.grandTotal | currency:'INR'}}</td>
           </tr>
           <tr>
-            <td><button mat-flat-button color="primary" (click)="reprintBill(bill)">Reprint Bill</button></td>
-            <td><button mat-flat-button color="primary" (click)="bill.kotVisible = !bill.kotVisible">See Kots</button></td>
+            <td><viraj-button color="primary" (click)="reprintBill(bill)">Reprint Bill</viraj-button></td>
+            <td><viraj-button color="primary" (click)="bill.kotVisible = !bill.kotVisible">See Kots</viraj-button></td>
           </tr>
         </table>
-        <div *ngIf="bill.kotVisible" [@slideInDownOnEnter] [@slideOutUpOnLeave]>
+        <div *ngIf="bill.kotVisible">
           <hr>
           <table>
             <tr>
               <th>Kot No</th>
               <th>Products</th>
-              <th>#</th>
+              <th>Print</th>
             </tr>
-            <tr *ngFor="let kot of bill.kots">
+            <tr *ngFor="let kot of bill.kots" class="border">
               <td>{{kot.id}}</td>
               <td>{{kot.products.length}}</td>
-              <td><button (click)="reprintKot(kot,bill)"><i class="ri-printer-fill"></i></button></td>
+              <td><viraj-button type="icon" (click)="reprintKot(kot,bill)"><i class="ri-printer-fill"></i></viraj-button></td>
             </tr>
           </table>
         </div>

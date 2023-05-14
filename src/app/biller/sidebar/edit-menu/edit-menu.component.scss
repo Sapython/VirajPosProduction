@@ -126,3 +126,13 @@ section{
         }
     }
 }
+
+@media screen and (max-width:1366px){
+    .sidebar{
+        .categories{
+            span{
+                padding:0px 10px !important;
+            }
+        }
+    }
+}

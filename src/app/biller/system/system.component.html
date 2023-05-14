@@ -7,7 +7,7 @@
     </div>
     <!-- <viraj-button type="icon" (vclick)="lock.emit()"><i class="ri-lock-fill"></i></viraj-button> -->
     <viraj-button type="icon" *ngIf="this.dataProvider.getAccess(['admin','manager'])" (vclick)="openHistory()"><i class="ri-history-line"></i></viraj-button>
-    <viraj-button type="icon" (vclick)="openChat()"><i class="ri-questionnaire-fill"></i></viraj-button>
+    <!-- <viraj-button type="icon" (vclick)="openChat()"><i class="ri-questionnaire-fill"></i></viraj-button> -->
     <viraj-button type="icon" *ngIf="this.dataProvider.getAccess(['admin','manager'])" (vclick)="openSettings()"><i class="ri-settings-3-fill"></i></viraj-button>
     <viraj-button type="outline" (vclick)="logOut()">Logout</viraj-button>
 </section>

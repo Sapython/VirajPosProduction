@@ -9,6 +9,7 @@ export interface BillConstructor {
   billNo?: string;
   orderNo: string|null;
   createdDate: Timestamp;
+  optionalTax:boolean;
   stage: 'active' | 'finalized' | 'settled' | 'cancelled';
   cancelledReason?: {
     reason: string;

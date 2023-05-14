@@ -1,541 +1,412 @@
 <section>
-  <!-- <mat-tab-group>
-    <mat-tab label="General">
-      <h1>Settings</h1>
-      <form class="form" [formGroup]="settingsForm" (ngSubmit)="saveSettings()">
-        <mat-form-field class="example-form-field" appearance="outline">
-          <mat-label>Project Name:</mat-label>
-          <input matInput type="text" formControlName="projectName" />
-        </mat-form-field>
-        <mat-form-field class="example-form-field" appearance="outline">
-          <mat-label>Phone Number:</mat-label>
-          <input matInput type="text" formControlName="phoneNumber" />
-        </mat-form-field>
-        <mat-form-field class="example-form-field" appearance="outline">
-          <mat-label>Address:</mat-label>
-          <input matInput type="text" formControlName="address" />
-        </mat-form-field>
-        <mat-form-field class="example-form-field" appearance="outline">
-          <mat-label>Port:</mat-label>
-          <input matInput type="text" formControlName="port" />
-        </mat-form-field>
-        <mat-form-field class="example-form-field" appearance="outline">
-          <mat-label>GST No:</mat-label>
-          <input matInput type="text" formControlName="gstNumber" />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Choose Printer For Bill</mat-label>
-          <mat-select formControlName="billPrinter">
-            <mat-option>Clear</mat-option>
-            <mat-option [value]="printer" *ngFor="let printer of printers">{{
-              printer
-            }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Choose Printer For KOT</mat-label>
-          <mat-select formControlName="kotPrinter">
-            <mat-option>Clear</mat-option>
-            <mat-option [value]="printer" *ngFor="let printer of printers">{{
-              printer
-            }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field class="example-form-field" appearance="outline">
-          <mat-label>FSSAI No:</mat-label>
-          <input matInput type="text" formControlName="fssaiNo" />
-        </mat-form-field>
-        <mat-form-field class="example-form-field" appearance="outline">
-          <mat-label>Counter No:</mat-label>
-          <input matInput type="text" formControlName="counterNo" />
-        </mat-form-field>
-        <mat-form-field class="example-form-field" appearance="outline">
-          <mat-label>Cashier Name:</mat-label>
-          <input matInput type="text" formControlName="cashierName" />
-        </mat-form-field>
-        <mat-form-field class="example-form-field" appearance="outline">
-          <mat-label>Device Name:</mat-label>
-          <input matInput type="text" formControlName="deviceName" />
-        </mat-form-field>
-        <button
-          color="primary"
-          style="margin-right: 20px"
-          (click)="cancelSettings()"
-          mat-stroked-button
-          type="button"
-        >
-          Cancel
-        </button>
-        <button
-          color="primary"
-          style="margin-right: 20px"
-          mat-flat-button
-          type="submit"
-        >
-          Submit
-        </button>
-      </form>
-    </mat-tab>
-    <mat-tab label="Printer">
-      <h1>Printer Settings</h1>
-      <viraj-button (vclick)="addConfig()">
-        <i class="ri-add-fill"></i> Add Config
-      </viraj-button>
-      <form (ngSubmit)="setPrinters()">
-        <div class="grid">
-          <ng-container *ngFor="let config of configs">
-            <mat-form-field appearance="outline">
-              <mat-label>Choose Printer For Bill</mat-label>
-              <mat-select [formControl]="config.printerControl">
-                <mat-option>Clear</mat-option>
-                <mat-option
-                  [value]="printer"
-                  *ngFor="let printer of printers"
-                  >{{ printer }}</mat-option
-                >
-              </mat-select>
-            </mat-form-field>
-            <div class="categories">
-              <ol>
-                <li *ngFor="let item of config.categories">
-                  <mat-checkbox
-                    [(ngModel)]="item.selected"
-                    [indeterminate]="item.indeterminate"
-                    [checked] = "item.selected"
-                    (change)="onCategoryChange(item)"
-                    [ngModelOptions]="{ standalone: true }"
-                    >{{ item.name }}</mat-checkbox
-                  >
-                  <ol>
-                    <li *ngFor="let product of item.products">
-                      <mat-checkbox
-                        [(ngModel)]="product.selected"
-                        (change)="onProductChange(item)"
-                        [ngModelOptions]="{ standalone: true }"
-                        >{{ product.name }}</mat-checkbox
-                      >
-                    </li>
-                  </ol>
-                </li>
-              </ol>
-            </div>
-          </ng-container>
-          <h2 *ngIf="configs.length==0">No Configs Found</h2>
-        </div>
-        <button mat-raised-button type="submit" color="primary">Submit</button>
-      </form>
-    </mat-tab>
-    <mat-tab label="View">
-      <h3>View Settings</h3>
-      <form [formGroup]="viewSettings">
-        <mat-slide-toggle formControlName="smartView">Smart View</mat-slide-toggle>
-        <mat-slide-toggle formControlName="touchMode">Touch Mode</mat-slide-toggle>
-      </form>
-    </mat-tab>
-  </mat-tab-group> -->
-
-  <div class="tabs">
-    <button
-      (click)="activeTab = 'about'"
-      [ngClass]="{ active: activeTab == 'about' }"
-    >
-      About
-    </button>
-    <button
-      (click)="activeTab = 'printer'"
-      [ngClass]="{ active: activeTab == 'printer' }"
-    >
-      Printer
-    </button>
-    <button
-      (click)="activeTab = 'view'"
-      [ngClass]="{ active: activeTab == 'view' }"
-    >
-      View
-    </button>
-    <button
-      (click)="activeTab = 'config'"
-      [ngClass]="{ active: activeTab == 'config' }"
-    >
-      Config
-    </button>
-    <button
-      (click)="activeTab = 'account'"
-      *ngIf="this.dataProvider.getAccess(['admin'])"
-      [ngClass]="{ active: activeTab == 'account' }"
-    >
-      Account
-    </button>
-    <button
-      (click)="activeTab = 'discount'"
-      [ngClass]="{ active: activeTab == 'discount' }"
-    >
-      Discounts
-    </button>
+  <div class="close">
+    <viraj-button type="icon" (vclick)="dialogRef.close()"><i class="ri-close-line"></i></viraj-button>
   </div>
-  <div class="active spaced" [ngSwitch]="activeTab">
-    <ng-container *ngSwitchCase="'printer'">
-      <h3>Printer Settings</h3>
-      <mat-form-field apperance="outline">
-        <mat-label>Bill Printer</mat-label>
-        <mat-select
-        #billerPrinter
-        (selectionChange)="updateBillPrinter(billerPrinter.value)"
-          name="printer"
-        >
-          <mat-option> Select </mat-option>
-          <mat-option [value]="printer" *ngFor="let printer of printers">
-            {{ printer }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field apperance="outline">
-        <mat-label>Custom Bill Note</mat-label>
-        <input type="text" matInput [(ngModel)]="this.dataProvider.customBillNote" (change)="updateSettings({customBillNote:customBillNote.value})" #customBillNote>
-      </mat-form-field>
-      <mat-form-field apperance="outline">
-        <mat-label>Bill No Suffix</mat-label>
-        <input type="text" matInput [(ngModel)]="this.dataProvider.billNoSuffix" (change)="updateSettings({billNoSuffix:billNoSuffixInput.value})" #billNoSuffixInput>
-      </mat-form-field>
-      <mat-slide-toggle
-          [(ngModel)]="dataProvider.optionalTax"
-          (change)="updateSettings({optionalTax:dataProvider.optionalTax})"
-          >Optional Tax</mat-slide-toggle
-        >
-      <mat-slide-toggle
-          [(ngModel)]="dataProvider.printBillAfterSettle"
-          (change)="updateSettings({printBillAfterSettle:dataProvider.printBillAfterSettle})"
-          >Bill After Settlement</mat-slide-toggle
-        >
-    </ng-container>
-    <ng-container *ngSwitchCase="'account'">
-      <h3>Account Settings</h3>
-      <button mat-flat-button color="primary" (click)="addAccount()">
-        Add Account
+  <div class="main">
+    <div class="tabs">
+      <button
+        (click)="activeTab = 'about'"
+        [ngClass]="{ active: activeTab == 'about' }"
+      >
+        About
       </button>
-      <!-- <ol>
-        <li *ngFor="let account of accounts">
-          <strong></strong>
-        </li>
-      </ol> -->
-      <table class="uk-table uk-table uk-table-divider">
-        <thead>
-          <tr>
-            <th>Username</th>
-            <th>Role</th>
-            <th>Update By</th>
-            <th>Created On</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let account of this.dataProvider.currentBusiness?.users">
-            <td>
-              <ng-container *ngIf="!account.new">
-                {{ account.username }}
-              </ng-container>
-              <input
-                type="text"
-                [(ngModel)]="account.username"
-                *ngIf="account.new"
-              />
-            </td>
-            <td class="select">
-              <mat-select
-                placeholder="Select"
-                (valueChange)="updateBusiness()"
-                [(ngModel)]="account.access"
-                name="access"
-              >
-                <mat-option
-                  *ngFor="let access of this.dataProvider.accessLevels"
-                  [value]="access"
+      <button
+        (click)="activeTab = 'printer'"
+        [ngClass]="{ active: activeTab == 'printer' }"
+      >
+        Printer
+      </button>
+      <button
+        (click)="activeTab = 'view'"
+        [ngClass]="{ active: activeTab == 'view' }"
+      >
+        View
+      </button>
+      <button
+        (click)="activeTab = 'config'"
+        [ngClass]="{ active: activeTab == 'config' }"
+      >
+        Config
+      </button>
+      <button
+        (click)="activeTab = 'account'"
+        *ngIf="this.dataProvider.getAccess(['admin'])"
+        [ngClass]="{ active: activeTab == 'account' }"
+      >
+        Account
+      </button>
+      <button
+        (click)="activeTab = 'discount'"
+        [ngClass]="{ active: activeTab == 'discount' }"
+      >
+        Discounts
+      </button>
+    </div>
+    <div class="active spaced" [ngSwitch]="activeTab">
+      <ng-container *ngSwitchCase="'printer'">
+        <h3>Printer Settings</h3>
+        <mat-form-field apperance="outline" *ngIf="this.dataProvider.currentBusiness">
+          <mat-label>Bill Printer</mat-label>
+          <mat-select
+          #billerPrinter
+          [(ngModel)]="this.dataProvider.currentBusiness.billerPrinter"
+          (selectionChange)="updateBillPrinter(billerPrinter.value)"
+            name="printer"
+          >
+            <mat-option> Select </mat-option>
+            <mat-option [value]="printer" *ngFor="let printer of printers">
+              {{ printer }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field apperance="outline">
+          <mat-label>Custom Bill Note</mat-label>
+          <input type="text" matInput [(ngModel)]="this.dataProvider.customBillNote" (change)="updateSettings({customBillNote:customBillNote.value})" #customBillNote>
+        </mat-form-field>
+        <mat-form-field apperance="outline">
+          <mat-label>Bill No Suffix</mat-label>
+          <input type="text" matInput [(ngModel)]="this.dataProvider.billNoSuffix" (change)="updateSettings({billNoSuffix:billNoSuffixInput.value})" #billNoSuffixInput>
+        </mat-form-field>
+        <mat-slide-toggle
+            [(ngModel)]="dataProvider.optionalTax"
+            (change)="updateSettings({optionalTax:dataProvider.optionalTax})"
+            >Optional Tax</mat-slide-toggle
+          >
+        <mat-slide-toggle
+            [(ngModel)]="dataProvider.printBillAfterSettle"
+            (change)="updateSettings({printBillAfterSettle:dataProvider.printBillAfterSettle})"
+            >Bill After Settlement</mat-slide-toggle
+          >
+      </ng-container>
+      <ng-container *ngSwitchCase="'account'">
+        <h3>Account Settings</h3>
+        <button mat-flat-button color="primary" (click)="addAccount()">
+          Add Account
+        </button>
+        <!-- <ol>
+          <li *ngFor="let account of accounts">
+            <strong></strong>
+          </li>
+        </ol> -->
+        <table class="uk-table uk-table uk-table-divider">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Role</th>
+              <th>Update By</th>
+              <th>Created On</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let account of this.dataProvider.currentBusiness?.users">
+              <td>
+                <ng-container *ngIf="!account.new">
+                  {{ account.username }}
+                </ng-container>
+                <input
+                  type="text"
+                  [(ngModel)]="account.username"
+                  *ngIf="account.new"
+                />
+              </td>
+              <td class="select">
+                <mat-select
+                  placeholder="Select"
+                  (valueChange)="updateBusiness()"
+                  [(ngModel)]="account.access"
+                  name="access"
                 >
-                  {{ access | titlecase }}
-                </mat-option>
-              </mat-select>
-            </td>
-            <td>{{ account.updatedBy }}</td>
+                  <mat-option
+                    *ngFor="let access of this.dataProvider.accessLevels"
+                    [value]="access"
+                  >
+                    {{ access | titlecase }}
+                  </mat-option>
+                </mat-select>
+              </td>
+              <td>{{ account.updatedBy }}</td>
+              <td>
+                {{ account.lastUpdated.toDate() | date : "short" }}
+                <button
+                  mat-flat-button
+                  *ngIf="account.new"
+                  color="primary"
+                  (click)="updateBusiness()"
+                >
+                  Update
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+      <ng-container *ngSwitchCase="'view'">
+        <h3>View Modes</h3>
+        <div class="row smartButtons">
+          <button
+            [disabled]="true"
+            [ngClass]="{ selected: dataProvider.smartMode }"
+            (click)="smartModeToggle(true)"
+          >
+            <img src="assets/images/brain.svg" alt="" />
+            Smart Mode*
+          </button>
+          <button
+            [ngClass]="{ selected: !dataProvider.smartMode }"
+            (click)="smartModeToggle(false)"
+          >
+            <img src="assets/images/noBrain.svg" alt="" />
+            Simple Mode
+          </button>
+        </div>
+        <div class="row smartButtons">
+          <button
+            [ngClass]="{ selected: !dataProvider.touchMode }"
+            (click)="touchModeToggle(false)"
+          >
+            <img src="assets/images/click.svg" alt="" />
+            Click Mode
+          </button>
+          <button
+            [ngClass]="{ selected: dataProvider.touchMode }"
+            (click)="touchModeToggle(true)"
+          >
+            <img src="assets/images/touch.svg" alt="" />
+            Touch Mode
+          </button>
+        </div>
+        <div>
+          <mat-slide-toggle
+            [(ngModel)]="dataProvider.showTableOnBillAction"
+            (change)="setLocalShowTable($event)"
+            >Show table on bill action</mat-slide-toggle
+          >
+        </div>
+        <div>
+          <mat-form-field>
+            <mat-label>Table timeout</mat-label>
+            <input type="text" matInput [(ngModel)]="this.dataProvider.tableTimeOutTime" (change)="updateSettings({tableTimeOutTime:time.value})" #time>
+          </mat-form-field>
+        </div>
+        <p class="danger">
+          <sup>*</sup> Smart mode is currently disabled for this account.
+        </p>
+      </ng-container>
+      <ng-container *ngSwitchCase="'about'">
+        <h3>About</h3>
+        <table class="uk-table uk-table-divider" [cellSpacing]="0">
+          <tr>
+            <td>Name</td>
+            <td>Viraj</td>
+          </tr>
+          <tr>
+            <td>Version</td>
             <td>
-              {{ account.lastUpdated.toDate() | date : "short" }}
-              <button
-                mat-flat-button
-                *ngIf="account.new"
-                color="primary"
-                (click)="updateBusiness()"
-              >
-                Update
-              </button>
+              {{ version }}
             </td>
           </tr>
-        </tbody>
-      </table>
-    </ng-container>
-    <ng-container *ngSwitchCase="'view'">
-      <h3>View Modes</h3>
-      <div class="row smartButtons">
-        <button
-          [disabled]="true"
-          [ngClass]="{ selected: dataProvider.smartMode }"
-          (click)="smartModeToggle(true)"
-        >
-          <img src="assets/images/brain.svg" alt="" />
-          Smart Mode*
-        </button>
-        <button
-          [ngClass]="{ selected: !dataProvider.smartMode }"
-          (click)="smartModeToggle(false)"
-        >
-          <img src="assets/images/noBrain.svg" alt="" />
-          Simple Mode
-        </button>
-      </div>
-      <div class="row smartButtons">
-        <button
-          [ngClass]="{ selected: !dataProvider.touchMode }"
-          (click)="touchModeToggle(false)"
-        >
-          <img src="assets/images/click.svg" alt="" />
-          Click Mode
-        </button>
-        <button
-          [ngClass]="{ selected: dataProvider.touchMode }"
-          (click)="touchModeToggle(true)"
-        >
-          <img src="assets/images/touch.svg" alt="" />
-          Touch Mode
-        </button>
-      </div>
-      <div>
-        <mat-slide-toggle
-          [(ngModel)]="dataProvider.showTableOnBillAction"
-          (change)="setLocalShowTable($event)"
-          >Show table on bill action</mat-slide-toggle
-        >
-      </div>
-      <div>
-        <mat-form-field>
-          <mat-label>Table timeout</mat-label>
-          <input type="text" matInput [(ngModel)]="this.dataProvider.tableTimeOutTime" (change)="updateSettings({tableTimeOutTime:time.value})" #time>
-        </mat-form-field>
-      </div>
-      <p class="danger">
-        <sup>*</sup> Smart mode is currently disabled for this account.
-      </p>
-    </ng-container>
-    <ng-container *ngSwitchCase="'about'">
-      <h3>About</h3>
-      <table class="uk-table uk-table-divider" [cellSpacing]="0">
-        <tr>
-          <td>Name</td>
-          <td>Viraj</td>
-        </tr>
-        <tr>
-          <td>Version</td>
-          <td>
-            {{ version }}
-          </td>
-        </tr>
-        <tr>
-          <td>Server Version</td>
-          <td>
-            {{ version }}
-          </td>
-        </tr>
-        <tr>
-          <td>Account</td>
-          <td>
-            {{ account }}
-          </td>
-        </tr>
-      </table>
-    </ng-container>
-    <ng-container *ngSwitchCase="'config'">
-      <h3>Active Modes</h3>
-      <div class="modes">
-        <mat-slide-toggle
-          [(ngModel)]="modes[0]"
-          (change)="updateMode()"
-          [disabled]="twoModeDeactived && modes[0]"
-          >Dine In</mat-slide-toggle
-        >
-        <mat-slide-toggle
-          [(ngModel)]="modes[1]"
-          (change)="updateMode()"
-          [disabled]="twoModeDeactived && modes[1]"
-          >Takeaway</mat-slide-toggle
-        >
-        <mat-slide-toggle
-          [(ngModel)]="modes[2]"
-          (change)="updateMode()"
-          [disabled]="twoModeDeactived && modes[2]"
-          >Online</mat-slide-toggle
-        >
-      </div>
-      <hr />
-      <h3>More Config</h3>
-      <form class="form" [formGroup]="settingsForm" (ngSubmit)="saveSettings()">
-        <mat-form-field class="example-form-field" appearance="outline">
-          <mat-label>Project Name:</mat-label>
-          <input matInput type="text" formControlName="hotelName" />
-        </mat-form-field>
-        <mat-form-field class="example-form-field" appearance="outline">
-          <mat-label>Phone Number:</mat-label>
-          <input matInput type="text" formControlName="phone" />
-        </mat-form-field>
-        <mat-form-field
-          class="example-form-field fullWidth"
-          appearance="outline"
-        >
-          <mat-label>Address:</mat-label>
-          <input matInput type="text" formControlName="address" />
-        </mat-form-field>
-        <!-- <mat-form-field class="example-form-field" appearance="outline">
-          <mat-label>Port:</mat-label>
-          <input matInput type="text" formControlName="port" />
-        </mat-form-field> -->
-        <mat-form-field class="example-form-field" appearance="outline">
-          <mat-label>GST No:</mat-label>
-          <input matInput type="text" formControlName="gst" />
-        </mat-form-field>
-        <mat-form-field class="example-form-field" appearance="outline">
-          <mat-label>FSSAI No:</mat-label>
-          <input matInput type="text" formControlName="fssai" />
-        </mat-form-field>
-        <mat-form-field class="example-form-field" appearance="outline">
-          <mat-label>CGST:</mat-label>
-          <input matInput type="text" formControlName="cgst" />
-        </mat-form-field>
-        <mat-form-field class="example-form-field" appearance="outline">
-          <mat-label>SGST:</mat-label>
-          <input matInput type="text" formControlName="sgst" />
-        </mat-form-field>
-        <!-- <mat-form-field appearance="outline">
-          <mat-label>Choose Printer For Bill</mat-label>
-          <mat-select formControlName="billPrinter">
-            <mat-option>Clear</mat-option>
-            <mat-option [value]="printer" *ngFor="let printer of printers">{{
-              printer
-            }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Choose Printer For KOT</mat-label>
-          <mat-select formControlName="kotPrinter">
-            <mat-option>Clear</mat-option>
-            <mat-option [value]="printer" *ngFor="let printer of printers">{{
-              printer
-            }}</mat-option>
-          </mat-select>
-        </mat-form-field> -->
-        <!-- <mat-form-field class="example-form-field" appearance="outline">
-          <mat-label>Counter No:</mat-label>
-          <input matInput type="text" formControlName="counterNo" />
-        </mat-form-field>
-        <mat-form-field class="example-form-field" appearance="outline">
-          <mat-label>Cashier Name:</mat-label>
-          <input matInput type="text" formControlName="cashierName" />
-        </mat-form-field>
-        <mat-form-field class="example-form-field" appearance="outline">
-          <mat-label>Device Name:</mat-label>
-          <input matInput type="text" formControlName="deviceName" />
-        </mat-form-field> -->
-        <button
-          color="primary"
-          style="margin-right: 20px"
-          (click)="cancelSettings()"
-          mat-stroked-button
-          type="button"
-        >
-          Cancel
-        </button>
-        <button
-          color="primary"
-          style="margin-right: 20px"
-          mat-flat-button
-          type="submit"
-        >
-          Submit
-        </button>
-      </form>
-    </ng-container>
-    <ng-container *ngSwitchCase="'discount'">
-      <h3>Discount</h3>
-      <div class="discount">
-        <!-- <div class="discountItem" *ngFor="let discount of discounts">
-          <div class="discountName">
-            {{discount.name}}
-          </div>
-          <div class="discountValue">
-            {{discount.value}}
-          </div>
-          <div class="discountType">
-            {{discount.type}}
-          </div>
-          <div class="discountType">
-            {{discount.type}}
-          </div>
-          <div class="discountAction">
-            <button mat-icon-button (click)="editDiscount(discount)">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-icon-button (click)="deleteDiscount(discount)">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
-        </div> -->
-        <button color="primary" mat-raised-button (click)="addDiscount()">
-          Add Discount
-        </button>
-        <div class="tableContainer">
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Value</th>
-                <th>Type</th>
-                <th>Min Amount</th>
-                <th>Min Products</th>
-                <th>Max Discount</th>
-                <th>Created On</th>
-                <th>Menus</th>
-                <th>Access</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let discount of discounts">
-                <td>{{ discount.name }}</td>
-                <td>{{ discount.value }}</td>
-                <td>{{ discount.type }}</td>
-                <td>{{ discount.minimumAmount }}</td>
-                <td>{{ discount.minimumProducts }}</td>
-                <td>{{ discount.maximumDiscount }}</td>
-                <td>
-                  {{
-                    discount.creationDate
-                      ? (discount.creationDate.toDate() | date)
-                      : "N/A"
-                  }}
-                </td>
-                <td>
-                  <li *ngFor="let item of getMappedMenu(discount.menus)">
-                    {{ item.name }}
-                  </li>
-                </td>
-                <td>
-                  <li *ngFor="let item of discount.accessLevels">
-                    {{ item }}
-                  </li>
-                </td>
-              </tr>
-              <tr *ngIf="loadingDiscount">
-                <td colspan="8">
-                  <mat-spinner mode="indeterminate"> </mat-spinner>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <tr>
+            <td>Server Version</td>
+            <td>
+              {{ version }}
+            </td>
+          </tr>
+          <tr>
+            <td>Account</td>
+            <td>
+              {{ account }}
+            </td>
+          </tr>
+        </table>
+      </ng-container>
+      <ng-container *ngSwitchCase="'config'">
+        <h3>Active Modes</h3>
+        <div class="modes">
+          <mat-slide-toggle
+            [(ngModel)]="modes[0]"
+            (change)="updateMode()"
+            [disabled]="twoModeDeactived && modes[0]"
+            >Dine In</mat-slide-toggle
+          >
+          <mat-slide-toggle
+            [(ngModel)]="modes[1]"
+            (change)="updateMode()"
+            [disabled]="twoModeDeactived && modes[1]"
+            >Takeaway</mat-slide-toggle
+          >
+          <mat-slide-toggle
+            [(ngModel)]="modes[2]"
+            (change)="updateMode()"
+            [disabled]="twoModeDeactived && modes[2]"
+            >Online</mat-slide-toggle
+          >
         </div>
-      </div>
-    </ng-container>
+        <hr />
+        <h3>More Config</h3>
+        <form class="form" [formGroup]="settingsForm" (ngSubmit)="saveSettings()">
+          <mat-form-field class="example-form-field" appearance="outline">
+            <mat-label>Project Name:</mat-label>
+            <input matInput type="text" formControlName="hotelName" />
+          </mat-form-field>
+          <mat-form-field class="example-form-field" appearance="outline">
+            <mat-label>Phone Number:</mat-label>
+            <input matInput type="text" formControlName="phone" />
+          </mat-form-field>
+          <mat-form-field
+            class="example-form-field fullWidth"
+            appearance="outline"
+          >
+            <mat-label>Address:</mat-label>
+            <input matInput type="text" formControlName="address" />
+          </mat-form-field>
+          <!-- <mat-form-field class="example-form-field" appearance="outline">
+            <mat-label>Port:</mat-label>
+            <input matInput type="text" formControlName="port" />
+          </mat-form-field> -->
+          <mat-form-field class="example-form-field" appearance="outline">
+            <mat-label>GST No:</mat-label>
+            <input matInput type="text" formControlName="gst" />
+          </mat-form-field>
+          <mat-form-field class="example-form-field" appearance="outline">
+            <mat-label>FSSAI No:</mat-label>
+            <input matInput type="text" formControlName="fssai" />
+          </mat-form-field>
+          <mat-form-field class="example-form-field" appearance="outline">
+            <mat-label>CGST:</mat-label>
+            <input matInput type="text" formControlName="cgst" />
+          </mat-form-field>
+          <mat-form-field class="example-form-field" appearance="outline">
+            <mat-label>SGST:</mat-label>
+            <input matInput type="text" formControlName="sgst" />
+          </mat-form-field>
+          <!-- <mat-form-field appearance="outline">
+            <mat-label>Choose Printer For Bill</mat-label>
+            <mat-select formControlName="billPrinter">
+              <mat-option>Clear</mat-option>
+              <mat-option [value]="printer" *ngFor="let printer of printers">{{
+                printer
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Choose Printer For KOT</mat-label>
+            <mat-select formControlName="kotPrinter">
+              <mat-option>Clear</mat-option>
+              <mat-option [value]="printer" *ngFor="let printer of printers">{{
+                printer
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field> -->
+          <!-- <mat-form-field class="example-form-field" appearance="outline">
+            <mat-label>Counter No:</mat-label>
+            <input matInput type="text" formControlName="counterNo" />
+          </mat-form-field>
+          <mat-form-field class="example-form-field" appearance="outline">
+            <mat-label>Cashier Name:</mat-label>
+            <input matInput type="text" formControlName="cashierName" />
+          </mat-form-field>
+          <mat-form-field class="example-form-field" appearance="outline">
+            <mat-label>Device Name:</mat-label>
+            <input matInput type="text" formControlName="deviceName" />
+          </mat-form-field> -->
+          <!-- <button
+            color="primary"
+            style="margin-right: 20px"
+            (click)="cancelSettings()"
+            mat-stroked-button
+            type="button"
+          >
+            Cancel
+          </button> -->
+          <button
+            color="primary"
+            style="margin-right: 20px"
+            mat-flat-button
+            type="submit"
+          >
+            Submit
+          </button>
+        </form>
+      </ng-container>
+      <ng-container *ngSwitchCase="'discount'">
+        <h3>Discount</h3>
+        <div class="discount">
+          <!-- <div class="discountItem" *ngFor="let discount of discounts">
+            <div class="discountName">
+              {{discount.name}}
+            </div>
+            <div class="discountValue">
+              {{discount.value}}
+            </div>
+            <div class="discountType">
+              {{discount.type}}
+            </div>
+            <div class="discountType">
+              {{discount.type}}
+            </div>
+            <div class="discountAction">
+              <button mat-icon-button (click)="editDiscount(discount)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button (click)="deleteDiscount(discount)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div> -->
+          <button color="primary" mat-raised-button (click)="addDiscount()">
+            Add Discount
+          </button>
+          <div class="tableContainer">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Value</th>
+                  <th>Type</th>
+                  <th>Min Amount</th>
+                  <th>Min Products</th>
+                  <th>Max Discount</th>
+                  <th>Created On</th>
+                  <th>Menus</th>
+                  <th>Access</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let discount of discounts">
+                  <td>{{ discount.name }}</td>
+                  <td>{{ discount.value }}</td>
+                  <td>{{ discount.type }}</td>
+                  <td>{{ discount.minimumAmount }}</td>
+                  <td>{{ discount.minimumProducts }}</td>
+                  <td>{{ discount.maximumDiscount }}</td>
+                  <td>
+                    {{
+                      discount.creationDate
+                        ? (discount.creationDate.toDate() | date)
+                        : "N/A"
+                    }}
+                  </td>
+                  <td>
+                    <li *ngFor="let item of getMappedMenu(discount.menus)">
+                      {{ item.name }}
+                    </li>
+                  </td>
+                  <td>
+                    <li *ngFor="let item of discount.accessLevels">
+                      {{ item }}
+                    </li>
+                  </td>
+                </tr>
+                <tr *ngIf="loadingDiscount">
+                  <td colspan="8">
+                    <mat-spinner mode="indeterminate"> </mat-spinner>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </ng-container>
+    </div>
   </div>
 </section>

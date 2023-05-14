@@ -69,6 +69,11 @@ export class ElectronService {
       console.log("STAGE 1 => Will Print: ", data, printer);
       return;
     }
+    if (!this.ipcRenderer){
+      const dialog = this.dialog.open(DialogComponent,{data:{title:'Error',description:'No Printer Found'}});
+      console.log("STAGE 2 => Will Print: ", data, printer);
+      return;
+    }
     console.log("STAGE 3 => Will Print: ", data, printer);
     this.ipcRenderer.send("printData", { data, printer });
     var promiseResolve, promiseReject;

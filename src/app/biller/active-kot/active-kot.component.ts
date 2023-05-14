@@ -33,6 +33,10 @@ export class ActiveKotComponent implements OnChanges {
   actionSheetExpanded: boolean = false;
   constructor(public dataProvider: DataProvider) {
     this.dataProvider.billAssigned.subscribe(() => {
+      this.kots = [];
+      this.dataProvider.kotViewVisible = true;
+      this.dataProvider.manageKot = false;
+      this.dataProvider.allProducts = false;
       console.log("this.dataProvider.currentBill",this.dataProvider.currentBill);
       this.generateLabels();
       if (this.dataProvider.currentBill) {

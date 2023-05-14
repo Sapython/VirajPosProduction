@@ -325,4 +325,8 @@ main {
             }
         }
     }
+    section.flexList{
+        display: flex;
+        flex-direction: column;
+    }
 }

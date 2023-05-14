@@ -26,13 +26,13 @@
     [@zoomOutOnLeave]
   >
     <ng-container *ngIf="allKot.length > 0 && dataProvider.manageKot">
-      <ng-container *ngFor="let kot of allKot; let i = index">
+      <div *ngFor="let kot of allKot; let i = index" [ngClass]="{'cancelled':kot.stage == 'cancelled'}">
         <div
           class="kotEditOptions"
-          [ngStyle]="{ borderLeftColor: kotNoColors[i].color }"
+          [ngStyle]="{ borderLeftColor: kotNoColors[i].color}"
         >
           <span
-            >KOT: {{ kot.id }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            >KOT: {{ kot.id }} {{kot.stage}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <strong
               ><i class="ri-time-line"></i>&nbsp;&nbsp;{{
                 kot.totalTimeTaken
@@ -40,10 +40,10 @@
             ></span
           >
           <span *ngIf="!kot.editMode">
-            <viraj-button type="icon" (vclick)="printKot(kot)"
+            <viraj-button type="icon" [disabled]="kot.stage == 'cancelled'" (vclick)="printKot(kot)"
               ><i class="ri-printer-fill"></i
             ></viraj-button>
-            <viraj-button type="icon" (vclick)="deleteKot(kot)"
+            <viraj-button type="icon" [disabled]="kot.stage == 'cancelled'" (vclick)="deleteKot(kot)"
               ><i class="ri-delete-bin-fill"></i
             ></viraj-button>
             <viraj-button
@@ -76,7 +76,7 @@
           [price]="item.price"
           *ngFor="let item of kot.products"
         ></app-kot-item>
-      </ng-container>
+      </div>
     </ng-container>
     <ng-container
       *ngIf="
@@ -138,6 +138,7 @@
   >
     <div
       class="kotCard"
+      [ngClass]="{'cancelled':kot.stage == 'cancelled'}"
       *ngFor="let kot of this.dataProvider.currentBill?.kots; let i = index"
     >
       <div

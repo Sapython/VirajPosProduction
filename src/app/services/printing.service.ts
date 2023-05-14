@@ -15,6 +15,7 @@ declare var window: any;
 // @ts-ignore
 import * as EscPosEncoder from '../esc-pos-encoder.umd'
 import { ElectronService } from '../core/services';
+import { Kot } from '../biller/Kot';
 console.log(EscPosEncoder);
 // declare var EscPosEncoder: any;
 var debugMode = true;
@@ -363,21 +364,70 @@ export class PrintingService {
       this.dataprovider.currentMenu?.products.filter(
         (product: Product) => product.category
       ) || [];
+    let allProducts = []
+    let discountedProducts = []
+    let totalQuantity = 0
+    bill.kots.forEach((kot: Kot) => {
+      kot.products.forEach((product: Product) => {
+        // add product to allProducts if not already present or update quantity
+        if (product.lineDiscount){
+          console.log('product has discount',product);
+          discountedProducts.push(
+            {
+              id: product.id,
+              name: product.name,
+              instruction: product.instruction,
+              quantity: product.quantity,
+              price: (bill.optionalTax ? product.taxedPrice : product.price) - product.lineDiscount.totalAppliedDiscount,
+              amount:((bill.optionalTax ? product.taxedPrice : product.price) * product.quantity) - product.lineDiscount.totalAppliedDiscount,
+            }
+          )
+          totalQuantity += product.quantity
+        } else {
+          allProducts.push(
+            {
+              id: product.id,
+              name: product.name,
+              instruction: product.instruction,
+              quantity: product.quantity,
+              price: bill.optionalTax ? product.taxedPrice : product.price,
+              amount: (bill.optionalTax ? product.taxedPrice : product.price) * product.quantity,
+            }
+          )
+          totalQuantity += product.quantity
+        }
+      });
+    })
+    let mergedProducts = []
+    allProducts.forEach((product: any) => {
+      // add product to mergedProducts if not already present or update quantity
+      let foundProduct = mergedProducts.find((prod: any) => prod.id === product.id)
+      if (foundProduct){
+        foundProduct.quantity += product.quantity
+        foundProduct.amount += product.amount
+      } else {
+        mergedProducts.push(product)
+      }
+    })
+    console.log("discountedProducts",discountedProducts,mergedProducts);
+    mergedProducts = mergedProducts.concat(discountedProducts);
+    // bill.allProducts.map((product: Product) => {
+    //   return {
+    //     id: product.id,
+    //     name: product.name,
+    //     instruction: product.instruction,
+    //     quantity: product.quantity,
+    //     price: bill.optionalTax ? product.taxedPrice : product.price,
+    //     amount: (bill.optionalTax ? product.taxedPrice : product.price) * product.quantity,
+    //   };
+    // })
     let printerConfig = filteredProducts.map((product: any) => {
       return { product: product.id, printer: product.category.printer };
     });
+    console.log("mergedProducts",mergedProducts);
     let billdata = {
       id: bill.id,
-      products: bill.allProducts.map((product: Product) => {
-        return {
-          id: product.id,
-          name: product.name,
-          instruction: product.instruction,
-          quantity: product.quantity,
-          price: this.dataprovider.optionalTax ? product.taxedPrice : product.price,
-          amount: (this.dataprovider.optionalTax ? product.taxedPrice : product.price) * product.quantity,
-        };
-      }),
+      products: mergedProducts,
       date: new Date().toLocaleDateString(),
       time: new Date().toLocaleTimeString(),
       grandTotal: bill.billing.grandTotal,
@@ -438,33 +488,32 @@ export class PrintingService {
     let printerConfig = filteredProducts.map((product: any) => {
       return { product: product.id, printer: product.category.printer };
     });
-    let products: Product[] = [];
-    let totalQuantity = 0;
-    bill.kots.forEach((kot) => {
-      kot.products.forEach((product) => {
-        let index = products.findIndex((item) => item.id === product.id);
-        if (index !== -1) {
-          products[index].quantity += product.quantity;
-          totalQuantity += product.quantity;
-        } else {
-          products.push(product);
-          totalQuantity += product.quantity;
+    let allProducts = []
+    let totalQuantity = 0
+    bill.kots.forEach((kot: Kot) => {
+      kot.products.forEach((product: Product) => {
+        // add product to allProducts if not already present or update quantity
+        let foundProduct = allProducts.find((prod: Product) => prod.id === product.id)
+        if(foundProduct){
+          foundProduct.quantity += product.quantity
+        }else{
+          allProducts.push(product)
         }
       });
-    });
+    })
+    console.log("allProducts",allProducts);
     let billdata = {
       id: bill.id,
-      products: products.map((product: Product) => {
+      products: allProducts.map((product: Product) => {
         return {
           id: product.id,
           name: product.name,
           instruction: product.instruction,
           quantity: product.quantity,
-          price: product.price,
-          total: product.price * product.quantity,
+          price: bill.optionalTax ? product.taxedPrice : product.price,
+          amount: (bill.optionalTax ? product.taxedPrice : product.price) * product.quantity,
         };
       }),
-      billNoSuffix:this.dataprovider.billNoSuffix,
       date: new Date().toLocaleDateString(),
       time: new Date().toLocaleTimeString(),
       grandTotal: bill.billing.grandTotal,
@@ -487,18 +536,19 @@ export class PrintingService {
           type: discount.type,
         };
       }),
+      billNoSuffix:this.dataprovider.billNoSuffix,
       subtotal: bill.billing.subTotal,
       totalQuantity: totalQuantity,
       cashierName: this.dataprovider.currentUser?.username,
       mode: 'bill',
-      note:this.dataprovider.customBillNote,
-      table: bill.table,
+      table: bill.table.name,
       billNo: bill.billNo,
       orderNo: bill.orderNo,
       notes: [],
+      note:this.dataprovider.customBillNote,
+      customerDetail: bill.customerInfo,
       businessDetails: businessDetails,
     };
-    console.log('printing data', billdata, printerConfig);
     console.log('printing data', billdata, printerConfig);
     let data = this.getBillCode(billdata);
     if(!this.dataprovider.currentBusiness?.billerPrinter){
@@ -506,11 +556,9 @@ export class PrintingService {
       return
     }
     return this.printing.printData(data,this.dataprovider.currentBusiness?.billerPrinter);
-    // return window.pywebview.api.print('reprintBill', billdata, printerConfig);
   }
 
   reprintKot(kot: KotConstructor, table: string, billNo: string) {
-    if (!debugMode && !this.printing) return;
     let businessDetails = {
       name: this.dataprovider.currentBusiness?.hotelName,
       address: this.dataprovider.currentBusiness?.address,
@@ -525,10 +573,9 @@ export class PrintingService {
     let printerConfig = filteredProducts.map((product: any) => {
       return { product: product.id, printer: product.category.printer };
     });
-    let products: Product[] = [];
     let kotdata = {
       id: kot.id,
-      products: products.map((product: Product) => {
+      products: kot.products.map((product: Product) => {
         return {
           id: product.id,
           name: product.name,
@@ -566,7 +613,7 @@ export class PrintingService {
         }
       }
     });
-    console.log('printing data', kotdata, printerConfig);
+    console.log('printing data', kotdata, printerConfig,groupedProducts);
     Object.keys(groupedProducts).forEach((printer: any) => {
       console.log('printing', printer, groupedProducts[printer]);
       kotdata.products = groupedProducts[printer];
@@ -850,7 +897,7 @@ class customEncoder extends EscPosEncoder {
       if (product.edited){
         // strike through products
         data.push([
-          (encoder: any) => encoder.strike(product.name),
+          (encoder: any) => "X--"+product.name+"--X",
           product.instruction ? product.instruction : '',
           product.quantity.toString(),
         ]);

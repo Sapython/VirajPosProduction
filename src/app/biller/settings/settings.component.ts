@@ -1,4 +1,4 @@
-import { Dialog } from '@angular/cdk/dialog';
+import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Timestamp } from '@angular/fire/firestore';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
@@ -58,7 +58,7 @@ export class SettingsComponent implements OnInit {
     return this.modes.filter((mode)=>!mode).length >= 2
   }
 
-  constructor(private indexedDb:NgxIndexedDBService,private alertify:AlertsAndNotificationsService,public dataProvider:DataProvider,private databaseService:DatabaseService,private dialog:Dialog, private electronService:ElectronService) {
+  constructor(private indexedDb:NgxIndexedDBService,private alertify:AlertsAndNotificationsService,public dataProvider:DataProvider,private databaseService:DatabaseService,private dialog:Dialog, private electronService:ElectronService,public dialogRef:DialogRef) {
     this.viewSettings.patchValue(localStorage.getItem('viewSettings')?JSON.parse(localStorage.getItem('viewSettings')!):{})
     this.viewSettings.valueChanges.pipe(debounceTime(1000)).subscribe((data)=>{
       localStorage.setItem('viewSettings',JSON.stringify(data))

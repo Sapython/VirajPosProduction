@@ -848,7 +848,7 @@ export class DatabaseService {
   }
 
   addSales(sale:number,type:string){
-    alert("Adding sales")
+    // alert("Adding sales")
     return updateDoc(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{
       [type]:increment(sale)
     })

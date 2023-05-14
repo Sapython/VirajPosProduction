@@ -163,6 +163,8 @@ export class ReportsComponent implements OnInit {
       } else {
         this.reportMode = false
       }
+    } else {
+      alert("Please select a valid date range")
     }
   }
 

@@ -2,6 +2,13 @@ section{
     overflow-y: auto;
     background: white;
     border-radius: var(--Viraj-border-radius) 0px 0px var(--Viraj-border-radius);
+    .cancelled{
+        text-decoration: line-through;
+        filter: saturate(0);
+        *{
+            text-decoration: line-through;
+        }
+    }
     .kotEditOptions{
         display: flex;
         justify-content: space-between;
@@ -32,6 +39,13 @@ section{
             background: whitesmoke;
             border-radius: 7px;
             box-shadow: 0px 1px 20px rgba(0,0,0,0.1);
+            &.cancelled{
+                text-decoration: line-through;
+                filter: saturate(0);
+                *{
+                    text-decoration: line-through;
+                }
+            }
             .heading{
                 display: flex;
                 padding: 10px;
@@ -143,6 +157,9 @@ section{
                 border-radius: 20px;
                 background: #ccc;
                 box-shadow: 0px 0px 20px 0px #00000009;
+            }
+            &:last-child{
+                margin-right: 40px;
             }
         }
     }

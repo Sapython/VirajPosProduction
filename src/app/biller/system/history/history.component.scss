@@ -2,7 +2,6 @@ section{
     background: white;
     padding: 30px;
     border-radius: 5px;
-    min-height: 70vh;
     width: 80vw;
     .heading{
       display: flex;
@@ -12,20 +11,30 @@ section{
         display: flex;
         flex-wrap: wrap;
         gap:20px;
+        height:60vh;
+        padding: 10px;
+        overflow-y: scroll;
         .bill{
             padding: 14px;
             border-radius: 7px;
             box-shadow: 2px 4px 20px rgba(0,0,0,0.2);
-            table.main{
-                color:green;
-            }
             table{
+                width: 100%;
+                border-collapse: collapse;
                 td:nth-child(1){
                     text-align: start;
                 }
                 td:nth-child(2){
                     text-align: end;
                 }
+                tr.border{
+                    border-bottom: 2px solid #ccc;
+                }
+            }
+            table.main{
+                color:green;
+                width: 100%;
+                border-collapse: collapse;
             }
         }
     }

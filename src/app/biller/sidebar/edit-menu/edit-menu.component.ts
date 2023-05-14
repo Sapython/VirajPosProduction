@@ -338,6 +338,7 @@ export class ModeConfig {
   };
 
   deleteViewCategory(){
+    this.dataProvider.loading = true;
     this.databaseService.deleteViewCategory(this.selectedMenuId,this.selectedCategory.id).then((data)=>{
       this.alertify.presentToast("Category Deleted Successfully");
       this.viewCategories = this.viewCategories.filter((cat)=>cat.id != this.selectedCategory.id);
@@ -346,6 +347,8 @@ export class ModeConfig {
       this.currentType = "all";
     }).catch((err)=>{
       this.alertify.presentToast("Category Delete Failed");
+    }).finally(()=>{
+      this.dataProvider.loading = false;
     })
   }
 

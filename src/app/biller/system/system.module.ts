@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SystemComponent } from './system.component';
-import { MatIconModule } from '@angular/material/icon';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { DialogModule } from '@angular/cdk/dialog';
 import { ChatComponent } from './chat/chat.component';
@@ -26,14 +26,13 @@ import {MatExpansionModule} from '@angular/material/expansion';
     ReactiveFormsModule,
     CommonModule,
     MatIconModule,
-    MatButtonModule,
     DialogModule,
     BaseComponentsModule,
     MatFormFieldModule,
     MatDatepickerModule,
     MatProgressSpinnerModule,
     MatInputModule,
-    MatExpansionModule
+    MatExpansionModule,
   ],
   exports:[
     SystemComponent

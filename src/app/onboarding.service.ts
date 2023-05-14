@@ -192,7 +192,6 @@ export class OnboardingService {
       this.dataProvider.onlineSales = res['onlineSales'];
       this.dataProvider.nonChargeableSales = res['nonChargeableSales'];
       this.dataProvider.settingsChanged.next(res)
-
     })
   }
 

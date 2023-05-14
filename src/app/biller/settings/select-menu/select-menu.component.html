@@ -1,0 +1,25 @@
+<section>
+    <h1>Select a menu for 
+        <ng-container *ngIf="this.data.type == 'dineIn'">
+            Dine In
+        </ng-container>
+        <ng-container *ngIf="this.data.type == 'takeaway'">
+            Takeaway
+        </ng-container>
+        <ng-container *ngIf="this.data.type == 'online'">
+            Online
+        </ng-container>
+    </h1>
+    <mat-form-field>
+        <mat-label>Select Menu</mat-label>
+        <mat-select placeholder="Select Menu" [(ngModel)]="this.data.value" name="menu">
+            <mat-option *ngFor="let menu of this.data.menus" [value]="menu.id">
+                {{menu.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    <div class="actions">
+        <button mat-raised-button color="primary" (click)="this.dialogRef.close(this.data.value)">Save</button>
+        <button mat-raised-button color="warn" (click)="this.dialogRef.close()">Cancel</button>
+    </div>
+</section>

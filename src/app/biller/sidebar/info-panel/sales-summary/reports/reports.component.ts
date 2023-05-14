@@ -69,7 +69,7 @@ export class ReportsComponent implements OnInit {
           console.log("bills",localBills);
           let kotReport = localBills.map((bill)=>{
             return bill.kots.map((kot)=>{
-              return {...kot,billNo:bill.billNo!,grandTotal: kot.products.reduce((a, b) => a + (b['price'] || 0), 0)}
+              return {...kot,billNo:bill.billNo!,tokenNo:bill.orderNo,grandTotal: kot.products.reduce((a, b) => a + (b['price'] || 0), 0)}
             })
           })
           this.kots = kotReport.flat()
@@ -171,7 +171,7 @@ export class ReportsComponent implements OnInit {
     // Select rows from table_id
     var rows = document.querySelectorAll('table#report-table tr');
     // Construct csv
-    let baseData = ['Date:',(new Date()).toLocaleString(),'User Id:',this.dataProvider.currentUser.username,'User Name:',this.dataProvider.currentUser.username]
+    let baseData = ['Date:',(new Date()).toLocaleString(),'User Id:',this.dataProvider.currentUser.username,'User Name:',this.dataProvider.currentBusiness.email]
     var csv = [baseData.join(separator)];
     for (var i = 0; i < rows.length; i++) {
         var row = [], cols:any = rows[i].querySelectorAll('td, th');
@@ -249,5 +249,5 @@ export class ReportsComponent implements OnInit {
 
   }
 }
-interface kotReport extends KotConstructor {billNo:string,grandTotal:number}
+interface kotReport extends KotConstructor {billNo:string,grandTotal:number,tokenNo:string}
 interface productReport extends Product {bills:string,kots:string,quantity:number,amount:number}

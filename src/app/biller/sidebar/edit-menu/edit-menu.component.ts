@@ -1,5 +1,5 @@
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Subject, debounceTime, firstValueFrom } from 'rxjs';
 import { DataProvider } from '../../../provider/data-provider.service';
 import { Category } from '../../../structures/general.structure';
@@ -90,6 +90,7 @@ export class EditMenuComponent implements OnInit {
     this.printers = await this.electronService.getPrinters() || []
     // this.printers.push("No Printer")
   }
+
 
   // addNewCategory(){
   //   const dialog = this.dialog.open(AddNewCategoryComponent, {data:{products:this.allProducts.products}})
@@ -182,7 +183,6 @@ export class ModeConfig {
     })
   }
 
-
   get isActive() {
     if (this.type == 'dineIn'){
       return this.dataProvider.activeModes[0]
@@ -223,6 +223,13 @@ export class ModeConfig {
           averagePrice: products.reduce((acc,curr)=>acc+curr.price,0)/products.length
         } as Category
       });
+      this.recommendedCategories.sort((a,b)=>{
+        if (a.order && b.order){
+          return a.order - b.order;
+        } else {
+          return 0;
+        }
+      })
     }
   }
 
@@ -244,15 +251,12 @@ export class ModeConfig {
       // sort by order
       this.viewCategories.sort((a,b)=>{
         if (a.order && b.order){
-          return b.order - a.order;
-        } else if (a.order){
-          return 1;
-        } else if (b.order){
-          return -1;
+          return a.order - b.order;
         } else {
           return 0;
         }
       })
+      console.log("this.viewCategories",this.viewCategories);
       // sort all products by productOrder
       this.viewCategories.forEach((cat)=>{
         // sort by cat.productOrders
@@ -290,10 +294,18 @@ export class ModeConfig {
           averagePrice: products.reduce((acc,curr)=>acc+curr.price,0)/products.length,
         } as Category
       })
+      this.mainCategories.sort((a,b)=>{
+        if (a.order && b.order){
+          return a.order - b.order;
+        } else {
+          return 0;
+        }
+      })
     }
   }
 
   async getAllData(){
+    this.dataProvider.loading = true;
     await this.getProducts();
     await this.getMainCategories();
     await this.getRecommendedCategories();
@@ -301,6 +313,7 @@ export class ModeConfig {
     this.dataProvider.menuLoadSubject.next({
       type:this.type,
     });
+    this.dataProvider.loading = false;
   }
 
   updateMenu(){
@@ -324,6 +337,18 @@ export class ModeConfig {
     this.fuseInstance.setCollection(this.selectedCategory.products);
   };
 
+  deleteViewCategory(){
+    this.databaseService.deleteViewCategory(this.selectedMenuId,this.selectedCategory.id).then((data)=>{
+      this.alertify.presentToast("Category Deleted Successfully");
+      this.viewCategories = this.viewCategories.filter((cat)=>cat.id != this.selectedCategory.id);
+      this.getViewCategories();
+      this.selectedCategory = this.allProductsCategory;
+      this.currentType = "all";
+    }).catch((err)=>{
+      this.alertify.presentToast("Category Delete Failed");
+    })
+  }
+
   addViewCategory(){
     const dialog = this.dialog.open(AddNewCategoryComponent, {data:{products:this.products}})
     dialog.closed.subscribe((data:any)=>{
@@ -337,7 +362,23 @@ export class ModeConfig {
   reorderViewCategory(event: any) {
     moveItemInArray(this.viewCategories, event.previousIndex, event.currentIndex);
     this.viewCategories.forEach((cat,index)=>{
-      cat.order = index;
+      cat.order = index+1;
+      cat.updated = true;
+    })
+  }
+
+  reorderRecommendedCategory(event: any) {
+    moveItemInArray(this.recommendedCategories, event.previousIndex, event.currentIndex);
+    this.recommendedCategories.forEach((cat,index)=>{
+      cat.order = index+1;
+      cat.updated = true;
+    })
+  }
+
+  reorderMainCategory(event: any) {
+    moveItemInArray(this.mainCategories, event.previousIndex, event.currentIndex);
+    this.mainCategories.forEach((cat,index)=>{
+      cat.order = index+1;
       cat.updated = true;
     })
   }
@@ -543,6 +584,28 @@ export class ModeConfig {
     }
   }
 
+  async deleteRecipe(product:Product){
+    this.selectedCategory.products = this.selectedCategory.products.filter((p:Product)=> p.id != product.id)
+    this.selectedCategory.productOrders = this.selectedCategory.productOrders.filter((p)=> p != product.id)
+    this.selectedCategory.updated = true;
+  }
+
+  addUploadedRecipe(){
+    // edit category using AddNewCategoryComponent
+    const dialog = this.dialog.open(AddNewCategoryComponent, {data:{mode:'edit',products:this.selectedCategory.products,category:this.selectedCategory}})
+    dialog.closed.subscribe((data:any)=>{
+      console.log("data",data);
+      if(data){
+        this.selectedCategory.products = data.products;
+        this.selectedCategory.productOrders = data.productOrders;
+        this.selectedCategory.name = data.name;
+        this.selectedCategory.updated = true;
+        this.selectedCategory.enabled = true;
+        console.log("this.selectedCategory",this.selectedCategory);
+      }
+    })
+  }
+
   reorderProduct(event: any) {
     moveItemInArray(this.selectedCategory.products, event.previousIndex, event.currentIndex);
     this.selectedCategory.productOrders = this.selectedCategory.products.map((product:Product)=>{
@@ -586,6 +649,11 @@ export class ModeConfig {
       let updateRequestrecommendedCategories = updatablerecommendedCategories.map((category:Category) => this.databaseService.updateRecommendedCategoryMenu({...category,products:category.products.map((p)=>p.id),updated:false},this.selectedMenu!));
       let updateRequestviewCategories = updatableviewCategories.map((category:Category) => this.databaseService.updateViewCategoryMenu({...category,products:category.products.map((p)=>p.id),updated:false},this.selectedMenu!));
       let updateRequestmainCategories = updatablemainCategories.map((category:Category) => this.databaseService.updateMainCategoryMenu({...category,products:category.products.map((p)=>p.id),updated:false},this.selectedMenu!));
+      // stats
+      console.log("total products update",updatableProducts.length);
+      console.log("total recommended category update",updatablerecommendedCategories.length);
+      console.log("total view category update",updatableviewCategories.length);
+      console.log("total main category update",updatablemainCategories.length);
       return Promise.all([updateRequestProducts,updateRequestmainCategories,updateRequestrecommendedCategories,updateRequestviewCategories].flat())
     } else {
       return Promise.reject("Please Select Menu");
@@ -595,6 +663,7 @@ export class ModeConfig {
   getExcelFormat(){
 
   };
+
   openProductCosting(product:Product){
     this.dialog.open(ProductCostingComponent,{data:product})
   };

@@ -23,23 +23,28 @@
             <div class="categories">
               <span>Product List</span>
               <app-category-card
-                [full]="true"
-                (click)="
-                  mode.selectCategory(mode.allProductsCategory);
-                  mode.currentType = 'all'
-                "
-                [category]="mode.allProductsCategory"
-              ></app-category-card>
+              [full]="true"
+              (click)="
+                mode.selectCategory(mode.allProductsCategory);
+                mode.currentType = 'all'
+              "
+              [category]="mode.allProductsCategory"
+            ></app-category-card>
               <span>Recommended</span>
-              <app-category-card
-                [full]="true"
-                *ngFor="let category of mode.recommendedCategories"
-                (click)="
-                  mode.selectCategory(category);
-                  mode.currentType = 'recommended'
-                "
-                [category]="category"
-              ></app-category-card>
+              <div cdkDropList
+                class="example-list"
+                (cdkDropListDropped)="mode.reorderRecommendedCategory($event)">
+                  <app-category-card
+                  cdkDrag
+                  [full]="true"
+                  *ngFor="let category of mode.recommendedCategories"
+                  (click)="
+                    mode.selectCategory(category);
+                    mode.currentType = 'recommended'
+                  "
+                  [category]="category"
+                ></app-category-card>
+              </div>
               <span
                 >View Categories<viraj-button
                   type="icon"
@@ -52,24 +57,30 @@
                 (cdkDropListDropped)="mode.reorderViewCategory($event)"
               >
                 <app-category-card
+                    [full]="true"
+                    cdkDrag
+                    *ngFor="let category of mode.viewCategories"
+                    (click)="
+                      mode.selectCategory(category); mode.currentType = 'view'
+                    "
+                    [category]="category"
+                  ></app-category-card>
+              </div>
+              <span>Main Categories</span>
+              <div cdkDropList
+                class="example-list"
+                (cdkDropListDropped)="mode.reorderMainCategory($event)"
+                >
+                <app-category-card
                   [full]="true"
                   cdkDrag
-                  *ngFor="let category of mode.viewCategories"
+                  *ngFor="let category of mode.mainCategories"
                   (click)="
-                    mode.selectCategory(category); mode.currentType = 'view'
+                    mode.selectCategory(category); mode.currentType = 'root'
                   "
                   [category]="category"
                 ></app-category-card>
               </div>
-              <span>Main Categories</span>
-              <app-category-card
-                [full]="true"
-                *ngFor="let category of mode.mainCategories"
-                (click)="
-                  mode.selectCategory(category); mode.currentType = 'root'
-                "
-                [category]="category"
-              ></app-category-card>
             </div>
           </div>
           <div class="main" *ngIf="mode.selectedCategory">
@@ -112,6 +123,24 @@
                   color="primary"
                 >
                   Add Recipe
+                </button>
+                <button
+                  *ngIf="['view'].includes(mode.currentType)"
+                  mat-stroked-button
+                  mat-button
+                  (click)="mode.addUploadedRecipe()"
+                  color="primary"
+                >
+                  Edit
+                </button>
+                <button
+                  *ngIf="['view'].includes(mode.currentType)"
+                  mat-stroked-button
+                  mat-button
+                  (click)="mode.deleteViewCategory()"
+                  color="primary"
+                >
+                  Delete
                 </button>
                 <mat-menu #menu="matMenu">
                   <button
@@ -322,6 +351,11 @@
                       (click)="mode.editRecipe(product, mode.selectedMenuId)"
                     >
                       <i class="ri-pencil-fill"></i>
+                    </viraj-button>
+                    <viraj-button
+                      (click)="mode.deleteRecipe(product)"
+                    >
+                      <i class="ri-delete-bin-6-fill"></i>
                     </viraj-button>
                     <!-- <viraj-button
                       *ngIf="mode.currentType == 'all'"

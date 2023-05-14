@@ -94,6 +94,15 @@ export class AddMenuComponent {
   }
 
   addNewMenu() {
+    // validate 
+    if (this.addNewMenuForm.invalid){
+      alert("Invalid form")
+      return
+    }
+    if (this.rootCategories.length == 0){
+      alert("Add some root categories ")
+      return
+    }
     this.dataProvider.loading = true;
     // filter rootCategories prdoucts to only include selected products
     this.rootCategories.forEach((category)=>{

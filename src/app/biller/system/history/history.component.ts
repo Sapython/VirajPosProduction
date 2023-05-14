@@ -6,10 +6,15 @@ import { Subject, debounceTime } from 'rxjs';
 import Fuse from 'fuse.js';
 import { PrintingService } from '../../../services/printing.service';
 import { DatabaseService } from '../../../services/database.service';
+import { slideInDownOnEnterAnimation, slideOutUpOnLeaveAnimation } from 'angular-animations';
 @Component({
   selector: 'app-history',
   templateUrl: './history.component.html',
-  styleUrls: ['./history.component.scss']
+  styleUrls: ['./history.component.scss'],
+  animations:[
+    slideInDownOnEnterAnimation(),
+    slideOutUpOnLeaveAnimation()
+  ]
 })
 export class HistoryComponent {
   selectedDate:Date = new Date();

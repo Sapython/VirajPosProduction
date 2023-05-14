@@ -10,6 +10,8 @@ import { DatabaseService } from '../../services/database.service';
 import { APP_CONFIG } from '../../../../src/environments/environment';
 import { AddDiscountComponent } from './add-discount/add-discount.component';
 import { ElectronService } from '../../core/services';
+import { SelectMenuComponent } from './select-menu/select-menu.component';
+import { ModeConfig } from '../sidebar/edit-menu/edit-menu.component';
 declare var window:any;
 
 @Component({
@@ -149,6 +151,66 @@ export class SettingsComponent implements OnInit {
   }
 
   updateMode(){
+    if (this.modes[0]){
+      if (!this.dataProvider.currentSettings.dineInMenu){
+        const dialog = this.dialog.open(SelectMenuComponent,{data:{type:'dineIn',menus:this.dataProvider.allMenus}});
+        dialog.closed.subscribe(async (data:any)=>{
+          console.log("data",data);
+          if (data){
+            let currentMenu = this.dataProvider.allMenus.find((menu)=>menu.id == data);
+            let inst = new ModeConfig('Dine In','dineIn',currentMenu,data,this.dataProvider,this.databaseService,this.alertify,this.dialog);
+            this.dataProvider.menus.push(inst);
+            this.modes[0] = true;
+            this.dataProvider.dineInMenu = currentMenu;
+            this.dataProvider.currentSettings.dineInMenu = currentMenu;
+            await this.updateSettings({dineInMenu:currentMenu})
+            this.alertify.presentToast("Dine In menu set successfully")
+          } else {
+            this.modes[0] = false;
+          }
+        })
+      }
+    }
+    if (this.modes[1]){
+      if (!this.dataProvider.currentSettings.takeawayMenu){
+        const dialog = this.dialog.open(SelectMenuComponent,{data:{type:'takeaway',menus:this.dataProvider.allMenus}});
+        dialog.closed.subscribe(async (data:any)=>{
+          console.log("data",data);
+          if (data){
+            let currentMenu = this.dataProvider.allMenus.find((menu)=>menu.id == data);
+            let inst = new ModeConfig('Takeaway','takeaway',currentMenu,data,this.dataProvider,this.databaseService,this.alertify,this.dialog);
+            this.dataProvider.menus.push(inst);
+            this.modes[0] = true;
+            this.dataProvider.takeawayMenu = currentMenu;
+            this.dataProvider.currentSettings.takeawayMenu = currentMenu;
+            await this.updateSettings({takeawayMenu:currentMenu})
+            this.alertify.presentToast("Takeaway menu set successfully")
+          } else {
+            this.modes[0] = false;
+          }
+        })
+      }
+    }
+    if (this.modes[2]){
+      if (!this.dataProvider.currentSettings.onlineMenu){
+        const dialog = this.dialog.open(SelectMenuComponent,{data:{type:'online',menus:this.dataProvider.allMenus}});
+        dialog.closed.subscribe(async (data:any)=>{
+          console.log("data",data);
+          if (data){
+            let currentMenu = this.dataProvider.allMenus.find((menu)=>menu.id == data);
+            let inst = new ModeConfig('Online','online',currentMenu,data,this.dataProvider,this.databaseService,this.alertify,this.dialog);
+            this.dataProvider.menus.push(inst);
+            this.modes[0] = true;
+            this.dataProvider.onlineMenu = currentMenu;
+            this.dataProvider.currentSettings.onlineMenu = currentMenu;
+            await this.updateSettings({onlineMenu:currentMenu})
+            this.alertify.presentToast("Online menu set successfully")
+          } else {
+            this.modes[0] = false;
+          }
+        })
+      }
+    }
     this.databaseService.updateMode(this.modes)
   }
 

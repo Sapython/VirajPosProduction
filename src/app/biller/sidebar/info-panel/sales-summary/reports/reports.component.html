@@ -121,6 +121,7 @@
       <thead>
         <tr>
           <th>Bill No</th>
+          <th>Token No</th>
           <th>Bill Amount</th>
           <th>Bill Kots</th>
           <th>Date-Time</th>
@@ -129,7 +130,10 @@
       <tbody>
         <tr *ngFor="let bill of bills">
           <td>
-            {{ bill.billNo }}
+            {{ bill.billNo || 'N/A' }}
+          </td>
+          <td>
+            {{ bill.orderNo }}
           </td>
           <td>
             {{ bill.billing.grandTotal }}
@@ -150,6 +154,7 @@
           <th>Kot Amount</th>
           <th>Products</th>
           <th>Bill No</th>
+          <th>Token No</th>
           <th>Date-Time</th>
         </tr>
       </thead>
@@ -166,6 +171,9 @@
           </td>
           <td>
             {{ kot.billNo }}
+          </td>
+          <td>
+            {{ kot.tokenNo }}
           </td>
           <td>
             {{ kot.createdDate.toDate() | date : "short" }}
@@ -207,6 +215,7 @@
       <thead>
         <tr>
           <th>Bill No</th>
+          <th>Token No</th>
           <th>Bill Amount</th>
           <th>Bill Kots</th>
           <th>Date-Time</th>
@@ -215,7 +224,10 @@
       <tbody>
         <tr *ngFor="let bill of discountedBills">
           <td>
-            {{ bill.billNo }}
+            {{ bill.billNo || 'N/A' }}
+          </td>
+          <td>
+            {{ bill.orderNo }}
           </td>
           <td>
             {{ bill.billing.grandTotal }}
@@ -233,6 +245,7 @@
       <thead>
         <tr>
           <th>Bill No</th>
+          <th>Token No</th>
           <th>Bill Amount</th>
           <th>Bill Kots</th>
           <th>Date-Time</th>
@@ -241,7 +254,10 @@
       <tbody>
         <tr *ngFor="let bill of ncBills">
           <td>
-            {{ bill.billNo }}
+            {{ bill.billNo || 'N/A' }}
+          </td>
+          <td>
+            {{ bill.orderNo }}
           </td>
           <td>
             {{ bill.billing.grandTotal }}
@@ -259,6 +275,7 @@
       <thead>
         <tr>
           <th>Bill No</th>
+          <th>Token No</th>
           <th>Bill Amount</th>
           <th>Bill Kots</th>
           <th>Date-Time</th>
@@ -267,7 +284,10 @@
       <tbody>
         <tr *ngFor="let bill of takeawayBills">
           <td>
-            {{ bill.billNo }}
+            {{ bill.billNo || 'N/A' }}
+          </td>
+          <td>
+            {{ bill.orderNo }}
           </td>
           <td>
             {{ bill.billing.grandTotal }}
@@ -285,6 +305,7 @@
       <thead>
         <tr>
           <th>Bill No</th>
+          <th>Token No</th>
           <th>Bill Amount</th>
           <th>Bill Kots</th>
           <th>Date-Time</th>
@@ -293,7 +314,10 @@
       <tbody>
         <tr *ngFor="let bill of onlineBills">
           <td>
-            {{ bill.billNo }}
+            {{ bill.billNo || 'N/A' }}
+          </td>
+          <td>
+            {{ bill.orderNo }}
           </td>
           <td>
             {{ bill.billing.grandTotal }}
@@ -307,7 +331,6 @@
         </tr>
       </tbody>
     </table>
-
     <mat-spinner *ngIf="loading" mode="indeterminate"> </mat-spinner>
   </div>
   <div class="reports" *ngIf="reportMode == false">
@@ -421,7 +444,7 @@
                     <th>Time</th>
                 </tr>
                 <tr *ngFor="let bill of bills">
-                    <td>{{bill.billNo}}</td>
+                    <td>{{bill.billNo || 'N/A'}}</td>
                     <td>{{joinArray(bill.kots)}}</td>
                     <td>{{bill.table.name}}</td>
                     <td>{{bill.billing.subTotal}}</td>
@@ -444,7 +467,7 @@
                     <th>Time</th>
                 </tr>
                 <tr *ngFor="let bill of ncBills">
-                    <td>{{bill.billNo}}</td>
+                    <td>{{bill.billNo || 'N/A'}}</td>
                     <td>{{joinArray(bill.kots)}}</td>
                     <td>{{bill.table.name}}</td>
                     <td>{{bill.billing.subTotal}}</td>

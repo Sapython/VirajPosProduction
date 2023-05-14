@@ -33,6 +33,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { AddDiscountComponent } from './settings/add-discount/add-discount.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ReactivateKotComponent } from './reactivate-kot/reactivate-kot.component';
+import { SelectMenuComponent } from './settings/select-menu/select-menu.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { ReactivateKotComponent } from './reactivate-kot/reactivate-kot.componen
     SettingsComponent,
     CustomerPanelComponent,
     AddDiscountComponent,
-    ReactivateKotComponent
+    ReactivateKotComponent,
+    SelectMenuComponent
   ],
   imports: [
     CommonModule,

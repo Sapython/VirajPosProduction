@@ -30,11 +30,11 @@ export class AlertsAndNotificationsService {
   }
 
   constructor(private snackbar: MatSnackBar) {
-    this.toastAudio.src = '/assets/audio/tones/toast.mp3';
-    this.toastAudio.volume = 0.4;
-    this.toastAudio.load();
-    this.toastErrorAudio.src = '/assets/audio/tones/error.mp3';
-    this.toastErrorAudio.volume = 0.4;
-    this.toastErrorAudio.load();
+    // this.toastAudio.src = '/assets/audio/tones/toast.mp3';
+    // this.toastAudio.volume = 0.4;
+    // this.toastAudio.load();
+    // this.toastErrorAudio.src = '/assets/audio/tones/error.mp3';
+    // this.toastErrorAudio.volume = 0.4;
+    // this.toastErrorAudio.load();
   }
 }

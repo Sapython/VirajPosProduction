@@ -3,6 +3,7 @@ import {
   addDoc,
   arrayUnion,
   collectionData,
+  deleteDoc,
   doc,
   docData,
   DocumentReference,
@@ -824,7 +825,12 @@ export class DatabaseService {
       { merge: true }
     );
   }
-
+  deleteViewCategory(menuId:string,categoryId:string){
+    return deleteDoc(doc(
+      this.firestore,
+      'business/'+this.dataProvider.businessId+'/menus/' + menuId + '/viewCategories/' + categoryId
+    ))
+  }
   addBusiness(userBusiness:BusinessRecord,id:string){
     return setDoc(doc(this.firestore,'business',id),{...userBusiness,id});
   }

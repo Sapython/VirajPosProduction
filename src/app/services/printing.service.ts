@@ -751,8 +751,7 @@ export class PrintingService {
       .hr()
       .lineIf(billdata.note,'left','Note:')
       .terms(billdata.notes)
-      .reviewQr(billdata.id)
-      .end('');
+      .end();
     return result;
   }
 
@@ -782,7 +781,7 @@ export class PrintingService {
       .hr()
       .itemTable(kotData.products)
       .hr()
-      .end('');
+      .end();
     return result;
   }
 }
@@ -896,7 +895,7 @@ class customEncoder extends EscPosEncoder {
       .align('left')
       .newline();
   }
-  end(id: string) {
+  end() {
     return this.newline()
       .newline()
       .newline()

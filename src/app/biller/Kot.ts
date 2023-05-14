@@ -64,6 +64,11 @@ export class Kot {
         images: product.images,
         createdDate: product.createdDate,
         visible: product.visible,
+        lineDiscount: product.lineDiscount || null,
+        sales: product.sales || 0,
+        instruction: product.instruction || null,
+        order: product.order || null,
+        taxedPrice: product.taxedPrice || null,
       };
     });
   }

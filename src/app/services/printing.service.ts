@@ -411,16 +411,6 @@ export class PrintingService {
     })
     console.log("discountedProducts",discountedProducts,mergedProducts);
     mergedProducts = mergedProducts.concat(discountedProducts);
-    // bill.allProducts.map((product: Product) => {
-    //   return {
-    //     id: product.id,
-    //     name: product.name,
-    //     instruction: product.instruction,
-    //     quantity: product.quantity,
-    //     price: bill.optionalTax ? product.taxedPrice : product.price,
-    //     amount: (bill.optionalTax ? product.taxedPrice : product.price) * product.quantity,
-    //   };
-    // })
     let printerConfig = filteredProducts.map((product: any) => {
       return { product: product.id, printer: product.category.printer };
     });
@@ -452,7 +442,7 @@ export class PrintingService {
       }),
       billNoSuffix:this.dataprovider.billNoSuffix,
       subtotal: bill.billing.subTotal,
-      totalQuantity: bill.totalProducts(),
+      totalQuantity: totalQuantity,
       cashierName: this.dataprovider.currentUser?.username,
       mode: 'bill',
       table: bill.table.name,
@@ -485,35 +475,60 @@ export class PrintingService {
       this.dataprovider.currentMenu?.products.filter(
         (product: Product) => product.category
       ) || [];
-    let printerConfig = filteredProducts.map((product: any) => {
-      return { product: product.id, printer: product.category.printer };
-    });
     let allProducts = []
+    let discountedProducts = []
     let totalQuantity = 0
     bill.kots.forEach((kot: Kot) => {
       kot.products.forEach((product: Product) => {
         // add product to allProducts if not already present or update quantity
-        let foundProduct = allProducts.find((prod: Product) => prod.id === product.id)
-        if(foundProduct){
-          foundProduct.quantity += product.quantity
-        }else{
-          allProducts.push(product)
+        if (product.lineDiscount){
+          console.log('product has discount',product);
+          discountedProducts.push(
+            {
+              id: product.id,
+              name: product.name,
+              instruction: product.instruction,
+              quantity: product.quantity,
+              price: (bill.optionalTax ? product.taxedPrice : product.price) - product.lineDiscount.totalAppliedDiscount,
+              amount:((bill.optionalTax ? product.taxedPrice : product.price) * product.quantity) - product.lineDiscount.totalAppliedDiscount,
+            }
+          )
+          totalQuantity += product.quantity
+        } else {
+          allProducts.push(
+            {
+              id: product.id,
+              name: product.name,
+              instruction: product.instruction,
+              quantity: product.quantity,
+              price: bill.optionalTax ? product.taxedPrice : product.price,
+              amount: (bill.optionalTax ? product.taxedPrice : product.price) * product.quantity,
+            }
+          )
+          totalQuantity += product.quantity
         }
       });
     })
-    console.log("allProducts",allProducts);
+    let mergedProducts = []
+    allProducts.forEach((product: any) => {
+      // add product to mergedProducts if not already present or update quantity
+      let foundProduct = mergedProducts.find((prod: any) => prod.id === product.id)
+      if (foundProduct){
+        foundProduct.quantity += product.quantity
+        foundProduct.amount += product.amount
+      } else {
+        mergedProducts.push(product)
+      }
+    })
+    console.log("discountedProducts",discountedProducts,mergedProducts);
+    mergedProducts = mergedProducts.concat(discountedProducts);
+    let printerConfig = filteredProducts.map((product: any) => {
+      return { product: product.id, printer: product.category.printer };
+    });
+    console.log("mergedProducts",mergedProducts);
     let billdata = {
       id: bill.id,
-      products: allProducts.map((product: Product) => {
-        return {
-          id: product.id,
-          name: product.name,
-          instruction: product.instruction,
-          quantity: product.quantity,
-          price: bill.optionalTax ? product.taxedPrice : product.price,
-          amount: (bill.optionalTax ? product.taxedPrice : product.price) * product.quantity,
-        };
-      }),
+      products: mergedProducts,
       date: new Date().toLocaleDateString(),
       time: new Date().toLocaleTimeString(),
       grandTotal: bill.billing.grandTotal,
@@ -897,7 +912,7 @@ class customEncoder extends EscPosEncoder {
       if (product.edited){
         // strike through products
         data.push([
-          (encoder: any) => "X--"+product.name+"--X",
+          "X--"+product.name+"--X",
           product.instruction ? product.instruction : '',
           product.quantity.toString(),
         ]);

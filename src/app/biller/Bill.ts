@@ -696,15 +696,15 @@ export class Bill implements BillConstructor {
         return;
       }
     }
-    // this.stage = 'finalized';
-    // let data = this.toObject();
+    this.stage = 'finalized';
+    let data = this.toObject();
     // this.databaseService.updateBill(data);
     this.printBill()
 
-    // this.updated.next();
-    // if(this.dataProvider.showTableOnBillAction){
-    //   this.dataProvider.openTableView.next(true);
-    // }
+    this.updated.next();
+    if(this.dataProvider.showTableOnBillAction){
+      this.dataProvider.openTableView.next(true);
+    }
   }
   setInstruction(){
     this.instruction = prompt('Enter instruction') || ''

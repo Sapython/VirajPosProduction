@@ -824,10 +824,10 @@ class customEncoder extends EscPosEncoder {
   productTable(products: any[]) {
     // products contains name, price, quantity, total
     let table = [
-      { width: 26, marginRight: 2, align: 'left' },
+      { width: 20, marginRight: 2, align: 'left' },
       { width: 5, marginRight: 2, align: 'center' },
       { width: 5, marginRight: 2, align: 'center' },
-      { width: 5, align: 'right' },
+      { width: 10, align: 'right' },
     ];
     let data = [];
     data.push([

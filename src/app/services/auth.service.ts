@@ -157,7 +157,7 @@ export class AuthService {
         if (token) {
           this.dataProvider.loading = true;
           try {
-            this.signInWithCustomToken(token);
+            await this.signInWithCustomToken(token);
           } catch (error) {
             this.alertify.presentToast('Error when signing in with token');
           } finally {

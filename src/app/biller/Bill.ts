@@ -390,6 +390,14 @@ export class Bill implements BillConstructor {
       allProducts.forEach((product) => {
         let oldPrice = JSON.parse(JSON.stringify(product.price));
         product.taxedPrice = product.price - (((Math.round((product.price + Number.EPSILON) * 100) / 100)/100) * totalApplicableTaxRate);
+        // set taxedPrice to all matching products
+        this.kots.forEach((kot) => {
+          kot.products.forEach((kotProduct) => {
+            if (kotProduct.id === product.id){
+              kotProduct.taxedPrice = product.taxedPrice;
+            }
+          })
+        });
         console.log('product price', product.taxedPrice,oldPrice);
       })
     }

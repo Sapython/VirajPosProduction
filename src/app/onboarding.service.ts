@@ -179,6 +179,7 @@ export class OnboardingService {
       this.dataProvider.tableTimeOutTime = res['tableTimeOutTime'] || 45;
       this.dataProvider.billNoSuffix = res['billNoSuffix'] || '';
       this.dataProvider.optionalTax = res['optionalTax'] || false;
+      this.dataProvider.printBillAfterSettle = res['printBillAfterSettle'] || false;
       this.dataProvider.takeawayToken = res['takeawayTokenNo'] || 0;
       this.dataProvider.onlineTokenNo = res['onlineTokenNo'] || 0;
       this.dataProvider.orderTokenNo = res['orderTokenNo'] || 0;

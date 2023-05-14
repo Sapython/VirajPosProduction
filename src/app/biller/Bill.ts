@@ -487,6 +487,7 @@ export class Bill implements BillConstructor {
         tax.amount = (tax.value / 100) * discountedSubtotal;
       })
     }
+    this.billing.taxes = taxes;
     let totalApplicableTax = taxes.reduce((acc, cur) => {
       return acc + cur.amount;
     }, 0);
@@ -539,7 +540,7 @@ export class Bill implements BillConstructor {
     // this.billing.taxes = taxes;
     // this.billing.totalTax = totalTax;
     // this.billing.grandTotal = partialSub + totalTax;
-    this.updated.next(noUpdate);
+    // this.updated.next(noUpdate);
   }
 
   removeProduct(product: Product, kotIndex: number) {
@@ -866,7 +867,9 @@ export class Bill implements BillConstructor {
       time: Timestamp.now(),
       user: this.user,
     };
-    this.printingService.printBill(this)
+    if (this.dataProvider.printBillAfterSettle){
+      this.printingService.printBill(this)
+    }
     if(this.nonChargeableDetail){
       this.databaseService.addSales(this.billing.grandTotal,'nonChargeableSales')
     } else if(this.mode=='dineIn'){

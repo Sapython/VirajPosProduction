@@ -202,6 +202,11 @@
           (change)="updateSettings({optionalTax:dataProvider.optionalTax})"
           >Optional Tax</mat-slide-toggle
         >
+      <mat-slide-toggle
+          [(ngModel)]="dataProvider.printBillAfterSettle"
+          (change)="updateSettings({printBillAfterSettle:dataProvider.printBillAfterSettle})"
+          >Bill After Settlement</mat-slide-toggle
+        >
     </ng-container>
     <ng-container *ngSwitchCase="'account'">
       <h3>Account Settings</h3>

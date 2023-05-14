@@ -86,6 +86,7 @@ export class DataProvider {
   public tableTimeOutTime: number = 45;
   public billNoSuffix: string = '';
   public optionalTax: boolean = false;
+  public printBillAfterSettle: boolean = false;
   public currentSettings:any;
   public customBillNote:string = '';
 

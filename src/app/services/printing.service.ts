@@ -693,7 +693,7 @@ export class PrintingService {
         ],
         [
           ['Date: ' + billdata.date, 'Time: ' + billdata.time],
-          ['Token: ' + billdata.orderNo, 'Bill: ' + (billdata.billNoSuffix ? billdata.billNoSuffix : '')+ billdata.billNo],
+          ['Token: ' + billdata.orderNo, 'Bill: ' + (billdata.billNoSuffix ? billdata.billNoSuffix : '')+ (billdata.billNo || '')],
           ['Cashier: ' + billdata.cashierName, 'Mode: ' + billdata.mode],
         ]
       )

@@ -1,5 +1,5 @@
 <section>
-  <mat-tab-group>
+  <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
     <ng-container *ngFor="let mode of this.dataProvider.menus">
       <mat-tab [label]="mode.name" *ngIf="mode.active">
         <div class="view">

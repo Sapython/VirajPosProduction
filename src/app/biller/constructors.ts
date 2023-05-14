@@ -73,6 +73,7 @@ export interface Product {
   id: string;
   name: string;
   price: number;
+  taxedPrice?:number;
   type: 'veg' | 'non-veg';
   tags: string[];
   images: string[];

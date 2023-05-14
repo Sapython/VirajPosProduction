@@ -181,8 +181,7 @@ export class MenuComponent implements OnInit,AfterViewInit {
   }
 
   openCategory(category:Category){
-    if (category.products?.length > 0){
-      this.dataProvider.menuProducts.next(category);
-    }
+    this.dataProvider.searchResults.next(false)
+    this.dataProvider.menuProducts.next(category);
   }
 }

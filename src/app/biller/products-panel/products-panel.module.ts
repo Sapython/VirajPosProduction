@@ -6,6 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import {MatCardModule} from '@angular/material/card';
 import { ProductCardComponent } from './product-card/product-card.component'; 
 import { MatRippleModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [ProductsPanelComponent, ProductCardComponent],
@@ -14,7 +16,9 @@ import { MatRippleModule } from '@angular/material/core';
     MatCardModule,
     MatButtonModule,
     MatIconModule,
-    MatRippleModule
+    MatRippleModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
   exports:[ProductsPanelComponent,ProductCardComponent]
 })

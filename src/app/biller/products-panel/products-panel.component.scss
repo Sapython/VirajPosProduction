@@ -15,3 +15,13 @@ section{
         justify-content: space-evenly;
     }
 }
+.noPadding{
+    padding: 0;
+    position: sticky;
+    top: 0px;
+    background: white;
+    z-index: 9;
+    mat-form-field{
+        width: 100%;
+    }
+}

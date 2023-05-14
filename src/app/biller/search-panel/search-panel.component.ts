@@ -72,15 +72,6 @@ export class SearchPanelComponent implements OnInit {
     })
     let results = this.searchInstance.search(value)
     console.log("results",results);
-    // {
-    //   name: data.dishName,
-    //   price: data.shopPrice,
-    //   image: data.images[0],
-    //   ingredients:[],
-    //   categories: data.categories,
-    //   id:doc.id,
-    //   quantity:1,
-    // }
     this.searchResults = results.map((result)=>{return result.item})
     if (value){
       this.dataProvider.searchResults.next(this.searchResults);

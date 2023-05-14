@@ -374,8 +374,8 @@ export class PrintingService {
           name: product.name,
           instruction: product.instruction,
           quantity: product.quantity,
-          price: product.price,
-          amount: product.price * product.quantity,
+          price: this.dataprovider.optionalTax ? product.taxedPrice : product.price,
+          amount: (this.dataprovider.optionalTax ? product.taxedPrice : product.price) * product.quantity,
         };
       }),
       date: new Date().toLocaleDateString(),
@@ -413,18 +413,6 @@ export class PrintingService {
       customerDetail: bill.customerInfo,
       businessDetails: businessDetails,
     };
-    if (this.dataprovider.optionalTax){
-      console.log("Optional tax is enabled",this.dataprovider.currentBusiness.cgst,this.dataprovider.currentBusiness.cgst,this.dataprovider.currentBusiness.sgst);
-      var totalTax = Number(this.dataprovider.currentBusiness.cgst) + Number(this.dataprovider.currentBusiness.sgst)
-      if (typeof(totalTax) == 'number'){
-        console.log("Total tax is",totalTax);
-        // reduce totalPrice of products by totalTax percentage
-        billdata.products.forEach((product: any) => {
-          console.log("Reducing tax from product",product.name,product.amount,((Number(product.amount)/100) * totalTax),product.amount - ((Number(product.amount)/100) * totalTax));
-          product.amount = Number(product.amount) - ((Number(product.amount)/100) * totalTax)
-        })
-      }
-    }
     console.log('printing data', billdata, printerConfig);
     let data = this.getBillCode(billdata);
     if(!this.dataprovider.currentBusiness?.billerPrinter){
@@ -914,6 +902,7 @@ class customEncoder extends EscPosEncoder {
   }
   discounts(discounts: any[]) {
     // discounts is of type {name: string, value: number, type: string, rate: number}[]
+    if (discounts.length == 0) return this;
     this.align('center').h2('Discounts', 'left');
     let discountsColumns = [['Discount', 'Rate', 'Amount']];
     discounts.forEach((discount, index) => {

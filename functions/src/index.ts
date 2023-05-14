@@ -1,4 +1,4 @@
-// import * as admin from "firebase-admin";
+import * as admin from "firebase-admin";
 import { initializeApp } from "firebase-admin/app";
 import * as functions from "firebase-functions";
 import { getAuth } from "firebase-admin/auth";
@@ -6,7 +6,9 @@ import { Timestamp, getFirestore } from "firebase-admin/firestore";
 import { subtle } from 'crypto'
 import { HttpsError } from "firebase-functions/v1/https";
 // let serviceAccount = require('fbms-shreeva-demo-firebase-adminsdk-8nk63-28663566a0.json')
-let app = initializeApp(); 
+let app = initializeApp({
+    credential:admin.credential.cert('fbms-shreeva-demo-firebase-adminsdk-8nk63-28663566a0.json'),
+}); 
 
 let auth = getAuth(app);
 let firestore = getFirestore(app);

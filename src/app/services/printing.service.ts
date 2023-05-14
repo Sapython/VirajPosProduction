@@ -322,7 +322,7 @@ export class PrintingService {
         };
       }),
     };
-    if(this.dataprovider.currentBusiness?.billerPrinter){
+    if(!this.dataprovider.currentBusiness?.billerPrinter){
       const dialog = this.dialog.open(DialogComponent,{data:{title:'No printer found for printing kot.',description:'Please select a printer in settings panel.',buttons:['Ok'],primary:[0]}})
       return
     }
@@ -424,7 +424,7 @@ export class PrintingService {
     }
     console.log('printing data', billdata, printerConfig);
     let data = this.getBillCode(billdata);
-    if(this.dataprovider.currentBusiness?.billerPrinter){
+    if(!this.dataprovider.currentBusiness?.billerPrinter){
       const dialog = this.dialog.open(DialogComponent,{data:{title:'No printer found for printing bill.',description:'Please select a printer in settings panel.',buttons:['Ok'],primary:[0]}})
       return
     }
@@ -510,7 +510,7 @@ export class PrintingService {
     console.log('printing data', billdata, printerConfig);
     console.log('printing data', billdata, printerConfig);
     let data = this.getBillCode(billdata);
-    if(this.dataprovider.currentBusiness?.billerPrinter){
+    if(!this.dataprovider.currentBusiness?.billerPrinter){
       const dialog = this.dialog.open(DialogComponent,{data:{title:'No printer found for printing bill.',description:'Please select a printer in settings panel.',buttons:['Ok'],primary:[0]}})
       return
     }
@@ -557,7 +557,7 @@ export class PrintingService {
       businessDetails: businessDetails,
     };
     console.log('printing data', kotdata, printerConfig);
-    if(this.dataprovider.currentBusiness?.billerPrinter){
+    if(!this.dataprovider.currentBusiness?.billerPrinter){
       const dialog = this.dialog.open(DialogComponent,{data:{title:'No printer found for printing kot.',description:'Please select a printer in settings panel.',buttons:['Ok'],primary:[0]}})
       return
     }
@@ -643,7 +643,7 @@ export class PrintingService {
     };
     console.log('printing data', kotdata, printerConfig);
     if (!debugMode && !this.printing) return;
-    if(this.dataprovider.currentBusiness?.billerPrinter){
+    if(!this.dataprovider.currentBusiness?.billerPrinter){
       const dialog = this.dialog.open(DialogComponent,{data:{title:'No printer found for printing kot.',description:'Please select a printer in settings panel.',buttons:['Ok'],primary:[0]}})
       return
     }

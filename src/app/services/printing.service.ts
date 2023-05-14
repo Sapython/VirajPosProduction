@@ -414,11 +414,14 @@ export class PrintingService {
       businessDetails: businessDetails,
     };
     if (this.dataprovider.optionalTax){
-      var totalTax = Number(this.dataprovider.currentSettings.cgst) + Number(this.dataprovider.currentSettings.sgst)
+      console.log("Optional tax is enabled",this.dataprovider.currentBusiness.cgst,this.dataprovider.currentBusiness.cgst,this.dataprovider.currentBusiness.sgst);
+      var totalTax = Number(this.dataprovider.currentBusiness.cgst) + Number(this.dataprovider.currentBusiness.sgst)
       if (typeof(totalTax) == 'number'){
+        console.log("Total tax is",totalTax);
         // reduce totalPrice of products by totalTax percentage
         billdata.products.forEach((product: any) => {
-          product.amount = product.amount - ((product.amount/100) * totalTax)
+          console.log("Reducing tax from product",product.name,product.amount,((Number(product.amount)/100) * totalTax),product.amount - ((Number(product.amount)/100) * totalTax));
+          product.amount = Number(product.amount) - ((Number(product.amount)/100) * totalTax)
         })
       }
     }
@@ -772,8 +775,8 @@ export class PrintingService {
           },
         ],
         [
-          ['Date: ' + kotData.date, 'Time: ' + kotData.time],
-          ['Token: ' + kotData.orderNo, 'Table No: ' + kotData.table],
+          ['Date: ' + kotData.date +' '+ kotData.time, 'Token: ' + kotData.orderNo],
+          ['Kot No: ' + kotData.id, 'Table No: ' + kotData.table],
         ]
       )
       .hr()

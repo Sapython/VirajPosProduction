@@ -142,8 +142,6 @@ const dbConfig: DBConfig = {
     FormsModule,
     HttpClientModule,
     CoreModule,
-    // SharedModule,
-    // HomeModule,
     DetailModule,
     AppRoutingModule,
     MatSnackBarModule,
@@ -184,12 +182,6 @@ const dbConfig: DBConfig = {
       let storageRef = getStorage();
       // connectStorageEmulator(storageRef, 'localhost', 9199);
       return storageRef;
-    }),
-    ServiceWorkerModule.register('ngsw-worker.js', {
-      enabled: !isDevMode(),
-      // Register the ServiceWorker as soon as the application is stable
-      // or after 30 seconds (whichever comes first).
-      registrationStrategy: 'registerWhenStable:30000'
     }),
     provideFunctions(() => {
       let functions = getFunctions();

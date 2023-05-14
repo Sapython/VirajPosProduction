@@ -556,7 +556,7 @@ export class PrintingService {
       totalQuantity: totalQuantity,
       cashierName: this.dataprovider.currentUser?.username,
       mode: 'bill',
-      table: bill.table.name,
+      table: bill.table,
       billNo: bill.billNo,
       orderNo: bill.orderNo,
       notes: [],

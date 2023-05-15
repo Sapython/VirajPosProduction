@@ -1,5 +1,5 @@
-import { DIALOG_DATA } from '@angular/cdk/dialog';
-import { Component, Inject, Input } from '@angular/core';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { Component, Inject, Injector, Input } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { debounceTime } from 'rxjs';
 import { DataProvider } from '../../provider/data-provider.service';
@@ -20,9 +20,10 @@ export class CustomerPanelComponent {
   @Input() orderFrequency: number = 0;
   @Input() lastMonth: string = "Jan";
   @Input() averageOrderPrice: number = 300;
+  @Input() isDialog: boolean = true;
   @Input() lastOrderDish: string[] = ["Chicken",'Rice','Salad'];
 
-  constructor(public dataProvider:DataProvider) {
+  constructor(public dataProvider:DataProvider,private injector:Injector) {
     if(this.dataProvider.currentBill){
       this.customerInfoForm.enable();
     } else {
@@ -53,6 +54,14 @@ export class CustomerPanelComponent {
         this.customerInfoForm.disable();
       }
     })
+  }
+
+  submit(){
+    this.dataProvider.currentBill?.setCustomerInfo(this.customerInfoForm.value);
+    if (this.isDialog){
+      // inject dialofRef
+      this.injector.get(DialogRef).close();
+    }
   }
 
   wordsToSentence(words: string[]): string {

@@ -1,6 +1,6 @@
 <section class="customerInfo" [ngClass]="{'pad':padding}">
     <h4>Customer Info</h4>
-    <form [formGroup]="customerInfoForm">
+    <form [formGroup]="customerInfoForm" (ngSubmit)="submit()">
         <div>
             <input [disabled]="this.dataProvider.currentBill?.stage!='active'" type="text" formControlName="name" placeholder="Customer Info">
             <input [disabled]="this.dataProvider.currentBill?.stage!='active'" type="tel" formControlName="phone" placeholder="Phone Number">
@@ -22,6 +22,7 @@
             <textarea matInput placeholder="Address" formControlName="address"></textarea>
         </mat-form-field> -->
         <!-- <textarea matInput placeholder="Address" formControlName="address"></textarea> -->
+        <button *ngIf="this.isDialog" type="submit" mat-flat-button color="primary">Submit</button>
     </form>
 </section>
 <section class="orders" *ngIf="dataProvider.smartMode" [ngClass]="{'pad':padding}">

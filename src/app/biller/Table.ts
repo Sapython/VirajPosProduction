@@ -310,6 +310,7 @@ export class Table implements TableConstructor {
           this.dataProvider.tempProduct
         );
         if (this.dataProvider.tempProduct) {
+          alert("Adding product to bill")
           this.bill.addProduct(this.dataProvider.tempProduct);
           this.dataProvider.tempProduct = undefined;
         }

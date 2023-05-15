@@ -117,8 +117,11 @@ export class OnboardingService {
             // check if all menus are loaded
             if (verifiedMenus.length == menuInits.length){
               this.loadingSteps.next('All menus loaded');
+              console.log("setting.modes",setting.modes);
+              
               // set current menu in order of dineIn, takeaway, online
-              let currentMenu = this.dataProvider.menus.find((menu)=>menu.type == 'dineIn') || this.dataProvider.menus.find((menu)=>menu.type == 'takeaway') || this.dataProvider.menus.find((menu)=>menu.type == 'online');
+              let currentMenu = this.dataProvider.menus.find((menu)=>((menu.type == 'dineIn') && setting.modes[0]) || (this.dataProvider.menus.find((menu)=>menu.type == 'takeaway') && setting.modes[1]) || (this.dataProvider.menus.find((menu)=>menu.type == 'online') && setting.modes[2]));
+              console.log("currentMenu",currentMenu);
               if (currentMenu){
                 this.dataProvider.menuLoadSubject.next(currentMenu);
               } else {

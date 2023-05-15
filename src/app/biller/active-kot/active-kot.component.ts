@@ -34,6 +34,7 @@ export class ActiveKotComponent implements OnChanges {
   constructor(public dataProvider: DataProvider) {
     this.dataProvider.billAssigned.subscribe(() => {
       this.kots = [];
+      this.allKot = [];
       this.dataProvider.kotViewVisible = true;
       this.dataProvider.manageKot = false;
       this.dataProvider.allProducts = false;

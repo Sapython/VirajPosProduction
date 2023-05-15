@@ -211,6 +211,11 @@ export class SettingsComponent implements OnInit {
         })
       }
     }
+    let currentMenu = this.dataProvider.menus.find((menu)=>((menu.type == 'dineIn') && this.modes[0]) || (this.dataProvider.menus.find((menu)=>menu.type == 'takeaway') && this.modes[1]) || (this.dataProvider.menus.find((menu)=>menu.type == 'online') && this.modes[2]));
+    console.log("currentMenu",currentMenu);
+    if (currentMenu){
+      this.dataProvider.menuLoadSubject.next(currentMenu);
+    }
     this.databaseService.updateMode(this.modes)
   }
 

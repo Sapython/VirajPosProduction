@@ -85,6 +85,7 @@ export class TableComponent implements OnInit {
     this.dataProvider.billAssigned.next();
     if(this.dataProvider.tempProduct && this.dataProvider.currentBill){
       this.dataProvider.currentBill.addProduct(this.dataProvider.tempProduct);
+      this.dataProvider.tempProduct = undefined;
     }
   }
 

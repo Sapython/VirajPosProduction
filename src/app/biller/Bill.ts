@@ -683,13 +683,14 @@ export class Bill implements BillConstructor {
       }
     }
     // alert("Mode: "+this.mode)
-    if (this.mode=='takeaway'){
-      console.log('customer info',this.customerInfo);
-      if (!(this.customerInfo.name && this.customerInfo.phone && this.customerInfo.address)){
-        alert('Please fill customer details');
-        return;
-      }
-    } else if (this.mode =='online'){
+    // if (this.mode=='takeaway'){
+    //   console.log('customer info',this.customerInfo);
+    //   if (!(this.customerInfo.name && this.customerInfo.phone && this.customerInfo.address)){
+    //     alert('Please fill customer details');
+    //     return;
+    //   }
+    // } else 
+    if (this.mode =='online'){
       console.log('customer info',this.customerInfo);
       if (!(this.customerInfo.name && this.customerInfo.phone && this.customerInfo.address && this.customerInfo.deliveryName && this.customerInfo.deliveryPhone)){
         alert('Please fill customer details');

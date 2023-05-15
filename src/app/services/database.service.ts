@@ -212,26 +212,26 @@ export class DatabaseService {
     // })
 
     // MENU COPIER
-    // getDocs(collection(this.firestore,'/business/46r0a1zlta7hyb077scig9/menus/Vj26EdBp971m06o7D9bd/products')).then((res)=>{
-    //   res.forEach((document)=>{
-    //     setDoc(doc(this.firestore,'/business/t73tctq4kwdvbux2h22h6/menus/BKEPVUhtCXXL7YNrvUqx/products/'+document.id),document.data())
-    //   })
-    // })
-    // getDocs(collection(this.firestore,'/business/46r0a1zlta7hyb077scig9/menus/Vj26EdBp971m06o7D9bd/recommededCategories')).then((res)=>{
-    //   res.forEach((document)=>{
-    //     setDoc(doc(this.firestore,'/business/t73tctq4kwdvbux2h22h6/menus/BKEPVUhtCXXL7YNrvUqx/recommededCategories/'+document.id),document.data())
-    //   })
-    // })
-    // getDocs(collection(this.firestore,'/business/46r0a1zlta7hyb077scig9/menus/Vj26EdBp971m06o7D9bd/rootCategories')).then((res)=>{
-    //   res.forEach((document)=>{
-    //     setDoc(doc(this.firestore,'/business/t73tctq4kwdvbux2h22h6/menus/BKEPVUhtCXXL7YNrvUqx/rootCategories/'+document.id),document.data())
-    //   })
-    // })
-    // getDocs(collection(this.firestore,'/business/46r0a1zlta7hyb077scig9/menus/Vj26EdBp971m06o7D9bd/viewCategories')).then((res)=>{
-    //   res.forEach((document)=>{
-    //     setDoc(doc(this.firestore,'/business/t73tctq4kwdvbux2h22h6/menus/BKEPVUhtCXXL7YNrvUqx/viewCategories/'+document.id),document.data())
-    //   })
-    // })
+    getDocs(collection(this.firestore,'/business/2t6wnystqc9yd7yd0acrl/menus/CG9WYqo03FM6nD3VlEz8/products')).then((res)=>{
+      res.forEach((document)=>{
+        setDoc(doc(this.firestore,'/business/uqd9dm0its2v9xx6fey2q/menus/cKVMRvUXaC9K2nFb5rC3/products/'+document.id),document.data())
+      })
+    })
+    getDocs(collection(this.firestore,'/business/2t6wnystqc9yd7yd0acrl/menus/CG9WYqo03FM6nD3VlEz8/recommededCategories')).then((res)=>{
+      res.forEach((document)=>{
+        setDoc(doc(this.firestore,'/business/uqd9dm0its2v9xx6fey2q/menus/cKVMRvUXaC9K2nFb5rC3/recommededCategories/'+document.id),document.data())
+      })
+    })
+    getDocs(collection(this.firestore,'/business/2t6wnystqc9yd7yd0acrl/menus/CG9WYqo03FM6nD3VlEz8/rootCategories')).then((res)=>{
+      res.forEach((document)=>{
+        setDoc(doc(this.firestore,'/business/uqd9dm0its2v9xx6fey2q/menus/cKVMRvUXaC9K2nFb5rC3/rootCategories/'+document.id),document.data())
+      })
+    })
+    getDocs(collection(this.firestore,'/business/2t6wnystqc9yd7yd0acrl/menus/CG9WYqo03FM6nD3VlEz8/viewCategories')).then((res)=>{
+      res.forEach((document)=>{
+        setDoc(doc(this.firestore,'/business/uqd9dm0its2v9xx6fey2q/menus/cKVMRvUXaC9K2nFb5rC3/viewCategories/'+document.id),document.data())
+      })
+    })
   }
 
   getMenuData(){

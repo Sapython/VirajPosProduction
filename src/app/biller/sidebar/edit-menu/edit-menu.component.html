@@ -352,8 +352,8 @@
                     >
                       <i class="ri-pencil-fill"></i>
                     </viraj-button>
-                    <viraj-button
-                      (click)="mode.deleteRecipe(product)"
+                    <viraj-button *ngIf="['root','view','all'].includes(this.currentType)"
+                      (click)="mode.deleteRecipe(product,mode.selectedMenuId)"
                     >
                       <i class="ri-delete-bin-6-fill"></i>
                     </viraj-button>

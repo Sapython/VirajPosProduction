@@ -239,8 +239,15 @@ export class ModeConfig {
       let data = await this.databaseService.getViewCategoriesByMenu(this.selectedMenu)
       console.log("Getting view cats",data.docs.map((doc)=>{return doc.data()}));
       this.viewCategories = data.docs.map((doc)=>{
-        
-        let products = this.products.filter((p)=>{return doc.data()['products'].includes(p.id) && p.visible})
+        let products = this.products.filter((p)=>{
+          if (doc.data()['disabled']){
+            var notDisabled = doc.data()['disabled'].find((id:string)=>id == p.id) ? false : true;
+          } else {
+            var notDisabled = true;
+          }
+          p.visible = notDisabled && p.visible;
+          return doc.data()['products'].includes(p.id)
+        })
         return {
           ...doc.data(),
           name:doc.data()['name'],
@@ -287,7 +294,15 @@ export class ModeConfig {
     if(this.selectedMenu){
       let data = await this.databaseService.getMainCategoriesByMenu(this.selectedMenu)
       this.mainCategories = data.docs.map((doc)=>{
-        let products = this.products.filter((p)=>{return doc.id == p.category?.id && p.visible})
+        let products = this.products.filter((p)=>{
+          if (doc.data()['disabled']){
+            var notDisabled = doc.data()['disabled'].find((id:string)=>id == p.id) ? false : true;
+          } else {
+            var notDisabled = true;
+          }
+          p.visible = notDisabled && p.visible;
+          return doc.data()['products'].includes(p.id)
+        })
         return {
           ...doc.data(),
           name:doc.data()['name'],
@@ -608,15 +623,35 @@ export class ModeConfig {
     }
   }
 
-  async deleteRecipe(product:Product){
-    this.selectedCategory.products = this.selectedCategory.products.filter((p:Product)=> p.id != product.id)
-    if (this.selectedCategory.productOrders){
-      this.selectedCategory.productOrders = this.selectedCategory.productOrders.filter((p)=> p != product.id)
+  async deleteRecipe(product:Product,menuId:string){
+    this.currentType
+    if (this.currentType == 'all'){
+      this.dataProvider.confirm("Are you sure you want to delete this recipe?",[1]).then((data)=>{
+        if (data){
+          this.dataProvider.loading = true;
+          this.databaseService.deleteProduct(product.id,menuId).then((data:any)=>{
+            this.alertify.presentToast("Recipe Deleted Successfully");
+          }).catch((err)=>{
+            this.alertify.presentToast("Recipe Delete Failed");
+          }).finally(()=>{
+            this.dataProvider.loading = false;
+          })
+        } else {
+          this.alertify.presentToast("Recipe Delete Cancelled");
+        }
+      })
+    } else if(['root','view'].includes(this.currentType)) {
+      this.selectedCategory.products = this.selectedCategory.products.filter((p:Product)=> p.id != product.id)
+      if (this.selectedCategory.productOrders){
+        this.selectedCategory.productOrders = this.selectedCategory.productOrders.filter((p)=> p != product.id)
+      } else {
+        this.selectedCategory.productOrders = this.selectedCategory.products.map((p:Product)=> p.id);
+      }
+      console.log("Deleted",this.selectedCategory.products.find((p)=>p.id == product.id),product);
+      this.selectedCategory.updated = true;
     } else {
-      this.selectedCategory.productOrders = this.selectedCategory.products.map((p:Product)=> p.id);
+      this.alertify.presentToast("Cannot delete from this category");
     }
-    console.log("Deleted",this.selectedCategory.products.find((p)=>p.id == product.id),product);
-    this.selectedCategory.updated = true;
   }
 
   addUploadedRecipe(){
@@ -676,8 +711,8 @@ export class ModeConfig {
       let updatablemainCategories = this.mainCategories.filter((category:Category) => category.updated);
       let updateRequestProducts = updatableProducts.map((product:Product) => this.databaseService.updateProductMenu({...product,updated:false},this.selectedMenu!));
       let updateRequestrecommendedCategories = updatablerecommendedCategories.map((category:Category) => this.databaseService.updateRecommendedCategoryMenu({...category,products:category.products.map((p)=>p.id),updated:false},this.selectedMenu!));
-      let updateRequestviewCategories = updatableviewCategories.map((category:Category) => this.databaseService.updateViewCategoryMenu({...category,products:category.products.map((p)=>p.id),updated:false},this.selectedMenu!));
-      let updateRequestmainCategories = updatablemainCategories.map((category:Category) => this.databaseService.updateMainCategoryMenu({...category,products:category.products.map((p)=>p.id),updated:false},this.selectedMenu!));
+      let updateRequestviewCategories = updatableviewCategories.map((category:Category) => this.databaseService.updateViewCategoryMenu({...category,products:category.products.map((p)=>p.id),disabled:category.products.filter((d)=>!d.visible).map((d)=>d.id),updated:false},this.selectedMenu!));
+      let updateRequestmainCategories = updatablemainCategories.map((category:Category) => this.databaseService.updateMainCategoryMenu({...category,products:category.products.map((p)=>p.id),disabled:category.products.filter((d)=>!d.visible).map((d)=>d.id),updated:false},this.selectedMenu!));
       // stats
       console.log("total products update",updatableProducts.length);
       console.log("total recommended category update",updatablerecommendedCategories.length);

@@ -573,6 +573,12 @@ export class DatabaseService {
     );
   }
 
+  deleteProduct(id:string,menuId:string){
+    return deleteDoc(
+      doc(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/'+menuId+'/products/' + id)
+    );
+  }
+
   async addNewMenu(
     menu: Menu,
     catGroups: { name: string; products: Product[] }[],

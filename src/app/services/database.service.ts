@@ -212,26 +212,31 @@ export class DatabaseService {
     // })
 
     // MENU COPIER
-    getDocs(collection(this.firestore,'/business/2t6wnystqc9yd7yd0acrl/menus/CG9WYqo03FM6nD3VlEz8/products')).then((res)=>{
-      res.forEach((document)=>{
-        setDoc(doc(this.firestore,'/business/uqd9dm0its2v9xx6fey2q/menus/cKVMRvUXaC9K2nFb5rC3/products/'+document.id),document.data())
-      })
-    })
-    getDocs(collection(this.firestore,'/business/2t6wnystqc9yd7yd0acrl/menus/CG9WYqo03FM6nD3VlEz8/recommededCategories')).then((res)=>{
-      res.forEach((document)=>{
-        setDoc(doc(this.firestore,'/business/uqd9dm0its2v9xx6fey2q/menus/cKVMRvUXaC9K2nFb5rC3/recommededCategories/'+document.id),document.data())
-      })
-    })
-    getDocs(collection(this.firestore,'/business/2t6wnystqc9yd7yd0acrl/menus/CG9WYqo03FM6nD3VlEz8/rootCategories')).then((res)=>{
-      res.forEach((document)=>{
-        setDoc(doc(this.firestore,'/business/uqd9dm0its2v9xx6fey2q/menus/cKVMRvUXaC9K2nFb5rC3/rootCategories/'+document.id),document.data())
-      })
-    })
-    getDocs(collection(this.firestore,'/business/2t6wnystqc9yd7yd0acrl/menus/CG9WYqo03FM6nD3VlEz8/viewCategories')).then((res)=>{
-      res.forEach((document)=>{
-        setDoc(doc(this.firestore,'/business/uqd9dm0its2v9xx6fey2q/menus/cKVMRvUXaC9K2nFb5rC3/viewCategories/'+document.id),document.data())
-      })
-    })
+    // getDocs(collection(this.firestore,'/business/2t6wnystqc9yd7yd0acrl/menus/CG9WYqo03FM6nD3VlEz8/products')).then((res)=>{
+    //   res.forEach((document)=>{
+    //     setDoc(doc(this.firestore,'/business/uqd9dm0its2v9xx6fey2q/menus/cKVMRvUXaC9K2nFb5rC3/products/'+document.id),document.data())
+    //   })
+    // })
+    // getDocs(collection(this.firestore,'/business/2t6wnystqc9yd7yd0acrl/menus/CG9WYqo03FM6nD3VlEz8/recommededCategories')).then((res)=>{
+    //   res.forEach((document)=>{
+    //     setDoc(doc(this.firestore,'/business/uqd9dm0its2v9xx6fey2q/menus/cKVMRvUXaC9K2nFb5rC3/recommededCategories/'+document.id),document.data())
+    //   })
+    // })
+    // getDocs(collection(this.firestore,'/business/2t6wnystqc9yd7yd0acrl/menus/CG9WYqo03FM6nD3VlEz8/rootCategories')).then((res)=>{
+    //   res.forEach((document)=>{
+    //     setDoc(doc(this.firestore,'/business/uqd9dm0its2v9xx6fey2q/menus/cKVMRvUXaC9K2nFb5rC3/rootCategories/'+document.id),document.data())
+    //   })
+    // })
+    // getDocs(collection(this.firestore,'/business/2t6wnystqc9yd7yd0acrl/menus/CG9WYqo03FM6nD3VlEz8/viewCategories')).then((res)=>{
+    //   res.forEach((document)=>{
+    //     setDoc(doc(this.firestore,'/business/uqd9dm0its2v9xx6fey2q/menus/cKVMRvUXaC9K2nFb5rC3/viewCategories/'+document.id),document.data())
+    //   })
+    // })
+    // getDocs(collection(this.firestore,'/business/2t6wnystqc9yd7yd0acrl/menus/CG9WYqo03FM6nD3VlEz8/viewCategories')).then((res)=>{
+    //   res.forEach((document)=>{
+    //     setDoc(doc(this.firestore,'/business/uqd9dm0its2v9xx6fey2q/menus/cKVMRvUXaC9K2nFb5rC3/viewCategories/'+document.id),document.data())
+    //   })
+    // })
   }
 
   getMenuData(){
@@ -280,6 +285,7 @@ export class DatabaseService {
   }
 
   addRecipe(recipe: any,menuId:string) {
+    console.log("Adding at",'business/'+this.dataProvider.businessId+'/menus/'+menuId+'/products');
     return addDoc(
       collection(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/'+menuId+'/products'),
       recipe
@@ -475,6 +481,13 @@ export class DatabaseService {
   getViewCategories() {
     return getDocs(
       collection(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/viewCategories')
+    );
+  }
+
+  updateRootCategory(id:string,products:string[]){
+    return updateDoc(
+      doc(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/rootCategories/' + id),
+      { products: arrayUnion(...products) }
     );
   }
 

@@ -1,9 +1,10 @@
 import { Timestamp } from '@angular/fire/firestore';
 import { KotConstructor, Product } from './constructors';
 
-export class Kot {
+export class Kot implements KotConstructor {
   id: string;
   createdDate: Timestamp;
+  unmade?: boolean;
   stage: 'active' | 'finalized' | 'cancelled' | 'edit';
   products: Product[];
   editMode: boolean;
@@ -26,6 +27,7 @@ export class Kot {
       this.stage = kotObject.stage;
       this.totalTimeTakenNumber = 0;
       this.totalTimeTaken = '0h 0m 0s';
+      this.unmade = kotObject.unmade || null;
     } else {
       this.products = [product];
       this.editMode = false;
@@ -120,6 +122,7 @@ export class Kot {
       allSelected: this.allSelected,
       editMode: this.editMode,
       someSelected: this.someSelected,
+      unmade:this.unmade || null,
     };
   }
 }

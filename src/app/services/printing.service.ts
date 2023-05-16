@@ -463,7 +463,6 @@ export class PrintingService {
   }
 
   reprintBill(bill: BillConstructor) {
-    if (!debugMode && !this.printing) return;
     let businessDetails = {
       name: this.dataprovider.currentBusiness?.hotelName,
       address: this.dataprovider.currentBusiness?.address,

@@ -14,14 +14,17 @@ export class CategoryCardComponent {
   length:number = 0;
   constructor(public dataProvider:DataProvider){
     // console.log("this.category?.products",this.category?.products);
-    this.category?.products.forEach((product)=>{
-      if(product.visible){
-        this.length += product.quantity;
-      }
-    })
+    if (this.category?.products){
+      this.category?.products.forEach((product)=>{
+        if(product.visible){
+          this.length += product.quantity;
+        }
+      })
+    }
   }
 
   filterVisible(products:Product[]){
+    if (!products) return [];
     return products.filter((product)=>product.visible || this.full);
   }
 

@@ -3,6 +3,10 @@ section{
     border-radius: 20px;
     background-color: #ffffff;
     display: flex;
+    form{
+        display: flex;
+        flex-direction: column;
+    }
     flex-direction: column;
     gap:15px;
     h2{

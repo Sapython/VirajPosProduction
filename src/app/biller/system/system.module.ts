@@ -12,14 +12,16 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatInputModule } from '@angular/material/input';
-import {MatExpansionModule} from '@angular/material/expansion'; 
+import {MatExpansionModule} from '@angular/material/expansion';
+import { ReprintReasonComponent } from './history/reprint-reason/reprint-reason.component'; 
 
 
 @NgModule({
   declarations: [
     SystemComponent,
     ChatComponent,
-    HistoryComponent
+    HistoryComponent,
+    ReprintReasonComponent
   ],
   imports: [
     FormsModule,

@@ -123,7 +123,7 @@ export class SettleComponent {
                 if (item) {
                   item.quantity += product.quantity;
                 } else {
-                  kotItems.push({ ...product, quantity: product.quantity });
+                  kotItems.push({ ...product, quantity: product.quantity,id:product.id || '' });
                 }
               });
             }

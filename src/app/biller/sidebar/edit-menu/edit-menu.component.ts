@@ -17,6 +17,7 @@ import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import Fuse from 'fuse.js';
 import { SelectCategoryComponent } from './select-category/select-category.component';
 import { ElectronService } from '../../../core/services';
+import { Timestamp } from '@angular/fire/firestore';
 @Component({
   selector: 'app-edit-menu',
   templateUrl: './edit-menu.component.html',
@@ -236,8 +237,9 @@ export class ModeConfig {
   async getViewCategories(){
     if(this.selectedMenu){
       let data = await this.databaseService.getViewCategoriesByMenu(this.selectedMenu)
-      console.log("Getting view cats",data.docs);
+      console.log("Getting view cats",data.docs.map((doc)=>{return doc.data()}));
       this.viewCategories = data.docs.map((doc)=>{
+        
         let products = this.products.filter((p)=>{return doc.data()['products'].includes(p.id) && p.visible})
         return {
           ...doc.data(),
@@ -537,17 +539,36 @@ export class ModeConfig {
       if (data){
         const categoryDialog = this.dialog.open(SelectCategoryComponent, {data:{mainCategories:this.mainCategories,viewCategories:this.viewCategories}})
         let category:any = await firstValueFrom(categoryDialog.closed)
-        delete category.mainCategory.products;
+        if (category.mainCategory.products){
+          delete category.mainCategory.products;
+        }
         console.log("category data",category);
+        let selectedViewCategories = category.viewCategories.filter((c)=>c.selected);
         // this.mainCategories
         this.dataProvider.loading = true;
-        let productRes = await this.databaseService.addRecipe({...data,category:category.mainCategory,createdDate:new Date()},menuId)
-        let viewCategoryRes = await Promise.all(this.viewCategories.map((c)=>{
+        let product:Product = {
+          category:category.mainCategory,
+          createdDate:Timestamp.now(),
+          images:[],
+          name:data.name,
+          price:data.price,
+          quantity:1,
+          selected:false,
+          type:data.type,
+          tags:[],
+          variants:[],
+          visible:true,
+        }
+        let productRes = await this.databaseService.addRecipe(product,menuId)
+        let rootCategoryRes = await this.databaseService.updateRootCategory(category.mainCategory.id,[productRes.id])
+        let viewCategoryRes = await Promise.all(selectedViewCategories.map((c)=>{
           return this.databaseService.updateViewCategory(c.id,[productRes.id])
         }))
+        console.log("productRes",productRes.id,"viewCategoryRes",viewCategoryRes);
         this.alertify.presentToast("Recipe Added Successfully");
       }
     }).catch((err)=>{
+      console.log("Recipe add error",err);
       this.alertify.presentToast("Recipe Added Failed");
     }).finally(()=>{
       this.dataProvider.loading = false;
@@ -589,7 +610,12 @@ export class ModeConfig {
 
   async deleteRecipe(product:Product){
     this.selectedCategory.products = this.selectedCategory.products.filter((p:Product)=> p.id != product.id)
-    this.selectedCategory.productOrders = this.selectedCategory.productOrders.filter((p)=> p != product.id)
+    if (this.selectedCategory.productOrders){
+      this.selectedCategory.productOrders = this.selectedCategory.productOrders.filter((p)=> p != product.id)
+    } else {
+      this.selectedCategory.productOrders = this.selectedCategory.products.map((p:Product)=> p.id);
+    }
+    console.log("Deleted",this.selectedCategory.products.find((p)=>p.id == product.id),product);
     this.selectedCategory.updated = true;
   }
 

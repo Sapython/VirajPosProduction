@@ -67,7 +67,7 @@
           [product]="item"
           [manageKot]="true"
           (lineDiscounted)="this.dataProvider.currentBill?.calculateBill()"
-          (lineCancelled)="this.dataProvider.currentBill?.lineCancelled(item,$event,kots[0])"
+          (lineCancelled)="this.dataProvider.currentBill?.lineCancelled(item,$event,kot)"
           [editMode]="kot.editMode"
           [quantity]="item.quantity"
           [productName]="item.name"

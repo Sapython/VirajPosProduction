@@ -2,11 +2,15 @@ import { Component } from '@angular/core';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { BillConstructor, TableConstructor, KotConstructor, Product } from '../../constructors';
-import { Subject, debounceTime } from 'rxjs';
+import { Subject, debounceTime, firstValueFrom } from 'rxjs';
 import Fuse from 'fuse.js';
 import { PrintingService } from '../../../services/printing.service';
 import { DatabaseService } from '../../../services/database.service';
 import { slideInDownOnEnterAnimation, slideOutUpOnLeaveAnimation } from 'angular-animations';
+import { Dialog } from '@angular/cdk/dialog';
+import { ReprintReasonComponent } from './reprint-reason/reprint-reason.component';
+import { Timestamp } from '@angular/fire/firestore';
+import { DataProvider } from '../../../provider/data-provider.service';
 @Component({
   selector: 'app-history',
   templateUrl: './history.component.html',
@@ -24,7 +28,7 @@ export class HistoryComponent {
   filteredBills:ExtendedBillConstructor[] = []
   fuseSearchInstance = new Fuse(this.bills, {keys:['billNo','orderNo']})
 
-  constructor(private databaseService: DatabaseService,private printingService:PrintingService) {
+  constructor(private databaseService: DatabaseService,private printingService:PrintingService,private dialog:Dialog,private dataProvider:DataProvider) {
     this.numberSearchSubject.pipe(debounceTime(600)).subscribe((searchTerm) => {
       if(searchTerm.length > 0){
         this.filteredBills = this.fuseSearchInstance.search(searchTerm).map((result) => {
@@ -50,8 +54,24 @@ export class HistoryComponent {
     });
   }
 
-  reprintBill(bill:BillConstructor){
-    this.printingService.reprintBill(bill);
+  async reprintBill(bill:BillConstructor){
+    const dialog = this.dialog.open(ReprintReasonComponent)
+    let res = await firstValueFrom(dialog.closed)
+    if(res && typeof res == 'string'){
+      let userRes = this.dataProvider.currentUser.business.find((business) => business.businessId == this.dataProvider.currentBusiness.businessId)!;
+      bill.billReprints.push({
+        reprintReason:res,
+        time:Timestamp.now(),
+        user:{
+          access:userRes.access.accessLevel,
+          username:userRes.name,
+        }
+      });
+      this.printingService.reprintBill(bill);
+    } else {
+      alert("Reprint Cancelled")
+      return;
+    }
   }
 
   reprintKot(kot:KotConstructor,bill:BillConstructor){

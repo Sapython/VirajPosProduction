@@ -9,6 +9,11 @@ export interface BillConstructor {
   billNo?: string;
   orderNo: string|null;
   createdDate: Timestamp;
+  billReprints:{
+    reprintReason:string;
+    time:Timestamp;
+    user:UserConstructor;
+  }[];
   optionalTax:boolean;
   stage: 'active' | 'finalized' | 'settled' | 'cancelled';
   cancelledReason?: {
@@ -65,13 +70,14 @@ export interface KotConstructor {
   selected: boolean;
   allSelected: boolean;
   someSelected: boolean;
+  unmade?:boolean;
   // selectAll(event:any): void;
   // checkAll(): void;
   // toObject(): any;
 }
 
 export interface Product {
-  id: string;
+  id?: string;
   name: string;
   price: number;
   taxedPrice?:number;

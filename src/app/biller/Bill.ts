@@ -9,6 +9,7 @@ import {
   Product,
   Tax,
   KotConstructor,
+  UserConstructor,
 } from './constructors';
 import { debounceTime, Subject } from 'rxjs';
 import { DataProvider } from '../provider/data-provider.service';
@@ -39,6 +40,11 @@ export class Bill implements BillConstructor {
   billNo?: string;
   orderNo: string|null = null;
   createdDate: Timestamp;
+  billReprints:{
+    reprintReason:string;
+    time:Timestamp;
+    user:UserConstructor;
+  }[] = [];
   stage: 'active' | 'finalized' | 'settled' | 'cancelled';
   customerInfo: CustomerInfo;
   reactivateKotReasons: string[] = []
@@ -629,15 +635,16 @@ export class Bill implements BillConstructor {
   lineCancelled(item:Product,event:any,kot:Kot){
     console.log("line cancelled",item,event);
     if (event.type=='unmade'){
-      let newProductList = kot.products.filter((product) => product.id !== item.id);
-      let tempKotEditer = {
-        kot:kot,
-        kotIndex:this.kots.findIndex((kot) => kot.id === kot.id),
-        newKot:newProductList,
-        previousKot:kot.products
-      }
-      this.printingService.printEditedKot(kot,tempKotEditer.previousKot,this.table.name,this.orderNo || '')
+      kot.unmade = true;
     }
+    let newProductList = kot.products.filter((product) => product.id !== item.id);
+    let tempKotEditer = {
+      kot:kot,
+      kotIndex:this.kots.findIndex((kot) => kot.id === kot.id),
+      newKot:newProductList,
+      previousKot:kot.products
+    }
+    this.printingService.printEditedKot(kot,tempKotEditer.previousKot,this.table.name,this.orderNo || '')
     this.cancelledProducts.push({product:item,kot:kot.id});
     // remove product from kot
     kot.products = kot.products.filter((product) => product.id !== item.id);
@@ -974,6 +981,7 @@ export class Bill implements BillConstructor {
       billNo: this.billNo || null,
       orderNo: this.orderNo || null,
       mode: this.mode,
+      billReprints: this.billReprints,
       optionalTax: this.optionalTax,
       kots: this.kotWithoutFunctions,
       billing: this.billing,
@@ -1029,6 +1037,7 @@ export class Bill implements BillConstructor {
       instance.nonChargeableDetail = object.nonChargeableDetail;
       instance.customerInfo = object.customerInfo;
       instance.optionalTax = object.optionalTax || false;
+      instance.billReprints = object.billReprints || [];
       // create kots classes from objects and add them to the bill
       object.kots.forEach((kot) => {
         console.log("Creating kot",kot);

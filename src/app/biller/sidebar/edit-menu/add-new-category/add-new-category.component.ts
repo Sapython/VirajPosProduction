@@ -38,6 +38,7 @@ export class AddNewCategoryComponent implements OnInit {
           name:this.dialogData.category.name,
           search:''
         })
+        console.log("this.dataProvider.products all",this.dataProvider.products);
         this.products = this.dataProvider.products.map((item) => {
           if (this.dialogData.category.products.find((product) => product.id == item.id)){
             return {

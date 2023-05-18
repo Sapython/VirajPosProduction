@@ -13,6 +13,7 @@ import { LineCancelComponent } from './kot-item/line-cancel/line-cancel.componen
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { ReasonComponent } from './reason/reason.component';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { MatInputModule } from '@angular/material/input';
     KotItemComponent,
     MergedProductsPipe,
     LineDiscountComponent,
-    LineCancelComponent
+    LineCancelComponent,
+    ReasonComponent
   ],
   imports: [
     CommonModule,

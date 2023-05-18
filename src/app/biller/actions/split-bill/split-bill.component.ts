@@ -3,6 +3,7 @@ import { Component, Inject } from '@angular/core';
 import { Bill } from '../../Bill';
 import { KotConstructor, Product } from '../../constructors';
 import { MatDialogRef } from '@angular/material/dialog';
+import { AlertsAndNotificationsService } from '../../../services/alerts-and-notification/alerts-and-notifications.service';
 
 @Component({
   selector: 'app-split-bill',
@@ -37,13 +38,17 @@ export class SplitBillComponent {
     }
   }
 
-  constructor(@Inject(DIALOG_DATA) private bill:Bill,private dialogRef:MatDialogRef<SplitBillComponent>) {
+  constructor(@Inject(DIALOG_DATA) private bill:Bill,private dialogRef:MatDialogRef<SplitBillComponent>,private alertify:AlertsAndNotificationsService) {
     this.allKots = JSON.parse(JSON.stringify(bill.kots.map((kot)=>kot.toObject())));
     this.allKots.forEach((kot)=>{
       kot.products.forEach((product)=>{
         product.selected = false;
       })
     })
+  }
+
+  cancel(){
+    this.dialogRef.close();
   }
 
   splitBill(){
@@ -55,6 +60,10 @@ export class SplitBillComponent {
         }
       })
     })
+    if (products.length == 0){
+      this.alertify.presentToast("Please select atleast one item to split");
+      return;
+    }
     let grandTotal = products.reduce((acc,product)=>acc+product.price,0);
     this.splittedItems.push({products:products,grandTotal:grandTotal});
     // remove products from bill

@@ -12,6 +12,7 @@ import { AddDiscountComponent } from './add-discount/add-discount.component';
 import { ElectronService } from '../../core/services';
 import { SelectMenuComponent } from './select-menu/select-menu.component';
 import { ModeConfig } from '../sidebar/edit-menu/edit-menu.component';
+import { AddMethodComponent } from './add-method/add-method.component';
 declare var window:any;
 
 @Component({
@@ -25,9 +26,10 @@ export class SettingsComponent implements OnInit {
   serverVersion:string = window.pywebview || 'N/A';
   account:string = this.dataProvider.currentFirebaseUser?.uid || 'N/A';
   discounts:Discount[] = []
+  paymentMethods:{name:string,detail:boolean}[] = [];
   @Output() cancel = new EventEmitter();
   @Output() save = new EventEmitter();
-  activeTab:'printer'|'account'|'view'|'about'|'config'|'discount' = 'config'
+  activeTab:'printer'|'account'|'view'|'about'|'config'|'discount'|'payment'|'taxes' = 'config'
   settingsForm:FormGroup = new FormGroup({
     hotelName: new FormControl(this.dataProvider.currentBusiness?.hotelName,[Validators.required]),
     phone: new FormControl(this.dataProvider.currentBusiness?.phone,[Validators.required]),
@@ -292,6 +294,24 @@ export class SettingsComponent implements OnInit {
         })
       } else {
         console.log("no data",data);
+      }
+    })
+  }
+
+  addMethod(){
+    const dialog = this.dialog.open(AddMethodComponent)
+    firstValueFrom(dialog.closed).then((data:any)=>{
+      this.dataProvider.loading = true;
+      if (data && data.name && typeof data.detail == 'boolean'){
+        this.databaseService.addPaymentMethod(data).then((res)=>{
+          this.alertify.presentToast("Payment method added successfully")
+        }).catch((err)=>{
+          this.alertify.presentToast("Error while adding payment method")
+        }).finally(()=>{
+          this.dataProvider.loading = false;
+        })
+      } else {
+        this.alertify.presentToast("Cancelled adding payment method")
       }
     })
   }

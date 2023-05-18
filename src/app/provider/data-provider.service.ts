@@ -89,7 +89,7 @@ export class DataProvider {
   public printBillAfterSettle: boolean = false;
   public currentSettings:any;
   public customBillNote:string = '';
-
+  
   // public access
   public discounts: Discount[] = [];
   public menus: ModeConfig[] = [];
@@ -112,7 +112,7 @@ export class DataProvider {
   public groupedTables: { [key: string]: Table[] } = {};
   public tokens: Table[] = [];
   public onlineTokens: Table[] = [];
-
+  
   // statuses
   public billingMode: 'dineIn' | 'takeaway' | 'online' = 'dineIn';
   public isAuthStateAvaliable: boolean = false;
@@ -130,12 +130,19 @@ export class DataProvider {
   public clientWidth: number = window.innerWidth;
   public clientHeight: number = window.innerHeight;
   
+  public get currentBusinessUser(){
+    if (this.currentBusiness && this.currentUser){
+      this.currentUser.business.find((business) => business.businessId == this.currentBusiness.businessId)!
+    } else {
+      return undefined;
+    }
+  };
   public smartMode: boolean = (localStorage.getItem('viewSettings')
-    ? JSON.parse(localStorage.getItem('viewSettings')!)
-    : { smartView: false }
+  ? JSON.parse(localStorage.getItem('viewSettings')!)
+  : { smartView: false }
   ).smartView;
   public touchMode: boolean = (localStorage.getItem('viewSettings')
-    ? JSON.parse(localStorage.getItem('viewSettings')!)
+  ? JSON.parse(localStorage.getItem('viewSettings')!)
     : { touchMode: false }
   ).touchMode;
   public loading: boolean = false;
@@ -198,6 +205,7 @@ export class DataProvider {
     params?: optionalPromptParam
   ): Promise<string | null> {
     const dialog = this.dialog.open(PromptComponent, {
+      panelClass:'customDialog',
       data: {
         title: title,
         ...params,
@@ -213,12 +221,14 @@ export class DataProvider {
 
   public async confirm(title: string,correct:number[], params?: {description?:string,buttons?:string[],primary?:number[],}) {
     const dialog = this.dialog.open(DialogComponent, {
+      panelClass:'customDialog',
       data: {
         title: title,
         ...params
       },
     });
     let res = await firstValueFrom(dialog.closed)
+    console.log("responded",res);
     if (typeof(res) == 'number'){
       if (correct.includes(res)){
         return true;

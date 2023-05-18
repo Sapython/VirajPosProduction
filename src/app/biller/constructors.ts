@@ -2,6 +2,7 @@ import { Timestamp } from '@angular/fire/firestore';
 import { Bill } from './Bill';
 import { Kot } from './Kot';
 import { Discount } from './settings/settings.component';
+import { Payment } from '../structures/general.structure';
 
 export interface BillConstructor {
   id: string;
@@ -23,11 +24,7 @@ export interface BillConstructor {
     user: UserConstructor;
   };
   settlement?:{
-    customerName: string;
-    customerContact: string;
-    paymentMethod: string;
-    cardEnding?: string;
-    upiAddress?: string;
+    payments:Payment[];
     time: Timestamp;
     user: UserConstructor;
   }
@@ -71,6 +68,11 @@ export interface KotConstructor {
   allSelected: boolean;
   someSelected: boolean;
   unmade?:boolean;
+  cancelReason?:{
+    reason:string;
+    time:Timestamp;
+    user:UserConstructor;
+  };
   // selectAll(event:any): void;
   // checkAll(): void;
   // toObject(): any;

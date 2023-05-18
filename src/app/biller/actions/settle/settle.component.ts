@@ -1,30 +1,14 @@
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
-import { Component } from '@angular/core';
+import { Component, QueryList, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DataProvider } from '../../../provider/data-provider.service';
 import { SplitBillComponent } from '../split-bill/split-bill.component';
 import { DatabaseService } from '../../../services/database.service';
 import { BillConstructor, Product, Tax } from '../../constructors';
 import { Discount } from '../../settings/settings.component';
 import { PrintingService } from '../../../services/printing.service';
-
-const taxes:Tax[] = [
-  {
-    id: 'tax1',
-    name: 'SGST',
-    type: 'percentage',
-    value: 2.5,
-    amount:0
-  },
-  {
-    id: 'tax1',
-    name: 'CGST',
-    type: 'percentage',
-    value: 2.5,
-    amount:0
-  },
-]
+import { AlertsAndNotificationsService } from '../../../services/alerts-and-notification/alerts-and-notifications.service';
+import { DialogComponent } from '../../../base-components/dialog/dialog.component';
 
 @Component({
   selector: 'app-settle',
@@ -35,6 +19,14 @@ export class SettleComponent {
   percentageSplitForm:FormGroup = new FormGroup({})
   percentageSplits:FormControl[] = []
   percentageValueError:boolean = false
+  billSum:number = 2000;
+  methods:any[] = [
+    {
+      paymentMethod:'Cash',
+      paymentMethods: ['Cash','Card','UPI','Wallet'],
+      amount:0
+    }
+  ]
   settleBillForm:FormGroup = new FormGroup({
     paymentMethod: new FormControl(''),
     cardEnding: new FormControl(''),
@@ -45,8 +37,9 @@ export class SettleComponent {
     splitMethod: new FormControl(''),
     percentageSplitForm:this.percentageSplitForm
   })
+  // @ViewChild('method') method:QueryList<any>;
   
-  constructor(private dialogRef:MatDialogRef<SettleComponent>,public dataProvider:DataProvider,private dialog:MatDialog,public databaseService:DatabaseService,private printingService:PrintingService){
+  constructor(private dialogRef:DialogRef,public dataProvider:DataProvider,private dialog:Dialog,public databaseService:DatabaseService,private alertify:AlertsAndNotificationsService){
     this.settleBillForm.valueChanges.subscribe((value)=>{
       this.percentageSplits = []
       console.log(value);
@@ -78,117 +71,57 @@ export class SettleComponent {
     this.dialogRef.close()
   }
   
-  settleBill(){
-    console.log({...this.settleBillForm.value,settling:true});
-    this.dialogRef.close({...this.settleBillForm.value,settling:true});
-  }
-
-  generateId() {
-    // random alphanumeric id
-    return Math.random().toString(36).substr(2, 9) + Math.random().toString(36).substr(2, 9) + Math.random().toString(36).substr(2, 9) 
-  }
-
-  splitAndSettle(){
-    const dialog = this.dialog.open(SplitBillComponent,{data:this.dataProvider.currentBill})
-    dialog.afterClosed().subscribe((value)=>{
-      console.log(value);
-      if (value){
-        let data = {
-          ...this.dataProvider.currentBill?.toObject(),
-        }
-        this.dataProvider.currentBill?.calculateBill()
-        console.log("bills",value,this.dataProvider.currentBill);
-        let billNo = this.dataProvider.currentBill!.settle(this.settleBillForm.value.customerName,this.settleBillForm.value.customerContact,this.settleBillForm.value.paymentMethod,this.settleBillForm.value.cardEnding,this.settleBillForm.value.upiAddress)
-        value.forEach((bill:any)=>{
-          bill.kots.forEach((kot:any)=>{
-            kot.products.forEach((product:any)=>{
-              delete product.kot
-            })
-          })
-          data.billNo = billNo
-          data.kots = bill.kots;
-          data.id = this.generateId()
-          // calculate all billing props
-          data.billing = JSON.parse(JSON.stringify(data.billing))
-          if (data.billingMode === 'nonChargeable') {
-            data.billing!.subTotal = 0;
-            data.billing!.grandTotal = 0;
-            return;
-          }
-          let kotItems: { id: string; quantity: number }[] = [];
-          data.kots!.forEach((kot) => {
-            if (kot.stage === 'active') {
-              kot.products.forEach((product:Product) => {
-                let item = kotItems.find((item) => item.id === product.id);
-                if (item) {
-                  item.quantity += product.quantity;
-                } else {
-                  kotItems.push({ ...product, quantity: product.quantity,id:product.id || '' });
-                }
-              });
-            }
-          });
-          console.log('kot items', kotItems);
-
-          data.billing!.subTotal = data.kots!.reduce((acc, cur) => {
-            return (
-              acc +
-              cur.products.reduce((acc: number, cur: { price: number; quantity: number; }) => {
-                return acc + cur.price * cur.quantity;
-              }, 0)
-            );
-          }, 0);
-          console.log("subtotal",data.billing!.subTotal);
-          // calculate discounts
-          let discounts:Discount[] = data.billing!.discount.map((discount) => {
-            if (discount.type === 'percentage'){
-              return {
-                ...discount,
-                totalAppliedDiscount: (discount.value / 100) * data.billing!.subTotal,
-              };
-            } else {
-              return {
-                ...discount,
-                totalAppliedDiscount: discount.value,
-              };
-            }
-          })
-          data.billing!.discount = discounts;
-          console.log("discounts",discounts);
-          // calculate taxes from taxes 
-          taxes.map((tax) => {
-            tax.amount = (tax.value / 100) * data.billing!.subTotal;
-          })
-          console.log("taxes",taxes);
-          let totalTax = taxes.reduce((acc, cur) => {
-            return acc + (cur.value / 100) * data.billing!.subTotal;
-          }, 0);
-          console.log("totalTax",totalTax);
-          data.billing!.taxes = taxes;
-          data.billing!.totalTax = totalTax;
-          data.billing!.grandTotal = data.billing!.subTotal + totalTax;
-          console.log("grandTotal",data.billing!.grandTotal);
-          console.log("data 1",data);
-          this.printingService.reprintBill(data as any)
-          this.databaseService.updateBill(data)
-          console.log("data 2",data);
-          this.dialogRef.close()
-          // let billInstance = new Bill(
-          //   this.generateId(),
-          //   this.dataProvider.currentBill!.table,
-          //   this.dataProvider.currentBill!.mode,
-          //   this.dataProvider.currentBill!.device,
-          //   this.dataProvider.currentBill!.user,
-          //   this.dataProvider.currentBill!.menu,
-          //   this.dataProvider,
-          //   this.databaseService,
-          //   this.dataProvider.currentBill!.billNo
-          // )
-          // billInstance.kots = bill.kots;
-          // console.log("billInstance",billInstance);
-        })
-        // this.dialogRef.close({...this.settleBillForm.value,settling:true,splitMethod:value.splitMethod,percentageSplitForm:value.percentageSplitForm})
+  async settleBill(){
+    if (this.billSum == this.totalPaid){
+      // check for conflicting payment methods
+      let paymentMethods = this.methods.map((method)=>method.paymentMethod)
+      let uniquePaymentMethods = [...new Set(paymentMethods)]
+      if (paymentMethods.length !== uniquePaymentMethods.length){
+        this.alertify.presentToast('Conflicting payment methods')
+        return
       }
+      this.dialogRef.close({paymentMethods,settling:true});
+      this.alertify.presentToast('Bill Settled')
+    } else {
+      this.alertify.presentToast('Amount does not match bill amount')
+    }
+  }
+
+  
+  get totalPaid(){
+    return this.methods.reduce((acc,cur)=>{
+      return acc + Number(cur.amount)
+    },0)
+  }
+
+  async addMethod(amount?:number){
+    let usedMethods = this.methods.map((method)=>method.paymentMethod)
+    let unusedMethods = ['Cash','Card','UPI','Wallet'].filter((method)=>{
+      return !usedMethods.includes(method)
     })
+    if (unusedMethods.length === 0){
+      this.alertify.presentToast('No more methods')
+      return
+    }
+    if (this.billSum > this.totalPaid){
+      amount = this.billSum - this.totalPaid
+    }
+    this.methods.push({
+      paymentMethod:unusedMethods[0],
+      amount:amount || 0,
+      paymentMethods: unusedMethods
+    })
+  }
+  
+  addOnReturn(event){
+    if (event.key === 'Enter'){
+      if (this.billSum > this.totalPaid){
+        this.addMethod()
+      } else if (this.billSum == this.totalPaid) {
+        this.settleBill()
+      } else {
+        this.alertify.presentToast('Amount exceeds bill amount')
+      }
+    }
   }
 }

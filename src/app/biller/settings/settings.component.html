@@ -41,6 +41,18 @@
       >
         Discounts
       </button>
+      <button
+        (click)="activeTab = 'payment'"
+        [ngClass]="{ active: activeTab == 'payment' }"
+      >
+        Payments
+      </button>
+      <button
+        (click)="activeTab = 'taxes'"
+        [ngClass]="{ active: activeTab == 'taxes' }"
+      >
+        Taxes
+      </button>
     </div>
     <div class="active spaced" [ngSwitch]="activeTab">
       <ng-container *ngSwitchCase="'printer'">
@@ -331,28 +343,6 @@
       <ng-container *ngSwitchCase="'discount'">
         <h3>Discount</h3>
         <div class="discount">
-          <!-- <div class="discountItem" *ngFor="let discount of discounts">
-            <div class="discountName">
-              {{discount.name}}
-            </div>
-            <div class="discountValue">
-              {{discount.value}}
-            </div>
-            <div class="discountType">
-              {{discount.type}}
-            </div>
-            <div class="discountType">
-              {{discount.type}}
-            </div>
-            <div class="discountAction">
-              <button mat-icon-button (click)="editDiscount(discount)">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button mat-icon-button (click)="deleteDiscount(discount)">
-                <mat-icon>delete</mat-icon>
-              </button>
-            </div>
-          </div> -->
           <button color="primary" mat-raised-button (click)="addDiscount()">
             Add Discount
           </button>
@@ -406,6 +396,29 @@
             </table>
           </div>
         </div>
+      </ng-container>
+      <ng-container *ngSwitchCase="'payment'">
+        <h3>Payment Methods</h3>
+        <button color="primary" mat-raised-button (click)="addMethod()">
+          Add Method
+        </button>
+        <table class="tableContainer">
+          <thead>
+            <tr>
+              <th>Method Name</th>
+              <th>Detail</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of paymentMethods">
+              <td>{{item.name}}</td>
+              <td>{{item.detail ? 'Required' : 'Not Required'}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+      <ng-container *ngSwitchCase="'taxes'">
+
       </ng-container>
     </div>
   </div>

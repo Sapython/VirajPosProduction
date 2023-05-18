@@ -33,7 +33,6 @@
     <div class="actions" *ngIf="this.dataProvider.currentBill?.stage=='active'">
       <viraj-button [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant','waiter'])" (click)="dataProvider.currentBill?.finalizeAndPrintKot()">Print KOT</viraj-button>
       <viraj-button [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant'])" (vclick)="finalizeBill()">Finalize Bill</viraj-button>
-      <viraj-button [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant'])" (vclick)="cancelBill()">Cancel</viraj-button>
       <viraj-button [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant'])" (vclick)="addDiscount()">Discount</viraj-button>
       <viraj-button [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant','waiter'])" (vclick)="this.dataProvider.allProducts=!this.dataProvider.allProducts">Preview</viraj-button>
       <!-- <button [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant','waiter'])" mat-flat-button (click)="dataProvider.moreActions=!dataProvider.moreActions">More</button> -->
@@ -41,6 +40,8 @@
     </div>
     <div class="actions" *ngIf="this.dataProvider.currentBill?.stage=='finalized'">
       <viraj-button [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant'])" (vclick)="settleBill()">Settle Bill</viraj-button>
+      <viraj-button [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant'])" (vclick)="splitAndSettle()">Split Bill</viraj-button>
+      <viraj-button [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant'])" (vclick)="cancelBill()">Cancel</viraj-button>
     </div>
     <div class="actions" *ngIf="this.dataProvider.currentBill?.stage=='cancelled'">
       <viraj-button [disabled]="!this.dataProvider.currentBill">Open Table</viraj-button>

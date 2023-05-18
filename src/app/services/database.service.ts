@@ -237,6 +237,35 @@ export class DatabaseService {
     //     setDoc(doc(this.firestore,'/business/uqd9dm0its2v9xx6fey2q/menus/cKVMRvUXaC9K2nFb5rC3/viewCategories/'+document.id),document.data())
     //   })
     // })
+    // getDocs(collection(this.firestore,'/business/uqd9dm0its2v9xx6fey2q/menus/cKVMRvUXaC9K2nFb5rC3/products')).then((res)=>{
+    //   let categories = []
+    //   res.forEach((document)=>{
+    //     if (document.data()['category']){
+    //       let foundCategory = categories.find((category)=>category.id == document.data()['category'].id)
+    //       if (!foundCategory){
+    //         categories.push({
+    //           ...document.data()['category'],
+    //           averagePrice:0,
+    //           enabled:true,
+    //           order:categories.length+1,
+    //           productOrders:[document.id],
+    //           products:[document.id],
+    //           updated:false
+    //         })
+    //       } else {
+    //         foundCategory.productOrders.push(document.id)
+    //         foundCategory.products.push(document.id)
+    //       }
+    //     }
+    //   })
+    //   categories.forEach((category)=>{
+    //     setTimeout(()=>{
+    //       console.log("Adding CATEGORY");
+    //       setDoc(doc(this.firestore,'/business/uqd9dm0its2v9xx6fey2q/menus/cKVMRvUXaC9K2nFb5rC3/rootCategories/'+category.id),category)
+    //     },6000)
+    //   })
+    //   console.log("NEW ROOT CATs",categories);
+    // })
   }
 
   getMenuData(){
@@ -465,6 +494,7 @@ export class DatabaseService {
         ),
         category
       );
+    console.log('business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/rootCategories/' + id);
     return setDoc(
       doc(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/rootCategories/' + id),
       category,
@@ -875,6 +905,22 @@ export class DatabaseService {
 
   updateBusiness(business:OptionalBusinessRecord){
     return setDoc(doc(this.firestore,'business',business.businessId),business,{merge:true});
+  }
+
+  addPaymentMethod(data:any){
+    return addDoc(collection(this.firestore,'business/'+this.dataProvider.businessId+'/paymentMethods'),data);
+  }
+
+  getPaymentMethods(){
+    return getDocs(collection(this.firestore,'business/'+this.dataProvider.businessId+'/paymentMethods'));
+  }
+
+  deletePaymentMethod(id:string){
+    return deleteDoc(doc(this.firestore,'business/'+this.dataProvider.businessId+'/paymentMethods',id));
+  }
+
+  updatePaymentMethod(id:string,data:any){
+    return setDoc(doc(this.firestore,'business/'+this.dataProvider.businessId+'/paymentMethods',id),data,{merge:true});
   }
 
 }

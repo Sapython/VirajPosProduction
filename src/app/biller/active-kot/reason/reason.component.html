@@ -1,0 +1,14 @@
+<form [formGroup]="reasonForm" (ngSubmit)="submit()">
+    <mat-form-field appearance="outline">
+        <mat-label>Reason</mat-label>
+        <input matInput placeholder="Reason" formControlName="reason">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input matInput placeholder="Password" formControlName="password">
+    </mat-form-field>
+    <div class="actions">
+        <button mat-raised-button color="primary">Submit</button>
+        <button mat-raised-button color="warn" (click)="cancel()">Cancel</button>
+    </div>
+</form>

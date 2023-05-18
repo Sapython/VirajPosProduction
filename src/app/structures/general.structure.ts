@@ -1,5 +1,10 @@
 import { Product } from "../biller/constructors";
 
+export interface Payment {
+    paymentMethod:string;
+    amount:number;
+    paymentMethods:string[];
+}
 export interface Category {
     id:string;
     name:string;

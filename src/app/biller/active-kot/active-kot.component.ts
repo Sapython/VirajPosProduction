@@ -1,9 +1,12 @@
 import { Component, OnChanges, SimpleChanges } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, firstValueFrom } from 'rxjs';
 import { DataProvider } from '../../provider/data-provider.service';
 import { Product } from '../constructors';
 import { Kot } from '../Kot';
 import { fadeInLeftOnEnterAnimation, fadeInOnEnterAnimation, fadeInRightOnEnterAnimation, fadeOutLeftOnLeaveAnimation, fadeOutOnLeaveAnimation, fadeOutRightOnLeaveAnimation, slideInLeftOnEnterAnimation, slideOutRightOnLeaveAnimation, zoomInOnEnterAnimation, zoomOutOnLeaveAnimation } from 'angular-animations';
+import { Dialog } from '@angular/cdk/dialog';
+import { ReasonComponent } from './reason/reason.component';
+import { Timestamp } from '@angular/fire/firestore';
 @Component({
   selector: 'app-active-kot',
   templateUrl: './active-kot.component.html',
@@ -31,7 +34,7 @@ export class ActiveKotComponent implements OnChanges {
     {color:'#8549ba',contrast: '#fff'},
   ];
   actionSheetExpanded: boolean = false;
-  constructor(public dataProvider: DataProvider) {
+  constructor(public dataProvider: DataProvider,private dialog:Dialog) {
     this.dataProvider.billAssigned.subscribe(() => {
       this.kots = [];
       this.allKot = [];
@@ -111,8 +114,21 @@ export class ActiveKotComponent implements OnChanges {
     this.dataProvider.currentBill?.printKot(kot,'reprintKot');
   }
 
-  deleteKot(kot: Kot) {
-    this.dataProvider.currentBill?.deleteKot(kot);
+  async deleteKot(kot: Kot) {
+    const dialog = this.dialog.open(ReasonComponent)
+    let reason = await firstValueFrom(dialog.closed);
+    if (reason && typeof reason === 'string') {
+      kot.cancelReason = {
+        reason: reason,
+        time: Timestamp.now(),
+        user: {
+          access: this.dataProvider.currentBusinessUser?.access,
+          username: this.dataProvider.currentBusinessUser?.username,
+        },
+      }
+      this.dataProvider.currentBill?.deleteKot(kot);
+    }
+    // this.dataProvider.currentBill?.deleteKot(kot);
   }
 
   editKot(kot: Kot) {

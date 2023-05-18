@@ -58,7 +58,6 @@
                     <ng-container>Large</ng-container>
                 </mat-button-toggle>
             </mat-button-toggle-group>
-            
         </div>
         <div class="tables">
             <button class="table" [ngClass]="{'active':table.status=='occupied','disabled':table.status!='occupied','late':this.dataProvider.tableTimeOutTime <= table.minutes,'finalized':table.bill?.stage=='finalized','medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}"  matRipple [matRippleDisabled]="table.status!='occupied'" *ngFor="let table of tables" (click)="moveKot(table,$event)">

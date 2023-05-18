@@ -301,7 +301,7 @@ export class ModeConfig {
             var notDisabled = true;
           }
           p.visible = notDisabled && p.visible;
-          return doc.data()['products'].includes(p.id)
+          return doc.data()['products'] && doc.data()['products'].includes(p.id)
         })
         return {
           ...doc.data(),

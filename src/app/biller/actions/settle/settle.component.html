@@ -1,47 +1,10 @@
-<section>
+<!-- <section>
     <form [formGroup]="settleBillForm" (ngSubmit)="settleBill()">
         <mat-button-toggle-group name="paymentMethod" formControlName="paymentMethod" aria-label="Font Style" #paymentMethod>
             <mat-button-toggle value="card">Card</mat-button-toggle>
             <mat-button-toggle value="upi">UPI</mat-button-toggle>
             <mat-button-toggle value="cash">Cash</mat-button-toggle>
-            <!-- <mat-button-toggle value="splitBill">Split Bill</mat-button-toggle> -->
         </mat-button-toggle-group>
-        <div class="splitBill" *ngIf="settleBillForm.value.paymentMethod=='splitBill'">
-            <h3>Split Bill</h3>
-            <mat-form-field appearance="outline">
-                <mat-label>Recipents</mat-label>
-                <input type="number" matInput formControlName="recipents">
-            </mat-form-field>
-            <mat-button-toggle-group name="splitMethod" formControlName="splitMethod" aria-label="Font Style" #splitMethod>
-                <mat-button-toggle value="percentage">By Percentage</mat-button-toggle>
-                <mat-button-toggle value="product">By Products</mat-button-toggle>
-            </mat-button-toggle-group>
-            <ng-container *ngIf="settleBillForm.value.splitMethod=='percentage'">
-                <div class="percentages">
-                    <mat-form-field appearance="outline" *ngFor="let item of percentageSplits">
-                        <mat-label>Percentage</mat-label>
-                        <input type="number" matInput [formControl]="item">
-                    </mat-form-field>
-                </div>
-                <p class="error" *ngIf="percentageValueError">The percentages doesn't add upto 100.</p>
-            </ng-container>
-            <!-- <ng-container *ngIf="settleBillForm.value.splitMethod=='product'">
-                <div class="productWise" >
-                    <div class="products">
-                        <div class="header">
-                            <button mat-flat-button color="primary" (click)="">Split</button>
-                        </div>
-                        <ng-container *ngFor="let kot of this.dataProvider.currentBill?.kots">
-                            <li><mat-checkbox [(ngModel)]="item.selected" *ngFor="let item of kot.products">{{item.name}} x {{item.quantity}}</mat-checkbox></li>
-                        </ng-container>
-                    </div>
-                    <div class="splits">
-
-                    </div>
-                </div>
-            </ng-container> -->
-            <hr>
-        </div>
         <ng-container>
             <mat-form-field appearance="outline" *ngIf="settleBillForm.value.paymentMethod=='card'">
                 <mat-label>Last Ending 4 Digits</mat-label>
@@ -52,7 +15,6 @@
                 <mat-label>UPI Address</mat-label>
                 <input matInput formControlName="upiAddress" type="text" placeholder="Upi Address">
             </mat-form-field>
-            <!-- TODO party payment -->
         </ng-container>
         <hr>
         <mat-form-field appearance="outline">
@@ -69,4 +31,45 @@
             <button mat-stroked-button color="primary" type="button" (click)="close()">Cancel</button>
         </div>
     </form>
+</section> -->
+
+
+<section>
+    <h2>Settle Bill</h2>
+    <div class="breakdown">
+        <div class="total">
+            <p>Bill Amount</p>
+            <span>
+                {{billSum | currency:'INR'}}
+            </span>
+        </div>
+        <div class="total">
+            <p>Total Paid</p>
+            <span class="paid">
+                {{totalPaid | currency:'INR'}}
+            </span>
+        </div>
+        <div class="total">
+            <p>Difference</p>
+            <span [ngClass]="{'red':(billSum - totalPaid != 0)}">
+                {{ totalPaid - billSum | currency:'INR'}}
+            </span>
+        </div>
+    </div>
+    <hr>
+    <div class="methods">
+        <div class="method" *ngFor="let method of methods; let i = index;">
+            <select [tabindex]="i+1" #method [(ngModel)]="method.paymentMethod">
+                <option *ngFor="let item of method.paymentMethods" [value]="item">{{item}}</option>
+            </select>
+            <input type="number" (keydown)="addOnReturn($event)" [tabindex]="i+2" [(ngModel)]="method.amount">
+        </div>
+        <div class="addMethod" (click)="addMethod()">
+            <i class="ri-add-fill"></i> Add Method
+        </div>
+    </div>
+    <div class="actions">
+        <button [tabindex]="methods.length+4" (click)="close()" mat-stroked-button color="primary">Cancel</button>
+        <button [tabindex]="methods.length+3" (click)="settleBill()" mat-flat-button color="primary">Submit</button>
+    </div>
 </section>

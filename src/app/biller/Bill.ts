@@ -18,7 +18,8 @@ import { Kot } from './Kot';
 import { splittedBill } from './actions/split-bill/split-bill.component';
 import { Discount } from './settings/settings.component';
 import { PrintingService } from '../services/printing.service';
-const taxes:Tax[] = [
+import { Payment } from '../structures/general.structure';
+export const taxes:Tax[] = [
   {
     id: 'tax1',
     name: 'SGST',
@@ -73,11 +74,7 @@ export class Bill implements BillConstructor {
   };
   billingMode: 'cash' | 'card' | 'upi' | 'nonChargeable' = 'cash';
   settlement?: {
-    customerName: string;
-    customerContact: string;
-    paymentMethod: string;
-    cardEnding?: string;
-    upiAddress?: string;
+    payments:Payment[];
     time: Timestamp;
     user: User;
   } = undefined;
@@ -797,6 +794,8 @@ export class Bill implements BillConstructor {
     kot.stage = 'cancelled';
     this.updated.next();
     this.printingService.deleteKot(this.table.tableNo.toString(),this.orderNo || '',kot.products,kot.id);
+    this.calculateBill();
+    this.updated.next();
   }
 
   printKot(kot:Kot,mode:'firstChargeable'|'cancelledKot'|'editedKot'|'runningNonChargeable'|'runningChargeable'|'firstNonChargeable'|'reprintKot'|'online'){
@@ -843,11 +842,7 @@ export class Bill implements BillConstructor {
   }
 
   settle(
-    customerName: string,
-    customerContact: string,
-    paymentMethod: string,
-    cardEnding?: string,
-    upiAddress?: string
+    payments: Payment[]
   ) {
     this.calculateBill();
     // update every product and increase their sales counter by their quantity
@@ -890,11 +885,7 @@ export class Bill implements BillConstructor {
     this.databaseService.updateProducts(allProducts);
     // this.stage = 'settled';
     this.settlement = {
-      customerName: customerName,
-      customerContact: customerContact,
-      paymentMethod: paymentMethod,
-      cardEnding: cardEnding || '',
-      upiAddress: upiAddress || '',
+      payments: payments,
       time: Timestamp.now(),
       user: this.user,
     };

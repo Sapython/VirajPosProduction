@@ -1,0 +1,13 @@
+form{
+    display: flex;
+    flex-direction: column;
+    gap:15px;
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    .actions{
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+}

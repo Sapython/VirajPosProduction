@@ -13,8 +13,7 @@ import {
   zoomOutOnLeaveAnimation,
 } from 'angular-animations';
 import { SplitBillComponent } from './split-bill/split-bill.component';
-import { Discount } from '../settings/settings.component';
-import { taxes } from '../Bill';
+import { CodeBaseDiscount, DirectFlatDiscount, DirectPercentDiscount } from '../settings/settings.component';
 import { PrintingService } from '../../services/printing.service';
 import { DatabaseService } from '../../services/database.service';
 
@@ -104,11 +103,11 @@ export class ActionsComponent {
 
   settleBill() {
     if (this.dataProvider.currentBill) {
-      let dialog = this.dialog.open(SettleComponent);
+      let dialog = this.dialog.open(SettleComponent,{data:this.dataProvider.currentBill.billing.grandTotal});
       dialog.closed.subscribe((result: any) => {
         console.log('Result', result);
         if (result && this.dataProvider.currentBill && result.settling && result.paymentMethods) {
-          this.dataProvider.currentBill.settle(result.paymentMethods);
+          this.dataProvider.currentBill.settle(result.paymentMethods,result.detail || null);
         }
       });
     }
@@ -121,7 +120,7 @@ export class ActionsComponent {
 
   splitAndSettle(){
     const dialog = this.dialog.open(SplitBillComponent,{data:this.dataProvider.currentBill})
-    dialog.closed.subscribe((value:any)=>{
+    dialog.closed.subscribe(async (value:any)=>{
       console.log(value);
       if (value){
         let data = {
@@ -129,7 +128,7 @@ export class ActionsComponent {
         }
         this.dataProvider.currentBill?.calculateBill()
         console.log("bills",value,this.dataProvider.currentBill);
-        let billNo = this.dataProvider.currentBill!.settle([
+        let billNo = await this.dataProvider.currentBill!.settle([
           {
             amount: value.amount,
             paymentMethod: 'Cash',
@@ -176,36 +175,38 @@ export class ActionsComponent {
             );
           }, 0);
           console.log("subtotal",data.billing!.subTotal);
+          // TODO: urgent
           // calculate discounts
-          let discounts:Discount[] = data.billing!.discount.map((discount) => {
-            if (discount.type === 'percentage'){
-              return {
-                ...discount,
-                totalAppliedDiscount: (discount.value / 100) * data.billing!.subTotal,
-              };
-            } else {
-              return {
-                ...discount,
-                totalAppliedDiscount: discount.value,
-              };
-            }
-          })
-          data.billing!.discount = discounts;
-          console.log("discounts",discounts);
+          // let discounts:(CodeBaseDiscount|DirectFlatDiscount|DirectPercentDiscount)[] = data.billing!.discount.map((discount) => {
+            // if (discount.type === 'percentage'){
+            //   return {
+            //     ...discount,
+            //     totalAppliedDiscount: (discount.value / 100) * data.billing!.subTotal,
+            //   };
+            // } else {
+            //   return {
+            //     ...discount,
+            //     totalAppliedDiscount: discount.value,
+            //   };
+            // }
+          // })
+          // data.billing!.discount = discounts;
+          // console.log("discounts",discounts);
           // calculate taxes from taxes 
-          taxes.map((tax) => {
-            tax.amount = (tax.value / 100) * data.billing!.subTotal;
-          })
-          console.log("taxes",taxes);
-          let totalTax = taxes.reduce((acc, cur) => {
-            return acc + (cur.value / 100) * data.billing!.subTotal;
-          }, 0);
-          console.log("totalTax",totalTax);
-          data.billing!.taxes = taxes;
-          data.billing!.totalTax = totalTax;
-          data.billing!.grandTotal = data.billing!.subTotal + totalTax;
-          console.log("grandTotal",data.billing!.grandTotal);
-          console.log("data 1",data);
+          // TODO: urgent
+          // taxes.map((tax) => {
+          //   tax.amount = (tax.value / 100) * data.billing!.subTotal;
+          // })
+          // console.log("taxes",taxes);
+          // let totalTax = taxes.reduce((acc, cur) => {
+          //   return acc + (cur.value / 100) * data.billing!.subTotal;
+          // }, 0);
+          // console.log("totalTax",totalTax);
+          // data.billing!.taxes = taxes;
+          // data.billing!.totalTax = totalTax;
+          // data.billing!.grandTotal = data.billing!.subTotal + totalTax;
+          // console.log("grandTotal",data.billing!.grandTotal);
+          // console.log("data 1",data);
           this.printingService.reprintBill(data as any)
           this.databaseService.updateBill(data)
           console.log("data 2",data);
@@ -216,11 +217,11 @@ export class ActionsComponent {
 
   addDiscount() {
     const dialog = this.dialog.open(AddDiscountComponent);
-    dialog.closed.subscribe((result: any) => {
-      if (this.dataProvider.currentBill && result?.discounted) {
-        this.dataProvider.currentBill.addDiscount(result.discount);
-      }
-    });
+    // dialog.closed.subscribe((result: any) => {
+    //   if (this.dataProvider.currentBill && result?.discounted) {
+    //     this.dataProvider.currentBill.addDiscount(result.discount);
+    //   }
+    // });
   }
 
   nonChargeable(event: any) {
@@ -252,7 +253,22 @@ export class ActionsComponent {
     // dialog.closed.subscribe((result)=>{})
   }
 
-  toggleManageKot() {}
+  toggleManageKot() {
+    //  ? dataProvider.kotViewVisible=true : dataProvider.kotViewVisible = false
+    if(this.dataProvider.manageKot == false){
+      // find any active kot if not found then set dataProvider.kotViewVisible to true
+      let activeKot = this.dataProvider.currentBill?.kots.find(
+        (kot: Kot) => kot.stage === 'active' || kot.stage === 'edit'
+      );
+      if (!activeKot) {
+        if (this.dataProvider.currentBill?.stage == 'finalized'){
+          this.dataProvider.allProducts = true;
+          return
+        }
+        this.dataProvider.kotViewVisible = true;
+      }
+    }
+  }
 
   splitBill() {
     if (this.dataProvider.currentBill) {

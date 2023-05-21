@@ -4,7 +4,7 @@
   <div class="badges">
     <span cdkOverlayOrigin #salesTrigger="cdkOverlayOrigin" id="salesTrigger" class="badge sales" (mouseleave)="this.closeSalesPanelSubscription.next(false);" (mouseenter)="isSalesOpen = true">
       <span>Sales</span>
-      <b>{{ (this.dataProvider.dineInSales + this.dataProvider.takeawaySales + this.dataProvider.onlineSales) | currency:'INR' }}</b>
+      <b>{{ ((this.dataProvider.todaySales?.dineInSales || 0) + (this.dataProvider.todaySales?.takeawaySales || 0) + (this.dataProvider.todaySales?.onlineSales || 0)) | currency:'INR' }}</b>
     </span>
     <ng-template *ngIf="!this.dataProvider.touchMode"
       cdkConnectedOverlay
@@ -13,7 +13,7 @@
       [cdkConnectedOverlayOrigin]="salesTrigger"
       [cdkConnectedOverlayOpen]="isSalesOpen"
     >
-      <app-sales-summary [dine]="this.dataProvider.dineInSales" [takeAway]="this.dataProvider.takeawaySales" [online]="this.dataProvider.onlineSales" [nonChargable]="this.dataProvider.nonChargeableSales" (close)="this.isSalesOpen = false" (mouseleave)="this.closeSalesPanelSubscription.next(false)" (mouseenter)="this.closeSalesPanelSubscription.next(true)"></app-sales-summary>
+      <app-sales-summary [dine]="(this.dataProvider.todaySales?.dineInSales || 0)" [takeAway]="(this.dataProvider.todaySales?.takeawaySales || 0)" [online]="(this.dataProvider.todaySales?.onlineSales || 0)" [nonChargable]="(this.dataProvider.todaySales?.nonChargeableSales || 0)" (close)="this.isSalesOpen = false" (mouseleave)="this.closeSalesPanelSubscription.next(false)" (mouseenter)="this.closeSalesPanelSubscription.next(true)"></app-sales-summary>
     </ng-template>
     <span class="badge orders" id="ordersTrigger" cdkOverlayOrigin #ordersTrigger="cdkOverlayOrigin" (mouseleave)="this.closeOrdersPanelSubscription.next(false);" (mouseenter)="isOpen = true">
       <span>Orders</span>

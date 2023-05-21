@@ -54,8 +54,10 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import { AddMenuComponent } from './edit-menu/add-menu/add-menu.component';
 import { SelectCategoryComponent } from './edit-menu/select-category/select-category.component'; 
 import {MatRadioModule} from '@angular/material/radio'; 
-import {DragDropModule} from '@angular/cdk/drag-drop'; 
-
+import {DragDropModule} from '@angular/cdk/drag-drop';
+import { SetTaxComponent } from './edit-menu/set-tax/set-tax.component';
+import { EnabledPipe } from './menu/enabled.pipe'; 
+import {MatPaginatorModule} from '@angular/material/paginator'; 
 @NgModule({
   declarations: [
     InfoPanelComponent,
@@ -88,6 +90,8 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
     UpgradeComponent,
     AddMenuComponent,
     SelectCategoryComponent,
+    SetTaxComponent,
+    EnabledPipe,
   ],
   imports: [
     CommonModule,
@@ -115,7 +119,8 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
     MatProgressSpinnerModule,
     MatDatepickerModule,
     MatRadioModule,
-    DragDropModule
+    DragDropModule,
+    MatPaginatorModule
   ],
   exports:[SidebarComponent,AddDishComponent,AddNewCategoryComponent,SelectRecipeComponent]
 })

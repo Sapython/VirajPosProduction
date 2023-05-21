@@ -21,7 +21,7 @@ export class AddNewCategoryComponent implements OnInit {
     name: new FormControl('',Validators.required),
     search: new FormControl(''),
   })
-  constructor(private dialogRef:DialogRef,@Inject(DIALOG_DATA) private dialogData:{products:any[],noSave:boolean,mode:'add'|'edit',category:Category},private dataProvider:DataProvider,private databaseService:DatabaseService,private alertify:AlertsAndNotificationsService){
+  constructor(private dialogRef:DialogRef,@Inject(DIALOG_DATA) private dialogData:{products:any[],noSave:boolean,mode:'add'|'edit',category:Category,rootProducts?:any[]},private dataProvider:DataProvider,private databaseService:DatabaseService,private alertify:AlertsAndNotificationsService){
     this.products = dialogData.products || [];
     this.newCategoryForm.valueChanges.pipe(debounceTime(600)).subscribe((value)=>{
       // use fuse
@@ -33,37 +33,38 @@ export class AddNewCategoryComponent implements OnInit {
   }
 
   ngOnInit(): void {
-      if(this.dialogData.mode == 'edit'){
-        this.newCategoryForm.patchValue({
-          name:this.dialogData.category.name,
-          search:''
-        })
-        console.log("this.dataProvider.products all",this.dataProvider.products);
-        this.products = this.dataProvider.products.map((item) => {
-          if (this.dialogData.category.products.find((product) => product.id == item.id)){
-            return {
-              ...this.dialogData.category.products.find((product) => product.id == item.id),
-              selected:true
-            }
-          } else {
-            return {
-              ...item,
-              selected:false
-            }
+    let allProducts = this.dialogData.rootProducts ? this.dialogData.rootProducts : this.dataProvider.products;
+    if(this.dialogData.mode == 'edit'){
+      this.newCategoryForm.patchValue({
+        name:this.dialogData.category.name,
+        search:''
+      })
+      console.log("this.dataProvider.products all",allProducts);
+      this.products = allProducts.map((item) => {
+        if (this.dialogData.category.products.find((product) => product.id == item.id)){
+          return {
+            ...this.dialogData.category.products.find((product) => product.id == item.id),
+            selected:true
           }
-        })
-      } else {
-        this.newCategoryForm.patchValue({
-          name:'',
-          search:''
-        })
-        this.products = this.dataProvider.products.map((item) => {
+        } else {
           return {
             ...item,
             selected:false
           }
-        })
-      }
+        }
+      })
+    } else {
+      this.newCategoryForm.patchValue({
+        name:'',
+        search:''
+      })
+      this.products = allProducts.map((item) => {
+        return {
+          ...item,
+          selected:false
+        }
+      })
+    }
   }
 
   formatLabel(value: number): string {

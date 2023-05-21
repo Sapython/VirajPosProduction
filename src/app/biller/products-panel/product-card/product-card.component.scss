@@ -7,6 +7,7 @@ div.main{
     padding: 10px;
     border-radius: 7px;
     justify-content: space-between;
+    background: white;
     .container{
         display: flex;
         gap: 5px;
@@ -15,7 +16,7 @@ div.main{
             color: #444444;
             font-size: var(--Viraj-font-medium);
             margin: 0px;
-            word-break: break-all;
+            // word-break: break-all;
         }
         strong{
             color:var(--Viraj-primary);
@@ -42,6 +43,10 @@ div.main{
             border-left: 5px solid rgba(115, 17, 17, 0.688);
         }
     }
+    span.tag{
+        padding: 4px 7px;
+        border-radius: 4px;
+    }
 }
 div.small{
     width: 70px;
@@ -58,6 +63,10 @@ div.small{
         }
         strong{
             font-size: var(--Viraj-font-large);
+            color:rgb(195, 90, 90)
         }
     }
+}
+.danger{
+    color: var(--Viraj-danger);
 }

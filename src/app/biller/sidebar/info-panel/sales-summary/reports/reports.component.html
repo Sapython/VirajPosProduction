@@ -18,22 +18,41 @@
     <mat-form-field appearance="outline">
       <mat-label>Enter a date range</mat-label>
       <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
-        <input matStartDate formControlName="start" placeholder="Start date" (dateChange)="getReport()">
-        <input matEndDate formControlName="end" placeholder="End date" (dateChange)="getReport()">
+        <input
+          matStartDate
+          formControlName="start"
+          placeholder="Start date"
+          (dateChange)="getReport()"
+        />
+        <input
+          matEndDate
+          formControlName="end"
+          placeholder="End date"
+          (dateChange)="getReport()"
+        />
       </mat-date-range-input>
       <mat-hint>MM/DD/YYYY - MM/DD/YYYY</mat-hint>
-      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker-toggle
+        matIconSuffix
+        [for]="picker"
+      ></mat-datepicker-toggle>
       <mat-date-range-picker #picker></mat-date-range-picker>
-    
-      <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Invalid start date</mat-error>
-      <mat-error *ngIf="range.controls.start.hasError('required')">Start date is required</mat-error>
-      <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Invalid end date</mat-error>
+      <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')"
+        >Invalid start date</mat-error
+      >
+      <mat-error *ngIf="range.controls.start.hasError('required')"
+        >Start date is required</mat-error
+      >
+      <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')"
+        >Invalid end date</mat-error
+      >
     </mat-form-field>
   </div>
   <hr />
   <div class="tableContainer" *ngIf="reportMode">
     <div class="tableHeading">
       <h3 *ngIf="reportMode == 'daySummary'">Day Summary</h3>
+      <h3 *ngIf="reportMode == 'consolidated'">Consolidate Report</h3>
       <h3 *ngIf="reportMode == 'billWise'">Bill Wise</h3>
       <h3 *ngIf="reportMode == 'kotWise'">Kot Wise</h3>
       <h3 *ngIf="reportMode == 'itemWise'">Item Wise</h3>
@@ -43,18 +62,23 @@
       <h3 *ngIf="reportMode == 'onlineBills'">Online Bills</h3>
       <div class="actions">
         <button mat-flat-button color="primary" (click)="downloadPdf()">
-            <span>
-                Export PDF <i class="ri-download-cloud-2-fill"></i>
-            </span>
+          <span> Export PDF <i class="ri-download-cloud-2-fill"></i> </span>
         </button>
         <button mat-flat-button color="primary" (click)="downloadExcel()">
-            <span>
-                Export Excel <i class="ri-file-excel-2-fill"></i>
-            </span>
+          <span> Export Excel <i class="ri-file-excel-2-fill"></i> </span>
         </button>
         <button mat-icon-button (click)="reportMode = false">
-            <i class="ri-close-line"></i>
+          <i class="ri-close-line"></i>
         </button>
+        <mat-form-field>
+          <mat-label>Maximum Amount</mat-label>
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="maxAmount"
+            (change)="getReport()"
+          />
+        </mat-form-field>
       </div>
     </div>
     <table id="report-table" *ngIf="!loading && reportMode == 'daySummary'">
@@ -117,6 +141,68 @@
         </tr>
       </tbody>
     </table>
+    <ng-container *ngIf="!loading && reportMode == 'consolidated'">
+      <table id="consolidatedTable" *ngIf="!loading">
+        <thead>
+          <tr>
+            <th>Bill No</th>
+            <th>Token No</th>
+            <th>Date-Time</th>
+            <th>Bill Kots</th>
+            <th>Subtotal</th>
+            <th>Taxes</th>
+            <th>Bill Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let bill of consolidatedSummary.bills">
+            <td>
+              {{ bill.billNo || "N/A" }}
+            </td>
+            <td>
+              {{ bill.orderNo }}
+            </td>
+            <td>
+              {{ bill.createdDate.toDate() | date : "short" }}
+            </td>
+            <td>
+              {{ joinArray(bill.kots) }}
+            </td>
+            <td>
+              {{ bill.billing.subTotal }}
+            </td>
+            <td>
+              <li *ngFor="let tax of bill.billing.taxes">
+                {{ tax.name }} - {{ tax.amount }}
+              </li>
+            </td>
+            <td>
+              {{ bill.billing.grandTotal }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <table id="report-table">
+        <tbody>
+          <tr>
+            <td>Bills</td>
+            <td>{{ consolidatedSummary.bills.length }}</td>
+          </tr>
+          <tr>
+            <td>Total Taxable Value</td>
+            <td>{{ consolidatedSummary.totalSubtotal }}</td>
+          </tr>
+          <tr *ngFor="let tax of consolidatedSummary.totalTaxes">
+            <td>{{ tax.name }}</td>
+            <td>{{ tax.amount }}</td>
+          </tr>
+          <tr>
+            <td>Grand Total</td>
+            <td>{{ consolidatedSummary.totalGrandTotal }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </ng-container>
     <table id="report-table" *ngIf="!loading && reportMode == 'billWise'">
       <thead>
         <tr>
@@ -130,7 +216,7 @@
       <tbody>
         <tr *ngFor="let bill of bills">
           <td>
-            {{ bill.billNo || 'N/A' }}
+            {{ bill.billNo || "N/A" }}
           </td>
           <td>
             {{ bill.orderNo }}
@@ -224,7 +310,7 @@
       <tbody>
         <tr *ngFor="let bill of discountedBills">
           <td>
-            {{ bill.billNo || 'N/A' }}
+            {{ bill.billNo || "N/A" }}
           </td>
           <td>
             {{ bill.orderNo }}
@@ -254,7 +340,7 @@
       <tbody>
         <tr *ngFor="let bill of ncBills">
           <td>
-            {{ bill.billNo || 'N/A' }}
+            {{ bill.billNo || "N/A" }}
           </td>
           <td>
             {{ bill.orderNo }}
@@ -284,7 +370,7 @@
       <tbody>
         <tr *ngFor="let bill of takeawayBills">
           <td>
-            {{ bill.billNo || 'N/A' }}
+            {{ bill.billNo || "N/A" }}
           </td>
           <td>
             {{ bill.orderNo }}
@@ -314,7 +400,7 @@
       <tbody>
         <tr *ngFor="let bill of onlineBills">
           <td>
-            {{ bill.billNo || 'N/A' }}
+            {{ bill.billNo || "N/A" }}
           </td>
           <td>
             {{ bill.orderNo }}
@@ -334,6 +420,18 @@
     <mat-spinner *ngIf="loading" mode="indeterminate"> </mat-spinner>
   </div>
   <div class="reports" *ngIf="reportMode == false">
+    <div class="report" matRipple>
+      <h3>Consolidated Report</h3>
+      <i class="ri-line-chart-fill"></i>
+      <p>All bills for selected range and amount.</p>
+      <button
+        mat-flat-button
+        (click)="reportMode = 'consolidated'; getReport()"
+        color="primary"
+      >
+        View Summary
+      </button>
+    </div>
     <div class="report" matRipple>
       <h3>Day Summary</h3>
       <i class="ri-line-chart-fill"></i>
@@ -431,52 +529,4 @@
       </button>
     </div>
   </div>
-  <!-- <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
-        <mat-tab label="Bill Wise Report">
-            <table>
-                <tr>
-                    <th>Bill No</th>
-                    <th>Kots</th>
-                    <th>Table</th>
-                    <th>Amount</th>
-                    <th>Discount</th>
-                    <th>Total</th>
-                    <th>Time</th>
-                </tr>
-                <tr *ngFor="let bill of bills">
-                    <td>{{bill.billNo || 'N/A'}}</td>
-                    <td>{{joinArray(bill.kots)}}</td>
-                    <td>{{bill.table.name}}</td>
-                    <td>{{bill.billing.subTotal}}</td>
-                    <td>{{bill.billing.discount}}</td>
-                    <td>{{bill.billing.grandTotal}}</td>
-                    <td>{{bill.createdDate.toDate() | date:'short'}}</td>
-                </tr>
-            </table>
-        </mat-tab>
-        <mat-tab label="NC Bill Report">
-            <table>
-                <tr>
-                    <th>Bill No</th>
-                    <th>Kots</th>
-                    <th>Table</th>
-                    <th>Amount</th>
-                    <th>Name</th>
-                    <th>Phone</th>
-                    <th>Reason</th>
-                    <th>Time</th>
-                </tr>
-                <tr *ngFor="let bill of ncBills">
-                    <td>{{bill.billNo || 'N/A'}}</td>
-                    <td>{{joinArray(bill.kots)}}</td>
-                    <td>{{bill.table.name}}</td>
-                    <td>{{bill.billing.subTotal}}</td>
-                    <td>{{bill.nonChargeableDetail?.name}}</td>
-                    <td>{{bill.nonChargeableDetail?.phone}}</td>
-                    <td>{{bill.nonChargeableDetail?.reason}}</td>
-                    <td>{{bill.createdDate.toDate() | date:'short'}}</td>
-                </tr>
-            </table>
-        </mat-tab>
-    </mat-tab-group> -->
 </section>

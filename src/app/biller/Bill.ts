@@ -16,25 +16,10 @@ import { DataProvider } from '../provider/data-provider.service';
 import { DatabaseService, Menu } from '../services/database.service';
 import { Kot } from './Kot';
 import { splittedBill } from './actions/split-bill/split-bill.component';
-import { Discount } from './settings/settings.component';
+import { CodeBaseDiscount, DirectFlatDiscount, DirectPercentDiscount } from './settings/settings.component';
 import { PrintingService } from '../services/printing.service';
 import { Payment } from '../structures/general.structure';
-export const taxes:Tax[] = [
-  {
-    id: 'tax1',
-    name: 'SGST',
-    type: 'percentage',
-    value: 2.5,
-    amount:0
-  },
-  {
-    id: 'tax1',
-    name: 'CGST',
-    type: 'percentage',
-    value: 2.5,
-    amount:0
-  },
-]
+
 export class Bill implements BillConstructor {
   id: string;
   tokens: string[] = [];
@@ -46,6 +31,7 @@ export class Bill implements BillConstructor {
     time:Timestamp;
     user:UserConstructor;
   }[] = [];
+  modifiedAllProducts:any[] = []
   stage: 'active' | 'finalized' | 'settled' | 'cancelled';
   customerInfo: CustomerInfo;
   reactivateKotReasons: string[] = []
@@ -77,6 +63,7 @@ export class Bill implements BillConstructor {
     payments:Payment[];
     time: Timestamp;
     user: User;
+    additionalInfo:any;
   } = undefined;
   cancelledReason?: {
     reason: string;
@@ -102,17 +89,17 @@ export class Bill implements BillConstructor {
     billNo?: string
   ) {
     this.optionalTax = this.dataProvider.optionalTax;
-    taxes[0].amount = Number(this.dataProvider.currentSettings.sgst)
-    taxes[1].amount = Number(this.dataProvider.currentSettings.cgst)
+    // taxes[0].amount = Number(this.dataProvider.currentSettings.sgst)
+    // taxes[1].amount = Number(this.dataProvider.currentSettings.cgst)
     this.updated.subscribe(()=>{
       this.dataProvider.queueUpdate.next()
     })
     this.updated.pipe(debounceTime(10000)).subscribe(async (data) => {
-      taxes[0].amount = Number(this.dataProvider.currentSettings.sgst)
-      taxes[1].amount = Number(this.dataProvider.currentSettings.cgst)
+      // taxes[0].amount = Number(this.dataProvider.currentSettings.sgst)
+      // taxes[1].amount = Number(this.dataProvider.currentSettings.cgst)
       if (!data) {
         let data = this.toObject();
-        // console.log('updating bill', data);
+        console.log('updating bill', data);
         await this.databaseService.updateBill(data);
         // console.log('Bill updated', data);
         this.table.updated.next()
@@ -375,8 +362,7 @@ export class Bill implements BillConstructor {
       this.updated.next(noUpdate);
       return;
     }
-    let totalApplicableTaxRate = Number(this.dataProvider.currentBusiness.cgst) + Number(this.dataProvider.currentBusiness.sgst);
-    let allProducts: Product[] = [];
+    let allProducts: any[] = [];
     this.kots.forEach((kot) => {
       if (kot.stage === 'finalized' || kot.stage === 'active') {
         // add product or increase quantity
@@ -390,180 +376,251 @@ export class Bill implements BillConstructor {
         })
       }
     })
-    // decrease the rate of products if optional tax is enabled
-    if (this.dataProvider.optionalTax){
-      allProducts.forEach((product) => {
-        let oldPrice = JSON.parse(JSON.stringify(product.price));
-        product.taxedPrice = product.price - (((Math.round((product.price + Number.EPSILON) * 100) / 100)/100) * totalApplicableTaxRate);
-        // set taxedPrice to all matching products
-        this.kots.forEach((kot) => {
-          kot.products.forEach((kotProduct) => {
-            if (kotProduct.id === product.id){
-              kotProduct.taxedPrice = product.taxedPrice;
+
+    // check individual product for tax and if the tax.mode is inclusive then add the applicable tax to totalTaxValue or if the tax.mode is exclusive then decrease the price of product by tax rate and add the applicableValue to totalTaxValue
+    let finalTaxes = JSON.parse(JSON.stringify(this.dataProvider.taxes)).map((tax:any) => {return {...tax,amount:0}})
+    allProducts.forEach((product) => {
+      if (product.taxes) {
+        console.log("product taxes",product.taxes);
+        let inclusive = product.taxes.find((tax) => tax.nature === 'inclusive') ? true : false;
+        console.log("Mode",inclusive);
+        let applicableDiscount = 0;
+        let totalAmount = product.price * product.quantity;
+        let applicableTax = 0;
+        product.taxes.forEach((tax) => {
+          if (tax.type === 'percentage'){
+            let taxAmount = (totalAmount * tax.cost) / 100;
+            applicableTax += taxAmount;
+            // find tax in finalTaxes and add the taxAmount to it
+            let index = finalTaxes.findIndex((item:Tax) => item.id === tax.id);
+            if (index !== -1){
+              console.log("adding",taxAmount);
+              finalTaxes[index].amount += taxAmount;
             }
-          })
-        });
-        console.log('product price', product.taxedPrice,oldPrice);
-      })
-    }
-    // calculate sub total
-    if (this.dataProvider.optionalTax){
-      this.billing.subTotal = allProducts.reduce((acc, cur) => {
-        if (cur.lineDiscount){
-          if (cur.lineDiscount.type == 'amount'){
-            return acc + (((cur.taxedPrice || 0) * cur.quantity) - cur.lineDiscount.value);
           } else {
-            return acc + (((cur.taxedPrice || 0) * cur.quantity) - ((cur.taxedPrice || 0) * cur.quantity * cur.lineDiscount.value / 100));
+            applicableTax += tax.cost;
+            // find tax in finalTaxes and add the taxAmount to it
+            let index = finalTaxes.findIndex((item:Tax) => item.id === tax.id);
+            if (index !== -1){
+              finalTaxes[index].amount += tax.cost;
+            }
+          }
+        })
+        let additionalTax = 0;
+        finalTaxes.forEach((tax:Tax) => {
+          if (tax.mode === 'bill'){
+            if (tax.type === 'percentage'){
+              let taxAmount = (totalAmount * tax.cost) / 100;
+              additionalTax += taxAmount;
+              // find tax in finalTaxes and add the taxAmount to it
+              let index = finalTaxes.findIndex((item:Tax) => item.id === tax.id);
+              if (index !== -1){
+                console.log("adding",taxAmount);
+                finalTaxes[index].amount += taxAmount;
+              }
+            } else {
+              additionalTax += tax.cost;
+              // find tax in finalTaxes and add the taxAmount to it
+              let index = finalTaxes.findIndex((item:Tax) => item.id === tax.id);
+              if (index !== -1){
+                finalTaxes[index].amount += tax.cost;
+              }
+            }
+          }
+        })
+        if (inclusive){
+          product.untaxedValue = (totalAmount - applicableTax) + additionalTax;
+          console.log("inclusive",product.untaxedValue);
+        } else {
+          product.untaxedValue = totalAmount + additionalTax;
+          console.log("exclusive",product.untaxedValue);
+        }
+        if (product.lineDiscount) {
+          if (product.lineDiscount.type === 'percentage'){
+            applicableDiscount = product.lineDiscount.value;
+          } else {
+            applicableDiscount = (product.lineDiscount.value / product.untaxedValue) * 100;
+          }
+          product.lineDiscounted = true;
+        }
+        this.billing.discount.forEach((discount) => {
+            if (discount.mode == 'codeBased'){
+              if (discount.type === 'percentage'){
+                applicableDiscount += discount.value;
+              } else {
+                let discountValue = (discount.value / product.untaxedValue) * 100;
+                applicableDiscount += discountValue;
+              }
+            } else if (discount.mode == 'directFlat') {
+              applicableDiscount += discount.value;
+            } else if (discount.mode == 'directPercent') {
+              let discountValue = (discount.value / product.untaxedValue) * 100;
+              applicableDiscount += discountValue;
+            }
+        })
+        product.taxedValue = totalAmount;
+        product.discountedValue = product.untaxedValue - applicableDiscount;
+        product.taxedDiscountedValue = (product.untaxedValue - applicableDiscount) + applicableTax;
+        product.applicableTax = applicableTax;
+        product.applicableDiscount = applicableDiscount;
+        // add product to modifiedAllProducts if it already exists increase quantity or else add it and also add it when the product is lineDiscounted
+        let index = this.modifiedAllProducts.findIndex((item) => item.id === product.id);
+        if (index !== -1){
+          if (product.lineDiscounted){
+            this.modifiedAllProducts.push(product);
+          } else {
+            this.modifiedAllProducts[index].quantity += product.quantity;
           }
         } else {
-          return acc + ((cur.taxedPrice || 0) * cur.quantity);
+          this.modifiedAllProducts.push(product);
         }
-      },0)
-    } else {
-      this.billing.subTotal = allProducts.reduce((acc, cur) => {
-        return acc + (cur.price * cur.quantity);
-      },0)
-    }
-    let unTaxedSubTotal = allProducts.reduce((acc, cur) => {
-      if (cur.lineDiscount){
-        if (cur.lineDiscount.type == 'amount'){
-          cur.lineDiscount.totalAppliedDiscount = cur.lineDiscount.value;
-          return acc + ((cur.price * cur.quantity) - cur.lineDiscount.value);
-        } else {
-          let discountValue = (cur.price * cur.quantity * cur.lineDiscount.value / 100)
-          cur.lineDiscount.totalAppliedDiscount = discountValue;
-          return acc + ((cur.price * cur.quantity) - discountValue);
-        }
-      } else {
-        return acc + (cur.price * cur.quantity);
-      }
-    },0)
-    console.log('sub total', this.billing.subTotal);
-    // calculate totalApplicable discount
-    let totalApplicableDiscount = 0;
-    // calculate discounts
-    // remove all discounts not allowed by current user
-    this.billing.discount = this.billing.discount.filter((discount) => discount.accessLevels.includes(this.user.access))
-    // remove all discounts not allowed by miniumum amount
-    this.billing.discount = this.billing.discount.filter((discount) => {
-      if(!discount.minimumAmount){
-        return true;
-      }
-      if(discount.minimumAmount <= this.billing.subTotal){
-        return true;
-      } else {
-        return false;
       }
     })
-    // remove all discounts not allowed by minimum products
-    this.billing.discount = this.billing.discount.filter((discount) => {
-      if (!discount.minimumProducts){
-        return true
-      }
-      if (discount.minimumProducts <= this.totalProducts()){
-        return true
-      } else {
-        return false
-      }
-    })
-    // calculate discounts
-    let discounts:Discount[] = this.billing.discount.map((discount) => {
-      if (discount.type === 'percentage'){
-        let val = (discount.value / 100) * this.billing.subTotal
-        if (discount.maximumDiscount && val > discount.maximumDiscount) {
-          val = discount.maximumDiscount;
-        }
-        return {
-          ...discount,
-          totalAppliedDiscount: val,
-        };
-      } else {
-        let val = discount.value
-        if (discount.maximumDiscount && val > discount.maximumDiscount) {
-          val = discount.maximumDiscount;
-        }
-        return {
-          ...discount,
-          totalAppliedDiscount: discount.value,
-        };
-      }
-    })
-    this.billing.discount = discounts;
-    // reduce the discounts
-    totalApplicableDiscount = discounts.reduce((acc, cur) => {
-      return acc + cur.totalAppliedDiscount;
-    }, 0);
-    console.log('total applicable discount', totalApplicableDiscount);
-    // decrease new subtotal with discount
-    if (totalApplicableDiscount){
-      var discountedSubtotal = this.billing.subTotal - totalApplicableDiscount;
-    } else {
-      var discountedSubtotal = this.billing.subTotal;
-    }
-    console.log('discounted subtotal', discountedSubtotal);
-    // generate taxes
-    if (this.dataProvider.optionalTax){
-      taxes.forEach((tax) => {
-        tax.amount = (tax.value / 100) * unTaxedSubTotal;
-      })
-    } else {
-      taxes.forEach((tax) => {
-        tax.amount = (tax.value / 100) * discountedSubtotal;
-      })
-    }
-    this.billing.taxes = taxes;
-    let totalApplicableTax = taxes.reduce((acc, cur) => {
-      return acc + cur.amount;
-    }, 0);
-    console.log('total applicable tax', totalApplicableTax);
-    // calculate grand total
-    this.billing.grandTotal = Math.ceil(discountedSubtotal + totalApplicableTax);
-    this.billing.grandTotal = Math.round((this.billing.grandTotal + Number.EPSILON) * 100) / 100
-    console.log('grand total', this.billing.grandTotal);
-    this.updated.next(noUpdate);
 
-    // // log items of active kot with their quantity
-    // // let kotItems: { id: string; quantity: number }[] = [];
-    // // this.kots.forEach((kot) => {
-    // //   if (kot.stage === 'active') {
-    // //     kot.products.forEach((product) => {
-    // //       let item = kotItems.find((item) => item.id === product.id);
-    // //       if (item) {
-    // //         item.quantity += product.quantity;
-    // //       } else {
-    // //         kotItems.push({ ...product, quantity: product.quantity });
-    // //       }
-    // //     });
-    // //   }
-    // // });
-    // // console.log('kot items', kotItems);
+    // this.modifiedAllProducts = JSON.parse(JSON.stringify(allProducts));
 
-    // this.billing.subTotal = this.kots.reduce((acc, cur) => {
-    //   return (
-    //     acc +
-    //     cur.products.reduce((acc, cur) => {
-    //       if(cur.lineDiscount){
-    //         if(cur.lineDiscount.type === 'percentage'){
-    //           return acc + ((cur.price * cur.quantity) - (((cur.price * cur.quantity)/100) * (cur.lineDiscount.value)));
-    //         } else if (cur.lineDiscount.type === 'amount') {
-    //           return acc + (cur.price * cur.quantity) - cur.lineDiscount.value;
+    this.billing.subTotal = allProducts.reduce((acc, cur) => {
+      return acc + cur.untaxedValue;
+    }, 0)
+
+    this.billing.taxes = finalTaxes.filter((tax) => tax.amount > 0);
+    this.billing.grandTotal = allProducts.reduce((acc, cur) => {
+      return acc + cur.taxedDiscountedValue;
+    }, 0)
+    console.log(this.billing,"all products",allProducts,"discounted",this.billing.discount,"final taxes",finalTaxes);
+    this.updated.next();
+
+
+    // // decrease the rate of products if optional tax is enabled
+    // if (this.dataProvider.optionalTax){
+    //   allProducts.forEach((product) => {
+    //     let oldPrice = JSON.parse(JSON.stringify(product.price));
+    //     product.taxedPrice = product.price - (((Math.round((product.price + Number.EPSILON) * 100) / 100)/100) * totalApplicableTaxRate);
+    //     // set taxedPrice to all matching products
+    //     this.kots.forEach((kot) => {
+    //       kot.products.forEach((kotProduct) => {
+    //         if (kotProduct.id === product.id){
+    //           kotProduct.taxedPrice = product.taxedPrice;
     //         }
+    //       })
+    //     });
+    //     console.log('product price', product.taxedPrice,oldPrice);
+    //   })
+    // }
+    // // calculate sub total
+    // if (this.dataProvider.optionalTax){
+    //   this.billing.subTotal = allProducts.reduce((acc, cur) => {
+    //     if (cur.lineDiscount){
+    //       if (cur.lineDiscount.type == 'amount'){
+    //         return acc + (((cur.taxedPrice || 0) * cur.quantity) - cur.lineDiscount.value);
+    //       } else {
+    //         return acc + (((cur.taxedPrice || 0) * cur.quantity) - ((cur.taxedPrice || 0) * cur.quantity * cur.lineDiscount.value / 100));
     //       }
-    //       return acc + (cur.price * cur.quantity);
-    //     }, 0)
-    //   );
-    // }, 0);
-    // let partialSub = this.billing.subTotal - totalDiscount;
-    // // calculate taxes from taxes 
-    // taxes.map((tax) => {
-    //   tax.amount = (tax.value / 100) * partialSub;
+    //     } else {
+    //       return acc + ((cur.taxedPrice || 0) * cur.quantity);
+    //     }
+    //   },0)
+    // } else {
+    //   this.billing.subTotal = allProducts.reduce((acc, cur) => {
+    //     return acc + (cur.price * cur.quantity);
+    //   },0)
+    // }
+    // let unTaxedSubTotal = allProducts.reduce((acc, cur) => {
+    //   if (cur.lineDiscount){
+    //     if (cur.lineDiscount.type == 'amount'){
+    //       cur.lineDiscount.totalAppliedDiscount = cur.lineDiscount.value;
+    //       return acc + ((cur.price * cur.quantity) - cur.lineDiscount.value);
+    //     } else {
+    //       let discountValue = (cur.price * cur.quantity * cur.lineDiscount.value / 100)
+    //       cur.lineDiscount.totalAppliedDiscount = discountValue;
+    //       return acc + ((cur.price * cur.quantity) - discountValue);
+    //     }
+    //   } else {
+    //     return acc + (cur.price * cur.quantity);
+    //   }
+    // },0)
+    // console.log('sub total', this.billing.subTotal);
+    // // calculate totalApplicable discount
+    // let totalApplicableDiscount = 0;
+    // // calculate discounts
+    // // remove all discounts not allowed by current user
+    // this.billing.discount = this.billing.discount.filter((discount) => discount.accessLevels.includes(this.user.access))
+    // // remove all discounts not allowed by miniumum amount
+    // this.billing.discount = this.billing.discount.filter((discount) => {
+    //   if(!discount.minimumAmount){
+    //     return true;
+    //   }
+    //   if(discount.minimumAmount <= this.billing.subTotal){
+    //     return true;
+    //   } else {
+    //     return false;
+    //   }
     // })
-    // let totalTax = taxes.reduce((acc, cur) => {
-    //   return acc + (cur.value / 100) * partialSub;
+    // // remove all discounts not allowed by minimum products
+    // this.billing.discount = this.billing.discount.filter((discount) => {
+    //   if (!discount.minimumProducts){
+    //     return true
+    //   }
+    //   if (discount.minimumProducts <= this.totalProducts()){
+    //     return true
+    //   } else {
+    //     return false
+    //   }
+    // })
+    // // calculate discounts
+    // let discounts:Discount[] = this.billing.discount.map((discount) => {
+    //   if (discount.type === 'percentage'){
+    //     let val = (discount.value / 100) * this.billing.subTotal
+    //     if (discount.maximumDiscount && val > discount.maximumDiscount) {
+    //       val = discount.maximumDiscount;
+    //     }
+    //     return {
+    //       ...discount,
+    //       totalAppliedDiscount: val,
+    //     };
+    //   } else {
+    //     let val = discount.value
+    //     if (discount.maximumDiscount && val > discount.maximumDiscount) {
+    //       val = discount.maximumDiscount;
+    //     }
+    //     return {
+    //       ...discount,
+    //       totalAppliedDiscount: discount.value,
+    //     };
+    //   }
+    // })
+    // this.billing.discount = discounts;
+    // // reduce the discounts
+    // totalApplicableDiscount = discounts.reduce((acc, cur) => {
+    //   return acc + cur.totalAppliedDiscount;
     // }, 0);
+    // console.log('total applicable discount', totalApplicableDiscount);
+    // // decrease new subtotal with discount
+    // if (totalApplicableDiscount){
+    //   var discountedSubtotal = this.billing.subTotal - totalApplicableDiscount;
+    // } else {
+    //   var discountedSubtotal = this.billing.subTotal;
+    // }
+    // console.log('discounted subtotal', discountedSubtotal);
+    // // generate taxes
+    // // if (this.dataProvider.optionalTax){
+    // //   taxes.forEach((tax) => {
+    // //     tax.amount = (tax.value / 100) * unTaxedSubTotal;
+    // //   })
+    // // } else {
+    // //   taxes.forEach((tax) => {
+    // //     tax.amount = (tax.value / 100) * discountedSubtotal;
+    // //   })
+    // // }
     // this.billing.taxes = taxes;
-    // this.billing.totalTax = totalTax;
-    // this.billing.grandTotal = partialSub + totalTax;
+    // let totalApplicableTax = taxes.reduce((acc, cur) => {
+    //   return acc + cur.amount;
+    // }, 0);
+    // console.log('total applicable tax', totalApplicableTax);
+    // // calculate grand total
+    // this.billing.grandTotal = Math.ceil(discountedSubtotal + totalApplicableTax);
+    // this.billing.grandTotal = Math.round((this.billing.grandTotal + Number.EPSILON) * 100) / 100
+    // console.log('grand total', this.billing.grandTotal);
     // this.updated.next(noUpdate);
   }
 
@@ -648,38 +705,10 @@ export class Bill implements BillConstructor {
     this.calculateBill();
   }
 
-  addDiscount(discount: Discount) {
-    this.billing.discount = [discount];
-    console.log("this.billing.discount",this.billing.discount,discount);
-    this.billing.grandTotal = this.billing.subTotal;
-    this.billing.discount.forEach((discount) => {
-      if (discount.type === 'percentage') {
-        this.billing.grandTotal -=
-          (this.billing.subTotal * discount.value) / 100;
-      } else {
-        this.billing.grandTotal -= discount.value;
-      }
-    });
-    if(this.dataProvider.showTableOnBillAction){
-      this.dataProvider.openTableView.next(true);
-    }
-    this.updated.next();
-  }
-
-  addTax(tax: Tax) {
-    this.billing.taxes.push(tax);
-    this.billing.grandTotal = this.billing.subTotal;
-    this.billing.taxes.forEach((tax) => {
-      if (tax.type === 'percentage') {
-        this.billing.grandTotal += (this.billing.subTotal * tax.value) / 100;
-      } else {
-        this.billing.grandTotal += tax.value;
-      }
-    });
-    this.updated.next();
-  }
-
-  finalize() {
+  async finalize() {
+    this.dataProvider.manageKot = false;
+    this.dataProvider.kotViewVisible = false;
+    this.dataProvider.allProducts = true;
     // check if any kot is active
     if (this.kots.find((kot) => kot.stage === 'active')) {
       if (confirm('There are active KOTs. Do you want to finalize them?')) {
@@ -704,90 +733,28 @@ export class Bill implements BillConstructor {
     this.stage = 'finalized';
     let data = this.toObject();
     // this.databaseService.updateBill(data);
-    this.printBill()
+    if (this.dataProvider.printBillAfterFinalize){
+      this.printBill()
+    } else {
+      let res = await this.dataProvider.confirm('Do you want to print bill?',[1],{buttons:['Save','Save And Print']})
+      if (res){
+        this.printBill();
+      }
+    }
 
     this.updated.next();
     if(this.dataProvider.showTableOnBillAction){
       this.dataProvider.openTableView.next(true);
     }
   }
-  setInstruction(){
-    this.instruction = prompt('Enter instruction') || ''
+
+  async setInstruction(){
+    this.instruction = (await this.dataProvider.prompt('Enter instruction')) || ''
     this.updated.next()
   }
 
-  printBill(){
-    // let kotObjects:any[] = []
-    // this.kots.forEach((kot)=>{
-    //   kotObjects.push(kot.toObject())
-    // })
-    // // merge all products of kots into one array and add quani
-    // let allProducts:any[] = []
-    // kotObjects.forEach((kot)=>{
-    //   kot.products.forEach((product:any)=>{
-    //     let index = allProducts.findIndex((res)=>res.id === product.id)
-    //     if (index === -1){
-    //       allProducts.push(product)
-    //     } else {
-    //       allProducts[index].quantity += product.quantity
-    //     }
-    //   })
-    // })
-    // let totalQuantity = allProducts.reduce((acc,cur)=>{
-    //   return acc + cur.quantity
-    // },0)
-    // let settings:any =JSON.parse(localStorage.getItem('printerSettings') || '');
-    // if (!settings['port']){
-    //   alert('Please set printer settings first')
-    //   return
-    // }
-    // let discounts = this.billing.discount.map((res)=>{
-    //   return {
-    //     title:res.name,
-    //     discountValue:res.value,
-    //     discountType:res.type,
-    //     appliedDiscountValue:res.totalAppliedDiscount,
-    //   }
-    // })
+  async printBill(){
     this.printingService.printBill(this);
-    // const data = {
-    //   "printer":localStorage.getItem('billPrinter'),
-    //   "currentProject":settings,
-    //   "isNonChargeable":this.nonChargeableDetail?true:false,
-    //   "complimentaryName":this.nonChargeableDetail?.name || '',
-    //   "customerInfoForm":this.customerInfo,
-    //   "kotsToken":this.kots.map((res)=>res.id).join(','),
-    //   "currentTable":this.table.tableNo,
-    //   "allProducts":allProducts,
-    //   "selectDiscounts":discounts,
-    //   "specialInstructions":this.instruction || false,
-    //   "totalQuantity":totalQuantity,
-    //   "tableNo":this.table.tableNo,
-    //   "totalTaxAmount":this.billing.totalTax,
-    //   "taxableValue":this.billing.subTotal,
-    //   "date": (new Date()).toLocaleDateString('en-GB'),
-    //   "time": (new Date()).toLocaleTimeString('en-GB'),
-    //   "cgst":(this.billing.taxes[0].amount).toFixed(2),
-    //   "sgst":(this.billing.taxes[1].amount).toFixed(2),
-    //   "grandTotal":(this.billing.grandTotal).toFixed(2),
-    //   "paymentMethod":this.billingMode,
-    //   "id":this.id,
-    //   "billNo":this.nonChargeableDetail ? "NC-" + this.id : this.id,
-    // }
-    // console.log("Data",data);
-    // fetch('http://192.168.29.125:'+settings['port']+'/printBill',{
-    //     method:'POST',
-    //     body: JSON.stringify(data),
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     }
-    //   }).then((res) => {
-    //     console.log("Contente",res)
-    //   }).catch((err) => {
-    //     console.log("Error",err)
-    //     alert("Error occurred while printing bill")
-    //   })
-    
   }
 
   deleteKot(kot: Kot) {
@@ -841,8 +808,9 @@ export class Bill implements BillConstructor {
     //   })
   }
 
-  settle(
-    payments: Payment[]
+  async settle(
+    payments: Payment[],
+    additionalInfo?:any
   ) {
     this.calculateBill();
     // update every product and increase their sales counter by their quantity
@@ -867,9 +835,9 @@ export class Bill implements BillConstructor {
           this.dataProvider.billToken++;
           this.databaseService.addBillToken();
         } else if (this.mode == 'takeaway') {
-          this.billNo = this.dataProvider.takeawayToken.toString(),
-          this.dataProvider.takeawayToken++;
-          this.databaseService.addTakeawayToken();
+          this.billNo = this.dataProvider.takeawayToken.toString();
+          // this.dataProvider.takeawayToken++;
+          // this.databaseService.addTakeawayToken();
         } else if (this.mode == 'online') {
           this.billNo = this.dataProvider.onlineTokenNo.toString(),
           this.dataProvider.onlineTokenNo++;
@@ -888,9 +856,15 @@ export class Bill implements BillConstructor {
       payments: payments,
       time: Timestamp.now(),
       user: this.user,
+      additionalInfo:additionalInfo,
     };
-    if (this.dataProvider.printBillAfterSettle){
+    if (this.dataProvider.printBillAfterFinalize){
       this.printingService.printBill(this)
+    } else {
+      let res = await this.dataProvider.confirm('Do you want to print bill?',[1],{buttons:['Save','Save And Print']})
+      if (res){
+        this.printingService.printBill(this)
+      }
     }
     if(this.nonChargeableDetail){
       this.databaseService.addSales(this.billing.grandTotal,'nonChargeableSales')
@@ -901,6 +875,7 @@ export class Bill implements BillConstructor {
     } else if (this.mode == 'online'){
       this.databaseService.addSales(this.billing.grandTotal,'onlineSales')
     }
+    this.stage = 'settled';
     this.dataProvider.currentTable?.clearTable()
     this.dataProvider.currentBill = undefined;
     this.dataProvider.currentTable = undefined;
@@ -923,10 +898,13 @@ export class Bill implements BillConstructor {
     // remove any active kot
     this.kots = this.kots.filter((kot) => kot.stage !== 'active');
     this.dataProvider.currentBill = undefined;
-    this.dataProvider.currentTable!.status = 'available';
-    this.dataProvider.currentTable!.bill = null;
+    if (this.dataProvider.currentTable.type == 'table'){
+      this.dataProvider.currentTable!.status = 'available';
+      this.dataProvider.currentTable!.bill = null;
+    } else {
+      this.dataProvider.currentTable!.completed = true;
+    }
     this.dataProvider.currentTable = undefined;
-    // this.dataProvider.totalSales += this.billing.grandTotal;
     if(this.dataProvider.showTableOnBillAction){
       this.dataProvider.openTableView.next(true);
     }
@@ -1043,7 +1021,6 @@ export class Bill implements BillConstructor {
       throw new Error("No menu selected")
     }
   }
-
 
   splitBill(bills:splittedBill[]) {
     

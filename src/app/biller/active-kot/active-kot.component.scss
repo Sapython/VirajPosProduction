@@ -2,6 +2,11 @@ section{
     overflow-y: auto;
     background: white;
     border-radius: var(--Viraj-border-radius) 0px 0px var(--Viraj-border-radius);
+    // background-image: url('^assets/background.svg');
+    // background-repeat: repeat;
+    // background-size: 400px;
+    // background-attachment: fixed;
+    // height: calc(100% - 40px);
     .cancelled{
         text-decoration: line-through;
         filter: saturate(0);
@@ -114,6 +119,56 @@ section{
             }
             p:nth-child(3){
                 color:var(--Viraj-success);
+            }
+        }
+        table{
+            width: 100%;
+            td{
+                padding: 4px 7px;
+                background: white;
+                font-size: var(--Viraj-font-large)
+            }
+            td:nth-child(1),th:nth-child(1){
+                text-align: left;
+            }
+            td:last-child,th:last-child{
+                text-align: right;
+            }
+            th{
+                font-size: var(--Viraj-font-xlarge);
+            }
+            table.products{
+                border-collapse: collapse;
+                width: 100%;
+                tr{
+                    border-bottom: 1px solid #eee;
+                }
+                td:nth-child(1){
+                    color:var(--Viraj-primary);
+                }
+                td:nth-child(2){
+                    color:var(--Viraj-success);
+                }
+                td:nth-child(3){
+                    color:var(--Viraj-success);
+                }
+                td:nth-child(4){
+                    color:var(--Viraj-success);
+                }
+            }
+            hr{
+                margin: 0px;
+                border: 2px solid #c8c8c8;
+                height: 0px;
+                width: 100%;
+            }
+            .big{
+                font-size: var(--Viraj-font-xxlarge) !important;
+                font-weight: bolder !important;
+                *{
+                    font-size: var(--Viraj-font-xxlarge) !important;
+                    font-weight: bolder !important;
+                }
             }
         }
     }

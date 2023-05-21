@@ -1,7 +1,6 @@
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
 import { DialogComponent } from '../../../base-components/dialog/dialog.component';
 import { DataProvider } from '../../../provider/data-provider.service';
 
@@ -12,12 +11,12 @@ import { DataProvider } from '../../../provider/data-provider.service';
 })
 export class CancelComponent {
   cancelForm:FormGroup = new FormGroup({
-    customer: new FormControl('',Validators.required),
+    customer: new FormControl(this.dataProvider.currentBill.customerInfo.name,Validators.required),
     reason: new FormControl('',Validators.required),
-    phone: new FormControl('',Validators.required),
+    phone: new FormControl(this.dataProvider.currentBill.customerInfo.phone,Validators.required),
     password: new FormControl('',Validators.required),
   })
-  constructor(private dialogRef:MatDialogRef<CancelComponent>,private dataProvider:DataProvider,private dialog:Dialog){}
+  constructor(private dialogRef:DialogRef,private dataProvider:DataProvider,private dialog:Dialog){}
 
   close(){
     this.dialogRef.close()
@@ -28,6 +27,8 @@ export class CancelComponent {
       const dialog = this.dialog.open(DialogComponent,{data:{title:'Invalid Password',description:'Please enter the correct password to continue.',buttons:['Ok'],primary:[0]}})
       return;
     }
+    this.dataProvider.currentBill.customerInfo.phone = this.cancelForm.value.phone;
+    this.dataProvider.currentBill.customerInfo.name = this.cancelForm.value.customer;
     this.dialogRef.close(this.cancelForm.value)
   }
 }

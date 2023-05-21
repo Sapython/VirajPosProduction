@@ -33,6 +33,11 @@ export class ProductsPanelComponent implements OnInit{
         this.searchVisible = false;
       }
     })
+    this.dataProvider.menuLoadSubject.subscribe((value)=>{
+      if (value){
+        this.searcher.setCollection(this.products);
+      }
+    })
     this.customSearchSubject.pipe(debounceTime(600)).subscribe((value)=>{
       this.customResults = this.customSearcher.search(value).map((result)=>{
         return result.item;

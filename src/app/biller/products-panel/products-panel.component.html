@@ -1,12 +1,8 @@
 <section class="noPadding">
     <input type="search" placeholder="Search In Category" (input)="customSearchSubject.next(customSearch.value)" #customSearch>
-    <!-- <mat-form-field>
-        <mat-label>Category Search</mat-label>
-        <input type="text" (input)="customSearchSubject.next(customSearch.value)" #customSearch matInput>
-    </mat-form-field> -->
 </section>
-<section [ngClass]="{'align':(products.length > 5 || (searchVisible && searchResults.length > 5) || (customSearchVisible && customResults.length > 5))}">
+<section class="productArea" [ngClass]="{'align':(products.length > 5 || (searchVisible && searchResults.length > 5) || (customSearchVisible && customResults.length > 5))}">
     <ng-container *ngFor="let item of searchVisible ? this.searchResults : (customSearchVisible ? customResults : products)">
-        <app-product-card (click)="selectProduct(item)" [category]="item.category.name" [productName]="item.name" [veg]="item.type == 'veg'" [price]="item.price" *ngIf="item.visible"></app-product-card>
+        <app-product-card [taxes]="item.taxes" (click)="item.taxes ? selectProduct(item) : {}" [tags]="item.tags" [category]="item.category.name" [productName]="item.name" [veg]="item.type == 'veg'" [price]="item.price" *ngIf="item.visible"></app-product-card>
     </ng-container>
 </section>

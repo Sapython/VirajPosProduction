@@ -13,6 +13,9 @@ export class BrandingComponent {
   constructor(public dataProvider:DataProvider){
     
   }
+  clicked(){
+    window.open('https://virajglobal.org/', '_blank');
+  }
   // generate list of stages
   stages: string[] = Array.from(Array(this.stageNumber).keys()).map((i) => `Stage ${i + 1}`);
 }

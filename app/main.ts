@@ -146,6 +146,14 @@ function createWindow(): BrowserWindow {
     }
   })
 
+  ipcMain.on("clearAuth", async (event, arg) => {
+    try {
+      event.returnValue = store.clear();
+    } catch (error) {
+      event.returnValue = false;
+    }
+  })
+
   return win;
 }
 

@@ -7,12 +7,12 @@ import { Subject, firstValueFrom } from 'rxjs';
 import { ModeConfig } from './biller/sidebar/edit-menu/edit-menu.component';
 import { DatabaseService, Menu  } from './services/database.service';
 import { Dialog } from '@angular/cdk/dialog';
-import { TableConstructor } from './biller/constructors';
+import { TableConstructor, Tax } from './biller/constructors';
 import { Table } from './biller/Table';
-import { Discount } from './biller/settings/settings.component';
 import { PrintingService } from './services/printing.service';
 import { DialogComponent } from './base-components/dialog/dialog.component';
 import { AuthService } from './services/auth.service';
+import { CodeBaseDiscount } from './biller/settings/settings.component';
 
 @Injectable({
   providedIn: 'root'
@@ -108,7 +108,7 @@ export class OnboardingService {
           })
           this.dataProvider.discounts = [];
           discountRes.docs.forEach((discount)=>{
-            this.dataProvider.discounts.push({...discount.data(),id:discount.id} as Discount);
+            this.dataProvider.discounts.push({...discount.data(),id:discount.id} as CodeBaseDiscount);
           })
           let verifiedMenus = []
           this.loadingSteps.next('Waiting for menus to load');
@@ -118,6 +118,9 @@ export class OnboardingService {
             if (verifiedMenus.length == menuInits.length){
               this.loadingSteps.next('All menus loaded');
               console.log("setting.modes",setting.modes);
+              this.databaseService.getTaxesSubscription().subscribe((taxes)=>{
+                this.dataProvider.taxes = taxes.map((tax)=>{return tax as Tax})
+              })
               // set current menu in order of dineIn, takeaway, online
               let currentMenu = this.dataProvider.menus.find((menu)=>((menu.type == 'dineIn') && setting.modes[0]) || (this.dataProvider.menus.find((menu)=>menu.type == 'takeaway') && setting.modes[1]) || (this.dataProvider.menus.find((menu)=>menu.type == 'online') && setting.modes[2]));
               console.log("currentMenu",currentMenu);
@@ -171,6 +174,11 @@ export class OnboardingService {
       this.dataProvider.currentBusiness = res as BusinessRecord;
       // console.log("Business Changed",res);
     })
+    let date = new Date().toISOString().split('T')[0];
+    docData(doc(this.firestore,'business/'+this.dataProvider.businessId+'/sales/'+date)).subscribe((res)=>{
+      // console.log("Sales Changed",res);
+      this.dataProvider.todaySales = res;
+    })
     docData(doc(this.firestore,'business',business.businessId,'settings','settings')).subscribe((res)=>{
       // console.log("Settings Changed",res);
       this.dataProvider.currentSettings = res;
@@ -182,6 +190,7 @@ export class OnboardingService {
       this.dataProvider.billNoSuffix = res['billNoSuffix'] || '';
       this.dataProvider.optionalTax = res['optionalTax'] || false;
       this.dataProvider.printBillAfterSettle = res['printBillAfterSettle'] || false;
+      this.dataProvider.printBillAfterFinalize = res['printBillAfterFinalize'] || false;
       this.dataProvider.takeawayToken = res['takeawayTokenNo'] || 0;
       this.dataProvider.onlineTokenNo = res['onlineTokenNo'] || 0;
       this.dataProvider.orderTokenNo = res['orderTokenNo'] || 0;

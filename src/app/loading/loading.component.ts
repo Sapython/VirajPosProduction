@@ -44,9 +44,9 @@ export class LoadingComponent {
   onboardingBusinessForm:FormGroup = new FormGroup({
     name:new FormControl('',[Validators.required]),
     address:new FormControl('',[Validators.required]),
-    phone:new FormControl('',[Validators.required]),
+    phone:new FormControl('',[Validators.required,Validators.pattern('[0-9]{10}')]),
     email:new FormControl('',[Validators.required,Validators.email]),
-    username:new FormControl('',[Validators.required]),
+    username:new FormControl('',[Validators.required,Validators.minLength(4),Validators.pattern('[a-zA-Z0-9]*')]),
     fssai:new FormControl(''),
     gst:new FormControl(''),
   })
@@ -168,6 +168,7 @@ export class LoadingComponent {
   }
 
   saveBusinessDetails(){
+    this.dataProvider.activeModes = [true,true,true]
   }
 
   logout(){
@@ -218,30 +219,39 @@ export class LoadingComponent {
     })
   }
 
-  login() {
+  async login() {
     if (this.mode == 'signup') {
       this.signup();
       return;
     }
-    this.dataProvider.loading = true;
-    this.signInWithUserAndPassword({
-      username:this.loginForm.value.username,
-      password:this.loginForm.value.password,
-    }).then((result)=>{
-      console.log(result.data);
-      this.authService.signInWithCustomToken(result.data['token']).then((data)=>{
-        console.log(data);
-        this.alertify.presentToast("Logged In with "+this.loginForm.value.username)
-      }).catch((error)=>{
-        console.log(error);
-        this.alertify.presentToast(error)
+    try {
+      this.dataProvider.loading = true;
+      let result = await this.signInWithUserAndPassword({
+        username:this.loginForm.value.username,
+        password:this.loginForm.value.password,
       })
-    }).catch((error)=>{
-      console.log(error);
-      this.alertify.presentToast(error)
-    }).finally(()=>{
+      console.log(result.data);
+      await this.authService.signInWithCustomToken(result.data['token'])
+      this.alertify.presentToast("Logged In with "+this.loginForm.value.username)
+    } catch (error) {
+      this.alertify.presentToast(error.message)
+    } finally {
       this.dataProvider.loading = false;
-    })
+    }
+    // .then((data)=>{
+    //   console.log(data);
+    //   this.alertify.presentToast("Logged In with "+this.loginForm.value.username)
+    // }).catch((error)=>{
+    //   console.log(error);
+    //   this.alertify.presentToast(error)
+    // })
+    // .then((result)=>{
+    // }).catch((error)=>{
+    //   console.log(error);
+    //   this.alertify.presentToast(error)
+    // }).finally(()=>{
+    //   this.dataProvider.loading = false;
+    // })
     // this.authService
     //   .loginWithEmailPassword(
     //     this.loginForm.value.username,
@@ -324,7 +334,7 @@ export class LoadingComponent {
       }
     })
     console.log('filteredProducts', filteredProducts);
-    const dialog = this.dialog.open(AddNewCategoryComponent,{data:{noSave:true,products:finalProducts}})
+    const dialog = this.dialog.open(AddNewCategoryComponent,{data:{noSave:true,products:finalProducts,rootProducts:finalProducts}})
     dialog.closed.subscribe((value:any)=>{
       console.log('value', value);
       if(value){
@@ -506,6 +516,7 @@ export class LoadingComponent {
           password:this.securityForm.value.billerPin,
           tableTimeOutTime:45,
           billNoSuffix:'',
+          printBillAfterFinalize:true,
           customBillNote:'',
           optionalTax:false,
           modes:this.dataProvider.activeModes,
@@ -552,9 +563,9 @@ export class LoadingComponent {
       this.loginStage.next('Error Occured')
       this.onboardingService.stage = 'errorOccured'
       this.onboardingStarted = false;
+      this.dataProvider.loading = false;
       this.alertify.presentToast("Some error occured",'error')
     }
-
   }
 
   setDefaultAccount(business:UserBusiness){
@@ -570,5 +581,11 @@ export class LoadingComponent {
         this.alertify.presentToast('Default account not set','error')
       }
     })
+  }
+
+  get everythingDone(){
+    let formsValid = this.onboardingBusinessForm.valid && this.securityForm.valid
+    let accountsValid = this.accounts.filter((account)=>account.username && account.access).length > 0
+    return formsValid && accountsValid
   }
 }

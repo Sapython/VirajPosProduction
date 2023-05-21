@@ -10,7 +10,7 @@
             Online
         </ng-container>
     </h1>
-    <mat-form-field>
+    <mat-form-field appearance="outline">
         <mat-label>Select Menu</mat-label>
         <mat-select placeholder="Select Menu" [(ngModel)]="this.data.value" name="menu">
             <mat-option *ngFor="let menu of this.data.menus" [value]="menu.id">

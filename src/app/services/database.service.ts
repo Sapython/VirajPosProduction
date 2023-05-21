@@ -17,7 +17,7 @@ import {
   where,
 } from '@angular/fire/firestore';
 import { collection, getDoc, getDocs } from '@firebase/firestore';
-import { Product, TableConstructor } from '../biller/constructors';
+import { Product, TableConstructor, Tax } from '../biller/constructors';
 import { DataProvider } from '../provider/data-provider.service';
 import {
   Category,
@@ -35,8 +35,8 @@ import {
 import { ModeConfig } from '../biller/sidebar/edit-menu/edit-menu.component';
 import { AlertsAndNotificationsService } from './alerts-and-notification/alerts-and-notifications.service';
 import { Dialog } from '@angular/cdk/dialog';
-import { Discount } from '../biller/settings/settings.component';
 import { BusinessRecord, Member, UserBusiness } from '../structures/user.structure';
+import { CodeBaseDiscount } from '../biller/settings/settings.component';
 
 @Injectable({
   providedIn: 'root',
@@ -266,6 +266,24 @@ export class DatabaseService {
     //   })
     //   console.log("NEW ROOT CATs",categories);
     // })
+    // setTimeout(() => {
+    //   this.getProducts().then((res)=>{
+    //     alert("Running")
+    //     res.docs.forEach((document)=>{
+    //       let name = document.data()['name'].replace(' Momos','').replace(' momos','')
+    //       // let tags = name.split('-').map((tag)=>tag.trim())
+    //       let finalTags = []
+    //       if (name.search('Full') != -1 || name.search('full') != -1){
+    //         finalTags.push({name:'Full',color:'green',contrast:'white'})
+    //       } else if (name.search('Half') != -1 || name.search('half') != -1){
+    //         finalTags.push({name:'Half',color:'tomato',contrast:'white'})
+    //       }
+    //       name = name.replace('Full','').replace('Half','').replace('full','').replace('half','').replace('-',' ').replace('Papper','Pepper').replace(' Classic',' ').replace('   ',' ').replace('  ',' ').trim()
+    //       console.log("NewProduct",name,finalTags,this.dataProvider.businessId,this.dataProvider.currentMenu?.selectedMenu?.id);
+    //       updateDoc(doc(this.firestore,'/business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/products/'+document.id),{name:name,tags:finalTags,oldName:document.data()['name']})
+    //     })
+    //   })
+    // },10000)
   }
 
   getMenuData(){
@@ -311,6 +329,10 @@ export class DatabaseService {
       collection(this.firestore, 'business/'+this.dataProvider.businessId+'/tables'),
       table
     );
+  }
+
+  deleteTable(id: string) {
+    return deleteDoc(doc(this.firestore, 'business/'+this.dataProvider.businessId+'/tables', id));
   }
 
   addRecipe(recipe: any,menuId:string) {
@@ -383,6 +405,7 @@ export class DatabaseService {
       { takeawayTokenNo: increment(1) }
     );
   }
+
   updateOnlineToken(token: any) {
     return setDoc(
       doc(
@@ -856,11 +879,24 @@ export class DatabaseService {
     );
   }
 
-  addDiscount(discount:Discount){
+  addDiscount(discount:CodeBaseDiscount){
     return addDoc(
       collection(this.firestore, 'business/'+this.dataProvider.businessId+'/discounts/'),
       {...discount,creationDate:serverTimestamp()}
     );
+  }
+
+  updateDiscount(discount:CodeBaseDiscount){
+    console.log('business',this.dataProvider.businessId,'discounts',discount.id);
+    return setDoc(
+      doc(this.firestore, 'business',this.dataProvider.businessId,'discounts',discount.id),
+      discount,
+      { merge: true }
+    );
+  }
+
+  deleteDiscount(id:string){
+    return deleteDoc(doc(this.firestore, 'business/'+this.dataProvider.businessId+'/discounts/',id));
   }
 
   getDiscounts(){
@@ -896,8 +932,13 @@ export class DatabaseService {
     }))
   }
 
-  addSales(sale:number,type:string){
+  async addSales(sale:number,type:string){
     // alert("Adding sales")
+    // get date in format of 2021-08-01
+    let date = new Date().toISOString().split('T')[0];
+    await setDoc(doc(this.firestore,'business/'+this.dataProvider.businessId+'/sales/'+date),{
+      [type]:increment(sale)
+    })
     return updateDoc(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{
       [type]:increment(sale)
     })
@@ -921,6 +962,26 @@ export class DatabaseService {
 
   updatePaymentMethod(id:string,data:any){
     return setDoc(doc(this.firestore,'business/'+this.dataProvider.businessId+'/paymentMethods',id),data,{merge:true});
+  }
+
+  getTaxesSubscription(){
+    return collectionData(collection(this.firestore,'business/'+this.dataProvider.businessId+'/taxes'),{idField:'id'});
+  }
+
+  getTaxes(){
+    return getDocs(collection(this.firestore,'business/'+this.dataProvider.businessId+'/taxes'));
+  }
+
+  addTax(data:Tax){
+    return addDoc(collection(this.firestore,'business/'+this.dataProvider.businessId+'/taxes'),data);
+  }
+
+  updateTax(id:string,data:any){
+    return setDoc(doc(this.firestore,'business/'+this.dataProvider.businessId+'/taxes',id),data,{merge:true});
+  }
+
+  deleteTax(id:string){
+    return deleteDoc(doc(this.firestore,'business/'+this.dataProvider.businessId+'/taxes',id));
   }
 
 }

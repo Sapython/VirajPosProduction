@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BillConstructor, KotConstructor, Product, TableConstructor } from '../../../../../biller/constructors';
+import { BillConstructor, KotConstructor, Product, TableConstructor, Tax } from '../../../../../biller/constructors';
 import { DatabaseService } from '../../../../../services/database.service';
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
@@ -32,6 +32,13 @@ export class ReportsComponent implements OnInit {
     totalOnlineBills:0,
     totalOnlineAmount:0,
   }
+  consolidatedSummary = {
+    bills:[],
+    totalSubtotal:0,
+    totalGrandTotal:0,
+    totalTaxes:[],
+  }
+  maxAmount:number = 0;
   bills:BillConstructor[] = []
   kots:kotReport[] = []
   products:productReport[] = []
@@ -41,10 +48,10 @@ export class ReportsComponent implements OnInit {
   onlineBills:BillConstructor[] = []
   tables:TableConstructor[] = []
   loading:boolean = false;
-  reportMode:'billWise'|'kotWise'|'itemWise'|'discounted'|'ncBills'|'takeawayBills'|'onlineBills' | 'daySummary' | false = false;
+  reportMode:'billWise'|'kotWise'|'itemWise'|'discounted'|'ncBills'|'takeawayBills'|'onlineBills' | 'daySummary' | 'consolidated' | false = false;
   range = new FormGroup({
-    start: new FormControl<Date | null>(null,[Validators.required]),
-    end: new FormControl<Date | null>(null),
+    start: new FormControl<Date | null>(new Date(),[Validators.required]),
+    end: new FormControl<Date | null>(new Date()),
   });
   ngOnInit(): void {
   }
@@ -160,6 +167,35 @@ export class ReportsComponent implements OnInit {
           this.loading = false;
         });
   
+      } else if (this.reportMode == 'consolidated'){
+        this.loading = true;
+        this.databaseService.getBillsByDay(this.range.value.start,this.range.value.end).then((bills) => {
+          let localBills = bills.docs.map((doc) => {
+            return {...doc.data(),id:doc.id} as BillConstructor;
+          })
+          console.log("bills local",localBills);
+          let filteredLocalBills = localBills.filter((res)=>res.settlement && res.billing.grandTotal < this.maxAmount && res.billing.grandTotal > 0)
+          console.log("bills",filteredLocalBills);
+          let taxes:Tax[] = []
+          filteredLocalBills.forEach((bill)=>{
+            bill.billing.taxes.forEach((tax)=>{
+              let index = taxes.findIndex((res)=>res.id == tax.id)
+              if (index == -1){
+                taxes.push(JSON.parse(JSON.stringify(tax)))
+              } else {
+                console.log("Adding tax",taxes[index].amount,tax.amount,taxes[index].amount + tax.amount);
+                taxes[index].amount = taxes[index].amount + tax.amount
+              }
+            })
+          })
+          this.consolidatedSummary = {
+            bills:filteredLocalBills,
+            totalSubtotal:filteredLocalBills.reduce((acc,res)=>acc + res.billing.subTotal,0),
+            totalGrandTotal:filteredLocalBills.reduce((acc,res)=>acc + res.billing.grandTotal,0),
+            totalTaxes:taxes,
+          }
+          this.loading = false;
+        });
       } else {
         this.reportMode = false
       }
@@ -219,6 +255,8 @@ export class ReportsComponent implements OnInit {
       title = "Takeaway Bills"
     } else if(this.reportMode == 'onlineBills'){
       title = "Online Bills"
+    } else if (this.reportMode == 'consolidated'){
+      title = "Consolidated Report"
     }
     let logo = new Image()
     logo.src = 'assets/viraj.png'
@@ -236,7 +274,13 @@ export class ReportsComponent implements OnInit {
       startY: 40,
     })
     doc.setFontSize(13);
-    autoTable(doc, { html: '#report-table', startY: 55 })
+    let y;
+    if (this.reportMode == 'consolidated'){
+      autoTable(doc, { html: '#consolidatedTable', startY: 55, didDrawPage: function (data) {
+        y = data.cursor.y
+      } })
+    }
+    autoTable(doc, { html: '#report-table', startY: y+10 })
     doc.save(this.reportMode+((new Date()).toLocaleString())+'.pdf')
   }
 

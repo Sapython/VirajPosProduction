@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { Tax } from '../../constructors';
 
 @Component({
   selector: 'app-product-card',
@@ -11,4 +12,6 @@ export class ProductCardComponent {
   @Input() smaller: boolean = false;
   @Input() category: string = '';
   @Input() veg: boolean = true;
+  @Input() tags: { name: string, color: string,contrast:string}[] = [];
+  @Input() taxes: Tax[] | undefined = undefined;
 }

@@ -1,5 +1,5 @@
 <main>
-  <h1>{{ onboardingService.stage }}</h1>
+  <!-- <h1>{{ onboardingService.stage }}</h1> -->
   <section
     [@zoomInOnEnter]
     [@zoomOutOnLeave]
@@ -17,44 +17,10 @@
         <input
           matInput
           formControlName="username"
-          type="email"
-          placeholder="Email"
-          (input)="checkUsername.next(username.value)"
-          #username
+          type="text"
+          placeholder="Username"
           required
         />
-        <mat-hint
-          *ngIf="
-            userNameAvailable == 'unavailable' &&
-            username.value &&
-            !checkingUsername
-          "
-          >Username already exists</mat-hint
-        >
-        <mat-hint
-          *ngIf="
-            userNameAvailable == 'available' &&
-            username.value &&
-            !checkingUsername
-          "
-          class="success"
-          ><strong>Great</strong> you can use this username</mat-hint
-        >
-        <mat-hint
-          *ngIf="
-            userNameAvailable == 'invalid' &&
-            username.value &&
-            !checkingUsername
-          "
-          class="error"
-          ><strong>Invalid</strong> you cannot use this username</mat-hint
-        >
-        <mat-spinner
-          *ngIf="checkingUsername"
-          matSuffix
-          [diameter]="18"
-          style="float: right; margin-left: 8px"
-        ></mat-spinner>
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>Password</mat-label>
@@ -64,7 +30,10 @@
           type="password"
           placeholder="Password"
           required
+          #password
         />
+        <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="password.type == 'password'" (click)="password.type == 'password' ? password.type = 'text' : password.type = 'password'" mat-icon-button><mat-icon>visibility</mat-icon></button>
+        <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="!(password.type == 'password')" (click)="password.type == 'password' ? password.type = 'text' : password.type = 'password'" mat-icon-button><mat-icon>visibility_off</mat-icon></button>
       </mat-form-field>
       <button
         mat-flat-button
@@ -173,19 +142,24 @@
     class="onboarding"
   >
     <!-- <p>onboarding</p> -->
-    <mat-stepper>
-      <mat-step label="Welcome">
+    <mat-stepper [linear]="true">
+      <mat-step label="Welcome" state="flag">
         <div>
           <h1>Welcome to <strong>Viraj</strong></h1>
           <p>The restaurant <strong>standard</strong> for modern age.</p>
           <h3>Let's get started</h3>
           <h3></h3>
-          <button color="primary" mat-flat-button matStepperNext>
-            Become a part
-          </button>
+          <div class="actions">
+            <button color="primary" mat-stroked-button (click)="onboardingService.stage = 'noUser'">
+              Cancel
+            </button>
+            <button color="primary" mat-flat-button matStepperNext>
+              Become a part
+            </button>
+          </div>
         </div>
       </mat-step>
-      <mat-step label="Register">
+      <mat-step label="Register" [stepControl]="onboardingBusinessForm" errorMessage="Missing basic details" state="edit_note">
         <div>
           <h1>Let's get started</h1>
           <form
@@ -206,7 +180,7 @@
               <mat-label>Address</mat-label>
               <input type="text" matInput formControlName="address" />
             </mat-form-field>
-            <div class="upload" (click)="picker.click()">
+            <!-- <div class="upload" (click)="picker.click()">
               <input type="file" hidden #picker (change)="chooseFile($event)" />
               <ng-container *ngIf="!logoFile">
                 <p>Upload Logo</p>
@@ -219,7 +193,7 @@
                 <img [src]="logoString" />
                 <p>{{ buisnessName.value | titlecase }}</p>
               </div>
-            </div>
+            </div> -->
             <mat-form-field appearance="outline">
               <mat-label>Phone</mat-label>
               <input type="tel" matInput formControlName="phone" />
@@ -234,8 +208,41 @@
                 type="text"
                 matInput
                 formControlName="username"
-                #newuserName
+                (input)="checkUsername.next(username.value)"
+                #username
               />
+              <mat-hint
+                *ngIf="
+                  userNameAvailable == 'unavailable' &&
+                  username.value &&
+                  !checkingUsername
+                "
+                >Username already exists</mat-hint
+              >
+              <mat-hint
+                *ngIf="
+                  userNameAvailable == 'available' &&
+                  username.value &&
+                  !checkingUsername
+                "
+                class="success"
+                ><strong>Great</strong> you can use this username</mat-hint
+              >
+              <mat-hint
+                *ngIf="
+                  userNameAvailable == 'invalid' &&
+                  username.value &&
+                  !checkingUsername
+                "
+                class="error"
+                ><strong>Invalid</strong> you cannot use this username</mat-hint
+              >
+              <mat-spinner
+                *ngIf="checkingUsername"
+                matSuffix
+                [diameter]="18"
+                style="float: right; margin-left: 8px"
+              ></mat-spinner>
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>FSSAI</mat-label>
@@ -256,10 +263,9 @@
           </form>
         </div>
       </mat-step>
-      <mat-step label="Security">
+      <mat-step label="Security" [stepControl]="securityForm" errorMessage="Security Details Incorrect" state="key">
         <form [formGroup]="securityForm" class="securityForm">
           <h1>Security</h1>
-          <p>Viraj is ...</p>
           <mat-form-field appearance="outline">
             <mat-label>Account Password</mat-label>
             <input
@@ -287,6 +293,8 @@
             <mat-error *ngIf="!(accConfirmPassword.value == accPassword.value)">
               Password don't match.
             </mat-error>
+            <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="accPassword.type == 'password'" (click)="accPassword.type == 'password' ? accPassword.type = 'text' : accPassword.type = 'password'" mat-icon-button><mat-icon>visibility</mat-icon></button>
+            <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="!(accPassword.type == 'password')" (click)="accPassword.type == 'password' ? accPassword.type = 'text' : accPassword.type = 'password'" mat-icon-button><mat-icon>visibility_off</mat-icon></button>
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Confirm Account Password</mat-label>
@@ -315,6 +323,8 @@
             <mat-error *ngIf="!(accConfirmPassword.value == accPassword.value)">
               Password don't match.
             </mat-error>
+            <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="accConfirmPassword.type == 'password'" (click)="accConfirmPassword.type == 'password' ? accConfirmPassword.type = 'text' : accConfirmPassword.type = 'password'" mat-icon-button><mat-icon>visibility</mat-icon></button>
+            <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="!(accConfirmPassword.type == 'password')" (click)="accConfirmPassword.type == 'password' ? accConfirmPassword.type = 'text' : accConfirmPassword.type = 'password'" mat-icon-button><mat-icon>visibility_off</mat-icon></button>
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Biller Pin</mat-label>
@@ -343,6 +353,8 @@
             <mat-error *ngIf="!(confirmBillerPin.value == billerPin.value)">
               Pin don't match.
             </mat-error>
+            <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="billerPin.type == 'password'" (click)="billerPin.type == 'password' ? billerPin.type = 'text' : billerPin.type = 'password'" mat-icon-button><mat-icon>visibility</mat-icon></button>
+            <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="!(billerPin.type == 'password')" (click)="billerPin.type == 'password' ? billerPin.type = 'text' : billerPin.type = 'password'" mat-icon-button><mat-icon>visibility_off</mat-icon></button>
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Confirm Biller Pin</mat-label>
@@ -371,6 +383,8 @@
             <mat-error *ngIf="!(confirmBillerPin.value == billerPin.value)">
               Pin don't match.
             </mat-error>
+            <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="confirmBillerPin.type == 'password'" (click)="confirmBillerPin.type == 'password' ? confirmBillerPin.type = 'text' : confirmBillerPin.type = 'password'" mat-icon-button><mat-icon>visibility</mat-icon></button>
+            <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="!(confirmBillerPin.type == 'password')" (click)="confirmBillerPin.type == 'password' ? confirmBillerPin.type = 'text' : confirmBillerPin.type = 'password'" mat-icon-button><mat-icon>visibility_off</mat-icon></button>
           </mat-form-field>
           <button
             color="primary"
@@ -382,7 +396,7 @@
           </button>
         </form>
       </mat-step>
-      <mat-step label="Accounts">
+      <mat-step label="Accounts" state="group">
         <div>
           <h1>Account</h1>
           <p>
@@ -424,7 +438,7 @@
           </button>
         </div>
       </mat-step>
-      <mat-step label="Menu">
+      <mat-step label="Menu" state="menu_book">
         <form [formGroup]="addNewMenuForm">
           <div class="modes">
             <mat-slide-toggle
@@ -471,7 +485,7 @@
           </button>
         </form>
       </mat-step>
-      <mat-step label="Dishes">
+      <mat-step label="Dishes" state="lunch_dining">
         <h1>Dishes</h1>
         <p>
           Add dishes to your menu. You can add dishes from our existing products
@@ -509,9 +523,9 @@
             </tbody>
           </table>
         </div>
-        <button mat-flat-button color="primary" matStepperNext>Continue</button>
+        <button mat-flat-button color="primary" [disabled]="selectedProducts.length == 0" matStepperNext>Continue</button>
       </mat-step>
-      <mat-step label="Categories">
+      <mat-step label="Categories" state="category">
         <div class="heading">
           <h3>Menu Categories</h3>
           <button
@@ -539,7 +553,7 @@
         </ol>
         <button mat-flat-button color="primary" matStepperNext>Continue</button>
       </mat-step>
-      <mat-step label="Complete">
+      <mat-step label="Complete" state="done_all">
         <h1>Completed</h1>
         <p>
           All the steps are done now. Press <strong>onboard me</strong> to
@@ -551,6 +565,7 @@
           *ngIf="!this.onboardingStarted"
           type="solid"
           [animated]="true"
+          [disabled]="!everythingDone"
           (vclick)="completeOnboarding()"
           [extraLarge]="true"
           >Onboard Me</viraj-button

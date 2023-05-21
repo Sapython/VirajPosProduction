@@ -1,23 +1,26 @@
 <section>
     <div class="categories">
-        <span><strong>Menu</strong>&nbsp;&nbsp;&nbsp; Viraj Categories</span>
-        <ng-container *ngIf="this.dataProvider.currentMenu?.recommendedCategories.length > 0">
-            <ng-container *ngFor="let category of this.dataProvider.currentMenu?.recommendedCategories">
-                <app-category-card (click)="openCategory(category)" *ngIf="category.enabled" [category]="category"></app-category-card>
+        <ng-container *ngIf="(this.dataProvider.currentMenu?.recommendedCategories | enabled).length > 0">
+            <span>Viraj Categories</span>
+            <ng-container *ngFor="let category of this.dataProvider.currentMenu?.recommendedCategories | enabled">
+                <app-category-card (click)="openCategory(category)" [category]="category"></app-category-card>
             </ng-container>
         </ng-container>
-        <ng-container *ngIf="this.dataProvider.currentMenu?.viewCategories.length > 0">
+        <ng-container *ngIf="(this.dataProvider.currentMenu?.viewCategories | enabled).length > 0">
             <span>Your Categories</span>
-            <ng-container *ngFor="let category of this.dataProvider.currentMenu?.viewCategories">
-                <app-category-card (click)="openCategory(category)" *ngIf="category.enabled" [category]="category"></app-category-card>
+            <ng-container *ngFor="let category of this.dataProvider.currentMenu?.viewCategories | enabled">
+                <app-category-card (click)="openCategory(category)" [category]="category"></app-category-card>
             </ng-container>
         </ng-container>
-        <ng-container *ngIf="this.dataProvider.currentMenu?.mainCategories.length > 0">
+        <ng-container *ngIf="(this.dataProvider.currentMenu?.mainCategories | enabled).length > 0">
             <span>Main Categories</span>
-            <ng-container *ngFor="let category of this.dataProvider.currentMenu?.mainCategories">
-                <app-category-card (click)="openCategory(category)" *ngIf="category.enabled" [category]="category"></app-category-card>
+            <ng-container *ngFor="let category of this.dataProvider.currentMenu?.mainCategories | enabled">
+                <app-category-card (click)="openCategory(category)" [category]="category"></app-category-card>
             </ng-container>
         </ng-container>
+        <br>
+        <br>
+        <br>
         <!-- <app-category-card (click)="openCategory(category)" *ngFor="let category of categories" [category]="category"></app-category-card>
         <app-category-card (click)="openCategory(category)" *ngFor="let category of categories" [category]="category"></app-category-card> -->
     </div>

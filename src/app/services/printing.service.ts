@@ -7,7 +7,6 @@ import {
   Tax,
 } from '../biller/constructors';
 import { Bill } from '../biller/Bill';
-import { Discount } from '../biller/settings/settings.component';
 import { Dialog } from '@angular/cdk/dialog';
 import { DialogComponent } from '../base-components/dialog/dialog.component';
 declare var window: any;
@@ -367,57 +366,57 @@ export class PrintingService {
     let allProducts = []
     let discountedProducts = []
     let totalQuantity = 0
-    bill.kots.forEach((kot: Kot) => {
-      kot.products.forEach((product: Product) => {
-        // add product to allProducts if not already present or update quantity
-        if (product.lineDiscount){
-          console.log('product has discount',product);
-          discountedProducts.push(
-            {
-              id: product.id,
-              name: product.name,
-              instruction: product.instruction,
-              quantity: product.quantity,
-              price: (bill.optionalTax ? product.taxedPrice : product.price) - product.lineDiscount.totalAppliedDiscount,
-              amount:((bill.optionalTax ? product.taxedPrice : product.price) * product.quantity) - product.lineDiscount.totalAppliedDiscount,
-            }
-          )
-          totalQuantity += product.quantity
-        } else {
-          allProducts.push(
-            {
-              id: product.id,
-              name: product.name,
-              instruction: product.instruction,
-              quantity: product.quantity,
-              price: bill.optionalTax ? product.taxedPrice : product.price,
-              amount: (bill.optionalTax ? product.taxedPrice : product.price) * product.quantity,
-            }
-          )
-          totalQuantity += product.quantity
-        }
-      });
-    })
-    let mergedProducts = []
-    allProducts.forEach((product: any) => {
-      // add product to mergedProducts if not already present or update quantity
-      let foundProduct = mergedProducts.find((prod: any) => prod.id === product.id)
-      if (foundProduct){
-        foundProduct.quantity += product.quantity
-        foundProduct.amount += product.amount
-      } else {
-        mergedProducts.push(product)
-      }
-    })
-    console.log("discountedProducts",discountedProducts,mergedProducts);
-    mergedProducts = mergedProducts.concat(discountedProducts);
+    // bill.kots.forEach((kot: Kot) => {
+    //   kot.products.forEach((product: Product) => {
+    //     // add product to allProducts if not already present or update quantity
+    //     if (product.lineDiscount){
+    //       console.log('product has discount',product);
+    //       discountedProducts.push(
+    //         {
+    //           id: product.id,
+    //           name: product.name,
+    //           instruction: product.instruction,
+    //           quantity: product.quantity,
+    //           price: (bill.optionalTax ? product.taxedPrice : product.price) - product.lineDiscount.totalAppliedDiscount,
+    //           amount:((bill.optionalTax ? product.taxedPrice : product.price) * product.quantity) - product.lineDiscount.totalAppliedDiscount,
+    //         }
+    //       )
+    //       totalQuantity += product.quantity
+    //     } else {
+    //       allProducts.push(
+    //         {
+    //           id: product.id,
+    //           name: product.name,
+    //           instruction: product.instruction,
+    //           quantity: product.quantity,
+    //           price: bill.optionalTax ? product.taxedPrice : product.price,
+    //           amount: (bill.optionalTax ? product.taxedPrice : product.price) * product.quantity,
+    //         }
+    //       )
+    //       totalQuantity += product.quantity
+    //     }
+    //   });
+    // })
+    // let mergedProducts = []
+    // allProducts.forEach((product: any) => {
+    //   // add product to mergedProducts if not already present or update quantity
+    //   let foundProduct = mergedProducts.find((prod: any) => prod.id === product.id)
+    //   if (foundProduct){
+    //     foundProduct.quantity += product.quantity
+    //     foundProduct.amount += product.amount
+    //   } else {
+    //     mergedProducts.push(product)
+    //   }
+    // })
+    console.log("discountedProducts",bill.modifiedAllProducts);
+    // mergedProducts = mergedProducts.concat(discountedProducts);
     let printerConfig = filteredProducts.map((product: any) => {
       return { product: product.id, printer: product.category.printer };
     });
-    console.log("mergedProducts",mergedProducts);
+    // console.log("mergedProducts",mergedProducts);
     let billdata = {
       id: bill.id,
-      products: mergedProducts,
+      products: bill.modifiedAllProducts,
       date: new Date().toLocaleDateString(),
       time: new Date().toLocaleTimeString(),
       grandTotal: bill.billing.grandTotal,
@@ -425,20 +424,36 @@ export class PrintingService {
         return {
           name: tax.name,
           value: tax.amount,
-          rate: tax.value,
+          rate: tax.cost,
         };
       }),
       totaltax: {
         value: bill.billing.totalTax,
-        rate: bill.billing.taxes.reduce((a, b: Tax) => a + b.value, 0),
+        rate: bill.billing.taxes.reduce((a, b: Tax) => a + b.cost, 0),
       },
-      discount: bill.billing.discount.map((discount: Discount) => {
-        return {
-          name: discount.name,
-          value: discount.totalAppliedDiscount,
-          rate: discount.value,
-          type: discount.type,
-        };
+      discount: bill.billing.discount.map((discount) => {
+        if (discount.mode === 'codeBased'){
+          return {
+            name: discount.name,
+            value: discount.totalAppliedDiscount,
+            rate: discount.value,
+            type: discount.type,
+          };
+        } else if (discount.mode == 'directFlat'){
+          return {
+            name: 'Flat',
+            value: discount.totalAppliedDiscount,
+            rate: discount.value,
+            type: 'flat',
+          };
+        } else if (discount.mode == 'directPercent'){
+          return {
+            name: 'Percent',
+            value: discount.totalAppliedDiscount,
+            rate: discount.value,
+            type: 'percentage',
+          };
+        }
       }),
       billNoSuffix:this.dataprovider.billNoSuffix,
       subtotal: bill.billing.subTotal,
@@ -448,7 +463,7 @@ export class PrintingService {
       table: bill.table.name,
       billNo: bill.billNo,
       orderNo: bill.orderNo,
-      notes: [],
+      notes: bill.instruction ? [bill.instruction] : [],
       note:this.dataprovider.customBillNote,
       customerDetail: bill.customerInfo,
       businessDetails: businessDetails,
@@ -475,59 +490,19 @@ export class PrintingService {
         (product: Product) => product.category
       ) || [];
     let allProducts = []
-    let discountedProducts = []
-    let totalQuantity = 0
-    bill.kots.forEach((kot: Kot) => {
-      kot.products.forEach((product: Product) => {
-        // add product to allProducts if not already present or update quantity
-        if (product.lineDiscount){
-          console.log('product has discount',product);
-          discountedProducts.push(
-            {
-              id: product.id,
-              name: product.name,
-              instruction: product.instruction,
-              quantity: product.quantity,
-              price: (bill.optionalTax ? product.taxedPrice : product.price) - product.lineDiscount.totalAppliedDiscount,
-              amount:((bill.optionalTax ? product.taxedPrice : product.price) * product.quantity) - product.lineDiscount.totalAppliedDiscount,
-            }
-          )
-          totalQuantity += product.quantity
-        } else {
-          allProducts.push(
-            {
-              id: product.id,
-              name: product.name,
-              instruction: product.instruction,
-              quantity: product.quantity,
-              price: bill.optionalTax ? product.taxedPrice : product.price,
-              amount: (bill.optionalTax ? product.taxedPrice : product.price) * product.quantity,
-            }
-          )
-          totalQuantity += product.quantity
-        }
-      });
-    })
+    let totalQuantity = 0;
+    // bill.modifiedAllProducts.forEach((product: any) => {
+      
+    // })
     let mergedProducts = []
-    allProducts.forEach((product: any) => {
-      // add product to mergedProducts if not already present or update quantity
-      let foundProduct = mergedProducts.find((prod: any) => prod.id === product.id)
-      if (foundProduct){
-        foundProduct.quantity += product.quantity
-        foundProduct.amount += product.amount
-      } else {
-        mergedProducts.push(product)
-      }
-    })
-    console.log("discountedProducts",discountedProducts,mergedProducts);
-    mergedProducts = mergedProducts.concat(discountedProducts);
+    console.log("discountedProducts",bill.modifiedAllProducts);
     let printerConfig = filteredProducts.map((product: any) => {
       return { product: product.id, printer: product.category.printer };
     });
     console.log("mergedProducts",mergedProducts);
     let billdata = {
       id: bill.id,
-      products: mergedProducts,
+      products: bill.modifiedAllProducts,
       date: new Date().toLocaleDateString(),
       time: new Date().toLocaleTimeString(),
       grandTotal: bill.billing.grandTotal,
@@ -535,20 +510,36 @@ export class PrintingService {
         return {
           name: tax.name,
           value: tax.amount,
-          rate: tax.value,
+          rate: tax.cost,
         };
       }),
       totaltax: {
         value: bill.billing.totalTax,
-        rate: bill.billing.taxes.reduce((a, b: Tax) => a + b.value, 0),
+        rate: bill.billing.taxes.reduce((a, b: Tax) => a + b.cost, 0),
       },
-      discount: bill.billing.discount.map((discount: Discount) => {
-        return {
-          name: discount.name,
-          value: discount.totalAppliedDiscount,
-          rate: discount.value,
-          type: discount.type,
-        };
+      discount: bill.billing.discount.map((discount) => {
+        if (discount.mode === 'codeBased'){
+          return {
+            name: discount.name,
+            value: discount.totalAppliedDiscount,
+            rate: discount.value,
+            type: discount.type,
+          };
+        } else if (discount.mode == 'directFlat'){
+          return {
+            name: 'Flat',
+            value: discount.totalAppliedDiscount,
+            rate: discount.value,
+            type: 'flat',
+          };
+        } else if (discount.mode == 'directPercent'){
+          return {
+            name: 'Percent',
+            value: discount.totalAppliedDiscount,
+            rate: discount.value,
+            type: 'percentage',
+          };
+        }
       }),
       billNoSuffix:this.dataprovider.billNoSuffix,
       subtotal: bill.billing.subTotal,
@@ -804,6 +795,9 @@ export class PrintingService {
     return result;
   }
 
+  getConsolidatedBillCode(billdata: any[]) {
+  }
+
   getKotCode(kotData: any) {
     let encoder = new customEncoder({ width: 48 });
     let result = encoder
@@ -889,8 +883,8 @@ class customEncoder extends EscPosEncoder {
       data.push([
         product.name,
         product.quantity.toString(),
-        'Rs.' + product.price.toString(),
-        'Rs.' + product.amount.toString(),
+        'Rs.' + product.untaxedValue.toString(),
+        'Rs.' + (product.untaxedValue * product.quantity).toString(),
       ]);
     });
     return this.table(table, data);
@@ -969,7 +963,7 @@ class customEncoder extends EscPosEncoder {
     discounts.forEach((discount, index) => {
       discountsColumns.push([
         discount.name,
-        discount.rate.toString() + '%',
+        discount.rate.toString() + (discount.type =='flat' ? 'Rs.' : '%'),
         'Rs.' + discount.value.toString(),
       ]);
     });

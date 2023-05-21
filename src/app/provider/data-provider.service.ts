@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { User } from '@angular/fire/auth';
 import { ReplaySubject, Subject, debounceTime, firstValueFrom } from 'rxjs';
-import { Product, TableConstructor } from '../biller/constructors';
+import { Product, TableConstructor, Tax } from '../biller/constructors';
 import { Bill } from '../biller/Bill';
 import { Device } from '../biller/Device';
 import { Table } from '../biller/Table';
@@ -13,10 +13,10 @@ import {
 import { BusinessRecord, UserRecord } from '../structures/user.structure';
 import { Menu } from '../services/database.service';
 import { ModeConfig } from '../biller/sidebar/edit-menu/edit-menu.component';
-import { Discount } from '../biller/settings/settings.component';
 import { PromptComponent } from '../base-components/prompt/prompt.component';
 import { Dialog } from '@angular/cdk/dialog';
 import { DialogComponent } from '../base-components/dialog/dialog.component';
+import { CodeBaseDiscount } from '../biller/settings/settings.component';
 
 @Injectable({
   providedIn: 'root',
@@ -87,11 +87,14 @@ export class DataProvider {
   public billNoSuffix: string = '';
   public optionalTax: boolean = false;
   public printBillAfterSettle: boolean = false;
+  public printBillAfterFinalize: boolean = false;
   public currentSettings:any;
   public customBillNote:string = '';
+  public todaySales:any = {};
+  public taxes:Tax[] = [];
   
   // public access
-  public discounts: Discount[] = [];
+  public discounts: CodeBaseDiscount[] = [];
   public menus: ModeConfig[] = [];
   public products: Product[] = [];
   public categories: Category[] = [];

@@ -35,6 +35,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ReactivateKotComponent } from './reactivate-kot/reactivate-kot.component';
 import { SelectMenuComponent } from './settings/select-menu/select-menu.component';
 import { AddMethodComponent } from './settings/add-method/add-method.component';
+import { AddTaxComponent } from './settings/add-tax/add-tax.component';
+import { MatTooltipModule } from '@angular/material/tooltip'; 
 
 @NgModule({
   declarations: [
@@ -45,7 +47,8 @@ import { AddMethodComponent } from './settings/add-method/add-method.component';
     AddDiscountComponent,
     ReactivateKotComponent,
     SelectMenuComponent,
-    AddMethodComponent
+    AddMethodComponent,
+    AddTaxComponent
   ],
   imports: [
     CommonModule,
@@ -71,7 +74,8 @@ import { AddMethodComponent } from './settings/add-method/add-method.component';
     MatSlideToggleModule,
     BaseComponentsModule,
     MatDialogModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatTooltipModule
   ]
 })
 export class BillerModule { }

@@ -18,6 +18,7 @@ export class Table implements TableConstructor {
   group?: string;
   maxOccupancy: string;
   billPrice: number;
+  completed?: boolean;
   name: string;
   occupiedStart: Timestamp;
   status: 'available' | 'occupied';
@@ -126,6 +127,10 @@ export class Table implements TableConstructor {
   clearTable() {
     this.bill = null;
     this.status = 'available';
+    if (this.type == 'token') {
+      // mark table complete
+      this.completed = true;
+    }
     this.updated.next();
   }
 
@@ -194,6 +199,7 @@ export class Table implements TableConstructor {
         instance.status = object.status;
         instance.tableNo = object.tableNo;
         instance.type = object.type;
+        instance.completed = object.completed || false;
         return instance;
       } else {
         console.log('bill does not exist', object.bill);
@@ -214,6 +220,7 @@ export class Table implements TableConstructor {
       instance.status = object.status;
       instance.tableNo = object.tableNo;
       instance.type = object.type;
+      instance.completed = object.completed || false;
       return instance;
     } else {
       instance.bill = object.bill;
@@ -221,6 +228,7 @@ export class Table implements TableConstructor {
       instance.occupiedStart = object.occupiedStart;
       instance.status = object.status;
       instance.status = 'available';
+      instance.completed = object.completed || false;
       return instance;
     }
   }
@@ -236,6 +244,7 @@ export class Table implements TableConstructor {
       status: this.status,
       tableNo: this.tableNo,
       type: this.type,
+      completed: this.completed || false,
     };
   }
 

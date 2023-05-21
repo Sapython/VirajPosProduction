@@ -57,7 +57,7 @@
     <div class="active spaced" [ngSwitch]="activeTab">
       <ng-container *ngSwitchCase="'printer'">
         <h3>Printer Settings</h3>
-        <mat-form-field apperance="outline" *ngIf="this.dataProvider.currentBusiness">
+        <mat-form-field appearance="outline" *ngIf="this.dataProvider.currentBusiness">
           <mat-label>Bill Printer</mat-label>
           <mat-select
           #billerPrinter
@@ -71,20 +71,25 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-        <mat-form-field apperance="outline">
+        <mat-form-field appearance="outline">
           <mat-label>Custom Bill Note</mat-label>
           <input type="text" matInput [(ngModel)]="this.dataProvider.customBillNote" (change)="updateSettings({customBillNote:customBillNote.value})" #customBillNote>
         </mat-form-field>
-        <mat-form-field apperance="outline">
+        <mat-form-field appearance="outline" matTooltip="This text will be added as prefix on printed bill' bill no">
           <mat-label>Bill No Suffix</mat-label>
           <input type="text" matInput [(ngModel)]="this.dataProvider.billNoSuffix" (change)="updateSettings({billNoSuffix:billNoSuffixInput.value})" #billNoSuffixInput>
         </mat-form-field>
-        <mat-slide-toggle
+        <!-- <mat-slide-toggle
             [(ngModel)]="dataProvider.optionalTax"
             (change)="updateSettings({optionalTax:dataProvider.optionalTax})"
             >Optional Tax</mat-slide-toggle
+          > -->
+        <mat-slide-toggle matTooltip="Print Bill After Finalize"
+            [(ngModel)]="dataProvider.printBillAfterFinalize"
+            (change)="updateSettings({printBillAfterFinalize:dataProvider.printBillAfterFinalize})"
+            >Bill After Finalize</mat-slide-toggle
           >
-        <mat-slide-toggle
+        <mat-slide-toggle matTooltip="Print Bill After Settle"
             [(ngModel)]="dataProvider.printBillAfterSettle"
             (change)="updateSettings({printBillAfterSettle:dataProvider.printBillAfterSettle})"
             >Bill After Settlement</mat-slide-toggle
@@ -110,7 +115,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let account of this.dataProvider.currentBusiness?.users">
+            <tr *ngFor="let account of this.dataProvider.currentBusiness?.users; let i = index">
               <td>
                 <ng-container *ngIf="!account.new">
                   {{ account.username }}
@@ -146,6 +151,9 @@
                   (click)="updateBusiness()"
                 >
                   Update
+                </button>
+                <button mat-icon-button (click)="deleteAccount(i)">
+                  <mat-icon>delete</mat-icon>
                 </button>
               </td>
             </tr>
@@ -188,14 +196,14 @@
           </button>
         </div>
         <div>
-          <mat-slide-toggle
+          <mat-slide-toggle matTooltip="Show table view after kot, bill, nc, settle and discount."
             [(ngModel)]="dataProvider.showTableOnBillAction"
             (change)="setLocalShowTable($event)"
             >Show table on bill action</mat-slide-toggle
           >
         </div>
         <div>
-          <mat-form-field>
+          <mat-form-field appearance="outline" matTooltip="Total time to mark a table as late in minutes">
             <mat-label>Table timeout</mat-label>
             <input type="text" matInput [(ngModel)]="this.dataProvider.tableTimeOutTime" (change)="updateSettings({tableTimeOutTime:time.value})" #time>
           </mat-form-field>
@@ -206,7 +214,7 @@
       </ng-container>
       <ng-container *ngSwitchCase="'about'">
         <h3>About</h3>
-        <table class="uk-table uk-table-divider" [cellSpacing]="0">
+        <table [cellSpacing]="0">
           <tr>
             <td>Name</td>
             <td>Viraj</td>
@@ -283,14 +291,6 @@
             <mat-label>FSSAI No:</mat-label>
             <input matInput type="text" formControlName="fssai" />
           </mat-form-field>
-          <mat-form-field class="example-form-field" appearance="outline">
-            <mat-label>CGST:</mat-label>
-            <input matInput type="text" formControlName="cgst" />
-          </mat-form-field>
-          <mat-form-field class="example-form-field" appearance="outline">
-            <mat-label>SGST:</mat-label>
-            <input matInput type="text" formControlName="sgst" />
-          </mat-form-field>
           <!-- <mat-form-field appearance="outline">
             <mat-label>Choose Printer For Bill</mat-label>
             <mat-select formControlName="billPrinter">
@@ -359,6 +359,7 @@
                   <th>Created On</th>
                   <th>Menus</th>
                   <th>Access</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -386,6 +387,10 @@
                       {{ item }}
                     </li>
                   </td>
+                  <td>
+                    <viraj-button (vclick)="editDiscount(discount)" type="icon"><i class="ri-pencil-fill"></i></viraj-button>
+                    <viraj-button (vclick)="deleteDiscount(discount.id)" type="icon"><i class="ri-delete-bin-2-fill"></i></viraj-button>
+                  </td>
                 </tr>
                 <tr *ngIf="loadingDiscount">
                   <td colspan="8">
@@ -407,18 +412,56 @@
             <tr>
               <th>Method Name</th>
               <th>Detail</th>
+              <th>Add Date</th>
+              <th>Update Date</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let item of paymentMethods">
               <td>{{item.name}}</td>
               <td>{{item.detail ? 'Required' : 'Not Required'}}</td>
+              <td>{{item.addDate.toDate() | date:'short'}}</td>
+              <td>{{item.updateDate.toDate() | date:'short'}}</td>
+              <td>
+                <viraj-button (vclick)="editMethod(item)" type="icon"><i class="ri-pencil-line"></i></viraj-button>
+                <viraj-button (vclick)="deleteMethod(item.id)" type="icon"><i class="ri-delete-bin-line"></i></viraj-button>
+              </td>
             </tr>
           </tbody>
         </table>
       </ng-container>
       <ng-container *ngSwitchCase="'taxes'">
-
+        <h3>Taxes</h3>
+        <button color="primary" mat-raised-button (click)="addTax()">
+          Add Tax
+        </button>
+        <table>
+          <thead>
+            <tr>
+              <th>Tax Name</th>
+              <th>Tax Cost</th>
+              <th>Type</th>
+              <th>Add Date</th>
+              <th>Update Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let tax of taxes">
+              <td>{{tax.name}}</td>
+              <td>{{tax.cost}}</td>
+              <td>{{tax.type | titlecase}}</td>
+              <td>{{tax.mode | titlecase}}</td>
+              <td>{{tax.creationDate.toDate() | date}}</td>
+              <td>{{tax.updateDate.toDate() | date}}</td>
+              <td>
+                <viraj-button (vclick)="editTax(tax)" type="icon"><i class="ri-pencil-line"></i></viraj-button>
+                <viraj-button (vclick)="deleteTax(tax.id)" type="icon"><i class="ri-delete-bin-line"></i></viraj-button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </ng-container>
     </div>
   </div>

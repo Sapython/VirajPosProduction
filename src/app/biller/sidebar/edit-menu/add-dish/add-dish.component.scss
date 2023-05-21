@@ -1,15 +1,15 @@
 // <section>
 //     <h1>Add New Product</h1>
 //     <form [formGroup]="newDishForm">
-//         <mat-form-field apperance="outline">
+//         <mat-form-field appearance="outline">
 //             <mat-label>Dish Name</mat-label>
 //             <input matInput formControlName="name">
 //         </mat-form-field>
-//         <mat-form-field apperance="outline">
+//         <mat-form-field appearance="outline">
 //             <mat-label>Amount</mat-label>
 //             <input matInput formControlName="price">
 //         </mat-form-field>
-//         <mat-form-field apperance="outline">
+//         <mat-form-field appearance="outline">
 //             <mat-label>Type</mat-label>
 //             <mat-select placeholder="Tag" formControlName="type" name="tag">
 //                 <mat-option *ngFor="let tag of tags" [value]="tag">
@@ -25,11 +25,11 @@
 //         </h4>
 //         <div class="variants">
 //             <div class="variant" *ngFor="let variant of variants; let i = index">
-//                 <mat-form-field apperance="outline">
+//                 <mat-form-field appearance="outline">
 //                     <mat-label>Variant Name</mat-label>
 //                     <input matInput [(ngModel)]="variant.variantName">
 //                 </mat-form-field>
-//                 <mat-form-field apperance="outline">
+//                 <mat-form-field appearance="outline">
 //                     <mat-label>Variant Price</mat-label>
 //                     <input matInput [(ngModel)]="variant.price">
 //                 </mat-form-field>

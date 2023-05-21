@@ -6,6 +6,10 @@ section{
     .heading{
       display: flex;
       justify-content: space-between;
+      .consolidated{
+        display: flex;
+        gap: 10px;
+      }
     }
     .bills{
         display: flex;

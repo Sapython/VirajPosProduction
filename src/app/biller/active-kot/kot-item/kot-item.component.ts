@@ -11,10 +11,10 @@ import { Product } from '../../constructors';
 import { Dialog } from '@angular/cdk/dialog';
 import { LineCancelComponent } from './line-cancel/line-cancel.component';
 import { LineDiscountComponent } from './line-discount/line-discount.component';
-import { Discount } from '../../settings/settings.component';
 import { Timestamp } from '@angular/fire/firestore';
 import { PromptComponent } from '../../../base-components/prompt/prompt.component';
 import { firstValueFrom } from 'rxjs';
+import { DirectFlatDiscount, DirectPercentDiscount } from '../../settings/settings.component';
 @Component({
   selector: 'app-kot-item',
   templateUrl: './kot-item.component.html',
@@ -96,18 +96,28 @@ export class KotItemComponent implements OnChanges {
     dialog.closed.subscribe((data: any) => {
       console.log('Discount', data);
       if (data && this.product) {
-        let formData: { type: 'percentage' | 'flat'; value: number } = data;
-        let discount: Discount = {
-          type: data.type,
-          accessLevels: ['admin', 'manager'],
-          creationDate: Timestamp.now(),
-          value: data.value,
-          name: 'Line Discount',
-          id: 'line-discount',
-          totalAppliedDiscount: 0,
-        };
-        this.product.lineDiscount = discount;
-        this.lineDiscounted.emit(discount);
+        let formData: { type: 'percentage' | 'flat'; value: number,reason:string } = data;
+        if (formData.type == 'percentage') {
+          let discount: DirectPercentDiscount = {
+            mode: data.type,
+            reason: data.reason,
+            creationDate: Timestamp.now(),
+            value: data.value,
+            totalAppliedDiscount: 0,
+          };
+          this.product.lineDiscount = discount;
+          this.lineDiscounted.emit(discount);
+        } else {
+          let discount: DirectFlatDiscount = {
+            mode: data.type,
+            reason: data.reason,
+            creationDate: Timestamp.now(),
+            value: data.value,
+            totalAppliedDiscount: 0,
+          };
+          this.product.lineDiscount = discount;
+          this.lineDiscounted.emit(discount);
+        }
       }
     });
   }

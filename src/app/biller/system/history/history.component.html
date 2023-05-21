@@ -19,10 +19,19 @@
         <mat-label>Search Bill No</mat-label>
         <input type="text" matInput (input)="numberSearchSubject.next(numberSearch.value)" #numberSearch>
       </mat-form-field>
+      <div class="consolidated">
+        <mat-form-field appearance="outline">
+          <mat-label>Minimum Amount</mat-label>
+          <input type="number" [(ngModel)]="minimumAmount" matInput>
+        </mat-form-field>
+        <viraj-button (vclick)="generateConsolidatedReport()">
+          Generate Consolidated Report
+        </viraj-button>
+      </div>
     </div>
     <hr />
     <div class="bills">
-      <div class="bill" *ngFor="let bill of bills">
+      <div class="bill" *ngFor="let bill of this.filteredBills.length > 0 ? this.filteredBills : bills">
         <table class="main">
           <tr>
             <td>Bill No</td>

@@ -6,7 +6,7 @@
     </mat-button-toggle-group>
     <ng-container *ngIf="mode=='recipe'">
       <h1>Recipe Based Setting</h1>
-      <mat-form-field apperance="outline">
+      <mat-form-field appearance="outline">
         <mat-label>Search ...</mat-label>
         <input type="text" matInput (input)="search.next(searchInput.value)" #searchInput>
       </mat-form-field>

@@ -1,4 +1,4 @@
-import { DialogRef } from '@angular/cdk/dialog';
+import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { Component, OnInit } from '@angular/core';
 import { Timestamp } from '@angular/fire/firestore';
 import { DataProvider } from '../../provider/data-provider.service';
@@ -8,7 +8,7 @@ import { Product, TableConstructor } from '../constructors';
 import { Kot } from '../Kot';
 import { Table } from '../Table';
 import { PrintingService } from '../../services/printing.service';
-import { group } from 'console';
+import { SettleComponent } from '../actions/settle/settle.component';
 
 @Component({
   selector: 'app-table',
@@ -31,7 +31,8 @@ export class TableComponent implements OnInit {
     public dataProvider: DataProvider,
     private database: DatabaseService,
     private alertify: AlertsAndNotificationsService,
-    private printingService:PrintingService
+    private printingService:PrintingService,
+    private dialog: Dialog
   ) {}
   ngOnInit(): void {
 
@@ -142,6 +143,14 @@ export class TableComponent implements OnInit {
       this.database,
       this.printingService
     );
+    this.dataProvider.currentBill = table.occupyTable();
+    this.dataProvider.currentTable = table;
+    this.dataProvider.billAssigned.next();
+    if(this.dataProvider.tempProduct && this.dataProvider.currentBill){
+      this.dataProvider.currentBill.addProduct(this.dataProvider.tempProduct);
+      this.dataProvider.tempProduct = undefined;
+    }
+    this.dialogRef.close(table);
     this.dataProvider.tokens.push(table);
   }
 
@@ -161,12 +170,49 @@ export class TableComponent implements OnInit {
       this.database,
       this.printingService
     );
+    this.dataProvider.currentBill = table.occupyTable();
+    this.dataProvider.currentTable = table;
+    this.dataProvider.billAssigned.next();
+    if(this.dataProvider.tempProduct && this.dataProvider.currentBill){
+      this.dataProvider.currentBill.addProduct(this.dataProvider.tempProduct);
+      this.dataProvider.tempProduct = undefined;
+    }
+    this.dialogRef.close(table);
     this.dataProvider.onlineTokens.push(table);
   }
 
   moveKot(table: Table, event: any) {
     this.moveKotSelectedTable = table;
     console.log('this.moveKotSelectedTable ', this.moveKotSelectedTable, event);
+  }
+
+  async deleteTable(table:Table,event:any){
+    event.stopPropagation();
+    console.log("table",table);
+    if (table.type == 'table'){
+      if (table.status == 'occupied'){
+        this.alertify.presentToast("Table is occupied");
+        return;
+      }
+      if (await this.dataProvider.confirm("Alert! Do you want to delete it?",[1],{buttons:["No","Yes"]})){
+        this.dataProvider.tables = this.dataProvider.tables.filter((t)=>{
+          return t.id != table.id;
+        });
+        this.dataProvider.groupedTables = {};
+        this.dataProvider.tables.forEach((t)=>{
+          if(!this.dataProvider.groupedTables[t.name.split(' ')[0]]){
+            this.dataProvider.groupedTables[t.name.split(' ')[0]] = [];
+          }
+          this.dataProvider.groupedTables[t.name.split(' ')[0]].push(t);
+        })
+        console.log("table.id",table.id,this.dataProvider.tables);
+        await this.database.deleteTable(table.id);
+      } else {
+        this.alertify.presentToast("Table delete cancelled");
+      }
+    } else {
+      this.alertify.presentToast("Only tables can be deleted");
+    }
   }
 
   exchange() {
@@ -318,6 +364,18 @@ export class TableComponent implements OnInit {
         return menu.selectedMenu?.id == this.dataProvider.onlineMenu?.id
       });
       console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
+    }
+  }
+
+  settleTable(table:Table,event){
+    if (table.bill) {
+      let dialog = this.dialog.open(SettleComponent,{data:table.bill.billing.grandTotal});
+      dialog.closed.subscribe((result: any) => {
+        console.log('Result', result);
+        if (result && table.bill && result.settling && result.paymentMethods) {
+          table.bill.settle(result.paymentMethods,result.detail || null);
+        }
+      });
     }
   }
 }

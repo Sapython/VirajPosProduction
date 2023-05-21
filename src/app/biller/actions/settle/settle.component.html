@@ -68,6 +68,12 @@
             <i class="ri-add-fill"></i> Add Method
         </div>
     </div>
+    <form [formGroup]="detailForm" *ngIf="customDetailRequired">
+        <mat-form-field appearance="outline">
+            <mat-label>Phone</mat-label>
+            <input type="tel" name="phone" matInput formControlName="phone">
+        </mat-form-field>
+    </form>
     <div class="actions">
         <button [tabindex]="methods.length+4" (click)="close()" mat-stroked-button color="primary">Cancel</button>
         <button [tabindex]="methods.length+3" (click)="settleBill()" mat-flat-button color="primary">Submit</button>

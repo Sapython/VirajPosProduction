@@ -125,7 +125,7 @@
     </ng-container>
     <img
       class="noItem"
-      src="assets/noItems.svg"
+      src="assets/notFound.svg"
       alt="No Items"
       *ngIf="showImage"
     />
@@ -163,8 +163,8 @@
     </div>
   </div>
   <div [@zoomInOnEnter]
-  [@zoomOutOnLeave] class="allProducts" *ngIf="dataProvider.allProducts">
-    <div
+  [@zoomOutOnLeave] class="allProducts" *ngIf="dataProvider.allProducts && this.dataProvider.currentBill">
+    <!-- <div
       class="item"
       *ngFor="let item of this.dataProvider.currentBill?.kots | mergedProducts"
     >
@@ -177,7 +177,103 @@
       <p>
         {{ item.quantity * item.price | currency : "INR" }}
       </p>
-    </div>
+    </div> -->
+    <table class="tableContainer">
+      <tr>
+        <td colspan="2">
+          <table class="products">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Qty</th>
+                <th>Amt</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of this.dataProvider.currentBill?.kots | mergedProducts">
+                <td>
+                  {{ item.name | titlecase}}
+                </td>
+                <td>
+                  {{ item.price | currency : "INR" }}
+                </td>
+                <td>
+                  {{ item.quantity }}
+                </td>
+                <td>
+                  {{ item.quantity * item.price | currency : "INR" }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td>Subtotal</td>
+        <td class="big">{{this.dataProvider.currentBill.billing.subTotal | currency:'INR'}}</td>
+      </tr>
+      <tr>
+        <td colspan="2"><hr></td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <table>
+            <thead>
+              <tr>
+                <th>Discount</th>
+                <th>Rate</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let discount of this.dataProvider.currentBill.billing.discount">
+                <ng-container *ngIf="discount.mode == 'codeBased'">
+                  <td>{{discount.name | titlecase}}</td>
+                  <td>{{discount.value}}</td>
+                  <td>{{discount.totalAppliedDiscount | currency:'INR'}}</td>
+                </ng-container>
+                <ng-container *ngIf="discount.mode == 'directPercent' || discount.mode == 'directFlat'">
+                  <td>Direct</td>
+                  <td>{{discount.value}}</td>
+                  <td>{{discount.totalAppliedDiscount | currency:'INR'}}</td>
+                </ng-container>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2"><hr></td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <table>
+            <thead>
+              <tr>
+                <th>Tax</th>
+                <th>Rate</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let taxes of this.dataProvider.currentBill.billing.taxes">
+                <td>{{taxes.name | titlecase}}</td>
+                <td>{{taxes.cost}}</td>
+                <td>{{taxes.amount | currency:'INR'}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2"><hr></td>
+      </tr>
+      <tr class="big">
+        <td>Grand Total</td>
+        <td>{{this.dataProvider.currentBill.billing.grandTotal | currency:'INR'}}</td>
+      </tr>
+    </table>
   </div>
 </section>
 <!-- <aside class="expandable" [ngClass]="{closed:!actionSheetExpanded,'opened':actionSheetExpanded}">

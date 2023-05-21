@@ -93,6 +93,11 @@ export class ElectronService {
     this.ipcRenderer.sendSync("saveAuth", token);
   }
 
+  clearAuth(){
+    if (!this.isElectron) return;
+    this.ipcRenderer.sendSync("clearAuth");
+  }
+
   getAuth(){
     if (!this.isElectron) return;
     return this.ipcRenderer.sendSync("getAuth");

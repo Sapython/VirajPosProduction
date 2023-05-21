@@ -14,6 +14,14 @@ export class ButtonComponent {
   @Input() disabled:boolean = false;
   @Input() minimalPadding:boolean = false;
   @Input() iconSize:'small' | 'medium' | 'large' = 'medium';
+  @Input() noPropogation:boolean = false;
   @Output() vclick: EventEmitter<any> = new EventEmitter();
+
+  filterClick(event){
+    if(this.noPropogation){
+      event.stopPropagation();
+    }
+    this.vclick.emit();
+  }
 
 }

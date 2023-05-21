@@ -63,9 +63,9 @@ export class Kot implements KotConstructor {
         category: product.category,
         tags: product.tags || [],
         quantity: product.quantity,
-        variants: product.variants,
+        variants: product.variants || [],
         selected: product.selected,
-        images: product.images,
+        images: product.images || [],
         createdDate: product.createdDate,
         visible: product.visible,
         lineDiscount: product.lineDiscount || null,
@@ -73,6 +73,7 @@ export class Kot implements KotConstructor {
         instruction: product.instruction || null,
         order: product.order || null,
         taxedPrice: product.taxedPrice || null,
+        taxes: product.taxes || []
       };
     });
   }

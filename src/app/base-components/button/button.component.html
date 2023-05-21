@@ -17,7 +17,7 @@
     mediumIcon:iconSize == 'medium',
     largeIcon:iconSize == 'large'
   }"
-  (click)="this.vclick.emit($event)"
+  (click)="filterClick($event)"
   [disabled]="disabled"
 >
   <ng-content></ng-content>

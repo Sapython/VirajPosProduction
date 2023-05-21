@@ -23,6 +23,7 @@ import { DataProvider } from '../../../provider/data-provider.service';
 export class HistoryComponent {
   selectedDate:Date = new Date();
   loading:boolean = false;
+  minimumAmount:number = 0;
   // Reports
   bills:ExtendedBillConstructor[] = []
   filteredBills:ExtendedBillConstructor[] = []
@@ -34,6 +35,9 @@ export class HistoryComponent {
         this.filteredBills = this.fuseSearchInstance.search(searchTerm).map((result) => {
           return result.item;
         })
+        console.log("filteredBills",this.filteredBills);
+      } else {
+        this.filteredBills = [];
       }
     })
   }
@@ -49,6 +53,7 @@ export class HistoryComponent {
       this.bills = bills.docs.map((doc) => {
         return {...doc.data(),id:doc.id,kotVisible:false} as ExtendedBillConstructor;
       })
+      this.fuseSearchInstance.setCollection(this.bills);
       console.log("bills",this.bills);
       this.loading = false;
     });
@@ -76,6 +81,23 @@ export class HistoryComponent {
 
   reprintKot(kot:KotConstructor,bill:BillConstructor){
     this.printingService.reprintKot(kot,bill.table.name,bill.billNo||'');
+  }
+
+  generateConsolidatedReport(){
+    let filteredBills = this.bills.filter((bill) => bill.billing.grandTotal >=this.minimumAmount && bill.stage=='settled');
+    
+    // let consolidated = filteredBills.reduce((acc,bill) => {
+    //   bill.modifiedAllProducts.forEach((product) => {
+    //     let index = acc.findIndex((accProduct) => accProduct.name == product.name);
+    //     if(index == -1){
+    //       acc.push({...product,quantity:1});
+    //     } else {
+    //       acc[index].quantity++;
+    //     }
+    //   })
+    //   return acc;
+    // },[] as Product[])
+    // let consolidated 
   }
 }
 interface ExtendedBillConstructor extends BillConstructor{

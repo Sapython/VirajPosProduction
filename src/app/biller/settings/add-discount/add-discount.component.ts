@@ -1,14 +1,15 @@
-import { DialogRef } from '@angular/cdk/dialog';
-import { Component } from '@angular/core';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataProvider } from '../../../provider/data-provider.service';
+import { CodeBaseDiscount } from '../settings.component';
 
 @Component({
   selector: 'app-add-discount',
   templateUrl: './add-discount.component.html',
   styleUrls: ['./add-discount.component.scss']
 })
-export class AddDiscountComponent {
+export class AddDiscountComponent implements OnInit {
   discountForm:FormGroup = new FormGroup({
     name:new FormControl(null,Validators.required),
     value:new FormControl(null,Validators.required),
@@ -27,6 +28,11 @@ export class AddDiscountComponent {
     "admin"
   ]
 
-  constructor(public dataProvider:DataProvider,public dialogRef:DialogRef){}
+  constructor(public dataProvider:DataProvider,public dialogRef:DialogRef,@Inject(DIALOG_DATA) private data:{mode:'add'|'edit',discount?:CodeBaseDiscount}){}
 
+  ngOnInit(): void {
+    if (this.data.mode=='edit'){
+      this.discountForm.patchValue(this.data.discount)
+    }
+  }
 }

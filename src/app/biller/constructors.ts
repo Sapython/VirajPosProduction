@@ -1,7 +1,7 @@
 import { Timestamp } from '@angular/fire/firestore';
 import { Bill } from './Bill';
 import { Kot } from './Kot';
-import { Discount } from './settings/settings.component';
+import { CodeBaseDiscount, DirectFlatDiscount, DirectPercentDiscount } from './settings/settings.component';
 import { Payment } from '../structures/general.structure';
 
 export interface BillConstructor {
@@ -15,6 +15,7 @@ export interface BillConstructor {
     time:Timestamp;
     user:UserConstructor;
   }[];
+  modifiedAllProducts:any[];
   optionalTax:boolean;
   stage: 'active' | 'finalized' | 'settled' | 'cancelled';
   cancelledReason?: {
@@ -27,6 +28,7 @@ export interface BillConstructor {
     payments:Payment[];
     time: Timestamp;
     user: UserConstructor;
+    additionalInfo:any;
   }
   instruction?: string;
   customerInfo: CustomerInfo;
@@ -52,7 +54,7 @@ export interface UserConstructor {
 
 export interface Billing {
   subTotal: number;
-  discount: Discount[];
+  discount: (CodeBaseDiscount | DirectPercentDiscount | DirectFlatDiscount)[];
   taxes: Tax[];
   totalTax: number;
   grandTotal: number;
@@ -84,7 +86,7 @@ export interface Product {
   price: number;
   taxedPrice?:number;
   type: 'veg' | 'non-veg';
-  tags: string[];
+  tags: {name:string,color:string,contrast:string}[];
   images: string[];
   category:{id:string,name:string};
   quantity: number;
@@ -96,10 +98,13 @@ export interface Product {
   instruction?: string;
   visible:boolean;
   updated?:boolean;
-  lineDiscount?:Discount;
+  lineDiscount?:DirectPercentDiscount | DirectFlatDiscount;
   order?:number;
+  taxes:productTax[];
 }
-
+export interface productTax extends Tax {
+  nature: 'inclusive' | 'exclusive';
+}
 interface Variant {
   name: string;
   price: number;
@@ -119,13 +124,17 @@ export interface CustomerInfo {
   deliveryPhone?: string;
 }
 
-export type Tax = {
-  value: number;
-  type: 'percentage' | 'flat';
-  name: string;
-  amount: number;
-  id?: string;
-};
+
+export interface Tax {
+  id?:string;
+  name:string;
+  cost:number;
+  amount:number;
+  type:'percentage'|'amount';
+  mode:'bill'|'product';
+  creationDate:Timestamp;
+  updateDate:Timestamp;
+}
 
 export type TableConstructor = {
   id: string;
@@ -137,6 +146,7 @@ export type TableConstructor = {
   minutes:number;
   occupiedStart: Timestamp;
   billPrice: number;
+  completed?:boolean;
   status: 'available' | 'occupied';
   type: 'table' | 'room' | 'token' | 'online';
 };

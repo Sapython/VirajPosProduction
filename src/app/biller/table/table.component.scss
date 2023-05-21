@@ -66,20 +66,6 @@ section{
         .actions{
             display: flex;
             gap: 20px;
-            .moveKotButton{
-                background: #FF5E35;
-                border: none;
-                color:white;
-                padding: 10px 30px;
-                border-radius: 6px;
-                font-size: var(--Viraj-font-large);
-                p{
-                    margin: 0px;
-                }
-            }
-            .moveKotButton.active{
-                background: var(--Viraj-success);
-            }
             button{
                 border:2px solid var(--Viraj-primary);
                 background: white;
@@ -100,6 +86,26 @@ section{
         padding: 20px;
         box-sizing: border-box;
         padding-bottom: 300px;
+        .heading{
+            display: flex;
+            gap:20px;
+            align-items: center;
+        }
+        .moveKotButton{
+            background: #FF5E35;
+            border: none;
+            color:white;
+            padding: 7px 14px;
+            height: min-content;
+            border-radius: 6px;
+            font-size: var(--Viraj-font-large);
+            p{
+                margin: 0px;
+            }
+        }
+        .moveKotButton.active{
+            background: var(--Viraj-success);
+        }
     }
     .tables{
         display: flex;
@@ -148,6 +154,12 @@ section{
         .table.highlight{
             border: 3px solid var(--Viraj-success);
             background: #e4ffe8;
+            &:hover{
+                cursor: pointer;
+                background: #e4ffe8;
+                border-color: var(--Viraj-success);
+                scale: 1.05;
+            }
         }
         .table.late{
             border: 3px solid var(--Viraj-danger);
@@ -187,6 +199,7 @@ section{
         .table.disabled{
             opacity: 0.5;
             cursor: not-allowed;
+            pointer-events: none;
         }
         button.medium{
             width: 90px !important;
@@ -209,10 +222,18 @@ section.moveKot{
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap:30px;
+        .tableWrapper{
+            max-height: 80vh;
+        }
         .to,.from{
             display: flex;
             flex-direction: column;
         }
+    }
+    .actions{
+        display: flex;
+        gap:15px;
+        padding-top: 10px;
     }
     .kotWise{
         display: grid;

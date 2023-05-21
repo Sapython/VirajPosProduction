@@ -5,7 +5,7 @@
     <viraj-button type="outline" (vclick)="editMenu();" *ngIf="this.dataProvider.getAccess(['admin','manager'])">
         <ng-container >Edit Menu</ng-container>
         <!-- <mat-icon *ngIf="dataProvider.clientHeight < 717" color="primary">edit</mat-icon> -->
-    </viraj-button> 
+    </viraj-button>
     <ng-container *ngIf="this.dataProvider.smartMode">
         <span class="badge sales" id="stockConsumptionTrigger" cdkOverlayOrigin #stockConsumptionTrigger="cdkOverlayOrigin" (mouseleave)="this.closeStockListPanelSubscription.next(false);" (mouseenter)="isStockListOpen = true">
             <p>Stock Cons.</p>

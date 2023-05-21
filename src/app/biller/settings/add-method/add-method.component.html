@@ -1,7 +1,7 @@
-<form>
+<form [formGroup]="paymentMethodForm" (ngSubmit)="submit()">
     <mat-form-field appearance="outline">
         <mat-label>Name</mat-label>
-        <input type="text" matInput>
+        <input type="text" formControlName="name" matInput>
     </mat-form-field>
     <mat-form-field appearance="outline">
         <mat-label>Detail</mat-label>

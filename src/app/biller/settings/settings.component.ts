@@ -13,6 +13,8 @@ import { ElectronService } from '../../core/services';
 import { SelectMenuComponent } from './select-menu/select-menu.component';
 import { ModeConfig } from '../sidebar/edit-menu/edit-menu.component';
 import { AddMethodComponent } from './add-method/add-method.component';
+import { Tax } from '../constructors';
+import { AddTaxComponent } from './add-tax/add-tax.component';
 declare var window:any;
 
 @Component({
@@ -25,8 +27,10 @@ export class SettingsComponent implements OnInit {
   version:string = APP_CONFIG.appVersion;
   serverVersion:string = window.pywebview || 'N/A';
   account:string = this.dataProvider.currentFirebaseUser?.uid || 'N/A';
-  discounts:Discount[] = []
-  paymentMethods:{name:string,detail:boolean}[] = [];
+  discounts:CodeBaseDiscount[] = []
+  taxes:Tax[] = []
+  paymentMethods:PaymentMethod[] = [];
+  loadingPaymentMethods:boolean = false;
   @Output() cancel = new EventEmitter();
   @Output() save = new EventEmitter();
   activeTab:'printer'|'account'|'view'|'about'|'config'|'discount'|'payment'|'taxes' = 'config'
@@ -60,15 +64,29 @@ export class SettingsComponent implements OnInit {
     return this.modes.filter((mode)=>!mode).length >= 2
   }
 
-  constructor(private indexedDb:NgxIndexedDBService,private alertify:AlertsAndNotificationsService,public dataProvider:DataProvider,private databaseService:DatabaseService,private dialog:Dialog, private electronService:ElectronService,public dialogRef:DialogRef) {
+  constructor(private alertify:AlertsAndNotificationsService,public dataProvider:DataProvider,private databaseService:DatabaseService,private dialog:Dialog, private electronService:ElectronService,public dialogRef:DialogRef) {
     this.viewSettings.patchValue(localStorage.getItem('viewSettings')?JSON.parse(localStorage.getItem('viewSettings')!):{})
     this.viewSettings.valueChanges.pipe(debounceTime(1000)).subscribe((data)=>{
       localStorage.setItem('viewSettings',JSON.stringify(data))
     })
   }
+
+  async deleteAccount(index:number){
+    if (await this.dataProvider.confirm('Are you sure you want to delete account ?',[1])){
+      // alert("delete account")
+      this.dataProvider.currentBusiness?.users.splice(index,1)
+      setTimeout(()=>{
+        if(this.dataProvider.currentBusiness){
+          this.databaseService.updateBusiness(this.dataProvider.currentBusiness);
+        }
+      },700)
+    }
+  }
+
   cancelSettings(){
     this.cancel.emit()
   }
+
   getMappedMenu(menus?:string[]){
     if(!menus) return []
     return this.dataProvider.allMenus.filter((menu)=>menus.includes(menu.id!))
@@ -93,10 +111,10 @@ export class SettingsComponent implements OnInit {
 
   getDiscounts(){
     this.loadingDiscount = true;
-    this.databaseService.getDiscounts().then((res:any)=>{
+    this.databaseService.getDiscounts().then((res)=>{
       this.discounts = []
-      res.forEach((data:any)=>{
-        this.discounts.push({...data.data(),id:data.id})
+      res.forEach((data)=>{
+        this.discounts.push({...data.data(),id:data.id} as CodeBaseDiscount)
       })
     }).catch((err:any)=>{
       console.log(err)
@@ -112,6 +130,8 @@ export class SettingsComponent implements OnInit {
   
   ngOnInit(): void {
     this.getDiscounts();
+    this.getPaymentMethods();
+    this.getTaxes();
     // this.indexedDb.getAll('categories').subscribe((data)=>{
     //   this.categories = data.map((cat:any)=> {return {...cat,selected:false,indeterminate:false,products:cat.products.map((product:any)=>{return JSON.parse(JSON.stringify({name:product.name,id:product.id,selected:false}))})}});
     //   console.log("category data",this.categories);
@@ -145,6 +165,65 @@ export class SettingsComponent implements OnInit {
       lastUpdated:Timestamp.now(),
       updatedBy:this.dataProvider.currentUser?.username || 'user',
       new:true,
+    })
+  }
+
+  addDiscount(){
+    const dialog = this.dialog.open(AddDiscountComponent,{data:{mode:'add'}})
+    dialog.closed.subscribe((data:any)=>{
+      console.log("data",data);
+      if (data){
+        if(data.menus.length === 0){
+          data.menus = null;
+        }
+        console.log("adding",data);
+          this.databaseService.addDiscount({...data,mode:'codeBased',totalAppliedDiscount:0,creationDate:Timestamp.now(),reason:'' } as CodeBaseDiscount).then((res)=>{
+          console.log("res",res);
+          this.getDiscounts();
+          this.alertify.presentToast("Discount added successfully")
+        }).catch((err)=>{
+          console.log("err",err);
+          this.alertify.presentToast("Error adding discount")
+        })
+      } else {
+        console.log("no data",data);
+      }
+    })
+  }
+
+  editDiscount(discount:CodeBaseDiscount){
+    console.log("discount",discount);
+    const dialog = this.dialog.open(AddDiscountComponent,{data:{mode:'edit',discount:discount}})
+    dialog.closed.subscribe((data:any)=>{
+      console.log("data",data);
+      if (data){
+        if(data.menus.length === 0){
+          data.menus = null;
+        }
+        console.log("adding",data);
+          this.databaseService.updateDiscount({...discount,...data} as CodeBaseDiscount).then((res)=>{
+          console.log("res",res);
+          this.getDiscounts();
+          this.alertify.presentToast("Discount update successfully")
+        }).catch((err)=>{
+          console.log("err",err);
+          this.alertify.presentToast("Error updating discount")
+        })
+      } else {
+        console.log("no data",data);
+      }
+    })
+  }
+
+  deleteDiscount(discountId:string){
+    this.dataProvider.loading = true;
+    this.databaseService.deleteDiscount(discountId).then(()=>{
+      this.alertify.presentToast("Discount deleted successfully")
+      this.getDiscounts();
+    }).catch((err)=>{
+      this.alertify.presentToast("Error while deleting discount")
+    }).finally(()=>{
+      this.dataProvider.loading = false;
     })
   }
 
@@ -275,35 +354,22 @@ export class SettingsComponent implements OnInit {
     console.log("item",item);
   }
 
-  addDiscount(){
-    const dialog = this.dialog.open(AddDiscountComponent)
-    dialog.closed.subscribe((data:any)=>{
-      console.log("data",data);
-      if (data){
-        if(data.menus.length === 0){
-          data.menus = null;
-        }
-        console.log("adding",data);
-        this.databaseService.addDiscount(data as Discount).then((res)=>{
-          console.log("res",res);
-          this.getDiscounts();
-          this.alertify.presentToast("Discount added successfully")
-        }).catch((err)=>{
-          console.log("err",err);
-          this.alertify.presentToast("Error adding discount")
-        })
-      } else {
-        console.log("no data",data);
-      }
+  getPaymentMethods(){
+    this.loadingPaymentMethods = true;
+    this.databaseService.getPaymentMethods().then((res)=>{
+      this.paymentMethods = res.docs.map((d)=>{return {...d.data(),id:d.id} as PaymentMethod})
+    }).finally(()=>{
+      this.loadingPaymentMethods = false;
     })
   }
 
   addMethod(){
-    const dialog = this.dialog.open(AddMethodComponent)
+    const dialog = this.dialog.open(AddMethodComponent,{data:{mode:'add'}})
     firstValueFrom(dialog.closed).then((data:any)=>{
+      console.log("data",data);
       this.dataProvider.loading = true;
       if (data && data.name && typeof data.detail == 'boolean'){
-        this.databaseService.addPaymentMethod(data).then((res)=>{
+        this.databaseService.addPaymentMethod({...data,addDate:new Date(),updateDate:new Date()}).then((res)=>{
           this.alertify.presentToast("Payment method added successfully")
         }).catch((err)=>{
           this.alertify.presentToast("Error while adding payment method")
@@ -311,9 +377,98 @@ export class SettingsComponent implements OnInit {
           this.dataProvider.loading = false;
         })
       } else {
+        this.dataProvider.loading = false;
         this.alertify.presentToast("Cancelled adding payment method")
       }
     })
+  }
+
+  editMethod(method:PaymentMethod){
+    const dialog = this.dialog.open(AddMethodComponent,{data:{mode:'edit',setting:method}})
+    firstValueFrom(dialog.closed).then((data:any)=>{
+      console.log("data",data);
+      this.dataProvider.loading = true;
+      if (data && data.name && typeof data.detail == 'boolean'){
+        this.databaseService.addPaymentMethod({...data,addDate:new Date(),updateDate:new Date()}).then((res)=>{
+          this.alertify.presentToast("Payment method added successfully")
+          this.getPaymentMethods();
+        }).catch((err)=>{
+          this.alertify.presentToast("Error while adding payment method")
+        }).finally(()=>{
+          this.dataProvider.loading = false;
+        })
+      } else {
+        this.dataProvider.loading = false;
+        this.alertify.presentToast("Cancelled adding payment method")
+      }
+    })
+  }
+
+  getTaxes(){
+    this.databaseService.getTaxes().then((res)=>{
+      this.taxes = res.docs.map((d)=>{return {...d.data(),id:d.id} as Tax})
+    })
+  }
+
+  addTax(){
+    const dialog = this.dialog.open(AddTaxComponent,{data:{mode:'add'}})
+    firstValueFrom(dialog.closed).then((data:any)=>{
+      console.log("data",data);
+      if (data){
+        this.dataProvider.loading = true;
+        this.databaseService.addTax({...data,creationDate:new Date(),updateDate:new Date()}).then((res)=>{
+          this.alertify.presentToast("Tax added successfully")
+          this.getTaxes();
+        }).catch((err)=>{
+          this.alertify.presentToast("Error while adding tax")
+        }).finally(()=>{
+          this.dataProvider.loading = false;
+        })
+      } else {
+        this.alertify.presentToast("Cancelled adding tax")
+      }
+    }).catch((err:any)=>{
+      this.alertify.presentToast("Error while adding tax")
+    })
+  }
+
+  editTax(tax:Tax){
+    const dialog = this.dialog.open(AddTaxComponent,{data:{mode:'edit',setting:tax}})
+    firstValueFrom(dialog.closed).then((data:any)=>{
+      console.log("data",data);
+      if (data){
+        this.databaseService.updateTax(tax.id,{...data,updateDate:Timestamp.now()}).then((res)=>{
+          this.alertify.presentToast("Tax updated successfully")
+          this.getTaxes()
+        }).catch((err)=>{
+          this.alertify.presentToast("Error while updating tax")
+        })
+      } else {
+        this.alertify.presentToast("Cancelled updating tax")
+      }
+    }).catch((err:any)=>{
+      this.alertify.presentToast("Error while updating tax")
+    })
+  }
+
+  async deleteTax(id:string){
+    if (await this.dataProvider.confirm('Are you sure you want to delete tax ?',[1])){
+      this.databaseService.deleteTax(id).then((res)=>{
+        this.alertify.presentToast("Tax deleted successfully")
+      }).catch((err)=>{
+        this.alertify.presentToast("Error while deleting tax")
+      })
+    }
+  }
+
+  deleteMethod(id:string){
+    if (this.dataProvider.confirm('Are you sure you want to delete payment method ?',[1])){
+      this.databaseService.deletePaymentMethod(id).then((res)=>{
+        this.alertify.presentToast("Payment method deleted successfully")
+      }).catch((err)=>{
+        this.alertify.presentToast("Error while deleting payment method")
+      })
+    }
   }
 
   updateBusiness(){
@@ -339,16 +494,43 @@ export interface Account{
   creationDate:Timestamp
 }
 
-export interface Discount{
-  id?:string,
+
+export interface CodeBaseDiscount{
+  mode:'codeBased';
+  type:'percentage'|'flat';
+  id:string;
+  name:string;
+  value:number;
+  totalAppliedDiscount:number;
+  creationDate:Timestamp;
+  minimumAmount?:number;
+  minimumProducts?:number;
+  maximumDiscount?:number;
+  menus?:string[];
+  accessLevels:string[];
+  reason:string;
+}
+export interface DirectPercentDiscount{
+  mode:'directPercent'
+  value:number;
+  totalAppliedDiscount:number;
+  creationDate:Timestamp;
+  reason:string;
+}
+
+export interface DirectFlatDiscount{
+  mode:'directFlat'
+  value:number;
+  totalAppliedDiscount:number;
+  creationDate:Timestamp;
+  reason:string;
+}
+
+export interface PaymentMethod {
+  id?:string
   name:string,
-  type:'percentage'|'amount',
-  value:number,
-  totalAppliedDiscount:number,
-  creationDate:Timestamp,
-  minimumAmount?:number,
-  minimumProducts?:number,
-  maximumDiscount?:number,
-  menus?:string[],
-  accessLevels:string[],
+  detail:boolean,
+  addDate:Timestamp,
+  updateDate:Timestamp,
+  custom?:boolean,
 }

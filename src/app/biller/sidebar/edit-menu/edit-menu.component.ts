@@ -18,6 +18,7 @@ import Fuse from 'fuse.js';
 import { SelectCategoryComponent } from './select-category/select-category.component';
 import { ElectronService } from '../../../core/services';
 import { Timestamp } from '@angular/fire/firestore';
+import { SetTaxComponent } from './set-tax/set-tax.component';
 @Component({
   selector: 'app-edit-menu',
   templateUrl: './edit-menu.component.html',
@@ -56,7 +57,7 @@ export class EditMenuComponent implements OnInit {
   // modeConfigs:ModeConfig[] = []
 
   currentType:'recommended'|'root'|'view'|'all' = 'all';
-  constructor(private dialog:Dialog,public dataProvider:DataProvider,private databaseService:DatabaseService,private alertify:AlertsAndNotificationsService,private dialogRef:DialogRef,private electronService:ElectronService){
+  constructor(private dialog:Dialog,public dataProvider:DataProvider,private databaseService:DatabaseService,private alertify:AlertsAndNotificationsService,public dialogRef:DialogRef,private electronService:ElectronService){
     // this.searchSubject.pipe(debounceTime(500)).subscribe((searchString)=>{
     //   if (searchString){
     //     let res = this.fuseInstance.search(searchString);
@@ -69,8 +70,15 @@ export class EditMenuComponent implements OnInit {
       this.dataProvider.loading = true;
       Promise.all(this.dataProvider.menus.map((menu)=>{
         return menu.updateChanged()
-      })).then((r)=>{
-        console.log(r);
+      })).then(async (r)=>{
+        if (r.flat().length > 0){
+          if (await this.dataProvider.confirm("Data is updated. Please restart the application to see the changes.",[1])){
+            let url = window.location.href.split('/')
+            url.pop()
+            url.push('index.html')
+            window.location.href = url.join('/') 
+          }
+        }
         this.alertify.presentToast("Menu changes updated successfully")
       }).catch((c)=>{
         console.log(c);
@@ -204,7 +212,8 @@ export class ModeConfig {
       // })
       this.products = data.docs.map((doc)=>{return {...doc.data(),id:doc.id} as Product});
       console.log("this.products",this.products);
-      this.allProductsCategory.products = this.products;
+      let event = { previousPageIndex: 0, pageIndex: 0, pageSize: 10, length: this.products.length }
+      this.allProductsCategory.products = this.products.slice(event.pageIndex*event.pageSize,(event.pageIndex+1)*event.pageSize);
       this.allProductsCategory.averagePrice = this.products.reduce((acc,curr)=>acc+curr.price,0)/this.products.length;
       this.fuseInstance.setCollection(this.products);
       this.selectedCategory = this.allProductsCategory;
@@ -333,6 +342,12 @@ export class ModeConfig {
     this.dataProvider.loading = false;
   }
 
+  pageChanged(event){
+    // paginate all products
+    console.log("event",event);
+    this.allProductsCategory.products = this.products.slice(event.pageIndex*event.pageSize,(event.pageIndex+1)*event.pageSize);
+  }
+
   updateMenu(){
     this.selectedMenu = this.dataProvider.allMenus.find((menu)=>menu.id == this.selectedMenuId);
     console.log("updating menu",this.selectedMenu,this.type);
@@ -409,6 +424,7 @@ export class ModeConfig {
         product.visible = false;
         product.updated = true;
       })
+      this.selectedCategory.updated = true;
       this.productVisibilityChanged = true;
     } else {
       this.alertify.presentToast("No Valid Category")
@@ -421,6 +437,7 @@ export class ModeConfig {
         product.visible = true;
         product.updated = true;
       })
+      this.selectedCategory.updated = true;
       this.productVisibilityChanged = true;
     } else {
       this.alertify.presentToast("No Valid Category")
@@ -573,6 +590,7 @@ export class ModeConfig {
           tags:[],
           variants:[],
           visible:true,
+          taxes:data.taxes || [],
         }
         let productRes = await this.databaseService.addRecipe(product,menuId)
         let rootCategoryRes = await this.databaseService.updateRootCategory(category.mainCategory.id,[productRes.id])
@@ -589,6 +607,28 @@ export class ModeConfig {
       this.dataProvider.loading = false;
     });
   };
+
+  setTaxes(product:Product){
+    const dialog = this.dialog.open(SetTaxComponent,{data:product})
+    firstValueFrom(dialog.closed).then((data:any)=>{
+      console.log("data",data);
+      if (data){
+        let filteredTax = data.taxes.filter((tax)=>tax.checked).map((tax)=>{
+          delete tax.checked;
+          return {...tax,nature:data.type}
+        });
+        this.dataProvider.loading = true;
+        product.taxes = filteredTax;
+        this.databaseService.updateRecipe(product,this.selectedMenuId).then((data:any)=>{
+          this.alertify.presentToast("Taxes Updated Successfully");
+        }).catch((err)=>{
+          this.alertify.presentToast("Taxes Update Failed");
+        }).finally(()=>{
+          this.dataProvider.loading = false;
+        })
+      }
+    })
+  }
 
   selectRecipe(){
     const dialog = this.dialog.open(SelectRecipeComponent, {data:this.products})
@@ -613,7 +653,9 @@ export class ModeConfig {
     try {
       let dialog = this.dialog.open(AddDishComponent,{data:{mode:'edit',product}})
       let data = await firstValueFrom(dialog.closed)
-      if (data){
+      if (typeof data =='object'){
+        await this.databaseService.updateRecipe({...product,...data,updated:true},menuId)
+        product = {...product,...data,updated:true}
         this.alertify.presentToast("Recipe Updated Successfully");
       }
     } catch (error) {
@@ -631,6 +673,9 @@ export class ModeConfig {
           this.dataProvider.loading = true;
           this.databaseService.deleteProduct(product.id,menuId).then((data:any)=>{
             this.alertify.presentToast("Recipe Deleted Successfully");
+            // remove from products
+            this.products = this.products.filter((p:Product)=> p.id != product.id)
+            this.selectedCategory.products = this.selectedCategory.products.filter((p:Product)=> p.id != product.id)
           }).catch((err)=>{
             this.alertify.presentToast("Recipe Delete Failed");
           }).finally(()=>{
@@ -695,7 +740,7 @@ export class ModeConfig {
     }
   }
 
-  updateChanged(){
+  async updateChanged(){
     this.dataProvider.menus.forEach((menu:ModeConfig) => {
       console.log("menu",menu.selectedMenu);
     })
@@ -706,6 +751,7 @@ export class ModeConfig {
     console.log("selectedMenu",this.selectedMenu);
     if(this.selectedMenu){
       let updatableProducts = this.products.filter((product:Product) => product.updated);
+      console.log("updatableProducts",updatableProducts);
       let updatablerecommendedCategories = this.recommendedCategories.filter((category:Category) => category.updated);
       let updatableviewCategories = this.viewCategories.filter((category:Category) => category.updated);
       let updatablemainCategories = this.mainCategories.filter((category:Category) => category.updated);
@@ -718,10 +764,22 @@ export class ModeConfig {
       console.log("total recommended category update",updatablerecommendedCategories.length);
       console.log("total view category update",updatableviewCategories.length);
       console.log("total main category update",updatablemainCategories.length);
-      return Promise.all([updateRequestProducts,updateRequestmainCategories,updateRequestrecommendedCategories,updateRequestviewCategories].flat())
+      return await Promise.all([updateRequestProducts,updateRequestmainCategories,updateRequestrecommendedCategories,updateRequestviewCategories].flat())
     } else {
       return Promise.reject("Please Select Menu");
     }
+  }
+
+  save(){
+    this.dataProvider.loading = true;
+    this.updateChanged().then(async (data:any)=>{
+      await this.getAllData();
+      this.alertify.presentToast("Menu Updated Successfully");
+    }).catch((err)=>{
+      this.alertify.presentToast("Menu Update Failed");
+    }).finally(()=>{
+      this.dataProvider.loading = false;
+    })
   }
 
   getExcelFormat(){

@@ -21,9 +21,7 @@ export class AppComponent {
   constructor(
     private electronService: ElectronService,
     private translate: TranslateService,
-    public dataProvider: DataProvider,
-    private dataService: GetDataService,
-    private printingService: PrintingService
+    public dataProvider: DataProvider
   ) {
     this.translate.setDefaultLang('en');
     console.log('APP_CONFIG', APP_CONFIG);

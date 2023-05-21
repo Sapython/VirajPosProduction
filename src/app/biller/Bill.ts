@@ -858,6 +858,7 @@ export class Bill implements BillConstructor {
       user: this.user,
       additionalInfo:additionalInfo,
     };
+    console.log("this.dataProvider.printBillAfterFinalize",this.dataProvider.printBillAfterFinalize);
     if (this.dataProvider.printBillAfterFinalize){
       this.printingService.printBill(this)
     } else {
@@ -868,7 +869,7 @@ export class Bill implements BillConstructor {
     }
     if(this.nonChargeableDetail){
       this.databaseService.addSales(this.billing.grandTotal,'nonChargeableSales')
-    } else if(this.mode=='dineIn'){
+    } else if (this.mode=='dineIn'){
       this.databaseService.addSales(this.billing.grandTotal,'dineInSales')
     } else if (this.mode == 'takeaway'){
       this.databaseService.addSales(this.billing.grandTotal,'takeawaySales')

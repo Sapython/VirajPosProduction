@@ -92,11 +92,9 @@
                         <p class="name">Token {{table.name}}</p>
                         <p class="cost" *ngIf="table.bill?.billing?.grandTotal"><strong>{{table.bill?.billing?.grandTotal | currency:'INR'}}</strong></p>
                         <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">{{ table.timeSpent }}</p>
-                        <!-- <p class="time">{{table.occupiedStart.toDate() | date}}</p> -->
-                        <!-- <div class="actions" *ngIf="table.status == 'occupied'">
-                            <viraj-button [minimalPadding]="true" type="icon" color="primary" (click)="printTable(table,$event)"><i class="ri-printer-fill"></i></viraj-button>
-                            <viraj-button [minimalPadding]="true" type="icon" color="primary" (click)="openTable(table,$event)"><i class="ri-eye-fill"></i></viraj-button>
-                        </div> -->
+                        <div class="actions" *ngIf="table.status == 'occupied'">
+                            <viraj-button [noPropogation]="true" *ngIf="table.bill.stage=='finalized'" [minimalPadding]="true" type="icon" (vclick)="settleTable(table,$event)"><i class="ri-save-fill"></i></viraj-button>
+                        </div>
                     </button>
                 </ng-container>
             </div>
@@ -111,10 +109,8 @@
                     <p class="name">Token {{table.name}}</p>
                     <p class="cost" *ngIf="table.bill?.billing?.grandTotal"><strong>{{table.bill?.billing?.grandTotal | currency:'INR'}}</strong></p>
                     <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">{{ table.timeSpent }}</p>
-                    <!-- <p class="time">{{table.occupiedStart.toDate() | date}}</p> -->
                     <div class="actions" *ngIf="table.status == 'occupied'">
-                        <viraj-button [noPropogation]="true" [minimalPadding]="true" type="icon" color="primary" (vclick)="printTable(table,$event)"><i class="ri-printer-fill"></i></viraj-button>
-                        <viraj-button [noPropogation]="true" [minimalPadding]="true" type="icon" color="primary" (vclick)="openTable(table,$event)"><i class="ri-eye-fill"></i></viraj-button>
+                        <viraj-button [noPropogation]="true" *ngIf="table.bill.stage=='finalized'" [minimalPadding]="true" type="icon" (vclick)="settleTable(table,$event)"><i class="ri-save-fill"></i></viraj-button>
                     </div>
                 </button>
             </div>

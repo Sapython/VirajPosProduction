@@ -248,7 +248,7 @@ export class PrintingService {
       products: products.map((product: Product) => {
         return {
           id: product.id,
-          name: product.name,
+          name: product.name + (product.tags.find((tag)=>tag.name.toLocaleLowerCase() == 'half' || tag.name.toLocaleLowerCase() == 'full')?.name),
           instruction: product.instruction,
           quantity: product.quantity,
           price: product.price,

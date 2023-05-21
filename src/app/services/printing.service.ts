@@ -9,7 +9,6 @@ import {
 import { Bill } from '../biller/Bill';
 import { Dialog } from '@angular/cdk/dialog';
 import { DialogComponent } from '../base-components/dialog/dialog.component';
-declare var window: any;
 // declare var printing: any;
 // @ts-ignore
 import * as EscPosEncoder from '../esc-pos-encoder.umd'
@@ -313,7 +312,7 @@ export class PrintingService {
       products: products.map((product: Product) => {
         return {
           id: product.id,
-          name: product.name,
+          name: product.name + (product.tags.find((tag)=>tag.name.toLocaleLowerCase() == 'half' || tag.name.toLocaleLowerCase() == 'full')?.name),
           instruction: product.instruction,
           quantity: product.quantity,
           price: product.price,
@@ -583,7 +582,7 @@ export class PrintingService {
       products: kot.products.map((product: Product) => {
         return {
           id: product.id,
-          name: product.name,
+          name: product.name + (product.tags.find((tag)=>tag.name.toLocaleLowerCase() == 'half' || tag.name.toLocaleLowerCase() == 'full')?.name),
           instruction: product.instruction,
           quantity: product.quantity,
           price: product.price,
@@ -652,7 +651,7 @@ export class PrintingService {
     oldProducts.forEach((product: any) => {
       let prd = {
         id: product.id,
-        name: product.name,
+        name: product.name + (product.tags.find((tag)=>tag.name.toLocaleLowerCase() == 'half' || tag.name.toLocaleLowerCase() == 'full')?.name),
         instruction: product.instruction,
         quantity: product.quantity,
         price: product.price,
@@ -664,7 +663,7 @@ export class PrintingService {
     kot.products.forEach((product: Product) => {
       let prd = {
         id: product.id,
-        name: product.name,
+        name: product.name + (product.tags.find((tag)=>tag.name.toLocaleLowerCase() == 'half' || tag.name.toLocaleLowerCase() == 'full')?.name),
         instruction: product.instruction,
         quantity: product.quantity,
         price: product.price,

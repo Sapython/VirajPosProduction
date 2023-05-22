@@ -11,22 +11,23 @@ import { Product } from '../../../constructors';
   styleUrls: ['./add-dish.component.scss']
 })
 export class AddDishComponent {
-  tags:string[] = [
+  type:string[] = [
     'veg',
     'non-veg',
   ];
+  tags:{color:string,name:string,contrast:string,important:boolean}[] = []
   variants:{variantName:string,price:number}[] = []
   newDishForm:FormGroup = new FormGroup({
     name: new FormControl('',Validators.required),
     price: new FormControl('',Validators.required),
     type: new FormControl('',Validators.required),
-    // variants: new FormControl(this.variants),
   });
 
   constructor(private dialogRef:DialogRef,@Inject(DIALOG_DATA) public data:{mode:'add'|'edit',product?:Product}) {
     if(data.mode == 'edit') {
       this.newDishForm.patchValue(data.product)
-      console.log(this.newDishForm.value);
+      this.tags = data.product.tags;
+      console.log(this.newDishForm.value,"this.tags",this.tags);
     }
   }
 

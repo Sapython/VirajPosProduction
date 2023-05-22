@@ -79,8 +79,15 @@ export class HistoryComponent {
     }
   }
 
-  reprintKot(kot:KotConstructor,bill:BillConstructor){
-    this.printingService.reprintKot(kot,bill.table.name,bill.billNo||'');
+  async reprintKot(kot:KotConstructor,bill:BillConstructor){
+    const dialog = this.dialog.open(ReprintReasonComponent)
+    let res = await firstValueFrom(dialog.closed)
+    if(res && typeof res == 'string'){
+      this.printingService.reprintKot(kot,bill.table.name,bill.billNo||'');
+    } else {
+      alert("Reprint Cancelled")
+      return;
+    }
   }
 
   generateConsolidatedReport(){

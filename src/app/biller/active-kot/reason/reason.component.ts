@@ -22,7 +22,10 @@ export class ReasonComponent {
   }
 
   submit(){
-    if (this.reasonForm.invalid) this.dialogRef.close()
+    if (this.reasonForm.invalid){
+      alert('Invalid Form')
+      return
+    }
     if (this.reasonForm.value.password == this.dataProvider.password){
       this.dialogRef.close(this.reasonForm.value.reason)
     } else {

@@ -110,8 +110,11 @@ export class ActiveKotComponent implements OnChanges {
     }
   }
 
-  printKot(kot: Kot) {
-    this.dataProvider.currentBill?.printKot(kot,'reprintKot');
+  async printKot(kot: Kot) {
+    let dialog = this.dialog.open(ReasonComponent);
+    firstValueFrom(dialog.closed).then((reason:string) => {
+      this.dataProvider.currentBill?.printKot(kot,'reprintKot',reason);
+    })
   }
 
   async deleteKot(kot: Kot) {
@@ -132,7 +135,10 @@ export class ActiveKotComponent implements OnChanges {
   }
 
   editKot(kot: Kot) {
-    this.dataProvider.currentBill?.editKot(kot);
+    let dialog = this.dialog.open(ReasonComponent);
+    firstValueFrom(dialog.closed).then((reason:string) => {
+      this.dataProvider.currentBill?.editKot(kot,reason);
+    })
   }
 
   saveEditedKot(kot: Kot) {}

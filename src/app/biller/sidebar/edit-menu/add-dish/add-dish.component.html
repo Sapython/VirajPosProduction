@@ -12,11 +12,25 @@
         <mat-form-field appearance="outline">
             <mat-label>Type</mat-label>
             <mat-select placeholder="Tag" formControlName="type" name="tag">
-                <mat-option *ngFor="let tag of tags" [value]="tag">
+                <mat-option *ngFor="let tag of type" [value]="tag">
                     {{tag}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
+        <!-- <div class="tags">
+            <ol>
+                <li *ngFor="let tag of tags">
+                    <i *ngIf="tag.important" (click)="tag.important = !tag.important" class="ri-shield-check-fill"></i>
+                    <i *ngIf="!tag.important" class="ri-shield-line"></i>
+                    {{tag.name}}
+                    <mat-select placeholder="Placeholder" (valueChange)="" name="item">
+                        <mat-option *ngFor="let item of items" [value]="item.value">
+                            {{item.viewValue}}
+                        </mat-option>
+                    </mat-select>
+                </li>
+            </ol>
+        </div> -->
         <hr>
         <!-- <h4>Variants 
             <button mat-fab color="primary" (click)="addVariant()">

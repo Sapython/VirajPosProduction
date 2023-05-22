@@ -24,7 +24,6 @@
         <!-- <div class="actions" *ngIf="this.dataProvider.currentMenu?.type=='dineIn'">
         </div> -->
     </div>
-    <p>{{this.dataProvider.currentMenu?.type}}</p>
     <h2>Table</h2>
     <ng-container *ngIf="!moveKotMode">
         <div class="modes">
@@ -77,6 +76,17 @@
                     <button class="table empty" (click)="addTable(tableGroup.key)" [ngClass]="{'medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}" *ngIf="this.dataProvider.getAccess(['admin','manager'])">
                         <mat-icon>add</mat-icon>
                         <p>Add New {{tableGroup.key}}</p>
+                    </button>
+                </div>
+            </div>
+            <div class="groupedTables" *ngIf="(this.dataProvider.groupedTables|keyvalue).length == 0">
+                <div class="heading">
+                    <h2>Tables</h2>
+                </div>
+                <div class="tables">
+                    <button class="table empty" (click)="addTable('Table')" [ngClass]="{'medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}" *ngIf="this.dataProvider.getAccess(['admin','manager'])">
+                        <mat-icon>add</mat-icon>
+                        <p>Add New Table</p>
                     </button>
                 </div>
             </div>

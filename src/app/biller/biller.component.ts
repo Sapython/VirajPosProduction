@@ -30,9 +30,6 @@ export class BillerComponent {
       }
       dialog.open(TableComponent)
     })
-    this.dataProvider.currentBill?.updated.subscribe((bill)=>{
-      alert("Bill Updated")
-    })
   }
 
 }

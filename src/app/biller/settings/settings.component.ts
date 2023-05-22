@@ -231,7 +231,7 @@ export class SettingsComponent implements OnInit {
     
   }
 
-  updateMode(){
+  async updateMode(){
     if (this.modes[0]){
       if (!this.dataProvider.currentSettings.dineInMenu){
         const dialog = this.dialog.open(SelectMenuComponent,{data:{type:'dineIn',menus:this.dataProvider.allMenus}});
@@ -297,7 +297,15 @@ export class SettingsComponent implements OnInit {
     if (currentMenu){
       this.dataProvider.menuLoadSubject.next(currentMenu);
     }
-    this.databaseService.updateMode(this.modes)
+    this.dataProvider.loading = true;
+    await this.databaseService.updateMode(this.modes)
+    this.dataProvider.loading = false;
+    if (await this.dataProvider.confirm("Data is updated. Please restart the application to see the changes.",[1])){
+      let url = window.location.href.split('/')
+      url.pop()
+      url.push('index.html')
+      window.location.href = url.join('/') 
+    }
   }
 
   smartModeToggle(value:boolean){

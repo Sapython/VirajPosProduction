@@ -35,6 +35,7 @@ import { ReprintReasonComponent } from './history/reprint-reason/reprint-reason.
     MatProgressSpinnerModule,
     MatInputModule,
     MatExpansionModule,
+    MatButtonModule
   ],
   exports:[
     SystemComponent

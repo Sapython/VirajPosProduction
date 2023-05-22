@@ -39,6 +39,7 @@ export class ReportsComponent implements OnInit {
     totalTaxes:[],
   }
   maxAmount:number = 0;
+  tokenWiseBills:BillConstructor[] = []
   bills:BillConstructor[] = []
   kots:kotReport[] = []
   products:productReport[] = []
@@ -48,7 +49,7 @@ export class ReportsComponent implements OnInit {
   onlineBills:BillConstructor[] = []
   tables:TableConstructor[] = []
   loading:boolean = false;
-  reportMode:'billWise'|'kotWise'|'itemWise'|'discounted'|'ncBills'|'takeawayBills'|'onlineBills' | 'daySummary' | 'consolidated' | false = false;
+  reportMode:'billWise'|'kotWise'|'itemWise'|'discounted'|'ncBills'|'takeawayBills'|'onlineBills' | 'daySummary' | 'consolidated' | 'takeawayTokenWise' | 'onlineTokenWise' | 'tableWise' | false = false;
   range = new FormGroup({
     start: new FormControl<Date | null>(new Date(),[Validators.required]),
     end: new FormControl<Date | null>(new Date()),
@@ -196,6 +197,30 @@ export class ReportsComponent implements OnInit {
           }
           this.loading = false;
         });
+      } else if (this.reportMode == 'takeawayTokenWise'){
+        this.loading = true;
+        this.databaseService.getBillsByDay(this.range.value.start,this.range.value.end).then((bills) => {
+          let localBills = bills.docs.map((doc) => {
+            return {...doc.data(),id:doc.id} as BillConstructor;
+          })
+          console.log("bills local",localBills);
+          let filteredLocalBills = localBills.filter((res)=>res.settlement && res.mode == 'takeaway')
+          console.log("bills",filteredLocalBills);
+          let taxes:Tax[] = []
+          filteredLocalBills.forEach((bill)=>{
+            bill.billing.taxes.forEach((tax)=>{
+              let index = taxes.findIndex((res)=>res.id == tax.id)
+              if (index == -1){
+                taxes.push(JSON.parse(JSON.stringify(tax)))
+              } else {
+                console.log("Adding tax",taxes[index].amount,tax.amount,taxes[index].amount + tax.amount);
+                taxes[index].amount = taxes[index].amount + tax.amount
+              }
+            })
+          })
+          this.tokenWiseBills = filteredLocalBills;
+          this.loading = false;
+        });
       } else {
         this.reportMode = false
       }
@@ -257,6 +282,8 @@ export class ReportsComponent implements OnInit {
       title = "Online Bills"
     } else if (this.reportMode == 'consolidated'){
       title = "Consolidated Report"
+    } else if (this.reportMode == 'takeawayTokenWise'){
+      title = "Takeaway Token Wise"
     }
     let logo = new Image()
     logo.src = 'assets/viraj.png'
@@ -278,7 +305,7 @@ export class ReportsComponent implements OnInit {
     if (this.reportMode == 'consolidated'){
       autoTable(doc, { html: '#consolidatedTable', startY: 55, didDrawPage: function (data) {
         y = data.cursor.y
-      } })
+      }})
     }
     autoTable(doc, { html: '#report-table', startY: y+10 })
     doc.save(this.reportMode+((new Date()).toLocaleString())+'.pdf')

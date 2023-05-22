@@ -1,4 +1,4 @@
-import { DIALOG_DATA } from '@angular/cdk/dialog';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Component, Inject } from '@angular/core';
 import { Bill } from '../../Bill';
 import { KotConstructor, Product } from '../../constructors';
@@ -38,7 +38,7 @@ export class SplitBillComponent {
     }
   }
 
-  constructor(@Inject(DIALOG_DATA) private bill:Bill,private dialogRef:MatDialogRef<SplitBillComponent>,private alertify:AlertsAndNotificationsService) {
+  constructor(@Inject(DIALOG_DATA) private bill:Bill,private dialogRef:DialogRef,private alertify:AlertsAndNotificationsService) {
     this.allKots = JSON.parse(JSON.stringify(bill.kots.map((kot)=>kot.toObject())));
     this.allKots.forEach((kot)=>{
       kot.products.forEach((product)=>{

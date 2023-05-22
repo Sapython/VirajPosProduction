@@ -370,10 +370,10 @@ export class TableComponent implements OnInit {
   settleTable(table:Table,event){
     if (table.bill) {
       let dialog = this.dialog.open(SettleComponent,{data:table.bill.billing.grandTotal});
-      dialog.closed.subscribe((result: any) => {
+      dialog.closed.subscribe(async (result: any) => {
         console.log('Result', result);
         if (result && table.bill && result.settling && result.paymentMethods) {
-          table.bill.settle(result.paymentMethods,result.detail || null);
+          await table.bill.settle(result.paymentMethods,'external',result.detail || null);
         }
       });
     }

@@ -26,6 +26,11 @@ export class Bill implements BillConstructor {
   billNo?: string;
   orderNo: string|null = null;
   createdDate: Timestamp;
+  kotReprints:{
+    reprintReason:string;
+    time:Timestamp;
+    user:UserConstructor;
+  }[] = [];
   billReprints:{
     reprintReason:string;
     time:Timestamp;
@@ -286,7 +291,7 @@ export class Bill implements BillConstructor {
     this.calculateBill();
   }
 
-  editKot(kot: Kot) {
+  editKot(kot: Kot,reason) {
     if (this.currentKot?.stage === 'active') {
       if (
         confirm(
@@ -635,7 +640,14 @@ export class Bill implements BillConstructor {
     this.updated.next();
   }
 
-  printKot(kot:Kot,mode:'firstChargeable'|'cancelledKot'|'editedKot'|'runningNonChargeable'|'runningChargeable'|'firstNonChargeable'|'reprintKot'|'online'){
+  printKot(kot:Kot,mode:'firstChargeable'|'cancelledKot'|'editedKot'|'runningNonChargeable'|'runningChargeable'|'firstNonChargeable'|'reprintKot'|'online',reason?:string){
+    if (mode=='reprintKot'){
+      this.kotReprints.push({
+        reprintReason:reason,
+        time:Timestamp.now(),
+        user:this.user,
+      })
+    }
     // let products = kot.products.map((product)=>{
     //   return {
     //     name:product.name,
@@ -680,7 +692,8 @@ export class Bill implements BillConstructor {
 
   async settle(
     payments: Payment[],
-    additionalInfo?:any
+    type:'internal'|'external',
+    additionalInfo:any,
   ) {
     this.calculateBill();
     // update every product and increase their sales counter by their quantity
@@ -747,9 +760,11 @@ export class Bill implements BillConstructor {
       this.databaseService.addSales(this.billing.grandTotal,'onlineSales')
     }
     this.stage = 'settled';
-    this.dataProvider.currentTable?.clearTable()
-    this.dataProvider.currentBill = undefined;
-    this.dataProvider.currentTable = undefined;
+    this.table?.clearTable()
+    if(type == 'internal'){
+      this.dataProvider.currentBill = undefined;
+      this.dataProvider.currentTable = undefined;
+    }
     this.dataProvider.totalSales += this.billing.grandTotal;
     this.updated.next();
     if(this.dataProvider.showTableOnBillAction){

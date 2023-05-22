@@ -70,7 +70,7 @@
         <button mat-icon-button (click)="reportMode = false">
           <i class="ri-close-line"></i>
         </button>
-        <mat-form-field>
+        <mat-form-field *ngIf="reportMode == 'consolidated'">
           <mat-label>Maximum Amount</mat-label>
           <input
             matInput
@@ -203,6 +203,36 @@
         </tbody>
       </table>
     </ng-container>
+    <table id="report-table" *ngIf="!loading && reportMode == 'takeawayTokenWise'">
+      <thead>
+        <tr>
+          <th>Token No</th>
+          <th>Bill No</th>
+          <th>Bill Amount</th>
+          <th>Bill Kots</th>
+          <th>Date-Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let bill of tokenWiseBills">
+          <td>
+            {{ bill.table.name }}
+          </td>
+          <td>
+            {{ bill.billNo || "N/A" }}
+          </td>
+          <td>
+            {{ bill.billing.grandTotal }}
+          </td>
+          <td>
+            {{ joinArray(bill.kots) }}
+          </td>
+          <td>
+            {{ bill.createdDate.toDate() | date : "short" }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
     <table id="report-table" *ngIf="!loading && reportMode == 'billWise'">
       <thead>
         <tr>
@@ -523,6 +553,18 @@
       <button
         mat-flat-button
         (click)="reportMode = 'onlineBills'; getReport()"
+        color="primary"
+      >
+        View Report
+      </button>
+    </div>
+    <div class="report" matRipple>
+      <h3>Takeaway Token Wise</h3>
+      <i class="ri-line-chart-fill"></i>
+      <p>All bills from takeaway mode with amount, kots, items, etc.</p>
+      <button
+        mat-flat-button
+        (click)="reportMode = 'takeawayTokenWise'; getReport()"
         color="primary"
       >
         View Report

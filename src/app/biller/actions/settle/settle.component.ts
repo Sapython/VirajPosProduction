@@ -68,20 +68,20 @@ export class SettleComponent implements OnInit {
   }
 
   ngOnInit(): void {
-      this.databaseService.getPaymentMethods().then((methods)=>{
-        this.additionalMethods = methods.docs.map((d)=>{return d.data()['name']})
-        this.methods.forEach((method)=>{
-          method.paymentMethods = ['Cash','Card','UPI','Wallet',...this.additionalMethods]
-        })
-        this.methodsWithDetail = methods.docs.filter((d)=>{return d.data()['detail']}).map((d)=>{return d.data()['name']})
-        console.log("this.methodsWithDetail",this.methodsWithDetail,"this.additionalMethods",this.additionalMethods);
+    this.databaseService.getPaymentMethods().then((methods)=>{
+      this.additionalMethods = methods.docs.map((d)=>{return d.data()['name']})
+      this.methods.forEach((method)=>{
+        method.paymentMethods = ['Cash','Card','UPI','Wallet',...this.additionalMethods]
       })
+      this.methodsWithDetail = methods.docs.filter((d)=>{return d.data()['detail']}).map((d)=>{return d.data()['name']})
+      console.log("this.methodsWithDetail",this.methodsWithDetail,"this.additionalMethods",this.additionalMethods);
+    })
   }
 
   close(){
     this.dialogRef.close()
   }
-  
+
   async settleBill(){
     if (!(this.customDetailRequired ? this.detailForm.valid : true)){
       this.alertify.presentToast('Missing required fields')

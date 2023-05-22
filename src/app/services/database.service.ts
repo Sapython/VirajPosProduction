@@ -945,7 +945,7 @@ export class DatabaseService {
   }
 
   updateBusiness(business:OptionalBusinessRecord){
-    return setDoc(doc(this.firestore,'business',business.businessId),business,{merge:true});
+    return setDoc(doc(this.firestore,'business',this.dataProvider.businessId),business,{merge:true});
   }
 
   addPaymentMethod(data:any){

@@ -117,13 +117,13 @@ export class OnboardingService {
             // check if all menus are loaded
             if (verifiedMenus.length == menuInits.length){
               this.loadingSteps.next('All menus loaded');
-              console.log("setting.modes",setting.modes);
+              // console.log("setting.modes",setting.modes);
               this.databaseService.getTaxesSubscription().subscribe((taxes)=>{
                 this.dataProvider.taxes = taxes.map((tax)=>{return tax as Tax})
               })
               // set current menu in order of dineIn, takeaway, online
               let currentMenu = this.dataProvider.menus.find((menu)=>((menu.type == 'dineIn') && setting.modes[0]) || (this.dataProvider.menus.find((menu)=>menu.type == 'takeaway') && setting.modes[1]) || (this.dataProvider.menus.find((menu)=>menu.type == 'online') && setting.modes[2]));
-              console.log("currentMenu",currentMenu);
+              // console.log("currentMenu",currentMenu);
               if (currentMenu){
                 this.dataProvider.menuLoadSubject.next(currentMenu);
               } else {
@@ -147,7 +147,7 @@ export class OnboardingService {
                 this.loadingSteps.next('All online tokens loaded');
               }
               this.dataProvider.showTableOnBillAction = JSON.parse(localStorage.getItem('showTable') || 'false');
-              console.log("Loading table size");
+              // console.log("Loading table size");
               let tempSize = localStorage.getItem('tableSize')
               if (tempSize == 'large' || tempSize == 'medium' || tempSize == 'small'){
                 this.dataProvider.currentTableSize = tempSize;
@@ -250,7 +250,7 @@ export class OnboardingService {
         r[a.name.split(' ')[0]] = [...r[a.name.split(' ')[0]] || [], a];
         return r;
       }, {});
-      console.log("groupedTables",groupedTables);
+      // console.log("groupedTables",groupedTables);
       this.dataProvider.tables = formedTable;
       this.dataProvider.groupedTables = groupedTables;
     } else {

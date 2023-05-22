@@ -177,13 +177,13 @@ export class Table implements TableConstructor {
       databaseService,
       printingService
     );
-    console.log('object.bill', object.bill);
+    // console.log('object.bill', object.bill);
     if (typeof object.bill == 'string') {
       let bill = await databaseService.getBill(object.bill);
-      console.log('bill.exists()', bill.exists());
+      // console.log('bill.exists()', bill.exists());
       if (bill.exists()) {
         let billData = bill.data() as BillConstructor;
-        console.log('billData ', billData);
+        // console.log('billData ', billData);
         instance.id = object.id;
         instance.bill = Bill.fromObject(
           billData,
@@ -200,11 +200,13 @@ export class Table implements TableConstructor {
         instance.tableNo = object.tableNo;
         instance.type = object.type;
         instance.completed = object.completed || false;
+        instance.minutes = object.minutes;
+        instance.timeSpent = object.timeSpent;
         return instance;
       } else {
-        console.log('bill does not exist', object.bill);
-        console.log('bill', bill);
-        console.log('object', object);
+        // console.log('bill does not exist', object.bill);
+        // console.log('bill', bill);
+        // console.log('object', object);
         alert('bill does not exist');
         instance.billPrice = object.billPrice;
         instance.occupiedStart = object.occupiedStart;
@@ -221,6 +223,8 @@ export class Table implements TableConstructor {
       instance.tableNo = object.tableNo;
       instance.type = object.type;
       instance.completed = object.completed || false;
+      instance.minutes = object.minutes;
+      instance.timeSpent = object.timeSpent;
       return instance;
     } else {
       instance.bill = object.bill;
@@ -229,6 +233,8 @@ export class Table implements TableConstructor {
       instance.status = object.status;
       instance.status = 'available';
       instance.completed = object.completed || false;
+      instance.minutes = object.minutes;
+      instance.timeSpent = object.timeSpent;
       return instance;
     }
   }
@@ -245,6 +251,8 @@ export class Table implements TableConstructor {
       tableNo: this.tableNo,
       type: this.type,
       completed: this.completed || false,
+      minutes:this.minutes,
+      timeSpent:this.timeSpent
     };
   }
 

@@ -2,11 +2,16 @@ import { DialogRef } from '@angular/cdk/dialog';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataProvider } from '../../../../provider/data-provider.service';
+import { shakeOnEnterAnimation, zoomOutOnLeaveAnimation } from 'angular-animations';
 
 @Component({
   selector: 'app-reprint-reason',
   templateUrl: './reprint-reason.component.html',
-  styleUrls: ['./reprint-reason.component.scss']
+  styleUrls: ['./reprint-reason.component.scss'],
+  animations:[
+    zoomOutOnLeaveAnimation(),
+    shakeOnEnterAnimation({duration:500})
+  ]
 })
 export class ReprintReasonComponent {
   reprintForm:FormGroup = new FormGroup({

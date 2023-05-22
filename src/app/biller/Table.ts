@@ -200,8 +200,8 @@ export class Table implements TableConstructor {
         instance.tableNo = object.tableNo;
         instance.type = object.type;
         instance.completed = object.completed || false;
-        instance.minutes = object.minutes;
-        instance.timeSpent = object.timeSpent;
+        instance.minutes = object.minutes || 0;
+        instance.timeSpent = object.timeSpent || '';
         return instance;
       } else {
         // console.log('bill does not exist', object.bill);
@@ -223,8 +223,8 @@ export class Table implements TableConstructor {
       instance.tableNo = object.tableNo;
       instance.type = object.type;
       instance.completed = object.completed || false;
-      instance.minutes = object.minutes;
-      instance.timeSpent = object.timeSpent;
+      instance.minutes = object.minutes || 0;
+      instance.timeSpent = object.timeSpent || '';
       return instance;
     } else {
       instance.bill = object.bill;
@@ -233,8 +233,8 @@ export class Table implements TableConstructor {
       instance.status = object.status;
       instance.status = 'available';
       instance.completed = object.completed || false;
-      instance.minutes = object.minutes;
-      instance.timeSpent = object.timeSpent;
+      instance.minutes = object.minutes || 0;
+      instance.timeSpent = object.timeSpent || '';
       return instance;
     }
   }
@@ -251,8 +251,8 @@ export class Table implements TableConstructor {
       tableNo: this.tableNo,
       type: this.type,
       completed: this.completed || false,
-      minutes:this.minutes,
-      timeSpent:this.timeSpent
+      minutes:this.minutes || 0,
+      timeSpent:this.timeSpent || ''
     };
   }
 

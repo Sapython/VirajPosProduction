@@ -31,4 +31,6 @@ export class CancelComponent {
     this.dataProvider.currentBill.customerInfo.name = this.cancelForm.value.customer;
     this.dialogRef.close(this.cancelForm.value)
   }
+
+  
 }

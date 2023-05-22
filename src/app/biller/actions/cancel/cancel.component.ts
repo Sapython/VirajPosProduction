@@ -32,5 +32,10 @@ export class CancelComponent {
     this.dialogRef.close(this.cancelForm.value)
   }
 
-  
+  moveFocus(event,elm){
+    console.log(event);
+    if(event.keyCode == 13){
+      elm.focus()
+    }
+  }
 }

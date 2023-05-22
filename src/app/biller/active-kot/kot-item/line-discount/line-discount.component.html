@@ -7,19 +7,19 @@
     </mat-button-toggle-group>
     <mat-form-field appearance="outline" *ngIf="type=='percentage'">
         <mat-label>Percentage</mat-label>
-        <input type="number" matInput [(ngModel)]="value">
+        <input type="number" matInput (keydown.enter)="reason.focus()" [(ngModel)]="value">
     </mat-form-field>
     <mat-form-field appearance="outline" *ngIf="type=='amount'">
         <mat-label>Flat</mat-label>
-        <input type="number" matInput [(ngModel)]="value">
+        <input type="number" matInput (keydown.enter)="reason.focus()" [(ngModel)]="value">
     </mat-form-field>
     <mat-form-field appearance="outline">
         <mat-label>Reason</mat-label>
-        <input type="text" matInput [(ngModel)]="reason"/>
+        <input type="text" matInput #reason (keydown.enter)="pwdInput.focus()" [(ngModel)]="reason"/>
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>Password</mat-label>
-        <input type="text" matInput [(ngModel)]="password" #pwdInput/>
+        <input type="text" matInput (keydown.enter)="submitBtn.focus()" [(ngModel)]="password" #pwdInput/>
         <button color="primary" mat-icon-button matSuffix (click)="pwdInput.type == 'password' ? pwdInput.type = 'text' : pwdInput.type = 'password'">
           <mat-icon *ngIf="pwdInput.type == 'password'">visibility_off</mat-icon>
           <mat-icon *ngIf="pwdInput.type == 'text'">visibility</mat-icon>
@@ -27,6 +27,6 @@
       </mat-form-field>
     <div class="actions">
         <button mat-stroked-button (click)="dialogRef.close()">Cancel</button>
-        <button mat-raised-button color="primary" (click)="submit()">Apply</button>
+        <button mat-raised-button #submitBtn color="primary" (click)="submit()">Apply</button>
     </div>
 </section>

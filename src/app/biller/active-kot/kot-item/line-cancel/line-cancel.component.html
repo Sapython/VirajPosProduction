@@ -4,19 +4,19 @@
     <form [formGroup]="cancelForm">
         <mat-form-field appearance="outline">
             <mat-label>Customer Name</mat-label>
-            <input matInput type="text" formControlName="customerName">
+            <input matInput type="text" (keydown.enter)="reason.focus()" formControlName="customerName">
         </mat-form-field>
         <mat-form-field appearance="outline">
             <mat-label>Reason</mat-label>
-            <input matInput type="text" formControlName="reason">
+            <input matInput type="text" #reason (keydown.enter)="phone.focus()" formControlName="reason">
         </mat-form-field>
         <mat-form-field appearance="outline">
             <mat-label>Phone</mat-label>
-            <input matInput type="tel" formControlName="phone">
+            <input matInput type="tel" #phone (keydown.enter)="pwdInput.focus()" formControlName="phone">
         </mat-form-field>
         <mat-form-field appearance="outline">
             <mat-label>Password</mat-label> 
-            <input matInput type="text" formControlName="password" #pwdInput>
+            <input matInput type="text" (keydown.enter)="submitBtn.focus()" formControlName="password" #pwdInput>
             <button color="primary" mat-icon-button matSuffix (click)="pwdInput.type == 'password' ? pwdInput.type = 'text' : pwdInput.type = 'password'">
                 <mat-icon *ngIf="pwdInput.type == 'password'">visibility_off</mat-icon>
                 <mat-icon *ngIf="pwdInput.type == 'text'">visibility</mat-icon>
@@ -25,7 +25,7 @@
         <div class="actions">
             <button mat-stroked-button (click)="dialogRef.close()">Back</button>
             <button mat-raised-button color="primary" (click)="submit('unmade')">Cancel Un-Made</button>
-            <button mat-raised-button color="primary" (click)="submit('made')">Cancel Made</button>
+            <button mat-raised-button color="primary" #submitBtn (click)="submit('made')">Cancel Made</button>
         </div>
     </form>
 </section>

@@ -1,27 +1,27 @@
 <section>
     <h2>Cancel Bill</h2>
-    <form [formGroup]="cancelForm">
+    <form [formGroup]="cancelForm" (keydown.enter)="$event.preventDefault()">
         <mat-form-field appearance="outline">
             <mat-label>Customer Name</mat-label>
-            <input matInput type="text" formControlName="customer">
+            <input matInput type="text" (keydown.enter)="reason.focus()" formControlName="customer">
         </mat-form-field>
         <mat-form-field appearance="outline">
             <mat-label>Reason</mat-label>
-            <input matInput type="text" formControlName="reason">
+            <input matInput type="text" (keydown.enter)="phone.focus()" #reason formControlName="reason">
         </mat-form-field>
         <mat-form-field appearance="outline">
             <mat-label>Phone</mat-label>
-            <input matInput type="tel" formControlName="phone">
+            <input matInput type="tel" #phone (keydown.enter)="passwordInput.focus()" formControlName="phone">
         </mat-form-field>
         <mat-form-field appearance="outline">
             <mat-label>Password</mat-label>
-            <input matInput type="text" formControlName="password" #passwordInput>
+            <input matInput type="text" (keydown.enter)="submit.focus()" formControlName="password" #passwordInput>
             <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="passwordInput.type == 'password'" (click)="passwordInput.type == 'password' ? passwordInput.type = 'text' : passwordInput.type = 'password'" mat-icon-button><mat-icon>visibility</mat-icon></button>
             <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="!(passwordInput.type == 'password')" (click)="passwordInput.type == 'password' ? passwordInput.type = 'text' : passwordInput.type = 'password'" mat-icon-button><mat-icon>visibility_off</mat-icon></button>
         </mat-form-field>
         <div class="actions">
             <button mat-stroked-button (click)="close()" color="primary">Back</button>
-            <button mat-flat-button [disabled]="!cancelForm.valid" (click)="cancelBill()" color="primary">Cancel Bill</button>
+            <button mat-flat-button #submit [disabled]="!cancelForm.valid" (click)="cancelBill()" color="primary">Cancel Bill</button>
         </div>
     </form>
 </section>

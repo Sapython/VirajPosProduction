@@ -17,7 +17,6 @@
     </aside>
     <div class="main">
       <ng-container *ngIf="currentDiscount">
-        <!-- TODO name phone reason password -->
         <div class="mode">
           <mat-button-toggle-group name="mode" value="Coupon Code" [(ngModel)]="currentDiscount.mode" aria-label="Font Style" #mode>
             <mat-button-toggle *ngIf="this.dataProvider.getAccess('admin')" value="directPercent">Direct Percent</mat-button-toggle>

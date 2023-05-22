@@ -1,7 +1,6 @@
 <section>
     <h2>Non Chargeable</h2>
     <form [formGroup]="nonChargeableForm" (ngSubmit)="submit()" (keydown.enter)="$event.preventDefault()">
-        <!-- TODO create nc for customer or concern based -->
         <mat-form-field appearance="outline">
             <mat-label>Name</mat-label>
             <input matInput type="text" formControlName="name" (keydown.enter)="phone.focus()">

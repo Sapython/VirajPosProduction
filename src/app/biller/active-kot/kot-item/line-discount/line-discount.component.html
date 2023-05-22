@@ -7,15 +7,15 @@
     </mat-button-toggle-group>
     <mat-form-field appearance="outline" *ngIf="type=='percentage'">
         <mat-label>Percentage</mat-label>
-        <input type="number" matInput (keydown.enter)="reason.focus()" [(ngModel)]="value">
+        <input type="number" matInput (keydown.enter)="reasonInput.focus()" [(ngModel)]="value">
     </mat-form-field>
     <mat-form-field appearance="outline" *ngIf="type=='amount'">
         <mat-label>Flat</mat-label>
-        <input type="number" matInput (keydown.enter)="reason.focus()" [(ngModel)]="value">
+        <input type="number" matInput (keydown.enter)="reasonInput.focus()" [(ngModel)]="value">
     </mat-form-field>
     <mat-form-field appearance="outline">
         <mat-label>Reason</mat-label>
-        <input type="text" matInput #reason (keydown.enter)="pwdInput.focus()" [(ngModel)]="reason"/>
+        <input type="text" matInput #reasonInput (keydown.enter)="pwdInput.focus()" [(ngModel)]="reason"/>
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>Password</mat-label>

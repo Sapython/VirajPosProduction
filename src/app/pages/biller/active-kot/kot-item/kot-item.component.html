@@ -1,0 +1,61 @@
+<section *ngIf="product" [matMenuTriggerFor]="manageKot ? menu : null">
+  <div class="border" (mouseenter)="showKotNo=true" (mouseleave)="showKotNo=false" [ngStyle]="{background:this.kotNoColors[kotNo % this.kotNoColors.length].color,padding:showKotNo ? '10px' : '0px'}">
+    <p *ngIf="showKotNo" [ngStyle]="{'color':this.kotNoColors[kotNo % this.kotNoColors.length].contrast}">{{kotId}}</p>
+  </div>
+  <div class="main">
+    <span class="veg" *ngIf="!showKotNo" [ngClass]="{ non: nonVeg }">
+      <span></span>
+    </span>
+    <div *ngIf="showKotNo"></div>
+    <div class="info">
+      <p class="name">{{ productName | titlecase }}</p>
+      <p class="price">{{ price | currency : "INR" }}</p>
+    </div>
+    <div class="more">
+      <div class="actions">
+        <select [disabled]="dataProvider.manageKot==true" *ngIf="variations.length > 0">
+          <option [value]="config.price" *ngFor="let config of variations">
+            {{ config.name }}
+          </option>
+        </select>
+        <div class="quantity">
+          <viraj-button [minimalPadding]="true" iconSize="small" [disabled]="(dataProvider.manageKot==true && !editMode)" (vclick)="increase($event)">
+            <i class="ri-add-fill"></i>
+          </viraj-button>
+          <input
+          [disabled]="(dataProvider.manageKot==true && !editMode)"
+            type="number"
+            [(ngModel)]="product.quantity"
+            (change)="this.dataProvider.currentBill ? this.dataProvider.currentBill.calculateBill() : {}"
+            [ngModelOptions]="{ standalone: true }"
+          />
+          <viraj-button [minimalPadding]="true" iconSize="small" (vclick)="product.quantity = product.quantity - 1;(this.dataProvider.currentBill ? this.dataProvider.currentBill.calculateBill() : {})" [disabled]="quantity <= 1 || (dataProvider.manageKot==true && !editMode)">
+            <i class="ri-subtract-fill"></i>
+          </viraj-button>
+        </div>
+        <ng-container>
+          <viraj-button iconSize="medium" type="icon" [disabled]="dataProvider.manageKot==true && !editMode" class="iconButton" (vclick)="setInfo()">
+            <i class="ri-sticky-note-fill"></i>
+          </viraj-button>
+          <viraj-button iconSize="medium" type="icon" [disabled]="dataProvider.manageKot==true && !editMode" class="iconButton" (vclick)="delete.emit()">
+            <i class="ri-delete-bin-2-line"></i>
+          </viraj-button>
+        </ng-container>
+      </div>
+      <div class="infoStatement" *ngIf="info">
+        <strong>INFO:</strong><span>{{ info }}</span>
+      </div>
+    </div>
+  </div>
+</section>
+<mat-menu #menu="matMenu">
+  <p mat-menu-item>{{productName}}</p>
+  <button mat-menu-item (click)="lineDiscount()">
+    <mat-icon>percent</mat-icon>
+    <span>Line Discount</span>
+  </button>
+  <button mat-menu-item (click)="lineCancel()">
+    <mat-icon>cancel</mat-icon>
+    <span>Line Cancel</span>
+  </button>
+</mat-menu>

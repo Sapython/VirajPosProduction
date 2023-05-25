@@ -2,8 +2,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { APP_INITIALIZER, ErrorHandler, NgModule, isDevMode } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { CoreModule } from './core/core.module';
-import { SharedModule } from './shared/shared.module';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -11,8 +9,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
-import { HomeModule } from './home/home.module';
-import { DetailModule } from './detail/detail.module';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -34,18 +30,14 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { BaseComponentsModule } from './base-components/base-components.module';
+import { BaseComponentsModule } from './shared/base-components/base-components.module';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
-import { DataProvider } from './provider/data-provider.service';
-import { AuthService } from './services/auth.service';
-import { AlertsAndNotificationsService } from './services/alerts-and-notification/alerts-and-notifications.service';
-import { GetDataService } from './services/get-data.service';
-import { OnboardingService } from './onboarding.service';
-import { PrintingService } from './services/printing.service';
+
+import { AlertsAndNotificationsService } from './core/services/alerts-and-notification/alerts-and-notifications.service';
 
 import * as Sentry from "@sentry/angular-ivy";
 import { Router } from '@angular/router';
@@ -141,8 +133,6 @@ const dbConfig: DBConfig = {
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    CoreModule,
-    DetailModule,
     AppRoutingModule,
     MatSnackBarModule,
     BaseComponentsModule,
@@ -193,12 +183,7 @@ const dbConfig: DBConfig = {
   providers: [
     ScreenTrackingService,
     UserTrackingService,
-    DataProvider,
-    AuthService,
     AlertsAndNotificationsService,
-    GetDataService,
-    OnboardingService,
-    PrintingService,
     {
       provide: ErrorHandler,
       useValue: Sentry.createErrorHandler({

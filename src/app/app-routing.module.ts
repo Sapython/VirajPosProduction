@@ -1,10 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { PageNotFoundComponent } from './shared/components';
 
-import { HomeRoutingModule } from './home/home-routing.module';
-import { DetailRoutingModule } from './detail/detail-routing.module';
-import { AuthGuard } from './guards/auth-guard.guard';
+import { AuthGuard } from './shared/guards/auth-guard.guard';
 
 const routes: Routes = [
   {
@@ -15,7 +12,7 @@ const routes: Routes = [
   {
     path: 'login',
     loadChildren: () =>
-      import('./loading/loading.module').then((m) => m.LoadingModule),
+      import('./pages/auth/loading/loading.module').then((m) => m.LoadingModule),
       data:{
         animation:'isLeft'
       }
@@ -24,22 +21,21 @@ const routes: Routes = [
     path: 'biller',
     canActivate: [AuthGuard],
     loadChildren: () =>
-      import('./biller/biller.module').then((m) => m.BillerModule),
+      import('./pages/biller/biller.module').then((m) => m.BillerModule),
       data:{
         animation:'isRight'
       }
   },
   {
     path: '**',
-    component: PageNotFoundComponent
+    redirectTo: 'login',
+    pathMatch: 'full'
   }
 ];
 
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, {}),
-    HomeRoutingModule,
-    DetailRoutingModule
   ],
   exports: [RouterModule]
 })

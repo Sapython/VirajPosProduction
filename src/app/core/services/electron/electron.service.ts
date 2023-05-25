@@ -6,7 +6,7 @@ import { ipcRenderer, webFrame,contextBridge } from 'electron';
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
 import { Dialog } from '@angular/cdk/dialog';
-import { DialogComponent } from '../../../base-components/dialog/dialog.component';
+import { DialogComponent } from '../../../shared/base-components/dialog/dialog.component';
 
 @Injectable({
   providedIn: 'root'

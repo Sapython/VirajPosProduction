@@ -15,6 +15,8 @@ import { ModeConfig } from '../sidebar/edit-menu/edit-menu.component';
 import { AddMethodComponent } from './add-method/add-method.component';
 import { Tax } from '../constructors';
 import { AddTaxComponent } from './add-tax/add-tax.component';
+import { Functions, httpsCallable } from '@angular/fire/functions';
+import { CheckPasswordComponent } from './check-password/check-password.component';
 declare var window:any;
 
 @Component({
@@ -33,6 +35,9 @@ export class SettingsComponent implements OnInit {
   loadingPaymentMethods:boolean = false;
   @Output() cancel = new EventEmitter();
   @Output() save = new EventEmitter();
+  checkUsernameFunction = httpsCallable(this.functions, 'userNameAvailable');
+  signUpWithUserAndPassword = httpsCallable(this.functions, 'signUpWithUserAndPassword');
+  signInWithUserAndPassword = httpsCallable(this.functions, 'signInWithUserAndPassword');
   activeTab:'printer'|'account'|'view'|'about'|'config'|'discount'|'payment'|'taxes' = 'config'
   settingsForm:FormGroup = new FormGroup({
     hotelName: new FormControl(this.dataProvider.currentBusiness?.hotelName,[Validators.required]),
@@ -64,7 +69,7 @@ export class SettingsComponent implements OnInit {
     return this.modes.filter((mode)=>!mode).length >= 2
   }
 
-  constructor(private alertify:AlertsAndNotificationsService,public dataProvider:DataProvider,private databaseService:DatabaseService,private dialog:Dialog, private electronService:ElectronService,public dialogRef:DialogRef) {
+  constructor(private alertify:AlertsAndNotificationsService,public dataProvider:DataProvider,private databaseService:DatabaseService,private dialog:Dialog, private electronService:ElectronService,public dialogRef:DialogRef,private functions: Functions) {
     this.viewSettings.patchValue(localStorage.getItem('viewSettings')?JSON.parse(localStorage.getItem('viewSettings')!):{})
     this.viewSettings.valueChanges.pipe(debounceTime(1000)).subscribe((data)=>{
       localStorage.setItem('viewSettings',JSON.stringify(data))
@@ -479,12 +484,21 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  updateBusiness(){
-    this.dataProvider.currentBusiness?.users.forEach((user:any)=>{
+  async updateBusiness(){
+    // this.dataProvider.currentBusiness?.users.forEach((user)=>{
+    // })
+    for (const user of this.dataProvider.currentBusiness?.users) {
       if (user.new){
-        delete user.new
+        let res = await this.checkUsernameFunction({username:user.username})
+        if (res.data['stage']=='available'){
+          let password = await this.dialog.open(CheckPasswordComponent);
+          if (password){
+            
+          }
+        }
+        // delete user.new
       }
-    })
+    }
     setTimeout(()=>{
       if(this.dataProvider.currentBusiness){
         this.databaseService.updateBusiness(this.dataProvider.currentBusiness);

@@ -36,7 +36,8 @@ import { ReactivateKotComponent } from './reactivate-kot/reactivate-kot.componen
 import { SelectMenuComponent } from './settings/select-menu/select-menu.component';
 import { AddMethodComponent } from './settings/add-method/add-method.component';
 import { AddTaxComponent } from './settings/add-tax/add-tax.component';
-import { MatTooltipModule } from '@angular/material/tooltip'; 
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { CheckPasswordComponent } from './settings/check-password/check-password.component'; 
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     ReactivateKotComponent,
     SelectMenuComponent,
     AddMethodComponent,
-    AddTaxComponent
+    AddTaxComponent,
+    CheckPasswordComponent
   ],
   imports: [
     CommonModule,

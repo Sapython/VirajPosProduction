@@ -4,6 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { APP_CONFIG } from '../environments/environment';
 import { fadeInDownOnEnterAnimation, fadeOutUpOnLeaveAnimation } from 'angular-animations';
 import { DataProvider } from './core/services/provider/data-provider.service';
+import { AuthService } from './core/services/auth/auth.service';
 
 
 @Component({
@@ -19,7 +20,8 @@ export class AppComponent {
   constructor(
     private electronService: ElectronService,
     private translate: TranslateService,
-    public dataProvider: DataProvider
+    public dataProvider: DataProvider,
+    private authService:AuthService
   ) {
     this.translate.setDefaultLang('en');
     console.log('APP_CONFIG', APP_CONFIG);

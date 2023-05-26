@@ -37,7 +37,14 @@ import { SelectMenuComponent } from './settings/select-menu/select-menu.componen
 import { AddMethodComponent } from './settings/add-method/add-method.component';
 import { AddTaxComponent } from './settings/add-tax/add-tax.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { CheckPasswordComponent } from './settings/check-password/check-password.component'; 
+import { CheckPasswordComponent } from './settings/check-password/check-password.component';
+import { PrinterComponent } from './settings/sections/printer/printer.component';
+import { AccountComponent } from './settings/sections/account/account.component';
+import { ViewComponent } from './settings/sections/view/view.component';
+import { AboutComponent } from './settings/sections/about/about.component';
+import { ConfigComponent } from './settings/sections/config/config.component';
+import { DiscountComponent } from './settings/sections/discount/discount.component';
+import { PaymentComponent } from './settings/sections/payment/payment.component'; 
 
 @NgModule({
   declarations: [
@@ -50,7 +57,14 @@ import { CheckPasswordComponent } from './settings/check-password/check-password
     SelectMenuComponent,
     AddMethodComponent,
     AddTaxComponent,
-    CheckPasswordComponent
+    CheckPasswordComponent,
+    PrinterComponent,
+    AccountComponent,
+    ViewComponent,
+    AboutComponent,
+    ConfigComponent,
+    DiscountComponent,
+    PaymentComponent
   ],
   imports: [
     CommonModule,

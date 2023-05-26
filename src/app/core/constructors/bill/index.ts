@@ -180,10 +180,19 @@ export class Bill implements BillConstructor {
   public setCustomerInfo = setCustomerInfo;
 
   // helpers
-  public allProducts = allProducts;
-  public allFinalProducts = allFinalProducts;
-  public kotWithoutFunctions = kotWithoutFunctions;
-  public totalProducts = totalProducts;
+  public get allProducts(){
+    return allProducts;
+  };
+  public get allFinalProducts(){
+    return allFinalProducts.call(this)
+  };
+  public get kotWithoutFunctions(){
+    // set {return kotWithoutFunctions} as getter function
+    return kotWithoutFunctions.call(this);
+  };
+  public get totalProducts(){
+    return totalProducts.call(this)
+  };
 
   // kot functions
   public addKot = addKot;

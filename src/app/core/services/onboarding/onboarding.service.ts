@@ -64,6 +64,7 @@ export class OnboardingService {
   ) {
     this.loadingSteps.next('Checking User');
     this.dataProvider.userSubject.subscribe((data) => {
+      console.log('data', data);
       this.stage = 'virajGettingReady';
       if (data.status) {
         this.loadingSteps.next('User Found');

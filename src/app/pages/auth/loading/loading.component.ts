@@ -101,7 +101,6 @@ export class LoadingComponent {
     private fileStorageService:FileStorageService,
     private settingsService:SettingsService,
     private tableService:TableService,
-    
   ) {
     this.checkUsername.subscribe((value)=>{
       this.checkingUsername = true;

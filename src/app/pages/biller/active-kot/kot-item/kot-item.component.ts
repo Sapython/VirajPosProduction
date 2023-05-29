@@ -121,12 +121,10 @@ export class KotItemComponent implements OnChanges {
       }
     });
   }
-  increase(event:any){
-    event.stopPropagation();
+  increase(){
     this.product.quantity = this.product.quantity + 1;this.dataProvider.currentBill?.calculateBill()
   }
-  decrease(event:any){
-    event.stopPropagation();
+  decrease(){
     this.product.quantity = this.product.quantity + 1;this.dataProvider.currentBill?.calculateBill()
   }
 

@@ -128,7 +128,7 @@ export class SplitBillComponent {
       customerInfo: this.bill.customerInfo,
       orderNo: this.bill.orderNo,
       optionalTax: this.bill.optionalTax,
-      instruction: this.bill.instruction,
+      instruction: this.bill.instruction || '',
       modifiedAllProducts: this.bill.modifiedAllProducts,
       billSplits: [],
       billReprints: [],
@@ -183,8 +183,10 @@ export class SplitBillComponent {
       return;
     }
     if (this.allSettled){
-      let ids = await Promise.all(this.splittedBills.map(async bill=>{
+      let ids = await Promise.all(this.splittedBills.map(async (bill:any)=>{
         this.printingService.printBill(bill.printableBillData);
+        bill.table = bill.table.id;
+        console.log("Printing Bill",bill);
         return (await this.billService.saveSplittedBill(this.bill.id,bill)).id;
       }))
       this.bill.settle(this.splittedBills.map(bill=>bill.settlement.payments).flat(),'internal',{

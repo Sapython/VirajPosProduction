@@ -39,10 +39,10 @@ export class customEncoder extends EscPosEncoder {
   productTable(products: printableBillItem[]) {
     // products contains name, price, quantity, total
     let table = [
-      { width: 20, marginRight: 2, align: 'left' },
+      { width: 15, marginRight: 2, align: 'left' },
       { width: 5, marginRight: 2, align: 'center' },
       { width: 5, marginRight: 2, align: 'center' },
-      { width: 10, align: 'right' },
+      { width: 12, align: 'right' },
     ];
     let data = [];
     data.push([

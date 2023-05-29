@@ -45,7 +45,7 @@ export function kotWithoutFunctions(this: Bill): any[] {
 export function totalProducts(): number {
   let total = 0;
   this.kots.forEach((kot) => {
-    if (kot.stage === 'active') {
+    if (kot.stage === 'finalized') {
       total += kot.products.length;
     }
   });

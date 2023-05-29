@@ -1,39 +1,3 @@
-<!-- <section>
-    <form [formGroup]="settleBillForm" (ngSubmit)="settleBill()">
-        <mat-button-toggle-group name="paymentMethod" formControlName="paymentMethod" aria-label="Font Style" #paymentMethod>
-            <mat-button-toggle value="card">Card</mat-button-toggle>
-            <mat-button-toggle value="upi">UPI</mat-button-toggle>
-            <mat-button-toggle value="cash">Cash</mat-button-toggle>
-        </mat-button-toggle-group>
-        <ng-container>
-            <mat-form-field appearance="outline" *ngIf="settleBillForm.value.paymentMethod=='card'">
-                <mat-label>Last Ending 4 Digits</mat-label>
-                <input matInput formControlName="cardEnding" type="number" placeholder="Customer Name">
-                <span matPrefix>**** **** **** </span>
-            </mat-form-field>
-            <mat-form-field appearance="outline" *ngIf="settleBillForm.value.paymentMethod=='upi'">
-                <mat-label>UPI Address</mat-label>
-                <input matInput formControlName="upiAddress" type="text" placeholder="Upi Address">
-            </mat-form-field>
-        </ng-container>
-        <hr>
-        <mat-form-field appearance="outline">
-            <mat-label>Customer Name</mat-label>
-            <input matInput formControlName="customerName" type="text" placeholder="Customer Name">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-            <mat-label>Customer Phone</mat-label>
-            <input matInput formControlName="customerContact" type="number" placeholder="Customer Name">
-        </mat-form-field>
-        <div class="actions">
-            <button mat-flat-button color="primary" [disabled]="!settleBillForm.valid" type="submit">Settle Bill</button>
-            <button mat-flat-button color="primary" [disabled]="!settleBillForm.valid" (click)="splitAndSettle()" type="button">Split Settle Bill</button>
-            <button mat-stroked-button color="primary" type="button" (click)="close()">Cancel</button>
-        </div>
-    </form>
-</section> -->
-
-
 <section>
     <h2>Settle Bill</h2>
     <div class="breakdown">

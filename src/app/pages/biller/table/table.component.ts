@@ -119,6 +119,7 @@ export class TableComponent implements OnInit {
       'table',
       this.dataProvider,this.analyticsService,this.tableService,this.billService,this.printingService
     );
+    table.clearTable();
     this.dataProvider.tables.push(table);
     if(!this.dataProvider.groupedTables[groupName]){
       this.dataProvider.groupedTables[groupName] = [];

@@ -31,6 +31,10 @@ export async function finalize(this:Bill) {
   this.dataProvider.kotViewVisible = false;
   this.dataProvider.allProducts = true;
   // check if any kot is active
+  if (this.totalProducts == 0){
+    alert("No products to finalize");
+    return;
+  }
   if (this.kots.find((kot) => kot.stage === 'active')) {
     if (confirm('There are active KOTs. Do you want to finalize them?')) {
       this.finalizeAndPrintKot();

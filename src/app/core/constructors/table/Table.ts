@@ -130,6 +130,11 @@ export class Table implements TableConstructor {
 
   clearTable() {
     this.bill = null;
+    // reset all variables
+    this.billPrice = 0;
+    this.occupiedStart  = undefined;
+    this.timeSpent = '';
+    this.minutes = 0;
     this.status = 'available';
     if (this.type == 'token') {
       // mark table complete
@@ -367,21 +372,3 @@ export class Table implements TableConstructor {
     }
   }
 }
-
-// export class Token extends Table implements TableConstructor {
-//   constructor(
-//     id: string,
-//     tableNo: number,
-//     name: string,
-//     maxOccupancy: string,
-//     type: 'table' | 'room' | 'token',
-//     dataProvider: DataProvider,
-//     databaseService: DatabaseService,
-//   ) {
-//     super(id, tableNo, name, maxOccupancy, type, dataProvider, databaseService);
-//   }
-
-//   override updateBill(data:any){
-//     this.databaseService.updateToken(data);
-//   }
-// }

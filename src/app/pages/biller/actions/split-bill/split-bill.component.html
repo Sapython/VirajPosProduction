@@ -4,23 +4,27 @@
         <div class="kotSpan">
             <h2>KOTs</h2>
             <div class="kots" [ngClass]="{'center':this.allKots.length == 0}">
-                <div class="kot" *ngFor="let kot of this.allKots;let i = index;">
-                    <div class="heading" [ngStyle]="{
-                        background: this.kotNoColors[i % this.kotNoColors.length].color,
-                        color: this.kotNoColors[i % this.kotNoColors.length].contrast
-                      }">
-                        <span>
-                            <mat-checkbox color="primary" [checked]="kot.allSelected" [indeterminate]="kot.someSelected" (change)="selectAll($event,kot)"></mat-checkbox>
-                            <p>KOT No: <strong>{{kot.id}}</strong></p>
-                        </span>
+                <ng-container *ngFor="let kot of this.allKots;let i = index;">
+                    <div class="kot" *ngIf="kot.stage == 'finalized'">
+                        <div class="heading" [ngStyle]="{
+                            background: this.kotNoColors[i % this.kotNoColors.length].color,
+                            color: this.kotNoColors[i % this.kotNoColors.length].contrast
+                          }">
+                            <span>
+                                <mat-checkbox color="primary" [checked]="kot.allSelected" [indeterminate]="kot.someSelected" (change)="selectAll($event,kot)"></mat-checkbox>
+                                <p>KOT No: <strong>{{kot.id}}</strong></p>
+                            </span>
+                        </div>
+                        <ol>
+                            <ng-container *ngFor="let item of kot.products">
+                                <li *ngIf="!item.cancelled">
+                                    <mat-checkbox [(ngModel)]="item.selected" (change)="checkAll($event,kot,item)" color="primary"></mat-checkbox>
+                                    {{item.name | titlecase}} <span>{{item.quantity}} x {{item.price | currency:'INR'}}</span>
+                                </li>
+                            </ng-container>
+                        </ol>
                     </div>
-                    <ol>
-                        <li *ngFor="let item of kot.products">
-                            <mat-checkbox [(ngModel)]="item.selected" (change)="checkAll($event,kot,item)" color="primary"></mat-checkbox>
-                            {{item.name | titlecase}} <span>{{item.quantity}} x {{item.price | currency:'INR'}}</span>
-                        </li>
-                    </ol>
-                </div>
+                </ng-container>
                 <ng-container *ngIf="this.allKots.length == 0">
                     <img src="assets/images/notFound.svg" alt="Not found" class="notFound">
                     <h4>No kots found</h4>

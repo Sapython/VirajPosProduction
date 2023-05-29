@@ -92,7 +92,7 @@ export class InfoPanelComponent implements OnInit,OnChanges, AfterViewInit{
   openUpgrade(){
     const dialog = this.dialog.open(UpgradeComponent)
     dialog.closed.subscribe((data)=>{
-      dialog.close();
+      // dialog.close();
     })
   }
 }

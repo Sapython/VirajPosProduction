@@ -112,9 +112,9 @@ export function calculateProducts(kots:(Kot|KotConstructor)[]){
       if (product.lineDiscount) {
         console.log("Applying linediscount",product.name,product.lineDiscount);
         if (product.lineDiscount.mode === 'directPercent') {
-          totalAmount = totalAmount- product.lineDiscount.value;
+          totalAmount = totalAmount - (product.untaxedValue / 100) * product.lineDiscount.value;
         } else {
-          totalAmount = totalAmount - (product.lineDiscount.value / product.untaxedValue) * 100;
+          totalAmount = totalAmount - product.lineDiscount.value;
         }
         product.lineDiscounted = true;
       }

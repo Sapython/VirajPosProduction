@@ -15,7 +15,9 @@ export function lineCancelled(this: Bill, item: Product, event: any, kot: Kot) {
   );
   this.cancelledProducts.push({ product: item, kot: kot.id });
   // remove product from kot
-  kot.products = kot.products.filter((product) => product.id !== item.id);
+  item.cancelled = true;
+  this.updateToFirebase();
+  // kot.products = kot.products.filter((product) => product.id !== item.id);
   this.calculateBill();
 }
 export function cancel(this: Bill, reason: string, phone: string) {

@@ -8,6 +8,7 @@ import { AddComponent } from './add/add.component';
 import { firstValueFrom } from 'rxjs';
 import { Timestamp } from '@angular/fire/firestore';
 import { AlertsAndNotificationsService } from '../../../../../core/services/alerts-and-notification/alerts-and-notifications.service';
+import { MenuManagementService } from '../../../../../core/services/database/menuManagement/menu-management.service';
 
 @Component({
   selector: 'app-account',
@@ -16,7 +17,7 @@ import { AlertsAndNotificationsService } from '../../../../../core/services/aler
 })
 export class AccountComponent {
   checkUsernameFunction = httpsCallable(this.functions, 'userNameAvailable');
-  constructor(public dataProvider:DataProvider,private functions:Functions,private dialog:Dialog,private settingsService:SettingsService,private alertify:AlertsAndNotificationsService){}
+  constructor(public dataProvider:DataProvider,private functions:Functions,private dialog:Dialog,private settingsService:SettingsService,private alertify:AlertsAndNotificationsService,private menuManagementService:MenuManagementService){}
 
   addAccount() {
     const dialog = this.dialog.open(AddComponent)
@@ -79,5 +80,16 @@ export class AccountComponent {
         }
       }, 700);
     }
+  }
+
+  updateSettings(){
+    this.dataProvider.loading = true;
+    this.menuManagementService.updateRootSettings({password:this.dataProvider.password},this.dataProvider.currentBusiness.businessId).then(()=>{
+      this.alertify.presentToast("Password updated successfully")
+    }).catch((err)=>{
+      this.alertify.presentToast("Failed to update password",'error')
+    }).finally(()=>{
+      this.dataProvider.loading = false;
+    })
   }
 }

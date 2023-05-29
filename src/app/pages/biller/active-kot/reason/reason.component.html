@@ -5,7 +5,7 @@
     </mat-form-field>
     <mat-form-field appearance="outline">
         <mat-label>Password</mat-label>
-        <input matInput placeholder="Password" formControlName="password" #passwordInput>
+        <input type="password" matInput placeholder="Password" formControlName="password" #passwordInput>
         <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="passwordInput.type == 'password'" (click)="passwordInput.type == 'password' ? passwordInput.type = 'text' : passwordInput.type = 'password'" mat-icon-button><mat-icon>visibility</mat-icon></button>
         <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="!(passwordInput.type == 'password')" (click)="passwordInput.type == 'password' ? passwordInput.type = 'text' : passwordInput.type = 'password'" mat-icon-button><mat-icon>visibility_off</mat-icon></button>
     </mat-form-field>

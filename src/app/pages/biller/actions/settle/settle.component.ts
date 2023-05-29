@@ -87,8 +87,12 @@ export class SettleComponent implements OnInit {
       this.alertify.presentToast('Missing required fields')
       return
     }
-    if (this.billSum == this.totalPaid){
+    if (this.billSum <= this.totalPaid){
       // check for conflicting payment methods
+      if(this.totalPaid > this.billSum){
+        // adjust the last method
+        this.methods[this.methods.length - 1].amount -= this.totalPaid - this.billSum
+      }
       let paymentMethods = this.methods.map((method)=>method.paymentMethod)
       let uniquePaymentMethods = [...new Set(paymentMethods)]
       if (paymentMethods.length !== uniquePaymentMethods.length){
@@ -116,9 +120,10 @@ export class SettleComponent implements OnInit {
 
   async addMethod(amount?:number){
     let usedMethods = this.methods.map((method)=>method.paymentMethod)
-    let unusedMethods = ['Cash','Card','UPI','Wallet',...this.additionalMethods].filter((method)=>{
-      return !usedMethods.includes(method)
-    })
+    // let unusedMethods = ['Cash','Card','UPI','Wallet',...this.additionalMethods].filter((method)=>{
+    //   return !usedMethods.includes(method)
+    // })
+    let unusedMethods = ['Cash','Card','UPI','Wallet',...this.additionalMethods]
     if (unusedMethods.length === 0){
       this.alertify.presentToast('No more methods')
       return
@@ -137,7 +142,7 @@ export class SettleComponent implements OnInit {
     if (event.key === 'Enter'){
       if (this.billSum > this.totalPaid){
         this.addMethod()
-      } else if (this.billSum == this.totalPaid) {
+      } else if (this.billSum <= this.totalPaid) {
         this.settleBill()
       } else {
         this.alertify.presentToast('Amount exceeds bill amount')

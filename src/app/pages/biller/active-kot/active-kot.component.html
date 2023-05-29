@@ -1,5 +1,5 @@
 <div class="title" #title>
-  <h2 #heading>
+  <h3 #heading>
     {{
       dataProvider.manageKot
         ? "Manage KOTs"
@@ -7,7 +7,7 @@
         ? "All KOTs"
         : "KOT"
     }}
-  </h2>
+  </h3>
   <div class="labels">
     <div class="label" *ngFor="let item of labels">
       <span [ngStyle]="{ background: item.color.color }"></span>

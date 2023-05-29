@@ -129,6 +129,18 @@ export class KotItemComponent implements OnChanges {
     event.stopPropagation();
     this.product.quantity = this.product.quantity + 1;this.dataProvider.currentBill?.calculateBill()
   }
+
+  get isHalf() {
+    if (this.product) {
+      for (const tag of this.product.tags) {
+        if (tag.name.toLocaleLowerCase() == 'half') {
+          return true;
+        }
+      }
+    } else {
+      return false;
+    }
+  }
 }
 export interface Config {
   name: string;

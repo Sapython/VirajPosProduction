@@ -1,0 +1,60 @@
+<h3>View Modes</h3>
+<div class="row smartButtons">
+  <button
+    [disabled]="true"
+    [ngClass]="{ selected: dataProvider.smartMode }"
+    (click)="smartModeToggle(true)"
+  >
+    <img src="assets/images/ui/brain.svg" alt="" />
+    Smart Mode*
+  </button>
+  <button
+    [ngClass]="{ selected: !dataProvider.smartMode }"
+    (click)="smartModeToggle(false)"
+  >
+    <img src="assets/images/ui/noBrain.svg" alt="" />
+    Simple Mode
+  </button>
+</div>
+<div class="row smartButtons">
+  <button
+    [ngClass]="{ selected: !dataProvider.touchMode }"
+    (click)="touchModeToggle(false)"
+  >
+    <img src="assets/images/ui/click.svg" alt="" />
+    Click Mode
+  </button>
+  <button
+    [ngClass]="{ selected: dataProvider.touchMode }"
+    (click)="touchModeToggle(true)"
+  >
+    <img src="assets/images/ui/touch.svg" alt="" />
+    Touch Mode
+  </button>
+</div>
+<div>
+  <mat-slide-toggle
+    matTooltip="Show table view after kot, bill, nc, settle and discount."
+    [(ngModel)]="dataProvider.showTableOnBillAction"
+    (change)="setLocalShowTable($event)"
+    >Show table on bill action</mat-slide-toggle
+  >
+</div>
+<div>
+  <mat-form-field
+    appearance="outline"
+    matTooltip="Total time to mark a table as late in minutes"
+  >
+    <mat-label>Table timeout</mat-label>
+    <input
+      type="text"
+      matInput
+      [(ngModel)]="this.dataProvider.tableTimeOutTime"
+      (change)="updateSettings({ tableTimeOutTime: time.value })"
+      #time
+    />
+  </mat-form-field>
+</div>
+<p class="danger">
+  <sup>*</sup> Smart mode is currently disabled for this account.
+</p>

@@ -1,8 +1,10 @@
 import { Timestamp } from "@angular/fire/firestore";
 import { Bill } from "..";
 import { Payment } from "../../../../types/payment.structure";
-import { splittedBill } from "../../../../types/bill.structure";
+import { BillConstructor } from "../../../../types/bill.structure";
 import { Product } from "../../../../types/product.structure";
+import { Kot } from "../../kot/Kot";
+import { CodeBaseDiscount, DirectFlatDiscount, DirectPercentDiscount } from "../../../../types/discount.structure";
 
 export function setAsNonChargeable(name: string, contact: string, reason: string) {
   this.billingMode = 'nonChargeable';
@@ -34,14 +36,6 @@ export async function finalize(this:Bill) {
       this.finalizeAndPrintKot();
     }
   }
-  // alert("Mode: "+this.mode)
-  // if (this.mode=='takeaway'){
-  //   console.log('customer info',this.customerInfo);
-  //   if (!(this.customerInfo.name && this.customerInfo.phone && this.customerInfo.address)){
-  //     alert('Please fill customer details');
-  //     return;
-  //   }
-  // } else
   if (this.mode == 'online') {
     console.log('customer info', this.customerInfo);
     if (
@@ -86,13 +80,14 @@ export async function setInstruction(this:Bill) {
 }
 
 export async function printBill(this:Bill) {
-  this.printingService.printBill(this);
+  this.printingService.printBill(this.printableBillData);
 }
 
 export async function settle(this:Bill,
   payments: Payment[],
   type: 'internal' | 'external',
-  additionalInfo: any
+  additionalInfo: any,
+  splitSave?: boolean,
 ) {
   this.calculateBill();
   // update every product and increase their sales counter by their quantity
@@ -144,16 +139,18 @@ export async function settle(this:Bill,
     'this.dataProvider.printBillAfterFinalize',
     this.dataProvider.printBillAfterFinalize
   );
-  if (this.dataProvider.printBillAfterFinalize) {
-    this.printingService.printBill(this);
-  } else {
-    let res = await this.dataProvider.confirm(
-      'Do you want to print bill?',
-      [1],
-      { buttons: ['Save', 'Save And Print'] }
-    );
-    if (res) {
-      this.printingService.printBill(this);
+  if(splitSave){
+    if (this.dataProvider.printBillAfterFinalize) {
+      this.printingService.printBill(this.printableBillData);
+    } else {
+      let res = await this.dataProvider.confirm(
+        'Do you want to print bill?',
+        [1],
+        { buttons: ['Save', 'Save And Print'] }
+      );
+      if (res) {
+        this.printingService.printBill(this.printableBillData);
+      }
     }
   }
   if (this.nonChargeableDetail) {
@@ -193,4 +190,14 @@ export function merge(this:Bill,bill: Bill) {
   this.updated.next();
 }
 
-export function splitBill(this:Bill,bills: splittedBill[]) {}
+export function splitBill(this:Bill,bills: BillConstructor[]) {
+
+}
+
+export function breakBill(this:Bill,kots:Kot[],discounts:(CodeBaseDiscount|DirectFlatDiscount|DirectPercentDiscount)[]) {
+  // now create a new billConstructor and add all the kots to it then calculate the bill and return the billConstructor
+  // let newBill:BillConstructor = {
+  //   id: this.id,
+
+  // }
+}

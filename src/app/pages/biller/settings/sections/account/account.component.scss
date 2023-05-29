@@ -1,0 +1,47 @@
+
+.tableContainer{
+    max-height: 50vh;
+    overflow-y: auto;
+    table{
+        width: 100%;
+        border-collapse: collapse;
+        width: 100%;
+        thead{
+            position: sticky;
+            top: 0;
+            background: white;
+            tr{
+                padding: 15px;
+                border: 1px solid #ddd;
+                background: white;
+                th{
+                    padding: 10px;
+                    border: 1px solid #ddd;
+                }
+            }
+        }
+        tbody{
+            tr{
+                td{
+                    padding: 10px;
+                    border: 1px solid #ddd;
+                }
+                td{
+                    padding:4px 10px;
+                    border-bottom: 2px solid #ccc;
+                    .username{
+                        border: none;
+                        border: 2px solid #ccc;
+                        height: 30px;
+                        border-radius: 5px;
+                        box-shadow: 2px 4px 30px rgba(0,0,0,0.2);
+                        padding: 0px 4px;
+                    }
+                }
+                td.select{
+                    width: 120px;
+                }
+            }
+        }
+    }
+}

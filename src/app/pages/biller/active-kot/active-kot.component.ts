@@ -125,8 +125,8 @@ export class ActiveKotComponent implements OnChanges {
         reason: reason,
         time: Timestamp.now(),
         user: {
-          access: this.dataProvider.currentBusinessUser?.access,
-          username: this.dataProvider.currentBusinessUser?.username,
+          access: this.dataProvider.currentBusinessUser.access.accessLevel,
+          username: this.dataProvider.currentBusinessUser.name,
         },
       }
       this.dataProvider.currentBill?.deleteKot(kot);

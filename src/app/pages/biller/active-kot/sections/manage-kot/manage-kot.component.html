@@ -1,0 +1,72 @@
+<div
+  *ngFor="let kot of allKot; let i = index"
+  [ngClass]="{ cancelled: kot.stage == 'cancelled' }"
+>
+  <div
+    class="kotEditOptions"
+    [ngStyle]="{ borderLeftColor: kotNoColors[i].color }"
+  >
+    <span
+      >KOT: {{ kot.id }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <strong
+        ><i class="ri-time-line"></i>&nbsp;&nbsp;{{
+          kot.totalTimeTaken
+        }}</strong
+      ></span
+    >
+    <span *ngIf="!kot.editMode">
+      <viraj-button
+        type="icon"
+        [disabled]="kot.stage == 'cancelled'"
+        (vclick)="printKot.emit(kot)"
+        ><i class="ri-printer-fill"></i
+      ></viraj-button>
+      <viraj-button
+        type="icon"
+        [disabled]="kot.stage == 'cancelled'"
+        (vclick)="deleteKot.emit(kot)"
+        ><i class="ri-delete-bin-fill"></i
+      ></viraj-button>
+      <viraj-button
+        *ngIf="kot.totalTimeTakenNumber <= 60"
+        type="icon"
+        (click)="editKot.emit(kot)"
+        ><i class="ri-pencil-fill"></i
+      ></viraj-button>
+    </span>
+    <span *ngIf="kot.editMode">
+      <viraj-button (vclick)="saveEditedKot.emit(kot)"
+        ><i class="ri-save-fill"></i>Save</viraj-button
+      >
+    </span>
+  </div>
+  <app-kot-item
+    [@zoomInOnEnter]
+    [@zoomOutOnLeave]
+    [kotId]="kot.id"
+    [kotNo]="i"
+    [product]="item"
+    [manageKot]="true"
+    (lineDiscounted)="
+      this.dataProvider.currentBill
+        ? this.dataProvider.currentBill.calculateBill()
+        : {}
+    "
+    (lineCancelled)="
+      this.dataProvider.currentBill
+        ? this.dataProvider.currentBill.lineCancelled(item, $event, kot)
+        : {}
+    "
+    [editMode]="kot.editMode"
+    [quantity]="item.quantity"
+    [productName]="item.name"
+    (lineDiscounted)="
+      this.dataProvider.currentBill
+        ? this.dataProvider.currentBill.calculateBill()
+        : {}
+    "
+    [nonVeg]="item.type == 'non-veg'"
+    [price]="item.price"
+    *ngFor="let item of kot.products"
+  ></app-kot-item>
+</div>

@@ -211,16 +211,18 @@ export class LoadingComponent {
       this.loginForm.value.username,
       this.loginForm.value.password,
       {
-        access:{
-          accessLevel:'admin',
-          lastUpdated:Timestamp.now(),
-          updatedBy:'system'
+        business:{
+          access:{
+            accessLevel:'admin',
+            lastUpdated:Timestamp.now(),
+            updatedBy:'system'
+          },
+          address:'Sardar Patel Marg, beside JK Palace, Civil Lines, Prayagraj, Uttar Pradesh 211001',
+          businessId:'46r0a1zlta7hyb077scig9',
+          joiningDate:Timestamp.now(),
+          name:'Momos Castle',
         },
-        address:'Sardar Patel Marg, beside JK Palace, Civil Lines, Prayagraj, Uttar Pradesh 211001',
-        businessId:'46r0a1zlta7hyb077scig9',
-        joiningDate:Timestamp.now(),
-        name:'Momos Castle',
-      },
+      }
     ).then((data)=>{
       console.log(data);
       this.alertify.presentToast("Signed Up with "+this.loginForm.value.username)
@@ -406,19 +408,23 @@ export class LoadingComponent {
         this.loginStage.next('Creating Account')
         console.log("Signing Up",username,password);
         this.signUpService.signUpWithUserAndPassword(username,password,{
-          access:{
-            accessLevel:'admin',
-            lastUpdated:Timestamp.fromDate(new Date()),
-            updatedBy:'system',
-          },
-          address:this.onboardingBusinessForm.value.address,
-          businessId:id,
-          joiningDate:Timestamp.fromDate(new Date()),
-          name:this.onboardingBusinessForm.value.name,
-        },data.email,data.phone).then((data)=>{
+          business:{
+            access:{
+              accessLevel:'admin',
+              lastUpdated:Timestamp.fromDate(new Date()),
+              updatedBy:'system',
+            },
+            address:this.onboardingBusinessForm.value.address,
+            businessId:id,
+            joiningDate:Timestamp.fromDate(new Date()),
+            name:this.onboardingBusinessForm.value.name,
+          },email:data.email,phone:data.phone
+        }).then((data)=>{
           this.loginStage.next('Account Created')
           console.log("FINAL DATA",data);
-          this.onboard(data,id,logo)
+          if (data['providerId']){
+            this.onboard(data as UserCredential,id,logo)
+          }
         }).catch((error)=>{
           this.loginStage.next('Error Creating Account')
           this.alertify.presentToast(error.message,'error')

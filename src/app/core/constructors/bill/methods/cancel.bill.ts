@@ -8,18 +8,10 @@ export function lineCancelled(this: Bill, item: Product, event: any, kot: Kot) {
   if (event.type == 'unmade') {
     kot.unmade = true;
   }
-  let newProductList = kot.products.filter((product) => product.id !== item.id);
-  let tempKotEditer = {
-    kot: kot,
-    kotIndex: this.kots.findIndex((kot) => kot.id === kot.id),
-    newKot: newProductList,
-    previousKot: kot.products,
-  };
-  this.printingService.printEditedKot(
+  item.cancelled = true;
+  this.printKot(
     kot,
-    tempKotEditer.previousKot,
-    this.table.name,
-    this.orderNo || ''
+    'editedKot'
   );
   this.cancelledProducts.push({ product: item, kot: kot.id });
   // remove product from kot

@@ -1,0 +1,44 @@
+<h3>About</h3>
+<table [cellSpacing]="0">
+  <tr>
+    <td>Username</td>
+    <td>
+      {{this.dataProvider.currentBusinessUser?.name}}
+      <div class="badge warning" (click)="resetPassword()">
+        Reset password
+      </div>
+    </td>
+  </tr>
+  <tr>
+    <td>Business Id</td>
+    <td>{{this.dataProvider.currentBusinessUser?.businessId}}</td>
+  </tr>
+  <tr>
+    <td>Joining Date</td>
+    <td>{{this.dataProvider.currentBusinessUser?.joiningDate.toDate() | date:'short'}}</td>
+  </tr>
+  <tr>
+    <td>Access</td>
+    <td>
+      <span class="badge success">
+        {{this.dataProvider.currentBusinessUser?.access.accessLevel}}
+      </span>
+    </td>
+  </tr>
+  <tr>
+    <td>Name</td>
+    <td>Viraj</td>
+  </tr>
+  <tr>
+    <td>Version</td>
+    <td>
+      {{ version }}
+    </td>
+  </tr>
+  <tr>
+    <td>Server Version</td>
+    <td>
+      {{ version }}
+    </td>
+  </tr>
+</table>

@@ -57,8 +57,20 @@ export class ProductsPanelComponent implements OnInit{
       keys:['name']
     })
   }
-
+  isHalf(product:Product) {
+    if (product) {
+      for (const tag of product.tags) {
+        if (tag.name.toLocaleLowerCase() == 'half') {
+          return true;
+        }
+      }
+    } else {
+      return false;
+    }
+  }
   selectProduct(product:Product){
+    product = JSON.parse(JSON.stringify(product))
+    product.name = product.name + (this.isHalf(product) ? ' Half' : ' Full')
     delete product.instruction
     if(!this.dataProvider.currentBill){
       this.dataProvider.tempProduct = product;
@@ -68,7 +80,7 @@ export class ProductsPanelComponent implements OnInit{
       return;
     }
     if (this.dataProvider.currentBill){
-      this.dataProvider.currentBill.addProduct(JSON.parse(JSON.stringify(product)));
+      this.dataProvider.currentBill.addProduct(product);
     }
   }
 }

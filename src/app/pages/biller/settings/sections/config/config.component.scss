@@ -1,0 +1,13 @@
+.modes{
+    display: flex;
+    gap:10px;
+    flex-wrap: nowrap;
+}
+form{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap:10px;
+    .fullWidth{
+        grid-column: 1/3;
+    }
+}

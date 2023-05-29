@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { customEncoder } from './encoder';
+import { PrintableBill } from '../../../../types/bill.structure';
+import { PrintableKot } from '../../../../types/kot.structure';
 
 @Injectable({
   providedIn: 'root',
@@ -7,7 +9,7 @@ import { customEncoder } from './encoder';
 export class EncoderService {
   constructor() {}
 
-  getBillCode(billdata: any) {
+  getBillCode(billdata: PrintableBill) {
     console.log('billdata.businessDetails.name', billdata.businessDetails.name);
     let encoder = new customEncoder({ width: 48 });
     let result = encoder
@@ -16,13 +18,13 @@ export class EncoderService {
       .lineIf(billdata.businessDetails.address, 'center', 'Add: ')
       .lineIf(billdata.businessDetails.phone, 'center', 'Phone: ')
       .lineIf(billdata.businessDetails.fssai, 'center', 'FSSAI: ')
-      .lineIf(billdata.businessDetails.gst, 'center', 'GST: ')
+      .lineIf(billdata.businessDetails.gstin, 'center', 'GST: ')
       .hr()
       .h2('Customer details', 'left')
       .lineIf(billdata.customerDetail.name, 'left', 'Name:')
       .lineIf(billdata.customerDetail.phone, 'left', 'Phone:')
       .lineIf(billdata.customerDetail.address, 'left', 'Add:')
-      .lineIf(billdata.customerDetail.gst, 'left', 'Gst:')
+      .lineIf(billdata.customerDetail.gstin, 'left', 'Gst:')
       .hr()
       .table(
         [
@@ -58,15 +60,15 @@ export class EncoderService {
             (encoder: any) =>
               encoder
                 .bold()
-                .text('Sub: Rs.' + billdata.subtotal)
+                .text('Sub: Rs.' + billdata.subTotal)
                 .bold(),
           ],
         ]
       )
       .hr()
-      .discounts(billdata.discount)
+      .discounts(billdata.discounts)
       .hr()
-      .taxes(billdata.tax)
+      .taxes(billdata.taxes)
       .hr(true)
       .table(
         [{ marginRight: 2, align: 'left' }, { align: 'right' }],
@@ -93,9 +95,8 @@ export class EncoderService {
     return result;
   }
 
-  getConsolidatedBillCode(billdata: any[]) {}
 
-  getKotCode(kotData: any) {
+  getKotCode(kotData: PrintableKot) {
     let encoder = new customEncoder({ width: 48 });
     let result = encoder
       .initPrint()
@@ -118,7 +119,7 @@ export class EncoderService {
             'Date: ' + kotData.date + ' ' + kotData.time,
             'Token: ' + kotData.orderNo,
           ],
-          ['Kot No: ' + kotData.id, 'Table No: ' + kotData.table],
+          ['Kot No: ' + kotData.token, 'Table No: ' + kotData.table],
         ]
       )
       .hr()

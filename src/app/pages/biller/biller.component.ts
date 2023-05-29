@@ -12,7 +12,8 @@ export class BillerComponent {
   expanded:boolean = true;
   constructor(private dialog:Dialog,public dataProvider:DataProvider){
     this.dataProvider.openTableView.subscribe(async (open)=>{
-      if(this.dataProvider.currentBill && this.dataProvider.currentBill.allProducts.length == 0){
+      console.log("this.dataProvider.currentBill.allProducts()",this.dataProvider.currentBill?.allProducts());
+      if(this.dataProvider.currentBill && this.dataProvider.currentBill.allProducts().length == 0){
         this.dataProvider.currentTable?.clearTable()
         this.dataProvider.currentBill = undefined;
         this.dataProvider.currentTable = undefined;

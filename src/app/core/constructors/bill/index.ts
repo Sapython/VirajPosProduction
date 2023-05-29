@@ -10,7 +10,7 @@ import { Kot } from '../kot/Kot';
 import { Product } from '../../../types/product.structure';
 import { Billing, Payment } from '../../../types/payment.structure';
 import { DataProvider } from '../../services/provider/data-provider.service';
-import { BillConstructor, splittedBill } from '../../../types/bill.structure';
+import { BillConstructor, PrintableBill } from '../../../types/bill.structure';
 import { BillService } from '../../services/database/bill/bill.service';
 import { AnalyticsService } from '../../services/database/analytics/analytics.service';
 
@@ -44,6 +44,7 @@ import {
 import {
   allFinalProducts,
   allProducts,
+  getPrintableBill,
   kotWithoutFunctions,
   totalProducts,
 } from './methods/getHelpers.bill';
@@ -52,6 +53,7 @@ import { setCustomerInfo } from './methods/customer.bill';
 import { addProduct, removeProduct } from './methods/product.bill';
 import { setTable } from './methods/table';
 import { PrinterService } from '../../services/printing/printer/printer.service';
+import { PrintableKot } from '../../../types/kot.structure';
 
 export class Bill implements BillConstructor {
   id: string;
@@ -69,6 +71,7 @@ export class Bill implements BillConstructor {
     time: Timestamp;
     user: UserConstructor;
   }[] = [];
+  billSplits: PrintableBill[] = [];
   modifiedAllProducts: any[] = [];
   stage: 'active' | 'finalized' | 'settled' | 'cancelled';
   customerInfo: CustomerInfo;
@@ -109,6 +112,7 @@ export class Bill implements BillConstructor {
     phone: string;
     user: User;
   };
+  printableBillData: PrintableBill | null = null;
   billSubscriptionCallerStarted: boolean = false;
   updated: Subject<boolean | void> = new Subject<boolean | void>();
   currentKot: Kot | null =
@@ -131,6 +135,7 @@ export class Bill implements BillConstructor {
     // taxes[1].amount = Number(this.dataProvider.currentSettings.cgst)
     this.updated.subscribe(() => {
       this.dataProvider.queueUpdate.next();
+      console.log("this.printableBillData",this.printableBillData);
     });
     this.updated.pipe(debounceTime(10000)).subscribe(async (data) => {
       this.updateToFirebase();
@@ -183,15 +188,22 @@ export class Bill implements BillConstructor {
   public get allProducts(){
     return allProducts;
   };
-  public get allFinalProducts(){
+  
+  public get allFinalProducts(): Product[]{
     return allFinalProducts.call(this)
   };
+
   public get kotWithoutFunctions(){
     // set {return kotWithoutFunctions} as getter function
     return kotWithoutFunctions.call(this);
   };
-  public get totalProducts(){
+
+  public get totalProducts():number{
     return totalProducts.call(this)
+  };
+
+  public getPrintableBillData(products:Product[]):PrintableBill{
+    return getPrintableBill.call(this,products,this.dataProvider)
   };
 
   // kot functions

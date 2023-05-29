@@ -1,0 +1,27 @@
+table{
+    width: 100%;
+    td{
+        padding:10px 20px;
+        border-bottom: 2px solid #ccc;
+        .badge{
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #fff;
+            &.success{
+                background-color: #28a745;
+            }
+            &.danger{
+                background-color: #dc3545;
+            }
+            &.warning{
+                background-color: #ffc107;
+                color: #000;
+            }
+            &.info{
+                background-color: #17a2b8;
+            }
+        }
+    }
+}

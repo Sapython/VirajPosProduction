@@ -44,7 +44,9 @@ import { ViewComponent } from './settings/sections/view/view.component';
 import { AboutComponent } from './settings/sections/about/about.component';
 import { ConfigComponent } from './settings/sections/config/config.component';
 import { DiscountComponent } from './settings/sections/discount/discount.component';
-import { PaymentComponent } from './settings/sections/payment/payment.component'; 
+import { PaymentComponent } from './settings/sections/payment/payment.component';
+import { TaxesComponent } from './settings/sections/taxes/taxes.component';
+import { AddComponent } from './settings/sections/account/add/add.component'; 
 
 @NgModule({
   declarations: [
@@ -64,7 +66,9 @@ import { PaymentComponent } from './settings/sections/payment/payment.component'
     AboutComponent,
     ConfigComponent,
     DiscountComponent,
-    PaymentComponent
+    PaymentComponent,
+    TaxesComponent,
+    AddComponent
   ],
   imports: [
     CommonModule,

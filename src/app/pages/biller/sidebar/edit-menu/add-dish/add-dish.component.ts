@@ -1,7 +1,7 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Product } from '../../../../../types/product.structure';
+import { Product, portionColor } from '../../../../../types/product.structure';
 
 @Component({
   selector: 'app-add-dish',
@@ -13,8 +13,30 @@ export class AddDishComponent {
     'veg',
     'non-veg',
   ];
+  predefinedColors:portionColor[] = [
+    {
+      color:'#008000',
+      contrast:'#ffffff',
+    },
+    {
+      color:'#ff6347',
+      contrast: '#ffffff',
+    },
+    {
+      color:'#ffa500',
+      contrast: '#ffffff',
+    },
+    {
+      color:'#ffff00',
+      contrast: '#000000',
+    },
+    {
+      color:'#0099ff',
+      contrast: '#ffffff',
+    },
+  ]
   tags:{color:string,name:string,contrast:string,important:boolean}[] = []
-  variants:{variantName:string,price:number}[] = []
+  portions:{portionName:string,portionSize:number,portionColor:portionColor}[] = []
   newDishForm:FormGroup = new FormGroup({
     name: new FormControl('',Validators.required),
     price: new FormControl('',Validators.required),
@@ -30,7 +52,11 @@ export class AddDishComponent {
   }
 
   addVariant(){
-    this.variants.push({variantName:'',price:0});
+    this.portions.push({
+      portionName:'',
+      portionSize:0,
+      portionColor:this.predefinedColors[0],
+    });
   }
 
   cancel(){
@@ -38,11 +64,15 @@ export class AddDishComponent {
   }
 
   removeVariant(i:number){
-    this.variants.splice(i,1);
+    this.portions.splice(i,1);
   }
 
   addDish(){
     this.dialogRef.close(this.newDishForm.value)
+  }
+
+  switchColor(event:any,i:number){
+    console.log(event,i);
   }
 
 }

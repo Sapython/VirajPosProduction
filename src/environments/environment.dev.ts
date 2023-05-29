@@ -13,4 +13,5 @@ export const APP_CONFIG = {
   production: false,
   environment: 'DEV',
   appVersion: require('../../package.json').version,
+  serverVersion: '0.0.1',
 };

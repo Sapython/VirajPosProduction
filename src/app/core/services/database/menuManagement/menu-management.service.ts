@@ -16,7 +16,25 @@ import { PrinterService } from '../../printing/printer/printer.service';
 })
 export class MenuManagementService {
 
-  constructor(private dataProvider:DataProvider,private firestore:Firestore,private analyticsService:AnalyticsService,private printingService:PrinterService,private tableService:TableService,private billService:BillService) { }
+  constructor(private dataProvider:DataProvider,private firestore:Firestore,private analyticsService:AnalyticsService,private printingService:PrinterService,private tableService:TableService,private billService:BillService) {
+    // copy from viewCategories to currentUser
+    // from: /business/t73tctq4kwdvbux2h22h6/menus/BKEPVUhtCXXL7YNrvUqx/viewCategories
+    // to: /business/t73tctq4kwdvbux2h22h6/menus/BKEPVUhtCXXL7YNrvUqx/users/momoscastle/viewCategories
+    // setTimeout(()=>{
+    //   console.log("Getting viewCategoryies");
+      
+    //   getDocs(collection(this.firestore,'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/viewCategories')).then((res)=>{ 
+    //     console.log("viewCategoryies res.docs",res.docs);
+    //     if (res.docs.length > 0){
+    //       res.docs.forEach((doc)=>{
+    //         let data = doc.data();
+    //         this.addViewCategory(data,doc.id);
+    //         console.log("viewCategoryies Adding View Category",data);
+    //       })
+    //     }
+    //   })
+    // },10000)
+  }
   getMenuData(){
     this.dataProvider.activeModes
   }
@@ -31,12 +49,12 @@ export class MenuManagementService {
       return addDoc(
         collection(
           this.firestore,
-          'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/viewCategories'
+          'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/users/'+this.dataProvider.currentUser.username+'/viewCategories'
         ),
         category
       );
     return setDoc(
-      doc(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/viewCategories/' + id),
+      doc(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/users/'+this.dataProvider.currentUser.username+'/viewCategories/' + id),
       category,
       { merge: true }
     );
@@ -67,7 +85,7 @@ export class MenuManagementService {
 
   getViewCategories() {
     return getDocs(
-      collection(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/viewCategories')
+      collection(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/users/'+this.dataProvider.currentUser.username+'/viewCategories')
     );
   }
 
@@ -80,7 +98,7 @@ export class MenuManagementService {
 
   updateViewCategory(id: string, products: string[]) {
     return updateDoc(
-      doc(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/viewCategories/' + id),
+      doc(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/users/'+this.dataProvider.currentUser.username+'/viewCategories/' + id),
       { products: arrayUnion(...products) }
     );
   }
@@ -276,7 +294,7 @@ export class MenuManagementService {
       collection(
         this.firestore,
         'business/'+this.dataProvider.businessId+'/menus/' +
-          menu.id +
+          menu.id+'/users/'+this.dataProvider.currentUser.username +
           '/viewCategories/'
       ),
     )
@@ -311,7 +329,7 @@ export class MenuManagementService {
 
   updateViewCategoryMenu(category:any,menu:Menu){
     return setDoc(
-      doc(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/' + menu.id + '/viewCategories/' + category.id),
+      doc(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/' + menu.id+'/users/'+this.dataProvider.currentUser.username + '/viewCategories/' + category.id),
       category,
       { merge: true }
     );
@@ -366,7 +384,7 @@ export class MenuManagementService {
   deleteViewCategory(menuId:string,categoryId:string){
     return deleteDoc(doc(
       this.firestore,
-      'business/'+this.dataProvider.businessId+'/menus/' + menuId + '/viewCategories/' + categoryId
+      'business/'+this.dataProvider.businessId+'/menus/' + menuId+'/users/'+this.dataProvider.currentUser.username + '/viewCategories/' + categoryId
     ))
   }
 

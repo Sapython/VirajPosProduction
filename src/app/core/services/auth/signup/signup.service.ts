@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, UserCredential } from '@angular/fire/auth';
+import { Auth, createUserWithEmailAndPassword, getAuth, UserCredential } from '@angular/fire/auth';
 import { updateDoc, doc, arrayUnion, Timestamp, setDoc, getDoc, Firestore } from '@angular/fire/firestore';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 import { User } from '@sentry/angular-ivy';
@@ -26,7 +26,8 @@ export class SignupService {
     private firestore:Firestore,
     private dataProvider:DataProvider,
     private loginService:LoginService
-  ) { }
+  ) {
+  }
 
   async createAccount(
     email: string,
@@ -68,16 +69,19 @@ export class SignupService {
   async signUpWithUserAndPassword(
     username: string,
     password: string,
-    business: {
-      access: { accessLevel: string; lastUpdated: Timestamp; updatedBy: string };
-      address: string;
-      businessId: string;
-      joiningDate: Timestamp;
-      name: string;
-    },
-    email?: string,
-    phone?: string,
-    image?: string
+    params:{
+      business: {
+        access: { accessLevel: string; lastUpdated: Timestamp; updatedBy: string };
+        address: string;
+        businessId: string;
+        joiningDate: Timestamp;
+        name: string;
+      },
+      email?: string,
+      phone?: string,
+      image?: string,
+      noSignIn?: boolean,
+    }
   ) {
     this.dataProvider.loading = true;
     try {
@@ -107,7 +111,7 @@ export class SignupService {
         throw new Error('Missing fields. Username and password are required');
         // return { error: 'Missing fields' }
       }
-      if (!business) {
+      if (!params.business) {
         // return { error: 'Missing fields' }
         throw new Error('Missing fields. Business is required');
       }
@@ -115,36 +119,36 @@ export class SignupService {
         business: [],
         providerId: 'custom',
       };
-      if (email) {
-        if (typeof email !== 'string' || !email.includes('@')) {
+      if (params.email) {
+        if (typeof params.email !== 'string' || !params.email.includes('@')) {
           throw new Error('Email is invalid');
         }
-        additonalClaims['email'] = email;
+        additonalClaims['email'] = params.email;
       }
-      if (image) {
-        if (typeof image !== 'string' || !image.includes('http')) {
+      if (params.image) {
+        if (typeof params.image !== 'string' || !params.image.includes('http')) {
           throw new Error('Image url is invalid');
         }
-        additonalClaims['image'] = image;
+        additonalClaims['image'] = params.image;
       }
-      if (phone) {
-        if (typeof phone !== 'string' || phone.length !== 10) {
+      if (params.phone) {
+        if (typeof params.phone !== 'string' || params.phone.length !== 10) {
           throw new Error('Phone number is invalid');
         }
-        additonalClaims['phone'] = phone;
+        additonalClaims['phone'] = params.phone;
       }
-      if (business) {
+      if (params.business) {
         if (
-          typeof business !== 'object' ||
-          !business.access ||
-          !business.address ||
-          !business.businessId ||
-          !business.joiningDate ||
-          !business.name
+          typeof params.business !== 'object' ||
+          !params.business.access ||
+          !params.business.address ||
+          !params.business.businessId ||
+          !params.business.joiningDate ||
+          !params.business.name
         ) {
           throw new Error('Business is invalid');
         }
-        additonalClaims['business'] = [business];
+        additonalClaims['business'] = [params.business];
       } else {
         throw new Error('Business is required');
       }
@@ -152,16 +156,18 @@ export class SignupService {
       let data = {
         username,
         password,
-        email,
-        phone,
-        image,
-        business,
+        email:params.email,
+        phone:params.phone,
+        image:params.image,
+        business:params.business,
       }
       let signUpRequest = await this.signUpWithUserAndPasswordFunction(data)
       if (signUpRequest.data['token']){
-        let res = await this.loginService.signInWithCustomToken(signUpRequest.data['token'])
-        let updateUser = await this.updateUserFactors(data)
-        return await this.loginService.signInWithCustomToken(signUpRequest.data['token'])
+        if (params.noSignIn){
+          return data;
+        } else {
+          return await this.loginService.signInWithCustomToken(signUpRequest.data['token'])
+        }
       } else {
         if (signUpRequest.data['error']){
           throw new Error(signUpRequest.data['error'])

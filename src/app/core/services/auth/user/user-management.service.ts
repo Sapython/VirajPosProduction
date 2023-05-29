@@ -1,16 +1,29 @@
 import { Injectable } from '@angular/core';
 import { Auth, signOut } from '@angular/fire/auth';
 import { getDoc, doc, Firestore } from '@angular/fire/firestore';
+import { Functions, httpsCallable } from '@angular/fire/functions';
 import { Router } from '@angular/router';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { firstValueFrom } from 'rxjs';
+import { AlertsAndNotificationsService } from '../../alerts-and-notification/alerts-and-notifications.service';
+import { DataProvider } from '../../provider/data-provider.service';
+import { Dialog } from '@angular/cdk/dialog';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserManagementService {
-
-  constructor(private firestore:Firestore,private dbService: NgxIndexedDBService,private auth: Auth,private router: Router) { }
+  resetPasswordFunction = httpsCallable(this.functions, 'resetPassword');
+  constructor(
+    private firestore: Firestore,
+    private dbService: NgxIndexedDBService,
+    private auth: Auth,
+    private router: Router,
+    private functions: Functions,
+    private alertify: AlertsAndNotificationsService,
+    private dataProvider: DataProvider,
+    private dialog:Dialog
+  ) {}
   getUser(uid: string) {
     return getDoc(doc(this.firestore, 'users/' + uid));
   }
@@ -50,8 +63,46 @@ export class UserManagementService {
     this.router.navigateByUrl('/login');
   }
 
-
   userExists(username: string) {
     return getDoc(doc(this.firestore, 'users/' + username));
+  }
+
+  async resetPassword(previousPassword:string,newPassword:string,confirmPassword:string){
+    // validate passwords for null, less than 8 chars, must be alphanumeric, must match
+    // if valid, call resetPasswordFunction
+    // if invalid, return error message
+    try {
+      if (!(isNaN(Number(previousPassword)) && isNaN(Number(newPassword)) && isNaN(Number(confirmPassword)))){
+        throw Error("Only numbers are not allowed.")
+      }
+      if (previousPassword == null || newPassword == null || confirmPassword == null){
+        throw Error("All fields must be filled out.")
+      }
+      if (previousPassword.length < 8 || newPassword.length < 8 || confirmPassword.length < 8){
+        throw Error("All passwords must be at least 8 characters.")
+      }
+      if (newPassword != confirmPassword){
+        throw Error("New password and confirm password must match.")
+      }
+    } catch (error) {
+      throw error || Error("Invalid details.");
+    }
+    try {
+      this.dataProvider.loading = true;
+      let resetPasswordRes = await this.resetPasswordFunction({previousPassword,newPassword,confirmPassword,uid:this.dataProvider.currentUser.username});
+      console.log("resetPasswordRes",resetPasswordRes);
+      if (resetPasswordRes){
+        this.alertify.presentToast("Password reset successfully.");
+        await this.dataProvider.confirm("Password reset successfully. Please login again.",[0],{buttons:["Ok"],primary:[0]});
+        this.dialog.closeAll();
+        this.logout();
+        this.router.navigateByUrl("/login");
+      }
+    } catch (error) {
+      console.log("resetPasswordError error res",error);
+      throw error;
+    } finally {
+      this.dataProvider.loading = false;
+    }
   }
 }

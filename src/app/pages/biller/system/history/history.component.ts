@@ -13,6 +13,7 @@ import { HistoryService } from '../../../../core/services/database/history/histo
 import { BillService } from '../../../../core/services/database/bill/bill.service';
 import { BillConstructor } from '../../../../types/bill.structure';
 import { KotConstructor } from '../../../../types/kot.structure';
+import { getPrintableBillConstructor } from '../../../../core/constructors/bill/methods/getHelpers.bill';
 @Component({
   selector: 'app-history',
   templateUrl: './history.component.html',
@@ -74,7 +75,19 @@ export class HistoryComponent {
           username:userRes.name,
         }
       });
-      this.printingService.reprintBill(bill);
+      let products = bill.kots.reduce((acc,kot) => {
+        kot.products.forEach((product) => {
+          let index = acc.findIndex((accProduct) => accProduct.name == product.name);
+          if(index == -1){
+            acc.push({...product,quantity:1});
+          } else {
+            acc[index].quantity++;
+          }
+        })
+        return acc;
+      },[] as any[])
+      let printableBillData = getPrintableBillConstructor(bill,products,this.dataProvider)
+      this.printingService.reprintBill(printableBillData);
     } else {
       alert("Reprint Cancelled")
       return;
@@ -85,7 +98,7 @@ export class HistoryComponent {
     const dialog = this.dialog.open(ReprintReasonComponent)
     let res = await firstValueFrom(dialog.closed)
     if(res && typeof res == 'string'){
-      this.printingService.reprintKot(kot,bill.table.name,bill.billNo||'');
+      this.printingService.reprintKot(kot,bill.table.name,bill);
     } else {
       alert("Reprint Cancelled")
       return;
@@ -94,7 +107,6 @@ export class HistoryComponent {
 
   generateConsolidatedReport(){
     let filteredBills = this.bills.filter((bill) => bill.billing.grandTotal >=this.minimumAmount && bill.stage=='settled');
-    
     // let consolidated = filteredBills.reduce((acc,bill) => {
     //   bill.modifiedAllProducts.forEach((product) => {
     //     let index = acc.findIndex((accProduct) => accProduct.name == product.name);

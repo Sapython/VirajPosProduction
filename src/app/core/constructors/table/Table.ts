@@ -79,7 +79,7 @@ export class Table implements TableConstructor {
     this.tableService.getTable(this.id, mode).subscribe(async (res) => {
       if (res) {
         let table: TableConstructor = res as TableConstructor;
-        console.log('table', table);
+        // console.log('table', table);
         this.status = res['status'] || 'available';
         this.billPrice = res['billPrice'] || 0;
         this.occupiedStart = res['occupiedStart'];

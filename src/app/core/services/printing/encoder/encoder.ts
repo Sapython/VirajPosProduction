@@ -1,3 +1,5 @@
+import { printableBillItem, printableDiscount, printableTax } from '../../../../types/bill.structure';
+import { printableKotItem } from '../../../../types/kot.structure';
 import * as EscPosEncoder from '../esc-pos-encoder.umd';
 export class customEncoder extends EscPosEncoder {
   constructor(data: any) {
@@ -34,7 +36,7 @@ export class customEncoder extends EscPosEncoder {
     // return text with strikethrough
     return this.text('X---').text(chars).text('---X');
   }
-  productTable(products: any[]) {
+  productTable(products: printableBillItem[]) {
     // products contains name, price, quantity, total
     let table = [
       { width: 20, marginRight: 2, align: 'left' },
@@ -59,7 +61,7 @@ export class customEncoder extends EscPosEncoder {
     });
     return this.table(table, data);
   }
-  itemTable(items: any[]) {
+  itemTable(items: printableKotItem[]) {
     let table = [
       { width: 26, marginRight: 2, align: 'left' },
       { width: 5, marginRight: 2, align: 'center' },
@@ -125,7 +127,7 @@ export class customEncoder extends EscPosEncoder {
     });
     return this;
   }
-  discounts(discounts: any[]) {
+  discounts(discounts: printableDiscount[]) {
     // discounts is of type {name: string, value: number, type: string, rate: number}[]
     if (discounts.length == 0) return this;
     this.align('center').h2('Discounts', 'left');
@@ -146,7 +148,7 @@ export class customEncoder extends EscPosEncoder {
       discountsColumns
     ).newline();
   }
-  taxes(taxes: any[]) {
+  taxes(taxes: printableTax[]) {
     // taxes is of type {name: string, value: number, rate: number}[]
     this.align('center').h2('Taxes', 'left');
     let taxesColumns = [['Tax', 'Rate', 'Amount']];

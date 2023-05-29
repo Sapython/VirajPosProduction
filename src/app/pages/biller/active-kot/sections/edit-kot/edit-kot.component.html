@@ -1,0 +1,16 @@
+<app-kot-item
+  [@zoomInOnEnter]
+  [@zoomOutOnLeave]
+  [kotId]="this.dataProvider.currentBill?.editKotMode?.kot?.id || ''"
+  [product]="item"
+  (delete)="delete.emit(item)"
+  [kotNo]="this.dataProvider.currentBill?.editKotMode?.kotIndex || 0"
+  [quantity]="item.quantity"
+  [productName]="item.name"
+  [nonVeg]="item.type == 'non-veg'"
+  [price]="item.price"
+  *ngFor="
+    let item of this.dataProvider.currentBill?.editKotMode?.newKot;
+    let i = index
+  "
+></app-kot-item>

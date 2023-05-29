@@ -1,0 +1,67 @@
+<h3>Account Settings</h3>
+<button mat-flat-button color="primary" (click)="addAccount()">
+  Add Account
+</button>
+<div class="tableContainer">
+  <table>
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Role</th>
+        <th>Update By</th>
+        <th>Created On</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="
+          let account of this.dataProvider.currentBusiness?.users;
+          let i = index
+        "
+      >
+        <td>
+          <ng-container *ngIf="!account.new">
+            {{ account.username }}
+          </ng-container>
+          <input
+            class="username"
+            placeholder="Username"
+            type="text"
+            [(ngModel)]="account.username"
+            *ngIf="account.new"
+          />
+        </td>
+        <td class="select">
+          <mat-select
+            placeholder="Select"
+            (valueChange)="account.new ? {} : updateBusiness()"
+            [(ngModel)]="account.access"
+            name="access"
+          >
+            <mat-option
+              *ngFor="let access of this.dataProvider.accessLevels"
+              [value]="access"
+            >
+              {{ access | titlecase }}
+            </mat-option>
+          </mat-select>
+        </td>
+        <td>{{ account.updatedBy }}</td>
+        <td>
+          {{ account.lastUpdated.toDate() | date : "short" }}
+          <button
+            mat-flat-button
+            *ngIf="account.new"
+            color="primary"
+            (click)="updateBusiness()"
+          >
+            Update
+          </button>
+          <button mat-icon-button (click)="deleteAccount(i)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

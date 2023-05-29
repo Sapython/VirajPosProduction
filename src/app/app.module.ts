@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { APP_INITIALIZER, ErrorHandler, NgModule, isDevMode } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -41,8 +41,9 @@ import { AlertsAndNotificationsService } from './core/services/alerts-and-notifi
 
 import * as Sentry from "@sentry/angular-ivy";
 import { Router } from '@angular/router';
-import { ServiceWorkerModule } from '@angular/service-worker';
 import { connectFunctionsEmulator, getFunctions, provideFunctions } from '@angular/fire/functions';
+import { ResetPasswordComponent } from './pages/auth/reset-password/reset-password.component';
+import { MatIconModule } from '@angular/material/icon';
 
 // AoT requires an exported function for factories
 const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>
@@ -128,10 +129,11 @@ const dbConfig: DBConfig = {
 };
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, ResetPasswordComponent],
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
     AppRoutingModule,
     MatSnackBarModule,
@@ -145,6 +147,7 @@ const dbConfig: DBConfig = {
     MatInputModule,
     MatSliderModule,
     MatButtonModule,
+    MatIconModule,
     NgxIndexedDBModule.forRoot(dbConfig),
     TranslateModule.forRoot({
       loader: {
@@ -175,7 +178,6 @@ const dbConfig: DBConfig = {
     }),
     provideFunctions(() => {
       let functions = getFunctions();
-      // useEmulator('localhost', 5001);
       // connectFunctionsEmulator(functions, 'localhost', 5001);
       return functions;
     })

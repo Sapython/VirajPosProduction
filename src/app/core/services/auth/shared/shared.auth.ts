@@ -31,6 +31,7 @@ export function setupDevice() {
     })
     .catch((err) => {
       console.log('Error', err);
+      this.alertify.presentToast('Error when getting device');
     });
 }
 export function generateDeviceId() {

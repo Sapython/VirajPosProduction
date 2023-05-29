@@ -9,6 +9,7 @@ export class Kot implements KotConstructor {
   unmade?: boolean;
   stage: 'active' | 'finalized' | 'cancelled' | 'edit';
   products: Product[];
+  mode;
   editMode: boolean;
   selected: boolean;
   allSelected: boolean;

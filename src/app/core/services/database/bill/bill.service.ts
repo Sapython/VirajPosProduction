@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, collectionData, doc, docData, getDoc, getDocs, increment, query, setDoc, updateDoc, where } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, collectionData, doc, docData, getDoc, getDocs, increment, query, setDoc, updateDoc, where } from '@angular/fire/firestore';
 import { DataProvider } from '../../provider/data-provider.service';
 import { Product } from '../../../../types/product.structure';
+import { BillConstructor } from '../../../../types/bill.structure';
 
 @Injectable({
   providedIn: 'root'
@@ -97,6 +98,13 @@ export class BillService {
       doc(this.firestore, 'business/'+this.dataProvider.businessId+'/tokens', token.id),
       token,
       { merge: true }
+    );
+  }
+
+  saveSplittedBill(billNo,bill:BillConstructor){
+    return addDoc(
+      collection(this.firestore, 'business/'+this.dataProvider.businessId+'/bills', billNo,'splittedBills'),
+      bill
     );
   }
 

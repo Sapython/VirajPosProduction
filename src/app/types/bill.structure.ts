@@ -11,6 +11,7 @@ export interface BillConstructor {
   billNo?: string;
   orderNo: string | null;
   createdDate: Timestamp;
+  billSplits:PrintableBill[];
   billReprints: {
     reprintReason: string;
     time: Timestamp;
@@ -39,6 +40,7 @@ export interface BillConstructor {
   kots: KotConstructor[];
   table: TableConstructor;
   billing: Billing;
+  printableBillData?: PrintableBill;
   nonChargeableDetail?: {
     reason: string;
     time: Timestamp;
@@ -47,8 +49,54 @@ export interface BillConstructor {
     name: string;
   };
 }
+export interface PrintableBill {
+  businessDetails:{
+    name: string;
+    address: string;
+    phone: string;
+    fssai: string;
+    gstin: string;
+    email: string;
+  };
+  customerDetail:{
+    name?:string;
+    phone?:string;
+    address?:string;
+    gstin?:string;
+  };
+  date: string;
+  time: string;
+  orderNo: string;
+  billNoSuffix?: string;
+  billNo: string;
+  cashierName: string;
+  mode:'Dine In' | 'Takeaway' | 'Online';
+  products:printableBillItem[];
+  totalQuantity: number;
+  subTotal: number;
+  discounts:printableDiscount[];
+  taxes:printableTax[];
+  grandTotal:number;
+  note:string;
+  notes:string[];
+}
 
-export interface splittedBill {
-  products: splittedProduct[];
-  grandTotal: number;
+export interface printableBillItem {
+  name:string;
+  quantity:number;
+  untaxedValue:number;
+  total:number;
+}
+
+export interface printableDiscount{
+  name:string;
+  rate:number;
+  type:'flat'|'percentage';
+  value:number;
+}
+
+export interface printableTax{
+  name:string;
+  rate:number;
+  value:number;
 }

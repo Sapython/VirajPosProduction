@@ -57,14 +57,18 @@ section{
             width: 100%;
             margin-bottom: 1rem;
         }
-        .variants{
-            .variant{
-                display: flex;
+        .portions{
+            .portion{
+                display: grid;
+                grid-template-columns: 4fr 4fr 1fr;
                 align-items: center;
-                margin-bottom: 1rem;
-                mat-form-field{
-                    width: 100%;
-                    margin-right: 1rem;
+                .badge{
+                    padding: 5px 10px;
+                    border-radius: 5px;
+                }
+                .tagColors{
+                    grid-column: 3/1;
+                    display: flex;
                 }
             }
         }

@@ -110,7 +110,7 @@ export class TableComponent implements OnInit {
     } else {
       groupName = tableName.split(' ')[0];
     }
-    console.log('tableName ', tableName,groupName);
+    // console.log('tableName ', tableName,groupName);
     let table = new Table(
       index.toString(),
       index,
@@ -184,8 +184,7 @@ export class TableComponent implements OnInit {
     console.log('this.moveKotSelectedTable ', this.moveKotSelectedTable, event);
   }
 
-  async deleteTable(table:Table,event:any){
-    event.stopPropagation();
+  async deleteTable(table:Table){
     console.log("table",table);
     if (table.type == 'table'){
       if (table.status == 'occupied'){

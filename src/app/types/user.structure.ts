@@ -71,3 +71,11 @@ export interface AdditonalClaims {
     name: string;
   }[];
 }
+
+export interface Account {
+  name: string;
+  phoneNumber: string;
+  email: string;
+  role: 'admin' | 'cashier' | 'manager';
+  creationDate: Timestamp;
+}

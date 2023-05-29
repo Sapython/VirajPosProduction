@@ -17,10 +17,35 @@ export interface KotConstructor {
     time: Timestamp;
     user: UserConstructor;
   };
+  mode?:'firstChargeable'
+  | 'cancelledKot'
+  | 'editedKot'
+  | 'runningNonChargeable'
+  | 'runningChargeable'
+  | 'firstNonChargeable'
+  | 'reprintKot'
+  | 'online';
 }
 
 export interface kotReport extends KotConstructor {
   billNo: string;
   grandTotal: number;
   tokenNo: string;
+}
+
+export interface PrintableKot {
+  mode:'firstChargeable'|'cancelledKot'|'editedKot'|'runningNonChargeable'|'runningChargeable'|'firstNonChargeable'|'reprintKot'|'online';
+  date:string;
+  time:string;
+  token:string;
+  orderNo:string;
+  table:string;
+  products:printableKotItem[];
+}
+
+export interface printableKotItem {
+  name:string;
+  instruction:string;
+  quantity:number;
+  edited?:boolean;
 }

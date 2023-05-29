@@ -14,6 +14,11 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ReasonComponent } from './reason/reason.component';
+import { ManageKotComponent } from './sections/manage-kot/manage-kot.component';
+import { NormalKotComponent } from './sections/normal-kot/normal-kot.component';
+import { EditKotComponent } from './sections/edit-kot/edit-kot.component';
+import { QuickKotViewComponent } from './sections/quick-kot-view/quick-kot-view.component';
+import { BillPreviewComponent } from './sections/bill-preview/bill-preview.component';
 
 
 @NgModule({
@@ -23,7 +28,12 @@ import { ReasonComponent } from './reason/reason.component';
     MergedProductsPipe,
     LineDiscountComponent,
     LineCancelComponent,
-    ReasonComponent
+    ReasonComponent,
+    ManageKotComponent,
+    NormalKotComponent,
+    EditKotComponent,
+    QuickKotViewComponent,
+    BillPreviewComponent
   ],
   imports: [
     CommonModule,
@@ -39,7 +49,8 @@ import { ReasonComponent } from './reason/reason.component';
   ],
   exports:[
     ActiveKotComponent,
-    KotItemComponent
+    KotItemComponent,
+    BillPreviewComponent
   ]
 })
 export class ActiveKotModule { }

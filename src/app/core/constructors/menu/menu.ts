@@ -731,17 +731,11 @@ export class ModeConfig {
       data: this.products,
     });
     dialog.closed.subscribe((data: any) => {
-      console.log('data', data);
       if (data) {
         if (this.selectedCategory) {
           const ids: string[] = data
             .filter((d: Product) => d.selected)
             .map((product: Product) => product.id);
-          console.log(
-            'business/UTJetLFyQnfthZssQoEh/viewCategories',
-            this.selectedCategory.id,
-            ids
-          );
           this.menuManagementService
             .updateViewCategory(this.selectedCategory.id, ids)
             .then((data: any) => {

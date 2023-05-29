@@ -1,0 +1,139 @@
+<section>
+  <h2>Add new account</h2>
+  <p>
+    You can add account from here. If no account will be <br />
+    found then you can create it from here.
+  </p>
+  <form [formGroup]="loginForm" (ngSubmit)="submit()">
+    <mat-form-field appearance="outline">
+      <mat-label>Username</mat-label>
+      <input type="text" matInput formControlName="username" #username />
+      <mat-hint *ngIf="stage == 'unavailable' && username.value"
+        >Username already exists</mat-hint
+      >
+      <mat-hint *ngIf="stage == 'available' && username.value" class="success"
+        ><strong>Great</strong> you can use this username</mat-hint
+      >
+      <mat-hint *ngIf="stage == 'invalid' && username.value" class="error"
+        ><strong>Invalid</strong> you cannot use this username</mat-hint
+      >
+      <mat-spinner
+        *ngIf="stage == 'checking'"
+        matSuffix
+        [diameter]="18"
+        style="float: right; margin-left: 8px"
+      ></mat-spinner>
+    </mat-form-field>
+    <ng-container *ngIf="stage == 'available'">
+      <mat-form-field appearance="outline">
+        <mat-label>Access</mat-label>
+        <mat-select
+          placeholder="Access"
+          formControlName="accessLevel"
+          name="access"
+        >
+          <mat-option
+            *ngFor="let access of this.dataProvider.accessLevels"
+            [value]="access"
+          >
+            {{ access | titlecase }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input type="password" matInput formControlName="password" #password />
+        <button
+          color="primary"
+          matSuffix
+          tabindex="-1"
+          type="button"
+          *ngIf="password.type == 'password'"
+          (click)="
+            password.type == 'password'
+              ? (password.type = 'text')
+              : (password.type = 'password')
+          "
+          mat-icon-button
+        >
+          <mat-icon>visibility</mat-icon>
+        </button>
+        <button
+          color="primary"
+          matSuffix
+          tabindex="-1"
+          type="button"
+          *ngIf="!(password.type == 'password')"
+          (click)="
+            password.type == 'password'
+              ? (password.type = 'text')
+              : (password.type = 'password')
+          "
+          mat-icon-button
+        >
+          <mat-icon>visibility_off</mat-icon>
+        </button>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Confirm Password</mat-label>
+        <input
+          type="password"
+          matInput
+          formControlName="confirmPassword"
+          #confirmPassword
+        />
+        <mat-error *ngIf="password.value !== confirmPassword.value"
+          >Passwords don't match.</mat-error
+        >
+        <button
+          color="primary"
+          matSuffix
+          tabindex="-1"
+          type="button"
+          *ngIf="confirmPassword.type == 'password'"
+          (click)="
+            confirmPassword.type == 'password'
+              ? (confirmPassword.type = 'text')
+              : (confirmPassword.type = 'password')
+          "
+          mat-icon-button
+        >
+          <mat-icon>visibility</mat-icon>
+        </button>
+        <button
+          color="primary"
+          matSuffix
+          tabindex="-1"
+          type="button"
+          *ngIf="!(confirmPassword.type == 'password')"
+          (click)="
+            confirmPassword.type == 'password'
+              ? (confirmPassword.type = 'text')
+              : (confirmPassword.type = 'password')
+          "
+          mat-icon-button
+        >
+          <mat-icon>visibility_off</mat-icon>
+        </button>
+      </mat-form-field>
+    </ng-container>
+    <div class="actions">
+      <button
+        color="primary"
+        [disabled]="loginForm.invalid && this.stage == 'checking'"
+        type="submit"
+        mat-flat-button
+      >
+        Submit
+      </button>
+      <button
+        color="primary"
+        (click)="cancel()"
+        type="button"
+        mat-stroked-button
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>

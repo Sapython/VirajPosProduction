@@ -27,6 +27,14 @@ export interface Product {
   lineDiscount?: DirectPercentDiscount | DirectFlatDiscount;
   order?: number;
   taxes: productTax[];
+  untaxedValue?:number;
+  lineDiscounted?:boolean;
+  taxedValue?:number;
+  discountedValue?:number;
+  taxedDiscountedValue?:number;
+  applicableTax?:number;
+  applicableDiscount?:number;
+  cancelled?:boolean;
 }
 
 interface Variant {
@@ -63,4 +71,9 @@ export interface productReport extends Product {
   kots: string;
   quantity: number;
   amount: number;
+}
+
+export interface portionColor {
+  color: string;
+  contrast: string;
 }

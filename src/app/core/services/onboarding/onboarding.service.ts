@@ -194,6 +194,7 @@ export class OnboardingService {
               id: discount.id,
             } as CodeBaseDiscount);
           });
+          console.log("loaded discounts",this.dataProvider.discounts);
           let verifiedMenus = [];
           this.loadingSteps.next('Waiting for menus to load');
           let menuSubscription = this.dataProvider.menuLoadSubject.subscribe(
@@ -320,6 +321,7 @@ export class OnboardingService {
       this.dataProvider.onlineTokenNo = res['onlineTokenNo'] || 0;
       this.dataProvider.orderTokenNo = res['orderTokenNo'] || 0;
       this.dataProvider.password = res['password'];
+      this.dataProvider.multipleDiscount = res['multipleDiscount'] || false;
       this.dataProvider.activeModes = res['modes'];
       this.dataProvider.dineInMenu = res['dineInMenu'];
       this.dataProvider.takeawayMenu = res['takeawayMenu'];

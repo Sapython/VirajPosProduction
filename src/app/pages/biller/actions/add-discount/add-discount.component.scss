@@ -40,22 +40,21 @@ section{
                 color: white;
             }
         }
-        .main{
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            align-items: center;
-            justify-content: center;
-            mat-form-field{
-                width: 100%;
-            }
-            img.notFound{
-                width: 100%;
-            }
-            p{
-                text-align: center;
-            }
+    }
+    .main{
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+        justify-content: center;
+        mat-form-field{
+            width: 100%;
+        }
+        img.notFound{
+            width: 100%;
+        }
+        p{
+            text-align: center;
         }
     }
-
 }

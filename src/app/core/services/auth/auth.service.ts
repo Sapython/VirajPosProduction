@@ -7,7 +7,7 @@ import { DataProvider } from '../provider/data-provider.service';
 import { UserRecord } from '../../../types/user.structure';
 import { AlertsAndNotificationsService } from '../alerts-and-notification/alerts-and-notifications.service';
 import { ElectronService } from '../electron/electron.service';
-import { setupDevice } from './shared/shared.auth';
+import { generateDeviceId, loginWithCustomToken, setupDevice } from './shared/shared.auth';
 import { UserManagementService } from './user/user-management.service';
 import { LoginService } from './login/login.service';
 
@@ -39,7 +39,6 @@ export class AuthService {
             email: string;
           };
           this.localUserId = localData.userId;
-          // console.log('Local login found', localData);
           this.userManagement.getUser(localData.userId).then((user) => {
             this.localUserData = user.data() as UserRecord;
             this.dataProvider.currentUser = user.data() as UserRecord;
@@ -93,25 +92,12 @@ export class AuthService {
                   message: 'User does not exists on server',
                 });
                 this.dataProvider.isAuthStateAvaliable = true;
-                // this.signUpUser(user);
-                // signOut(this.auth);
-                // signUp the user
               }
             })
             .catch((err) => {
               console.log('Getting current user Error', err);
             });
         }
-        // console.log('Auth state found', user);
-        // this.checkbusiness('1').then((deviceLoginStatus)=>{
-        //   console.log("deviceLoginStatus",deviceLoginStatus);
-        //   if (deviceLoginStatus){
-        //     console.log("Local login found");
-        //   } else {
-
-        //     console.log("Local login not found");
-        //   }
-        // })
       } else {
         console.log(
           'No auth state found, 9452',
@@ -128,16 +114,6 @@ export class AuthService {
             this.dataProvider.loading = false;
           }
         }
-        // alert("No user");
-        // if (window.localStorage.getItem('signInToken')){
-        //   // alert("Has local user");
-        //   try{
-        // await signInWithCustomToken(this.auth,window.localStorage.getItem('signInToken'));
-        //   } catch (e){
-        // console.log("LOCAL SIGN IN ERROR",e);
-        // alert("Error when signing local")
-        //   }
-        // }
         this.dataProvider.isAuthStateAvaliable = true;
         this.dataProvider.loggedIn = false;
         this.dataProvider.currentUser = undefined;
@@ -153,4 +129,6 @@ export class AuthService {
   }
 
   private setupDevice = setupDevice;
+  private generateDeviceId = generateDeviceId;
+  private loginWithCustomToken = loginWithCustomToken;
 }

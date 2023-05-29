@@ -67,10 +67,10 @@
                         <!-- <p class="time">{{table.occupiedStart.toDate() | date}}</p> -->
                         <div class="actions" *ngIf="table.status == 'occupied'">
                             <viraj-button [noPropogation]="true" [minimalPadding]="true" type="icon" (vclick)="settleTable(table,$event)"><i class="ri-save-fill"></i></viraj-button>
-                            <viraj-button [noPropogation]="true" [minimalPadding]="true" type="icon" (vclick)="deleteTable(table,$event)"><i class="ri-delete-bin-fill"></i></viraj-button>
+                            <viraj-button [noPropogation]="true" [minimalPadding]="true" type="icon" (vclick)="deleteTable(table)"><i class="ri-delete-bin-fill"></i></viraj-button>
                         </div>
                         <div class="actions" *ngIf="table.status != 'occupied'">
-                            <viraj-button [noPropogation]="true" [minimalPadding]="true" type="icon" (vclick)="deleteTable(table,$event)"><i class="ri-delete-bin-fill"></i></viraj-button>
+                            <viraj-button [noPropogation]="true" [minimalPadding]="true" type="icon" (vclick)="deleteTable(table)"><i class="ri-delete-bin-fill"></i></viraj-button>
                         </div>
                     </button>
                     <button class="table empty" (click)="addTable(tableGroup.key)" [ngClass]="{'medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}" *ngIf="this.dataProvider.getAccess(['admin','manager'])">

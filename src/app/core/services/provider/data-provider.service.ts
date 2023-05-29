@@ -89,6 +89,7 @@ export class DataProvider {
   public customBillNote:string = '';
   public todaySales:any = {};
   public taxes:Tax[] = [];
+  public multipleDiscount:boolean = false;
   
   // public access
   public discounts: CodeBaseDiscount[] = [];
@@ -132,7 +133,7 @@ export class DataProvider {
   
   public get currentBusinessUser(){
     if (this.currentBusiness && this.currentUser){
-      this.currentUser.business.find((business) => business.businessId == this.currentBusiness.businessId)!
+      return this.currentUser.business.find((business) => business.businessId == this.currentBusiness.businessId)!
     } else {
       return undefined;
     }

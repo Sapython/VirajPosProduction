@@ -1,0 +1,58 @@
+<h3>Printer Settings</h3>
+<mat-form-field appearance="outline" *ngIf="this.dataProvider.currentBusiness">
+  <mat-label>Bill Printer</mat-label>
+  <mat-select
+    #billerPrinter
+    [(ngModel)]="this.dataProvider.currentBusiness.billerPrinter"
+    (selectionChange)="updateBillPrinter(billerPrinter.value)"
+    name="printer"
+  >
+    <mat-option> Select </mat-option>
+    <mat-option [value]="printer" *ngFor="let printer of printers">
+      {{ printer }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+<mat-form-field appearance="outline">
+  <mat-label>Custom Bill Note</mat-label>
+  <input
+    type="text"
+    matInput
+    [(ngModel)]="this.dataProvider.customBillNote"
+    (change)="updateSettings({ customBillNote: customBillNote.value })"
+    #customBillNote
+  />
+</mat-form-field>
+<mat-form-field
+  appearance="outline"
+  matTooltip="This text will be added as prefix on printed bill' bill no"
+>
+  <mat-label>Bill No Suffix</mat-label>
+  <input
+    type="text"
+    matInput
+    [(ngModel)]="this.dataProvider.billNoSuffix"
+    (change)="updateSettings({ billNoSuffix: billNoSuffixInput.value })"
+    #billNoSuffixInput
+  />
+</mat-form-field>
+<mat-slide-toggle
+  matTooltip="Print Bill After Finalize"
+  [(ngModel)]="dataProvider.printBillAfterFinalize"
+  (change)="
+    updateSettings({
+      printBillAfterFinalize: dataProvider.printBillAfterFinalize
+    })
+  "
+  >Bill After Finalize</mat-slide-toggle
+>
+<mat-slide-toggle
+  matTooltip="Print Bill After Settle"
+  [(ngModel)]="dataProvider.printBillAfterSettle"
+  (change)="
+    updateSettings({
+      printBillAfterSettle: dataProvider.printBillAfterSettle
+    })
+  "
+  >Bill After Settlement</mat-slide-toggle
+>

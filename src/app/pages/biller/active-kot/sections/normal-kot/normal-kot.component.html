@@ -1,0 +1,14 @@
+<app-kot-item
+        [@zoomInOnEnter]
+        [@zoomOutOnLeave]
+        [kotId]="kots[0].id"
+        (delete)="delete.emit(item)"
+        [product]="item"
+        [kotNo]="activeKotIndex"
+        [info]="item.instruction || null"
+        [quantity]="item.quantity"
+        [productName]="item.name"
+        [nonVeg]="item.type == 'non-veg'"
+        [price]="item.price"
+        *ngFor="let item of kots[0].products; let i = index"
+></app-kot-item>

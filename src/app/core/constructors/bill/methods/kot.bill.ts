@@ -2,6 +2,7 @@ import { Timestamp } from '@angular/fire/firestore';
 import { Bill } from '..';
 import { Product } from '../../../../types/product.structure';
 import { Kot } from '../../kot/Kot';
+import { PrintableKot } from '../../../../types/kot.structure';
 
 export function addKot(this: Bill, kot: Kot) {
   this.kots.push(kot);
@@ -78,15 +79,17 @@ export function finalizeAndPrintKot(this: Bill) {
     );
     console.log('Kot index', kotIndex);
     if (kotIndex != -1) {
-      this.kots[kotIndex].products = this.editKotMode.newKot;
+      let cancelledProducts:Product[] = this.kots[kotIndex].products.map((product)=>{
+        return {
+          ...product,
+          cancelled:true,
+        }
+      })
+      this.kots[kotIndex].products = [...cancelledProducts,...this.editKotMode.newKot];
+
       this.kots[kotIndex].stage = 'finalized';
       console.log('Active kot', this.kots[kotIndex]);
-      this.printingService.printEditedKot(
-        this.kots[kotIndex],
-        this.editKotMode.previousKot,
-        this.table.name,
-        this.orderNo || ''
-      );
+      this.printKot(this.kots[kotIndex],'editedKot')
     }
     this.editKotMode = null;
     this.dataProvider.kotViewVisible = true;
@@ -134,12 +137,10 @@ export function finalizeAndPrintKot(this: Bill) {
 export function deleteKot(this: Bill, kot: Kot) {
   kot.stage = 'cancelled';
   this.updated.next();
-  this.printingService.deleteKot(
-    this.table.tableNo.toString(),
-    this.orderNo || '',
-    kot.products,
-    kot.id
-  );
+  kot.products.forEach((product) => {
+    product.cancelled = true;
+  })
+  this.printKot(kot,'cancelledKot');
   this.calculateBill();
   this.updated.next();
 }
@@ -148,7 +149,7 @@ export function printKot(
   this: Bill,
   kot: Kot,
   mode:
-    | 'firstChargeable'
+    'firstChargeable'
     | 'cancelledKot'
     | 'editedKot'
     | 'runningNonChargeable'
@@ -158,19 +159,34 @@ export function printKot(
     | 'online',
   reason?: string
 ) {
+  kot.mode = mode || 'firstChargeable';
   if (mode == 'reprintKot') {
+    if (!reason){
+      throw new Error('Reason is required for reprint');
+      return;
+    }
     this.kotReprints.push({
       reprintReason: reason,
       time: Timestamp.now(),
       user: this.user,
     });
   }
-  this.printingService.printKot(
-    this.table.tableNo.toString(),
-    this.orderNo || '',
-    kot.products,
-    kot.id,
-    mode
-  );
+  let data:PrintableKot = {
+    date:kot.createdDate.toDate().toLocaleDateString(),
+    time:kot.createdDate.toDate().toLocaleTimeString(),
+    orderNo:this.orderNo,
+    mode:mode,
+    token:this.id,
+    products:kot.products.map((product)=>{
+      return {
+        name: product.name,
+        instruction:product.instruction,
+        quantity:product.quantity,
+        edited:product.cancelled
+      }
+    }),
+    table:this.table.id,
+  }
+  this.printingService.printKot(data);
   console.log('Send to service');
 }

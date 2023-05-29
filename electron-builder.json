@@ -17,8 +17,10 @@
   "win": {
     "icon": "dist/assets/icons",
     "target": [
-      "msi"
-    ]
+      "msi",
+      "nsis"
+    ],
+    "publish": ["github"]
   },
   "portable": {
     "splashImage": "dist/assets/icons/electron.bmp"

@@ -1,12 +1,13 @@
 {
   "name": "virajpos",
-  "version": "0.1.52",
+  "version": "0.1.55",
   "description": "Viraj POS system.",
   "homepage": "https://virajworld.in/",
   "author": {
     "name": "Shreeva",
     "email": "create@shreeva.com"
   },
+  "repository": "github:swayambhu-innovations/Packages",
   "keywords": [
     "angular",
     "angular 15",
@@ -37,7 +38,7 @@
     "electron:serve-tsc": "tsc -p tsconfig.serve.json",
     "electron:serve": "wait-on tcp:4200 && npm run electron:serve-tsc && electron . --serve",
     "electron:local": "npm run build:prod && electron .",
-    "electron:build": "npm run build:prod && electron-builder build --publish=never",
+    "electron:build": "npm run build:prod && electron-builder build --publish=always",
     "test": "ng test --watch=false",
     "test:watch": "ng test",
     "e2e": "npm run build:prod && playwright test -c e2e/playwright.config.ts e2e/",

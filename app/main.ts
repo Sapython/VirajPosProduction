@@ -3,9 +3,17 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as child_process from 'child_process';
 import * as Store from 'electron-store';
+import { autoUpdater, NsisUpdater } from "electron-updater"
 const store = new Store();
 let win: BrowserWindow = null;
 const args = process.argv.slice(1),serve = args.some((val) => val === '--serve');
+autoUpdater.logger = require("electron-log")
+// const updater = new NsisUpdater({
+//   provider:'github',
+//   owner:'swayambhu-innovations',
+//   repo:'Packages',
+// })
+
 
 function run_script(command, args, event, callback) {
   var child = child_process.spawn(command, args, {
@@ -89,6 +97,8 @@ function createWindow(): BrowserWindow {
 
     require('electron-reloader')(module);
     win.loadURL('http://localhost:4200');
+    // autoUpdater.addListener("")
+    autoUpdater.checkForUpdatesAndNotify();
   } else {
     // Path when running electron executable
     let pathIndex = './index.html';

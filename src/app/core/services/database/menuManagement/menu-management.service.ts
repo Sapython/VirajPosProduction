@@ -49,7 +49,7 @@ export class MenuManagementService {
   ) {
     this.menuUpdated.pipe(debounceTime(1000)).subscribe(() => {
       let menus = this.updatableMenus.filter((v, i, a) => a.indexOf(v) === i);
-      console.log('Menus to update', menus);
+      // console.log('Menus to update', menus);
       // menus.forEach((menuId) => {
       //   this.getMenu(menuId)
       // });
@@ -59,7 +59,7 @@ export class MenuManagementService {
     })
     this.menuUpdated.pipe(debounceTime(5000)).subscribe(() => {
       let menus = this.updatableMenus.filter((v, i, a) => a.indexOf(v) === i);
-      console.log('Menus to update', menus);
+      // console.log('Menus to update', menus);
       menus.forEach((menuId) => {
         this.updateMenuData(menuId);
       });
@@ -74,30 +74,30 @@ export class MenuManagementService {
       ).subscribe((res) => {
         // this.getMenu()
         res.forEach(async (menu) => {
-          console.log('menu112 getting menu', menu);
+          // console.log('menu112 getting menu', menu);
           try {
             let res:any = await firstValueFrom(
               this.indexedDbService.getByIndex('menu', 'menuId', menu.id)
             );
             if (res) {
               if (res.menu.menuVersion){
-                console.log("menu112 id exists",res.menu.menuVersion,menu.menuVersion);
+                // console.log("menu112 id exists",res.menu.menuVersion,menu.menuVersion);
                 if (res.menu.menuVersion < menu.menuVersion){
-                  console.log('menu112 res menu version',res.menu.menuVersion,menu.menuVersion);
+                  // console.log('menu112 res menu version',res.menu.menuVersion,menu.menuVersion);
                   await this.getMenu(menu.id);
                 } else {
-                  console.log("menu112 id exists and version is same or lower");
+                  // console.log("menu112 id exists and version is same or lower");
                 }
               } else {
-                console.log("menu112 id doesn't exists");
+                // console.log("menu112 id doesn't exists");
                 await this.getMenu(menu.id);
               }
             } else {
-              console.log('menu112 res error getting menu', res, menu.id);
+              // console.log('menu112 res error getting menu', res, menu.id);
               await this.getMenu(menu.id);
             }
           } catch (error) {
-            console.log('menu112 error getting menu', menu.id);
+            // console.log('menu112 error getting menu', menu.id);
             await this.getMenu(menu.id);
           }
         });
@@ -116,7 +116,7 @@ export class MenuManagementService {
       }
     } catch (error) {
       if (error instanceof DOMException){
-        console.log("menu112 DOMException",error);
+        // console.log("menu112 DOMException",error);
         this.indexedDbService.createObjectStore(dbConfig.objectStoresMeta[2])
       }
       if (error)
@@ -153,7 +153,7 @@ export class MenuManagementService {
 
   getMainCategories() {
     let menuData = this.getLocalMenu(this.dataProvider.currentMenu?.selectedMenu?.id);
-    console.log("menu113 ",menuData);
+    // console.log("menu113 ",menuData);
     return getDocs(
       collection(
         this.firestore,
@@ -188,7 +188,7 @@ export class MenuManagementService {
               this.printingService
             );
           });
-          console.log('tables ', tables);
+          // console.log('tables ', tables);
           // add data to indexedDB
           let formedTable = await Promise.all(tables);
           // sort tables by tableNo
@@ -203,7 +203,7 @@ export class MenuManagementService {
         }
       })
       .catch((err) => {
-        console.log('Table fetch Error ', err);
+        // console.log('Table fetch Error ', err);
       });
   }
 
@@ -252,7 +252,7 @@ export class MenuManagementService {
           this.billService,
           this.printingService
         );
-        console.log('ONLINE TABLE', tableClass);
+        // console.log('ONLINE TABLE', tableClass);
         return tableClass;
       });
       let formedTable = await Promise.all(tables);
@@ -265,7 +265,7 @@ export class MenuManagementService {
 
   async getRecommendedCategoriesByMenu(menu: Menu) {
     let localMenu = await this.getLocalMenu(menu.id);
-    console.log("menu113 recommendedCategories",localMenu?.recommendedCategories);
+    // console.log("menu113 recommendedCategories",localMenu?.recommendedCategories);
     if (localMenu?.recommendedCategories){
       return localMenu?.recommendedCategories
     }
@@ -288,7 +288,7 @@ export class MenuManagementService {
 
   async getViewCategoriesByMenu(menu: Menu) {
     let localMenu = await this.getLocalMenu(menu.id);
-    console.log("menu113 viewCategories",localMenu?.viewCategories);
+    // console.log("menu113 viewCategories",localMenu?.viewCategories);
     if (localMenu?.viewCategories){
       return localMenu?.viewCategories
     }
@@ -313,7 +313,7 @@ export class MenuManagementService {
 
   async getMainCategoriesByMenu(menu: Menu) {
     let localMenu = await this.getLocalMenu(menu.id);
-    console.log("menu113 rootCategories",localMenu?.rootCategories);
+    // console.log("menu113 rootCategories",localMenu?.rootCategories);
     if (localMenu?.rootCategories){
       return localMenu?.rootCategories
     }
@@ -402,7 +402,7 @@ export class MenuManagementService {
           'business/' + this.dataProvider.businessId + '/menus/' + menuId
         )
       );
-      console.log("menu112 Requests generated");
+      // console.log("menu112 Requests generated");
       // fetch in parallel
       let [
         productsFetch,
@@ -417,28 +417,24 @@ export class MenuManagementService {
         recommendedCategoriesFetchRequest,
         menuFetchRequest,
       ]);
-      console.log("menu112 Data loaded");
       // check if the menu exists if yes then delete entry
       try {
         let menuExists = await firstValueFrom(
           this.indexedDbService.getByIndex('menu', 'menuId', menuId)
         );
-        console.log("menu112 Previous menu exists",menuExists);
         if (menuExists) {
-          console.log("menu112 Deleting previous menu",menuExists);
           let res = await firstValueFrom(this.indexedDbService.delete('menu', menuId));
-          console.log("menu112 Delete res",res);
         } else {
-          console.log('menu112 menu does not exist');
+          // console.log('menu112 menu does not exist');
         }
       } catch (error) {
-        console.log('menu112 menu does not exist');
+        // console.log('menu112 menu does not exist');
       }
       let menuData = {
         menuId:menuId,
         menu: menuFetch.data(),
         products: productsFetch.docs.map((doc) => {
-          return { ...doc.data(), id: doc.id };
+          return { ...doc.data(), id: doc.id } as Product;
         }),
         rootCategories: rootCategoriesFetch.docs.map((doc) => {
           return { ...doc.data(), id: doc.id };
@@ -450,25 +446,27 @@ export class MenuManagementService {
           return { ...doc.data(), id: doc.id };
         }),
       }
-      console.log("menu112 ADDING MENU",menuData);
       firstValueFrom(
         this.indexedDbService.add('menu',menuData)
       )
       .then((res) => {
-        console.log('menu112 added menu to indexedDB', res);
         this.dataProvider.menus.find((menu) => menu.selectedMenuId == menuId).getAllData();
+        if (this.dataProvider.currentMenu.selectedMenuId == menuId){
+          this.dataProvider.products = menuData.products;
+        }
+        this.dataProvider.menuLoadSubject.next(true);
       })
       .catch((err) => {
-        console.log('menu112 error adding menu to indexedDB', err);
+        // console.log('menu112 error adding menu to indexedDB', err);
       });
     } catch (error) {
-      console.log('index not found');
+      // console.log('index not found');
     }
   }
 
   async getRootCategories() {
     let localMenu = await this.getLocalMenu(this.dataProvider.currentMenu?.selectedMenu?.id);
-    console.log("menu113 rootCategories",localMenu?.rootCategories);
+    // console.log("menu113 rootCategories",localMenu?.rootCategories);
     if (localMenu?.rootCategories){
       return localMenu?.rootCategories
     }
@@ -491,7 +489,7 @@ export class MenuManagementService {
 
   async getViewCategories() {
     let localMenu = await this.getLocalMenu(this.dataProvider.currentMenu?.selectedMenu?.id);
-    console.log("menu113 viewCategories",localMenu?.viewCategories);
+    // console.log("menu113 viewCategories",localMenu?.viewCategories);
     if (localMenu?.viewCategories){
       return localMenu?.viewCategories
     }
@@ -516,7 +514,7 @@ export class MenuManagementService {
 
   async getRecommendedCategories() {
     let localMenu = await this.getLocalMenu(this.dataProvider.currentMenu?.selectedMenu?.id);
-    console.log("menu113 recommendedCategories",localMenu?.recommendedCategories);
+    // console.log("menu113 recommendedCategories",localMenu?.recommendedCategories);
     if (localMenu?.recommendedCategories){
       return localMenu?.recommendedCategories
     }
@@ -546,9 +544,9 @@ export class MenuManagementService {
     );
   }
 
-  addViewCategory(category: any, id?: string) {
-    if (!id)
-      return addDoc(
+  async addViewCategory(category: any, id?: string) {
+    if (!id){
+      let categoryRes = await addDoc(
         collection(
           this.firestore,
           'business/' +
@@ -561,7 +559,11 @@ export class MenuManagementService {
         ),
         category
       );
-    return setDoc(
+      this.updatableMenus.push(this.dataProvider.currentMenu?.selectedMenu?.id);
+      this.menuUpdated.next();
+      return categoryRes;
+    }
+    let categoryRes = await setDoc(
       doc(
         this.firestore,
         'business/' +
@@ -576,11 +578,14 @@ export class MenuManagementService {
       category,
       { merge: true }
     );
+    this.updatableMenus.push(this.dataProvider.currentMenu?.selectedMenu?.id);
+    this.menuUpdated.next();
+    return categoryRes;
   }
 
-  addRootCategory(category: any, id?: string) {
-    if (!id)
-      return addDoc(
+  async addRootCategory(category: any, id?: string) {
+    if (!id){
+      let categoryRes = await addDoc(
         collection(
           this.firestore,
           'business/' +
@@ -591,15 +596,19 @@ export class MenuManagementService {
         ),
         category
       );
-    console.log(
-      'business/' +
-        this.dataProvider.businessId +
-        '/menus/' +
-        this.dataProvider.currentMenu?.selectedMenu?.id +
-        '/rootCategories/' +
-        id
-    );
-    return setDoc(
+      this.updatableMenus.push(this.dataProvider.currentMenu?.selectedMenu?.id);
+      this.menuUpdated.next();
+      return categoryRes;
+    }
+    // console.log(
+      // 'business/' +
+      //   this.dataProvider.businessId +
+      //   '/menus/' +
+      //   this.dataProvider.currentMenu?.selectedMenu?.id +
+      //   '/rootCategories/' +
+      //   id
+    // );
+    let categoryRes = await setDoc(
       doc(
         this.firestore,
         'business/' +
@@ -612,6 +621,9 @@ export class MenuManagementService {
       category,
       { merge: true }
     );
+    this.updatableMenus.push(this.dataProvider.currentMenu?.selectedMenu?.id);
+    this.menuUpdated.next();
+    return categoryRes;
   }
 
   async addNewMenu(
@@ -629,7 +641,7 @@ export class MenuManagementService {
       );
       let allProducts: Product[] = [];
       let productsRef: Promise<DocumentReference>[] = [];
-      let rootCategoriesRef = catGroups.forEach(async (catGroup) => {
+      let rootCategoriesRef = catGroups.forEach(async (catGroup,index) => {
         allProducts = [...allProducts, ...catGroup.products];
         let res = await addDoc(
           collection(
@@ -643,6 +655,12 @@ export class MenuManagementService {
           {
             name: catGroup.name,
             enabled: true,
+            products: catGroup.products.map((product) => product.id),
+            productOrders:catGroup.products.map((product) => product.id),
+            averagePrice:catGroup.products.reduce((a,b)=>a+b.price,0)/catGroup.products.length,
+            order:index+1,
+            printer:'',
+            disabled:[],
           }
         );
         catGroup.products.forEach((product) => {
@@ -711,7 +729,7 @@ export class MenuManagementService {
           );
         })
       );
-      console.log('New menu', menuRes.id);
+      // console.log('New menu', menuRes.id);
       this.updatableMenus.push(menuRes.id);
       this.menuUpdated.next();
       return { menuRes, productsRes, categoriesRes };
@@ -938,7 +956,7 @@ export class MenuManagementService {
   }
 
   setPrinter(menu: Menu, category: Category) {
-    console.log('setPrinter', category);
+    // console.log('setPrinter', category);
     this.updatableMenus.push(menu.id);
     this.menuUpdated.next();
     // update every product in this category with the new printer

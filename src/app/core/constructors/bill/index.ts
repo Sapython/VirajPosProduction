@@ -133,12 +133,14 @@ export class Bill implements BillConstructor {
     this.optionalTax = this.dataProvider.optionalTax;
     // taxes[0].amount = Number(this.dataProvider.currentSettings.sgst)
     // taxes[1].amount = Number(this.dataProvider.currentSettings.cgst)
-    // this.updated.subscribe(() => {
-    //   this.dataProvider.queueUpdate.next();
-    //   console.log("this.printableBillData",this.printableBillData);
-    // });
-    this.updated.pipe(debounceTime(400)).subscribe(async (data) => {
-      this.updateToFirebase();
+    this.updated.subscribe(() => {
+      this.dataProvider.queueUpdate.next(1000);
+      console.log("this.printableBillData",this.printableBillData);
+    });
+    this.updated.pipe(debounceTime(1000)).subscribe(async (data) => {
+      if(!data){
+        this.updateToFirebase();
+      }
     });
     this.toObject = this.toObject.bind(this);
     this.id = id;

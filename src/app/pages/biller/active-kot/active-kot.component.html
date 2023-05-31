@@ -44,6 +44,7 @@
       (delete)="delete($event)"
     ></app-normal-kot>
     <app-edit-kot
+      (delete)="delete($event)"
       *ngIf="
         !dataProvider.manageKot &&
         this.dataProvider.currentBill?.editKotMode != null

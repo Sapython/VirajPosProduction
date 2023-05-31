@@ -31,21 +31,30 @@ export class SearchPanelComponent implements OnInit {
   billListnerActive:boolean = false;
   billListner:Subscription = Subscription.EMPTY;
   searchInstance = new Fuse(this.dataProvider.products, {
-    keys: ['dishName','count'],
+    keys: ['name','price'],
   })
   searchVisible:boolean = false;
   constructor(public dataProvider:DataProvider,private billsService:BillService) {
     this.searchSubcription.pipe(debounceTime(400)).subscribe((value)=>{
-      console.log(value);
+      // console.log(value);
       this.fetchAdvancedResults(value)
     })
+    this.dataProvider.menuLoadSubject.subscribe((value)=>{
+      if (value){
+        // console.log("SETTING COLLECTION",this.dataProvider.currentMenu?.products);
+        this.searchInstance.setCollection(this.dataProvider.currentMenu?.products)
+      }
+    })
     this.dataProvider.modeChanged.subscribe((mode)=>{
+      // console.log("this.dataProvider.modeChanged",mode,this.dataProvider.currentMenu?.products);
+      this.searchResults = [];
+      this.billResults = [];
       if(this.dataProvider.currentMenu){
         this.searchInstance.setCollection(this.dataProvider.currentMenu?.products)
       }
     })
     this.searchSubcription.pipe(debounceTime(200)).subscribe((value)=>{
-      console.log(value);
+      // console.log(value);
       this.currentSearchTerm = value;
       this.basicSearch(value)
     })
@@ -66,11 +75,8 @@ export class SearchPanelComponent implements OnInit {
   }
 
   basicSearch(value:string){
-    this.searchInstance = new Fuse(this.dataProvider.products, {
-      keys: ['name','count'],
-    })
     let results = this.searchInstance.search(value)
-    console.log("results",results);
+    // console.log("results",results,this.searchInstance);
     this.searchResults = results.map((result)=>{return result.item})
     if (value){
       this.dataProvider.searchResults.next(this.searchResults);
@@ -98,11 +104,10 @@ export class SearchPanelComponent implements OnInit {
   }
 
   switchMode(mode:any){
-    console.log("mode",mode);
+    // console.log("mode",mode);
     this.dataProvider.billingMode = mode.value;
-    this.dataProvider.modeChanged.next(mode.value);
     if (mode.value == 'dineIn'){
-      console.log("this.dataProvider.dineInMenu",this.dataProvider.dineInMenu);
+      // console.log("this.dataProvider.dineInMenu",this.dataProvider.dineInMenu);
       if(!this.dataProvider.dineInMenu){
         alert("No dine-in menu found");
         return;
@@ -112,12 +117,13 @@ export class SearchPanelComponent implements OnInit {
       });
       if (this.dataProvider.currentMenu){
         this.dataProvider.currentMenu.type = 'dineIn';
+        this.dataProvider.products = this.dataProvider.currentMenu.products;
       } else {
-        console.log("this.dataProvider.menus",this.dataProvider.menus);
+        // console.log("this.dataProvider.menus",this.dataProvider.menus);
       }
-      console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
+      // console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
     } else if (mode.value == 'takeaway'){
-      console.log("this.dataProvider.takeawayMenu",this.dataProvider.takeawayMenu);
+      // console.log("this.dataProvider.takeawayMenu",this.dataProvider.takeawayMenu);
       if(!this.dataProvider.takeawayMenu){
         alert("No takeaway menu found");
         return;
@@ -127,12 +133,13 @@ export class SearchPanelComponent implements OnInit {
       });
       if (this.dataProvider.currentMenu){
         this.dataProvider.currentMenu.type = 'takeaway';
+        this.dataProvider.products = this.dataProvider.currentMenu.products;
       } else {
-        console.log("this.dataProvider.menus",this.dataProvider.menus);
+        // console.log("this.dataProvider.menus",this.dataProvider.menus);
       }
-      console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
+      // console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
     } else if (mode.value == 'online'){
-      console.log("this.dataProvider.onlineMenu",this.dataProvider.onlineMenu);
+      // console.log("this.dataProvider.onlineMenu",this.dataProvider.onlineMenu);
       if(!this.dataProvider.onlineMenu){
         alert("No online menu found");
         return;
@@ -142,10 +149,12 @@ export class SearchPanelComponent implements OnInit {
       });
       if (this.dataProvider.currentMenu){
         this.dataProvider.currentMenu.type = 'online';
+        this.dataProvider.products = this.dataProvider.currentMenu.products;
       } else {
-        console.log("this.dataProvider.menus",this.dataProvider.menus);
+        // console.log("this.dataProvider.menus",this.dataProvider.menus);
       }
-      console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
+      // console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
     }
+    this.dataProvider.modeChanged.next(mode.value);
   }
 }

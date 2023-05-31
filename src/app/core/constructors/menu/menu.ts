@@ -136,7 +136,7 @@ export class ModeConfig {
       this.products = data.docs.map((doc) => {
         return { ...doc.data(), id: doc.id } as Product;
       });
-      console.log('this.products', this.products);
+      // console.log('this.products', this.products);
       let event = {
         previousPageIndex: 0,
         pageIndex: 0,
@@ -212,7 +212,7 @@ export class ModeConfig {
             products.length,
         } as Category;
       });
-      console.log('this.viewCategories', this.viewCategories);
+      // console.log('this.viewCategories', this.viewCategories);
       // sort by order
       this.viewCategories.sort((a, b) => {
         if (a.order && b.order) {
@@ -221,7 +221,7 @@ export class ModeConfig {
           return 0;
         }
       });
-      console.log('this.viewCategories', this.viewCategories);
+      // console.log('this.viewCategories', this.viewCategories);
       // sort all products by productOrder
       this.viewCategories.forEach((cat) => {
         // sort by cat.productOrders
@@ -300,7 +300,7 @@ export class ModeConfig {
 
   pageChanged(event) {
     // paginate all products
-    console.log('event', event);
+    // console.log('event', event);
     this.allProductsCategory.products = this.products.slice(
       event.pageIndex * event.pageSize,
       (event.pageIndex + 1) * event.pageSize
@@ -311,7 +311,7 @@ export class ModeConfig {
     this.selectedMenu = this.dataProvider.allMenus.find(
       (menu) => menu.id == this.selectedMenuId
     );
-    console.log('updating menu', this.selectedMenu, this.type);
+    // console.log('updating menu', this.selectedMenu, this.type);
     if (this.selectedMenu && this.type) {
       this.menuManagementService
         .updateMenu(this.selectedMenu, this.type)
@@ -360,6 +360,7 @@ export class ModeConfig {
     });
     dialog.closed.subscribe((data: any) => {
       if (data) {
+        // console.log('data', data);
         this.viewCategories.push(data);
       }
       this.getViewCategories();
@@ -430,9 +431,9 @@ export class ModeConfig {
 
   recommendationSave(id: string) {
     if (this.selectedMenu) {
-      console.log('this.products', this.products);
+      // console.log('this.products', this.products);
       if (id == 'highRange') {
-        console.log('this.highRangeForm.value', this.highRangeForm.value);
+        // console.log('this.highRangeForm.value', this.highRangeForm.value);
         if (this.highRangeForm.value.min && this.highRangeForm.value.max) {
           var filteredList = this.products.filter(
             (product) =>
@@ -453,7 +454,7 @@ export class ModeConfig {
         let currSelectedCategory = this.selectedCategory;
         if (currSelectedCategory && this.selectedCategory) {
           this.selectedCategory.products = filteredList;
-          console.log('this.selectedCategory', this.selectedCategory.products);
+          // console.log('this.selectedCategory', this.selectedCategory.products);
           currSelectedCategory.loading = true;
         }
         this.menuManagementService
@@ -476,7 +477,7 @@ export class ModeConfig {
             }
           });
       } else if (id == 'lowRange') {
-        console.log('this.lowRangeForm.value', this.lowRangeForm.value);
+        // console.log('this.lowRangeForm.value', this.lowRangeForm.value);
         if (this.lowRangeForm.value.min && this.lowRangeForm.value.max) {
           var filteredList = this.products.filter(
             (product) =>
@@ -494,11 +495,11 @@ export class ModeConfig {
         } else {
           var filteredList = this.products;
         }
-        console.log('filteredList', filteredList);
+        // console.log('filteredList', filteredList);
         let currSelectedCategory = this.selectedCategory;
         if (currSelectedCategory && this.selectedCategory) {
           this.selectedCategory.products = filteredList;
-          console.log('this.selectedCategory', this.selectedCategory.products);
+          // console.log('this.selectedCategory', this.selectedCategory.products);
           currSelectedCategory.loading = true;
         }
         this.menuManagementService
@@ -521,7 +522,7 @@ export class ModeConfig {
             }
           });
       } else if (id == 'mostSelling') {
-        console.log('this.mostSellingForm.value', this.mostSellingForm.value);
+        // console.log('this.mostSellingForm.value', this.mostSellingForm.value);
         // var filteredList = this.products.filter(product => (product.sales || 0) >= this.mostSellingForm.value.min && (product.sales || 0) <= this.mostSellingForm.value.max);
         if (this.mostSellingForm.value.min && this.mostSellingForm.value.max) {
           var filteredList = this.products.filter(
@@ -543,10 +544,10 @@ export class ModeConfig {
         let currSelectedCategory = this.selectedCategory;
         if (currSelectedCategory && this.selectedCategory) {
           this.selectedCategory.products = filteredList;
-          console.log('this.selectedCategory', this.selectedCategory.products);
+          // console.log('this.selectedCategory', this.selectedCategory.products);
           currSelectedCategory.loading = true;
         }
-        console.log('filteredList', filteredList);
+        // console.log('filteredList', filteredList);
         this.menuManagementService
           .setSettingsMenu(
             this.mostSellingForm.value,
@@ -567,7 +568,7 @@ export class ModeConfig {
             }
           });
       } else if (id == 'newDishes') {
-        console.log('this.newDishesForm.value', this.newDishesForm.value);
+        // console.log('this.newDishesForm.value', this.newDishesForm.value);
         // var filteredList = this.products.filter(product => product.createdDate.toDate().getTime() >= this.newDishesForm.value.min.getTime() && product.createdDate.toDate().getTime() <= this.newDishesForm.value.max.getTime());
         if (this.newDishesForm.value.min && this.newDishesForm.value.max) {
           var filteredList = this.products.filter(
@@ -595,7 +596,7 @@ export class ModeConfig {
         let currSelectedCategory = this.selectedCategory;
         if (currSelectedCategory && this.selectedCategory) {
           this.selectedCategory.products = filteredList;
-          console.log('this.selectedCategory', this.selectedCategory.products);
+          // console.log('this.selectedCategory', this.selectedCategory.products);
           currSelectedCategory.loading = true;
         }
         this.menuManagementService
@@ -638,7 +639,7 @@ export class ModeConfig {
           if (category.mainCategory.products) {
             delete category.mainCategory.products;
           }
-          console.log('category data', category);
+          // console.log('category data', category);
           let selectedViewCategories = category.viewCategories.filter(
             (c) => c.selected
           );
@@ -671,17 +672,17 @@ export class ModeConfig {
               ]);
             })
           );
-          console.log(
-            'productRes',
-            productRes.id,
-            'viewCategoryRes',
-            viewCategoryRes
-          );
+          // console.log(
+          //   'productRes',
+          //   productRes.id,
+          //   'viewCategoryRes',
+          //   viewCategoryRes
+          // );
           this.alertify.presentToast('Recipe Added Successfully');
         }
       })
       .catch((err) => {
-        console.log('Recipe add error', err);
+        // console.log('Recipe add error', err);
         this.alertify.presentToast('Recipe Added Failed');
       })
       .finally(() => {
@@ -692,7 +693,7 @@ export class ModeConfig {
   setTaxes(product: Product) {
     const dialog = this.dialog.open(SetTaxComponent, { data: product });
     firstValueFrom(dialog.closed).then((data: any) => {
-      console.log('data', data);
+      // console.log('data', data);
       if (data) {
         let filteredTax = data.taxes
           .filter((tax) => tax.checked)
@@ -701,6 +702,8 @@ export class ModeConfig {
             return { ...tax, nature: data.type };
           });
         this.dataProvider.loading = true;
+        // product = { ...product, ...data };
+        // console.log("New Product Data",data);
         product.taxes = filteredTax;
         this.productService
           .updateRecipe(product, this.selectedMenuId)
@@ -754,7 +757,20 @@ export class ModeConfig {
           { ...product, ...data, updated: true },
           menuId
         );
+        // console.log("New Product Data",data);
         product = { ...product, ...data, updated: true };
+        let foundProduct = this.dataProvider.menus.find((menu: ModeConfig) => menu.selectedMenuId == menuId).products.find((p:Product)=>p.id == product.id)
+        // console.log("UPDATING global category products",foundProduct);
+        if(foundProduct){
+          foundProduct = product;
+        }
+        let localProduct = this.selectedCategory.products.find((p:Product)=>p.id == product.id);
+        // console.log("UPDATING local category",localProduct);
+        if(localProduct){
+          localProduct.name = product.name;
+          localProduct.price = product.price;
+          localProduct.type = product.type;
+        }
         this.alertify.presentToast('Recipe Updated Successfully');
       }
     } catch (error) {
@@ -806,11 +822,11 @@ export class ModeConfig {
         this.selectedCategory.productOrders =
           this.selectedCategory.products.map((p: Product) => p.id);
       }
-      console.log(
-        'Deleted',
-        this.selectedCategory.products.find((p) => p.id == product.id),
-        product
-      );
+      // console.log(
+      //   'Deleted',
+      //   this.selectedCategory.products.find((p) => p.id == product.id),
+      //   product
+      // );
       this.selectedCategory.updated = true;
     } else {
       this.alertify.presentToast('Cannot delete from this category');
@@ -827,14 +843,14 @@ export class ModeConfig {
       },
     });
     dialog.closed.subscribe((data: any) => {
-      console.log('data', data);
+      // console.log('data', data);
       if (data) {
         this.selectedCategory.products = data.products;
         this.selectedCategory.productOrders = data.productOrders;
         this.selectedCategory.name = data.name;
         this.selectedCategory.updated = true;
         this.selectedCategory.enabled = true;
-        console.log('this.selectedCategory', this.selectedCategory);
+        // console.log('this.selectedCategory', this.selectedCategory);
       }
     });
   }
@@ -854,7 +870,7 @@ export class ModeConfig {
   }
 
   updatePrinter(selectedCategory: Category) {
-    console.log('selectedCategory', selectedCategory);
+    // console.log('selectedCategory', selectedCategory);
     if (this.selectedMenu) {
       this.dataProvider.loading = true;
       this.menuManagementService
@@ -876,18 +892,18 @@ export class ModeConfig {
 
   async updateChanged() {
     this.dataProvider.menus.forEach((menu: ModeConfig) => {
-      console.log('menu', menu.selectedMenu);
+      // console.log('menu', menu.selectedMenu);
     });
     this.selectedMenu = this.dataProvider.allMenus.find((menu: Menu) => {
-      console.log(menu.id, this.selectedMenuId, menu.id == this.selectedMenuId);
+      // console.log(menu.id, this.selectedMenuId, menu.id == this.selectedMenuId);
       return menu.id == this.selectedMenuId;
     });
-    console.log('selectedMenu', this.selectedMenu);
+    // console.log('selectedMenu', this.selectedMenu);
     if (this.selectedMenu) {
       let updatableProducts = this.products.filter(
         (product: Product) => product.updated
       );
-      console.log('updatableProducts', updatableProducts);
+      // console.log('updatableProducts', updatableProducts);
       let updatablerecommendedCategories = this.recommendedCategories.filter(
         (category: Category) => category.updated
       );
@@ -943,13 +959,13 @@ export class ModeConfig {
           )
       );
       // stats
-      console.log('total products update', updatableProducts.length);
-      console.log(
-        'total recommended category update',
-        updatablerecommendedCategories.length
-      );
-      console.log('total view category update', updatableviewCategories.length);
-      console.log('total main category update', updatablemainCategories.length);
+      // console.log('total products update', updatableProducts.length);
+      // console.log(
+      //   'total recommended category update',
+      //   updatablerecommendedCategories.length
+      // );
+      // console.log('total view category update', updatableviewCategories.length);
+      // console.log('total main category update', updatablemainCategories.length);
       return await Promise.all(
         [
           updateRequestProducts,

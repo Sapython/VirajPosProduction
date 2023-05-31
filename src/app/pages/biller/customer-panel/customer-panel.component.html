@@ -2,12 +2,12 @@
     <h4>Customer Info</h4>
     <form [formGroup]="customerInfoForm" (ngSubmit)="submit()">
         <div>
-            <input [disabled]="this.dataProvider.currentBill?.stage!='active'" type="text" formControlName="name" placeholder="Customer Info">
-            <input [disabled]="this.dataProvider.currentBill?.stage!='active'" type="tel" formControlName="phone" placeholder="Phone Number">
-            <input [disabled]="this.dataProvider.currentBill?.stage!='active'" type="tel" formControlName="gst" placeholder="Gst">
+            <input type="text" formControlName="name" placeholder="Customer Info">
+            <input type="tel" formControlName="phone" placeholder="Phone Number">
+            <input type="tel" formControlName="gst" placeholder="Gst">
             <input matInput placeholder="Address" formControlName="address">
-            <input *ngIf="this.dataProvider.currentBill?.mode=='online'" [disabled]="this.dataProvider.currentBill?.stage!='active'" type="text" formControlName="deliveryName" placeholder="Agent Name">
-            <input *ngIf="this.dataProvider.currentBill?.mode=='online'" [disabled]="this.dataProvider.currentBill?.stage!='active'" type="tel" formControlName="deliveryPhone" placeholder="Agent Phone">
+            <input *ngIf="this.dataProvider.currentBill?.mode=='online'" type="text" formControlName="deliveryName" placeholder="Agent Name">
+            <input *ngIf="this.dataProvider.currentBill?.mode=='online'" type="tel" formControlName="deliveryPhone" placeholder="Agent Phone">
             <!-- <mat-form-field appearance="outline" >
                 <mat-label>Customer Name</mat-label>
                 <input matInput type="text" formControlName="name" placeholder="Customer Info">

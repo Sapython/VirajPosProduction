@@ -9,6 +9,7 @@ import { AlertsAndNotificationsService } from '../../alerts-and-notification/ale
 import { DataProvider } from '../../provider/data-provider.service';
 import { Dialog } from '@angular/cdk/dialog';
 import { ElectronService } from '../../electron/electron.service';
+import { dbConfig } from '../../../../app.module';
 
 @Injectable({
   providedIn: 'root',
@@ -57,13 +58,19 @@ export class UserManagementService {
     }
   }
 
-  logout() {
+  async logout() {
+    this.dataProvider.loading = true;
     signOut(this.auth);
     // clear local storage
     this.electronService.clearAuth();
     localStorage.clear();
-    indexedDB.deleteDatabase('Viraj');
+    // indexedDB.deleteDatabase('Viraj');
+    let deleteRequests = Promise.all(dbConfig.objectStoresMeta.map(async (store) => {
+      return await firstValueFrom(this.dbService.deleteObjectStore(store.store));
+    }))
+    console.log("Deleting Viraj cache ",deleteRequests)
     this.router.navigateByUrl('/login');
+    this.dataProvider.loading = false;
   }
 
   userExists(username: string) {

@@ -37,14 +37,13 @@
 <!-- line -->
 <div class="items">
   <div class="item">
-    <p>Total time to mark a table as late in minutes</p>
+    <p>Total time to mark a table as late <strong>(in minutes)</strong>
+    </p>
     <input
-      type="text"
+      type="number"
       placeholder="45 Min"
       [(ngModel)]="this.dataProvider.tableTimeOutTime"
-      (change)="
-        updateSettings({ tableTimeOutTime: this.dataProvider.tableTimeOutTime })
-      "
+      (change)="isValidNumber(this.dataProvider.tableTimeOutTime) ? updateSettings({ tableTimeOutTime: this.dataProvider.tableTimeOutTime }) : this.dataProvider.tableTimeOutTime = 0;"
     />
   </div>
   <div class="item">
@@ -98,12 +97,12 @@
     [@zoomInOnEnterAnimation]
     [@zoomOutOnLeaveAnimation]
   >
-    <p>Total time till you can edit KOT</p>
+    <p>Total time till you can edit KOT <strong>(in seconds)</strong></p>
     <input
-      type="text"
-      placeholder="10 Min"
+      type="number"
+      placeholder="60"
       [(ngModel)]="this.dataProvider.editKotTime"
-      (change)="updateSettings({ editKotTime: this.dataProvider.editKotTime })"
+      (change)="isValidNumber(this.dataProvider.editKotTime) ? this.updateSettings({ editKotTime: this.dataProvider.editKotTime }) : this.dataProvider.editKotTime = 0;"
     />
   </div>
   <div class="item">

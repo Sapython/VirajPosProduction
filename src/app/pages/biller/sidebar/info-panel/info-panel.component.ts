@@ -27,12 +27,12 @@ export class InfoPanelComponent implements OnInit,OnChanges, AfterViewInit{
       this.isSalesOpen = false;
     })
     this.version = APP_CONFIG.appVersion
-    console.log("this.el.nativeElement",this.el.nativeElement.offsetHeight);
+    // console.log("this.el.nativeElement",this.el.nativeElement.offsetHeight);
     this.height = this.el.nativeElement.offsetHeight;
   }
 
   ngAfterViewInit(): void {
-    console.log("this.el.nativeElement",this.el.nativeElement.offsetHeight);
+    // console.log("this.el.nativeElement",this.el.nativeElement.offsetHeight);
     this.height = this.el.nativeElement.offsetHeight;
     if (this.dataProvider.touchMode){
       // sales recognizer

@@ -40,7 +40,7 @@ export class MenuComponent implements OnInit,AfterViewInit {
         enabled:recommendedCategory.enabled
       }
     });
-    console.log("this.dataProvider.rootCategories",this.dataProvider.rootCategories);
+    // console.log("this.dataProvider.rootCategories",this.dataProvider.rootCategories);
     this.rootCategories = this.dataProvider.rootCategories.map(rootCategory => {
       return {
         name:rootCategory.name,
@@ -58,7 +58,7 @@ export class MenuComponent implements OnInit,AfterViewInit {
       var mc = new Hammer.Manager(document.getElementById('stockConsumptionTrigger'));
       mc.add( new Hammer.Press({ time:500 }) );
       mc.on("press", (ev:any) => {
-        console.log("press",ev);
+        // console.log("press",ev);
         const dialog = this.dialog.open(StockListComponent)
         dialog.componentInstance?.close.subscribe((data)=>{
           dialog.close();
@@ -76,7 +76,7 @@ export class MenuComponent implements OnInit,AfterViewInit {
         this.dataProvider.categories = []
         this.dataProvider.viewCategories.forEach((category:ViewCategory)=>{
           let products = this.dataProvider.products.filter((product)=> category.products.includes(product.id) );
-          console.log("products",products);
+          // console.log("products",products);
           this.dataProvider.categories.push({
             id:category.id,
             name:category.name,
@@ -85,63 +85,7 @@ export class MenuComponent implements OnInit,AfterViewInit {
             enabled:category.enabled
           });
         })
-        console.log("Sagadi",this.dataProvider.categories,this.dataProvider.products);
-        // let allCategories:Category[] = []
-        // this.dataProvider.products.forEach((data: any) => {
-        //   this.products.push(
-        //     {
-        //       ...data,
-        //       id:data.id,
-        //       quantity:1,
-        //     }
-        //   );
-        //   // console.log("data.category",data.category);
-        //   if (data.category){
-        //     allCategories.push(JSON.parse(JSON.stringify(data.category)));
-        //   }
-        //   console.log("categories",allCategories);
-        // });
-        // let filteredCat: any[] = [];
-        // allCategories.forEach((item, index) => {
-        //   let found = false;
-        //   // console.log(item)
-        //   if (item){
-        //     filteredCat.forEach((item2) => {
-        //       if (item2.name == item.name) {
-        //         found = true;
-        //       }
-        //     });
-        //     if (!found) {
-        //       filteredCat.push(item);
-        //     }
-        //   } else {
-        //     // console.log("No Category",index, this.products[index]?.id)
-        //   }
-        // });
-        // this.dataProvider.categories = filteredCat;
-        // // // map categories to products
-        // this.dataProvider.categories.forEach((category,index) => {
-        //   category.products = [];
-        //   console.log("Sagadi",category,this.products,this.dataProvider.products);
-        //   this.products.forEach((product) => {
-        //     if (product.category?.id == category.id) {
-        //       console.log("Sagadi",product,category.products);
-        //       category.products.push(product);
-        //     }
-        //   });
-        //   // calculate average price
-        //   let total = 0;
-        //   category.products.forEach((product) => {
-        //     total += product.price;
-        //   })
-        //   category.averagePrice = total / category.products.length;
-        // });
-        // this.dataProvider.categories.forEach((category)=>{
-        //   this.databaseService.addCategory({name:category.name,id:category.id,averagePrice:category.averagePrice},category.id)
-        // })
-        // console.log("Storing categories to indexedDB");
-        // store to indexedDB
-       this.storeCategoriesIndexedDb()
+        this.storeCategoriesIndexedDb()
       }
     })
   }
@@ -159,8 +103,6 @@ export class MenuComponent implements OnInit,AfterViewInit {
           })
         }
       }
-    },(err)=>{
-      console.log("Serious error occured while storing categories",err)
     })
     this.indexedDb.getAll('recommendedCategories').subscribe((data)=>{
       if (data.length == 0){
@@ -174,8 +116,6 @@ export class MenuComponent implements OnInit,AfterViewInit {
           })
         }
       }
-    },(err)=>{
-      console.log("Serious error occured while storing categories",err)
     })
   }
 

@@ -1,4 +1,5 @@
-<section class="noPadding">
+<section class="noPadding" *ngIf="currentCategory">
+    <h3>{{currentCategory.name | titlecase}}</h3>
     <input type="search" placeholder="Search In Category" (input)="customSearchSubject.next(customSearch.value)" #customSearch>
 </section>
 <section class="productArea" [ngClass]="{'align':(products.length > 5 || (searchVisible && searchResults.length > 5) || (customSearchVisible && customResults.length > 5))}">

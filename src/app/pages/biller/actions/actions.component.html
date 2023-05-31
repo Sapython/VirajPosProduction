@@ -36,7 +36,7 @@
       <viraj-button [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant'])" (vclick)="addDiscount()">Discount</viraj-button>
       <viraj-button [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant','waiter'])" (vclick)="this.dataProvider.allProducts=!this.dataProvider.allProducts">Preview</viraj-button>
       <!-- <button [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant','waiter'])" mat-flat-button (click)="dataProvider.moreActions=!dataProvider.moreActions">More</button> -->
-      <viraj-button [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant','waiter'])" (vclick)="dataProvider.currentBill ? dataProvider.currentBill.setInstruction() : {}">Info</viraj-button>
+      <viraj-button matTooltip="Add a bill note on the printed bill." [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant','waiter'])" (vclick)="dataProvider.currentBill ? dataProvider.currentBill.setInstruction() : {}">Note</viraj-button>
     </div>
     <div class="actions" *ngIf="this.dataProvider.currentBill?.stage=='finalized'">
       <viraj-button [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant'])" (vclick)="settleBill()">Settle Bill</viraj-button>

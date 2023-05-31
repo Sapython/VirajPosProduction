@@ -17,11 +17,13 @@ export class ProductsPanelComponent implements OnInit{
   searchResults:Product[] = [];
   customSearchVisible:boolean = false;
   customResults:Product[] = [];
+  currentCategory:Category|undefined = undefined;
   customSearchSubject:Subject<string> = new Subject<string>();
   customSearcher:Fuse<any> = new Fuse([], {keys:['name']});
   constructor(private dataProvider:DataProvider){
     this.dataProvider.menuProducts.subscribe((menu:Category)=>{
       this.products = menu.products;
+      this.currentCategory = menu;
       this.customSearcher.setCollection(this.products);
     })
     this.dataProvider.searchResults.subscribe((results:Product[]|false)=>{
@@ -32,6 +34,11 @@ export class ProductsPanelComponent implements OnInit{
       } else {
         this.searchVisible = false;
       }
+    })
+    this.dataProvider.modeChanged.subscribe((mode)=>{
+      this.searchResults = [];
+      this.customResults = [];
+      this.searchVisible = false;
     })
     this.dataProvider.menuLoadSubject.subscribe((value)=>{
       if (value){
@@ -59,7 +66,7 @@ export class ProductsPanelComponent implements OnInit{
   }
   isHalf(product:Product) {
     if (product) {
-      for (const tag of product.tags) {
+      for (const tag of product.tags || []) {
         if (tag.name.toLocaleLowerCase() == 'half') {
           return true;
         }

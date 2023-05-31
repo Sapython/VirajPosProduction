@@ -44,13 +44,14 @@ import { Router } from '@angular/router';
 import { connectFunctionsEmulator, getFunctions, provideFunctions } from '@angular/fire/functions';
 import { ResetPasswordComponent } from './pages/auth/reset-password/reset-password.component';
 import { MatIconModule } from '@angular/material/icon';
+import { CheckingPasswordComponent } from './shared/checking-password/checking-password.component';
 
 // AoT requires an exported function for factories
 const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>
   new TranslateHttpLoader(http, './assets/i18n/', '.json');
 export const dbConfig: DBConfig = {
   name: 'Viraj',
-  version: 6,
+  version: 10,
   objectStoresMeta: [
     {
       store: 'business',
@@ -97,7 +98,7 @@ export const dbConfig: DBConfig = {
 };
 
 @NgModule({
-  declarations: [AppComponent, ResetPasswordComponent],
+  declarations: [AppComponent, ResetPasswordComponent, CheckingPasswordComponent],
   imports: [
     BrowserModule,
     FormsModule,

@@ -26,26 +26,26 @@ export class AppComponent {
     private indexedDbService:NgxIndexedDBService
   ) {
     this.translate.setDefaultLang('en');
-    console.log('APP_CONFIG', APP_CONFIG);
+    // console.log('APP_CONFIG', APP_CONFIG);
     // console.log('ESCPOS', EscPosEncoder);
 
-    if (electronService.isElectron) {
-      console.log(process.env);
-      console.log('Run in electron');
-      console.log('Electron ipcRenderer', this.electronService.ipcRenderer);
-      console.log('NodeJS childProcess', this.electronService.childProcess);
-    } else {
-      console.log('Run in browser');
-    }
+    // if (electronService.isElectron) {
+    //   console.log(process.env);
+    //   console.log('Run in electron');
+    //   console.log('Electron ipcRenderer', this.electronService.ipcRenderer);
+    //   console.log('NodeJS childProcess', this.electronService.childProcess);
+    // } else {
+    //   console.log('Run in browser');
+    // }
     indexedDbService.getAll('config').subscribe((res)=>{
-      console.log('112 got config',res);
+      // console.log('112 got config',res);
     },(err)=>{
-      console.log('112 got config error',err);
+      // console.log('112 got config error',err);
     })
     indexedDbService.add('config',{id:1,config:APP_CONFIG}).subscribe((res)=>{
-      console.log('112 config success',res);
+      // console.log('112 config success',res);
     },(err)=>{
-      console.log('112 config error',err);
+      // console.log('112 config error',err);
     });
     // console.log('EscPosEncoder', EscPosEncoder);
   }

@@ -79,3 +79,18 @@ export interface Account {
   role: 'admin' | 'cashier' | 'manager';
   creationDate: Timestamp;
 }
+
+export type userState =
+  | {
+      status: false;
+      stage: number;
+      code: string;
+      message: string;
+    }
+  | {
+      status: true;
+      stage: number;
+      code: string;
+      message: string;
+      user: UserRecord;
+    };

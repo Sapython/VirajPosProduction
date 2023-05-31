@@ -43,6 +43,22 @@ export class AddDiscountComponent implements OnInit {
     // }
     this.password = ""
     this.reason = ""
+    // this.currentDiscount = 
+    if(this.appliedDiscounts.length == 0){
+      this.appliedDiscounts.push({
+        mode:'codeBased',
+        accessLevels:[],
+        creationDate:Timestamp.now(),
+        id:'',
+        name:'',
+        type:'percentage',
+        menus:[],
+        reason:'',
+        value:0,
+        totalAppliedDiscount:0,
+      });
+    }
+    this.currentDiscount = this.appliedDiscounts[0]
     this.appliedDiscounts.forEach(discount=>{
       if (discount.reason){
         this.reason = discount.reason;

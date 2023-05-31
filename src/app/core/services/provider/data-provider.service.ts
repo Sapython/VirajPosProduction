@@ -7,7 +7,7 @@ import { PromptComponent } from '../../../shared/base-components/prompt/prompt.c
 import { Category, ViewCategory, RootCategory } from '../../../types/category.structure';
 import { CodeBaseDiscount } from '../../../types/discount.structure';
 import { Tax } from '../../../types/tax.structure';
-import { UserRecord, BusinessRecord } from '../../../types/user.structure';
+import { UserRecord, BusinessRecord, userState } from '../../../types/user.structure';
 import { Bill } from '../../constructors/bill';
 import { Device } from '../../constructors/device/Device';
 import { ModeConfig } from '../../constructors/menu/menu';
@@ -15,6 +15,10 @@ import { Product } from '../../../types/product.structure';
 import { Menu } from '../../../types/menu.structure';
 import { Table } from '../../constructors/table/Table';
 import { Functions, httpsCallable } from '@angular/fire/functions';
+import { updateRequest } from '../../../types/loader.structure';
+import { Timestamp } from '@angular/fire/firestore';
+import { optionalPromptParam } from '../../../types/prompt.strcuture';
+import { CheckingPasswordComponent } from '../../../shared/checking-password/checking-password.component';
 
 @Injectable({
   providedIn: 'root',
@@ -45,12 +49,22 @@ export class DataProvider {
     window.addEventListener('offline', () => {
       this.offline = true;
     });
-    this.queueUpdate.subscribe((d)=>{
-      this.updating = true;
-    })
-    this.queueUpdate.pipe(debounceTime(15000)).subscribe((dt)=>[
-      this.updating = false
+    this.queueUpdate.subscribe((updateTime)=>[
+      this.updateRequests.push({
+        currentTime:Timestamp.now(),
+        totalUpdateTimeMs:updateTime+500
+      })
     ])
+
+    // window.onbeforeunload = () => "STOP!! Data is being updated. Please wait. Or you may corrupt it.";
+    setInterval(()=>{
+      this.updating = !this.isTimeElapsed();
+      if(this.updating){
+        window.onbeforeunload = () => "STOP!! Data is being updated. Please wait. Or you may corrupt it.";
+      } else {
+        window.onbeforeunload = () => null;
+      }
+    },500)
   }
 
   private passwordCheck = httpsCallable(this.functions,'checkPassword');
@@ -169,7 +183,26 @@ export class DataProvider {
   public offline: boolean = false;
   public updating:boolean = false;
   public backOnline: Subject<boolean> = new Subject<boolean>();
-  public queueUpdate:Subject<void> = new Subject();
+  public queueUpdate:Subject<number> = new Subject<number>();
+  public updateRequests:updateRequest[] = [];
+
+  public isTimeElapsed():boolean{
+    return this.updateRequests.filter((request)=>{
+      // get current time in systemTime
+      // get totalElapsed time => systemTime - request.currentTime
+      // if totalElapsed time > request.totalUpdateTimeMs
+      // return true
+
+      // else return false
+      let systemTime = Timestamp.now();
+      let totalElapsed = systemTime.toMillis() - request.currentTime.toMillis();
+      if (totalElapsed > request.totalUpdateTimeMs){
+        return false;
+      } else {
+        return true;
+      }
+    }).length == 0
+  }
 
   public get currentAccessLevel() {
     if (this.currentBusiness) {
@@ -248,6 +281,11 @@ export class DataProvider {
 
   public async checkPassword(password: string) {
     this.loading = true;
+    const dialog = this.dialog.open(CheckingPasswordComponent,{
+      hasBackdrop:false,
+      panelClass:'passwordAlert'
+    })
+    dialog.disableClose = true;
     try {
       let res = await this.passwordCheck({password:password,uid:this.currentUser.username})
       if (res.data['correct']){
@@ -258,6 +296,7 @@ export class DataProvider {
     } catch (error) {
       return false;
     } finally {
+      dialog.close();
       this.loading = false;
     }
   }
@@ -270,24 +309,4 @@ export class DataProvider {
   public businessId: string = '';
 }
 
-export type userState =
-  | {
-      status: false;
-      stage: number;
-      code: string;
-      message: string;
-    }
-  | {
-      status: true;
-      stage: number;
-      code: string;
-      message: string;
-      user: UserRecord;
-    };
-interface optionalPromptParam {
-  value?: string;
-  description?: string;
-  required?: boolean;
-  placeholder?: string;
-  type?: string;
-}
+

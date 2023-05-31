@@ -14,6 +14,7 @@ export function firebaseUpdate(this: Bill) {
     this.billService.getBillSubscription(this.id).subscribe((bill) => {
       this.billSubscriptionCallerStarted = true;
       console.log('bill changed', bill);
+      //  && (!this.dataProvider.currentBill || this.dataProvider.currentBill.id != bill['id'])
       if (bill) {
         this.stage = bill['stage'];
         this.billNo = bill['billNo'];
@@ -65,7 +66,8 @@ export function firebaseUpdate(this: Bill) {
             this.kots.push(new Kot(kot.products[0], kot));
           }
         });
-        this.billUpdated.next();
+        // this.billUpdated.next();
+        this.calculateBill(true);
       }
     });
   }

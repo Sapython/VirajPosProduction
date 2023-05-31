@@ -69,10 +69,6 @@ export class TableService {
   }
 
   getTable(tableId: string, type: 'tables' | 'tokens' | 'onlineTokens') {
-    console.log(
-      'business/' + this.dataProvider.businessId + '/' + type,
-      tableId
-    );
     return docData(
       doc(
         this.firestore,

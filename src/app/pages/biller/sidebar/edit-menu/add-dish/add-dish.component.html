@@ -17,6 +17,14 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
+        <mat-form-field>
+            <mat-label>Select Label</mat-label>
+            <mat-select formControlName="label" name="label">
+                <mat-option *ngFor="let label of tags" [value]="label">
+                    {{label.name | titlecase}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
         <!-- <div class="tags">
             <ol>
                 <li *ngFor="let tag of tags">
@@ -31,7 +39,7 @@
                 </li>
             </ol>
         </div> -->
-        <hr>
+        <!-- <hr>
         <h4>Portions 
             <button mat-fab color="primary" type="button" (click)="addVariant()">
                 <mat-icon>add</mat-icon>
@@ -55,18 +63,8 @@
                         </span>
                     </mat-radio-button>
                 </mat-radio-group>
-                <!-- <mat-form-field appearance="outline">
-                    <mat-label>Color</mat-label>
-                    <select matNativeControl placeholder="Color" [ngModelOptions]="{standalone:true}" [(ngModel)]="portion.portionColor" name="color">
-                        <option *ngFor="let color of predefinedColors" [value]="color">
-                            <span [ngStyle]="{background:color.color,color:color.contrast}">
-                                {{portionName.value}}
-                            </span>
-                        </option>
-                    </select>
-                </mat-form-field> -->
             </div>
-        </div>
+        </div> -->
         <div class="actions">
             <button mat-stroked-button (click)="cancel()" type="button" color="primary">Cancel</button>
             <button mat-flat-button type="submit" color="primary">{{this.data.mode == 'add' ?  'Add New' : 'Update'}} Product</button>

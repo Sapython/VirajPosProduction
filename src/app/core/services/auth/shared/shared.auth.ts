@@ -6,9 +6,9 @@ export function setupDevice() {
   // check if there is a device in indexedDB if yes then return it else create a new one and return it
   firstValueFrom(this.dbService.getAll('device'))
     .then((data: any) => {
-      console.log('success', data);
+      // console.log('success', data);
       if (data && data.length > 0) {
-        console.log('Device found', data);
+        // console.log('Device found', data);
         this.dataProvider.currentDevice = {
           id: data[0].deviceId,
           lastLogin: Timestamp.now(),
@@ -20,7 +20,7 @@ export function setupDevice() {
             deviceId: id,
           })
         ).catch((err) => {
-          console.log('Error', err);
+          // console.log('Error', err);
           let id = this.generateDeviceId().toString();
         });
         this.dataProvider.currentDevice = {
@@ -30,7 +30,7 @@ export function setupDevice() {
       }
     })
     .catch((err) => {
-      console.log('Error', err);
+      // console.log('Error', err);
       this.alertify.presentToast('Error when getting device');
     });
 }

@@ -19,6 +19,7 @@ import { SplitBillComponent } from './split-bill/split-bill.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { DialogModule } from '@angular/cdk/dialog';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import { MatSelectModule } from '@angular/material/select';
     MatCheckboxModule,
     DialogModule,
     MatSlideToggleModule,
-    MatSelectModule
+    MatSelectModule,
+    MatTooltipModule
   ],
   exports:[
     ActionsComponent

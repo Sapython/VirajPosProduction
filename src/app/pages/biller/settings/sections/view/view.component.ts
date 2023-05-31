@@ -69,4 +69,22 @@ export class ViewComponent {
         this.alertify.presentToast('Error while updating settings');
       });
   }
+
+  isValidNumber(number:any){
+    if (isNaN(Number(number)) || typeof(number) !== "number" || number < 0){
+      alert("Please enter a valid number");
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  setNewTime(){
+    if (isNaN(Number(this.dataProvider.editKotTime)) || typeof(this.dataProvider.editKotTime) !== "number" || this.dataProvider.editKotTime < 0){
+      alert("Please enter a valid number");
+      this.dataProvider.editKotTime = 0;
+      return
+    }
+    this.updateSettings({ editKotTime: this.dataProvider.editKotTime })
+  }
 }

@@ -3,18 +3,21 @@
 </div>
 <main>
   <div
-  class="offlineBar"
-  [@fadeInDownOnEnter]
-  [@fadeOutUpOnLeave]
-  *ngIf="this.dataProvider.offline || this.dataProvider.updating"
-  [ngClass]="{ online: this.dataProvider.backOnline | async, updating:this.dataProvider.updating }"
->
+    class="offlineBar"
+    [@fadeInDownOnEnter]
+    [@fadeOutUpOnLeave]
+    *ngIf="this.dataProvider.offline || this.dataProvider.updating"
+    [ngClass]="{
+      online: this.dataProvider.backOnline | async,
+      updating: this.dataProvider.updating
+    }"
+  >
     <ng-container *ngIf="!this.dataProvider.updating">
-        System is currently offline !!!
+      System is currently offline !!!
     </ng-container>
     <ng-container *ngIf="this.dataProvider.updating">
-        Syncing Online !!!
+      Syncing Online !!!
     </ng-container>
-</div>
+  </div>
   <router-outlet #outlet="outlet"></router-outlet>
 </main>

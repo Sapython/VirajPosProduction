@@ -333,10 +333,11 @@ export class TableComponent implements OnInit {
         return;
       }
       this.dataProvider.currentMenu = this.dataProvider.menus.find((menu)=>{
-        return (menu.selectedMenu?.id == this.dataProvider.dineInMenu?.id)
+        return menu.selectedMenu?.id == this.dataProvider.dineInMenu?.id
       });
       if (this.dataProvider.currentMenu){
         this.dataProvider.currentMenu.type = 'dineIn';
+        this.dataProvider.products = this.dataProvider.currentMenu.products;
       } else {
         console.log("this.dataProvider.menus",this.dataProvider.menus);
       }
@@ -350,8 +351,13 @@ export class TableComponent implements OnInit {
       this.dataProvider.currentMenu = this.dataProvider.menus.find((menu)=>{
         return menu.selectedMenu?.id == this.dataProvider.takeawayMenu?.id
       });
+      if (this.dataProvider.currentMenu){
+        this.dataProvider.currentMenu.type = 'takeaway';
+        this.dataProvider.products = this.dataProvider.currentMenu.products;
+      } else {
+        console.log("this.dataProvider.menus",this.dataProvider.menus);
+      }
       console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
-      
     } else if (mode.value == 'online'){
       console.log("this.dataProvider.onlineMenu",this.dataProvider.onlineMenu);
       if(!this.dataProvider.onlineMenu){
@@ -361,6 +367,12 @@ export class TableComponent implements OnInit {
       this.dataProvider.currentMenu = this.dataProvider.menus.find((menu)=>{
         return menu.selectedMenu?.id == this.dataProvider.onlineMenu?.id
       });
+      if (this.dataProvider.currentMenu){
+        this.dataProvider.currentMenu.type = 'online';
+        this.dataProvider.products = this.dataProvider.currentMenu.products;
+      } else {
+        console.log("this.dataProvider.menus",this.dataProvider.menus);
+      }
       console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
     }
   }
@@ -375,5 +387,9 @@ export class TableComponent implements OnInit {
         }
       });
     }
+  }
+
+  isNumber(value:any){
+    return !isNaN(Number(value));
   }
 }

@@ -1,12 +1,20 @@
-import { Timestamp } from "@angular/fire/firestore";
-import { Bill } from "..";
-import { Payment } from "../../../../types/payment.structure";
-import { BillConstructor } from "../../../../types/bill.structure";
-import { Product } from "../../../../types/product.structure";
-import { Kot } from "../../kot/Kot";
-import { CodeBaseDiscount, DirectFlatDiscount, DirectPercentDiscount } from "../../../../types/discount.structure";
+import { Timestamp } from '@angular/fire/firestore';
+import { Bill } from '..';
+import { Payment } from '../../../../types/payment.structure';
+import { BillConstructor } from '../../../../types/bill.structure';
+import { Product } from '../../../../types/product.structure';
+import { Kot } from '../../kot/Kot';
+import {
+  CodeBaseDiscount,
+  DirectFlatDiscount,
+  DirectPercentDiscount,
+} from '../../../../types/discount.structure';
 
-export function setAsNonChargeable(name: string, contact: string, reason: string) {
+export function setAsNonChargeable(
+  name: string,
+  contact: string,
+  reason: string
+) {
   this.billingMode = 'nonChargeable';
   this.nonChargeableDetail = {
     reason,
@@ -19,20 +27,20 @@ export function setAsNonChargeable(name: string, contact: string, reason: string
   this.updated.next();
 }
 
-export function setAsNormal(this:Bill) {
+export function setAsNormal(this: Bill) {
   this.billingMode = 'cash';
   this.nonChargeableDetail = undefined;
   this.calculateBill();
   this.updated.next();
 }
 
-export async function finalize(this:Bill) {
+export async function finalize(this: Bill) {
   this.dataProvider.manageKot = false;
   this.dataProvider.kotViewVisible = false;
   this.dataProvider.allProducts = true;
   // check if any kot is active
-  if (this.totalProducts == 0){
-    alert("No products to finalize");
+  if (this.totalProducts == 0) {
+    alert('No products to finalize');
     return;
   }
   if (this.kots.find((kot) => kot.stage === 'active')) {
@@ -77,22 +85,26 @@ export async function finalize(this:Bill) {
   }
 }
 
-export async function setInstruction(this:Bill) {
+export async function setInstruction(this: Bill) {
   this.instruction =
-    (await this.dataProvider.prompt('Enter instruction',{value:this.instruction})) || '';
-  console.log("THIS INSTRUCTION",this.instruction);
+    (await this.dataProvider.prompt('Enter instruction', {
+      value: this.instruction,
+      multiline: false,
+    })) || '';
+  console.log('THIS INSTRUCTION', this.instruction);
   this.calculateBill();
 }
 
-export async function printBill(this:Bill) {
+export async function printBill(this: Bill) {
   this.printingService.printBill(this.printableBillData);
 }
 
-export async function settle(this:Bill,
+export async function settle(
+  this: Bill,
   payments: Payment[],
   type: 'internal' | 'external',
   additionalInfo: any,
-  splitSave?: boolean,
+  splitSave?: boolean
 ) {
   this.calculateBill();
   // update every product and increase their sales counter by their quantity
@@ -144,7 +156,7 @@ export async function settle(this:Bill,
     'this.dataProvider.printBillAfterFinalize',
     this.dataProvider.printBillAfterFinalize
   );
-  if(splitSave){
+  if (splitSave) {
     if (this.dataProvider.printBillAfterFinalize) {
       this.printingService.printBill(this.printableBillData);
     } else {
@@ -184,7 +196,7 @@ export async function settle(this:Bill,
   return this.billNo;
 }
 
-export function merge(this:Bill,bill: Bill) {
+export function merge(this: Bill, bill: Bill) {
   bill.kots.forEach((kot) => {
     this.addKot(kot);
   });
@@ -195,14 +207,15 @@ export function merge(this:Bill,bill: Bill) {
   this.updated.next();
 }
 
-export function splitBill(this:Bill,bills: BillConstructor[]) {
+export function splitBill(this: Bill, bills: BillConstructor[]) {}
 
-}
-
-export function breakBill(this:Bill,kots:Kot[],discounts:(CodeBaseDiscount|DirectFlatDiscount|DirectPercentDiscount)[]) {
+export function breakBill(
+  this: Bill,
+  kots: Kot[],
+  discounts: (CodeBaseDiscount | DirectFlatDiscount | DirectPercentDiscount)[]
+) {
   // now create a new billConstructor and add all the kots to it then calculate the bill and return the billConstructor
   // let newBill:BillConstructor = {
   //   id: this.id,
-
   // }
 }

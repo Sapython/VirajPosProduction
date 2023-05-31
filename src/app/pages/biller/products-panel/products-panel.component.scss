@@ -31,13 +31,21 @@ section{
     top: 0px;
     background: white;
     z-index: 9;
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    padding: 0px 0px 0px 20px;
+    border-bottom: 1px solid #ccc;
+    h3{
+        margin: 0px;
+        width: fit-content;
+    }
     input{
-        width: 100%;
+        min-width: 300px;
         height: 40px;
         border: none;
         font-size: var(--Viraj-font-large);
-        border-bottom: 1px solid #ccc;
         background: white;
         padding: 5px 20px;
+        box-shadow: inset 1px 2px 5px rgba(0,0,0,0.07);
     }
 }

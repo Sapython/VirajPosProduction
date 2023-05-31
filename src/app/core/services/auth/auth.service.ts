@@ -44,7 +44,7 @@ export class AuthService {
             this.dataProvider.currentUser = user.data() as UserRecord;
           });
         } else {
-          console.log('Local login not found');
+          // console.log('Local login not found');
         }
       })
       .catch((err) => {

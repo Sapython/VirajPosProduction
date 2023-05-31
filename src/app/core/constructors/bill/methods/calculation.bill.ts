@@ -41,12 +41,12 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
     discount.totalAppliedDiscount = 0;
     if (discount.mode == 'codeBased') {
       if (discount.type === 'percentage') {
-        applicableDiscount += discount.value;
-        discount.totalAppliedDiscount += Number(discount.value);
-      } else {
         let discountValue = (this.billing.subTotal/100) * discount.value;
         applicableDiscount += discountValue;
         discount.totalAppliedDiscount += Number(discountValue);
+      } else {
+        applicableDiscount += discount.value;
+        discount.totalAppliedDiscount += Number(discount.value);
       }
     } else if (discount.mode == 'directFlat') {
       applicableDiscount += discount.value;
@@ -65,7 +65,7 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   console.log('totalApplicableTax',this.billing.taxes,finalTaxes, totalApplicableTax,finalAdditionalTax);
   this.billing.grandTotal = (this.billing.subTotal - applicableDiscount) + totalApplicableTax;
   if (this.billingMode === 'nonChargeable') {
-    this.billing.subTotal = 0;
+    // this.billing.subTotal = 0;
     this.billing.grandTotal = 0;
   }
   this.printableBillData = this.getPrintableBillData(allProducts);

@@ -99,4 +99,37 @@
       {{ printableBillData.grandTotal | currency : "INR" }}
     </td>
   </tr>
+  <ng-container *ngIf="printableBillData.notes.length > 0">
+    <tr>
+      <td colspan="2">
+        <hr />
+      </td>
+    </tr>
+    <tr>
+      <td class="noteHead">
+        Notes
+      </td>
+    </tr>
+    <ng-container *ngFor="let note of printableBillData.notes">
+      <tr>
+        <td class="note" colspan="2">
+          {{ note }}
+        </td>
+      </tr>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="this.printableBillData.note">
+    <tr>
+      <td colspan="2">
+        <hr />
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <strong>
+          {{ this.printableBillData.note }}
+        </strong>
+      </td>
+    </tr>
+  </ng-container>
 </table>

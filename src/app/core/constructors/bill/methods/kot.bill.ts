@@ -150,6 +150,10 @@ export function deleteKot(this: Bill, kot: Kot) {
   this.printKot(kot,'cancelledKot');
   this.calculateBill();
   this.updated.next();
+  this.dataProvider.kotViewVisible = true;
+  this.dataProvider.manageKot = false;
+  this.dataProvider.manageKotChanged.next(false);
+  this.dataProvider.allProducts = false;
 }
 
 export function printKot(

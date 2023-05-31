@@ -20,6 +20,7 @@ export class PromptComponent {
       required: boolean;
       placeholder: string;
       type: string;
+      multiline?:boolean;
     },
     private dialogRef: DialogRef
   ) {

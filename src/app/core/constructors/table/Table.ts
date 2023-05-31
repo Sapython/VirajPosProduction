@@ -49,7 +49,7 @@ export class Table implements TableConstructor {
     this.type = type;
     this.firebaseUpdate();
     this.updated.subscribe(()=>{
-      this.dataProvider.queueUpdate.next()
+      this.dataProvider.queueUpdate.next(1000)
     })
     this.updated.pipe(debounceTime(1000)).subscribe(() => {
       // this.databaseService.updateTable(this.toObject());
@@ -86,10 +86,10 @@ export class Table implements TableConstructor {
         if (!this.bill && res['bill']) {
           if (typeof table.bill == 'string') {
             let bill = await this.billService.getBill(table.bill);
-            console.log('bill.exists()', bill.exists());
+            // console.log('bill.exists()', bill.exists());
             if (bill.exists()) {
               let billData = bill.data() as BillConstructor;
-              console.log('billData ', billData);
+              // console.log('billData ', billData);
               this.id = table.id;
               this.bill = Bill.fromObject(
                 billData,

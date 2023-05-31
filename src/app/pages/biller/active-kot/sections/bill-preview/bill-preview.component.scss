@@ -69,4 +69,10 @@ table{
             font-weight: bolder !important;
         }
     }
+    td.note{
+        text-align: center;
+    }
+    td.noteHead{
+        font-size: var(--Viraj-font-large);
+    }
 }

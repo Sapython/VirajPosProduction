@@ -2,9 +2,9 @@
 <table [cellSpacing]="0">
   <tr>
     <td>Username</td>
-    <td>
+    <td class="containsAction">
       {{this.dataProvider.currentBusinessUser?.name}}
-      <div class="badge warning" (click)="resetPassword()">
+      <div class="badge warning clickable" (click)="resetPassword()">
         Reset password
       </div>
     </td>

@@ -35,7 +35,18 @@ export class AddDishComponent {
       contrast: '#ffffff',
     },
   ]
-  tags:{color:string,name:string,contrast:string,important:boolean}[] = []
+  tags:{color:string,name:string,contrast:string}[] = [
+    {
+      color:'tomato',
+      contrast:'white',
+      name:'Half',
+    },
+    {
+      color:'green',
+      contrast:'white',
+      name:'Full',
+    }
+  ]
   portions:{portionName:string,portionSize:number,portionColor:portionColor}[] = []
   newDishForm:FormGroup = new FormGroup({
     name: new FormControl('',Validators.required),
@@ -68,7 +79,7 @@ export class AddDishComponent {
   }
 
   addDish(){
-    this.dialogRef.close(this.newDishForm.value)
+    this.dialogRef.close({...this.newDishForm.value,tags:this.tags})
   }
 
   switchColor(event:any,i:number){

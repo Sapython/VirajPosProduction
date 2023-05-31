@@ -362,7 +362,7 @@
         <tr>
           <th>Bill No</th>
           <th>Token No</th>
-          <th>Bill Amount</th>
+          <th>Bill Amount (Subtotal)</th>
           <th>Bill Kots</th>
           <th>Date-Time</th>
         </tr>
@@ -376,7 +376,7 @@
             {{ bill.orderNo }}
           </td>
           <td>
-            {{ bill.billing.grandTotal }}
+            {{ bill.billing.subTotal }}
           </td>
           <td>
             {{ joinArray(bill.kots) }}

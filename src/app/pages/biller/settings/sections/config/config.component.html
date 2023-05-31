@@ -42,6 +42,21 @@
     <mat-label>FSSAI No:</mat-label>
     <input matInput type="text" formControlName="fssai" />
   </mat-form-field>
+  <mat-form-field appearance="outline" *ngIf="this.dataProvider.currentBusiness">
+    <mat-label>Bill Printer</mat-label>
+    <mat-select
+      #billerPrinter
+      [ngModelOptions]="{standalone: true}"
+      [(ngModel)]="this.dataProvider.currentBusiness.billerPrinter"
+      (selectionChange)="updateBillPrinter(billerPrinter.value)"
+      name="printer"
+    >
+      <mat-option> Select </mat-option>
+      <mat-option [value]="printer" *ngFor="let printer of printers">
+        {{ printer }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
   <button
     color="primary"
     style="margin-right: 20px"

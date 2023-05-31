@@ -35,10 +35,8 @@ export async function addProduct(this: Bill, product: Product) {
         this.dataProvider.orderTokenNo++;
         this.analyticsService.addOrderToken();
       }
-      let kot = new Kot(this.dataProvider.kotToken.toString(), product);
+      let kot = new Kot(product);
       this.kots.push(kot);
-      this.dataProvider.kotToken++;
-      this.analyticsService.addKitchenToken();
     } else {
       // if the item exists in the kot, increase the quantity by 1 else add the item to the kot
       this.kots[kotIndex].products.find((item) => item.id === product.id)
@@ -47,8 +45,7 @@ export async function addProduct(this: Bill, product: Product) {
         : this.kots[kotIndex].products.push(product);
     }
   }
-  this.updated.next();
-  this.calculateBill();
+  this.calculateBill(true);
 }
 
 export function removeProduct(this: Bill, product: Product, kotIndex: number) {

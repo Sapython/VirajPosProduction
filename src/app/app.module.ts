@@ -48,9 +48,9 @@ import { MatIconModule } from '@angular/material/icon';
 // AoT requires an exported function for factories
 const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>
   new TranslateHttpLoader(http, './assets/i18n/', '.json');
-const dbConfig: DBConfig = {
+export const dbConfig: DBConfig = {
   name: 'Viraj',
-  version: 2,
+  version: 1,
   objectStoresMeta: [
     {
       store: 'business',
@@ -74,57 +74,25 @@ const dbConfig: DBConfig = {
       ],
     },
     {
-      // for TableConstructor
-      store: 'tables',
-      storeConfig: { keyPath: 'id', autoIncrement: true },
-      storeSchema: [
-        { name: 'id', keypath: 'id', options: { unique: false } },
-        { name: 'tableNo', keypath: 'tableNo', options: { unique: false } },
-        { name: 'bill', keypath: 'bill', options: { unique: false } },
-        {
-          name: 'maxOccupancy',
-          keypath: 'maxOccupancy',
-          options: { unique: false },
-        },
-        { name: 'name', keypath: 'name', options: { unique: false } },
-        {
-          name: 'occupiedStart',
-          keypath: 'occupiedStart',
-          options: { unique: false },
-        },
-        { name: 'billPrice', keypath: 'billPrice', options: { unique: false } },
-        { name: 'status', keypath: 'status', options: { unique: false } },
-        { name: 'type', keypath: 'type', options: { unique: false } },
-      ],
+      store:'menu',
+      storeConfig:{keyPath:'menuId',autoIncrement:false},
+      storeSchema:[
+        {name:'menuId',keypath:'menuId',options:{unique:false}},
+        {name:'menu',keypath:'menu',options:{unique:false}},
+        {name:'products',keypath:'products',options:{unique:false}},
+        {name:'rootCategories',keypath:'rootCategories',options:{unique:false}},
+        {name:'viewCategories',keypath:'viewCategories',options:{unique:false}},
+        {name:'recommendedCategories',keypath:'recommendedCategories',options:{unique:false}},
+      ]
     },
     {
-      store: 'categories',
-      storeConfig: { keyPath: 'id', autoIncrement: true },
-      storeSchema: [
-        { name: 'id', keypath: 'id', options: { unique: true } },
-        { name: 'name', keypath: 'name', options: { unique: false } },
-        { name: 'products', keypath: 'products', options: { unique: false } },
-        {
-          name: 'averagePrice',
-          keypath: 'averagePrice',
-          options: { unique: false },
-        },
-      ],
-    },
-    {
-      store: 'recommendedCategories',
-      storeConfig: { keyPath: 'id', autoIncrement: true },
-      storeSchema: [
-        { name: 'id', keypath: 'id', options: { unique: true } },
-        { name: 'name', keypath: 'name', options: { unique: false } },
-        { name: 'products', keypath: 'products', options: { unique: false } },
-        {
-          name: 'averagePrice',
-          keypath: 'averagePrice',
-          options: { unique: false },
-        },
-      ],
-    },
+      store:'config',
+      storeConfig:{keyPath:'id',autoIncrement:true},
+      storeSchema:[
+        {name:'id',keypath:'id',options:{unique:true}},
+        {name:'config',keypath:'config',options:{unique:false}},
+      ]
+    }
   ],
 };
 

@@ -8,7 +8,7 @@
                 <p class="version">Version &nbsp;{{version}}</p>
             </div>
             <viraj-button [minimalPadding]="true" [noPropogation]="true" (vclick)="upgrade.emit()">
-                <ng-container *ngIf="dataProvider.clientWidth >= 1366">Upgrade</ng-container>
+                <ng-container *ngIf="dataProvider.clientWidth >= 1366">Update</ng-container>
                 <!-- <mat-icon>upgrade</mat-icon>/ -->
                 <i *ngIf="dataProvider.clientWidth < 1366" class="ri-upload-cloud-line"></i>
             </viraj-button>

@@ -21,12 +21,12 @@ export class ReasonComponent {
     this.dialogRef.close()
   }
 
-  submit(){
+  async submit(){
     if (this.reasonForm.invalid){
       alert('Invalid Form')
       return
     }
-    if (this.reasonForm.value.password == this.dataProvider.password){
+    if ((await this.dataProvider.checkPassword(this.reasonForm.value.password))){
       this.dialogRef.close(this.reasonForm.value.reason)
     } else {
       alert('Wrong Password')

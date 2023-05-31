@@ -6,6 +6,7 @@ import { OrderSummaryComponent } from './order-summary/order-summary.component';
 import { UpgradeComponent } from './upgrade/upgrade.component';
 import { APP_CONFIG } from '../../../../../environments/environment';
 import { DataProvider } from '../../../../core/services/provider/data-provider.service';
+import { ElectronService } from '../../../../core/services';
 declare var Hammer:any;
 @Component({
   selector: 'app-info-panel',
@@ -20,7 +21,7 @@ export class InfoPanelComponent implements OnInit,OnChanges, AfterViewInit{
   height:number = 0;
   closeOrdersPanelSubscription:Subject<boolean> = new Subject<boolean>();
   closeSalesPanelSubscription:Subject<boolean> = new Subject<boolean>();
-  constructor(public dataProvider:DataProvider,private el:ElementRef,private dialog:Dialog) {
+  constructor(public dataProvider:DataProvider,private el:ElementRef,private dialog:Dialog,private electronService:ElectronService) {
     this.dataProvider.closeAllPanel.subscribe((data)=>{
       this.isOpen = false;
       this.isSalesOpen = false;
@@ -90,9 +91,23 @@ export class InfoPanelComponent implements OnInit,OnChanges, AfterViewInit{
   }
 
   openUpgrade(){
-    const dialog = this.dialog.open(UpgradeComponent)
-    dialog.closed.subscribe((data)=>{
-      // dialog.close();
-    })
+    alert("Checking for updates")
+    this.dataProvider.loading = true;
+    let res = this.electronService.checkForUpdate()
+    if (res){
+      res.then((res)=>{
+        console.log("UPDATE RES",res);
+      }).catch((error)=>{
+        console.log("UPDATE RES error",error);
+      }).finally(()=>{
+        this.dataProvider.loading = false;
+      })
+    } else {
+      this.dataProvider.loading = false;
+    }
+    // const dialog = this.dialog.open(UpgradeComponent)
+    // dialog.closed.subscribe((data)=>{
+    //   // dialog.close();
+    // })
   }
 }

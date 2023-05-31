@@ -20,10 +20,10 @@ export class ReprintReasonComponent {
   })
   constructor(public dialogRef:DialogRef,private dataProvider:DataProvider){}
 
-  submit(){
+  async submit(){
     if (this.reprintForm.valid){
       const password = this.reprintForm.get('password')?.value;
-      if(password == this.dataProvider.password){
+      if((await this.dataProvider.checkPassword(password))){
         this.dialogRef.close(this.reprintForm.value)
       } else {
         alert("Incorrect Password")

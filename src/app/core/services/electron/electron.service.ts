@@ -103,4 +103,9 @@ export class ElectronService {
     return this.ipcRenderer.sendSync("getAuth");
   }
 
+  checkForUpdate(){
+    if (!this.isElectron) return;
+    return this.ipcRenderer.sendSync("checkForUpdate");
+  }
+
 }

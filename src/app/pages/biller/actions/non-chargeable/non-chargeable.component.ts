@@ -17,9 +17,9 @@ export class NonChargeableComponent {
     password:new FormControl('',Validators.required)
   });
   constructor(private dialogRef:DialogRef,private dataProvider:DataProvider,private dialog:Dialog){}
-  submit(){
+  async submit(){
     if (this.nonChargeableForm.invalid) return;
-    if(this.nonChargeableForm.value.password != this.dataProvider.password){
+    if(!(await this.dataProvider.checkPassword(this.nonChargeableForm.value.password))){
       const dialog = this.dialog.open(DialogComponent,{data:{title:'Invalid Password',description:'Please enter the correct password to continue.',buttons:['Ok'],primary:[0]}})
       return;
     }

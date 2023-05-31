@@ -73,6 +73,17 @@ export class BillService {
     );
   }
 
+  addSales(productIds:string[]){
+    return Promise.all(
+      productIds.map((id)=>{
+        return updateDoc(
+          doc(this.firestore,'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/products/'+id),
+          {sales:increment(1)}
+        )
+      })
+    )
+  }
+
 
   updateOnlineToken(token: any) {
     return setDoc(

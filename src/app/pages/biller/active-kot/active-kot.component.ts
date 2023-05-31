@@ -1,5 +1,5 @@
 import { Component, OnChanges, SimpleChanges } from '@angular/core';
-import { Subscription, firstValueFrom } from 'rxjs';
+import { Subscription, firstValueFrom, merge } from 'rxjs';
 import { zoomInOnEnterAnimation, zoomOutOnLeaveAnimation } from 'angular-animations';
 import { Dialog } from '@angular/cdk/dialog';
 import { ReasonComponent } from './reason/reason.component';
@@ -47,7 +47,7 @@ export class ActiveKotComponent implements OnChanges {
         this.kots = this.dataProvider.currentBill.kots.filter((kot)=>kot.stage == 'active') || []
         this.activeKotSubscription.unsubscribe();
         this.activeKotSubscription =
-          this.dataProvider.currentBill.updated.subscribe((bill: any) => {
+        merge(this.dataProvider.currentBill.updated,this.dataProvider.currentBill.billUpdated).subscribe((bill: any) => {
             this.generateLabels();
             if (!this.dataProvider.currentBill) {
               this.activeKotSubscription.unsubscribe();

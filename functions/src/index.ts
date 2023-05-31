@@ -405,6 +405,55 @@ export const resetPassword = functions.https.onCall(
     }
 );
 
+export const checkPassword = functions.https.onCall(
+    async (request, response) => {
+        let uid = request.uid;
+        let password = request.password;
+        console.log('uid', uid);
+        if (!uid || !password) {
+            throw new HttpsError(
+                'invalid-argument',
+                'Missing fields. Username and password are required'
+            );
+        }
+        if (
+            typeof password != 'string' ||
+            !password ||
+            password.length < 4 ||
+            password.length > 20
+        ) {
+            throw new HttpsError(
+                'invalid-argument',
+                'Password must be between 4 and 20 characters'
+            );
+        }
+        // check if userId exists
+        let uidDoc = await firestore.doc('authData/' + uid).get();
+        if (!uidDoc.exists) {
+            throw new HttpsError('not-found', 'Username not found');
+        }
+        // get password
+        // generate salt
+        let salt = new TextDecoder().decode(
+            await subtle.digest('SHA-512', new TextEncoder().encode(uidDoc.id)) // uidDoc.id
+        );
+        password = password + salt;
+        // hash password
+        let hash = await subtle.digest(
+            'SHA-512',
+            new TextEncoder().encode(password)
+        );
+        let stringHash = new TextDecoder().decode(hash);
+        // check if password matches
+        console.log('Password hashes', uidDoc.data()?.password, stringHash);
+        if (stringHash !== uidDoc.data()?.password) {
+            throw new HttpsError('unauthenticated', 'Password incorrect');
+        } else {
+            return { status: 'success',correct:true }
+        }
+    }
+)
+
 interface AdditonalClaims {
   email?: string;
   providerId: string;

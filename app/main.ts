@@ -113,6 +113,7 @@ function createWindow(): BrowserWindow {
     win.webContents.on("did-fail-load", () => {
       console.log("did-fail-load");
       const url = new URL(path.join('file:', __dirname, pathIndex));
+      console.log("LOADING NOW",__dirname,pathIndex,url.href);
       win.loadURL(url.href);
       // REDIRECT TO FIRST WEBPAGE AGAIN
     });
@@ -159,6 +160,14 @@ function createWindow(): BrowserWindow {
   ipcMain.on("clearAuth", async (event, arg) => {
     try {
       event.returnValue = store.clear();
+    } catch (error) {
+      event.returnValue = false;
+    }
+  })
+
+  ipcMain.on("checkForUpdate", async (event, arg) => {
+    try {
+      event.returnValue = autoUpdater.checkForUpdatesAndNotify();
     } catch (error) {
       event.returnValue = false;
     }

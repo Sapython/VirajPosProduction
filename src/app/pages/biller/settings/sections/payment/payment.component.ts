@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DataProvider } from '../../../../../core/services/provider/data-provider.service';
 import { Dialog } from '@angular/cdk/dialog';
 import { AlertsAndNotificationsService } from '../../../../../core/services/alerts-and-notification/alerts-and-notifications.service';
@@ -12,7 +12,7 @@ import { PaymentMethod } from '../../../../../types/payment.structure';
   templateUrl: './payment.component.html',
   styleUrls: ['./payment.component.scss'],
 })
-export class PaymentComponent {
+export class PaymentComponent implements OnInit {
   paymentMethods: PaymentMethod[] = [];
   loadingPaymentMethods: boolean = false;
   constructor(
@@ -21,6 +21,9 @@ export class PaymentComponent {
     private alertify: AlertsAndNotificationsService,
     private settingsService: SettingsService
   ) {}
+  ngOnInit(): void {
+    this.getPaymentMethods();
+  }
   editMethod(method: PaymentMethod) {
     const dialog = this.dialog.open(AddMethodComponent, {
       data: { mode: 'edit', setting: method },

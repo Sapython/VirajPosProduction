@@ -52,16 +52,20 @@ export function firebaseUpdate(this: Bill) {
             kot.editMode = bill['kots'][index]['editMode'];
           } else {
             // remove kot
-            this.kots = this.kots.filter((item) => item.id !== kot.id);
+            this.kots = this.kots.filter((item) => item.id !== kot.id || (kot.stage =='active' || kot.stage =='edit'));
           }
+          this.kots.sort((a, b) => {
+            return a.createdDate.seconds - b.createdDate.seconds;
+          })
         });
         // add new kots
         bill['kots'].forEach((kot: KotConstructor) => {
           let index = this.kots.findIndex((item) => item.id === kot.id);
           if (index === -1) {
-            this.kots.push(new Kot(kot.id, kot.products[0], kot));
+            this.kots.push(new Kot(kot.products[0], kot));
           }
         });
+        this.billUpdated.next();
       }
     });
   }
@@ -90,6 +94,7 @@ export function toObject(this: Bill) {
     billing: this.billing,
     stage: this.stage,
     user: this.user,
+    instruction: this.instruction || null,
     settlement: this.settlement || null,
     cancelledReason: this.cancelledReason || null,
     billingMode: this.billingMode,
@@ -130,10 +135,11 @@ export function fromObject(
     instance.customerInfo = object.customerInfo;
     instance.optionalTax = object.optionalTax || false;
     instance.billReprints = object.billReprints || [];
+    instance.instruction = object.instruction || '';
     // create kots classes from objects and add them to the bill
     object.kots.forEach((kot) => {
       console.log('Creating kot', kot);
-      instance.addKot(new Kot(kot.id, kot.products[0], kot));
+      instance.addKot(new Kot(kot.products[0], kot));
     });
     // instance.currentKot = instance.kots.find((kot) => {
     //   return kot.stage === 'active';

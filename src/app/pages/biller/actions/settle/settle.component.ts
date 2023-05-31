@@ -95,10 +95,10 @@ export class SettleComponent implements OnInit {
       }
       let paymentMethods = this.methods.map((method)=>method.paymentMethod)
       let uniquePaymentMethods = [...new Set(paymentMethods)]
-      if (paymentMethods.length !== uniquePaymentMethods.length){
-        this.alertify.presentToast('Conflicting payment methods')
-        return
-      }
+      // if (paymentMethods.length !== uniquePaymentMethods.length){
+      //   this.alertify.presentToast('Conflicting payment methods')
+      //   return
+      // }
       this.dialogRef.close({paymentMethods,settling:true,detail:this.detailForm.value});
       this.alertify.presentToast('Bill Settled')
     } else {

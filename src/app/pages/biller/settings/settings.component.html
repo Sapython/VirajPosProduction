@@ -13,22 +13,10 @@
         About
       </button>
       <button
-        (click)="activeTab = 'printer'"
-        [ngClass]="{ active: activeTab == 'printer' }"
-      >
-        Printer
-      </button>
-      <button
-        (click)="activeTab = 'view'"
-        [ngClass]="{ active: activeTab == 'view' }"
-      >
-        View
-      </button>
-      <button
         (click)="activeTab = 'config'"
         [ngClass]="{ active: activeTab == 'config' }"
       >
-        Config
+        Business
       </button>
       <button
         (click)="activeTab = 'account'"
@@ -55,6 +43,18 @@
       >
         Taxes
       </button>
+      <button
+        (click)="activeTab = 'view'"
+        [ngClass]="{ active: activeTab == 'view' }"
+      >
+        Settings
+      </button>
+      <!-- <button
+        (click)="activeTab = 'printer'"
+        [ngClass]="{ active: activeTab == 'printer' }"
+      >
+        Printer
+      </button> -->
     </div>
     <div class="active spaced" [ngSwitch]="activeTab">
       <app-printer *ngSwitchCase="'printer'"></app-printer>

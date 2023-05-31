@@ -5,12 +5,6 @@ import { Tax } from '../../../../types/tax.structure';
 import { Kot } from '../../kot/Kot';
 
 export function calculateBill(this: Bill, noUpdate: boolean = false) {
-  if (this.billingMode === 'nonChargeable') {
-    this.billing.subTotal = 0;
-    this.billing.grandTotal = 0;
-    this.updated.next(noUpdate);
-    return;
-  }
   // let allProducts: Product[] = [];
   // this.kots.forEach((kot) => {
   //   if (kot.stage === 'finalized' || kot.stage === 'active') {
@@ -70,8 +64,12 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   }, 0)
   console.log('totalApplicableTax',this.billing.taxes,finalTaxes, totalApplicableTax,finalAdditionalTax);
   this.billing.grandTotal = (this.billing.subTotal - applicableDiscount) + totalApplicableTax;
+  if (this.billingMode === 'nonChargeable') {
+    this.billing.subTotal = 0;
+    this.billing.grandTotal = 0;
+  }
   this.printableBillData = this.getPrintableBillData(allProducts);
-  this.updated.next();
+  this.updated.next(noUpdate);
 }
 
 export function calculateProducts(kots:(Kot|KotConstructor)[]){

@@ -117,7 +117,7 @@ export class Bill implements BillConstructor {
   updated: Subject<boolean | void> = new Subject<boolean | void>();
   currentKot: Kot | null =
     this.kots.find((kot) => kot.stage === 'active') || null;
-
+  billUpdated: Subject<boolean | void> = new Subject<boolean | void>();
   constructor(
     id: string,
     table: Table,
@@ -133,14 +133,13 @@ export class Bill implements BillConstructor {
     this.optionalTax = this.dataProvider.optionalTax;
     // taxes[0].amount = Number(this.dataProvider.currentSettings.sgst)
     // taxes[1].amount = Number(this.dataProvider.currentSettings.cgst)
-    this.updated.subscribe(() => {
-      this.dataProvider.queueUpdate.next();
-      console.log("this.printableBillData",this.printableBillData);
-    });
-    this.updated.pipe(debounceTime(10000)).subscribe(async (data) => {
+    // this.updated.subscribe(() => {
+    //   this.dataProvider.queueUpdate.next();
+    //   console.log("this.printableBillData",this.printableBillData);
+    // });
+    this.updated.pipe(debounceTime(400)).subscribe(async (data) => {
       this.updateToFirebase();
     });
-    this.firebaseUpdate();
     this.toObject = this.toObject.bind(this);
     this.id = id;
     this.instruction = '';
@@ -160,6 +159,7 @@ export class Bill implements BillConstructor {
       grandTotal: 0,
     };
     this.updated.next();
+    this.firebaseUpdate();
   }
 
   // defnintions

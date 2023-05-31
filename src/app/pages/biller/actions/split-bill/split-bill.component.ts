@@ -125,7 +125,14 @@ export class SplitBillComponent {
       user: this.bill.user,
       createdDate: this.bill.createdDate,
       stage: 'active',
-      customerInfo: this.bill.customerInfo,
+      customerInfo: {
+        name: this.bill.customerInfo.name || '',
+        phone: this.bill.customerInfo.phone || '',
+        address: this.bill.customerInfo.address || '',
+        deliveryName: this.bill.customerInfo.deliveryName || '',
+        deliveryPhone: this.bill.customerInfo.deliveryPhone || '',
+        gst: this.bill.customerInfo.gst || '',
+      },
       orderNo: this.bill.orderNo,
       optionalTax: this.bill.optionalTax,
       instruction: this.bill.instruction || '',
@@ -183,16 +190,19 @@ export class SplitBillComponent {
       return;
     }
     if (this.allSettled){
-      let ids = await Promise.all(this.splittedBills.map(async (bill:any)=>{
+      let ids = await Promise.all(this.splittedBills.map(async (bill)=>{
         this.printingService.printBill(bill.printableBillData);
-        bill.table = bill.table.id;
+        bill.table = bill.table.id || bill.table as any;
         console.log("Printing Bill",bill);
-        return (await this.billService.saveSplittedBill(this.bill.id,bill)).id;
+        let res = (await this.billService.saveSplittedBill(this.bill.id,bill)).id;
+        console.log("Saved splitted bill");
+        return res
       }))
       this.bill.settle(this.splittedBills.map(bill=>bill.settlement.payments).flat(),'internal',{
         splitBill:true,
         bills:ids
       });
+      this.dialogRef.close();
     }
   }
 

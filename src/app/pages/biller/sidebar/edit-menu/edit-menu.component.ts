@@ -23,14 +23,14 @@ export class EditMenuComponent implements OnInit {
       Promise.all(this.dataProvider.menus.map((menu)=>{
         return menu.updateChanged()
       })).then(async (r)=>{
-        if (r.flat().length > 0){
-          if (await this.dataProvider.confirm("Data is updated. Please restart the application to see the changes.",[1])){
-            let url = window.location.href.split('/')
-            url.pop()
-            url.push('index.html')
-            window.location.href = url.join('/') 
-          }
-        }
+        // if (r.flat().length > 0){
+        //   if (await this.dataProvider.confirm("Data is updated. Please restart the application to see the changes.",[1])){
+        //     let url = window.location.href.split('/')
+        //     url.pop()
+        //     url.push('index.html')
+        //     window.location.href = url.join('/') 
+        //   }
+        // }
         this.alertify.presentToast("Menu changes updated successfully")
       }).catch((c)=>{
         console.log(c);

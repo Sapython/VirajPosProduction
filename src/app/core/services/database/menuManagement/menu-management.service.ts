@@ -1,126 +1,540 @@
 import { Injectable } from '@angular/core';
 import { DataProvider } from '../../provider/data-provider.service';
-import { getDocs, collection, addDoc, setDoc, doc, updateDoc, arrayUnion, DocumentReference, deleteDoc, Firestore } from '@angular/fire/firestore';
+import {
+  getDocs,
+  collection,
+  addDoc,
+  setDoc,
+  doc,
+  updateDoc,
+  arrayUnion,
+  DocumentReference,
+  deleteDoc,
+  Firestore,
+  serverTimestamp,
+  increment,
+  getDoc,
+  docData,
+  collectionData,
+} from '@angular/fire/firestore';
 import { TableConstructor } from '../../../../types/table.structure';
 import { Product } from '../../../../types/product.structure';
 import { Menu } from '../../../../types/menu.structure';
-import { Category } from '../../../../types/category.structure';
+import { Category, RootCategory, ViewCategory } from '../../../../types/category.structure';
 import { Table } from '../../../constructors/table/Table';
 import { AnalyticsService } from '../analytics/analytics.service';
 import { TableService } from '../table/table.service';
 import { BillService } from '../bill/bill.service';
 import { PrinterService } from '../../printing/printer/printer.service';
+import { AlertsAndNotificationsService } from '../../alerts-and-notification/alerts-and-notifications.service';
+import { Subject, debounceTime, first, firstValueFrom } from 'rxjs';
+import { NgxIndexedDBService } from 'ngx-indexed-db';
+import { dbConfig } from '../../../../app.module';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MenuManagementService {
-
-  constructor(private dataProvider:DataProvider,private firestore:Firestore,private analyticsService:AnalyticsService,private printingService:PrinterService,private tableService:TableService,private billService:BillService) {
-    // copy from viewCategories to currentUser
-    // from: /business/t73tctq4kwdvbux2h22h6/menus/BKEPVUhtCXXL7YNrvUqx/viewCategories
-    // to: /business/t73tctq4kwdvbux2h22h6/menus/BKEPVUhtCXXL7YNrvUqx/users/momoscastle/viewCategories
-    // setTimeout(()=>{
-    //   console.log("Getting viewCategoryies");
-      
-    //   getDocs(collection(this.firestore,'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/viewCategories')).then((res)=>{ 
-    //     console.log("viewCategoryies res.docs",res.docs);
-    //     if (res.docs.length > 0){
-    //       res.docs.forEach((doc)=>{
-    //         let data = doc.data();
-    //         this.addViewCategory(data,doc.id);
-    //         console.log("viewCategoryies Adding View Category",data);
-    //       })
-    //     }
-    //   })
-    // },10000)
-  }
-  getMenuData(){
-    this.dataProvider.activeModes
-  }
-  getMainCategories() {
-    return getDocs(
-      collection(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/rootCategories')
-    );
-  }
-
-  addViewCategory(category: any, id?: string) {
-    if (!id)
-      return addDoc(
+  menuUpdated: Subject<void> = new Subject();
+  updatableMenus: string[] = [];
+  constructor(
+    private dataProvider: DataProvider,
+    private firestore: Firestore,
+    private analyticsService: AnalyticsService,
+    private printingService: PrinterService,
+    private tableService: TableService,
+    private billService: BillService,
+    private alertify: AlertsAndNotificationsService,
+    private indexedDbService: NgxIndexedDBService
+  ) {
+    this.menuUpdated.pipe(debounceTime(1000)).subscribe(() => {
+      let menus = this.updatableMenus.filter((v, i, a) => a.indexOf(v) === i);
+      console.log('Menus to update', menus);
+      // menus.forEach((menuId) => {
+      //   this.getMenu(menuId)
+      // });
+      this.dataProvider.loading = true;
+      Promise.all(menus.map(async (menuId)=> await this.getMenu(menuId)))
+      this.dataProvider.loading = false;
+    })
+    this.menuUpdated.pipe(debounceTime(5000)).subscribe(() => {
+      let menus = this.updatableMenus.filter((v, i, a) => a.indexOf(v) === i);
+      console.log('Menus to update', menus);
+      menus.forEach((menuId) => {
+        this.updateMenuData(menuId);
+      });
+    });
+    firstValueFrom(this.dataProvider.menuLoadSubject).then((res) => {
+      collectionData(
         collection(
           this.firestore,
-          'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/users/'+this.dataProvider.currentUser.username+'/viewCategories'
+          '/business/' + this.dataProvider.currentBusiness.businessId + '/menus'
         ),
-        category
-      );
-    return setDoc(
-      doc(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/users/'+this.dataProvider.currentUser.username+'/viewCategories/' + id),
-      category,
-      { merge: true }
-    );
+        { idField: 'id' }
+      ).subscribe((res) => {
+        // this.getMenu()
+        res.forEach(async (menu) => {
+          console.log('menu112 getting menu', menu);
+          try {
+            let res:any = await firstValueFrom(
+              this.indexedDbService.getByIndex('menu', 'menuId', menu.id)
+            );
+            if (res) {
+              if (res.menu.menuVersion){
+                console.log("menu112 id exists",res.menu.menuVersion,menu.menuVersion);
+                if (res.menu.menuVersion < menu.menuVersion){
+                  console.log('menu112 res menu version',res.menu.menuVersion,menu.menuVersion);
+                  await this.getMenu(menu.id);
+                } else {
+                  console.log("menu112 id exists and version is same or lower");
+                }
+              } else {
+                console.log("menu112 id doesn't exists");
+                await this.getMenu(menu.id);
+              }
+            } else {
+              console.log('menu112 res error getting menu', res, menu.id);
+              await this.getMenu(menu.id);
+            }
+          } catch (error) {
+            console.log('menu112 error getting menu', menu.id);
+            await this.getMenu(menu.id);
+          }
+        });
+      });
+    });
   }
 
-  addRootCategory(category: any, id?: string) {
-    if (!id)
-      return addDoc(
-        collection(
-          this.firestore,
-          'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/rootCategories'
-        ),
-        category
-      );
-    console.log('business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/rootCategories/' + id);
-    return setDoc(
-      doc(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/rootCategories/' + id),
-      category,
-      { merge: true }
-    );
+  async getLocalMenu(menuId){
+    try {
+      return (await firstValueFrom(this.indexedDbService.getByKey('menu',menuId))) as {
+        menu:any;
+        products:Product[],
+        rootCategories:RootCategory[],
+        viewCategories:ViewCategory[],
+        recommendedCategories:ViewCategory[]
+      }
+    } catch (error) {
+      if (error instanceof DOMException){
+        console.log("menu112 DOMException",error);
+        this.indexedDbService.createObjectStore(dbConfig.objectStoresMeta[2])
+      }
+      if (error)
+      return undefined
+    }
   }
 
-  getRootCategories() {
-    return getDocs(
-      collection(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/rootCategories')
-    );
+  storeMenuData(menuId: string) {
+    this.getMenus();
   }
 
-  getViewCategories() {
-    return getDocs(
-      collection(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/users/'+this.dataProvider.currentUser.username+'/viewCategories')
-    );
-  }
-
-  updateRootCategory(id:string,products:string[]){
-    return updateDoc(
-      doc(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/rootCategories/' + id),
-      { products: arrayUnion(...products) }
-    );
-  }
-
-  updateViewCategory(id: string, products: string[]) {
-    return updateDoc(
-      doc(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/users/'+this.dataProvider.currentUser.username+'/viewCategories/' + id),
-      { products: arrayUnion(...products) }
-    );
-  }
-
-  addRecommendedCategory(category: any) {
-    return setDoc(
+  updateMenuData(menuId: string) {
+    updateDoc(
       doc(
         this.firestore,
-        'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/recommendedCategories/' + category.id
+        'business/' + this.dataProvider.businessId + '/menus/' + menuId
       ),
-      category,
-      { merge: true }
-    );
+      {
+        lastUpdated: serverTimestamp(),
+        menuVersion: increment(1),
+      }
+    )
+      .then(() => {
+        this.alertify.presentToast('Menu propogated successfully');
+      })
+      .catch((err) => {
+        this.alertify.presentToast('Menu propogation failed');
+      });
   }
 
-  getRecommendedCategories() {
+  getMenuData() {
+    this.dataProvider.activeModes;
+  }
+
+  getMainCategories() {
+    let menuData = this.getLocalMenu(this.dataProvider.currentMenu?.selectedMenu?.id);
+    console.log("menu113 ",menuData);
     return getDocs(
       collection(
         this.firestore,
-        'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/recommendedCategories'
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          this.dataProvider.currentMenu?.selectedMenu?.id +
+          '/rootCategories'
       )
     );
+  }
+
+  async getTables() {
+    getDocs(
+      collection(
+        this.firestore,
+        'business/' + this.dataProvider.businessId + '/tables'
+      )
+    )
+      .then(async (res) => {
+        if (res.docs.length > 0) {
+          let tables = res.docs.map(async (doc) => {
+            let table = { ...doc.data(), id: doc.id } as TableConstructor;
+            // let tableClass = new Table(table.id,Number(table.tableNo),table.name,table.maxOccupancy,table.type,this.dataProvider,this.databaseService)
+            // tableClass.fromObject(table);
+            return await Table.fromObject(
+              table,
+              this.dataProvider,
+              this.analyticsService,
+              this.tableService,
+              this.billService,
+              this.printingService
+            );
+          });
+          console.log('tables ', tables);
+          // add data to indexedDB
+          let formedTable = await Promise.all(tables);
+          // sort tables by tableNo
+          formedTable.sort((a, b) => {
+            return a.tableNo - b.tableNo;
+          });
+          this.dataProvider.tables = formedTable;
+        } else {
+          if (this.dataProvider.tables.length == 0 && res.docs.length == 0) {
+            this.dataProvider.tables = [];
+          }
+        }
+      })
+      .catch((err) => {
+        console.log('Table fetch Error ', err);
+      });
+  }
+
+  async getTokens() {
+    getDocs(
+      collection(
+        this.firestore,
+        'business/' + this.dataProvider.businessId + '/tokens'
+      )
+    ).then(async (res) => {
+      let tables = res.docs.map(async (doc) => {
+        let table = { ...doc.data(), id: doc.id } as TableConstructor;
+        // let tableClass = new Table(table.id,Number(table.tableNo),table.name,table.maxOccupancy,'token',this.dataProvider,this.databaseService)
+        // tableClass.fromObject(table);
+        return await Table.fromObject(
+          table,
+          this.dataProvider,
+          this.analyticsService,
+          this.tableService,
+          this.billService,
+          this.printingService
+        );
+      });
+      let formedTable = await Promise.all(tables);
+      formedTable.sort((a, b) => {
+        return a.tableNo - b.tableNo;
+      });
+      this.dataProvider.tokens = formedTable;
+    });
+  }
+
+  async getOnlineTokens() {
+    getDocs(
+      collection(
+        this.firestore,
+        'business/' + this.dataProvider.businessId + '/onlineTokens'
+      )
+    ).then(async (res) => {
+      let tables = res.docs.map(async (doc) => {
+        let table = { ...doc.data(), id: doc.id } as TableConstructor;
+        let tableClass = await Table.fromObject(
+          table,
+          this.dataProvider,
+          this.analyticsService,
+          this.tableService,
+          this.billService,
+          this.printingService
+        );
+        console.log('ONLINE TABLE', tableClass);
+        return tableClass;
+      });
+      let formedTable = await Promise.all(tables);
+      formedTable.sort((a, b) => {
+        return a.tableNo - b.tableNo;
+      });
+      this.dataProvider.onlineTokens = formedTable;
+    });
+  }
+
+  async getRecommendedCategoriesByMenu(menu: Menu) {
+    let localMenu = await this.getLocalMenu(menu.id);
+    console.log("menu113 recommendedCategories",localMenu?.recommendedCategories);
+    if (localMenu?.recommendedCategories){
+      return localMenu?.recommendedCategories
+    }
+    let res = await getDocs(
+      collection(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menu.id +
+          '/recommededCategories/'
+      )
+    );
+    if (res){
+      return res.docs.map((d)=>{return {...d.data(),id:d.id}})
+    } else {
+      return []
+    }
+  }
+
+  async getViewCategoriesByMenu(menu: Menu) {
+    let localMenu = await this.getLocalMenu(menu.id);
+    console.log("menu113 viewCategories",localMenu?.viewCategories);
+    if (localMenu?.viewCategories){
+      return localMenu?.viewCategories
+    }
+    let res = await getDocs(
+      collection(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menu.id +
+          '/users/' +
+          this.dataProvider.currentUser.username +
+          '/viewCategories/'
+      )
+    );
+    if (res){
+      return res.docs.map((d)=>{return {...d.data(),id:d.id}})
+    } else {
+      return []
+    }
+  }
+
+  async getMainCategoriesByMenu(menu: Menu) {
+    let localMenu = await this.getLocalMenu(menu.id);
+    console.log("menu113 rootCategories",localMenu?.rootCategories);
+    if (localMenu?.rootCategories){
+      return localMenu?.rootCategories
+    }
+    let res = await getDocs(
+      collection(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menu.id +
+          '/rootCategories/'
+      )
+    );
+    if (res){
+      return res.docs.map((d)=>{return {...d.data(),id:d.id}})
+    } else {
+      return []
+    }
+  }
+
+  getRootProducts() {
+    return getDocs(collection(this.firestore, 'productsCollection'));
+  }
+
+  getMenus() {
+    return getDocs(
+      collection(
+        this.firestore,
+        'business/' + this.dataProvider.businessId + '/menus'
+      )
+    );
+  }
+
+  async getMenu(menuId: string) {
+    try {
+      // get products
+      let productsFetchRequest = getDocs(
+        collection(
+          this.firestore,
+          'business/' +
+            this.dataProvider.businessId +
+            '/menus/' +
+            menuId +
+            '/products'
+        )
+      );
+      // get rootCategories
+      let rootCategoriesFetchRequest = getDocs(
+        collection(
+          this.firestore,
+          'business/' +
+            this.dataProvider.businessId +
+            '/menus/' +
+            menuId +
+            '/rootCategories'
+        )
+      );
+      // get viewCategories
+      let viewCategoriesFetchRequest = getDocs(
+        collection(
+          this.firestore,
+          'business/' +
+            this.dataProvider.businessId +
+            '/menus/' +
+            menuId +
+            '/users/' +
+            this.dataProvider.currentUser.username +
+            '/viewCategories'
+        )
+      );
+      // get recommendedCategories
+      let recommendedCategoriesFetchRequest = getDocs(
+        collection(
+          this.firestore,
+          'business/' +
+            this.dataProvider.businessId +
+            '/menus/' +
+            menuId +
+            '/recommededCategories'
+        )
+      );
+      // get menu
+      let menuFetchRequest = getDoc(
+        doc(
+          this.firestore,
+          'business/' + this.dataProvider.businessId + '/menus/' + menuId
+        )
+      );
+      console.log("menu112 Requests generated");
+      // fetch in parallel
+      let [
+        productsFetch,
+        rootCategoriesFetch,
+        viewCategoriesFetch,
+        recommendedCategoriesFetch,
+        menuFetch,
+      ] = await Promise.all([
+        productsFetchRequest,
+        rootCategoriesFetchRequest,
+        viewCategoriesFetchRequest,
+        recommendedCategoriesFetchRequest,
+        menuFetchRequest,
+      ]);
+      console.log("menu112 Data loaded");
+      // check if the menu exists if yes then delete entry
+      try {
+        let menuExists = await firstValueFrom(
+          this.indexedDbService.getByIndex('menu', 'menuId', menuId)
+        );
+        console.log("menu112 Previous menu exists",menuExists);
+        if (menuExists) {
+          console.log("menu112 Deleting previous menu",menuExists);
+          let res = await firstValueFrom(this.indexedDbService.delete('menu', menuId));
+          console.log("menu112 Delete res",res);
+        } else {
+          console.log('menu112 menu does not exist');
+        }
+      } catch (error) {
+        console.log('menu112 menu does not exist');
+      }
+      let menuData = {
+        menuId:menuId,
+        menu: menuFetch.data(),
+        products: productsFetch.docs.map((doc) => {
+          return { ...doc.data(), id: doc.id };
+        }),
+        rootCategories: rootCategoriesFetch.docs.map((doc) => {
+          return { ...doc.data(), id: doc.id };
+        }),
+        viewCategories: viewCategoriesFetch.docs.map((doc) => {
+          return { ...doc.data(), id: doc.id };
+        }),
+        recommendedCategories: recommendedCategoriesFetch.docs.map((doc) => {
+          return { ...doc.data(), id: doc.id };
+        }),
+      }
+      console.log("menu112 ADDING MENU",menuData);
+      firstValueFrom(
+        this.indexedDbService.add('menu',menuData)
+      )
+      .then((res) => {
+        console.log('menu112 added menu to indexedDB', res);
+        this.dataProvider.menus.find((menu) => menu.selectedMenuId == menuId).getAllData();
+      })
+      .catch((err) => {
+        console.log('menu112 error adding menu to indexedDB', err);
+      });
+    } catch (error) {
+      console.log('index not found');
+    }
+  }
+
+  async getRootCategories() {
+    let localMenu = await this.getLocalMenu(this.dataProvider.currentMenu?.selectedMenu?.id);
+    console.log("menu113 rootCategories",localMenu?.rootCategories);
+    if (localMenu?.rootCategories){
+      return localMenu?.rootCategories
+    }
+    let res = await getDocs(
+      collection(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          this.dataProvider.currentMenu?.selectedMenu?.id +
+          '/rootCategories'
+      )
+    );
+    if (res){
+      return res.docs.map((d)=>{return {...d.data(),id:d.id}})
+    } else {
+      return []
+    }
+  }
+
+  async getViewCategories() {
+    let localMenu = await this.getLocalMenu(this.dataProvider.currentMenu?.selectedMenu?.id);
+    console.log("menu113 viewCategories",localMenu?.viewCategories);
+    if (localMenu?.viewCategories){
+      return localMenu?.viewCategories
+    }
+    let res = await getDocs(
+      collection(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          this.dataProvider.currentMenu?.selectedMenu?.id +
+          '/users/' +
+          this.dataProvider.currentUser.username +
+          '/viewCategories'
+      )
+    );
+    if (res){
+      return res.docs.map((d)=>{return {...d.data(),id:d.id}})
+    } else {
+      return []
+    }
+  }
+
+  async getRecommendedCategories() {
+    let localMenu = await this.getLocalMenu(this.dataProvider.currentMenu?.selectedMenu?.id);
+    console.log("menu113 recommendedCategories",localMenu?.recommendedCategories);
+    if (localMenu?.recommendedCategories){
+      return localMenu?.recommendedCategories
+    }
+    let res = await getDocs(
+      collection(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          this.dataProvider.currentMenu?.selectedMenu?.id +
+          '/recommendedCategories'
+      )
+    );
+    if (res){
+      return res.docs.map((d)=>{return {...d.data(),id:d.id}})
+    } else {
+      return []
+    }
   }
 
   getIngredients() {
@@ -132,18 +546,70 @@ export class MenuManagementService {
     );
   }
 
-  updateProductVisiblity(id: string, visible: boolean) {
+  addViewCategory(category: any, id?: string) {
+    if (!id)
+      return addDoc(
+        collection(
+          this.firestore,
+          'business/' +
+            this.dataProvider.businessId +
+            '/menus/' +
+            this.dataProvider.currentMenu?.selectedMenu?.id +
+            '/users/' +
+            this.dataProvider.currentUser.username +
+            '/viewCategories'
+        ),
+        category
+      );
     return setDoc(
-      doc(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/products/' + id),
-      { visible: visible },
+      doc(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          this.dataProvider.currentMenu?.selectedMenu?.id +
+          '/users/' +
+          this.dataProvider.currentUser.username +
+          '/viewCategories/' +
+          id
+      ),
+      category,
       { merge: true }
     );
   }
 
-  updateCategoryVisiblity(id: string, type: string, enabled: boolean) {
+  addRootCategory(category: any, id?: string) {
+    if (!id)
+      return addDoc(
+        collection(
+          this.firestore,
+          'business/' +
+            this.dataProvider.businessId +
+            '/menus/' +
+            this.dataProvider.currentMenu?.selectedMenu?.id +
+            '/rootCategories'
+        ),
+        category
+      );
+    console.log(
+      'business/' +
+        this.dataProvider.businessId +
+        '/menus/' +
+        this.dataProvider.currentMenu?.selectedMenu?.id +
+        '/rootCategories/' +
+        id
+    );
     return setDoc(
-      doc(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/' + type + '/' + id),
-      { enabled: enabled },
+      doc(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          this.dataProvider.currentMenu?.selectedMenu?.id +
+          '/rootCategories/' +
+          id
+      ),
+      category,
       { merge: true }
     );
   }
@@ -151,30 +617,32 @@ export class MenuManagementService {
   async addNewMenu(
     menu: Menu,
     catGroups: { name: string; products: Product[] }[],
-    businessId?: string,
+    businessId?: string
   ) {
-    if (!businessId){
-      businessId = this.dataProvider.businessId
+    if (!businessId) {
+      businessId = this.dataProvider.businessId;
     }
     try {
       let menuRes = await addDoc(
-        collection(this.firestore, 'business/'+businessId+'/menus'),
+        collection(this.firestore, 'business/' + businessId + '/menus'),
         menu
       );
-      let allProducts:Product[] = [];
-      let productsRef:Promise<DocumentReference>[] = []
+      let allProducts: Product[] = [];
+      let productsRef: Promise<DocumentReference>[] = [];
       let rootCategoriesRef = catGroups.forEach(async (catGroup) => {
         allProducts = [...allProducts, ...catGroup.products];
         let res = await addDoc(
           collection(
             this.firestore,
-            'business/'+businessId+'/menus/' +
+            'business/' +
+              businessId +
+              '/menus/' +
               menuRes.id +
               '/rootCategories'
           ),
           {
             name: catGroup.name,
-            enabled: true
+            enabled: true,
           }
         );
         catGroup.products.forEach((product) => {
@@ -182,14 +650,12 @@ export class MenuManagementService {
             addDoc(
               collection(
                 this.firestore,
-                'business/'+businessId+'/menus/' +
-                  menuRes.id +
-                  '/products/'
+                'business/' + businessId + '/menus/' + menuRes.id + '/products/'
               ),
-              {...product,category:{id:res.id,name:catGroup.name}}
+              { ...product, category: { id: res.id, name: catGroup.name } }
             )
           );
-        })
+        });
       });
       let recommededCategories = [
         {
@@ -214,7 +680,9 @@ export class MenuManagementService {
           enabled: true,
           name: 'Most Selling',
           settings: { min: 100, max: null },
-          products: allProducts.filter((product) => (product.sales||0) >= 100),
+          products: allProducts.filter(
+            (product) => (product.sales || 0) >= 100
+          ),
         },
         {
           id: 'newDishes',
@@ -231,7 +699,9 @@ export class MenuManagementService {
           return setDoc(
             doc(
               this.firestore,
-              'business/'+businessId+'/menus/' +
+              'business/' +
+                businessId +
+                '/menus/' +
                 menuRes.id +
                 '/recommededCategories/' +
                 category.id
@@ -241,36 +711,133 @@ export class MenuManagementService {
           );
         })
       );
-      console.log('New menu',menuRes.id);
+      console.log('New menu', menuRes.id);
+      this.updatableMenus.push(menuRes.id);
+      this.menuUpdated.next();
       return { menuRes, productsRes, categoriesRes };
     } catch (error) {
       throw error;
     }
   }
 
-  getRootProducts() {
-    return getDocs(collection(this.firestore, 'productsCollection'));
+  updateRootCategory(id: string, products: string[]) {
+    this.updatableMenus.push(this.dataProvider.currentMenu?.selectedMenu?.id);
+    this.menuUpdated.next();
+    return updateDoc(
+      doc(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          this.dataProvider.currentMenu?.selectedMenu?.id +
+          '/rootCategories/' +
+          id
+      ),
+      { products: arrayUnion(...products) }
+    );
   }
-  getMenus(){
-    return getDocs(collection(this.firestore, 'business/'+this.dataProvider.businessId+'/menus'));
+
+  updateViewCategory(id: string, products: string[]) {
+    this.updatableMenus.push(this.dataProvider.currentMenu?.selectedMenu?.id);
+    this.menuUpdated.next();
+    return updateDoc(
+      doc(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          this.dataProvider.currentMenu?.selectedMenu?.id +
+          '/users/' +
+          this.dataProvider.currentUser.username +
+          '/viewCategories/' +
+          id
+      ),
+      { products: arrayUnion(...products) }
+    );
   }
-  updateMenu(menu:Menu,type:'dineIn'|'takeaway'|'online'){
-    if (type=='dineIn'){
+
+  addRecommendedCategory(category: any) {
+    this.updatableMenus.push(this.dataProvider.currentMenu?.selectedMenu?.id);
+    this.menuUpdated.next();
+    return setDoc(
+      doc(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          this.dataProvider.currentMenu?.selectedMenu?.id +
+          '/recommendedCategories/' +
+          category.id
+      ),
+      category,
+      { merge: true }
+    );
+  }
+
+  updateProductVisiblity(id: string, visible: boolean) {
+    this.updatableMenus.push(this.dataProvider.currentMenu?.selectedMenu?.id);
+    this.menuUpdated.next();
+    return setDoc(
+      doc(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          this.dataProvider.currentMenu?.selectedMenu?.id +
+          '/products/' +
+          id
+      ),
+      { visible: visible },
+      { merge: true }
+    );
+  }
+
+  updateCategoryVisiblity(id: string, type: string, enabled: boolean) {
+    this.updatableMenus.push(this.dataProvider.currentMenu?.selectedMenu?.id);
+    this.menuUpdated.next();
+    return setDoc(
+      doc(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          this.dataProvider.currentMenu?.selectedMenu?.id +
+          '/' +
+          type +
+          '/' +
+          id
+      ),
+      { enabled: enabled },
+      { merge: true }
+    );
+  }
+
+  updateMenu(menu: Menu, type: 'dineIn' | 'takeaway' | 'online') {
+    if (type == 'dineIn') {
       return setDoc(
-        doc(this.firestore, 'business/'+this.dataProvider.businessId+'/settings/settings/'),
-        {dineInMenu:menu},
+        doc(
+          this.firestore,
+          'business/' + this.dataProvider.businessId + '/settings/settings/'
+        ),
+        { dineInMenu: menu },
         { merge: true }
       );
-    } else if (type=='takeaway'){
+    } else if (type == 'takeaway') {
       return setDoc(
-        doc(this.firestore, 'business/'+this.dataProvider.businessId+'/settings/settings/'),
-        {takeawayMenu:menu},
+        doc(
+          this.firestore,
+          'business/' + this.dataProvider.businessId + '/settings/settings/'
+        ),
+        { takeawayMenu: menu },
         { merge: true }
       );
-    } else if (type=='online'){
+    } else if (type == 'online') {
       return setDoc(
-        doc(this.firestore, 'business/'+this.dataProvider.businessId+'/settings/settings/'),
-        {onlineMenu:menu},
+        doc(
+          this.firestore,
+          'business/' + this.dataProvider.businessId + '/settings/settings/'
+        ),
+        { onlineMenu: menu },
         { merge: true }
       );
     } else {
@@ -278,172 +845,154 @@ export class MenuManagementService {
     }
   }
 
-  getRecommendedCategoriesByMenu(menu:Menu){
-    return getDocs(
-      collection(
-        this.firestore,
-        'business/'+this.dataProvider.businessId+'/menus/' +
-          menu.id +
-          '/recommededCategories/'
-      ),
-    )
-  }
-
-  getViewCategoriesByMenu(menu:Menu){
-    return getDocs(
-      collection(
-        this.firestore,
-        'business/'+this.dataProvider.businessId+'/menus/' +
-          menu.id+'/users/'+this.dataProvider.currentUser.username +
-          '/viewCategories/'
-      ),
-    )
-  }
-
-  getMainCategoriesByMenu(menu:Menu){
-    return getDocs(
-      collection(
-        this.firestore,
-        'business/'+this.dataProvider.businessId+'/menus/' +
-          menu.id +
-          '/rootCategories/'
-      ),
-    )
-  }
-
-  updateProductMenu(product:any,menu:Menu){
+  updateProductMenu(product: any, menu: Menu) {
+    this.updatableMenus.push(menu.id);
+    this.menuUpdated.next();
     return setDoc(
-      doc(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/' + menu.id + '/products/' + product.id),
+      doc(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menu.id +
+          '/products/' +
+          product.id
+      ),
       product,
       { merge: true }
     );
   }
 
-  updateRecommendedCategoryMenu(category:any,menu:Menu){
-    return setDoc(
-      doc(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/' + menu.id + '/recommededCategories/' + category.id),
-      category,
-      { merge: true }
-    );
-  }
-
-  updateViewCategoryMenu(category:any,menu:Menu){
-    return setDoc(
-      doc(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/' + menu.id+'/users/'+this.dataProvider.currentUser.username + '/viewCategories/' + category.id),
-      category,
-      { merge: true }
-    );
-  }
-
-  updateMainCategoryMenu(category:any,menu:Menu){
-    return setDoc(
-      doc(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/' + menu.id + '/rootCategories/' + category.id),
-      category,
-      { merge: true }
-    );
-  }
-  
-  setSettingsMenu(data: any, type: string, productList: string[],menu:Menu) {
+  updateRecommendedCategoryMenu(category: any, menu: Menu) {
+    this.updatableMenus.push(menu.id);
+    this.menuUpdated.next();
     return setDoc(
       doc(
         this.firestore,
-        '/business/'+this.dataProvider.businessId+'/menus/'+menu.id+'/recommededCategories/' + type
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menu.id +
+          '/recommededCategories/' +
+          category.id
+      ),
+      category,
+      { merge: true }
+    );
+  }
+
+  updateViewCategoryMenu(category: any, menu: Menu) {
+    this.updatableMenus.push(menu.id);
+    this.menuUpdated.next();
+    return setDoc(
+      doc(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menu.id +
+          '/users/' +
+          this.dataProvider.currentUser.username +
+          '/viewCategories/' +
+          category.id
+      ),
+      category,
+      { merge: true }
+    );
+  }
+
+  updateMainCategoryMenu(category: any, menu: Menu) {
+    this.updatableMenus.push(menu.id);
+    this.menuUpdated.next();
+    return setDoc(
+      doc(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menu.id +
+          '/rootCategories/' +
+          category.id
+      ),
+      category,
+      { merge: true }
+    );
+  }
+
+  setSettingsMenu(data: any, type: string, productList: string[], menu: Menu) {
+    this.updatableMenus.push(menu.id);
+    this.menuUpdated.next();
+    return setDoc(
+      doc(
+        this.firestore,
+        '/business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menu.id +
+          '/recommededCategories/' +
+          type
       ),
       { settings: data, products: productList },
       { merge: true }
     );
   }
 
-  setPrinter(menu:Menu,category:Category){
-    console.log('setPrinter',category);
+  setPrinter(menu: Menu, category: Category) {
+    console.log('setPrinter', category);
+    this.updatableMenus.push(menu.id);
+    this.menuUpdated.next();
     // update every product in this category with the new printer
-    category.products.forEach((product:any)=>{
-      this.updateProductMenu({category:{
-        id:category.id,
-        name:category.name,
-        printer:category.printer
-      },id:product.id},menu);
-    })
+    category.products.forEach((product: any) => {
+      this.updateProductMenu(
+        {
+          category: {
+            id: category.id,
+            name: category.name,
+            printer: category.printer,
+          },
+          id: product.id,
+        },
+        menu
+      );
+    });
     return setDoc(
       doc(
         this.firestore,
-        '/business/'+this.dataProvider.businessId+'/menus/'+menu.id+'/rootCategories/' + category.id
+        '/business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menu.id +
+          '/rootCategories/' +
+          category.id
       ),
       { printer: category.printer },
       { merge: true }
     );
   }
 
-  updateRootSettings(settings:any,businessId:string){
+  updateRootSettings(settings: any, businessId: string) {
     return setDoc(
-      doc(this.firestore, 'business/'+businessId+'/settings/settings'),
+      doc(this.firestore, 'business/' + businessId + '/settings/settings'),
       settings,
       { merge: true }
     );
   }
-  deleteViewCategory(menuId:string,categoryId:string){
-    return deleteDoc(doc(
-      this.firestore,
-      'business/'+this.dataProvider.businessId+'/menus/' + menuId+'/users/'+this.dataProvider.currentUser.username + '/viewCategories/' + categoryId
-    ))
-  }
 
-  async getTables(){
-    getDocs(collection(this.firestore,'business/'+this.dataProvider.businessId+'/tables')).then(async (res)=>{
-      if (res.docs.length > 0){
-        let tables = res.docs.map(async (doc)=>{
-          let table =  {...doc.data(),id:doc.id} as TableConstructor
-          // let tableClass = new Table(table.id,Number(table.tableNo),table.name,table.maxOccupancy,table.type,this.dataProvider,this.databaseService)
-          // tableClass.fromObject(table);
-          return await Table.fromObject(table,this.dataProvider,this.analyticsService,this.tableService,this.billService,this.printingService);
-        })
-        console.log("tables ",tables);
-        // add data to indexedDB
-        let formedTable = await Promise.all(tables);
-        // sort tables by tableNo
-        formedTable.sort((a,b)=>{
-          return a.tableNo - b.tableNo;
-        })
-        this.dataProvider.tables = formedTable;
-      } else {
-        if (this.dataProvider.tables.length == 0 && res.docs.length == 0){
-          this.dataProvider.tables = [];
-        }
-      }
-    }).catch((err)=>{
-      console.log("Table fetch Error ",err);
-    })
-  }
-
-  async getTokens(){
-    getDocs(collection(this.firestore,'business/'+this.dataProvider.businessId+'/tokens')).then(async (res)=>{
-      let tables = res.docs.map(async (doc)=>{
-        let table =  {...doc.data(),id:doc.id} as TableConstructor
-        // let tableClass = new Table(table.id,Number(table.tableNo),table.name,table.maxOccupancy,'token',this.dataProvider,this.databaseService)
-        // tableClass.fromObject(table);
-        return await Table.fromObject(table,this.dataProvider,this.analyticsService,this.tableService,this.billService,this.printingService);
-      })
-      let formedTable = await Promise.all(tables);
-      formedTable.sort((a,b)=>{
-        return a.tableNo - b.tableNo;
-      })
-      this.dataProvider.tokens = formedTable;
-    })
-  }
-
-  async getOnlineTokens(){
-    getDocs(collection(this.firestore,'business/'+this.dataProvider.businessId+'/onlineTokens')).then(async (res)=>{
-      let tables = res.docs.map(async (doc)=>{
-        let table =  {...doc.data(),id:doc.id} as TableConstructor
-        let tableClass = await Table.fromObject(table,this.dataProvider,this.analyticsService,this.tableService,this.billService,this.printingService)
-        console.log("ONLINE TABLE",tableClass);
-        return tableClass;
-      })
-      let formedTable = await Promise.all(tables);
-      formedTable.sort((a,b)=>{
-        return a.tableNo - b.tableNo;
-      })
-      this.dataProvider.onlineTokens = formedTable;
-    })
+  deleteViewCategory(menuId: string, categoryId: string) {
+    this.updatableMenus.push(menuId);
+    this.menuUpdated.next();
+    return deleteDoc(
+      doc(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menuId +
+          '/users/' +
+          this.dataProvider.currentUser.username +
+          '/viewCategories/' +
+          categoryId
+      )
+    );
   }
 }

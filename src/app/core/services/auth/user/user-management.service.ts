@@ -8,6 +8,7 @@ import { firstValueFrom } from 'rxjs';
 import { AlertsAndNotificationsService } from '../../alerts-and-notification/alerts-and-notifications.service';
 import { DataProvider } from '../../provider/data-provider.service';
 import { Dialog } from '@angular/cdk/dialog';
+import { ElectronService } from '../../electron/electron.service';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +23,8 @@ export class UserManagementService {
     private functions: Functions,
     private alertify: AlertsAndNotificationsService,
     private dataProvider: DataProvider,
-    private dialog:Dialog
+    private dialog:Dialog,
+    private electronService:ElectronService
   ) {}
   getUser(uid: string) {
     return getDoc(doc(this.firestore, 'users/' + uid));
@@ -58,6 +60,7 @@ export class UserManagementService {
   logout() {
     signOut(this.auth);
     // clear local storage
+    this.electronService.clearAuth();
     localStorage.clear();
     indexedDB.deleteDatabase('Viraj');
     this.router.navigateByUrl('/login');

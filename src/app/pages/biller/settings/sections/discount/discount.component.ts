@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CodeBaseDiscount } from '../../../../../types/discount.structure';
 import { AddDiscountComponent } from '../../add-discount/add-discount.component';
 import { Dialog } from '@angular/cdk/dialog';
@@ -13,7 +13,7 @@ import { MenuManagementService } from '../../../../../core/services/database/men
   templateUrl: './discount.component.html',
   styleUrls: ['./discount.component.scss'],
 })
-export class DiscountComponent {
+export class DiscountComponent implements OnInit {
   loadingDiscount: boolean = false;
   discounts: CodeBaseDiscount[] = [];
   constructor(
@@ -23,6 +23,10 @@ export class DiscountComponent {
     private alertify: AlertsAndNotificationsService,
     public dataProvider:DataProvider,
   ) {}
+
+  ngOnInit(): void {
+    this.getDiscounts();
+  }
 
   updateSettings(){
     this.dataProvider.loading = true;

@@ -23,9 +23,16 @@
       </div>
       <div class="items">
         <div class="item" *ngFor="let product of kot.products">
-          <p>{{ product.name }}</p>
-          <p>{{ product.quantity }}</p>
-          <p>{{ product.quantity * product.price | currency : "INR" }}</p>
+          <ng-container *ngIf="!product.cancelled">
+            <p>{{ product.name }}</p>
+            <p>{{ product.quantity }}</p>
+            <p>{{ product.quantity * product.price | currency : "INR" }}</p>
+          </ng-container>
+          <ng-container *ngIf="product.cancelled">
+            <p><s>{{ product.name }}</s></p>
+            <p><s>{{ product.quantity }}</s></p>
+            <p><s>{{ product.quantity * product.price | currency : "INR" }}</s></p>
+          </ng-container>
         </div>
       </div>
     </div>

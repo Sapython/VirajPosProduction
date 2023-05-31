@@ -16,6 +16,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 })
 export class ConfigComponent {
   modes: [boolean, boolean, boolean] = this.dataProvider.activeModes;
+  printers: string[] = [];
   constructor(
     public dataProvider: DataProvider,
     private menuManagementService: MenuManagementService,
@@ -48,6 +49,7 @@ export class ConfigComponent {
       Validators.required,
     ]),
   });
+
   async updateMode() {
     if (this.modes[0]) {
       if (!this.dataProvider.currentSettings.dineInMenu) {
@@ -178,6 +180,7 @@ export class ConfigComponent {
       window.location.href = url.join('/');
     }
   }
+
   updateSettings(data: any) {
     this.menuManagementService
       .updateRootSettings(data, this.dataProvider.currentBusiness?.businessId!)
@@ -188,6 +191,7 @@ export class ConfigComponent {
         this.alertify.presentToast('Error while updating settings');
       });
   }
+
   saveSettings() {
     this.settingsService
       .updateBusiness(this.settingsForm.value)
@@ -200,8 +204,24 @@ export class ConfigComponent {
         console.log(err);
       });
   }
+
   get twoModeDeactived(): boolean {
     // return true when any two modes are false from all modes
     return this.modes.filter((mode) => !mode).length >= 2;
+  }
+
+  updateBillPrinter(value: string) {
+    this.dataProvider.currentBusiness!.billerPrinter = value;
+    this.settingsService
+      .updateBusiness({
+        billerPrinter: value,
+        businessId: this.dataProvider.currentBusiness?.businessId!,
+      })
+      .then(() => {
+        this.alertify.presentToast('Printer updated successfully');
+      })
+      .catch((err) => {
+        this.alertify.presentToast('Error while updating printer');
+      });
   }
 }

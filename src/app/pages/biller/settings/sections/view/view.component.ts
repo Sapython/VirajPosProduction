@@ -4,11 +4,16 @@ import { AlertsAndNotificationsService } from '../../../../../core/services/aler
 import { MenuManagementService } from '../../../../../core/services/database/menuManagement/menu-management.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { debounceTime } from 'rxjs';
+import { zoomInOnEnterAnimation, zoomOutOnLeaveAnimation } from 'angular-animations';
 
 @Component({
   selector: 'app-view',
   templateUrl: './view.component.html',
-  styleUrls: ['./view.component.scss']
+  styleUrls: ['./view.component.scss'],
+  animations:[
+    zoomInOnEnterAnimation(),
+    zoomOutOnLeaveAnimation()
+  ]
 })
 export class ViewComponent {
   viewSettings: FormGroup = new FormGroup({

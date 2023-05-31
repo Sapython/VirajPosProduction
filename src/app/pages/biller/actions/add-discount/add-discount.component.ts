@@ -102,8 +102,8 @@ export class AddDiscountComponent implements OnInit {
     }
   }
 
-  submit(){
-    if(this.password != this.dataProvider.password){
+  async submit(){
+    if(!(await this.dataProvider.checkPassword(this.password))){
       const dialog = this.dialog.open(DialogComponent,{data:{title:'Invalid Password',description:'Please enter the correct password to continue.',buttons:['Ok'],primary:[0]}})
       return;
     }

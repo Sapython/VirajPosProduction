@@ -161,13 +161,13 @@ export class ModeConfig {
         await this.menuManagementService.getRecommendedCategoriesByMenu(
           this.selectedMenu
         );
-      this.recommendedCategories = data.docs.map((doc) => {
+      this.recommendedCategories = data.map((doc) => {
         let products = this.products.filter((p) => {
-          return doc.data()['products'].includes(p.id) && p.visible;
+          return doc['products'].includes(p.id) && p.visible;
         });
         return {
-          ...doc.data(),
-          name: doc.data()['name'],
+          ...doc,
+          name: doc['name'],
           id: doc.id,
           products: products,
           averagePrice:
@@ -190,29 +190,21 @@ export class ModeConfig {
       let data = await this.menuManagementService.getViewCategoriesByMenu(
         this.selectedMenu
       );
-      console.log(
-        'Getting view cats',
-        data.docs.map((doc) => {
-          return doc.data();
-        })
-      );
-      this.viewCategories = data.docs.map((doc) => {
+      this.viewCategories = data.map((doc) => {
         let products = this.products.filter((p) => {
-          if (doc.data()['disabled']) {
-            var notDisabled = doc
-              .data()
-              ['disabled'].find((id: string) => id == p.id)
+          if (doc['disabled']) {
+            var notDisabled = doc['disabled'].find((id: string) => id == p.id)
               ? false
               : true;
           } else {
             var notDisabled = true;
           }
           p.visible = notDisabled && p.visible;
-          return doc.data()['products'].includes(p.id);
+          return doc['products'].includes(p.id);
         });
         return {
-          ...doc.data(),
-          name: doc.data()['name'],
+          ...doc,
+          name: doc['name'],
           id: doc.id,
           products: products,
           averagePrice:
@@ -259,11 +251,10 @@ export class ModeConfig {
       let data = await this.menuManagementService.getMainCategoriesByMenu(
         this.selectedMenu
       );
-      this.mainCategories = data.docs.map((doc) => {
+      this.mainCategories = data.map((doc) => {
         let products = this.products.filter((p) => {
-          if (doc.data()['disabled']) {
+          if (doc['disabled']) {
             var notDisabled = doc
-              .data()
               ['disabled'].find((id: string) => id == p.id)
               ? false
               : true;
@@ -272,12 +263,12 @@ export class ModeConfig {
           }
           p.visible = notDisabled && p.visible;
           return (
-            doc.data()['products'] && doc.data()['products'].includes(p.id)
+            doc['products'] && doc['products'].includes(p.id)
           );
         });
         return {
-          ...doc.data(),
-          name: doc.data()['name'],
+          ...doc,
+          name: doc['name'],
           id: doc.id,
           products: products,
           averagePrice:

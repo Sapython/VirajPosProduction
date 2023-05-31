@@ -1,6 +1,6 @@
 {
   "name": "virajpos",
-  "version": "0.1.55",
+  "version": "0.1.62",
   "description": "Viraj POS system.",
   "homepage": "https://virajworld.in/",
   "author": {
@@ -38,7 +38,8 @@
     "electron:serve-tsc": "tsc -p tsconfig.serve.json",
     "electron:serve": "wait-on tcp:4200 && npm run electron:serve-tsc && electron . --serve",
     "electron:local": "npm run build:prod && electron .",
-    "electron:build": "npm run build:prod && electron-builder build --publish=always",
+    "electron:build": "npm run build:prod && electron-builder build --publish=never",
+    "electron:build:publish": "npm run build:prod && electron-builder build --publish=always",
     "test": "ng test --watch=false",
     "test:watch": "ng test",
     "e2e": "npm run build:prod && playwright test -c e2e/playwright.config.ts e2e/",

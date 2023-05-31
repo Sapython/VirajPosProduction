@@ -68,6 +68,12 @@ export class OnboardingService {
       this.stage = 'virajGettingReady';
       if (data.status) {
         this.loadingSteps.next('User Found');
+        // remove duplicates from data.user.business by checking their businessId
+        data.user.business = data.user.business.filter(
+          (business, index, self) =>
+            index ===
+            self.findIndex((t) => t.businessId === business.businessId)
+        );
         if (data.user.business.length > 1) {
           this.loadingSteps.next('User Found with multiple businesses');
           let localRead = localStorage.getItem('businessId');
@@ -199,6 +205,7 @@ export class OnboardingService {
           this.loadingSteps.next('Waiting for menus to load');
           let menuSubscription = this.dataProvider.menuLoadSubject.subscribe(
             async (menu) => {
+              console.log("Loaded",menu,menuInits,verifiedMenus);
               verifiedMenus.push(menu.type);
               // check if all menus are loaded
               if (verifiedMenus.length == menuInits.length) {
@@ -266,6 +273,7 @@ export class OnboardingService {
                 menuSubscription.unsubscribe();
                 this.loadingSteps.next('Setup Completed');
                 this.message = 'Viraj is ready to use.';
+                this.dataProvider.loading = false;
                 this.stage = 'virajReady';
               }
             }
@@ -318,9 +326,11 @@ export class OnboardingService {
       this.dataProvider.printBillAfterFinalize =
         res['printBillAfterFinalize'] || false;
       this.dataProvider.takeawayToken = res['takeawayTokenNo'] || 0;
+      this.dataProvider.editKotTime = res['editKotTime'] || 0;
+      this.dataProvider.kotEditable = res['kotEditable'] || false;
       this.dataProvider.onlineTokenNo = res['onlineTokenNo'] || 0;
       this.dataProvider.orderTokenNo = res['orderTokenNo'] || 0;
-      this.dataProvider.password = res['password'];
+      // this.dataProvider.password = res['password'];
       this.dataProvider.multipleDiscount = res['multipleDiscount'] || false;
       this.dataProvider.activeModes = res['modes'];
       this.dataProvider.dineInMenu = res['dineInMenu'];

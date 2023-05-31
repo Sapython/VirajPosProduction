@@ -23,8 +23,8 @@ export class LineCancelComponent {
     
   })
   constructor(@Inject(DIALOG_DATA) public product:Product,public dialogRef:DialogRef,private dialog:Dialog,private dataProvider:DataProvider){}
-  submit(type:'made'|'unmade'){
-    if (this.cancelForm.value.password == this.dataProvider.password){
+  async submit(type:'made'|'unmade'){
+    if ((await this.dataProvider.checkPassword(this.cancelForm.value.password))){
       this.dialogRef.close({type,...this.cancelForm.value})
     } else {
       const dialog = this.dialog.open(DialogComponent,{data:{title:'Wrong Password',description:'Please enter the correct password to continue.'}})

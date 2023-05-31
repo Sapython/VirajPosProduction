@@ -40,7 +40,6 @@ export class PrinterService {
           primary: [0],
         },
       });
-      return;
     }
     let printerConfig = printableKotData.products.map((product: any) => {
       return { product: product.id, printer: product.category?.printer };
@@ -56,25 +55,16 @@ export class PrinterService {
       });
       return;
     }
+    console.log("printableKotData.products",printableKotData.products);
     // group products by printer
     let groupedProducts: any = {};
-    printerConfig.forEach((config: any) => {
-      if (groupedProducts[config.printer]) {
-        let foundProd = printableKotData.products.find(
-          (product: any) => product.id === config.product
-        );
-        if (foundProd) {
-          groupedProducts[config.printer].push(foundProd);
-        }
+    printableKotData.products.forEach((product: any) => {
+      if (groupedProducts[product.category.printer]) {
+        groupedProducts[product.category.printer].push(product);
       } else {
-        let foundProd = printableKotData.products.find(
-          (product: any) => product.id === config.product
-        );
-        if (foundProd) {
-          groupedProducts[config.printer] = [foundProd];
-        }
+        groupedProducts[product.category.printer] = [product];
       }
-    });
+    })
     console.log('grouped products', groupedProducts);
     Object.keys(groupedProducts).forEach((printer: any) => {
       console.log('printing', printer, groupedProducts[printer]);
@@ -86,6 +76,7 @@ export class PrinterService {
   }
 
   printBill(billData: PrintableBill) {
+    console.log("Printing bill",billData);
     let data = this.encoderService.getBillCode(billData);
     if (!this.dataprovider.currentBusiness?.billerPrinter) {
       const dialog = this.dialog.open(DialogComponent, {
@@ -105,6 +96,7 @@ export class PrinterService {
   }
 
   reprintBill(billData: PrintableBill) {
+    console.log("Printing bill",billData);
     let data = this.encoderService.getBillCode(billData);
     if (!this.dataprovider.currentBusiness?.billerPrinter) {
       const dialog = this.dialog.open(DialogComponent, {
@@ -136,7 +128,8 @@ export class PrinterService {
           name:product.name,
           instruction:product.instruction,
           quantity:product.quantity,
-          edited:product.cancelled
+          edited:product.cancelled,
+          category:product.category
         }
       }),
     }

@@ -2,6 +2,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import Chart, { ChartItem } from 'chart.js/auto';
 import { ReportsComponent } from './reports/reports.component';
+import { DataProvider } from '../../../../../core/services/provider/data-provider.service';
 @Component({
   selector: 'app-sales-summary',
   templateUrl: './sales-summary.component.html',
@@ -16,7 +17,7 @@ export class SalesSummaryComponent implements AfterViewInit {
   total: number = this.dine + this.takeAway + this.online + this.nonChargable;
   @ViewChild('myChart') myChart: {nativeElement:HTMLCanvasElement}|undefined;
   barThickness = 40;
-  constructor(private dialog:Dialog){}
+  constructor(private dialog:Dialog,public dataProvider:DataProvider){}
   ngAfterViewInit(): void {
     const DATA_COUNT = 7;
     const NUMBER_CFG = {count: DATA_COUNT, min: -100, max: 100};

@@ -17,8 +17,8 @@ export class LineDiscountComponent {
   reason:string = '';
   password:string = '';
   constructor(@Inject(DIALOG_DATA) public product:Product,public dialogRef:DialogRef,private dialog:Dialog,private dataProvider:DataProvider){}
-  submit(){
-    if (this.password == this.dataProvider.password){
+  async submit(){
+    if ((await this.dataProvider.checkPassword(this.password))){
       this.dialogRef.close({type:this.type,value:this.value,reason:this.reason})
     } else {
       const dialog = this.dialog.open(DialogComponent,{data:{title:'Wrong Password',description:'Please enter the correct password to continue.'}})

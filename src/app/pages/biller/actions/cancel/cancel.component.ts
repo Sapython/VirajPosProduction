@@ -22,8 +22,8 @@ export class CancelComponent {
     this.dialogRef.close()
   }
 
-  cancelBill(){
-    if(this.cancelForm.value.password != this.dataProvider.password){
+  async cancelBill(){
+    if(!(await this.dataProvider.checkPassword(this.cancelForm.value.password))){
       const dialog = this.dialog.open(DialogComponent,{data:{title:'Invalid Password',description:'Please enter the correct password to continue.',buttons:['Ok'],primary:[0]}})
       return;
     }

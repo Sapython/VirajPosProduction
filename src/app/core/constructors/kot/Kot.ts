@@ -4,7 +4,7 @@ import { KotConstructor } from '../../../types/kot.structure';
 import { UserConstructor } from '../../../types/user.structure';
 
 export class Kot implements KotConstructor {
-  id: string;
+  id?: string;
   createdDate: Timestamp;
   unmade?: boolean;
   stage: 'active' | 'finalized' | 'cancelled' | 'edit';
@@ -17,11 +17,12 @@ export class Kot implements KotConstructor {
   totalTimeTaken: string;
   totalTimeTakenNumber: number;
   someSelected: boolean;
-  constructor(id: string, product: Product,kotObject?:KotConstructor) {
-    this.id = id;
+  constructor(product: Product,kotObject?:KotConstructor) {
     this.createdDate = Timestamp.now();
     this.stage = 'active';
+    this.id = "new"
     if(kotObject){
+      this.id = kotObject.id;
       this.products = kotObject.products;
       this.editMode = kotObject.editMode;
       this.selected = kotObject.selected;

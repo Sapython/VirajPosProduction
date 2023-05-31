@@ -125,7 +125,7 @@ export class KotItemComponent implements OnChanges {
     this.product.quantity = this.product.quantity + 1;this.dataProvider.currentBill?.calculateBill()
   }
   decrease(){
-    this.product.quantity = this.product.quantity + 1;this.dataProvider.currentBill?.calculateBill()
+    this.product.quantity = this.product.quantity - 1;this.dataProvider.currentBill?.calculateBill()
   }
 
   get isHalf() {

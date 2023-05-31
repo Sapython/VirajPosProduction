@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AlertsAndNotificationsService } from '../../../../../core/services/alerts-and-notification/alerts-and-notifications.service';
 import { Dialog } from '@angular/cdk/dialog';
 import { SettingsService } from '../../../../../core/services/database/settings/settings.service';
@@ -13,7 +13,7 @@ import { Timestamp } from '@angular/fire/firestore';
   templateUrl: './taxes.component.html',
   styleUrls: ['./taxes.component.scss'],
 })
-export class TaxesComponent {
+export class TaxesComponent implements OnInit {
   taxes: Tax[] = [];
   constructor(
     private alertify: AlertsAndNotificationsService,
@@ -21,6 +21,10 @@ export class TaxesComponent {
     private settingsService:SettingsService,
     private dataProvider:DataProvider
   ) {}
+
+  ngOnInit(): void {
+    this.getTaxes();
+  }
   getTaxes() {
     this.settingsService.getTaxes().then((res) => {
       this.taxes = res.docs.map((d) => {

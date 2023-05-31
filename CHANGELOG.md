@@ -1,4 +1,4 @@
-## <small>0.1.55 (2023-05-29)</small>
+## <small>0.1.62 (2023-05-31)</small>
 
 * Added firebase and material ([5a8afcf](https://github.com/swayambhu-innovations/Packages/commit/5a8afcf))
 * Added icon for build ([d4e5870](https://github.com/swayambhu-innovations/Packages/commit/d4e5870))
@@ -6,6 +6,7 @@
 * Added sentry tracking. ([937dd51](https://github.com/swayambhu-innovations/Packages/commit/937dd51))
 * Added service worker ([95bd6dc](https://github.com/swayambhu-innovations/Packages/commit/95bd6dc))
 * Added settle bill option and fixed taxes print ([0b98416](https://github.com/swayambhu-innovations/Packages/commit/0b98416))
+* Added updater for viraj. ([7e5e452](https://github.com/swayambhu-innovations/Packages/commit/7e5e452))
 * Bug fix before lint ([0947bc6](https://github.com/swayambhu-innovations/Packages/commit/0947bc6))
 * Builder config change ([7c6b92a](https://github.com/swayambhu-innovations/Packages/commit/7c6b92a))
 * Changed gitignore for umd files ([274c5b3](https://github.com/swayambhu-innovations/Packages/commit/274c5b3))

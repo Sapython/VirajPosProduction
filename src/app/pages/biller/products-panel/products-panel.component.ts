@@ -70,6 +70,7 @@ export class ProductsPanelComponent implements OnInit{
   }
   selectProduct(product:Product){
     product = JSON.parse(JSON.stringify(product))
+    product.cancelled = false;
     product.name = product.name + (this.isHalf(product) ? ' Half' : ' Full')
     delete product.instruction
     if(!this.dataProvider.currentBill){

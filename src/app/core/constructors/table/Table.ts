@@ -132,7 +132,6 @@ export class Table implements TableConstructor {
     this.bill = null;
     // reset all variables
     this.billPrice = 0;
-    this.occupiedStart  = undefined;
     this.timeSpent = '';
     this.minutes = 0;
     this.status = 'available';
@@ -211,6 +210,12 @@ export class Table implements TableConstructor {
         instance.completed = object.completed || false;
         instance.minutes = object.minutes || 0;
         instance.timeSpent = object.timeSpent || '';
+        if (instance.bill.stage == 'settled'){
+          if (instance.type == 'token'){
+            instance.completed = true;
+          }
+          instance.clearTable();
+        }
         return instance;
       } else {
         // console.log('bill does not exist', object.bill);
@@ -234,6 +239,12 @@ export class Table implements TableConstructor {
       instance.completed = object.completed || false;
       instance.minutes = object.minutes || 0;
       instance.timeSpent = object.timeSpent || '';
+      if (instance.bill.stage == 'settled'){
+        if (instance.type == 'token'){
+          instance.completed = true;
+        }
+        instance.clearTable();
+      }
       return instance;
     } else {
       instance.bill = object.bill;

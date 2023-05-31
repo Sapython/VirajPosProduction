@@ -85,11 +85,14 @@ export function finalizeAndPrintKot(this: Bill) {
           cancelled:true,
         }
       })
+      this.editKotMode.newKot.forEach((product)=>{
+        product.cancelled = false;
+      })
       this.kots[kotIndex].products = [...cancelledProducts,...this.editKotMode.newKot];
-
       this.kots[kotIndex].stage = 'finalized';
       console.log('Active kot', this.kots[kotIndex]);
       this.printKot(this.kots[kotIndex],'editedKot')
+      this.kots[kotIndex].products = this.editKotMode.newKot;
     }
     this.editKotMode = null;
     this.dataProvider.kotViewVisible = true;
@@ -100,6 +103,9 @@ export function finalizeAndPrintKot(this: Bill) {
     console.log('info =>', activeKot);
 
     if (activeKot) {
+      activeKot.id = this.dataProvider.kotToken.toString();
+      this.dataProvider.kotToken++;
+      this.analyticsService.addKitchenToken();
       activeKot.stage = 'finalized';
       console.log('Active kot', activeKot);
       this.analyticsService.addKitchenToken();
@@ -132,6 +138,7 @@ export function finalizeAndPrintKot(this: Bill) {
   if (this.dataProvider.showTableOnBillAction) {
     this.dataProvider.openTableView.next(true);
   }
+  this.calculateBill();
 }
 
 export function deleteKot(this: Bill, kot: Kot) {
@@ -171,22 +178,25 @@ export function printKot(
       user: this.user,
     });
   }
+  console.log("kot.products",kot.products);
   let data:PrintableKot = {
     date:kot.createdDate.toDate().toLocaleDateString(),
     time:kot.createdDate.toDate().toLocaleTimeString(),
     orderNo:this.orderNo,
     mode:mode,
-    token:this.id,
+    token:kot.id,
     products:kot.products.map((product)=>{
       return {
         name: product.name,
         instruction:product.instruction,
         quantity:product.quantity,
-        edited:product.cancelled
+        edited:product.cancelled,
+        category:product.category
       }
     }),
     table:this.table.id,
   }
+  console.log("Kot data",data);
   this.printingService.printKot(data);
   console.log('Send to service');
 }

@@ -39,7 +39,7 @@ export function allFinalProducts(this: Bill): Product[] {
 }
 
 export function kotWithoutFunctions(this: Bill): any[] {
-  return this.kots.map((kot) => kot.toObject());
+  return this.kots.filter(kot => kot.stage=='cancelled' || kot.stage=='finalized').map((kot) => kot.toObject());
 }
 
 export function totalProducts(): number {

@@ -1,5 +1,5 @@
-<h3>View Modes</h3>
-<div class="row smartButtons">
+<h3>Settings</h3>
+<!-- <div class="row smartButtons">
   <button
     [disabled]="true"
     [ngClass]="{ selected: dataProvider.smartMode }"
@@ -31,30 +31,120 @@
     <img src="assets/images/ui/touch.svg" alt="" />
     Touch Mode
   </button>
-</div>
-<div>
-  <mat-slide-toggle
-    matTooltip="Show table view after kot, bill, nc, settle and discount."
-    [(ngModel)]="dataProvider.showTableOnBillAction"
-    (change)="setLocalShowTable($event)"
-    >Show table on bill action</mat-slide-toggle
-  >
-</div>
-<div>
-  <mat-form-field
-    appearance="outline"
-    matTooltip="Total time to mark a table as late in minutes"
-  >
-    <mat-label>Table timeout</mat-label>
+</div> -->
+<!-- <br />
+<hr /> -->
+<!-- line -->
+<div class="items">
+  <div class="item">
+    <p>Total time to mark a table as late in minutes</p>
     <input
       type="text"
-      matInput
+      placeholder="45 Min"
       [(ngModel)]="this.dataProvider.tableTimeOutTime"
-      (change)="updateSettings({ tableTimeOutTime: time.value })"
-      #time
+      (change)="
+        updateSettings({ tableTimeOutTime: this.dataProvider.tableTimeOutTime })
+      "
     />
-  </mat-form-field>
+  </div>
+  <div class="item">
+    <p>This text will be added as a note on printed bill</p>
+    <input
+      type="text"
+      placeholder="Thank you for visiting us"
+      [(ngModel)]="this.dataProvider.customBillNote"
+      (change)="
+        updateSettings({ customBillNote: this.dataProvider.customBillNote })
+      "
+    />
+  </div>
+  <div class="item">
+    <p>Prefix will be added to printed bill no</p>
+    <input
+      type="text"
+      placeholder="2023-"
+      [(ngModel)]="this.dataProvider.billNoSuffix"
+      (change)="
+        updateSettings({ billNoSuffix: this.dataProvider.billNoSuffix })
+      "
+    />
+  </div>
+  <div class="item">
+    <p>Enable <strong>smart mode</strong> to make your work efficient</p>
+    <mat-slide-toggle
+      [(ngModel)]="dataProvider.showTableOnBillAction"
+      [disabled]="true"
+      matTooltip="Smart mode is currently disabled for this account"
+      (change)="setLocalShowTable($event)"
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
+    <p>Enable <strong>touch mode</strong> if you have touch screen POS</p>
+    <mat-slide-toggle
+      [(ngModel)]="dataProvider.showTableOnBillAction"
+      (change)="setLocalShowTable($event)"
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
+    <p>Allow kot edit</p>
+    <mat-slide-toggle
+      [(ngModel)]="dataProvider.kotEditable"
+      (change)="updateSettings({ kotEditable: this.dataProvider.kotEditable })"
+    ></mat-slide-toggle>
+  </div>
+  <div
+    class="item"
+    *ngIf="this.dataProvider.kotEditable"
+    [@zoomInOnEnterAnimation]
+    [@zoomOutOnLeaveAnimation]
+  >
+    <p>Total time till you can edit KOT</p>
+    <input
+      type="text"
+      placeholder="10 Min"
+      [(ngModel)]="this.dataProvider.editKotTime"
+      (change)="updateSettings({ editKotTime: this.dataProvider.editKotTime })"
+    />
+  </div>
+  <div class="item">
+    <p>Show table view after kot, bill, nc, settle and discount</p>
+    <mat-slide-toggle
+      [(ngModel)]="dataProvider.showTableOnBillAction"
+      (change)="setLocalShowTable($event)"
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
+    <p>Directly print a bill when finalized</p>
+    <mat-slide-toggle
+      matTooltip="Print Bill After Finalize"
+      [(ngModel)]="dataProvider.printBillAfterFinalize"
+      (change)="
+        updateSettings({
+          printBillAfterFinalize: dataProvider.printBillAfterFinalize
+        })
+      "
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
+    <p>Directly print a bill when settled</p>
+    <mat-slide-toggle
+      matTooltip="Print Bill After Settle"
+      [(ngModel)]="dataProvider.printBillAfterSettle"
+      (change)="
+        updateSettings({
+          printBillAfterSettle: dataProvider.printBillAfterSettle
+        })
+      "
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
+    <p>Allow to add multiple discounts to a bill</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.multipleDiscount"
+      (change)="
+        updateSettings({ multipleDiscount: this.dataProvider.multipleDiscount })
+      "
+      *ngIf="this.dataProvider.getAccess('admin')"
+    ></mat-slide-toggle>
+  </div>
 </div>
-<p class="danger">
-  <sup>*</sup> Smart mode is currently disabled for this account.
-</p>

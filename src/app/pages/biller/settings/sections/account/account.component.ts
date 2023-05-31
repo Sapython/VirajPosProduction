@@ -82,14 +82,14 @@ export class AccountComponent {
     }
   }
 
-  updateSettings(){
-    this.dataProvider.loading = true;
-    this.menuManagementService.updateRootSettings({password:this.dataProvider.password},this.dataProvider.currentBusiness.businessId).then(()=>{
-      this.alertify.presentToast("Password updated successfully")
-    }).catch((err)=>{
-      this.alertify.presentToast("Failed to update password",'error')
-    }).finally(()=>{
-      this.dataProvider.loading = false;
-    })
-  }
+  // updateSettings(){
+  //   this.dataProvider.loading = true;
+  //   this.menuManagementService.updateRootSettings({password:this.dataProvider.password},this.dataProvider.currentBusiness.businessId).then(()=>{
+  //     this.alertify.presentToast("Password updated successfully")
+  //   }).catch((err)=>{
+  //     this.alertify.presentToast("Failed to update password",'error')
+  //   }).finally(()=>{
+  //     this.dataProvider.loading = false;
+  //   })
+  // }
 }

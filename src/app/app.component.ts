@@ -5,6 +5,7 @@ import { APP_CONFIG } from '../environments/environment';
 import { fadeInDownOnEnterAnimation, fadeOutUpOnLeaveAnimation } from 'angular-animations';
 import { DataProvider } from './core/services/provider/data-provider.service';
 import { AuthService } from './core/services/auth/auth.service';
+import { NgxIndexedDBService } from 'ngx-indexed-db';
 
 
 @Component({
@@ -21,7 +22,8 @@ export class AppComponent {
     private electronService: ElectronService,
     private translate: TranslateService,
     public dataProvider: DataProvider,
-    private authService:AuthService
+    private authService:AuthService,
+    private indexedDbService:NgxIndexedDBService
   ) {
     this.translate.setDefaultLang('en');
     console.log('APP_CONFIG', APP_CONFIG);
@@ -35,7 +37,16 @@ export class AppComponent {
     } else {
       console.log('Run in browser');
     }
-
+    indexedDbService.getAll('config').subscribe((res)=>{
+      console.log('112 got config',res);
+    },(err)=>{
+      console.log('112 got config error',err);
+    })
+    indexedDbService.add('config',{id:1,config:APP_CONFIG}).subscribe((res)=>{
+      console.log('112 config success',res);
+    },(err)=>{
+      console.log('112 config error',err);
+    });
     // console.log('EscPosEncoder', EscPosEncoder);
   }
 

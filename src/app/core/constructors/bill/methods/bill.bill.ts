@@ -79,8 +79,9 @@ export async function finalize(this:Bill) {
 
 export async function setInstruction(this:Bill) {
   this.instruction =
-    (await this.dataProvider.prompt('Enter instruction')) || '';
-  this.updated.next();
+    (await this.dataProvider.prompt('Enter instruction',{value:this.instruction})) || '';
+  console.log("THIS INSTRUCTION",this.instruction);
+  this.calculateBill();
 }
 
 export async function printBill(this:Bill) {
@@ -131,7 +132,7 @@ export async function settle(this:Bill,
     }
   }
   // update in databse
-  this.billService.updateProducts(allProducts);
+  this.billService.addSales(allProducts.map((product) => product.id));
   // this.stage = 'settled';
   this.settlement = {
     payments: payments,

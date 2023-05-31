@@ -14,12 +14,13 @@ import { ModeConfig } from '../../constructors/menu/menu';
 import { Product } from '../../../types/product.structure';
 import { Menu } from '../../../types/menu.structure';
 import { Table } from '../../constructors/table/Table';
+import { Functions, httpsCallable } from '@angular/fire/functions';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DataProvider {
-  constructor(private dialog: Dialog) {
+  constructor(private dialog: Dialog,private functions:Functions) {
     // read viewSettings from localStorage every 2 seconds
     setInterval(() => {
       this.smartMode = (
@@ -52,12 +53,14 @@ export class DataProvider {
     ])
   }
 
+  private passwordCheck = httpsCallable(this.functions,'checkPassword');
+
   // smart vars
   public chatInnerHtml: Node | undefined;
   public chatCustomWidget: any;
 
   // constants
-  public password: string = '123456';
+  // public password: string = '123456';
   public accessLevels: string[] = ['manager', 'waiter', 'accountant', 'admin'];
 
   // recommendationConfig
@@ -90,6 +93,8 @@ export class DataProvider {
   public todaySales:any = {};
   public taxes:Tax[] = [];
   public multipleDiscount:boolean = false;
+  public editKotTime:number = 1;
+  public kotEditable:boolean = false;
   
   // public access
   public discounts: CodeBaseDiscount[] = [];
@@ -241,9 +246,25 @@ export class DataProvider {
     }
   }
 
+  public async checkPassword(password: string) {
+    this.loading = true;
+    try {
+      let res = await this.passwordCheck({password:password,uid:this.currentUser.username})
+      if (res.data['correct']){
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      return false;
+    } finally {
+      this.loading = false;
+    }
+  }
+
   // onboarding vars
   public userSubject: Subject<userState> = new Subject<userState>();
-  public menuLoadSubject: Subject<any> = new Subject<any>();
+  public menuLoadSubject: ReplaySubject<any> = new ReplaySubject<any>(3);
   public modeChanged: Subject<string> = new Subject<string>();
   public currentBusiness: BusinessRecord | undefined;
   public businessId: string = '';

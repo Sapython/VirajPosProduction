@@ -1,9 +1,10 @@
 import { Timestamp } from '@angular/fire/firestore';
 import { UserConstructor } from './user.structure';
 import { Product } from './product.structure';
+import { Category } from './category.structure';
 
 export interface KotConstructor {
-  id: string;
+  id?: string;
   createdDate: Timestamp;
   stage: 'active' | 'finalized' | 'cancelled' | 'edit';
   products: Product[];
@@ -47,5 +48,6 @@ export interface printableKotItem {
   name:string;
   instruction:string;
   quantity:number;
+  category:any;
   edited?:boolean;
 }

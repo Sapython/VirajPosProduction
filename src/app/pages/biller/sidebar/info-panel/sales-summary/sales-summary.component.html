@@ -38,6 +38,6 @@
         <p>Total Orders</p>
         <p>{{ dine + takeAway + online | currency:'INR'}}</p>
     </li>
-    <button mat-flat-button color="primary" (click)="openReports()">Full Report</button>
+    <button mat-flat-button color="primary" *ngIf="this.dataProvider.getAccess(['admin','manager'])" (click)="openReports()">Full Report</button>
   </div>
 </section>

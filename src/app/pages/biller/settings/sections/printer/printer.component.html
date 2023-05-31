@@ -1,18 +1,4 @@
-<h3>Printer Settings</h3>
-<mat-form-field appearance="outline" *ngIf="this.dataProvider.currentBusiness">
-  <mat-label>Bill Printer</mat-label>
-  <mat-select
-    #billerPrinter
-    [(ngModel)]="this.dataProvider.currentBusiness.billerPrinter"
-    (selectionChange)="updateBillPrinter(billerPrinter.value)"
-    name="printer"
-  >
-    <mat-option> Select </mat-option>
-    <mat-option [value]="printer" *ngFor="let printer of printers">
-      {{ printer }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+
 <mat-form-field appearance="outline">
   <mat-label>Custom Bill Note</mat-label>
   <input

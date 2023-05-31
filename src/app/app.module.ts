@@ -50,7 +50,7 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>
   new TranslateHttpLoader(http, './assets/i18n/', '.json');
 export const dbConfig: DBConfig = {
   name: 'Viraj',
-  version: 1,
+  version: 6,
   objectStoresMeta: [
     {
       store: 'business',

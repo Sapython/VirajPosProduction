@@ -91,35 +91,6 @@ function createWindow(): BrowserWindow {
     autoHideMenuBar: true,
   });
 
-  if (serve) {
-    const debug = require('electron-debug');
-    debug();
-
-    require('electron-reloader')(module);
-    win.loadURL('http://localhost:4200');
-    // autoUpdater.addListener("")
-    autoUpdater.checkForUpdatesAndNotify();
-  } else {
-    // Path when running electron executable
-    let pathIndex = './index.html';
-
-    if (fs.existsSync(path.join(__dirname, '../dist/index.html'))) {
-      // Path when running electron in local folder
-      pathIndex = '../dist/index.html';
-    }
-
-    const url = new URL(path.join('file:', __dirname, pathIndex));
-    win.loadURL(url.href);
-    win.webContents.on("did-fail-load", () => {
-      console.log("did-fail-load");
-      const url = new URL(path.join('file:', __dirname, pathIndex));
-      console.log("LOADING NOW",__dirname,pathIndex,url.href);
-      win.loadURL(url.href);
-      // REDIRECT TO FIRST WEBPAGE AGAIN
-    });
-  }
-  
-  // Emitted when the window is closed.
   win.on('closed', () => {
     // Dereference the window object, usually you would store window
     // in an array if your app supports multi windows, this is the time
@@ -173,6 +144,51 @@ function createWindow(): BrowserWindow {
     }
   })
 
+  let pathIndex = './index.html';
+
+  if (fs.existsSync(path.join(__dirname, '../dist/index.html'))) {
+    // Path when running electron in local folder
+    pathIndex = '../dist/index.html';
+  }
+  const url = new URL(path.join('file:', __dirname, pathIndex));
+  win.loadURL(url.href);
+  win.webContents.on("did-fail-load", () => {
+    console.log("did-fail-load");
+    const url = new URL(path.join('file:', __dirname, pathIndex));
+    win.loadURL(url.href);
+    // REDIRECT TO FIRST WEBPAGE AGAIN
+  });
+  setTimeout(() => {
+    win.reload();
+  },500)
+  // if (serve) {
+  //   const debug = require('electron-debug');
+  //   debug();
+
+  //   require('electron-reloader')(module);
+  //   win.loadURL('http://localhost:4200');
+  //   // autoUpdater.addListener("")
+  //   autoUpdater.checkForUpdatesAndNotify();
+  // } else {
+  //   // Path when running electron executable
+  //   let pathIndex = './index.html';
+
+  //   if (fs.existsSync(path.join(__dirname, '../dist/index.html'))) {
+  //     // Path when running electron in local folder
+  //     pathIndex = '../dist/index.html';
+  //   }
+
+  //   const url = new URL(path.join('file:', __dirname, pathIndex));
+  //   win.loadURL(url.href);
+  //   win.webContents.on("did-fail-load", () => {
+  //     console.log("did-fail-load");
+  //     const url = new URL(path.join('file:', __dirname, pathIndex));
+  //     win.loadURL(url.href);
+  //     // REDIRECT TO FIRST WEBPAGE AGAIN
+  //   });
+  // }
+  
+  // Emitted when the window is closed.
   return win;
 }
 

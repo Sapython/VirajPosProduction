@@ -1,4 +1,4 @@
-## <small>0.1.62 (2023-05-31)</small>
+## <small>0.1.77 (2023-05-31)</small>
 
 * Added firebase and material ([5a8afcf](https://github.com/swayambhu-innovations/Packages/commit/5a8afcf))
 * Added icon for build ([d4e5870](https://github.com/swayambhu-innovations/Packages/commit/d4e5870))
@@ -26,6 +26,7 @@
 * Fixed bugs. ([8abd6b4](https://github.com/swayambhu-innovations/Packages/commit/8abd6b4))
 * Fixed bugs. ([9634543](https://github.com/swayambhu-innovations/Packages/commit/9634543))
 * Fixed bugs. ([b58acc5](https://github.com/swayambhu-innovations/Packages/commit/b58acc5))
+* Fixed bugs. And created final application. ([79b61aa](https://github.com/swayambhu-innovations/Packages/commit/79b61aa))
 * Fixed critical issues related to bill printing. ([9a0021d](https://github.com/swayambhu-innovations/Packages/commit/9a0021d))
 * Fixed discount and split bill bug. ([6b26f8d](https://github.com/swayambhu-innovations/Packages/commit/6b26f8d))
 * Fixed enter key bugs ([29cacea](https://github.com/swayambhu-innovations/Packages/commit/29cacea))

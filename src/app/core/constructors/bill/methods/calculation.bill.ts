@@ -33,7 +33,7 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   let finalTaxes: Tax[] = calculationResults.finalTaxes;
   let finalAdditionalTax = calculationResults.finalAdditionalTax;
   this.billing.subTotal = allProducts.reduce((acc, cur) => {
-    return acc + cur.untaxedValue;
+    return acc + (cur.untaxedValue * cur.quantity);
   }, 0);
   let applicableDiscount = 0;
   // apply discount to subTotal

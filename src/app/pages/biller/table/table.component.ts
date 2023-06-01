@@ -325,7 +325,7 @@ export class TableComponent implements OnInit {
   switchMode(mode:any){
   //  console.log("mode",mode);
     this.dataProvider.billingMode = mode.value;
-    this.dataProvider.modeChanged.next(mode.value);
+    this.dataProvider.modeChanged.next();
     if (mode.value == 'dineIn'){
     //  console.log("this.dataProvider.dineInMenu",this.dataProvider.dineInMenu);
       if(!this.dataProvider.dineInMenu){

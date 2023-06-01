@@ -18,6 +18,9 @@ import { MenuManagementService } from '../../services/database/menuManagement/me
 import { Dialog } from '@angular/cdk/dialog';
 import { ProductsService } from '../../services/database/products/products.service';
 
+
+var debug:boolean = true;
+
 export class ModeConfig {
   name: string;
   active: boolean;
@@ -75,6 +78,9 @@ export class ModeConfig {
     ]),
     max: new FormControl(this.dataProvider.newDishesConfig.max),
   });
+
+  // temps
+  activateCategory: Category | undefined;
   constructor(
     name: string,
     type: 'dineIn' | 'takeaway' | 'online',
@@ -125,6 +131,10 @@ export class ModeConfig {
     } else {
       return false;
     }
+  }
+
+  public resetActivateCategory(){
+    this.activateCategory = undefined;
   }
 
   async getProducts() {
@@ -243,6 +253,7 @@ export class ModeConfig {
           }
         });
       });
+      if(debug) console.log('this.viewCategories', this.viewCategories, this.activateCategory);
     }
   }
 
@@ -295,6 +306,23 @@ export class ModeConfig {
     this.dataProvider.menuLoadSubject.next({
       type: this.type,
     });
+    if (this.activateCategory){
+      if(debug) console.log('this.activateCategory', this.activateCategory);
+      let newViewCategory = this.viewCategories.find((cat)=>cat.id == this.activateCategory.id);
+      if(debug) console.log('newCategory', newViewCategory);
+      if (newViewCategory){
+        this.selectCategory(newViewCategory);
+        // this.activateCategory = undefined;
+      }
+    }
+    if(this.activateCategory){
+      let newMainCategory = this.mainCategories.find((cat)=>cat.id == this.activateCategory.id);
+      if(debug) console.log('newCategory', newMainCategory);
+      if (newMainCategory){
+        this.selectCategory(newMainCategory);
+        // this.activateCategory = undefined;
+      }
+    }
     this.dataProvider.loading = false;
   }
 
@@ -360,7 +388,8 @@ export class ModeConfig {
     });
     dialog.closed.subscribe((data: any) => {
       if (data) {
-        // console.log('data', data);
+        if(debug) console.log('data', data);
+        this.activateCategory = data;
         this.viewCategories.push(data);
       }
       this.getViewCategories();

@@ -78,7 +78,7 @@ export class AnalyticsService {
         this.firestore,
         'business/' + this.dataProvider.businessId + '/settings/settings'
       ),
-      { takeawayTokenNo: increment(1) }
+      { takeawayTokenNo: this.dataProvider.takeawayToken }
     );
   }
 
@@ -88,7 +88,7 @@ export class AnalyticsService {
         this.firestore,
         'business/' + this.dataProvider.businessId + '/settings/settings'
       ),
-      { onlineTokenNo: increment(1) }
+      { onlineTokenNo: this.dataProvider.onlineTokenNo }
     );
   }
 

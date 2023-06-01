@@ -17,9 +17,9 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
-        <mat-form-field>
+        <mat-form-field appearance="outline">
             <mat-label>Select Label</mat-label>
-            <mat-select formControlName="label" name="label">
+            <mat-select formControlName="tag" name="label">
                 <mat-option *ngFor="let label of tags" [value]="label">
                     {{label.name | titlecase}}
                 </mat-option>

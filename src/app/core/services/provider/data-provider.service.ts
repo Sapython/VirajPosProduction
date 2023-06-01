@@ -304,7 +304,7 @@ export class DataProvider {
   // onboarding vars
   public userSubject: Subject<userState> = new Subject<userState>();
   public menuLoadSubject: ReplaySubject<any> = new ReplaySubject<any>(3);
-  public modeChanged: Subject<string> = new Subject<string>();
+  public modeChanged: Subject<void> = new Subject<void>();
   public currentBusiness: BusinessRecord | undefined;
   public businessId: string = '';
 }

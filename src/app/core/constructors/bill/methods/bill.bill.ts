@@ -39,14 +39,14 @@ export async function finalize(this: Bill) {
   this.dataProvider.kotViewVisible = false;
   this.dataProvider.allProducts = true;
   // check if any kot is active
-  if (this.totalProducts == 0) {
-    alert('No products to finalize');
-    return;
-  }
   if (this.kots.find((kot) => kot.stage === 'active')) {
     if (confirm('There are active KOTs. Do you want to finalize them?')) {
       this.finalizeAndPrintKot();
     }
+  }
+  if (this.totalProducts == 0) {
+    alert('No products to finalize');
+    return;
   }
   if (this.mode == 'online') {
   //  console.log('customer info', this.customerInfo);
@@ -126,19 +126,19 @@ export async function settle(
     } else {
       if (this.mode == 'dineIn') {
         (this.billNo = this.dataProvider.billToken.toString()),
-          this.dataProvider.billToken++;
+        this.dataProvider.billToken++;
         this.analyticsService.addBillToken();
       } else if (this.mode == 'takeaway') {
         this.billNo = this.dataProvider.takeawayToken.toString();
-        // this.dataProvider.takeawayToken++;
-        // this.databaseService.addTakeawayToken();
+        this.dataProvider.takeawayToken++;
+        this.analyticsService.addTakeawayToken();
       } else if (this.mode == 'online') {
         (this.billNo = this.dataProvider.onlineTokenNo.toString()),
-          this.dataProvider.onlineTokenNo++;
+        this.dataProvider.onlineTokenNo++;
         this.analyticsService.addOnlineToken();
       } else {
         (this.billNo = this.dataProvider.billToken.toString()),
-          this.dataProvider.billToken++;
+        this.dataProvider.billToken++;
         this.analyticsService.addBillToken();
       }
     }

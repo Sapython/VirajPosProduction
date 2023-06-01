@@ -52,12 +52,13 @@ export class AddDishComponent {
     name: new FormControl('',Validators.required),
     price: new FormControl('',Validators.required),
     type: new FormControl('',Validators.required),
+    tag: new FormControl('',Validators.required),
   });
 
   constructor(private dialogRef:DialogRef,@Inject(DIALOG_DATA) public data:{mode:'add'|'edit',product?:Product}) {
     if(data.mode == 'edit') {
       this.newDishForm.patchValue(data.product)
-      this.tags = data.product.tags;
+      this.newDishForm.controls.tag.setValue(data.product.tags[0]);
     //  console.log(this.newDishForm.value,"this.tags",this.tags);
     }
   }
@@ -79,7 +80,7 @@ export class AddDishComponent {
   }
 
   addDish(){
-    this.dialogRef.close({...this.newDishForm.value,tags:this.tags})
+    this.dialogRef.close({...this.newDishForm.value,tags:[this.newDishForm.value.tag]})
   }
 
   switchColor(event:any,i:number){

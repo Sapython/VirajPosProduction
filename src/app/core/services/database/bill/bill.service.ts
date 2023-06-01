@@ -123,19 +123,19 @@ export class BillService {
   }
 
   updateToken(token: any) {
-    let foundTokens = this.updateHistory.filter((token)=>token.id==token.id)
-    if(foundTokens.length>0){
-      if (!token.bill){
-        // check if token had any bill before
-        let hasTokens = foundTokens.filter((token)=>token.bill);
-        if(hasTokens.length >0){
-          alert("Token already had a bill")
-          // console.log("HAD TOKENS",hasTokens);
-          return
-        }
-      }
-    }
-    this.updateHistory.push(token)
+    // let foundTokens = this.updateHistory.filter((token)=>token.id==token.id)
+    // if(foundTokens.length>0){
+    //   if (!token.bill){
+    //     // check if token had any bill before
+    //     let hasTokens = foundTokens.filter((token)=>token.bill);
+    //     if(hasTokens.length >0){
+    //       alert("Token already had a bill")
+    //       // console.log("HAD TOKENS",hasTokens);
+    //       return
+    //     }
+    //   }
+    // }
+    // this.updateHistory.push(token)
     return setDoc(
       doc(this.firestore, 'business/'+this.dataProvider.businessId+'/tokens', token.id),
       token,

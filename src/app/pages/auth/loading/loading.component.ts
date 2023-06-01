@@ -24,6 +24,9 @@ import { BusinessRecord, UserBusiness } from '../../../types/user.structure';
 import { TableConstructor } from '../../../types/table.structure';
 import { SettingsService } from '../../../core/services/database/settings/settings.service';
 import { TableService } from '../../../core/services/database/table/table.service';
+
+var debug = true;
+
 @Component({
   selector: 'app-loading',
   templateUrl: './loading.component.html',
@@ -60,8 +63,8 @@ export class LoadingComponent {
   securityForm:FormGroup = new FormGroup({
     password:new FormControl('',[Validators.required,Validators.minLength(8)]),
     confirmPassword:new FormControl('',[Validators.required,Validators.minLength(8)]),
-    billerPin:new FormControl('',[Validators.required,Validators.minLength(6)]),
-    confirmBillerPin:new FormControl('',[Validators.required,Validators.minLength(6)]),
+    // billerPin:new FormControl('',[Validators.required,Validators.minLength(6)]),
+    // confirmBillerPin:new FormControl('',[Validators.required,Validators.minLength(6)]),
   })
 
   addNewMenuForm: FormGroup = new FormGroup({
@@ -192,51 +195,51 @@ export class LoadingComponent {
     })
   }
 
-  signup(){
-  //  console.log(this.loginForm.value);
+  // signup(){
+  // //  console.log(this.loginForm.value);
     
-    if (this.loginForm.invalid) {
-      this.alertify.presentToast('Invalid form details.');
-      return;
-    }
-    // this.signUpWithUserAndPassword({
+  //   if (this.loginForm.invalid) {
+  //     this.alertify.presentToast('Invalid form details.');
+  //     return;
+  //   }
+  //   // this.signUpWithUserAndPassword({
       
-    // }).then((result)=>{
-    // //  console.log(result.data);
+  //   // }).then((result)=>{
+  //   // //  console.log(result.data);
       
-    // }).catch((error)=>{
-    // //  console.log(error);
-    // })
-    this.signUpService.signUpWithUserAndPassword(
-      this.loginForm.value.username,
-      this.loginForm.value.password,
-      {
-        business:{
-          access:{
-            accessLevel:'admin',
-            lastUpdated:Timestamp.now(),
-            updatedBy:'system'
-          },
-          address:'Sardar Patel Marg, beside JK Palace, Civil Lines, Prayagraj, Uttar Pradesh 211001',
-          businessId:'46r0a1zlta7hyb077scig9',
-          joiningDate:Timestamp.now(),
-          name:'Momos Castle',
-        },
-      }
-    ).then((data)=>{
-    //  console.log(data);
-      this.alertify.presentToast("Signed Up with "+this.loginForm.value.username)
-    }).catch((error)=>{
-    //  console.log(error);
-      this.alertify.presentToast("Some Error Occured")
-    })
-  }
+  //   // }).catch((error)=>{
+  //   // //  console.log(error);
+  //   // })
+  //   this.signUpService.signUpWithUserAndPassword(
+  //     this.loginForm.value.username,
+  //     this.loginForm.value.password,
+  //     {
+  //       business:{
+  //         access:{
+  //           accessLevel:'admin',
+  //           lastUpdated:Timestamp.now(),
+  //           updatedBy:'system'
+  //         },
+  //         address:'Sardar Patel Marg, beside JK Palace, Civil Lines, Prayagraj, Uttar Pradesh 211001',
+  //         businessId:'46r0a1zlta7hyb077scig9',
+  //         joiningDate:Timestamp.now(),
+  //         name:'Momos Castle',
+  //       },
+  //     }
+  //   ).then((data)=>{
+  //   //  console.log(data);
+  //     this.alertify.presentToast("Signed Up with "+this.loginForm.value.username)
+  //   }).catch((error)=>{
+  //   //  console.log(error);
+  //     this.alertify.presentToast("Some Error Occured")
+  //   })
+  // }
 
   async login() {
-    if (this.mode == 'signup') {
-      this.signup();
-      return;
-    }
+    // if (this.mode == 'signup') {
+    //   this.signup();
+    //   return;
+    // }
     try {
       this.dataProvider.loading = true;
       let result = await this.signInWithUserAndPassword({
@@ -371,7 +374,7 @@ export class LoadingComponent {
     this.userManagementService.userExists(username).then((doc)=>{
       if(doc.exists()){
         this.loginStage.next('Account Exists')
-      //  console.log('signing in',username,password);
+        if (debug) console.log('signing in',username,password);
         this.loginService.signInWithUserAndPassword(username,password).then((data)=>{
           this.loginStage.next('Logged In')
           this.onboard(data,id,logo)
@@ -386,7 +389,7 @@ export class LoadingComponent {
           businessId:id,
           hotelName:this.onboardingBusinessForm.value.name,
           hotelLogo:logo || '',
-          billerPin:this.securityForm.value.billerPin,
+          // billerPin:this.securityForm.value.billerPin,
           devices:[],
           modes:this.dataProvider.activeModes,
           username:this.onboardingBusinessForm.value.username,
@@ -406,7 +409,7 @@ export class LoadingComponent {
           }],
         }
         this.loginStage.next('Creating Account')
-      //  console.log("Signing Up",username,password);
+        if (debug) console.log("Signing Up",username,password);
         this.signUpService.signUpWithUserAndPassword(username,password,{
           business:{
             access:{
@@ -421,11 +424,12 @@ export class LoadingComponent {
           },email:data.email,phone:data.phone
         }).then((data)=>{
           this.loginStage.next('Account Created')
-        //  console.log("FINAL DATA",data);
+          if (debug) console.log("FINAL DATA",data);
           if (data['providerId']){
             this.onboard(data as UserCredential,id,logo)
           }
         }).catch((error)=>{
+          console.log('error', error);
           this.loginStage.next('Error Creating Account')
           this.alertify.presentToast(error.message,'error')
           // this.onboardingService.stage = 'onboardingStep3'
@@ -433,6 +437,7 @@ export class LoadingComponent {
         })
       }
     }).catch((error)=>{
+      console.log('error', error);
       this.loginStage.next('Error Fetching Account')
       this.alertify.presentToast(error.message,'error')
       // this.onboardingService.stage = 'onboardingStep3'
@@ -452,7 +457,7 @@ export class LoadingComponent {
     // TODO: register accounts
     // TODO: create menu
     try {
-    //  console.log("Started onboarding");
+      if(debug) console.log("Started onboarding");
       let userBusiness:UserBusiness = {
         access:{accessLevel:'admin',lastUpdated:Timestamp.fromDate(new Date()),updatedBy:'system'},
         address:this.onboardingBusinessForm.value.address,
@@ -460,22 +465,21 @@ export class LoadingComponent {
         joiningDate:Timestamp.fromDate(new Date()),
         name:this.onboardingBusinessForm.value.name,
       }
-    //  console.log('userBusiness', userBusiness,user);
+      if(debug) console.log('userBusiness', userBusiness,user);
       this.loginStage.next('Adding user account')
       let userBusinessRes = await this.signUpService.addBusinessAccount(user,userBusiness)
-    //  console.log('userBusinessRes', userBusinessRes);
+      if(debug) console.log('userBusinessRes', userBusinessRes);
       let data:BusinessRecord = {
         address:this.onboardingBusinessForm.value.address,
         businessId:id,
         hotelName:this.onboardingBusinessForm.value.name,
         hotelLogo:logoImage || '',
         modes:this.dataProvider.activeModes,
-        billerPin:this.securityForm.value.billerPin,
         devices:[],
         username:this.onboardingBusinessForm.value.username,
         email:this.onboardingBusinessForm.value.email,
-        fssai:this.onboardingBusinessForm.value.fssai,
-        gst:this.onboardingBusinessForm.value.gst,
+        fssai:this.onboardingBusinessForm.value.fssai || '',
+        gst:this.onboardingBusinessForm.value.gst || '',
         image:'',
         billerPrinter:'',
         cgst:2.5,
@@ -488,16 +492,16 @@ export class LoadingComponent {
           updatedBy:'system',
         }],
       }
-    //  console.log('data', data);
+      if(debug) console.log('data', data);
       this.loginStage.next('Adding business account')
       let addBusinessRes = this.settingsService.addBusiness(data,id)
       let businessRes = await Promise.all([userBusinessRes,addBusinessRes])
-    //  console.log('businessRes', businessRes);
+      if(debug) console.log('businessRes', businessRes);
       this.rootCategories.forEach((category)=>{
         category.products = category.products.filter((product)=> product.selected)
       })
       this.loginStage.next('Adding menu')
-    //  console.log("this.addNewMenuForm.value, this.rootCategories,id",this.addNewMenuForm.value, this.rootCategories,id);
+      if(debug) console.log("this.addNewMenuForm.value, this.rootCategories,id",this.addNewMenuForm.value, this.rootCategories,id);
       let menuRes = await this.menuManagementService.addNewMenu(this.addNewMenuForm.value, this.rootCategories,id)
       // generate and add 10 tables
       this.loginStage.next('Adding tables')
@@ -518,7 +522,7 @@ export class LoadingComponent {
         })
       }
       let tablesRes = await this.tableService.addTables(tables,id)
-    //  console.log('menuRes', menuRes);
+      if(debug) console.log('menuRes', menuRes);
       let settingsRef = await this.menuManagementService.updateRootSettings(
         {
           billTokenNo:0,
@@ -530,7 +534,6 @@ export class LoadingComponent {
           takeawaySales:0,
           dineInSales:0,
           onlineSales:0,
-          password:this.securityForm.value.billerPin,
           tableTimeOutTime:45,
           billNoSuffix:'',
           printBillAfterFinalize:true,
@@ -555,7 +558,7 @@ export class LoadingComponent {
         },
         id
       )
-    //  console.log('settingsRef', settingsRef);
+      if(debug) console.log('settingsRef', settingsRef);
       this.loginStage.next('Adding other accounts')
       let accountRef = await Promise.all(this.accounts.map((account)=>{
         return this.settingsService.addAccount({
@@ -565,7 +568,7 @@ export class LoadingComponent {
           updatedBy:'system',
         },id)
       }))
-    //  console.log('accountRef', accountRef);
+      if(debug) console.log('accountRef', accountRef);
       // onboard completed
       this.loginStage.next('Onboarding completed')
       const dialog = this.dialog.open(DialogComponent,{data:{title:'Your onboarding is complete.',description:"You can now login to your account and start using the application.",buttonText:'Login'}})
@@ -576,7 +579,7 @@ export class LoadingComponent {
         window.location.href = url.join('/') 
       })
     } catch (error) {
-    //  console.log('error', error);
+      console.log('error', error);
       this.loginStage.next('Error Occured')
       this.onboardingService.stage = 'errorOccured'
       this.onboardingStarted = false;

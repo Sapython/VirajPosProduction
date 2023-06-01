@@ -190,6 +190,7 @@ export class SplitBillComponent {
       return;
     }
     if (this.allSettled){
+      this.dataProvider.loading = true;
       let ids = await Promise.all(this.splittedBills.map(async (bill)=>{
         this.printingService.printBill(bill.printableBillData);
         bill.table = bill.table.id || bill.table as any;
@@ -202,6 +203,7 @@ export class SplitBillComponent {
         splitBill:true,
         bills:ids
       });
+      this.dataProvider.loading = false;
       this.dialogRef.close();
     }
   }

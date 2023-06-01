@@ -110,6 +110,7 @@ export class OnboardingService {
   }
 
   loadBusiness(businessId: string) {
+    console.log('Loading business', businessId);
     getDoc(doc(this.firestore, 'business', businessId)).then((business) => {
       if (business.exists()) {
         // console.log('business.data()', business.data());
@@ -406,11 +407,11 @@ export class OnboardingService {
         this.billService,
         this.printingService
       );
-      if(table.bill){
-        if(!tableClass.bill){
-          alert("Corrupted table")
-        }
-      }
+      // if(table.bill){
+      //   if(!tableClass.bill){
+      //     alert("Corrupted table")
+      //   }
+      // }
       return tableClass;
     });
     let formedTable = await Promise.all(tables);
@@ -430,8 +431,7 @@ export class OnboardingService {
     let changes = collectionChanges(query(collection(
       this.firestore,
       'business/' + this.dataProvider.businessId + '/tokens'
-    ),
-    where('completed','==',false)))
+    )))
     changes.subscribe(async (res)=>{
       // console.log("TOKENCHANGE",res);
       res.forEach(async (change)=>{
@@ -450,6 +450,20 @@ export class OnboardingService {
             this.dataProvider.tokens.push(table);
           }
         }
+        // if (change.type == 'modified'){
+        //   let tableId = change.doc.id;
+        //   let newTable = change.doc.data();
+        //   let table = this.dataProvider.tokens.find((token)=>token.id==tableId);
+        //   console.log("TABLE CHANGED",table,JSON.stringify(table.bill.stage),newTable);
+        //   console.log("CONDITION CHECKED",!(!table),!(!table.id),(table.bill == null || table.bill.stage == 'settled' || table.bill.stage == 'cancelled'));
+        //   if(table && table.id && (table.bill == null || table.bill.stage == 'settled' || table.bill.stage == 'cancelled')){
+        //     console.log("PASSED TO CLEAR TABLE",table);
+        //     if(newTable.bill == null){
+        //       console.log("CLEARING TABLE",table);
+        //       table.clearTable();
+        //     }
+        //   }
+        // }
       })
     })
     // res.then(async (res)=>{

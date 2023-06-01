@@ -68,6 +68,9 @@ export function firebaseUpdate(this: Bill) {
         });
         // this.billUpdated.next();
         this.calculateBill(true);
+        if(this.stage == 'settled' || this.stage == 'cancelled'){
+          this.table.clearTable();
+        }
       }
     });
   }

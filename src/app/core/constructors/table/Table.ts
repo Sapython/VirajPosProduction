@@ -22,7 +22,7 @@ export class Table implements TableConstructor {
   completed?: boolean;
   name: string;
   occupiedStart: Timestamp;
-  status: any;
+  status: 'available' | 'occupied';
   tableNo: number;
   type: 'table' | 'room' | 'token' | 'online';
   updated: Subject<void> = new Subject<void>();
@@ -54,22 +54,26 @@ export class Table implements TableConstructor {
     })
     this.updated.pipe(debounceTime(1000)).subscribe(() => {
       // this.databaseService.updateTable(this.toObject());
-      if (this.type == 'table') {
-        this.updateBill(this.toObject());
-      } else if (this.type == 'room') {
-        this.updateBill(this.toObject());
-      } else if (this.type == 'token') {
-        if (this.bill){
-          if(!this.toObject().bill){
-            alert("CORRUPTION: Token already had a bill")
-          }
-        }
-        this.updateToken(this.toObject());
-      } else if (this.type == 'online') {
-        this.updateOnlineToken(this.toObject());
-      }
+      this.triggerUpdate();
     });
     // this.updated.next();
+  }
+
+  triggerUpdate(){
+    if (this.type == 'table') {
+      this.updateBill(this.toObject());
+    } else if (this.type == 'room') {
+      this.updateBill(this.toObject());
+    } else if (this.type == 'token') {
+      // if (this.bill){
+      //   if(!this.toObject().bill){
+      //     alert("CORRUPTION: Token already had a bill")
+      //   }
+      // }
+      this.updateToken(this.toObject());
+    } else if (this.type == 'online') {
+      this.updateOnlineToken(this.toObject());
+    }
   }
 
   firebaseUpdate() {
@@ -151,6 +155,7 @@ export class Table implements TableConstructor {
       // mark table complete
       this.completed = true;
     }
+    this.triggerUpdate();
     this.updated.next();
   }
 
@@ -233,7 +238,7 @@ export class Table implements TableConstructor {
         // console.log('bill does not exist', object.bill);
         // console.log('bill', bill);
         // console.log('object', object);
-        alert('bill does not exist');
+        // alert('bill does not exist');
         instance.billPrice = object.billPrice;
         instance.occupiedStart = object.occupiedStart;
         instance.status = 'available';
@@ -263,7 +268,7 @@ export class Table implements TableConstructor {
       instance.billPrice = object.billPrice;
       instance.occupiedStart = object.occupiedStart;
       instance.status = object.status;
-      instance.status = 'availabler';
+      instance.status = 'available';
       instance.completed = object.completed || false;
       instance.minutes = object.minutes || 0;
       instance.timeSpent = object.timeSpent || '';
@@ -273,18 +278,18 @@ export class Table implements TableConstructor {
 
   toObject() {
     let foundTokens = this.updateHistory.filter((token)=>token.id==token.id)
-    if(foundTokens.length>0){
-      if (!this.bill){
-        // check if token had any bill before
-        let hasTokens = foundTokens.filter((token)=>token.bill);
-        if(hasTokens.length >0){
-          alert("Token already had a bill")
-          // console.log("HAD TOKENS",hasTokens);
-          return
-        }
-      }
-    }
-    this.updateHistory.push(this)
+    // if(foundTokens.length>0){
+    //   if (!this.bill){
+    //     // check if token had any bill before
+    //     let hasTokens = foundTokens.filter((token)=>token.bill);
+    //     if(hasTokens.length >0){
+    //       alert("Token already had a bill")
+    //       // console.log("HAD TOKENS",hasTokens);
+    //       return
+    //     }
+    //   }
+    // }
+    // this.updateHistory.push(this)
     return {
       id: this.id,
       bill: this.bill?.id || null,
@@ -377,9 +382,48 @@ export class Table implements TableConstructor {
         }
         return this.bill;
       } else {
-        this.status = 'available';
-        this.updated.next();
-        throw new Error('No bill is available on table ' + this.tableNo);
+        if (this.dataProvider.currentUser) {
+          let user: UserConstructor = {
+            username: this.dataProvider.currentUser?.username,
+            access: '',
+          };
+          var mode: 'takeaway' | 'online' | 'dineIn';
+          if (this.type == 'token') {
+            mode = 'takeaway';
+          } else if (this.type == 'online') {
+            mode = 'online';
+          } else if (this.type == 'table') {
+            mode = 'dineIn';
+          } else if (this.type == 'room') {
+            mode = 'dineIn';
+          } else {
+            alert('Table corrupted please contact admin');
+            return;
+          }
+          this.bill = new Bill(
+            this.generateId(),
+            this,
+            mode,
+            user,
+            this.dataProvider.currentMenu?.selectedMenu,
+            this.dataProvider,
+            this.analyticsService,this.billService,this.printingService
+          );
+          this.occupiedStart = Timestamp.now();
+          this.status = 'occupied';
+          this.updated.next();
+          return this.bill;
+        } else {
+          if (!this.dataProvider.currentUser) {
+            console.log(
+              'this.dataProvider.currentUser ',
+              this.dataProvider.currentUser
+            );
+            throw new Error('No user is found');
+          } else {
+            throw new Error('Some error occurred');
+          }
+        }
       }
     }
   }
@@ -390,6 +434,7 @@ export class Table implements TableConstructor {
       this.bill = table.bill;
       table.bill = tempBill;
       this.updated.next();
+      this.triggerUpdate();
     } else {
       throw new Error(
         'No bill is available on table ' + this.tableNo + ' or ' + table.tableNo
@@ -401,6 +446,7 @@ export class Table implements TableConstructor {
     if (this.bill && table.bill) {
       this.bill.merge(table.bill);
       this.updated.next();
+      this.triggerUpdate();
     } else {
       throw new Error(
         'No bill is available on table ' + this.tableNo + ' or ' + table.tableNo

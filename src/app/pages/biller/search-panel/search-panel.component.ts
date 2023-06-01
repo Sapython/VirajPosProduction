@@ -45,7 +45,7 @@ export class SearchPanelComponent implements OnInit {
         this.searchInstance.setCollection(this.dataProvider.currentMenu?.products)
       }
     })
-    this.dataProvider.modeChanged.subscribe((mode)=>{
+    this.dataProvider.modeChanged.subscribe(()=>{
       // console.log("this.dataProvider.modeChanged",mode,this.dataProvider.currentMenu?.products);
       this.searchResults = [];
       this.billResults = [];

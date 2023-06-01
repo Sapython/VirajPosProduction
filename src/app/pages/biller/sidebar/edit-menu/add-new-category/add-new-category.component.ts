@@ -121,8 +121,10 @@ export class AddNewCategoryComponent implements OnInit {
         // })
         this.dataProvider.loading = true;
         let res = await this.menuManagementService.addViewCategory(category);
-        this.alertify.presentToast('Category Added');
-        this.dialogRef.close(category);
+        if(res){
+          this.alertify.presentToast('Category Added');
+          this.dialogRef.close({...category,id:res.id});
+        }
       } catch (error) {
         this.alertify.presentToast('Something went wrong');
       } finally {

@@ -35,9 +35,10 @@ export class ProductsPanelComponent implements OnInit{
         this.searchVisible = false;
       }
     })
-    this.dataProvider.modeChanged.subscribe((mode)=>{
+    this.dataProvider.modeChanged.subscribe(()=>{
       this.searchResults = [];
       this.customResults = [];
+      this.products = [];
       this.searchVisible = false;
     })
     this.dataProvider.menuLoadSubject.subscribe((value)=>{

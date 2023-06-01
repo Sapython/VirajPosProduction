@@ -42,7 +42,6 @@ export interface BusinessRecord {
   cgst: number;
   sgst: number;
   users: Member[];
-  billerPin: string;
   devices: string[];
 }
 export interface Access {

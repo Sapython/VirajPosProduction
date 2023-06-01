@@ -21,6 +21,8 @@ export class EditMenuComponent implements OnInit {
     this.dialogRef.closed.subscribe(()=>{
       this.dataProvider.loading = true;
       Promise.all(this.dataProvider.menus.map((menu)=>{
+        menu.resetActivateCategory();
+        this.dataProvider.modeChanged.next();
         return menu.updateChanged()
       })).then(async (r)=>{
         // if (r.flat().length > 0){

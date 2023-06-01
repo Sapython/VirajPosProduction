@@ -47,17 +47,17 @@ export class MenuManagementService {
     private alertify: AlertsAndNotificationsService,
     private indexedDbService: NgxIndexedDBService
   ) {
+    // this.menuUpdated.pipe(debounceTime(1000)).subscribe(() => {
+    //   let menus = this.updatableMenus.filter((v, i, a) => a.indexOf(v) === i);
+    //   // console.log('Menus to update', menus);
+    //   // menus.forEach((menuId) => {
+    //   //   this.getMenu(menuId)
+    //   // });
+    //   this.dataProvider.loading = true;
+    //   Promise.all(menus.map(async (menuId)=> await this.getMenu(menuId)))
+    //   this.dataProvider.loading = false;
+    // })
     this.menuUpdated.pipe(debounceTime(1000)).subscribe(() => {
-      let menus = this.updatableMenus.filter((v, i, a) => a.indexOf(v) === i);
-      // console.log('Menus to update', menus);
-      // menus.forEach((menuId) => {
-      //   this.getMenu(menuId)
-      // });
-      this.dataProvider.loading = true;
-      Promise.all(menus.map(async (menuId)=> await this.getMenu(menuId)))
-      this.dataProvider.loading = false;
-    })
-    this.menuUpdated.pipe(debounceTime(5000)).subscribe(() => {
       let menus = this.updatableMenus.filter((v, i, a) => a.indexOf(v) === i);
       // console.log('Menus to update', menus);
       menus.forEach((menuId) => {

@@ -139,6 +139,8 @@ export class SettleComponent implements OnInit {
   }
   
   addOnReturn(event){
+    console.log(event);
+    event.stopPropagation();
     if (event.key === 'Enter'){
       if (this.billSum > this.totalPaid){
         this.addMethod()

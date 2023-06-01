@@ -4,6 +4,8 @@ import { Product } from '../../../../types/product.structure';
 import { Kot } from '../../kot/Kot';
 import { PrintableKot } from '../../../../types/kot.structure';
 
+var debug:boolean = true;
+
 export function addKot(this: Bill, kot: Kot) {
   this.kots.push(kot);
   this.tokens.push(this.dataProvider.kotToken.toString());
@@ -189,8 +191,14 @@ export function printKot(
   }
 //  console.log("kot.products",kot.products);
   let data:PrintableKot = {
-    date:kot.createdDate.toDate().toLocaleDateString(),
-    time:kot.createdDate.toDate().toLocaleTimeString(),
+    // date in dd/mm/yyyy format
+    date: kot.createdDate.toDate().toLocaleDateString('en-GB'),
+    // time in 12 hour format
+    time: kot.createdDate.toDate().toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    }),
     orderNo:this.orderNo,
     mode:mode,
     billingMode:this.mode,
@@ -206,7 +214,7 @@ export function printKot(
     }),
     table:this.table.id,
   }
-//  console.log("Kot data",data);
+  if(debug) console.log("Kot data",data);
   this.printingService.printKot(data);
 //  console.log('Send to service');
 }

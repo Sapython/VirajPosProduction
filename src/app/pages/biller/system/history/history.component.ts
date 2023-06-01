@@ -12,7 +12,7 @@ import { DataProvider } from '../../../../core/services/provider/data-provider.s
 import { HistoryService } from '../../../../core/services/database/history/history.service';
 import { BillService } from '../../../../core/services/database/bill/bill.service';
 import { BillConstructor } from '../../../../types/bill.structure';
-import { KotConstructor } from '../../../../types/kot.structure';
+import { KotConstructor, PrintableKot } from '../../../../types/kot.structure';
 import { getPrintableBillConstructor } from '../../../../core/constructors/bill/methods/getHelpers.bill';
 import { calculateBill } from '../../actions/split-bill/split-bill.component';
 @Component({
@@ -100,7 +100,32 @@ export class HistoryComponent {
     const dialog = this.dialog.open(ReprintReasonComponent)
     let res = await firstValueFrom(dialog.closed)
     if(res && typeof res == 'string'){
-      this.printingService.reprintKot(kot,bill.table.name,bill);
+      let printableKot:PrintableKot = {
+        billingMode:bill.mode,
+        // date in dd/mm/yyyy format
+        date: kot.createdDate.toDate().toLocaleDateString('en-GB'),
+        // time in 12 hour format
+        time: kot.createdDate.toDate().toLocaleTimeString('en-US', {
+          hour: 'numeric',
+          minute: 'numeric',
+          hour12: true,
+        }),
+        mode:'reprintKot',
+        orderNo:bill.orderNo,
+        products:kot.products.map((product)=>{
+          return {
+            category:product.category,
+            instruction:product.instruction,
+            name: product.name,
+            quantity:product.quantity,
+            edited:product.cancelled,
+          }
+        }),
+        table:bill.table as unknown as string,
+        token:kot.id,
+      }
+      this.printingService.printKot(printableKot)
+      // this.printingService.reprintKot(kot,bill.table.name,bill);
     } else {
       alert("Reprint Cancelled")
       return;

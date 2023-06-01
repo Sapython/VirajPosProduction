@@ -17,7 +17,7 @@ export class AddTaxComponent implements OnInit {
   constructor(private dialog:DialogRef,@Inject(DIALOG_DATA) public data:{mode:'add'|'edit',setting:any}){}
   ngOnInit(): void {
     if(this.data.mode == 'edit'){
-      console.log(this.data.setting);
+    //  console.log(this.data.setting);
       this.taxForm.patchValue(this.data.setting)
     }
   }

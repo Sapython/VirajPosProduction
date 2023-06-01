@@ -44,12 +44,12 @@ export class UserManagementService {
       email: string;
     } = await firstValueFrom(this.dbService.getByKey('business', 1));
     if (res && res['userId']) {
-      console.log('UserId', res);
+    //  console.log('UserId', res);
       if (res['userId'] == userId) {
         return res;
       } else {
         this.dbService.deleteByKey('business', 1).subscribe((res) => {
-          console.log('Deleted', res);
+        //  console.log('Deleted', res);
         });
         return false;
       }
@@ -68,7 +68,7 @@ export class UserManagementService {
     let deleteRequests = Promise.all(dbConfig.objectStoresMeta.map(async (store) => {
       return await firstValueFrom(this.dbService.deleteObjectStore(store.store));
     }))
-    console.log("Deleting Viraj cache ",deleteRequests)
+  //  console.log("Deleting Viraj cache ",deleteRequests)
     this.router.navigateByUrl('/login');
     this.dataProvider.loading = false;
   }
@@ -100,7 +100,7 @@ export class UserManagementService {
     try {
       this.dataProvider.loading = true;
       let resetPasswordRes = await this.resetPasswordFunction({previousPassword,newPassword,confirmPassword,uid:this.dataProvider.currentUser.username});
-      console.log("resetPasswordRes",resetPasswordRes);
+    //  console.log("resetPasswordRes",resetPasswordRes);
       if (resetPasswordRes){
         this.alertify.presentToast("Password reset successfully.");
         await this.dataProvider.confirm("Password reset successfully. Please login again.",[0],{buttons:["Ok"],primary:[0]});
@@ -109,7 +109,7 @@ export class UserManagementService {
         this.router.navigateByUrl("/login");
       }
     } catch (error) {
-      console.log("resetPasswordError error res",error);
+    //  console.log("resetPasswordError error res",error);
       throw error;
     } finally {
       this.dataProvider.loading = false;

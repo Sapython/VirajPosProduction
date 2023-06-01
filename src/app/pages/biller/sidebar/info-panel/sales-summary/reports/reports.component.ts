@@ -66,7 +66,7 @@ export class ReportsComponent implements OnInit {
       if (this.reportMode == 'billWise'){
         this.loading = true;
         this.billService.getBillsByDay(this.range.value.start,this.range.value.end).then((bills) => {
-          console.log("bills",bills.docs);
+        //  console.log("bills",bills.docs);
           this.bills = bills.docs.map((doc) => {
             return {...doc.data(),id:doc.id} as BillConstructor;
           })
@@ -78,14 +78,14 @@ export class ReportsComponent implements OnInit {
           let localBills = bills.docs.map((doc) => {
             return {...doc.data(),id:doc.id} as BillConstructor;
           })
-          console.log("bills",localBills);
+        //  console.log("bills",localBills);
           let kotReport = localBills.map((bill)=>{
             return bill.kots.map((kot)=>{
               return {...kot,billNo:bill.billNo!,tokenNo:bill.orderNo,grandTotal: kot.products.reduce((a, b) => a + (b['price'] || 0), 0)}
             })
           })
           this.kots = kotReport.flat()
-          console.log("kotReport",kotReport,);
+        //  console.log("kotReport",kotReport,);
           this.loading = false;
         });
       } else if (this.reportMode == 'itemWise'){
@@ -94,7 +94,7 @@ export class ReportsComponent implements OnInit {
           let localBills = bills.docs.map((doc) => {
             return {...doc.data(),id:doc.id} as BillConstructor;
           })
-          console.log("bills",localBills);
+        //  console.log("bills",localBills);
           let kotReport = localBills.map((bill)=>{
             return bill.kots.map((kot)=>{
               return kot.products.map((product)=>{
@@ -103,7 +103,7 @@ export class ReportsComponent implements OnInit {
             })
           })
           let productReport = kotReport.flat().flat()
-          console.log("productReport",productReport);
+        //  console.log("productReport",productReport);
           this.products = productReport.reduce((a, b) => {
             let index = a.findIndex((res)=>res.id == b.id)
             if (index == -1){
@@ -112,7 +112,7 @@ export class ReportsComponent implements OnInit {
               return [...a.slice(0,index),{...a[index],bills:a[index].bills+','+b.billNo,kots:a[index].kots+','+b.kotNo,quantity:a[index].quantity+1,amount:a[index].amount+b.price},...a.slice(index+1)]
             }
           },[] as productReport[])
-          console.log("productReport",this.products);
+        //  console.log("productReport",this.products);
           this.loading = false;
         });
       } else if (this.reportMode == 'discounted'){
@@ -178,9 +178,9 @@ export class ReportsComponent implements OnInit {
           let localBills = bills.docs.map((doc) => {
             return {...doc.data(),id:doc.id} as BillConstructor;
           })
-          console.log("bills local",localBills);
+        //  console.log("bills local",localBills);
           let filteredLocalBills = localBills.filter((res)=>res.settlement && res.billing.grandTotal < this.maxAmount && res.billing.grandTotal > 0)
-          console.log("bills",filteredLocalBills);
+        //  console.log("bills",filteredLocalBills);
           let taxes:Tax[] = []
           filteredLocalBills.forEach((bill)=>{
             bill.billing.taxes.forEach((tax)=>{
@@ -188,7 +188,7 @@ export class ReportsComponent implements OnInit {
               if (index == -1){
                 taxes.push(JSON.parse(JSON.stringify(tax)))
               } else {
-                console.log("Adding tax",taxes[index].amount,tax.amount,taxes[index].amount + tax.amount);
+              //  console.log("Adding tax",taxes[index].amount,tax.amount,taxes[index].amount + tax.amount);
                 taxes[index].amount = taxes[index].amount + tax.amount
               }
             })
@@ -207,9 +207,9 @@ export class ReportsComponent implements OnInit {
           let localBills = bills.docs.map((doc) => {
             return {...doc.data(),id:doc.id} as BillConstructor;
           })
-          console.log("bills local",localBills);
+        //  console.log("bills local",localBills);
           let filteredLocalBills = localBills.filter((res)=>res.settlement && res.mode == 'takeaway')
-          console.log("bills",filteredLocalBills);
+        //  console.log("bills",filteredLocalBills);
           let taxes:Tax[] = []
           filteredLocalBills.forEach((bill)=>{
             bill.billing.taxes.forEach((tax)=>{
@@ -217,7 +217,7 @@ export class ReportsComponent implements OnInit {
               if (index == -1){
                 taxes.push(JSON.parse(JSON.stringify(tax)))
               } else {
-                console.log("Adding tax",taxes[index].amount,tax.amount,taxes[index].amount + tax.amount);
+              //  console.log("Adding tax",taxes[index].amount,tax.amount,taxes[index].amount + tax.amount);
                 taxes[index].amount = taxes[index].amount + tax.amount
               }
             })

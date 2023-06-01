@@ -4,7 +4,7 @@ import { Product } from '../../../../types/product.structure';
 import { Kot } from '../../kot/Kot';
 
 export function lineCancelled(this: Bill, item: Product, event: any, kot: Kot) {
-  console.log('line cancelled', item, event);
+//  console.log('line cancelled', item, event);
   if (event.type == 'unmade') {
     kot.unmade = true;
   }

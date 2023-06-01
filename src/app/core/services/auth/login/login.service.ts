@@ -22,7 +22,7 @@ export class LoginService {
         throw new Error('Password must be between 8 and 20 characters');
     }
     let signInRequest = await this.signInWithUserAndPasswordFunction({username, password})
-    console.log("signInRequest",signInRequest);
+  //  console.log("signInRequest",signInRequest);
     return loginWithCustomToken(signInRequest.data['token'])
   }
 

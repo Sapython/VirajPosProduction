@@ -57,7 +57,7 @@ export class ConfigComponent {
           data: { type: 'dineIn', menus: this.dataProvider.allMenus },
         });
         dialog.closed.subscribe(async (data: any) => {
-          console.log('data', data);
+        //  console.log('data', data);
           if (data) {
             let currentMenu = this.dataProvider.allMenus.find(
               (menu) => menu.id == data
@@ -91,7 +91,7 @@ export class ConfigComponent {
           data: { type: 'takeaway', menus: this.dataProvider.allMenus },
         });
         dialog.closed.subscribe(async (data: any) => {
-          console.log('data', data);
+        //  console.log('data', data);
           if (data) {
             let currentMenu = this.dataProvider.allMenus.find(
               (menu) => menu.id == data
@@ -125,7 +125,7 @@ export class ConfigComponent {
           data: { type: 'online', menus: this.dataProvider.allMenus },
         });
         dialog.closed.subscribe(async (data: any) => {
-          console.log('data', data);
+        //  console.log('data', data);
           if (data) {
             let currentMenu = this.dataProvider.allMenus.find(
               (menu) => menu.id == data
@@ -161,7 +161,7 @@ export class ConfigComponent {
         (this.dataProvider.menus.find((menu) => menu.type == 'online') &&
           this.modes[2])
     );
-    console.log('currentMenu', currentMenu);
+  //  console.log('currentMenu', currentMenu);
     if (currentMenu) {
       this.dataProvider.menuLoadSubject.next(currentMenu);
     }
@@ -201,7 +201,7 @@ export class ConfigComponent {
       })
       .catch((err) => {
         this.alertify.presentToast('Error while saving settings');
-        console.log(err);
+      //  console.log(err);
       });
   }
 

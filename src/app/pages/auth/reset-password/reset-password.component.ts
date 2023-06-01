@@ -49,7 +49,7 @@ export class ResetPasswordComponent {
           this.resetPasswordForm.reset();
         })
         .catch((err) => {
-          console.log(err);
+        //  console.log(err);
           this.alertify.presentToast(
             err.message || err || 'Some error occured while resetting password'
           );

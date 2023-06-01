@@ -19,11 +19,11 @@ export class SelectRecipeComponent {
     private dialogRef: DialogRef
   ) {
     this.searchSubject.pipe(debounceTime(600)).subscribe((searchString:string)=>{
-      console.log("searchString",searchString);
+    //  console.log("searchString",searchString);
       this.filteredProducts = this.fuseSearchInstance.search(searchString).map((result)=>{
         return result.item;
       })
-      console.log("this.filteredProducts",this.filteredProducts);
+    //  console.log("this.filteredProducts",this.filteredProducts);
     })
   }
 

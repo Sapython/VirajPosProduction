@@ -30,7 +30,7 @@ export class SystemComponent {
   logOut(){
     const confirmDialog = this.dialog.open(DialogComponent,{data:{title:'Logout',message:'Are you sure you want to logout?'}});
     confirmDialog.closed.subscribe(result=>{
-      console.log(result);
+    //  console.log(result);
       if(result){
         this.userManagementService.logout();
       }

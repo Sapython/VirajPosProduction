@@ -37,7 +37,7 @@ export class TaxesComponent implements OnInit {
     const dialog = this.dialog.open(AddTaxComponent, { data: { mode: 'add' } });
     firstValueFrom(dialog.closed)
       .then((data: any) => {
-        console.log('data', data);
+      //  console.log('data', data);
         if (data) {
           this.dataProvider.loading = true;
           this.settingsService
@@ -71,7 +71,7 @@ export class TaxesComponent implements OnInit {
     });
     firstValueFrom(dialog.closed)
       .then((data: any) => {
-        console.log('data', data);
+      //  console.log('data', data);
         if (data) {
           this.settingsService
             .updateTax(tax.id, { ...data, updateDate: Timestamp.now() })

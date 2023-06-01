@@ -93,7 +93,7 @@ export class AnalyticsService {
   }
 
   addKitchenToken() {
-    console.log('this.dataProvider.kotToken', this.dataProvider.kotToken);
+  //  console.log('this.dataProvider.kotToken', this.dataProvider.kotToken);
     return updateDoc(
       doc(
         this.firestore,

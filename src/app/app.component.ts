@@ -30,12 +30,12 @@ export class AppComponent {
     // console.log('ESCPOS', EscPosEncoder);
 
     // if (electronService.isElectron) {
-    //   console.log(process.env);
-    //   console.log('Run in electron');
-    //   console.log('Electron ipcRenderer', this.electronService.ipcRenderer);
-    //   console.log('NodeJS childProcess', this.electronService.childProcess);
+    // //  console.log(process.env);
+    // //  console.log('Run in electron');
+    // //  console.log('Electron ipcRenderer', this.electronService.ipcRenderer);
+    // //  console.log('NodeJS childProcess', this.electronService.childProcess);
     // } else {
-    //   console.log('Run in browser');
+    // //  console.log('Run in browser');
     // }
     indexedDbService.getAll('config').subscribe((res)=>{
       // console.log('112 got config',res);

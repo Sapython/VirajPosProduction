@@ -398,7 +398,7 @@ export class OnboardingService {
     );
     let tables = res.docs.map(async (doc) => {
       let table = {...doc.data(),id:doc.id} as TableConstructor;
-      return await Table.fromObject(
+      let tableClass =  await Table.fromObject(
         table,
         this.dataProvider,
         this.analyticsService,
@@ -406,6 +406,12 @@ export class OnboardingService {
         this.billService,
         this.printingService
       );
+      if(table.bill){
+        if(!tableClass.bill){
+          alert("Corrupted table")
+        }
+      }
+      return tableClass;
     });
     let formedTable = await Promise.all(tables);
     formedTable.sort((a, b) => {

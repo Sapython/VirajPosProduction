@@ -12,7 +12,7 @@ export class ProductsService {
   constructor(private dataProvider:DataProvider,private firestore:Firestore) { }
   
   addRecipe(recipe: any,menuId:string) {
-    console.log("Adding at",'business/'+this.dataProvider.businessId+'/menus/'+menuId+'/products');
+  //  console.log("Adding at",'business/'+this.dataProvider.businessId+'/menus/'+menuId+'/products');
     return addDoc(
       collection(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/'+menuId+'/products'),
       recipe

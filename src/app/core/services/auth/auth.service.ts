@@ -48,7 +48,7 @@ export class AuthService {
         }
       })
       .catch((err) => {
-        console.log('Local login error', err);
+      //  console.log('Local login error', err);
       });
     onAuthStateChanged(this.auth, async (user) => {
       this.dataProvider.isAuthStateAvaliable = false;
@@ -95,7 +95,7 @@ export class AuthService {
               }
             })
             .catch((err) => {
-              console.log('Getting current user Error', err);
+            //  console.log('Getting current user Error', err);
             });
         }
       } else {
@@ -123,7 +123,7 @@ export class AuthService {
           code: 'noUser',
           message: 'User not found',
         });
-        console.log('No auth state found');
+      //  console.log('No auth state found');
       }
     });
   }

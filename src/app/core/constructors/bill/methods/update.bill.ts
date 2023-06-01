@@ -13,7 +13,7 @@ export function firebaseUpdate(this: Bill) {
   if (this.id) {
     this.billService.getBillSubscription(this.id).subscribe((bill) => {
       this.billSubscriptionCallerStarted = true;
-      console.log('bill changed', bill);
+    //  console.log('bill changed', bill);
       //  && (!this.dataProvider.currentBill || this.dataProvider.currentBill.id != bill['id'])
       if (bill) {
         this.stage = bill['stage'];
@@ -140,7 +140,7 @@ export function fromObject(
     instance.instruction = object.instruction || '';
     // create kots classes from objects and add them to the bill
     object.kots.forEach((kot) => {
-      console.log('Creating kot', kot);
+    //  console.log('Creating kot', kot);
       instance.addKot(new Kot(kot.products[0], kot));
     });
     // instance.currentKot = instance.kots.find((kot) => {
@@ -156,7 +156,7 @@ export function fromObject(
 export async function updateToFirebase(this: Bill, data: boolean | void) {
   if (!data) {
     let data = this.toObject();
-    console.log('updating bill', data);
+  //  console.log('updating bill', data);
     await this.billService.updateBill(data);
     // console.log('Bill updated', data);
     this.table.updated.next();

@@ -33,7 +33,7 @@ export class CancelComponent {
   }
 
   moveFocus(event,elm){
-    console.log(event);
+  //  console.log(event);
     if(event.keyCode == 13){
       elm.focus()
     }

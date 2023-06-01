@@ -67,7 +67,7 @@ export class ActionsComponent {
                 this.dataProvider.currentBill.kots.findIndex(
                   (kot: Kot) => kot.stage === 'active' || kot.stage === 'edit'
                 );
-              console.log('this.activeKotIndex', this.activeKotIndex);
+            //  console.log('this.activeKotIndex', this.activeKotIndex);
               if (activeKot) {
                 this.kots = [activeKot];
               } else {
@@ -106,7 +106,7 @@ export class ActionsComponent {
     if (this.dataProvider.currentBill) {
       let dialog = this.dialog.open(SettleComponent,{data:this.dataProvider.currentBill.billing.grandTotal});
       dialog.closed.subscribe((result: any) => {
-        console.log('Result', result);
+      //  console.log('Result', result);
         if (result && this.dataProvider.currentBill && result.settling && result.paymentMethods) {
           this.dataProvider.currentBill.settle(result.paymentMethods,'internal',result.detail || null);
         }
@@ -122,18 +122,18 @@ export class ActionsComponent {
   splitAndSettle(){
     const dialog = this.dialog.open(SplitBillComponent,{data:this.dataProvider.currentBill})
     dialog.closed.subscribe(async (value:any)=>{
-      console.log(value);
+    //  console.log(value);
     })
   }
 
   addDiscount() {
     const dialog = this.dialog.open(AddDiscountComponent,{data:this.dataProvider.currentBill});
     dialog.closed.subscribe((result: any) => {
-      console.log("Result",result);
+    //  console.log("Result",result);
       if (typeof result == 'object' && this.dataProvider.currentBill) {
-        console.log(result);
+      //  console.log(result);
         this.dataProvider.currentBill.billing.discount = result;
-        console.log("Applied discount",this.dataProvider.currentBill.billing.discount);
+      //  console.log("Applied discount",this.dataProvider.currentBill.billing.discount);
         this.dataProvider.currentBill.calculateBill();
       }
     })
@@ -145,7 +145,7 @@ export class ActionsComponent {
   }
 
   nonChargeable(event: any) {
-    console.log(event);
+  //  console.log(event);
     if (this.dataProvider.currentBill && event.checked) {
       const dialog = this.dialog.open(NonChargeableComponent);
       dialog.closed.subscribe((result: any) => {

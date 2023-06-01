@@ -23,7 +23,7 @@ export class UpgradeComponent {
     this.dialogRef.close();
   }
   submit(){
-    console.log(this.form.value);
+  //  console.log(this.form.value);
     this.dataProvider.loading = true;
     this.systemService.upgrade(this.form.value).then((data)=>{
       this.alertify.presentToast("Upgrade request sent successfully");

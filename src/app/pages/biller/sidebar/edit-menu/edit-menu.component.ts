@@ -33,7 +33,7 @@ export class EditMenuComponent implements OnInit {
         // }
         this.alertify.presentToast("Menu changes updated successfully")
       }).catch((c)=>{
-        console.log(c);
+      //  console.log(c);
         this.alertify.presentToast("Error updating menu")
       }).finally(()=>{
         this.dataProvider.loading = false;
@@ -54,7 +54,7 @@ export class EditMenuComponent implements OnInit {
   addNewMenu(){
     const dialog = this.dialog.open(AddMenuComponent)
     dialog.closed.subscribe((data:any)=>{
-      console.log("data",data);
+    //  console.log("data",data);
       this.getMenus();
       if(data){
       }

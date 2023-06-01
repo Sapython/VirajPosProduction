@@ -67,7 +67,7 @@ export class CustomerPanelComponent {
       .subscribe((value) => {
         if (value.name || value.phone || value.address) {
           this.dataProvider.currentBill?.setCustomerInfo(value);
-          console.log('value', this.dataProvider.currentBill?.customerInfo);
+        //  console.log('value', this.dataProvider.currentBill?.customerInfo);
         }
       });
     this.dataProvider.billAssigned.subscribe(() => {

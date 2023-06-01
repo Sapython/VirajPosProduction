@@ -41,7 +41,7 @@ export class ActiveKotComponent implements OnChanges {
       this.dataProvider.kotViewVisible = true;
       this.dataProvider.manageKot = false;
       this.dataProvider.allProducts = false;
-      console.log("this.dataProvider.currentBill",this.dataProvider.currentBill);
+    //  console.log("this.dataProvider.currentBill",this.dataProvider.currentBill);
       this.generateLabels();
       if (this.dataProvider.currentBill) {
         this.kots = this.dataProvider.currentBill.kots.filter((kot)=>kot.stage == 'active') || []
@@ -63,7 +63,7 @@ export class ActiveKotComponent implements OnChanges {
                 this.dataProvider.currentBill.kots.findIndex(
                   (kot: Kot) => kot.stage === 'active' || kot.stage === 'edit'
                 );
-              console.log('this.activeKotIndex', this.activeKotIndex);
+            //  console.log('this.activeKotIndex', this.activeKotIndex);
               if (activeKot) {
                 this.kots = [activeKot];
               } else {
@@ -95,7 +95,7 @@ export class ActiveKotComponent implements OnChanges {
         });
       }
     }
-    console.log('this.labels', this.labels);
+  //  console.log('this.labels', this.labels);
   }
 
   delete(product: Product) {

@@ -56,7 +56,7 @@ export class SalesSummaryComponent implements AfterViewInit {
       ]
     };
     if (this.myChart){
-      console.log("this.myChart",this.myChart);
+    //  console.log("this.myChart",this.myChart);
       new Chart(this.myChart.nativeElement, {
         type: 'bar',
         data: data,

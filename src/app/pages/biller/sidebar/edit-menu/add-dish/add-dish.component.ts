@@ -58,7 +58,7 @@ export class AddDishComponent {
     if(data.mode == 'edit') {
       this.newDishForm.patchValue(data.product)
       this.tags = data.product.tags;
-      console.log(this.newDishForm.value,"this.tags",this.tags);
+    //  console.log(this.newDishForm.value,"this.tags",this.tags);
     }
   }
 
@@ -83,7 +83,7 @@ export class AddDishComponent {
   }
 
   switchColor(event:any,i:number){
-    console.log(event,i);
+  //  console.log(event,i);
   }
 
 }

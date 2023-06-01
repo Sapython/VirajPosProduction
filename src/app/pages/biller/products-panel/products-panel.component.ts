@@ -29,7 +29,7 @@ export class ProductsPanelComponent implements OnInit{
     this.dataProvider.searchResults.subscribe((results:Product[]|false)=>{
       if (results) {
         this.searchResults = results;
-        console.log("Search Results: ",this.searchResults);
+      //  console.log("Search Results: ",this.searchResults);
         this.searchVisible = true;
       } else {
         this.searchVisible = false;
@@ -49,7 +49,7 @@ export class ProductsPanelComponent implements OnInit{
       this.customResults = this.customSearcher.search(value).map((result)=>{
         return result.item;
       })
-      console.log("Custom Search: ",value,this.customResults);
+    //  console.log("Custom Search: ",value,this.customResults);
       if (value){
         this.customSearchVisible = true;
       } else {

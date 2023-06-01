@@ -50,17 +50,17 @@ export class KotItemComponent implements OnChanges {
   ];
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('quantity', this.quantity);
+  //  console.log('quantity', this.quantity);
     //Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
     //Add '${implements OnChanges}' to the class.
-    console.log(changes);
+  //  console.log(changes);
   }
 
   async setInfo() {
-    console.log("this.info",this.info);
+  //  console.log("this.info",this.info);
     const dialog = this.dialog.open(PromptComponent,{data:{title:'Enter a instruction',placeholder:'Instruction',value:this.info,type:'text',required:false,description:'Enter a instruction for the kitchen'}})
     let res = await firstValueFrom(dialog.closed)
-    console.log("res",res);
+  //  console.log("res",res);
     if (typeof(res) == 'string'){
       this.info = res
       this.product!.instruction = this.info;
@@ -71,12 +71,12 @@ export class KotItemComponent implements OnChanges {
   }
   invertHex(hex: string) {
     hex.replace('#', '');
-    console.log('hex', hex);
+  //  console.log('hex', hex);
     let a = (Number(`0x1${hex}`) ^ 0xffffff)
       .toString(16)
       .substr(1)
       .toUpperCase();
-    console.log('a', a);
+  //  console.log('a', a);
     return a;
   }
   lineCancel() {
@@ -94,7 +94,7 @@ export class KotItemComponent implements OnChanges {
       data: this.product,
     });
     dialog.closed.subscribe((data: any) => {
-      console.log('Discount', data);
+    //  console.log('Discount', data);
       if (data && this.product) {
         let formData: { type: 'percentage' | 'flat'; value: number,reason:string } = data;
         if (formData.type == 'percentage') {

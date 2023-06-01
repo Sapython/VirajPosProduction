@@ -41,26 +41,26 @@ export class SplitBillComponent {
     {color:'#8549ba',contrast: '#fff'},
   ];
   selectAll(event: any, kot: KotConstructor) {
-    console.log('event', event);
+  //  console.log('event', event);
     kot.products.forEach((product) => {
       product.selected = event.checked;
     });
   }
   checkAll(event: any, kot: any, item: any) {
-    console.log('event', event);
+  //  console.log('event', event);
     item.selected = event.checked;
     if (kot.products.every((product: any) => product.selected)) {
       kot.allSelected = true;
       kot.someSelected = false;
-      console.log('kot', kot.allSelected);
+    //  console.log('kot', kot.allSelected);
     } else if (kot.products.some((product: any) => product.selected)) {
       kot.allSelected = false;
       kot.someSelected = true;
-      console.log('kot', kot.someSelected);
+    //  console.log('kot', kot.someSelected);
     } else {
       kot.allSelected = false;
       kot.someSelected = false;
-      console.log('kot', kot.someSelected);
+    //  console.log('kot', kot.someSelected);
     }
   }
 
@@ -154,7 +154,7 @@ export class SplitBillComponent {
   settleBill(billConstructor: BillConstructor) {
     let dialog = this.dialog.open(SettleComponent,{data:billConstructor.billing.grandTotal});
     dialog.closed.subscribe((result: any) => {
-      console.log('Result', result);
+    //  console.log('Result', result);
       if (result && billConstructor && result.settling && result.paymentMethods) {
         // billConstructor.settle(result.paymentMethods,'internal',result.detail || null);
         billConstructor.settlement = {
@@ -175,9 +175,9 @@ export class SplitBillComponent {
   addDiscount(billConstructor: BillConstructor) {
     const dialog = this.dialog.open(AddDiscountComponent,{data:billConstructor})
     dialog.closed.subscribe((result: any) => {
-      console.log("Result",result);
+    //  console.log("Result",result);
       if (typeof result == 'object' && this.dataProvider.currentBill) {
-        console.log(result);
+      //  console.log(result);
         billConstructor.billing.discount = result;
         this.calculateBill(billConstructor);
       }
@@ -193,9 +193,9 @@ export class SplitBillComponent {
       let ids = await Promise.all(this.splittedBills.map(async (bill)=>{
         this.printingService.printBill(bill.printableBillData);
         bill.table = bill.table.id || bill.table as any;
-        console.log("Printing Bill",bill);
+      //  console.log("Printing Bill",bill);
         let res = (await this.billService.saveSplittedBill(this.bill.id,bill)).id;
-        console.log("Saved splitted bill");
+      //  console.log("Saved splitted bill");
         return res
       }))
       this.bill.settle(this.splittedBills.map(bill=>bill.settlement.payments).flat(),'internal',{
@@ -246,13 +246,13 @@ export class SplitBillComponent {
     let totalApplicableTax = bill.billing.taxes.reduce((acc, cur) => {
       return acc + cur.amount;
     }, 0);
-    console.log(
-      'totalApplicableTax',
-      bill.billing.taxes,
-      finalTaxes,
-      totalApplicableTax,
-      finalAdditionalTax
-    );
+    // console.log(
+    //   'totalApplicableTax',
+    //   bill.billing.taxes,
+    //   finalTaxes,
+    //   totalApplicableTax,
+    //   finalAdditionalTax
+    // );
     bill.billing.grandTotal = bill.billing.subTotal - applicableDiscount + totalApplicableTax;
     bill.printableBillData = getPrintableBillConstructor(
       bill,

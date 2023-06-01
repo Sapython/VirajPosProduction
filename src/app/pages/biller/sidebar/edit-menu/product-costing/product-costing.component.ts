@@ -44,7 +44,7 @@ export class ProductCostingComponent implements OnInit {
   }
 
   switch(event:any){
-    console.log(event);
+  //  console.log(event);
   }
 
   getIngredients(){

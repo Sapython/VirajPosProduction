@@ -34,7 +34,7 @@ export class AddDiscountComponent implements OnInit {
   switchDiscount(discount,index:number){
     this.appliedDiscounts[index] = {...this.dataProvider.discounts.find(d=>d.id == discount),reason:''};
     this.appliedDiscounts[index].mode = 'codeBased';
-    console.log("Set",this.currentDiscount);
+  //  console.log("Set",this.currentDiscount);
   }
 
   ngOnInit(): void {
@@ -79,7 +79,7 @@ export class AddDiscountComponent implements OnInit {
       primary:[0,1,2],
     }})
     let res = await firstValueFrom(dialog.closed)
-    console.log(res);
+  //  console.log(res);
     let response = res as number;
     if(response === 0){
       this.appliedDiscounts.push({
@@ -126,7 +126,7 @@ export class AddDiscountComponent implements OnInit {
     this.appliedDiscounts.forEach(discount=>{
       discount.reason = this.reason;
     })
-    console.log("applying",this.appliedDiscounts);
+  //  console.log("applying",this.appliedDiscounts);
     this.dialogRef.close(this.appliedDiscounts);
     // if (this.discountForm.value.mode == 'codeBased'){
     //   this.dialogRef.close({discount:this.discountForm.value.selectDiscount,discounted:true})

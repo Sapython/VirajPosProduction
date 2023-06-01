@@ -111,7 +111,7 @@ export class ReceiveStockComponent {
       dialog.closed.subscribe((result)=>{
         if (result){
           this.requests = this.requests.map((item)=>{
-            console.log("item.id",item.id,"this.recevingForm.value.id",this.recevingForm.value.ids);
+          //  console.log("item.id",item.id,"this.recevingForm.value.id",this.recevingForm.value.ids);
             if (item.id==this.currentRequest?.id){
               return {...item,approved:true}
             }

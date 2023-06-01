@@ -17,7 +17,7 @@ let firestore = getFirestore(app);
 
 export const userNameAvailable = functions.https.onCall(
   async (request, response) => {
-    console.log('request.body', request);
+  //  console.log('request.body', request);
     if (
       !request.username ||
       request.username.length < 4 ||
@@ -44,7 +44,7 @@ export const updateUser = functions.https.onCall(async (request, response) => {
     photoURL: request.image || 'https://api.dicebear.com/6.x/lorelei/svg?seed='+request.username,
   };
   if (request.email) {
-    console.log('updating email');
+  //  console.log('updating email');
     data.email = request.email;
     data.emailVerified = false;
   }
@@ -52,7 +52,7 @@ export const updateUser = functions.https.onCall(async (request, response) => {
     if (!request.phone.startsWith('+91')) {
       request.phone = '+91' + request.phone;
     }
-    console.log('updating phone');
+  //  console.log('updating phone');
     data.phoneNumber = request.phone;
   }
   data.password = request.password;
@@ -64,7 +64,7 @@ export const signUpWithUserAndPassword = functions.https.onCall(
   async (request, response) => {
     // check all the types of variables used
     // validations for all the fields
-    console.log('request data', request);
+  //  console.log('request data', request);
     if (
       typeof request.username != 'string' ||
       !request.username ||
@@ -157,7 +157,7 @@ export const signUpWithUserAndPassword = functions.https.onCall(
       throw new HttpsError('invalid-argument', 'Business is required');
     }
     // validations done
-    console.log('validations done');
+  //  console.log('validations done');
     // get password
     let password = request.password;
     // generate salt
@@ -165,15 +165,15 @@ export const signUpWithUserAndPassword = functions.https.onCall(
       await subtle.digest('SHA-512', new TextEncoder().encode(uidDoc.id))
     );
     password = password + salt;
-    console.log('generated password salt');
+  //  console.log('generated password salt');
     // hash password
     let hash = await subtle.digest(
       'SHA-512',
       new TextEncoder().encode(password)
     );
-    console.log('generated password hash');
+  //  console.log('generated password hash');
     // create custom token
-    console.log('trying creating custom token');
+  //  console.log('trying creating custom token');
     let stringHash = new TextDecoder().decode(hash);
     let authReq = await auth.createCustomToken(uidDoc.id, {
       username: uidDoc.id,
@@ -200,11 +200,11 @@ export const signUpWithUserAndPassword = functions.https.onCall(
       disabled: false,
       ...userCreds
     })
-    console.log('created custom token');
+  //  console.log('created custom token');
     // console.log("trying updating email",request.email);
 
     additonalClaims['providerId'] = 'custom';
-    console.log('updated custom token');
+  //  console.log('updated custom token');
     // store username and password hash in firestore
     await firestore.doc('authData/' + uidDoc.id).set({
       username: uidDoc.id,
@@ -215,7 +215,7 @@ export const signUpWithUserAndPassword = functions.https.onCall(
       username: uidDoc.id,
       ...additonalClaims,
     });
-    console.log('created firestore document');
+  //  console.log('created firestore document');
     // sign in with custom token
     return {
       token: authReq,
@@ -276,7 +276,7 @@ export const signInWithUserAndPassword = functions.https.onCall(
     );
     let stringHash = new TextDecoder().decode(hash);
     // check if password matches
-    console.log('Password hashes', uidDoc.data()?.password, stringHash);
+  //  console.log('Password hashes', uidDoc.data()?.password, stringHash);
     if (stringHash !== uidDoc.data()?.password) {
       throw new HttpsError('unauthenticated', 'Password incorrect');
     }
@@ -293,10 +293,10 @@ export const resetPassword = functions.https.onCall(
         const newPassword = request.newPassword;
         const confirmPassword = request.confirmPassword;
         const uid = request.uid;
-        console.log('request.previousPassword', request.previousPassword);
-        console.log('request.newPassword', request.newPassword);
-        console.log('request.confirmPassword', request.confirmPassword);
-        console.log('uid', uid);
+      //  console.log('request.previousPassword', request.previousPassword);
+      //  console.log('request.newPassword', request.newPassword);
+      //  console.log('request.confirmPassword', request.confirmPassword);
+      //  console.log('uid', uid);
 
         if (
             typeof previousPassword != 'string' ||
@@ -363,7 +363,7 @@ export const resetPassword = functions.https.onCall(
         );
         let stringHash = new TextDecoder().decode(hash);
         // check if password matches
-        console.log('Password hashes', uidDoc.data()?.password, stringHash);
+      //  console.log('Password hashes', uidDoc.data()?.password, stringHash);
         if (stringHash !== uidDoc.data()?.password) {
             throw new HttpsError('unauthenticated', 'Password incorrect');
         }
@@ -409,7 +409,7 @@ export const checkPassword = functions.https.onCall(
     async (request, response) => {
         let uid = request.uid;
         let password = request.password;
-        console.log('uid', uid);
+      //  console.log('uid', uid);
         if (!uid || !password) {
             throw new HttpsError(
                 'invalid-argument',
@@ -445,7 +445,7 @@ export const checkPassword = functions.https.onCall(
         );
         let stringHash = new TextDecoder().decode(hash);
         // check if password matches
-        console.log('Password hashes', uidDoc.data()?.password, stringHash);
+      //  console.log('Password hashes', uidDoc.data()?.password, stringHash);
         if (stringHash !== uidDoc.data()?.password) {
             throw new HttpsError('unauthenticated', 'Password incorrect');
         } else {

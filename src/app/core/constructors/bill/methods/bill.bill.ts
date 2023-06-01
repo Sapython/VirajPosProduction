@@ -49,7 +49,7 @@ export async function finalize(this: Bill) {
     }
   }
   if (this.mode == 'online') {
-    console.log('customer info', this.customerInfo);
+  //  console.log('customer info', this.customerInfo);
     if (
       !(
         this.customerInfo.name &&
@@ -91,7 +91,7 @@ export async function setInstruction(this: Bill) {
       value: this.instruction,
       multiline: false,
     })) || '';
-  console.log('THIS INSTRUCTION', this.instruction);
+//  console.log('THIS INSTRUCTION', this.instruction);
   this.calculateBill();
 }
 
@@ -152,10 +152,10 @@ export async function settle(
     user: this.user,
     additionalInfo: additionalInfo,
   };
-  console.log(
-    'this.dataProvider.printBillAfterFinalize',
-    this.dataProvider.printBillAfterFinalize
-  );
+  // console.log(
+  //   'this.dataProvider.printBillAfterFinalize',
+  //   this.dataProvider.printBillAfterFinalize
+  // );
   if (splitSave) {
     if (this.dataProvider.printBillAfterFinalize) {
       this.printingService.printBill(this.printableBillData);

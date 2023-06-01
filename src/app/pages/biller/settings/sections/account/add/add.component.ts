@@ -36,7 +36,7 @@ export class AddComponent {
       this.stage = 'checking';
       this.checkUsernameFunction({ username: res.username })
         .then((res) => {
-          console.log(res);
+        //  console.log(res);
           if (res.data) {
             this.stage = res.data['stage'];
             if (this.stage == 'available') {

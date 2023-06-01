@@ -29,7 +29,7 @@ export class PaymentComponent implements OnInit {
       data: { mode: 'edit', setting: method },
     });
     firstValueFrom(dialog.closed).then((data: any) => {
-      console.log('data', data);
+    //  console.log('data', data);
       this.dataProvider.loading = true;
       if (data && data.name && typeof data.detail == 'boolean') {
         this.settingsService
@@ -89,7 +89,7 @@ export class PaymentComponent implements OnInit {
       data: { mode: 'add' },
     });
     firstValueFrom(dialog.closed).then((data: any) => {
-      console.log('data', data);
+    //  console.log('data', data);
       this.dataProvider.loading = true;
       if (data && data.name && typeof data.detail == 'boolean') {
         this.settingsService

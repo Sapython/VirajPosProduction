@@ -39,7 +39,7 @@ export class InfoPanelComponent implements OnInit,OnChanges, AfterViewInit{
       var mc = new Hammer.Manager(document.getElementById('salesTrigger'));
       mc.add( new Hammer.Press({ time:500 }) );
       mc.on("press", (ev:any) => {
-        console.log("press",ev);
+      //  console.log("press",ev);
         const dialog = this.dialog.open(SalesSummaryComponent)
         dialog.componentInstance?.close.subscribe((data)=>{
           dialog.close();
@@ -48,7 +48,7 @@ export class InfoPanelComponent implements OnInit,OnChanges, AfterViewInit{
       var mc = new Hammer.Manager(document.getElementById('ordersTrigger'));
       mc.add( new Hammer.Press({ time:500 }) );
       mc.on("press", (ev:any) => {
-        console.log("press",ev);
+      //  console.log("press",ev);
         const dialog = this.dialog.open(OrderSummaryComponent)
         dialog.componentInstance?.close.subscribe((data)=>{
           dialog.close();
@@ -71,11 +71,11 @@ export class InfoPanelComponent implements OnInit,OnChanges, AfterViewInit{
     }
 
     this.closeOrdersPanelSubscription.pipe(debounceTime(600)).subscribe((data)=>{
-      console.log("closePanelSubscription",data);
+    //  console.log("closePanelSubscription",data);
       this.isOpen = data;
     })
     this.closeSalesPanelSubscription.pipe(debounceTime(600)).subscribe((data)=>{
-      console.log("closePanelSubscription",data);
+    //  console.log("closePanelSubscription",data);
       this.isSalesOpen = data;
     })
   }
@@ -96,9 +96,9 @@ export class InfoPanelComponent implements OnInit,OnChanges, AfterViewInit{
     let res = this.electronService.checkForUpdate()
     if (res){
       res.then((res)=>{
-        console.log("UPDATE RES",res);
+      //  console.log("UPDATE RES",res);
       }).catch((error)=>{
-        console.log("UPDATE RES error",error);
+      //  console.log("UPDATE RES error",error);
       }).finally(()=>{
         this.dataProvider.loading = false;
       })

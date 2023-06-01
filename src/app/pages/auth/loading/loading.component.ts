@@ -108,11 +108,11 @@ export class LoadingComponent {
     this.checkUsername.pipe(debounceTime(1000)).subscribe((value)=>{
       this.checkingUsername = true;
       this.checkUsernameFunction({username:value}).then((result)=>{
-        console.log(result.data);
+      //  console.log(result.data);
         this.checkingUsername = false;
         this.userNameAvailable = result.data['stage'];
       }).catch((error)=>{
-        console.log(error);
+      //  console.log(error);
         this.checkingUsername = false;
         this.userNameAvailable = 'invalid';
       })
@@ -138,12 +138,12 @@ export class LoadingComponent {
         });
         dialog.componentInstance!.editMode = true;
         let a = dialog.closed.subscribe((value: any) => {
-          console.log('value', value);
+        //  console.log('value', value);
           if (value) {
             this.selectedProducts = value.filter((p: Product) => {
               return p.selected;
             });
-            console.log('selectedProducts', this.selectedProducts);
+          //  console.log('selectedProducts', this.selectedProducts);
           }
           a.unsubscribe();
         });
@@ -154,7 +154,7 @@ export class LoadingComponent {
   }
 
   log(){
-    console.log(this.securityForm);
+  //  console.log(this.securityForm);
     
   }
 
@@ -185,7 +185,7 @@ export class LoadingComponent {
   logout(){
     const confirmDialog = this.dialog.open(DialogComponent,{data:{title:'Logout',message:'Are you sure you want to logout?'}});
     confirmDialog.closed.subscribe(result=>{
-      console.log(result);
+    //  console.log(result);
       if(result){
         this.userManagementService.logout();
       }
@@ -193,7 +193,7 @@ export class LoadingComponent {
   }
 
   signup(){
-    console.log(this.loginForm.value);
+  //  console.log(this.loginForm.value);
     
     if (this.loginForm.invalid) {
       this.alertify.presentToast('Invalid form details.');
@@ -202,10 +202,10 @@ export class LoadingComponent {
     // this.signUpWithUserAndPassword({
       
     // }).then((result)=>{
-    //   console.log(result.data);
+    // //  console.log(result.data);
       
     // }).catch((error)=>{
-    //   console.log(error);
+    // //  console.log(error);
     // })
     this.signUpService.signUpWithUserAndPassword(
       this.loginForm.value.username,
@@ -224,10 +224,10 @@ export class LoadingComponent {
         },
       }
     ).then((data)=>{
-      console.log(data);
+    //  console.log(data);
       this.alertify.presentToast("Signed Up with "+this.loginForm.value.username)
     }).catch((error)=>{
-      console.log(error);
+    //  console.log(error);
       this.alertify.presentToast("Some Error Occured")
     })
   }
@@ -243,7 +243,7 @@ export class LoadingComponent {
         username:this.loginForm.value.username,
         password:this.loginForm.value.password,
       })
-      console.log(result.data);
+    //  console.log(result.data);
       await this.loginService.signInWithCustomToken(result.data['token'])
       this.alertify.presentToast("Logged In with "+this.loginForm.value.username)
     } catch (error) {
@@ -252,15 +252,15 @@ export class LoadingComponent {
       this.dataProvider.loading = false;
     }
     // .then((data)=>{
-    //   console.log(data);
+    // //  console.log(data);
     //   this.alertify.presentToast("Logged In with "+this.loginForm.value.username)
     // }).catch((error)=>{
-    //   console.log(error);
+    // //  console.log(error);
     //   this.alertify.presentToast(error)
     // })
     // .then((result)=>{
     // }).catch((error)=>{
-    //   console.log(error);
+    // //  console.log(error);
     //   this.alertify.presentToast(error)
     // }).finally(()=>{
     //   this.dataProvider.loading = false;
@@ -271,7 +271,7 @@ export class LoadingComponent {
     //     this.loginForm.value.password
     //   )
     //   .then((data) => {
-    //     console.log(data.user);
+    //   //  console.log(data.user);
     //     this.alertify.presentToast("Logged In with "+this.loginForm.value.email)
     //   }).catch((error)=>{
     //     if(error.message){
@@ -305,7 +305,7 @@ export class LoadingComponent {
   addDish() {
     const dialog = this.dialog.open(AddDishComponent);
     let a = dialog.closed.subscribe((value) => {
-      console.log('value', value);
+    //  console.log('value', value);
       a.unsubscribe();
     });
     // open dishes dialog
@@ -323,7 +323,7 @@ export class LoadingComponent {
         this.alertify.presentToast('Menu added successfully');
       })
       .catch((err) => {
-        console.log('err', err);
+      //  console.log('err', err);
         this.alertify.presentToast(
           'Error adding menu, please try again later',
           'error'
@@ -346,10 +346,10 @@ export class LoadingComponent {
         finalProducts.push(product)
       }
     })
-    console.log('filteredProducts', filteredProducts);
+  //  console.log('filteredProducts', filteredProducts);
     const dialog = this.dialog.open(AddNewCategoryComponent,{data:{noSave:true,products:finalProducts,rootProducts:finalProducts}})
     dialog.closed.subscribe((value:any)=>{
-      console.log('value', value);
+    //  console.log('value', value);
       if(value){
         this.rootCategories.push(value)
       }
@@ -371,7 +371,7 @@ export class LoadingComponent {
     this.userManagementService.userExists(username).then((doc)=>{
       if(doc.exists()){
         this.loginStage.next('Account Exists')
-        console.log('signing in',username,password);
+      //  console.log('signing in',username,password);
         this.loginService.signInWithUserAndPassword(username,password).then((data)=>{
           this.loginStage.next('Logged In')
           this.onboard(data,id,logo)
@@ -406,7 +406,7 @@ export class LoadingComponent {
           }],
         }
         this.loginStage.next('Creating Account')
-        console.log("Signing Up",username,password);
+      //  console.log("Signing Up",username,password);
         this.signUpService.signUpWithUserAndPassword(username,password,{
           business:{
             access:{
@@ -421,7 +421,7 @@ export class LoadingComponent {
           },email:data.email,phone:data.phone
         }).then((data)=>{
           this.loginStage.next('Account Created')
-          console.log("FINAL DATA",data);
+        //  console.log("FINAL DATA",data);
           if (data['providerId']){
             this.onboard(data as UserCredential,id,logo)
           }
@@ -452,7 +452,7 @@ export class LoadingComponent {
     // TODO: register accounts
     // TODO: create menu
     try {
-      console.log("Started onboarding");
+    //  console.log("Started onboarding");
       let userBusiness:UserBusiness = {
         access:{accessLevel:'admin',lastUpdated:Timestamp.fromDate(new Date()),updatedBy:'system'},
         address:this.onboardingBusinessForm.value.address,
@@ -460,10 +460,10 @@ export class LoadingComponent {
         joiningDate:Timestamp.fromDate(new Date()),
         name:this.onboardingBusinessForm.value.name,
       }
-      console.log('userBusiness', userBusiness,user);
+    //  console.log('userBusiness', userBusiness,user);
       this.loginStage.next('Adding user account')
       let userBusinessRes = await this.signUpService.addBusinessAccount(user,userBusiness)
-      console.log('userBusinessRes', userBusinessRes);
+    //  console.log('userBusinessRes', userBusinessRes);
       let data:BusinessRecord = {
         address:this.onboardingBusinessForm.value.address,
         businessId:id,
@@ -488,16 +488,16 @@ export class LoadingComponent {
           updatedBy:'system',
         }],
       }
-      console.log('data', data);
+    //  console.log('data', data);
       this.loginStage.next('Adding business account')
       let addBusinessRes = this.settingsService.addBusiness(data,id)
       let businessRes = await Promise.all([userBusinessRes,addBusinessRes])
-      console.log('businessRes', businessRes);
+    //  console.log('businessRes', businessRes);
       this.rootCategories.forEach((category)=>{
         category.products = category.products.filter((product)=> product.selected)
       })
       this.loginStage.next('Adding menu')
-      console.log("this.addNewMenuForm.value, this.rootCategories,id",this.addNewMenuForm.value, this.rootCategories,id);
+    //  console.log("this.addNewMenuForm.value, this.rootCategories,id",this.addNewMenuForm.value, this.rootCategories,id);
       let menuRes = await this.menuManagementService.addNewMenu(this.addNewMenuForm.value, this.rootCategories,id)
       // generate and add 10 tables
       this.loginStage.next('Adding tables')
@@ -518,7 +518,7 @@ export class LoadingComponent {
         })
       }
       let tablesRes = await this.tableService.addTables(tables,id)
-      console.log('menuRes', menuRes);
+    //  console.log('menuRes', menuRes);
       let settingsRef = await this.menuManagementService.updateRootSettings(
         {
           billTokenNo:0,
@@ -555,7 +555,7 @@ export class LoadingComponent {
         },
         id
       )
-      console.log('settingsRef', settingsRef);
+    //  console.log('settingsRef', settingsRef);
       this.loginStage.next('Adding other accounts')
       let accountRef = await Promise.all(this.accounts.map((account)=>{
         return this.settingsService.addAccount({
@@ -565,7 +565,7 @@ export class LoadingComponent {
           updatedBy:'system',
         },id)
       }))
-      console.log('accountRef', accountRef);
+    //  console.log('accountRef', accountRef);
       // onboard completed
       this.loginStage.next('Onboarding completed')
       const dialog = this.dialog.open(DialogComponent,{data:{title:'Your onboarding is complete.',description:"You can now login to your account and start using the application.",buttonText:'Login'}})
@@ -576,7 +576,7 @@ export class LoadingComponent {
         window.location.href = url.join('/') 
       })
     } catch (error) {
-      console.log('error', error);
+    //  console.log('error', error);
       this.loginStage.next('Error Occured')
       this.onboardingService.stage = 'errorOccured'
       this.onboardingStarted = false;

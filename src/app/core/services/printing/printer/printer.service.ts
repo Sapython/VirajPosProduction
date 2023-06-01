@@ -55,7 +55,7 @@ export class PrinterService {
       });
       return;
     }
-    console.log("printableKotData.products",printableKotData.products);
+  //  console.log("printableKotData.products",printableKotData.products);
     // group products by printer
     let groupedProducts: any = {};
     printableKotData.products.forEach((product: any) => {
@@ -65,9 +65,9 @@ export class PrinterService {
         groupedProducts[product.category.printer] = [product];
       }
     })
-    console.log('grouped products', groupedProducts);
+  //  console.log('grouped products', groupedProducts);
     Object.keys(groupedProducts).forEach((printer: any) => {
-      console.log('printing', printer, groupedProducts[printer]);
+    //  console.log('printing', printer, groupedProducts[printer]);
       printableKotData.products = groupedProducts[printer];
       let result = this.encoderService.getKotCode(printableKotData);
       console.log('got kot code', result);
@@ -76,7 +76,7 @@ export class PrinterService {
   }
 
   printBill(billData: PrintableBill) {
-    console.log("Printing bill",billData);
+  //  console.log("Printing bill",billData);
     let data = this.encoderService.getBillCode(billData);
     if (!this.dataprovider.currentBusiness?.billerPrinter) {
       const dialog = this.dialog.open(DialogComponent, {
@@ -89,6 +89,7 @@ export class PrinterService {
       });
       return;
     }
+    console.log('printing bill', data);
     return this.printing.printData(
       data,
       this.dataprovider.currentBusiness?.billerPrinter
@@ -96,7 +97,7 @@ export class PrinterService {
   }
 
   reprintBill(billData: PrintableBill) {
-    console.log("Printing bill",billData);
+  //  console.log("Printing bill",billData);
     let data = this.encoderService.getBillCode(billData);
     if (!this.dataprovider.currentBusiness?.billerPrinter) {
       const dialog = this.dialog.open(DialogComponent, {
@@ -109,6 +110,7 @@ export class PrinterService {
       });
       return;
     }
+    console.log('printing bill', data);
     return this.printing.printData(
       data,
       this.dataprovider.currentBusiness?.billerPrinter
@@ -165,11 +167,12 @@ export class PrinterService {
         }
       }
     });
-    console.log('printing data', printableKotData, printerConfig, groupedProducts);
+  //  console.log('printing data', printableKotData, printerConfig, groupedProducts);
     Object.keys(groupedProducts).forEach((printer: any) => {
-      console.log('printing', printer, groupedProducts[printer]);
+    //  console.log('printing', printer, groupedProducts[printer]);
       printableKotData.products = groupedProducts[printer];
       let result = this.encoderService.getKotCode(printableKotData);
+      console.log('got kot code', result);
       this.printing.printData(result, printer);
     });
   }

@@ -135,7 +135,7 @@ export class Bill implements BillConstructor {
     // taxes[1].amount = Number(this.dataProvider.currentSettings.cgst)
     this.updated.subscribe(() => {
       this.dataProvider.queueUpdate.next(1000);
-      console.log("this.printableBillData",this.printableBillData);
+    //  console.log("this.printableBillData",this.printableBillData);
     });
     this.updated.pipe(debounceTime(1000)).subscribe(async (data) => {
       if(!data){

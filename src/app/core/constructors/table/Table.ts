@@ -22,11 +22,12 @@ export class Table implements TableConstructor {
   completed?: boolean;
   name: string;
   occupiedStart: Timestamp;
-  status: 'available' | 'occupied';
+  status: any;
   tableNo: number;
   type: 'table' | 'room' | 'token' | 'online';
   updated: Subject<void> = new Subject<void>();
-
+  
+  updateHistory:any[] = []
   constructor(
     id: string,
     tableNo: number,
@@ -58,12 +59,17 @@ export class Table implements TableConstructor {
       } else if (this.type == 'room') {
         this.updateBill(this.toObject());
       } else if (this.type == 'token') {
+        if (this.bill){
+          if(!this.toObject().bill){
+            alert("CORRUPTION: Token already had a bill")
+          }
+        }
         this.updateToken(this.toObject());
       } else if (this.type == 'online') {
         this.updateOnlineToken(this.toObject());
       }
     });
-    this.updated.next();
+    // this.updated.next();
   }
 
   firebaseUpdate() {
@@ -76,10 +82,13 @@ export class Table implements TableConstructor {
     } else if (this.type == 'online') {
       mode = 'onlineTokens';
     }
+    
     this.tableService.getTable(this.id, mode).subscribe(async (res) => {
       if (res) {
         let table: TableConstructor = res as TableConstructor;
-        // console.log('table', table);
+        // if(!table.bill){
+        //   console.log('table changed ',table.id, table);
+        // }
         this.status = res['status'] || 'available';
         this.billPrice = res['billPrice'] || 0;
         this.occupiedStart = res['occupiedStart'];
@@ -121,6 +130,9 @@ export class Table implements TableConstructor {
   }
 
   updateToken(data: any) {
+    // if(!data.bill){
+    //   console.log('updateToken', data);
+    // }
     this.billService.updateToken(data);
   }
 
@@ -165,7 +177,7 @@ export class Table implements TableConstructor {
     //   let bill = await this.databaseService.getBill(object.bill)
     //   if (bill.exists()){
     //     let billData = bill.data() as BillConstructor;
-    //     console.log("billData ",billData);
+    //   //  console.log("billData ",billData);
     //     this.id = object.id;
     //     this.bill = Bill.fromObject(billData, this, this.dataProvider, this.databaseService);
     //     this.maxOccupancy = object.maxOccupancy;
@@ -251,7 +263,7 @@ export class Table implements TableConstructor {
       instance.billPrice = object.billPrice;
       instance.occupiedStart = object.occupiedStart;
       instance.status = object.status;
-      instance.status = 'available';
+      instance.status = 'availabler';
       instance.completed = object.completed || false;
       instance.minutes = object.minutes || 0;
       instance.timeSpent = object.timeSpent || '';
@@ -260,6 +272,19 @@ export class Table implements TableConstructor {
   }
 
   toObject() {
+    let foundTokens = this.updateHistory.filter((token)=>token.id==token.id)
+    if(foundTokens.length>0){
+      if (!this.bill){
+        // check if token had any bill before
+        let hasTokens = foundTokens.filter((token)=>token.bill);
+        if(hasTokens.length >0){
+          alert("Token already had a bill")
+          // console.log("HAD TOKENS",hasTokens);
+          return
+        }
+      }
+    }
+    this.updateHistory.push(this)
     return {
       id: this.id,
       bill: this.bill?.id || null,
@@ -286,10 +311,10 @@ export class Table implements TableConstructor {
   }
 
   occupyTable() {
-    console.log(
-      'this.dataProvider.tempProduct 1',
-      this.dataProvider.tempProduct
-    );
+    // console.log(
+    //   'this.dataProvider.tempProduct 1',
+    //   this.dataProvider.tempProduct
+    // );
     if (!this.dataProvider.currentMenu?.selectedMenu) {
       alert('Please select a menu first');
       return;
@@ -339,12 +364,12 @@ export class Table implements TableConstructor {
       }
     } else {
       if (this.status === 'occupied' && this.bill != undefined) {
-        console.log('Activating bill', this.bill);
+      //  console.log('Activating bill', this.bill);
         this.updated.next();
-        console.log(
-          'this.dataProvider.tempProduct',
-          this.dataProvider.tempProduct
-        );
+        // console.log(
+        //   'this.dataProvider.tempProduct',
+        //   this.dataProvider.tempProduct
+        // );
         if (this.dataProvider.tempProduct) {
           alert("Adding product to bill")
           this.bill.addProduct(this.dataProvider.tempProduct);

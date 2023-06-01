@@ -10,7 +10,7 @@ export class EncoderService {
   constructor() {}
 
   getBillCode(billdata: PrintableBill) {
-    console.log('billdata.businessDetails.name', billdata.businessDetails.name);
+  //  console.log('billdata.businessDetails.name', billdata.businessDetails.name);
     let encoder = new customEncoder({ width: 48 });
     let result = encoder
       .initPrint()

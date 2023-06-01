@@ -17,10 +17,10 @@ export class OptionComponent implements AfterViewInit {
     if(this.category){
       this.options = this.category.products
     }
-    console.log("Options", this.optionsComponent);
+  //  console.log("Options", this.optionsComponent);
     
     if(this.optionsComponent){
-      console.log("Changing position", this.optionsComponent, this.x, this.y);
+    //  console.log("Changing position", this.optionsComponent, this.x, this.y);
       this.optionsComponent.nativeElement.style.top = this.y + "px";
       this.optionsComponent.nativeElement.style.left = this.x + "px";
     }

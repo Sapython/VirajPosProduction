@@ -53,7 +53,7 @@ export function totalProducts(): number {
 }
 
 export function getPrintableBill(this: Bill,products:Product[],dataProvider:DataProvider): PrintableBill {
-  console.log("madhoosh",this);
+//  console.log("madhoosh",this);
   let bill = this;
   return printableBillGenerator(bill,products,dataProvider);
 }

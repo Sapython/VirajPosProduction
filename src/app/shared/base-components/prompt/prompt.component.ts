@@ -38,7 +38,7 @@ export class PromptComponent {
 
   submit(){
     if (this.promptForm.valid){
-      console.log(this.promptForm.value);
+    //  console.log(this.promptForm.value);
       this.dialogRef.close(this.promptForm.get('value')?.value);
     }
   }

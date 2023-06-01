@@ -176,7 +176,7 @@ export class SignupService {
         }
       }
     } catch (error) {
-      console.log(error);
+    //  console.log(error);
       throw error;
     } finally {
       this.dataProvider.loading = false;

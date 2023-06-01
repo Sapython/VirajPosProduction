@@ -38,7 +38,7 @@ export class HistoryComponent {
         this.filteredBills = this.fuseSearchInstance.search(searchTerm).map((result) => {
           return result.item;
         })
-        console.log("filteredBills",this.filteredBills);
+      //  console.log("filteredBills",this.filteredBills);
       } else {
         this.filteredBills = [];
       }
@@ -52,12 +52,12 @@ export class HistoryComponent {
 
   getReport(){
     this.billService.getBillsByDay(this.selectedDate).then((bills) => {
-      console.log("bills",bills.docs);
+    //  console.log("bills",bills.docs);
       this.bills = bills.docs.map((doc) => {
         return {...doc.data(),id:doc.id,kotVisible:false} as ExtendedBillConstructor;
       })
       this.fuseSearchInstance.setCollection(this.bills);
-      console.log("bills",this.bills);
+    //  console.log("bills",this.bills);
       this.loading = false;
     });
   }

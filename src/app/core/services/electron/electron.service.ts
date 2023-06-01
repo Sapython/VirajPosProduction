@@ -37,7 +37,7 @@ export class ElectronService {
           console.error(`stderr: ${stderr}`);
           return;
         }
-        console.log(`stdout:\n${stdout}`);
+      //  console.log(`stdout:\n${stdout}`);
       });
 
       // Notes :
@@ -66,15 +66,15 @@ export class ElectronService {
   printData(data:any, printer:string) {
     if (!data || !printer){
       const dialog = this.dialog.open(DialogComponent,{data:{title:'Error',description:'No Data or Printer Selected'}});
-      console.log("STAGE 1 => Will Print: ", data, printer);
+    //  console.log("STAGE 1 => Will Print: ", data, printer);
       return;
     }
     if (!this.ipcRenderer){
       const dialog = this.dialog.open(DialogComponent,{data:{title:'Error',description:'No Printer Found'}});
-      console.log("STAGE 2 => Will Print: ", data, printer);
+    //  console.log("STAGE 2 => Will Print: ", data, printer);
       return;
     }
-    console.log("STAGE 3 => Will Print: ", data, printer);
+  //  console.log("STAGE 3 => Will Print: ", data, printer);
     this.ipcRenderer.send("printData", { data, printer });
     var promiseResolve, promiseReject;
     var promise = new Promise(function (resolve, reject) {
@@ -82,7 +82,7 @@ export class ElectronService {
       promiseReject = reject;
     });
     this.ipcRenderer.on("printDataComplete", (event, data) => {
-      console.log("Done Printing", data);
+    //  console.log("Done Printing", data);
       promiseResolve(data);
     });
     return promise;

@@ -33,9 +33,9 @@ export class DataProvider {
           : { smartView: false }
       ).smartView;
     }, 2000);
-    window.alert = (message: string) => {
-      this.confirm('Alert',[0],{description:message,buttons:['ok'],primary:[0]});
-    };
+    // window.alert = (message: string) => {
+    //   this.confirm('Alert',[0],{description:message,buttons:['ok'],primary:[0]});
+    // };
     window.addEventListener('resize', () => {
       this.clientWidth = window.innerWidth;
       this.clientHeight = window.innerHeight;
@@ -267,7 +267,7 @@ export class DataProvider {
       },
     });
     let res = await firstValueFrom(dialog.closed)
-    console.log("responded",res);
+  //  console.log("responded",res);
     if (typeof(res) == 'number'){
       if (correct.includes(res)){
         return true;

@@ -69,12 +69,12 @@ export class AddMenuComponent {
         });
         dialog.componentInstance!.editMode = true;
         let a = dialog.closed.subscribe((value: any) => {
-          console.log('value', value);
+        //  console.log('value', value);
           if (value) {
             this.selectedProducts = value.filter((p: Product) => {
               return p.selected;
             });
-            console.log('selectedProducts', this.selectedProducts);
+          //  console.log('selectedProducts', this.selectedProducts);
           }
           a.unsubscribe();
         });
@@ -87,7 +87,7 @@ export class AddMenuComponent {
   addDish() {
     const dialog = this.dialog.open(AddDishComponent);
     let a = dialog.closed.subscribe((value) => {
-      console.log('value', value);
+    //  console.log('value', value);
       a.unsubscribe();
     });
     // open dishes dialog
@@ -115,7 +115,7 @@ export class AddMenuComponent {
         this.dialogRef.close();
       })
       .catch((err) => {
-        console.log('err', err);
+      //  console.log('err', err);
         this.alertify.presentToast(
           'Error adding menu, please try again later',
           'error'
@@ -142,10 +142,10 @@ export class AddMenuComponent {
         finalProducts.push(product)
       }
     })
-    console.log('filteredProducts', filteredProducts);
+  //  console.log('filteredProducts', filteredProducts);
     const dialog = this.dialog.open(AddNewCategoryComponent,{data:{noSave:true,products:finalProducts}})
     dialog.closed.subscribe((value:any)=>{
-      console.log('value', value);
+    //  console.log('value', value);
       if(value){
         this.rootCategories.push(value)
       }

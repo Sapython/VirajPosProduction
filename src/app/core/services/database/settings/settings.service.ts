@@ -39,7 +39,7 @@ export class SettingsService {
   }
 
   updateDiscount(discount:CodeBaseDiscount){
-    console.log('business',this.dataProvider.businessId,'discounts',discount.id);
+  //  console.log('business',this.dataProvider.businessId,'discounts',discount.id);
     return setDoc(
       doc(this.firestore, 'business',this.dataProvider.businessId,'discounts',discount.id),
       discount,

@@ -12,7 +12,7 @@ export class ChatComponent implements AfterViewInit{
     
   }
   ngAfterViewInit(): void {
-    console.log("(this.chat)",(this.chat),this.dataProvider.chatInnerHtml);
+  //  console.log("(this.chat)",(this.chat),this.dataProvider.chatInnerHtml);
     this.chat.nativeElement.appendChild(this.dataProvider.chatInnerHtml)
   }
 }

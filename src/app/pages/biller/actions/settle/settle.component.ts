@@ -42,7 +42,7 @@ export class SettleComponent implements OnInit {
   constructor(private dialogRef:DialogRef,public dataProvider:DataProvider,private settingService:SettingsService,private alertify:AlertsAndNotificationsService,@Inject(DIALOG_DATA) public billSum:number){
     this.settleBillForm.valueChanges.subscribe((value)=>{
       this.percentageSplits = []
-      console.log(value);
+    //  console.log(value);
       if (Number(value.recipents) > 0){
         this.percentageSplitForm = new FormGroup({})
         for (let i = 0; i < Number(value.recipents); i++){
@@ -74,7 +74,7 @@ export class SettleComponent implements OnInit {
         method.paymentMethods = ['Cash','Card','UPI','Wallet',...this.additionalMethods]
       })
       this.methodsWithDetail = methods.docs.filter((d)=>{return d.data()['detail']}).map((d)=>{return d.data()['name']})
-      console.log("this.methodsWithDetail",this.methodsWithDetail,"this.additionalMethods",this.additionalMethods);
+    //  console.log("this.methodsWithDetail",this.methodsWithDetail,"this.additionalMethods",this.additionalMethods);
     })
   }
 

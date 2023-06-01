@@ -40,7 +40,7 @@ export class TableComponent implements OnInit {
   ) {}
   ngOnInit(): void {
 
-    console.log('this.dataProvider.tables ', this.dataProvider.tables,this.dataProvider.currentMenu?.type,this.dataProvider.billingMode);
+  //  console.log('this.dataProvider.tables ', this.dataProvider.tables,this.dataProvider.currentMenu?.type,this.dataProvider.billingMode);
     if(this.dataProvider.currentMenu){
       this.dataProvider.billingMode = this.dataProvider.currentMenu.type || 'dineIn';
     }
@@ -125,7 +125,7 @@ export class TableComponent implements OnInit {
       this.dataProvider.groupedTables[groupName] = [];
     }
     this.dataProvider.groupedTables[groupName].push(table);
-    console.log('this.dataProvider.tables ', this.dataProvider.tables);
+  //  console.log('this.dataProvider.tables ', this.dataProvider.tables);
   }
 
   addToken() {
@@ -156,10 +156,10 @@ export class TableComponent implements OnInit {
   }
 
   addOnlineToken() {
-    console.log(
-      'this.dataProvider.takeawayToken ',
-      this.dataProvider.takeawayToken
-    );
+    // console.log(
+    //   'this.dataProvider.takeawayToken ',
+    //   this.dataProvider.takeawayToken
+    // );
     this.analyticsService.addOnlineToken();
     let table = new Table(
       this.dataProvider.onlineTokenNo.toString(),
@@ -182,11 +182,11 @@ export class TableComponent implements OnInit {
 
   moveKot(table: Table, event: any) {
     this.moveKotSelectedTable = table;
-    console.log('this.moveKotSelectedTable ', this.moveKotSelectedTable, event);
+  //  console.log('this.moveKotSelectedTable ', this.moveKotSelectedTable, event);
   }
 
   async deleteTable(table:Table){
-    console.log("table",table);
+  //  console.log("table",table);
     if (table.type == 'table'){
       if (table.status == 'occupied'){
         this.alertify.presentToast("Table is occupied");
@@ -203,7 +203,7 @@ export class TableComponent implements OnInit {
           }
           this.dataProvider.groupedTables[t.name.split(' ')[0]].push(t);
         })
-        console.log("table.id",table.id,this.dataProvider.tables);
+      //  console.log("table.id",table.id,this.dataProvider.tables);
         await this.tableService.deleteTable(table.id);
       } else {
         this.alertify.presentToast("Table delete cancelled");
@@ -253,7 +253,7 @@ export class TableComponent implements OnInit {
 
   changeTable(event: any, kot: Kot) {
     // add kot to selectedKotsForKotTransfer
-    console.log('event ', event);
+  //  console.log('event ', event);
     if (event.checked) {
       this.selectedKotsForKotTransfer.push(kot);
     } else {
@@ -275,7 +275,7 @@ export class TableComponent implements OnInit {
     this.moveKotSelectedTable?.bill?.kots.forEach((kot) => {
       if (kot.allSelected) {
         kots.push(kot);
-        console.log('Adding kot ', kot.products);
+      //  console.log('Adding kot ', kot.products);
       } else {
         products.push(...kot.products.filter((p) => p.selected));
         console.log(
@@ -284,8 +284,8 @@ export class TableComponent implements OnInit {
         );
       }
     });
-    console.log('kots ', kots);
-    console.log('products ', products);
+  //  console.log('kots ', kots);
+  //  console.log('products ', products);
     // now shift the kots to the new table and add products to a new kot
     if (kots.length > 0) {
       kots.forEach((kot) => {
@@ -317,17 +317,17 @@ export class TableComponent implements OnInit {
   }
 
   switchTableSize(event:any){
-    console.log("event",event);
+  //  console.log("event",event);
     localStorage.setItem('tableSize',event.value);
     this.dataProvider.currentTableSize = event.value;
   }
 
   switchMode(mode:any){
-    console.log("mode",mode);
+  //  console.log("mode",mode);
     this.dataProvider.billingMode = mode.value;
     this.dataProvider.modeChanged.next(mode.value);
     if (mode.value == 'dineIn'){
-      console.log("this.dataProvider.dineInMenu",this.dataProvider.dineInMenu);
+    //  console.log("this.dataProvider.dineInMenu",this.dataProvider.dineInMenu);
       if(!this.dataProvider.dineInMenu){
         alert("No dine-in menu found");
         return;
@@ -339,11 +339,11 @@ export class TableComponent implements OnInit {
         this.dataProvider.currentMenu.type = 'dineIn';
         this.dataProvider.products = this.dataProvider.currentMenu.products;
       } else {
-        console.log("this.dataProvider.menus",this.dataProvider.menus);
+      //  console.log("this.dataProvider.menus",this.dataProvider.menus);
       }
-      console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
+    //  console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
     } else if (mode.value == 'takeaway'){
-      console.log("this.dataProvider.takeawayMenu",this.dataProvider.takeawayMenu);
+    //  console.log("this.dataProvider.takeawayMenu",this.dataProvider.takeawayMenu);
       if(!this.dataProvider.takeawayMenu){
         alert("No takeaway menu found");
         return;
@@ -355,11 +355,11 @@ export class TableComponent implements OnInit {
         this.dataProvider.currentMenu.type = 'takeaway';
         this.dataProvider.products = this.dataProvider.currentMenu.products;
       } else {
-        console.log("this.dataProvider.menus",this.dataProvider.menus);
+      //  console.log("this.dataProvider.menus",this.dataProvider.menus);
       }
-      console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
+    //  console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
     } else if (mode.value == 'online'){
-      console.log("this.dataProvider.onlineMenu",this.dataProvider.onlineMenu);
+    //  console.log("this.dataProvider.onlineMenu",this.dataProvider.onlineMenu);
       if(!this.dataProvider.onlineMenu){
         alert("No online menu found");
         return;
@@ -371,9 +371,9 @@ export class TableComponent implements OnInit {
         this.dataProvider.currentMenu.type = 'online';
         this.dataProvider.products = this.dataProvider.currentMenu.products;
       } else {
-        console.log("this.dataProvider.menus",this.dataProvider.menus);
+      //  console.log("this.dataProvider.menus",this.dataProvider.menus);
       }
-      console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
+    //  console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
     }
   }
 
@@ -381,7 +381,7 @@ export class TableComponent implements OnInit {
     if (table.bill) {
       let dialog = this.dialog.open(SettleComponent,{data:table.bill.billing.grandTotal});
       dialog.closed.subscribe(async (result: any) => {
-        console.log('Result', result);
+      //  console.log('Result', result);
         if (result && table.bill && result.settling && result.paymentMethods) {
           await table.bill.settle(result.paymentMethods,'external',result.detail || null);
         }

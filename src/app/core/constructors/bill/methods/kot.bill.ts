@@ -40,7 +40,7 @@ export function editKot(this: Bill, kot: Kot, reason) {
         kot: kot,
         kotIndex: this.kots.findIndex((localKot) => localKot.id == kot.id) || 0,
       };
-      console.log('edit kot mode 1', this.editKotMode);
+    //  console.log('edit kot mode 1', this.editKotMode);
       this.dataProvider.manageKot = false;
       this.dataProvider.manageKotChanged.next(false);
       this.updated.next();
@@ -59,7 +59,7 @@ export function editKot(this: Bill, kot: Kot, reason) {
       kotIndex: this.kots.findIndex((localKot) => localKot.id == kot.id) || 0,
     };
     // finalize the kot
-    console.log('edit kot mode', this.editKotMode);
+  //  console.log('edit kot mode', this.editKotMode);
     this.dataProvider.manageKot = false;
     this.dataProvider.manageKotChanged.next(false);
     this.updated.next();
@@ -77,7 +77,7 @@ export function finalizeAndPrintKot(this: Bill) {
     let kotIndex = this.kots.findIndex(
       (kot) => this.editKotMode && kot.id === this.editKotMode.kot.id
     );
-    console.log('Kot index', kotIndex);
+  //  console.log('Kot index', kotIndex);
     if (kotIndex != -1) {
       let cancelledProducts:Product[] = this.kots[kotIndex].products.map((product)=>{
         return {
@@ -90,7 +90,7 @@ export function finalizeAndPrintKot(this: Bill) {
       })
       this.kots[kotIndex].products = [...cancelledProducts,...this.editKotMode.newKot];
       this.kots[kotIndex].stage = 'finalized';
-      console.log('Active kot', this.kots[kotIndex]);
+    //  console.log('Active kot', this.kots[kotIndex]);
       this.printKot(this.kots[kotIndex],'editedKot')
       this.kots[kotIndex].products = this.editKotMode.newKot;
     }
@@ -100,14 +100,14 @@ export function finalizeAndPrintKot(this: Bill) {
     let activeKot = this.kots.find(
       (value) => value.stage === 'active' || value.stage == 'edit'
     );
-    console.log('info =>', activeKot);
+  //  console.log('info =>', activeKot);
 
     if (activeKot) {
       activeKot.id = this.dataProvider.kotToken.toString();
       this.dataProvider.kotToken++;
       this.analyticsService.addKitchenToken();
       activeKot.stage = 'finalized';
-      console.log('Active kot', activeKot);
+    //  console.log('Active kot', activeKot);
       this.analyticsService.addKitchenToken();
       activeKot.createdDate = Timestamp.now();
       this.updated.next();
@@ -117,7 +117,7 @@ export function finalizeAndPrintKot(this: Bill) {
           this.printKot(activeKot, 'runningNonChargeable');
         } else {
           // running chargeable kot
-          console.log('running chargeable');
+        //  console.log('running chargeable');
           this.printKot(activeKot, 'runningChargeable');
         }
       } else {
@@ -129,7 +129,7 @@ export function finalizeAndPrintKot(this: Bill) {
           this.printKot(activeKot, 'firstChargeable');
         }
       }
-      console.log('Must have printed');
+    //  console.log('Must have printed');
       this.dataProvider.kotViewVisible = true;
     } else {
       alert('No active kot found');
@@ -182,7 +182,7 @@ export function printKot(
       user: this.user,
     });
   }
-  console.log("kot.products",kot.products);
+//  console.log("kot.products",kot.products);
   let data:PrintableKot = {
     date:kot.createdDate.toDate().toLocaleDateString(),
     time:kot.createdDate.toDate().toLocaleTimeString(),
@@ -200,7 +200,7 @@ export function printKot(
     }),
     table:this.table.id,
   }
-  console.log("Kot data",data);
+//  console.log("Kot data",data);
   this.printingService.printKot(data);
-  console.log('Send to service');
+//  console.log('Send to service');
 }

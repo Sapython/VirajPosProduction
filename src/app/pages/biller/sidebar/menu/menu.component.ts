@@ -124,3 +124,6 @@ export class MenuComponent implements OnInit,AfterViewInit {
     this.dataProvider.menuProducts.next(category);
   }
 }
+
+// create a regex for console.log( to find all console.log( in the project and end it in )
+// console.log\((.*)\)

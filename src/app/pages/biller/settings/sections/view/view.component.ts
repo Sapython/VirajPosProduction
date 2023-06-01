@@ -41,7 +41,7 @@ export class ViewComponent {
       })
     );
     this.dataProvider.smartMode = value;
-    console.log(localStorage.getItem('viewSettings'));
+  //  console.log(localStorage.getItem('viewSettings'));
   }
 
   touchModeToggle(value: boolean) {
@@ -53,7 +53,7 @@ export class ViewComponent {
       })
     );
     this.dataProvider.touchMode = value;
-    console.log(localStorage.getItem('viewSettings'));
+  //  console.log(localStorage.getItem('viewSettings'));
   }
   setLocalShowTable(event: any) {
     localStorage.setItem('showTable', JSON.stringify(event.target.checked));

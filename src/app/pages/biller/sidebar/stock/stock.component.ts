@@ -38,7 +38,7 @@ export class StockComponent implements AfterViewInit{
       var mc = new Hammer.Manager(document.getElementById('stockValuationTrigger'));
       mc.add( new Hammer.Press({ time:500 }) );
       mc.on("press", (ev:any) => {
-        console.log("press",ev);
+      //  console.log("press",ev);
         const dialog = this.dialog.open(StockValuationComponent)
         dialog.componentInstance?.close.subscribe((data)=>{
           dialog.close();
@@ -48,7 +48,7 @@ export class StockComponent implements AfterViewInit{
       var mc = new Hammer.Manager(document.getElementById('cashCounterTrigger'));
       mc.add( new Hammer.Press({ time:500 }) );
       mc.on("press", (ev:any) => {
-        console.log("press",ev);
+      //  console.log("press",ev);
         const dialog = this.dialog.open(CashCounterComponent)
         dialog.componentInstance?.close.subscribe((data)=>{
           dialog.close();

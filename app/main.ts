@@ -28,7 +28,7 @@ function run_script(command, args, event, callback) {
   child.stdout.on('data', (data) => {
     //Here is the output
     data = data.toString();
-    console.log(data);
+  //  console.log(data);
     event.sender.send('printDataComplete', { stage: 'stderr', data, command, args });
   });
 
@@ -38,20 +38,20 @@ function run_script(command, args, event, callback) {
     // win.webContents.send('mainprocess-response', data);
     //Here is the output from the command
     data = data.toString();
-    console.log(data);
+  //  console.log(data);
     event.sender.send('printDataComplete', { stage: 'stdout', data, command, args });
   });
 
   child.on('close', (code) => {
     //Here you can get the exit code of the script
-    console.log(`child process exited with code ${code}`);
+  //  console.log(`child process exited with code ${code}`);
     event.sender.send('printDataComplete', { stage: 'closed', code, command, args });
   });
   if (typeof callback === 'function') callback();
 }
 
 function printData(event, data, printer) {
-  console.log('Will Print: ', data, printer);
+//  console.log('Will Print: ', data, printer);
   var home = require("os").homedir();
   var dataPath = home + '/Documents/somefolderwhichexists/';
   if (!fs.existsSync(dataPath)){
@@ -62,13 +62,13 @@ function printData(event, data, printer) {
       console.error(err);
     }
     // file written successfully
-    console.log('File Written Successfully');
+  //  console.log('File Written Successfully');
     run_script(
       'RawPrint.exe',
       ['"'+printer+'"','"'+dataPath+'printableData.txt'+'"'],
       event,
       function () {
-        console.log('Done Printing (main)');
+      //  console.log('Done Printing (main)');
       }
     );
   });
@@ -100,31 +100,31 @@ function createWindow(): BrowserWindow {
 
   ipcMain.on("getPrinters", async (event, arg) => {
     let res = win.webContents.getPrintersAsync();
-    console.log("Main printers", res);
+  //  console.log("Main printers", res);
     event.returnValue = await res;
   });
   ipcMain.on("printData", async (event, arg) => {
-    console.log("GOT", arg, arg.data, arg.printer);
+  //  console.log("GOT", arg, arg.data, arg.printer);
     let res = printData(event, arg.data, arg.printer);
   });
   ipcMain.on("saveAuth", async (event, arg) => {
     try {
-      console.log("GOT", arg, );
+    //  console.log("GOT", arg, );
       store.set('token', arg);
       event.returnValue = true;
-      console.log("Succes saveAuth");
+    //  console.log("Succes saveAuth");
     } catch (error) {
       event.returnValue = false;
-      console.log("Save auth",error);
+    //  console.log("Save auth",error);
     }
   });
   ipcMain.on("getAuth", async (event, arg) => {
     try {
       event.returnValue = store.get('token');
-      console.log("Success getAuth", event.returnValue);
+    //  console.log("Success getAuth", event.returnValue);
     } catch (error) {
       event.returnValue = false;
-      console.log("Get auth",error);
+    //  console.log("Get auth",error);
     }
   })
 
@@ -153,7 +153,7 @@ function createWindow(): BrowserWindow {
   const url = new URL(path.join('file:', __dirname, pathIndex));
   win.loadURL(url.href);
   win.webContents.on("did-fail-load", () => {
-    console.log("did-fail-load");
+  //  console.log("did-fail-load");
     const url = new URL(path.join('file:', __dirname, pathIndex));
     win.loadURL(url.href);
     // REDIRECT TO FIRST WEBPAGE AGAIN
@@ -181,7 +181,7 @@ function createWindow(): BrowserWindow {
   //   const url = new URL(path.join('file:', __dirname, pathIndex));
   //   win.loadURL(url.href);
   //   win.webContents.on("did-fail-load", () => {
-  //     console.log("did-fail-load");
+  //   //  console.log("did-fail-load");
   //     const url = new URL(path.join('file:', __dirname, pathIndex));
   //     win.loadURL(url.href);
   //     // REDIRECT TO FIRST WEBPAGE AGAIN

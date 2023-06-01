@@ -14,6 +14,7 @@ import { BillService } from '../../../../core/services/database/bill/bill.servic
 import { BillConstructor } from '../../../../types/bill.structure';
 import { KotConstructor } from '../../../../types/kot.structure';
 import { getPrintableBillConstructor } from '../../../../core/constructors/bill/methods/getHelpers.bill';
+import { calculateBill } from '../../actions/split-bill/split-bill.component';
 @Component({
   selector: 'app-history',
   templateUrl: './history.component.html',
@@ -75,19 +76,20 @@ export class HistoryComponent {
           username:userRes.name,
         }
       });
-      let products = bill.kots.reduce((acc,kot) => {
-        kot.products.forEach((product) => {
-          let index = acc.findIndex((accProduct) => accProduct.name == product.name);
-          if(index == -1){
-            acc.push({...product,quantity:1});
-          } else {
-            acc[index].quantity++;
-          }
-        })
-        return acc;
-      },[] as any[])
-      let printableBillData = getPrintableBillConstructor(bill,products,this.dataProvider)
-      this.printingService.reprintBill(printableBillData);
+      // let products = bill.kots.reduce((acc,kot) => {
+      //   kot.products.forEach((product) => {
+      //     let index = acc.findIndex((accProduct) => accProduct.name == product.name);
+      //     if(index == -1){
+      //       acc.push({...product,quantity:1});
+      //     } else {
+      //       acc[index].quantity++;
+      //     }
+      //   })
+      //   return acc;
+      // },[] as any[])
+      // let printableBillData = getPrintableBillConstructor(bill,products,this.dataProvider)
+      calculateBill(bill,this.dataProvider);
+      this.printingService.reprintBill(bill.printableBillData);
     } else {
       alert("Reprint Cancelled")
       return;

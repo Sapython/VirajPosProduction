@@ -51,9 +51,9 @@ export class customEncoder extends EscPosEncoder {
       (encoder: any) => encoder.bold().align('center').text('Price').bold(),
       'Amount',
     ]);
-    products.forEach((product) => {
+    products.forEach((product,index) => {
       data.push([
-        product.name,
+        (index+1).toString()+'. '+product.name,
         product.quantity.toString(),
         'Rs.' + product.untaxedValue.toString(),
         'Rs.' + (product.untaxedValue * product.quantity).toString(),

@@ -119,7 +119,7 @@ export class EncoderService {
             'Date: ' + kotData.date + ' ' + kotData.time,
             'Token: ' + kotData.orderNo,
           ],
-          ['Kot No: ' + kotData.token, 'Table No: ' + kotData.table],
+          ['Kot No: ' + kotData.token, (this.getModeTitle(kotData.billingMode))+' No: ' + kotData.table],
         ]
       )
       .hr()
@@ -128,4 +128,17 @@ export class EncoderService {
       .end();
     return result;
   }
+
+  getModeTitle(mode: 'dineIn'|'takeaway'|'online'):string {
+    if (mode=='dineIn'){
+      return 'Table';
+    } else if (mode =='takeaway'){
+      return 'Token';
+    } else if (mode =='online'){
+      return 'Order';
+    } else {
+      return 'Table';
+    }
+  }
 }
+

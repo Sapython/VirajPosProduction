@@ -36,6 +36,7 @@ export interface kotReport extends KotConstructor {
 
 export interface PrintableKot {
   mode:'firstChargeable'|'cancelledKot'|'editedKot'|'runningNonChargeable'|'runningChargeable'|'firstNonChargeable'|'reprintKot'|'online';
+  billingMode:'dineIn'|'takeaway'|'online';
   date:string;
   time:string;
   token:string;

@@ -141,7 +141,7 @@ export class SplitBillComponent {
       billReprints: [],
       billingMode: this.bill.billingMode,
     };
-    this.calculateBill(billConstructor);
+    calculateBill(billConstructor,this.dataProvider);
     this.splittedBills.push(billConstructor);
     // remove selected products from original bill
     this.allKots.forEach((kot) => {
@@ -167,7 +167,7 @@ export class SplitBillComponent {
           }
         }
         billConstructor.stage = 'settled';
-        this.calculateBill(billConstructor);
+        calculateBill(billConstructor,this.dataProvider);
       }
     });
   }
@@ -179,7 +179,7 @@ export class SplitBillComponent {
       if (typeof result == 'object' && this.dataProvider.currentBill) {
       //  console.log(result);
         billConstructor.billing.discount = result;
-        this.calculateBill(billConstructor);
+        calculateBill(billConstructor,this.dataProvider);
       }
     })
   }
@@ -192,11 +192,11 @@ export class SplitBillComponent {
     if (this.allSettled){
       this.dataProvider.loading = true;
       let ids = await Promise.all(this.splittedBills.map(async (bill)=>{
-        this.printingService.printBill(bill.printableBillData);
         bill.table = bill.table.id || bill.table as any;
-      //  console.log("Printing Bill",bill);
+        this.printingService.printBill(bill.printableBillData);
+        // console.log("Printing Bill",bill.printableBillData);
         let res = (await this.billService.saveSplittedBill(this.bill.id,bill)).id;
-      //  console.log("Saved splitted bill");
+        //  console.log("Saved splitted bill");
         return res
       }))
       this.bill.settle(this.splittedBills.map(bill=>bill.settlement.payments).flat(),'internal',{
@@ -208,61 +208,63 @@ export class SplitBillComponent {
     }
   }
 
-  calculateBill(bill: BillConstructor) {
-    if (bill.billingMode === 'nonChargeable') {
-      bill.billing.subTotal = 0;
-      bill.billing.grandTotal = 0;
-      return;
-    }
-    let productCalculation = calculateProducts(bill.kots);
-    let allProducts = productCalculation.allProducts;
-    let finalTaxes: Tax[] = productCalculation.finalTaxes;
-    let finalAdditionalTax = productCalculation.finalAdditionalTax;
-    bill.billing.subTotal = allProducts.reduce((acc, cur) => {
-      return acc + cur.untaxedValue;
-    }, 0);
-    let applicableDiscount = 0;
-    // apply discount to subTotal
-    bill.billing.discount.forEach((discount) => {
-      discount.totalAppliedDiscount = 0;
-      if (discount.mode == 'codeBased') {
-        if (discount.type === 'percentage') {
-          applicableDiscount += discount.value;
-          discount.totalAppliedDiscount += Number(discount.value);
-        } else {
-          let discountValue = (bill.billing.subTotal / 100) * discount.value;
-          applicableDiscount += discountValue;
-          discount.totalAppliedDiscount += Number(discountValue);
-        }
-      } else if (discount.mode == 'directFlat') {
+  get allSettled(){
+    return this.splittedBills.every(bill=>bill.stage=='settled');
+  }
+}
+
+
+export function calculateBill(bill: BillConstructor,dataProvider:DataProvider) {
+  if (bill.billingMode === 'nonChargeable') {
+    bill.billing.subTotal = 0;
+    bill.billing.grandTotal = 0;
+    return;
+  }
+  let productCalculation = calculateProducts(bill.kots);
+  let allProducts = productCalculation.allProducts;
+  let finalTaxes: Tax[] = productCalculation.finalTaxes;
+  let finalAdditionalTax = productCalculation.finalAdditionalTax;
+  bill.billing.subTotal = allProducts.reduce((acc, cur) => {
+    return acc + cur.untaxedValue;
+  }, 0);
+  let applicableDiscount = 0;
+  // apply discount to subTotal
+  bill.billing.discount.forEach((discount) => {
+    discount.totalAppliedDiscount = 0;
+    if (discount.mode == 'codeBased') {
+      if (discount.type === 'percentage') {
         applicableDiscount += discount.value;
         discount.totalAppliedDiscount += Number(discount.value);
-      } else if (discount.mode == 'directPercent') {
+      } else {
         let discountValue = (bill.billing.subTotal / 100) * discount.value;
         applicableDiscount += discountValue;
         discount.totalAppliedDiscount += Number(discountValue);
       }
-    });
+    } else if (discount.mode == 'directFlat') {
+      applicableDiscount += discount.value;
+      discount.totalAppliedDiscount += Number(discount.value);
+    } else if (discount.mode == 'directPercent') {
+      let discountValue = (bill.billing.subTotal / 100) * discount.value;
+      applicableDiscount += discountValue;
+      discount.totalAppliedDiscount += Number(discountValue);
+    }
+  });
 
-    bill.billing.taxes = finalTaxes.filter((tax) => tax.amount > 0);
-    let totalApplicableTax = bill.billing.taxes.reduce((acc, cur) => {
-      return acc + cur.amount;
-    }, 0);
-    // console.log(
-    //   'totalApplicableTax',
-    //   bill.billing.taxes,
-    //   finalTaxes,
-    //   totalApplicableTax,
-    //   finalAdditionalTax
-    // );
-    bill.billing.grandTotal = bill.billing.subTotal - applicableDiscount + totalApplicableTax;
-    bill.printableBillData = getPrintableBillConstructor(
-      bill,
-      allProducts,
-      this.dataProvider
-    );
-  }
-  get allSettled(){
-    return this.splittedBills.every(bill=>bill.stage=='settled');
-  }
+  bill.billing.taxes = finalTaxes.filter((tax) => tax.amount > 0);
+  let totalApplicableTax = bill.billing.taxes.reduce((acc, cur) => {
+    return acc + cur.amount;
+  }, 0);
+  // console.log(
+  //   'totalApplicableTax',
+  //   bill.billing.taxes,
+  //   finalTaxes,
+  //   totalApplicableTax,
+  //   finalAdditionalTax
+  // );
+  bill.billing.grandTotal = bill.billing.subTotal - applicableDiscount + totalApplicableTax;
+  bill.printableBillData = getPrintableBillConstructor(
+    bill,
+    allProducts,
+    dataProvider
+  );
 }

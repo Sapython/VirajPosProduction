@@ -182,12 +182,18 @@ export function printKot(
       user: this.user,
     });
   }
+  if (!this.orderNo) {
+    this.orderNo = this.dataProvider.orderTokenNo.toString();
+    this.dataProvider.orderTokenNo++;
+    this.analyticsService.addOrderToken();
+  }
 //  console.log("kot.products",kot.products);
   let data:PrintableKot = {
     date:kot.createdDate.toDate().toLocaleDateString(),
     time:kot.createdDate.toDate().toLocaleTimeString(),
     orderNo:this.orderNo,
     mode:mode,
+    billingMode:this.mode,
     token:kot.id,
     products:kot.products.map((product)=>{
       return {

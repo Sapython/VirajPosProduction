@@ -76,7 +76,7 @@ export class PrinterService {
   }
 
   printBill(billData: PrintableBill) {
-  //  console.log("Printing bill",billData);
+    console.log("Printing bill",billData);
     let data = this.encoderService.getBillCode(billData);
     if (!this.dataprovider.currentBusiness?.billerPrinter) {
       const dialog = this.dialog.open(DialogComponent, {
@@ -125,6 +125,7 @@ export class PrinterService {
       orderNo:billConstructor.orderNo,
       table:billConstructor.table as unknown as string,
       token:kot.id,
+      billingMode:billConstructor.mode,
       products:kot.products.map((product)=>{
         return {
           name:product.name,

@@ -24,7 +24,7 @@ export class ReprintReasonComponent {
     if (this.reprintForm.valid){
       const password = this.reprintForm.get('password')?.value;
       if((await this.dataProvider.checkPassword(password))){
-        this.dialogRef.close(this.reprintForm.value)
+        this.dialogRef.close(this.reprintForm.value.reason)
       } else {
         alert("Incorrect Password")
       }

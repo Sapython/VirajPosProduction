@@ -30,11 +30,6 @@ export async function addProduct(this: Bill, product: Product) {
   } else {
     const kotIndex = this.kots.findIndex((kot) => kot.stage === 'active');
     if (kotIndex === -1) {
-      if (!this.orderNo) {
-        this.orderNo = this.dataProvider.orderTokenNo.toString();
-        this.dataProvider.orderTokenNo++;
-        this.analyticsService.addOrderToken();
-      }
       let kot = new Kot(product);
       this.kots.push(kot);
     } else {

@@ -79,11 +79,17 @@ function printableBillGenerator(bill:BillConstructor|Bill,products:Product[],dat
       phone: bill.customerInfo.phone,
     },
     billNoSuffix: dataProvider.billNoSuffix,
-    billNo: bill.id,
+    billNo: bill.billNo || '',
     orderNo: bill.orderNo,
     cashierName: dataProvider.currentUser.username,
-    date: bill.createdDate.toDate().toLocaleDateString(),
-    time: bill.createdDate.toDate().toLocaleDateString(),
+    // date in dd/mm/yyyy format
+    date: bill.createdDate.toDate().toLocaleDateString('en-GB'),
+    // time in 12 hour format
+    time: bill.createdDate.toDate().toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    }),
     mode:
       bill.mode == 'dineIn'
         ? 'Dine In'
@@ -97,46 +103,50 @@ function printableBillGenerator(bill:BillConstructor|Bill,products:Product[],dat
         name: product.name,
         quantity: product.quantity,
         untaxedValue: product.untaxedValue,
-        total: product.untaxedValue * product.quantity,
+        total: roundOffPipe(product.untaxedValue * product.quantity),
       };
     }),
     totalQuantity: products.reduce((acc, product) => {
       return acc + product.quantity;
     },0),
-    subTotal: bill.billing.subTotal,
+    subTotal: roundOffPipe(bill.billing.subTotal),
     discounts: bill.billing.discount.map((discount) => {
       if (discount.mode == 'codeBased') {
         return {
           name: discount.name,
-          rate: discount.value,
+          rate: roundOffPipe(discount.value),
           type: discount.type,
-          value: discount.totalAppliedDiscount,
+          value: roundOffPipe(discount.totalAppliedDiscount),
         };
       } else if (discount.mode == 'directFlat') {
         return {
           name: 'Flat',
-          rate: discount.value,
-          value: discount.totalAppliedDiscount,
+          rate: roundOffPipe(discount.value),
+          value: roundOffPipe(discount.totalAppliedDiscount),
           type: 'flat',
         };
       } else {
         return {
           name: 'Offer',
-          rate: discount.value,
+          rate: roundOffPipe(discount.value),
           type: 'percentage',
-          value: discount.totalAppliedDiscount,
+          value: roundOffPipe(discount.totalAppliedDiscount),
         };
       }
     }),
     taxes: bill.billing.taxes.map((tax) => {
       return {
         name: tax.name,
-        rate: tax.cost,
-        value: tax.amount,
+        rate: roundOffPipe(tax.cost),
+        value: roundOffPipe(tax.amount),
       };
     }),
-    grandTotal: bill.billing.grandTotal,
+    grandTotal: roundOffPipe(bill.billing.grandTotal),
     note: dataProvider.customBillNote,
-    notes: [bill.instruction],
+    notes: bill.instruction ? [bill.instruction] : [],
   };
+}
+
+function roundOffPipe(num:number){
+  return Math.round((num + Number.EPSILON) * 100) / 100
 }

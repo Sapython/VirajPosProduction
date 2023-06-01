@@ -7,6 +7,8 @@ import { BusinessRecord, UserBusiness, UserRecord, AdditonalClaims } from '../..
 import { DataProvider } from '../../provider/data-provider.service';
 import { LoginService } from '../login/login.service';
 
+var debug = true;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -160,13 +162,16 @@ export class SignupService {
         phone:params.phone,
         image:params.image,
         business:params.business,
+        providerId:'custom',
       }
       let signUpRequest = await this.signUpWithUserAndPasswordFunction(data)
       if (signUpRequest.data['token']){
         if (params.noSignIn){
           return data;
         } else {
-          return await this.loginService.signInWithCustomToken(signUpRequest.data['token'])
+          let newSignupData = await this.loginService.signInWithCustomToken(signUpRequest.data['token'])
+          if(debug) console.log("newSignupData",newSignupData);
+          return newSignupData
         }
       } else {
         if (signUpRequest.data['error']){

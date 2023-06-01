@@ -425,7 +425,7 @@ export class LoadingComponent {
         }).then((data)=>{
           this.loginStage.next('Account Created')
           if (debug) console.log("FINAL DATA",data);
-          if (data['providerId']){
+          if (!data['providerId']){
             this.onboard(data as UserCredential,id,logo)
           }
         }).catch((error)=>{

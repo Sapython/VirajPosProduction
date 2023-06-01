@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DataProvider } from '../../../../../core/services/provider/data-provider.service';
 import { SelectMenuComponent } from '../../select-menu/select-menu.component';
 import { ModeConfig } from '../../../../../core/constructors/menu/menu';
@@ -8,13 +8,14 @@ import { AlertsAndNotificationsService } from '../../../../../core/services/aler
 import { Dialog } from '@angular/cdk/dialog';
 import { SettingsService } from '../../../../../core/services/database/settings/settings.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { ElectronService } from '../../../../../core/services';
 
 @Component({
   selector: 'app-config',
   templateUrl: './config.component.html',
   styleUrls: ['./config.component.scss'],
 })
-export class ConfigComponent {
+export class ConfigComponent implements OnInit {
   modes: [boolean, boolean, boolean] = this.dataProvider.activeModes;
   printers: string[] = [];
   constructor(
@@ -23,8 +24,13 @@ export class ConfigComponent {
     private productService: ProductsService,
     private alertify: AlertsAndNotificationsService,
     private dialog: Dialog,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private electronService: ElectronService
   ) {}
+
+  async ngOnInit(): Promise<void> {
+    this.printers = await this.electronService.getPrinters() || []
+  }
 
   settingsForm: FormGroup = new FormGroup({
     hotelName: new FormControl(this.dataProvider.currentBusiness?.hotelName, [

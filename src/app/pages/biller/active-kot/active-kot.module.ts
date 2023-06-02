@@ -19,6 +19,7 @@ import { NormalKotComponent } from './sections/normal-kot/normal-kot.component';
 import { EditKotComponent } from './sections/edit-kot/edit-kot.component';
 import { QuickKotViewComponent } from './sections/quick-kot-view/quick-kot-view.component';
 import { BillPreviewComponent } from './sections/bill-preview/bill-preview.component';
+import { CancelKOtComponent } from './cancel-kot/cancel-kot.component';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { BillPreviewComponent } from './sections/bill-preview/bill-preview.compo
     NormalKotComponent,
     EditKotComponent,
     QuickKotViewComponent,
-    BillPreviewComponent
+    BillPreviewComponent,
+    CancelKOtComponent
   ],
   imports: [
     CommonModule,

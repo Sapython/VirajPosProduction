@@ -193,7 +193,7 @@ export class SplitBillComponent {
       this.dataProvider.loading = true;
       let ids = await Promise.all(this.splittedBills.map(async (bill)=>{
         bill.table = bill.table.id || bill.table as any;
-        this.printingService.printBill(bill.printableBillData);
+        this.printingService.printBill(structuredClone(bill.printableBillData));
         // console.log("Printing Bill",bill.printableBillData);
         let res = (await this.billService.saveSplittedBill(this.bill.id,bill)).id;
         //  console.log("Saved splitted bill");

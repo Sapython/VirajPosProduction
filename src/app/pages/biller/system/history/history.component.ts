@@ -32,6 +32,7 @@ export class HistoryComponent {
   bills:ExtendedBillConstructor[] = []
   filteredBills:ExtendedBillConstructor[] = []
   fuseSearchInstance = new Fuse(this.bills, {keys:['billNo','orderNo']})
+  numberSearchSubject:Subject<string> = new Subject<string>();
 
   constructor(private historyService: HistoryService,private billService:BillService,private printingService:PrinterService,private dialog:Dialog,private dataProvider:DataProvider) {
     this.numberSearchSubject.pipe(debounceTime(600)).subscribe((searchTerm) => {
@@ -46,7 +47,6 @@ export class HistoryComponent {
     })
   }
 
-  numberSearchSubject:Subject<string> = new Subject<string>();
   ngOnInit(): void {
     this.getReport();
   }

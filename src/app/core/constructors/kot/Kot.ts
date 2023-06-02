@@ -13,7 +13,7 @@ export class Kot implements KotConstructor {
   editMode: boolean;
   selected: boolean;
   allSelected: boolean;
-  cancelReason?: { reason: string; time: Timestamp; user: UserConstructor; };
+  cancelReason?: { reason: string;mode:'un-made'|'made', time: Timestamp; user: UserConstructor; };
   totalTimeTaken: string;
   totalTimeTakenNumber: number;
   someSelected: boolean;

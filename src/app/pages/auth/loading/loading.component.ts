@@ -40,6 +40,17 @@ export class LoadingComponent {
     password: new FormControl(''),
   });
 
+  resetPasswordFormVerification: FormGroup = new FormGroup({
+    email: new FormControl('', [Validators.required, Validators.email]),
+    username: new FormControl('', [Validators.required]),
+  })
+
+  resetPasswordForm: FormGroup = new FormGroup({
+    otp: new FormControl('', [Validators.required, Validators.minLength(6),Validators.maxLength(6)]),
+    password: new FormControl('', [Validators.required, Validators.minLength(8)]),
+    confirmPassword: new FormControl('', [Validators.required, Validators.minLength(8)]),
+  })
+
   checkUsernameFunction = httpsCallable(this.functions, 'userNameAvailable');
   signUpWithUserAndPassword = httpsCallable(this.functions, 'signUpWithUserAndPassword');
   signInWithUserAndPassword = httpsCallable(this.functions, 'signInWithUserAndPassword');
@@ -607,5 +618,11 @@ export class LoadingComponent {
     let formsValid = this.onboardingBusinessForm.valid && this.securityForm.valid
     let accountsValid = this.accounts.filter((account)=>account.username && account.access).length > 0
     return formsValid && accountsValid
+  }
+
+  resetPassword(){
+    this.userManagementService.sendResetPasswordMail(this.resetPasswordFormVerification.value.email,this.resetPasswordFormVerification.value.username).then((res)=>{
+      console.log('res', res);
+    })
   }
 }

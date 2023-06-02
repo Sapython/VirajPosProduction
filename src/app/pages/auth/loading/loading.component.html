@@ -43,6 +43,9 @@
       >
         Login
       </button>
+      <button type="button" mat-stroked-button color="primary" (click)="onboardingService.startResetPassword()">
+        Forgot Password
+      </button>
       <!-- <button
         mat-flat-button
         color="primary"
@@ -60,6 +63,100 @@
     <div *ngIf="!dataProvider.isAuthStateAvaliable" class="center">
       <mat-spinner></mat-spinner>
     </div>
+  </section>
+  <section
+    [@zoomInOnEnter]
+    [@zoomOutOnLeave]
+    *ngIf="onboardingService.stage == 'resetPasswordStage1' || onboardingService.stage == 'resetPasswordStage2' ||onboardingService.stage == 'resetPasswordStage3'"
+  >
+    <img src="assets/images/viraj.png" alt="Viraj" />
+    <h1>Reset Password</h1>
+    <ng-container *ngIf="onboardingService.stage == 'resetPasswordStage1'">
+      <form
+        [formGroup]="resetPasswordFormVerification"
+        (ngSubmit)="resetPassword()"
+      >
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input
+            matInput
+            formControlName="email"
+            type="email"
+            placeholder="Email"
+            required
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Username</mat-label>
+          <input
+            matInput
+            formControlName="username"
+            type="text"
+            placeholder="Username"
+            required
+          />
+        </mat-form-field>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="!resetPasswordFormVerification.valid"
+        >
+          Send Reset OTP
+        </button>
+      </form>
+    </ng-container>
+    <ng-container *ngIf="onboardingService.stage == 'resetPasswordStage2'">
+      <form
+        [formGroup]="resetPasswordForm"
+        (ngSubmit)="resetPassword()"
+      >
+        <mat-form-field appearance="outline">
+          <mat-label>OTP</mat-label>
+          <input
+            matInput
+            formControlName="otp"
+            type="text"
+            placeholder="OTP"
+            required
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>New Password</mat-label>
+          <input
+            matInput
+            formControlName="password"
+            type="password"
+            placeholder="Password"
+            required
+            #password
+          />
+          <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="password.type == 'password'" (click)="password.type == 'password' ? password.type = 'text' : password.type = 'password'" mat-icon-button><mat-icon>visibility</mat-icon></button>
+          <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="!(password.type == 'password')" (click)="password.type == 'password' ? password.type = 'text' : password.type = 'password'" mat-icon-button><mat-icon>visibility_off</mat-icon></button>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Confirm Password</mat-label>
+          <input
+            matInput
+            formControlName="confirmPassword"
+            type="password"
+            placeholder="Confirm Password"
+            required
+            #confirmPassword
+          />
+          <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="confirmPassword.type == 'password'" (click)="confirmPassword.type == 'password' ? confirmPassword.type = 'text' : confirmPassword.type = 'password'" mat-icon-button><mat-icon>visibility</mat-icon></button>
+          <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="!(confirmPassword.type == 'password')" (click)="confirmPassword.type == 'password' ? confirmPassword.type = 'text' : confirmPassword.type = 'password'" mat-icon-button><mat-icon>visibility_off</mat-icon></button>
+        </mat-form-field>
+        <button
+          mat-flat-button
+          color="primary"
+          (click)="mode = 'login'"
+          [disabled]="!resetPasswordForm.valid"
+        >
+          Reset Password
+        </button>
+      </form>
+    </ng-container>
   </section>
   <section
     [@zoomInOnEnter]

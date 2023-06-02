@@ -33,8 +33,8 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   let finalTaxes: Tax[] = calculationResults.finalTaxes;
   let finalAdditionalTax = calculationResults.finalAdditionalTax;
   this.billing.subTotal = allProducts.reduce((acc, cur) => {
-    return acc + (cur.untaxedValue * cur.quantity);
-  }, 0);
+    return acc + (cur.untaxedValue);
+  }, 0); 
   let applicableDiscount = 0;
   // apply discount to subTotal
   this.billing.discount.forEach((discount) => {
@@ -95,6 +95,8 @@ export function calculateProducts(kots:(Kot|KotConstructor)[]){
     }
   });
 
+  console.log("FINAL allProducts",allProducts);
+
   // check individual product for tax and if the tax.mode is inclusive then add the applicable tax to totalTaxValue or if the tax.mode is exclusive then decrease the price of product by tax rate and add the applicableValue to totalTaxValue
   let finalAdditionalTax: number = 0;
   let finalTaxes: Tax[] = [];
@@ -106,11 +108,12 @@ export function calculateProducts(kots:(Kot|KotConstructor)[]){
         ? true
         : false;
     //  console.log('Mode', inclusive);
+      console.log("product.price * product.quantity",product.price * product.quantity,product.price,product.quantity);
       let totalAmount = product.price * product.quantity;
       if (product.lineDiscount) {
-      //  console.log("Applying linediscount",product.name,product.lineDiscount);
+        console.log("Applying linediscount",product.name,product.lineDiscount);
         if (product.lineDiscount.mode === 'directPercent') {
-          totalAmount = totalAmount - (product.untaxedValue / 100) * product.lineDiscount.value;
+          totalAmount = totalAmount - ((totalAmount / 100) * product.lineDiscount.value);
         } else {
           totalAmount = totalAmount - product.lineDiscount.value;
         }
@@ -119,8 +122,9 @@ export function calculateProducts(kots:(Kot|KotConstructor)[]){
       let applicableTax = 0;
       product.taxes.forEach((tax) => {
         if (tax.type === 'percentage') {
+          console.log("Total amount",totalAmount);
           let taxAmount = (totalAmount * tax.cost) / 100;
-          applicableTax += taxAmount;
+          applicableTax += taxAmount; // applicableTax = applicableTax + taxAmount
           // find tax in finalTaxes and add the taxAmount to it
           let index = finalTaxes.findIndex((item: Tax) => item.id === tax.id);
           if (index !== -1) {

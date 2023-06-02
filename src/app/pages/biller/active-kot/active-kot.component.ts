@@ -7,6 +7,7 @@ import { Timestamp } from '@angular/fire/firestore';
 import { Kot } from '../../../core/constructors/kot/Kot';
 import { DataProvider } from '../../../core/services/provider/data-provider.service';
 import { Product } from '../../../types/product.structure';
+import { CancelKOtComponent } from './cancel-kot/cancel-kot.component';
 @Component({
   selector: 'app-active-kot',
   templateUrl: './active-kot.component.html',
@@ -118,11 +119,12 @@ export class ActiveKotComponent implements OnChanges {
   }
 
   async deleteKot(kot: Kot) {
-    const dialog = this.dialog.open(ReasonComponent)
-    let reason = await firstValueFrom(dialog.closed);
-    if (reason && typeof reason === 'string') {
+    const dialog = this.dialog.open(CancelKOtComponent)
+    let reason:any = await firstValueFrom(dialog.closed);
+    if (reason) {
       kot.cancelReason = {
-        reason: reason,
+        reason: reason.reason,
+        mode:reason.mode,
         time: Timestamp.now(),
         user: {
           access: this.dataProvider.currentBusinessUser.access.accessLevel,

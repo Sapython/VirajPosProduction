@@ -49,6 +49,10 @@ export class OnboardingService {
     | 'onboardingStep3'
     | 'virajReady'
     | 'virajGettingReady'
+    | 'resetPasswordStage1'
+    | 'resetPasswordStage2'
+    | 'resetPasswordStage3'
+    | 'resetPasswordStage4'
     | 'errorOccured' = 'noUser';
   loadingSteps: Subject<string> = new Subject<string>();
 
@@ -520,5 +524,9 @@ export class OnboardingService {
         }
       })
     })
+  }
+
+  startResetPassword(){
+    this.stage = 'resetPasswordStage1';
   }
 }

@@ -135,6 +135,7 @@ export class TableComponent implements OnInit {
       'this.dataProvider.takeawayToken ',
       this.dataProvider.takeawayToken
     );
+    this.dataProvider.takeawayToken++;
     this.analyticsService.addTakeawayToken();
     let table = new Table(
       this.dataProvider.takeawayToken.toString(),
@@ -160,6 +161,7 @@ export class TableComponent implements OnInit {
     //   'this.dataProvider.takeawayToken ',
     //   this.dataProvider.takeawayToken
     // );
+    this.dataProvider.onlineTokenNo++;
     this.analyticsService.addOnlineToken();
     let table = new Table(
       this.dataProvider.onlineTokenNo.toString(),

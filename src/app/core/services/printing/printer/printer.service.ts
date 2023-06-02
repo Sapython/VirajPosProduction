@@ -30,6 +30,7 @@ export class PrinterService {
   printKot(
     printableKotData:PrintableKot
   ) {
+    if(debugMode) console.log("Printing kot",printableKotData);
     let filteredProducts = printableKotData.products.filter((product: any) => product.category?.printer)
     if (filteredProducts.length != printableKotData.products.length) {
       const dialog = this.dialog.open(DialogComponent, {

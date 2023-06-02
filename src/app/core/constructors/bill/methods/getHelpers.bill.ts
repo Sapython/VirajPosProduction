@@ -102,8 +102,8 @@ function printableBillGenerator(bill:BillConstructor|Bill,products:Product[],dat
       return {
         name: product.name,
         quantity: product.quantity,
-        untaxedValue: product.untaxedValue,
-        total: roundOffPipe(product.untaxedValue * product.quantity),
+        untaxedValue: product.price,
+        total: product.untaxedValue,
       };
     }),
     totalQuantity: products.reduce((acc, product) => {

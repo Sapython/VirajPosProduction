@@ -13,13 +13,13 @@ import { DataProvider } from '../../../../../core/services/provider/data-provide
 })
 export class LineDiscountComponent {
   value:number = 0;
-  type:'percentage'|'amount' = 'percentage';
+  mode:'directPercent'|'directFlat' = 'directPercent';
   reason:string = '';
   password:string = '';
   constructor(@Inject(DIALOG_DATA) public product:Product,public dialogRef:DialogRef,private dialog:Dialog,private dataProvider:DataProvider){}
   async submit(){
     if ((await this.dataProvider.checkPassword(this.password))){
-      this.dialogRef.close({type:this.type,value:this.value,reason:this.reason})
+      this.dialogRef.close({type:this.mode,value:this.value,reason:this.reason})
     } else {
       const dialog = this.dialog.open(DialogComponent,{data:{title:'Wrong Password',description:'Please enter the correct password to continue.'}})
     }

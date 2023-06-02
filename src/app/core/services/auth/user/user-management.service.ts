@@ -16,6 +16,7 @@ import { dbConfig } from '../../../../app.module';
 })
 export class UserManagementService {
   resetPasswordFunction = httpsCallable(this.functions, 'resetPassword');
+  resetPasswordMailFunction = httpsCallable(this.functions, 'resetPasswordMail');
   constructor(
     private firestore: Firestore,
     private dbService: NgxIndexedDBService,
@@ -114,5 +115,9 @@ export class UserManagementService {
     } finally {
       this.dataProvider.loading = false;
     }
+  }
+
+  sendResetPasswordMail(username:string,email:string){
+    return this.resetPasswordMailFunction({username,email})
   }
 }

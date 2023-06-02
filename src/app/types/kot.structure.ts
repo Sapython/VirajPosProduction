@@ -15,6 +15,7 @@ export interface KotConstructor {
   unmade?: boolean;
   cancelReason?: {
     reason: string;
+    mode:'un-made'|'made';
     time: Timestamp;
     user: UserConstructor;
   };

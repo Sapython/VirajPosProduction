@@ -71,7 +71,7 @@
   <div class="item">
     <p>Enable <strong>smart mode</strong> to make your work efficient</p>
     <mat-slide-toggle
-      [(ngModel)]="dataProvider.showTableOnBillAction"
+      [(ngModel)]="dataProvider.smartMode"
       [disabled]="true"
       matTooltip="Smart mode is currently disabled for this account"
       (change)="setLocalShowTable($event)"
@@ -80,7 +80,7 @@
   <div class="item">
     <p>Enable <strong>touch mode</strong> if you have touch screen POS</p>
     <mat-slide-toggle
-      [(ngModel)]="dataProvider.showTableOnBillAction"
+      [(ngModel)]="dataProvider.touchMode"
       (change)="setLocalShowTable($event)"
     ></mat-slide-toggle>
   </div>

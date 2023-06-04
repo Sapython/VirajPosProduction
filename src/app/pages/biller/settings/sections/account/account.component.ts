@@ -23,7 +23,7 @@ export class AccountComponent {
     const dialog = this.dialog.open(AddComponent)
     dialog.disableClose = true;
     firstValueFrom(dialog.closed).then(async (res:any)=>{
-      if (res.username){
+      if (res && res.username){
         this.dataProvider.currentBusiness?.users.push({
           access: res.access || 'waiter',
           username: res.username,
@@ -36,7 +36,7 @@ export class AccountComponent {
         } catch (error) {
           this.alertify.presentToast('Failed to add account','error')
         }
-      } else {
+      } else if (res.cancelled) {
         this.alertify.presentToast("Account not added",'error')
       }
     });

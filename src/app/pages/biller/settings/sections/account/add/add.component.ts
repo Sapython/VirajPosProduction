@@ -111,9 +111,12 @@ export class AddComponent {
       })){
         this.userManagement.addExistingUser(this.loginForm.value.username,this.loginForm.value.accessLevel).then(res=>{
           console.log(res);
-          if (res.data['status']=='success' && res.data['authId'])
-          this.authOtpVerificationId = res.data['authId'];
-          this.onboardingStage = 'otp';
+          if (res.data['status']=='success' && res.data['authId']){
+            this.authOtpVerificationId = res.data['authId'];
+            this.onboardingStage = 'otp';
+          } else {
+            this.alertify.presentToast('Something went wrong');
+          }
         }).catch(err=>{
           console.log(err);
           this.alertify.presentToast(err.message);
@@ -169,7 +172,7 @@ export class AddComponent {
     if (
       await this.dataProvider.confirm('Are you sure you want to cancel ?', [1])
     ) {
-      this.dialogRef.close();
+      this.dialogRef.close({cancelled:true});
     }
   }
 

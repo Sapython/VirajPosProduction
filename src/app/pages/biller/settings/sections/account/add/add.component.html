@@ -145,7 +145,7 @@
   <ng-container *ngIf="onboardingStage=='otp'">
     <hr>
     <form [formGroup]="otpForm" (ngSubmit)="verifyOtp()">
-      <mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>OTP</mat-label>
         <input type="text" matInput formControlName="otp" />
       </mat-form-field>

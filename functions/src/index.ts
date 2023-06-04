@@ -400,7 +400,7 @@ export const addExistingUser = functions.https.onCall(
     // send an otp to the user email
     let generatedOtp = generateOtp();
     try {
-      let generateOtpRequest = await firestore
+      let optDocument = await firestore
         .collection('otps')
         .add({ 
           otp: generatedOtp, 
@@ -409,20 +409,6 @@ export const addExistingUser = functions.https.onCall(
           username:request.username,
           currentUser:request.currentUser
         });
-      if(debug) console.log("MESSAGE",{
-        From: {
-          Email: 'create@shreeva.com',
-          Name: 'Viraj Hospitality',
-        },
-        To: {
-          Email: uidDoc.data()?.email,
-          Name: request.username,
-        },
-        Subject: `Otp for adding your account to Viraj Hospitality.`,
-        TextPart: `Dear ${request.username}, ${generatedOtp} is the otp for adding your account ${request.username} to ${businessDoc.data()!['hotelName']}. Please do not share this otp with anyone. This email is sent to you because of ${uidDoc.data()?.email} is registered as email with this account.`,
-        HtmlPart: `Dear ${request.username}, <strong>${generatedOtp}</strong> is the otp for adding your account <strong>${request.username}</strong> to ${businessDoc.data()!['hotelName']}. Please do not share this otp with anyone. This email is sent to you because of ${uidDoc.data()?.email} is registered as email with this account.`,
-      });
-      
       let res = await mailjet.post('send', { version: 'v3.1' }).request({
         Messages: [
           {
@@ -430,10 +416,10 @@ export const addExistingUser = functions.https.onCall(
               Email: 'create@shreeva.com',
               Name: 'Viraj Hospitality',
             },
-            To: {
+            To: [{
               Email: uidDoc.data()?.email,
               Name: request.username,
-            },
+            }],
             Subject: `Otp for adding your account to Viraj Hospitality.`,
             TextPart: `Dear ${request.username}, ${generatedOtp} is the otp for adding your account ${request.username} to ${businessDoc.data()!['hotelName']}. Please do not share this otp with anyone. This email is sent to you because of ${uidDoc.data()?.email} is registered as email with this account.`,
             HtmlPart: `Dear ${request.username}, <strong>${generatedOtp}</strong> is the otp for adding your account <strong>${request.username}</strong> to ${businessDoc.data()!['hotelName']}. Please do not share this otp with anyone. This email is sent to you because of ${uidDoc.data()?.email} is registered as email with this account.`,
@@ -441,9 +427,10 @@ export const addExistingUser = functions.https.onCall(
         ],
       });
       console.log('Sent mail', res.body);
-      return { status: 'success', authId: generateOtpRequest.id };
+      return { status: 'success', message:'Account added', authId:optDocument.id };
     } catch (error: any) {
-      return { message: 'Some error occurred', error: error };
+      console.log(error);
+      return { message: 'Some error occurred' };
     }
   }
 )
@@ -456,6 +443,8 @@ export const verifyOtpExistingUser = functions.https.onCall(async (request, resp
   //    businessId: 'zYYtDSX7HevaFmCM31d5'
   //  }
   // validate authId
+  if(debug) console.log('REQUEST ', request);
+  
   if (!request.authId) {
     throw new HttpsError(
       'invalid-argument',

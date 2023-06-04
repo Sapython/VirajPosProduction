@@ -65,9 +65,13 @@ export const signUpWithUserAndPassword = functions.https.onCall(
       );
       // return { error: 'Missing fields' }
     }
-    validateName(request.username)
-    validatePassword(request.password)
-    validateEmail(request.email)
+    try {
+      validateName(request.username)
+      validatePassword(request.password)
+      validateEmail(request.email)
+    } catch (error) {
+      return error
+    }
     // check if userId exists
     let uidDoc = await firestore.doc('users/' + request.username).get();
     if (uidDoc.exists) {
@@ -104,7 +108,7 @@ export const signUpWithUserAndPassword = functions.https.onCall(
     // validations done
     //  console.log('validations done');
     // get password
-    let hashedPassword = generateHashedPassword(request.password, uidDoc.id);
+    let hashedPassword = await generateHashedPassword(request.password, uidDoc.id);
     console.log("hashedPassword",hashedPassword);
     let authReq = await auth.createCustomToken(uidDoc.id, {
       username: uidDoc.id,
@@ -198,7 +202,7 @@ export const resetPassword = functions.https.onCall(
     // get password
     verifyPassword(previousPassword, uidDoc.data()?.password, uidDoc.id);
     // set new password
-    const hashedPassword = generateHashedPassword(newPassword, uidDoc.id);
+    const hashedPassword = await generateHashedPassword(newPassword, uidDoc.id);
     // update user
     await auth.updateUser(uid, {
       password: newPassword,
@@ -347,7 +351,7 @@ export const verifyResetPasswordOtp = functions.https.onCall(
     // delete otp
     await firestore.collection('otps').doc(request.authId).delete();
     // reset password
-    let hashedPassword = generateHashedPassword(request.newPassword, uidDoc.id);
+    let hashedPassword = await generateHashedPassword(request.newPassword, uidDoc.id);
     // update user
     await auth.updateUser(uidDoc.id, {
       password: request.password,

@@ -96,7 +96,7 @@ export class ActionsComponent {
       await this.userManagementService.authenticateAction([
         'admin',
         'manager',
-        'cashier'
+        'accountant'
       ])
     ){
       if (this.dataProvider.currentBill) {
@@ -118,7 +118,7 @@ export class ActionsComponent {
       await this.userManagementService.authenticateAction([
         'admin',
         'manager',
-        'cashier',
+        'accountant',
         'waiter'
       ])
     ) {
@@ -133,7 +133,7 @@ export class ActionsComponent {
       await this.userManagementService.authenticateAction([
         'admin',
         'manager',
-        'cashier'
+        'accountant'
       ])
     ){
       if (this.dataProvider.currentBill) {
@@ -182,7 +182,7 @@ export class ActionsComponent {
       await this.userManagementService.authenticateAction([
         'admin',
         'manager',
-        'cashier'
+        'accountant'
       ])
     ){
       const dialog = this.dialog.open(AddDiscountComponent, {
@@ -211,7 +211,7 @@ export class ActionsComponent {
       await this.userManagementService.authenticateAction([
         'admin',
         'manager',
-        'cashier',
+        'accountant',
       ])
     ) {
       if (this.dataProvider.currentBill && event.checked) {
@@ -270,7 +270,7 @@ export class ActionsComponent {
       await this.userManagementService.authenticateAction([
         'admin',
         'manager',
-        'cashier'
+        'accountant'
       ])
     ){
       if (this.dataProvider.currentBill) {

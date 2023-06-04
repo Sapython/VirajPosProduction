@@ -75,7 +75,7 @@ export interface Account {
   name: string;
   phoneNumber: string;
   email: string;
-  role: 'admin' | 'cashier' | 'manager';
+  role: 'admin' | 'accountant' | 'manager' | 'waiter';
   creationDate: Timestamp;
 }
 

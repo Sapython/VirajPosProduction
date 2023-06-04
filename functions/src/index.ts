@@ -173,11 +173,14 @@ export const signInWithUserAndPassword = functions.https.onCall(
     if (!uidDoc.exists) {
       throw new HttpsError('not-found', 'Username not found');
     }
-    verifyPassword(request.password, uidDoc.data()?.password, uidDoc.id);
-    // create custom token
-    let authReq = await auth.createCustomToken(uidDoc.id, uidDoc.data());
-    // sign in with custom token
-    return { token: authReq, uid: uidDoc.id, ...uidDoc.data() };
+    if (await verifyPassword(request.password, uidDoc.data()?.password, uidDoc.id)){
+      // create custom token
+      let authReq = await auth.createCustomToken(uidDoc.id, uidDoc.data());
+      // sign in with custom token
+      return { token: authReq, uid: uidDoc.id, ...uidDoc.data() };
+    } else {
+      throw new HttpsError('unauthenticated', 'Password incorrect');
+    };
   }
 );
 
@@ -200,32 +203,35 @@ export const resetPassword = functions.https.onCall(
       throw new HttpsError('not-found', 'Username not found');
     }
     // get password
-    verifyPassword(previousPassword, uidDoc.data()?.password, uidDoc.id);
-    // set new password
-    const hashedPassword = await generateHashedPassword(newPassword, uidDoc.id);
-    // update user
-    await auth.updateUser(uid, {
-      password: newPassword,
-    });
-    // update password
-    await firestore.doc('authData/' + uid).update({
-      password: hashedPassword,
-    });
-    let additonalClaims: AdditonalClaims = {
-      business: uidDoc.data()?.business,
-      providerId: uidDoc.data()?.providerId,
-    };
-    let userData = {
-      username: uidDoc.id,
-      imageUrl:
-        uidDoc.data()!['imageUrl'] ||
-        'https://api.dicebear.com/6.x/lorelei/svg?seed=' + request.username,
-      ...additonalClaims,
-    };
-    // create custom token
-    let authReq = await auth.createCustomToken(uidDoc.id);
-    // sign in with custom token
-    return { token: authReq, uid: uidDoc.id, ...userData };
+    if (await verifyPassword(previousPassword, uidDoc.data()?.password, uidDoc.id)){
+      // set new password
+      const hashedPassword = await generateHashedPassword(newPassword, uidDoc.id);
+      // update user
+      await auth.updateUser(uid, {
+        password: newPassword,
+      });
+      // update password
+      await firestore.doc('authData/' + uid).update({
+        password: hashedPassword,
+      });
+      let additonalClaims: AdditonalClaims = {
+        business: uidDoc.data()?.business,
+        providerId: uidDoc.data()?.providerId,
+      };
+      let userData = {
+        username: uidDoc.id,
+        imageUrl:
+          uidDoc.data()!['imageUrl'] ||
+          'https://api.dicebear.com/6.x/lorelei/svg?seed=' + request.username,
+        ...additonalClaims,
+      };
+      // create custom token
+      let authReq = await auth.createCustomToken(uidDoc.id);
+      // sign in with custom token
+      return { token: authReq, uid: uidDoc.id, ...userData };
+    } else {
+      throw new HttpsError('unauthenticated', 'Password incorrect');
+    }
   }
 );
 

@@ -117,7 +117,7 @@ export class ActiveKotComponent implements OnChanges {
       await this.userManagementService.authenticateAction([
         'admin',
         'manager',
-        'cashier'
+        'accountant'
       ])
     ){
       let dialog = this.dialog.open(ReasonComponent);
@@ -132,7 +132,7 @@ export class ActiveKotComponent implements OnChanges {
       await this.userManagementService.authenticateAction([
         'admin',
         'manager',
-        'cashier'
+        'accountant'
       ])
     ){
       const dialog = this.dialog.open(CancelKOtComponent)
@@ -158,7 +158,7 @@ export class ActiveKotComponent implements OnChanges {
       await this.userManagementService.authenticateAction([
         'admin',
         'manager',
-        'cashier',
+        'accountant',
         'waiter'
       ])
     ){

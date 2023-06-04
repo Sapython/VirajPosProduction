@@ -191,9 +191,11 @@ export class SplitBillComponent {
     }
     if (this.allSettled){
       this.dataProvider.loading = true;
-      let ids = await Promise.all(this.splittedBills.map(async (bill)=>{
+      let ids = await Promise.all(this.splittedBills.map(async (bill,index)=>{
         bill.table = bill.table.id || bill.table as any;
-        this.printingService.printBill(structuredClone(bill.printableBillData));
+        setTimeout(() => {
+          this.printingService.printBill(JSON.parse(JSON.stringify(bill.printableBillData)));
+        },index*1000)
         // console.log("Printing Bill",bill.printableBillData);
         let res = (await this.billService.saveSplittedBill(this.bill.id,bill)).id;
         //  console.log("Saved splitted bill");
@@ -233,7 +235,7 @@ export function calculateBill(bill: BillConstructor,dataProvider:DataProvider) {
     discount.totalAppliedDiscount = 0;
     if (discount.mode == 'codeBased') {
       if (discount.type === 'percentage') {
-        let discountValue = (this.billing.subTotal/100) * discount.value;
+        let discountValue = (bill.billing.subTotal/100) * discount.value;
         applicableDiscount += discountValue;
         discount.totalAppliedDiscount += Number(discountValue);
       } else {

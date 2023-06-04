@@ -40,8 +40,8 @@
                     <h3 class="settled" *ngIf="bill.stage == 'settled'">Settled</h3>
                     <app-bill-preview [printableBillData]="bill.printableBillData"></app-bill-preview>
                     <div class="actions">
-                        <button mat-flat-button (click)="addDiscount(bill)" color="primary">Add Discount</button>
-                        <button mat-flat-button (click)="settleBill(bill)" color="primary">Settle Bill</button>
+                        <button [disabled]="bill.stage == 'settled'" mat-flat-button (click)="addDiscount(bill)" color="primary">Add Discount</button>
+                        <button [disabled]="bill.stage == 'settled'" mat-flat-button (click)="settleBill(bill)" color="primary">Settle Bill</button>
                     </div>
                 </div>
                 <ng-container *ngIf="this.splittedBills.length == 0">

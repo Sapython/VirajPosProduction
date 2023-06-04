@@ -32,6 +32,7 @@ export class KotItemComponent implements OnChanges {
   @Input() variations: Config[] = [];
   @Input() product: Product | undefined;
   @Input() manageKot: boolean = false;
+  @Input() cancelled: boolean = false;
   @Output() delete: EventEmitter<any> = new EventEmitter();
   @Output() lineCancelled: EventEmitter<any> = new EventEmitter();
   @Output() lineDiscounted: EventEmitter<any> = new EventEmitter();

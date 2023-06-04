@@ -115,6 +115,7 @@ export class AddDiscountComponent implements OnInit {
     }
     if(this.appliedDiscounts.length-1 >= 0){
       this.currentDiscount = this.appliedDiscounts[this.appliedDiscounts.length-1];
+      this.currentIndex = this.appliedDiscounts.length-1;
     }
   }
 

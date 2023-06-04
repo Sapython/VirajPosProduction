@@ -6,7 +6,7 @@
       <aside>
         <button *ngFor="let discount of appliedDiscounts;let i = index;" (click)="currentDiscount = discount;currentIndex=i" [ngClass]="{'selected':currentIndex==i}">
           <ng-container *ngIf="discount.mode=='codeBased'">
-            {{discount.name}}
+            {{discount.name || 'Not Choosen'}}
           </ng-container>
           <ng-container *ngIf="discount.mode=='directPercent'">
             -{{discount.value}}%

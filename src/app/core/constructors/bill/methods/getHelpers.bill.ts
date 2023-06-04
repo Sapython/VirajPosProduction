@@ -81,7 +81,7 @@ function printableBillGenerator(bill:BillConstructor|Bill,products:Product[],dat
     billNoSuffix: dataProvider.billNoSuffix,
     billNo: bill.billNo || '',
     orderNo: bill.orderNo,
-    cashierName: dataProvider.currentUser.username,
+    cashierName: dataProvider.currentUser?.username||'',
     // date in dd/mm/yyyy format
     date: bill.createdDate.toDate().toLocaleDateString('en-GB'),
     // time in 12 hour format

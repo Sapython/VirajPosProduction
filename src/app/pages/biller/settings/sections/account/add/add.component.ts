@@ -109,6 +109,7 @@ export class AddComponent {
           'Invite'
         ]
       })){
+        this.dataProvider.loading = true;
         this.userManagement.addExistingUser(this.loginForm.value.username,this.loginForm.value.accessLevel).then(res=>{
           console.log(res);
           if (res.data['status']=='success' && res.data['authId']){
@@ -120,6 +121,8 @@ export class AddComponent {
         }).catch(err=>{
           console.log(err);
           this.alertify.presentToast(err.message);
+        }).finally(()=>{
+          this.dataProvider.loading = false;
         })
       } else {
         this.alertify.presentToast('Invitation Cancelled');
@@ -177,6 +180,7 @@ export class AddComponent {
   }
 
   verifyOtp(){
+    this.dataProvider.loading = true;
     this.userManagement.verifyOtpExistingUser(
       this.loginForm.value.username,
       this.otpForm.value.otp,
@@ -189,6 +193,8 @@ export class AddComponent {
       }
     }).catch(err=>{
       this.alertify.presentToast(err.message);
+    }).finally(()=>{
+      this.dataProvider.loading = false;
     })
   }
 }

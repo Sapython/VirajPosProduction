@@ -484,6 +484,42 @@ export const verifyOtpExistingUser = functions.https.onCall(async (request, resp
   return { status: 'success', message: 'User approved successfully' };
 })
 
+export const authenticateAction = functions.https.onCall(
+  async (request, response) => {
+    // in this function we get username and password whe have to check of they are correct and return true else return false
+    // check for fields {username,password}
+    validateName(request.username);
+    validatePassword(request.password);
+    validateAny(request.businessId,'string');
+    // check if userId exists
+    let uidDoc = await firestore.doc('authData/' + request.username).get();
+    if (!uidDoc.exists) {
+      throw new HttpsError('not-found', 'Username not found');
+    }
+    // check if the user is in the business
+    let businessDoc = await firestore.doc('business/' + request.businessId).get();
+    let foundUser:any = undefined;
+    for (let user of businessDoc.data()?.users) {
+      if (user.username === request.username) {
+        foundUser = user;
+        break;
+      }
+    }
+    if (!foundUser) {
+      throw new HttpsError(
+        'permission-denied',
+        'User is not in your business'
+      );
+    }
+    let authorized = await verifyPassword(request.password, uidDoc.data()?.password, uidDoc.id);
+    if(authorized){
+      return { status: 'success', authorized: true, access:foundUser['access'] };
+    }else {
+      throw new HttpsError('unauthenticated', 'Password incorrect');
+    }
+  }
+)
+
 // export const resetPasswordByAdmin = functions.https.onCall(
 //   async (request, response) => {
 //     // here we will receive

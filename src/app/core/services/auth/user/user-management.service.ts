@@ -10,6 +10,7 @@ import { DataProvider } from '../../provider/data-provider.service';
 import { Dialog } from '@angular/cdk/dialog';
 import { ElectronService } from '../../electron/electron.service';
 import { dbConfig } from '../../../../app.module';
+import { RequiresPrivilegeComponent } from '../../../../shared/requires-privilege/requires-privilege.component';
 
 @Injectable({
   providedIn: 'root',
@@ -20,6 +21,7 @@ export class UserManagementService {
   resetPasswordWithOtpFunction = httpsCallable(this.functions, 'verifyResetPasswordOtp');
   addExistingUserFunction = httpsCallable(this.functions, 'addExistingUser');
   verifyOtpExistingUserFunction = httpsCallable(this.functions, 'verifyOtpExistingUser');
+  authenticateActionFunction = httpsCallable(this.functions, 'authenticateAction');
   constructor(
     private firestore: Firestore,
     private dbService: NgxIndexedDBService,
@@ -135,5 +137,42 @@ export class UserManagementService {
   // verifyOtpExistingUser
   verifyOtpExistingUser(username:string,otp:string,authId:string){
     return this.verifyOtpExistingUserFunction({username,otp:otp.toString(),authId})
+  }
+
+  async authenticateAction(requiredAccessess:string[]){
+    // check if current user has access to the required accessess
+    // if yes, return true
+    // if no, then fetch the user from firebase and check if the user has access to the required accessess
+    
+    if (this.dataProvider.currentAccessLevel && requiredAccessess.includes(this.dataProvider.currentAccessLevel)){
+      console.log("Access granted.",this.dataProvider.currentAccessLevel);
+      return true;
+    } else {
+      const dialog = this.dialog.open(RequiresPrivilegeComponent)
+      dialog.disableClose = true;
+      let userCredentials:any = await firstValueFrom(dialog.closed);
+      console.log("userCredentials",userCredentials);
+      if (userCredentials && userCredentials.username && userCredentials.password){
+        try {
+          this.dataProvider.loading = true;
+          let response = await this.authenticateActionFunction({username:userCredentials.username,password:userCredentials.password,businessId:this.dataProvider.currentBusiness.businessId})
+          if (response.data && response.data['status'] && response.data['status']=='success' && requiredAccessess.includes(response.data['access'])){
+            this.alertify.presentToast("Access granted.");
+            return true;
+          } else {
+            this.alertify.presentToast("You don't have access to this action.",'error');
+            return false;
+          }
+        } catch (error) {
+          this.alertify.presentToast(error.message,'error');
+          return false;
+        } finally {
+          this.dataProvider.loading = false;
+        }
+      } else {
+        this.alertify.presentToast("You don't have access to this action.",'error');
+        return false;
+      }
+    }
   }
 }

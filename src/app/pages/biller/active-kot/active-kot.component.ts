@@ -8,6 +8,7 @@ import { Kot } from '../../../core/constructors/kot/Kot';
 import { DataProvider } from '../../../core/services/provider/data-provider.service';
 import { Product } from '../../../types/product.structure';
 import { CancelKOtComponent } from './cancel-kot/cancel-kot.component';
+import { UserManagementService } from '../../../core/services/auth/user/user-management.service';
 @Component({
   selector: 'app-active-kot',
   templateUrl: './active-kot.component.html',
@@ -35,7 +36,7 @@ export class ActiveKotComponent implements OnChanges {
     {color:'#8549ba',contrast: '#fff'},
   ];
   actionSheetExpanded: boolean = false;
-  constructor(public dataProvider: DataProvider,private dialog:Dialog) {
+  constructor(public dataProvider: DataProvider,private dialog:Dialog,private userManagementService:UserManagementService) {
     this.dataProvider.billAssigned.subscribe(() => {
       this.kots = [];
       this.allKot = [];
@@ -99,7 +100,7 @@ export class ActiveKotComponent implements OnChanges {
   //  console.log('this.labels', this.labels);
   }
 
-  delete(product: Product) {
+  async delete(product: Product) {
     if (this.dataProvider.currentBill?.editKotMode) {
       const index = this.dataProvider.currentBill?.editKotMode.newKot.findIndex(
         (item) => item.id === product.id
@@ -112,35 +113,60 @@ export class ActiveKotComponent implements OnChanges {
   }
 
   async printKot(kot: Kot) {
-    let dialog = this.dialog.open(ReasonComponent);
-    firstValueFrom(dialog.closed).then((reason:string) => {
-      this.dataProvider.currentBill?.printKot(kot,'reprintKot',reason);
-    })
+    if (
+      await this.userManagementService.authenticateAction([
+        'admin',
+        'manager',
+        'cashier'
+      ])
+    ){
+      let dialog = this.dialog.open(ReasonComponent);
+      firstValueFrom(dialog.closed).then((reason:string) => {
+        this.dataProvider.currentBill?.printKot(kot,'reprintKot',reason);
+      })
+    }
   }
 
   async deleteKot(kot: Kot) {
-    const dialog = this.dialog.open(CancelKOtComponent)
-    let reason:any = await firstValueFrom(dialog.closed);
-    if (reason) {
-      kot.cancelReason = {
-        reason: reason.reason,
-        mode:reason.mode,
-        time: Timestamp.now(),
-        user: {
-          access: this.dataProvider.currentBusinessUser.access.accessLevel,
-          username: this.dataProvider.currentBusinessUser.name,
-        },
+    if (
+      await this.userManagementService.authenticateAction([
+        'admin',
+        'manager',
+        'cashier'
+      ])
+    ){
+      const dialog = this.dialog.open(CancelKOtComponent)
+      let reason:any = await firstValueFrom(dialog.closed);
+      if (reason) {
+        kot.cancelReason = {
+          reason: reason.reason,
+          mode:reason.mode,
+          time: Timestamp.now(),
+          user: {
+            access: this.dataProvider.currentBusinessUser.access.accessLevel,
+            username: this.dataProvider.currentBusinessUser.name,
+          },
+        }
+        this.dataProvider.currentBill?.deleteKot(kot);
       }
-      this.dataProvider.currentBill?.deleteKot(kot);
+      // this.dataProvider.currentBill?.deleteKot(kot);
     }
-    // this.dataProvider.currentBill?.deleteKot(kot);
   }
 
-  editKot(kot: Kot) {
-    let dialog = this.dialog.open(ReasonComponent);
-    firstValueFrom(dialog.closed).then((reason:string) => {
-      this.dataProvider.currentBill?.editKot(kot,reason);
-    })
+  async editKot(kot: Kot) {
+    if (
+      await this.userManagementService.authenticateAction([
+        'admin',
+        'manager',
+        'cashier',
+        'waiter'
+      ])
+    ){
+      let dialog = this.dialog.open(ReasonComponent);
+      firstValueFrom(dialog.closed).then((reason:string) => {
+        this.dataProvider.currentBill?.editKot(kot,reason);
+      })
+    }
   }
 
   saveEditedKot(kot: Kot) {}

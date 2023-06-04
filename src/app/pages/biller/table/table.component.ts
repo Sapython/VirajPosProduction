@@ -92,6 +92,7 @@ export class TableComponent implements OnInit {
       this.dataProvider.currentBill.addProduct(this.dataProvider.tempProduct);
       this.dataProvider.tempProduct = undefined;
     }
+    this.dialogRef.close();
   }
 
   async addTable(groupName:string){
@@ -205,7 +206,6 @@ export class TableComponent implements OnInit {
           }
           this.dataProvider.groupedTables[t.name.split(' ')[0]].push(t);
         })
-      //  console.log("table.id",table.id,this.dataProvider.tables);
         await this.tableService.deleteTable(table.id);
       } else {
         this.alertify.presentToast("Table delete cancelled");

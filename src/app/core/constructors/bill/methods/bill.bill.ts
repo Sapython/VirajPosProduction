@@ -193,6 +193,8 @@ export async function settle(
   if (this.dataProvider.showTableOnBillAction) {
     this.dataProvider.openTableView.next(true);
   }
+  console.log('Bill settled');
+  
   return this.billNo;
 }
 

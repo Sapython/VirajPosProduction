@@ -22,23 +22,14 @@ export class AnalyticsService {
     // alert("Adding sales")
     // get date in format of 2021-08-01
     let date = new Date().toISOString().split('T')[0];
-    await setDoc(
+    return await setDoc(
       doc(
         this.firestore,
         'business/' + this.dataProvider.businessId + '/sales/' + date
       ),
       {
         [type]: increment(sale),
-      }
-    );
-    return updateDoc(
-      doc(
-        this.firestore,
-        'business/' + this.dataProvider.businessId + '/settings/settings'
-      ),
-      {
-        [type]: increment(sale),
-      }
+      },{merge:true}
     );
   }
 

@@ -45,6 +45,7 @@ import { connectFunctionsEmulator, getFunctions, provideFunctions } from '@angul
 import { ResetPasswordComponent } from './pages/auth/reset-password/reset-password.component';
 import { MatIconModule } from '@angular/material/icon';
 import { CheckingPasswordComponent } from './shared/checking-password/checking-password.component';
+import { RequiresPrivilegeComponent } from './shared/requires-privilege/requires-privilege.component';
 
 // AoT requires an exported function for factories
 const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>
@@ -98,7 +99,7 @@ export const dbConfig: DBConfig = {
 };
 
 @NgModule({
-  declarations: [AppComponent, ResetPasswordComponent, CheckingPasswordComponent],
+  declarations: [AppComponent, ResetPasswordComponent, CheckingPasswordComponent, RequiresPrivilegeComponent],
   imports: [
     BrowserModule,
     FormsModule,
@@ -147,7 +148,7 @@ export const dbConfig: DBConfig = {
     }),
     provideFunctions(() => {
       let functions = getFunctions();
-      // connectFunctionsEmulator(functions, 'localhost', 5001);
+      connectFunctionsEmulator(functions, 'localhost', 5001);
       return functions;
     })
   ],

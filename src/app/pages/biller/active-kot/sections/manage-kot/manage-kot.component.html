@@ -17,13 +17,13 @@
     <span *ngIf="!kot.editMode">
       <viraj-button
         type="icon"
-        *ngIf="kot.stage != 'cancelled' && this.dataProvider.getAccess(['admin','manager'])"
+        *ngIf="kot.stage != 'cancelled'"
         (vclick)="printKot.emit(kot)"
         ><i class="ri-printer-fill"></i
       ></viraj-button>
       <viraj-button
         type="icon"
-        *ngIf="kot.stage != 'cancelled' && this.dataProvider.getAccess(['admin','manager'])"
+        *ngIf="kot.stage != 'cancelled'"
         (vclick)="deleteKot.emit(kot)"
         ><i class="ri-delete-bin-fill"></i
       ></viraj-button>
@@ -47,6 +47,7 @@
     [kotNo]="i"
     [product]="item"
     [manageKot]="true"
+    [cancelled]="kot.stage == 'cancelled'"
     (delete)="delete.emit($event)"
     (lineDiscounted)="
       this.dataProvider.currentBill

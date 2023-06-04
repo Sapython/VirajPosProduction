@@ -36,7 +36,7 @@ export class AccountComponent {
         } catch (error) {
           this.alertify.presentToast('Failed to add account','error')
         }
-      } else if (res.cancelled) {
+      } else if (res && res.cancelled) {
         this.alertify.presentToast("Account not added",'error')
       }
     });

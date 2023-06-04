@@ -17,6 +17,7 @@ import { PrinterService } from '../../../core/services/printing/printer/printer.
 import { Product } from '../../../types/product.structure';
 import { Tax } from '../../../types/tax.structure';
 import { BillConstructor } from '../../../types/bill.structure';
+import { UserManagementService } from '../../../core/services/auth/user/user-management.service';
 
 @Component({
   selector: 'app-actions',
@@ -40,9 +41,15 @@ export class ActionsComponent {
   activeKotIndex: number = 0;
   kots: Kot[] = [];
   allKot: Kot[] = [];
-  constructor(public dataProvider: DataProvider, private dialog: Dialog,private printingService:PrinterService,) {
+  constructor(
+    public dataProvider: DataProvider,
+    private dialog: Dialog,
+    private userManagementService: UserManagementService
+  ) {
     this.dataProvider.billAssigned.subscribe(() => {
       if (this.dataProvider.currentBill) {
+        this.isNonChargeable =
+          !!this.dataProvider.currentBill.nonChargeableDetail;
         if (
           this.dataProvider.currentBill &&
           this.dataProvider.currentBill?.kots &&
@@ -57,6 +64,8 @@ export class ActionsComponent {
         }
         this.dataProvider.currentBill.updated.subscribe(() => {
           if (this.dataProvider.currentBill) {
+            this.isNonChargeable =
+              !!this.dataProvider.currentBill.nonChargeableDetail;
             // this.activeKotIndex = this.dataProvider.currentBill!.kots.findIndex((kot: Kot) => kot.stage === 'active' || kot.stage === 'edit');
             if (this.dataProvider.currentBill.kots) {
               this.allKot = this.dataProvider.currentBill.kots;
@@ -67,7 +76,7 @@ export class ActionsComponent {
                 this.dataProvider.currentBill.kots.findIndex(
                   (kot: Kot) => kot.stage === 'active' || kot.stage === 'edit'
                 );
-            //  console.log('this.activeKotIndex', this.activeKotIndex);
+              //  console.log('this.activeKotIndex', this.activeKotIndex);
               if (activeKot) {
                 this.kots = [activeKot];
               } else {
@@ -82,61 +91,113 @@ export class ActionsComponent {
     });
   }
 
-  cancelBill() {
-    if (this.dataProvider.currentBill) {
-      let dialog = this.dialog.open(CancelComponent);
-      dialog.closed.subscribe((result: any) => {
-        if (result.reason && result.phone) {
-          this.dataProvider.currentBill?.cancel(result.reason, result.phone);
-        }
-      });
+  async cancelBill() {
+    if (
+      await this.userManagementService.authenticateAction([
+        'admin',
+        'manager',
+        'cashier'
+      ])
+    ){
+      if (this.dataProvider.currentBill) {
+        let dialog = this.dialog.open(CancelComponent);
+        dialog.closed.subscribe((result: any) => {
+          if (result.reason && result.phone) {
+            this.dataProvider.currentBill?.cancel(result.reason, result.phone);
+          }
+        });
+      }
     }
   }
   delete(index: Product) {
     this.dataProvider.currentBill?.removeProduct(index, this.activeKotIndex);
   }
 
-  finalizeBill() {
-    if (this.dataProvider.currentBill) {
-      this.dataProvider.currentBill.finalize();
+  async finalizeBill() {
+    if (
+      await this.userManagementService.authenticateAction([
+        'admin',
+        'manager',
+        'cashier',
+        'waiter'
+      ])
+    ) {
+      if (this.dataProvider.currentBill) {
+        this.dataProvider.currentBill.finalize();
+      }
     }
   }
 
-  settleBill() {
-    if (this.dataProvider.currentBill) {
-      let dialog = this.dialog.open(SettleComponent,{data:this.dataProvider.currentBill.billing.grandTotal});
+  async settleBill() {
+    if (
+      await this.userManagementService.authenticateAction([
+        'admin',
+        'manager',
+        'cashier'
+      ])
+    ){
+      if (this.dataProvider.currentBill) {
+        let dialog = this.dialog.open(SettleComponent, {
+          data: this.dataProvider.currentBill.billing.grandTotal,
+        });
+        dialog.closed.subscribe((result: any) => {
+          //  console.log('Result', result);
+          if (
+            result &&
+            this.dataProvider.currentBill &&
+            result.settling &&
+            result.paymentMethods
+          ) {
+            this.dataProvider.currentBill.settle(
+              result.paymentMethods,
+              'internal',
+              result.detail || null
+            );
+          }
+        });
+      }
+    }
+  }
+
+  generateId() {
+    // random alphanumeric id
+    return (
+      Math.random().toString(36).substr(2, 9) +
+      Math.random().toString(36).substr(2, 9) +
+      Math.random().toString(36).substr(2, 9)
+    );
+  }
+
+  splitAndSettle() {
+    const dialog = this.dialog.open(SplitBillComponent, {
+      data: this.dataProvider.currentBill,
+    });
+    dialog.closed.subscribe(async (value: any) => {
+      //  console.log(value);
+    });
+  }
+
+  async addDiscount() {
+    if (
+      await this.userManagementService.authenticateAction([
+        'admin',
+        'manager',
+        'cashier'
+      ])
+    ){
+      const dialog = this.dialog.open(AddDiscountComponent, {
+        data: this.dataProvider.currentBill,
+      });
       dialog.closed.subscribe((result: any) => {
-      //  console.log('Result', result);
-        if (result && this.dataProvider.currentBill && result.settling && result.paymentMethods) {
-          this.dataProvider.currentBill.settle(result.paymentMethods,'internal',result.detail || null);
+        //  console.log("Result",result);
+        if (typeof result == 'object' && this.dataProvider.currentBill) {
+          //  console.log(result);
+          this.dataProvider.currentBill.billing.discount = result;
+          //  console.log("Applied discount",this.dataProvider.currentBill.billing.discount);
+          this.dataProvider.currentBill.calculateBill();
         }
       });
     }
-  }
-  
-  generateId() {
-    // random alphanumeric id
-    return Math.random().toString(36).substr(2, 9) + Math.random().toString(36).substr(2, 9) + Math.random().toString(36).substr(2, 9) 
-  }
-
-  splitAndSettle(){
-    const dialog = this.dialog.open(SplitBillComponent,{data:this.dataProvider.currentBill})
-    dialog.closed.subscribe(async (value:any)=>{
-    //  console.log(value);
-    })
-  }
-
-  addDiscount() {
-    const dialog = this.dialog.open(AddDiscountComponent,{data:this.dataProvider.currentBill});
-    dialog.closed.subscribe((result: any) => {
-    //  console.log("Result",result);
-      if (typeof result == 'object' && this.dataProvider.currentBill) {
-      //  console.log(result);
-        this.dataProvider.currentBill.billing.discount = result;
-      //  console.log("Applied discount",this.dataProvider.currentBill.billing.discount);
-        this.dataProvider.currentBill.calculateBill();
-      }
-    })
     // dialog.closed.subscribe((result: any) => {
     //   if (this.dataProvider.currentBill && result?.discounted) {
     //     this.dataProvider.currentBill.addDiscount(result.discount);
@@ -144,25 +205,33 @@ export class ActionsComponent {
     // });
   }
 
-  nonChargeable(event: any) {
-  //  console.log(event);
-    if (this.dataProvider.currentBill && event.checked) {
-      const dialog = this.dialog.open(NonChargeableComponent);
-      dialog.closed.subscribe((result: any) => {
-        if (!result || !result.nonChargeable) {
-          this.isNonChargeable = false;
-          return;
-        }
-        if (this.dataProvider.currentBill && result.nonChargeable) {
-          this.dataProvider.currentBill.setAsNonChargeable(
-            result.name || '',
-            result.phone || '',
-            result.reason || ''
-          );
-        }
-      });
-    } else if (this.dataProvider.currentBill && !event.checked) {
-      this.dataProvider.currentBill.setAsNormal();
+  async nonChargeable(event: any) {
+    //  console.log(event);
+    if (
+      await this.userManagementService.authenticateAction([
+        'admin',
+        'manager',
+        'cashier',
+      ])
+    ) {
+      if (this.dataProvider.currentBill && event.checked) {
+        const dialog = this.dialog.open(NonChargeableComponent);
+        dialog.closed.subscribe((result: any) => {
+          if (!result || !result.nonChargeable) {
+            this.isNonChargeable = false;
+            return;
+          }
+          if (this.dataProvider.currentBill && result.nonChargeable) {
+            this.dataProvider.currentBill.setAsNonChargeable(
+              result.name || '',
+              result.phone || '',
+              result.reason || ''
+            );
+          }
+        });
+      } else if (this.dataProvider.currentBill && !event.checked) {
+        this.dataProvider.currentBill.setAsNormal();
+      }
     }
   }
 
@@ -175,17 +244,17 @@ export class ActionsComponent {
 
   toggleManageKot() {
     //  ? dataProvider.kotViewVisible=true : dataProvider.kotViewVisible = false
-    if(this.dataProvider.manageKot == false){
+    if (this.dataProvider.manageKot == false) {
       // find any active kot if not found then set dataProvider.kotViewVisible to true
       let activeKot = this.dataProvider.currentBill?.kots.find(
         (kot: Kot) => kot.stage === 'active' || kot.stage === 'edit'
       );
       if (!activeKot) {
-        if (this.dataProvider.currentBill?.stage == 'finalized'){
+        if (this.dataProvider.currentBill?.stage == 'finalized') {
           this.dataProvider.allProducts = true;
           this.dataProvider.kotViewVisible = false;
           this.dataProvider.manageKot = true;
-          return
+          return;
         }
         this.dataProvider.kotViewVisible = true;
         this.dataProvider.allProducts = false;
@@ -196,22 +265,40 @@ export class ActionsComponent {
     }
   }
 
-  splitBill() {
-    if (this.dataProvider.currentBill) {
-      const dialog = this.dialog.open(SplitBillComponent, {
-        data: this.dataProvider.currentBill,
-      });
-      // this.dataProvider.currentBill.splitBill()
+  async splitBill() {
+    if (
+      await this.userManagementService.authenticateAction([
+        'admin',
+        'manager',
+        'cashier'
+      ])
+    ){
+      if (this.dataProvider.currentBill) {
+        const dialog = this.dialog.open(SplitBillComponent, {
+          data: this.dataProvider.currentBill,
+        });
+        // this.dataProvider.currentBill.splitBill()
+      }
     }
   }
 
-  showPreview(){
+  showPreview() {
     // check for any active kot if there is any active kot then show alert that you have to print the kot first
-    if(this.dataProvider.currentBill?.kots.find((kot: Kot) => kot.stage === 'active' || kot.stage === 'edit')){
-      if(this.dataProvider.confirm("You have to print the kot first to see the preview",[1],{buttons:["Cancel","Print"]})){
-        this.printKot.emit()
+    if (
+      this.dataProvider.currentBill?.kots.find(
+        (kot: Kot) => kot.stage === 'active' || kot.stage === 'edit'
+      )
+    ) {
+      if (
+        this.dataProvider.confirm(
+          'You have to print the kot first to see the preview',
+          [1],
+          { buttons: ['Cancel', 'Print'] }
+        )
+      ) {
+        this.dataProvider.currentBill.finalizeAndPrintKot()
+        this.dataProvider.allProducts = !this.dataProvider.allProducts;
       }
     }
-    this.dataProvider.allProducts=!this.dataProvider.allProducts
   }
 }

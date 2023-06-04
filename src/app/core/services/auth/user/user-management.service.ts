@@ -17,6 +17,9 @@ import { dbConfig } from '../../../../app.module';
 export class UserManagementService {
   resetPasswordFunction = httpsCallable(this.functions, 'resetPassword');
   resetPasswordMailFunction = httpsCallable(this.functions, 'resetPasswordMail');
+  resetPasswordWithOtpFunction = httpsCallable(this.functions, 'verifyResetPasswordOtp');
+  addExistingUserFunction = httpsCallable(this.functions, 'addExistingUser');
+  verifyOtpExistingUserFunction = httpsCallable(this.functions, 'verifyOtpExistingUser');
   constructor(
     private firestore: Firestore,
     private dbService: NgxIndexedDBService,
@@ -119,5 +122,18 @@ export class UserManagementService {
 
   sendResetPasswordMail(username:string,email:string){
     return this.resetPasswordMailFunction({username,email})
+  }
+
+  resetPasswordWithOtp(username:string,otp:string,newPassword:string,confirmPassword:string,authId:string){
+    return this.resetPasswordWithOtpFunction({username,otp:otp.toString(),newPassword,confirmPassword,authId})
+  }
+
+  addExistingUser(username:string,accessLevel:string){
+    return this.addExistingUserFunction({username,businessId:this.dataProvider.currentBusiness.businessId,accessLevel,currentUser:this.dataProvider.currentUser.username})
+  }
+
+  // verifyOtpExistingUser
+  verifyOtpExistingUser(username:string,otp:string,authId:string){
+    return this.verifyOtpExistingUserFunction({username,otp:otp.toString(),authId})
   }
 }

@@ -32,9 +32,9 @@
     </div>
     <div class="actions" *ngIf="this.dataProvider.currentBill?.stage=='active'">
       <viraj-button [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant','waiter'])" (click)="dataProvider.currentBill ? dataProvider.currentBill.finalizeAndPrintKot() : {}">Print KOT</viraj-button>
-      <viraj-button [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant'])" (vclick)="finalizeBill()">Finalize Bill</viraj-button>
+      <viraj-button [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant','waiter'])" (vclick)="finalizeBill()">Finalize Bill</viraj-button>
       <viraj-button [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant'])" (vclick)="addDiscount()">Discount</viraj-button>
-      <viraj-button [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant','waiter'])" (vclick)="this.dataProvider.allProducts=!this.dataProvider.allProducts">Preview</viraj-button>
+      <viraj-button [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant','waiter'])" (vclick)="showPreview()">Preview</viraj-button>
       <!-- <button [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant','waiter'])" mat-flat-button (click)="dataProvider.moreActions=!dataProvider.moreActions">More</button> -->
       <viraj-button matTooltip="Add a bill note on the printed bill." [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant','waiter'])" (vclick)="dataProvider.currentBill ? dataProvider.currentBill.setInstruction() : {}">Note</viraj-button>
     </div>

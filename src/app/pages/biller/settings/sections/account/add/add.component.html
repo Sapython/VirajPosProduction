@@ -24,21 +24,25 @@
         style="float: right; margin-left: 8px"
       ></mat-spinner>
     </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Access</mat-label>
+      <mat-select
+        placeholder="Access"
+        formControlName="accessLevel"
+        name="access"
+      >
+        <mat-option
+          *ngFor="let access of this.dataProvider.accessLevels"
+          [value]="access"
+        >
+          {{ access | titlecase }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
     <ng-container *ngIf="stage == 'available'">
       <mat-form-field appearance="outline">
-        <mat-label>Access</mat-label>
-        <mat-select
-          placeholder="Access"
-          formControlName="accessLevel"
-          name="access"
-        >
-          <mat-option
-            *ngFor="let access of this.dataProvider.accessLevels"
-            [value]="access"
-          >
-            {{ access | titlecase }}
-          </mat-option>
-        </mat-select>
+        <mat-label>Email</mat-label>
+        <input type="email" matInput formControlName="email">
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>Password</mat-label>
@@ -117,10 +121,12 @@
         </button>
       </mat-form-field>
     </ng-container>
-    <div class="actions">
+    <!-- <p>{{loginForm.invalid}}</p> -->
+    <!-- <p>{{loginForm.invalid || this.stage == 'checking' || stage == 'invalid' || !stage}}</p> -->
+    <div class="actions" *ngIf="onboardingStage == 'registration'">
       <button
         color="primary"
-        [disabled]="loginForm.invalid && this.stage == 'checking'"
+        [disabled]="loginForm.invalid || this.stage == 'checking' || stage == 'invalid' || !stage"
         type="submit"
         mat-flat-button
       >
@@ -136,4 +142,31 @@
       </button>
     </div>
   </form>
+  <ng-container *ngIf="onboardingStage=='otp'">
+    <hr>
+    <form [formGroup]="otpForm" (ngSubmit)="verifyOtp()">
+      <mat-form-field>
+        <mat-label>OTP</mat-label>
+        <input type="text" matInput formControlName="otp" />
+      </mat-form-field>
+      <div class="actions">
+        <button
+          color="primary"
+          [disabled]="otpForm.invalid"
+          type="submit"
+          mat-flat-button
+        >
+          Submit
+        </button>
+        <button
+          color="primary"
+          (click)="cancel()"
+          type="button"
+          mat-stroked-button
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  </ng-container>
 </section>

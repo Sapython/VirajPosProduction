@@ -99,7 +99,7 @@ export class LoadingComponent {
   imageUrl: string = '';
 
   loginStage:Subject<string> = new Subject<string>();
-
+  resetPasswordRequestAuthId:string = '';
   logoFile:File|undefined;
   logoString:string = '';
   constructor(
@@ -620,9 +620,46 @@ export class LoadingComponent {
     return formsValid && accountsValid
   }
 
-  resetPassword(){
-    this.userManagementService.sendResetPasswordMail(this.resetPasswordFormVerification.value.email,this.resetPasswordFormVerification.value.username).then((res)=>{
+  checkRestMail(){
+    this.dataProvider.loading = true;
+    this.userManagementService.sendResetPasswordMail(this.resetPasswordFormVerification.value.username,this.resetPasswordFormVerification.value.email).then((res)=>{
       console.log('res', res);
+      if(res['data'] && res['data']['status']=='success'){
+        this.alertify.presentToast('Verification mail sent')
+        this.onboardingService.stage = 'resetPasswordStage2'
+        this.resetPasswordRequestAuthId = res['data']['authId']
+      } else {
+        this.alertify.presentToast('Some error occured','error')
+      }
+    }).catch ((error)=>{
+      console.log('error', error);
+      this.alertify.presentToast(error.message,'error')
+    }).finally(()=>{
+      this.dataProvider.loading = false;
+    })
+  }
+
+  resetPassword(){
+    this.dataProvider.loading = true;
+    this.userManagementService.resetPasswordWithOtp(
+      this.resetPasswordFormVerification.value.username,
+      this.resetPasswordForm.value.otp,
+      this.resetPasswordForm.value.password,
+      this.resetPasswordForm.value.confirmPassword,
+      this.resetPasswordRequestAuthId
+    ).then((res)=>{
+      console.log('res', res);
+      if (res['data'] && res['data']['status'] =='success'){
+        this.alertify.presentToast('Password reset successfully')
+        this.onboardingService.stage = 'noUser'
+      } else {
+        this.alertify.presentToast('Some error occured','error')
+      }
+    }).catch((error)=>{
+      console.log('error', error);
+      this.alertify.presentToast(error.message,'error')
+    }).finally(()=>{
+      this.dataProvider.loading = false;
     })
   }
 }

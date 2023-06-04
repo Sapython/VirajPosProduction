@@ -204,4 +204,14 @@ export class ActionsComponent {
       // this.dataProvider.currentBill.splitBill()
     }
   }
+
+  showPreview(){
+    // check for any active kot if there is any active kot then show alert that you have to print the kot first
+    if(this.dataProvider.currentBill?.kots.find((kot: Kot) => kot.stage === 'active' || kot.stage === 'edit')){
+      if(this.dataProvider.confirm("You have to print the kot first to see the preview",[1],{buttons:["Cancel","Print"]})){
+        this.printKot.emit()
+      }
+    }
+    this.dataProvider.allProducts=!this.dataProvider.allProducts
+  }
 }

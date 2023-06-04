@@ -233,12 +233,12 @@ export function calculateBill(bill: BillConstructor,dataProvider:DataProvider) {
     discount.totalAppliedDiscount = 0;
     if (discount.mode == 'codeBased') {
       if (discount.type === 'percentage') {
-        applicableDiscount += discount.value;
-        discount.totalAppliedDiscount += Number(discount.value);
-      } else {
-        let discountValue = (bill.billing.subTotal / 100) * discount.value;
+        let discountValue = (this.billing.subTotal/100) * discount.value;
         applicableDiscount += discountValue;
         discount.totalAppliedDiscount += Number(discountValue);
+      } else {
+        applicableDiscount += discount.value;
+        discount.totalAppliedDiscount += Number(discount.value);
       }
     } else if (discount.mode == 'directFlat') {
       applicableDiscount += discount.value;

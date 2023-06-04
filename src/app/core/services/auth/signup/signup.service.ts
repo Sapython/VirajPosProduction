@@ -13,10 +13,10 @@ var debug = true;
   providedIn: 'root'
 })
 export class SignupService {
-  updateUserFactors = httpsCallable(
-    this.functions,
-    'updateUser'
-  );
+  // updateUserFactors = httpsCallable(
+  //   this.functions,
+  //   'updateUser'
+  // );
   signUpWithUserAndPasswordFunction = httpsCallable(
     this.functions,
     'signUpWithUserAndPassword'
@@ -79,7 +79,7 @@ export class SignupService {
         joiningDate: Timestamp;
         name: string;
       },
-      email?: string,
+      email: string,
       phone?: string,
       image?: string,
       noSignIn?: boolean,

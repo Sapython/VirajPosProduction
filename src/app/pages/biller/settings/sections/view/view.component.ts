@@ -56,7 +56,8 @@ export class ViewComponent {
   //  console.log(localStorage.getItem('viewSettings'));
   }
   setLocalShowTable(event: any) {
-    localStorage.setItem('showTable', JSON.stringify(event.target.checked));
+    localStorage.setItem('showTable', JSON.stringify(this.dataProvider.showTableOnBillAction));
+    this.alertify.presentToast('Settings updated successfully');
   }
 
   updateSettings(data: any) {

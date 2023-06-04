@@ -74,7 +74,7 @@
     <ng-container *ngIf="onboardingService.stage == 'resetPasswordStage1'">
       <form
         [formGroup]="resetPasswordFormVerification"
-        (ngSubmit)="resetPassword()"
+        (ngSubmit)="checkRestMail()"
       >
         <mat-form-field appearance="outline">
           <mat-label>Email</mat-label>
@@ -150,7 +150,7 @@
         <button
           mat-flat-button
           color="primary"
-          (click)="mode = 'login'"
+          type="submit"
           [disabled]="!resetPasswordForm.valid"
         >
           Reset Password

@@ -76,11 +76,11 @@ export class UserManagementService {
     }))
   //  console.log("Deleting Viraj cache ",deleteRequests)
     this.dataProvider.loading = false;
-    // let url = window.location.href.split('/')
-    // url.pop()
-    // url.push('index.html')
-    // window.location.href = url.join('/') 
-    window.location.reload();
+    let url = window.location.href.split('/')
+    url.pop()
+    url.push('index.html')
+    window.location.href = url.join('/') 
+    // window.location.reload();
   }
 
   userExists(username: string) {

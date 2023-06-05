@@ -30,7 +30,7 @@ export class ConfigComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     let localPrinters = (await this.electronService.getPrinters());
-    this.printers = localPrinters.length > 0 ? localPrinters : []
+    this.printers = localPrinters?.length > 0 ? localPrinters : ['Test 1','Test 2']
   }
 
   settingsForm: FormGroup = new FormGroup({

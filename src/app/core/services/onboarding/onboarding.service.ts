@@ -300,6 +300,7 @@ export class OnboardingService {
       idField: 'businessId',
     }).subscribe((res) => {
       this.dataProvider.currentBusiness = res as BusinessRecord;
+      this.dataProvider.currentBusiness.billerPrinter = localStorage.getItem('billerPrinter');
       // console.log("Business Changed",res);
     });
     let date = new Date().toISOString().split('T')[0];

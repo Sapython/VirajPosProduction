@@ -80,7 +80,11 @@ export class AddDishComponent {
   }
 
   addDish(){
-    this.dialogRef.close({...this.newDishForm.value,tags:[this.newDishForm.value.tag]})
+    if (this.newDishForm.invalid){
+      alert("Please fill all the fields")
+      return;
+    }
+    this.dialogRef.close({...this.newDishForm.value,tags:this.newDishForm.value.tag ? [this.newDishForm.value.tag] : []})
   }
 
   switchColor(event:any,i:number){

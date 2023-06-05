@@ -258,6 +258,10 @@ export class ModeConfig {
   }
 
   async getMainCategories() {
+    let configs = JSON.parse(localStorage.getItem('selectedMenu'));
+    if (!configs) {
+      configs = {}
+    }
     if (this.selectedMenu) {
       let data = await this.menuManagementService.getMainCategoriesByMenu(
         this.selectedMenu
@@ -282,6 +286,7 @@ export class ModeConfig {
           name: doc['name'],
           id: doc.id,
           products: products,
+          printer: configs[this.selectedMenuId+'-'+doc.id] || '',
           averagePrice:
             products.reduce((acc, curr) => acc + curr.price, 0) /
             products.length,
@@ -803,6 +808,7 @@ export class ModeConfig {
         this.alertify.presentToast('Recipe Updated Successfully');
       }
     } catch (error) {
+      console.log(error);
       this.alertify.presentToast('Recipe Updated Failed');
     } finally {
       this.dataProvider.loading = false;
@@ -901,19 +907,32 @@ export class ModeConfig {
   updatePrinter(selectedCategory: Category) {
     // console.log('selectedCategory', selectedCategory);
     if (this.selectedMenu) {
-      this.dataProvider.loading = true;
-      this.menuManagementService
-        .setPrinter(this.selectedMenu, selectedCategory)
-        .then((data: any) => {
-          this.alertify.presentToast('Printer Updated Successfully');
-          // console.log("selectedCategory",selectedCategory);
-        })
-        .catch((err) => {
-          this.alertify.presentToast('Some error occurred', 'error');
-        })
-        .finally(() => {
-          this.dataProvider.loading = false;
-        });
+      let printerConfig = localStorage.getItem('selectedMenu');
+      if (printerConfig) {
+        var configs:any = JSON.parse(printerConfig);
+        if (!configs){
+          configs = {};
+        }
+        configs[this.selectedMenuId+'-'+selectedCategory.id] = selectedCategory.printer;
+      } else {
+        var configs:any = {};
+        configs[this.selectedMenuId+'-'+selectedCategory.id] = selectedCategory.printer;
+      }
+      console.log('printerConfig', configs);
+      localStorage.setItem('selectedMenu', JSON.stringify(configs));
+      // this.dataProvider.loading = true;
+      // this.menuManagementService
+      //   .setPrinter(this.selectedMenu, selectedCategory)
+      //   .then((data: any) => {
+      //     this.alertify.presentToast('Printer Updated Successfully');
+      //     // console.log("selectedCategory",selectedCategory);
+      //   })
+      //   .catch((err) => {
+      //     this.alertify.presentToast('Some error occurred', 'error');
+      //   })
+      //   .finally(() => {
+      //     this.dataProvider.loading = false;
+      //   });
     } else {
       this.alertify.presentToast('Please Select Menu');
     }

@@ -50,7 +50,8 @@ export class EditMenuComponent implements OnInit {
   };
 
   async ngOnInit(): Promise<void> {
-    this.printers = await this.electronService.getPrinters() || []
+    let localPrinters = (await this.electronService.getPrinters());
+    this.printers = localPrinters.length > 0 ? localPrinters : ['Test 1','Test 2']
   }
 
   addNewMenu(){

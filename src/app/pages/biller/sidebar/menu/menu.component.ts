@@ -5,6 +5,7 @@ import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { StockListComponent } from './stock-list/stock-list.component';
 import { Category, ViewCategory } from '../../../../types/category.structure';
 import { DataProvider } from '../../../../core/services/provider/data-provider.service';
+import { ModeConfig } from '../../../../core/constructors/menu/menu';
 declare var Hammer:any;
 @Component({
   selector: 'app-menu',
@@ -23,9 +24,18 @@ export class MenuComponent implements OnInit,AfterViewInit {
   currentCategory:Category|undefined = undefined;
   currentEvent:any = undefined;
   stockConsumption:number = 0;
+  currentMenu:undefined|ModeConfig;
   constructor(public viewContainerRef: ViewContainerRef,private dialog:Dialog,public dataProvider:DataProvider,private indexedDb:NgxIndexedDBService) {
     this.closeStockListPanelSubscription.pipe(debounceTime(600)).subscribe((data)=>{
       this.isStockListOpen = data;
+    })
+    this.dataProvider.menuLoadSubject.subscribe((data)=>{
+      // console.log("LOADED MENU",this.dataProvider.currentMenu);
+      this.currentMenu = this.dataProvider.currentMenu;
+    })
+    this.dataProvider.modeChanged.subscribe((data)=>{
+      // console.log("MODE CHANGED",data);
+      this.currentMenu = this.dataProvider.currentMenu;
     })
   }
 

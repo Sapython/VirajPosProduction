@@ -100,6 +100,7 @@ function printableBillGenerator(bill:BillConstructor|Bill,products:Product[],dat
         : 'Dine In',
     products: products.map((product) => {
       return {
+        id:product.id,
         name: product.name,
         quantity: product.quantity,
         untaxedValue: product.price,

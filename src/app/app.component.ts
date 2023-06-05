@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ElectronService } from './core/services';
-import { TranslateService } from '@ngx-translate/core';
+// import { TranslateService } from '@ngx-translate/core';
 import { APP_CONFIG } from '../environments/environment';
 import { fadeInDownOnEnterAnimation, fadeOutUpOnLeaveAnimation } from 'angular-animations';
 import { DataProvider } from './core/services/provider/data-provider.service';
@@ -20,12 +20,11 @@ import { NgxIndexedDBService } from 'ngx-indexed-db';
 export class AppComponent {
   constructor(
     private electronService: ElectronService,
-    private translate: TranslateService,
     public dataProvider: DataProvider,
     private authService:AuthService,
     private indexedDbService:NgxIndexedDBService
   ) {
-    this.translate.setDefaultLang('en');
+    // this.translate.setDefaultLang('en');
     // console.log('APP_CONFIG', APP_CONFIG);
     // console.log('ESCPOS', EscPosEncoder);
 

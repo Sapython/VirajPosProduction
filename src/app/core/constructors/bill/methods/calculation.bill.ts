@@ -108,7 +108,7 @@ export function calculateProducts(kots:(Kot|KotConstructor)[]){
         ? true
         : false;
     //  console.log('Mode', inclusive);
-      console.log("product.price * product.quantity",product.price * product.quantity,product.price,product.quantity);
+      // console.log("product.price * product.quantity",product.price * product.quantity,product.price,product.quantity);
       let totalAmount = product.price * product.quantity;
       if (product.lineDiscount) {
         console.log("Applying linediscount",product.name,product.lineDiscount);
@@ -122,7 +122,7 @@ export function calculateProducts(kots:(Kot|KotConstructor)[]){
       let applicableTax = 0;
       product.taxes.forEach((tax) => {
         if (tax.type === 'percentage') {
-          console.log("Total amount",totalAmount);
+          // console.log("Total amount",totalAmount);
           let taxAmount = (totalAmount * tax.cost) / 100;
           applicableTax += taxAmount; // applicableTax = applicableTax + taxAmount
           // find tax in finalTaxes and add the taxAmount to it

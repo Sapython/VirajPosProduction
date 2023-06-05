@@ -29,7 +29,8 @@ export class ConfigComponent implements OnInit {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    this.printers = await this.electronService.getPrinters() || []
+    let localPrinters = (await this.electronService.getPrinters());
+    this.printers = localPrinters.length > 0 ? localPrinters : ['Test 1','Test 2']
   }
 
   settingsForm: FormGroup = new FormGroup({
@@ -217,17 +218,19 @@ export class ConfigComponent implements OnInit {
   }
 
   updateBillPrinter(value: string) {
+    localStorage.setItem('billerPrinter', value)
     this.dataProvider.currentBusiness!.billerPrinter = value;
-    this.settingsService
-      .updateBusiness({
-        billerPrinter: value,
-        businessId: this.dataProvider.currentBusiness?.businessId!,
-      })
-      .then(() => {
-        this.alertify.presentToast('Printer updated successfully');
-      })
-      .catch((err) => {
-        this.alertify.presentToast('Error while updating printer');
-      });
+    // this.dataProvider.currentBusiness!.billerPrinter = value;
+    // this.settingsService
+    //   .updateBusiness({
+    //     billerPrinter: value,
+    //     businessId: this.dataProvider.currentBusiness?.businessId!,
+    //   })
+    //   .then(() => {
+    //     this.alertify.presentToast('Printer updated successfully');
+    //   })
+    //   .catch((err) => {
+    //     this.alertify.presentToast('Error while updating printer');
+    //   });
   }
 }

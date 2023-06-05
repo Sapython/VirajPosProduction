@@ -1,5 +1,5 @@
 import { Dialog } from '@angular/cdk/dialog';
-import { Component } from '@angular/core';
+import { AfterViewInit, Component } from '@angular/core';
 import { TableComponent } from './table/table.component';
 import { DataProvider } from '../../core/services/provider/data-provider.service';
 
@@ -8,7 +8,7 @@ import { DataProvider } from '../../core/services/provider/data-provider.service
   templateUrl: './biller.component.html',
   styleUrls: ['./biller.component.scss']
 })
-export class BillerComponent {
+export class BillerComponent implements AfterViewInit {
   expanded:boolean = true;
   constructor(private dialog:Dialog,public dataProvider:DataProvider){
     this.dataProvider.openTableView.subscribe(async (open)=>{
@@ -31,4 +31,13 @@ export class BillerComponent {
     })
   }
 
+  ngAfterViewInit(): void {
+    // console.log("MENU LOADED",this.dataProvider.currentMenu);
+    //   if(this.dataProvider.currentMenu.products.length){
+    //     console.log("Menu loaded");
+    //   } else {
+    //     console.log("Menu not loaded");
+        
+    //   }
+  }
 }

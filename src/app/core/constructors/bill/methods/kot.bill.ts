@@ -205,6 +205,7 @@ export function printKot(
     token:kot.id,
     products:kot.products.map((product)=>{
       return {
+        id:product.id,
         name: product.name,
         instruction:product.instruction,
         quantity:product.quantity,

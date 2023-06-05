@@ -1,20 +1,20 @@
 <section>
     <div class="categories">
-        <ng-container *ngIf="(this.dataProvider.currentMenu?.recommendedCategories | enabled).length > 0">
+        <ng-container *ngIf="(currentMenu?.recommendedCategories | enabled).length > 0">
             <span>Viraj Categories</span>
-            <ng-container *ngFor="let category of this.dataProvider.currentMenu?.recommendedCategories | enabled">
+            <ng-container *ngFor="let category of currentMenu?.recommendedCategories | enabled">
                 <app-category-card (click)="openCategory(category)" [category]="category"></app-category-card>
             </ng-container>
         </ng-container>
-        <ng-container *ngIf="(this.dataProvider.currentMenu?.viewCategories | enabled).length > 0">
+        <ng-container *ngIf="(currentMenu?.viewCategories | enabled).length > 0">
             <span>Your Categories</span>
-            <ng-container *ngFor="let category of this.dataProvider.currentMenu?.viewCategories | enabled">
+            <ng-container *ngFor="let category of currentMenu?.viewCategories | enabled">
                 <app-category-card (click)="openCategory(category)" [category]="category"></app-category-card>
             </ng-container>
         </ng-container>
-        <ng-container *ngIf="(this.dataProvider.currentMenu?.mainCategories | enabled).length > 0">
+        <ng-container *ngIf="(currentMenu?.mainCategories | enabled).length > 0">
             <span>Main Categories</span>
-            <ng-container *ngFor="let category of this.dataProvider.currentMenu?.mainCategories | enabled">
+            <ng-container *ngFor="let category of currentMenu?.mainCategories | enabled">
                 <app-category-card (click)="openCategory(category)" [category]="category"></app-category-card>
             </ng-container>
         </ng-container>

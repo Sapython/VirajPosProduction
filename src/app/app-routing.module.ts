@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { AuthGuard } from './shared/guards/auth-guard.guard';
+import { BillerComponent } from './pages/biller/biller.component';
+import { LoadingComponent } from './pages/auth/loading/loading.component';
 
 const routes: Routes = [
   {
@@ -11,20 +13,12 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    loadChildren: () =>
-      import('./pages/auth/loading/loading.module').then((m) => m.LoadingModule),
-      data:{
-        animation:'isLeft'
-      }
+    component:LoadingComponent
   },
   {
     path: 'biller',
+    component: BillerComponent,
     canActivate: [AuthGuard],
-    loadChildren: () =>
-      import('./pages/biller/biller.module').then((m) => m.BillerModule),
-      data:{
-        animation:'isRight'
-      }
   },
   {
     path: '**',

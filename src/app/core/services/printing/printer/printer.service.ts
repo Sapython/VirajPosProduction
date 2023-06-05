@@ -43,8 +43,10 @@ export class PrinterService {
       });
     }
     let printerConfig = printableKotData.products.map((product: any) => {
-      return { product: product.id, printer: product.category?.printer };
+      let category = this.dataprovider.currentMenu.mainCategories.find((category)=>category.id == product.category.id)
+      return { product: product.id, printer: category?.printer };
     });
+    console.log('printerConfig', printerConfig);
     if (!this.dataprovider.currentBusiness?.billerPrinter) {
       const dialog = this.dialog.open(DialogComponent, {
         data: {
@@ -60,13 +62,14 @@ export class PrinterService {
     // group products by printer
     let groupedProducts: any = {};
     printableKotData.products.forEach((product: any) => {
-      if (groupedProducts[product.category.printer]) {
-        groupedProducts[product.category.printer].push(product);
+      let category = this.dataprovider.currentMenu.mainCategories.find((category)=>category.id == product.category.id)
+      if (groupedProducts[category.printer]) {
+        groupedProducts[category.printer].push(product);
       } else {
-        groupedProducts[product.category.printer] = [product];
+        groupedProducts[category.printer] = [product];
       }
     })
-  //  console.log('grouped products', groupedProducts);
+    console.log('grouped products', groupedProducts);
     Object.keys(groupedProducts).forEach((printer: any) => {
     //  console.log('printing', printer, groupedProducts[printer]);
       printableKotData.products = groupedProducts[printer];
@@ -129,6 +132,7 @@ export class PrinterService {
       billingMode:billConstructor.mode,
       products:kot.products.map((product)=>{
         return {
+          id:product.id,
           name:product.name,
           instruction:product.instruction,
           quantity:product.quantity,
@@ -169,9 +173,9 @@ export class PrinterService {
         }
       }
     });
-  //  console.log('printing data', printableKotData, printerConfig, groupedProducts);
+    console.log('printing data', printableKotData, printerConfig, groupedProducts);
     Object.keys(groupedProducts).forEach((printer: any) => {
-    //  console.log('printing', printer, groupedProducts[printer]);
+     console.log('printing', printer, groupedProducts[printer]);
       printableKotData.products = groupedProducts[printer];
       let result = this.encoderService.getKotCode(printableKotData);
       console.log('got kot code', result);

@@ -82,6 +82,7 @@ export interface PrintableBill {
 }
 
 export interface printableBillItem {
+  id:string;
   name:string;
   quantity:number;
   untaxedValue:number;

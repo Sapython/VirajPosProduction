@@ -1,6 +1,6 @@
 {
   "name": "virajpos",
-  "version": "0.1.77",
+  "version": "0.1.83",
   "description": "Viraj POS system.",
   "homepage": "https://virajworld.in/",
   "author": {
@@ -31,7 +31,9 @@
     "start": "npm-run-all -p electron:serve ng:serve",
     "ng:serve": "ng serve -c web -o",
     "ng:serve:external": "ng serve -c web -o --host 192.168.29.239",
-    "build": "npm run electron:serve-tsc && ng build --aot --base-href ./",
+    "build": "npm run electron:serve-tsc && ng build --aot --base-href ./ --stats-json",
+    "analyze": "webpack-bundle-analyzer dist/stats.json",
+    "analyze:build": "npm run build && npm run analyze",
     "build:dev": "npm run build -- -c dev",
     "build:prod": "npm run build -- -c production",
     "web:build": "npm run build -- -c web-production",
@@ -115,7 +117,8 @@
     "ts-node": "10.9.1",
     "typescript": "~4.9.4",
     "wait-on": "7.0.1",
-    "webdriver-manager": "12.1.8"
+    "webdriver-manager": "12.1.8",
+    "webpack-bundle-analyzer": "4.9.0"
   },
   "engines": {
     "node": ">= 14.20.0 || >= 16.13.0 || >= 18.10.0"

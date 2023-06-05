@@ -114,6 +114,7 @@ export class HistoryComponent {
         orderNo:bill.orderNo,
         products:kot.products.map((product)=>{
           return {
+            id:product.id,
             category:product.category,
             instruction:product.instruction,
             name: product.name,

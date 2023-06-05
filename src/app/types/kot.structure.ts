@@ -47,6 +47,7 @@ export interface PrintableKot {
 }
 
 export interface printableKotItem {
+  id:string;
   name:string;
   instruction:string;
   quantity:number;

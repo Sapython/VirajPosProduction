@@ -5,13 +5,8 @@ import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 
-// NG Translate
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-
-
 import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule, provideNoopAnimations } from '@angular/platform-browser/animations';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { APP_CONFIG } from '../environments/environment';
 import { DBConfig, NgxIndexedDBModule } from 'ngx-indexed-db';
@@ -46,10 +41,10 @@ import { ResetPasswordComponent } from './pages/auth/reset-password/reset-passwo
 import { MatIconModule } from '@angular/material/icon';
 import { CheckingPasswordComponent } from './shared/checking-password/checking-password.component';
 import { RequiresPrivilegeComponent } from './shared/requires-privilege/requires-privilege.component';
+import { BillerModule } from './pages/biller/biller.module';
+import { LoadingModule } from './pages/auth/loading/loading.module';
 
 // AoT requires an exported function for factories
-const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>
-  new TranslateHttpLoader(http, './assets/i18n/', '.json');
 export const dbConfig: DBConfig = {
   name: 'Viraj',
   version: 10,
@@ -119,13 +114,8 @@ export const dbConfig: DBConfig = {
     MatButtonModule,
     MatIconModule,
     NgxIndexedDBModule.forRoot(dbConfig),
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: httpLoaderFactory,
-        deps: [HttpClient],
-      },
-    }),
+    LoadingModule,
+    BillerModule,
     BrowserAnimationsModule,
     provideFirebaseApp(() => initializeApp(APP_CONFIG.firebase)),
     provideAnalytics(() => getAnalytics()),
@@ -150,28 +140,15 @@ export const dbConfig: DBConfig = {
       let functions = getFunctions();
       // connectFunctionsEmulator(functions, 'localhost', 5001);
       return functions;
-    })
+    }),
+    providePerformance(() => {
+      return getPerformance();
+    }),
   ],
   providers: [
     ScreenTrackingService,
     UserTrackingService,
     AlertsAndNotificationsService,
-    {
-      provide: ErrorHandler,
-      useValue: Sentry.createErrorHandler({
-        showDialog: true,
-      }),
-    },
-    {
-      provide: Sentry.TraceService,
-      deps: [Router],
-    },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: () => () => {},
-      deps: [Sentry.TraceService],
-      multi: true,
-    },
   ],
   bootstrap: [AppComponent],
 })

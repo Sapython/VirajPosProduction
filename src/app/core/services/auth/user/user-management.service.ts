@@ -69,14 +69,18 @@ export class UserManagementService {
     signOut(this.auth);
     // clear local storage
     this.electronService.clearAuth();
-    localStorage.clear();
+    // localStorage.clear();
     // indexedDB.deleteDatabase('Viraj');
     let deleteRequests = Promise.all(dbConfig.objectStoresMeta.map(async (store) => {
       return await firstValueFrom(this.dbService.deleteObjectStore(store.store));
     }))
   //  console.log("Deleting Viraj cache ",deleteRequests)
-    this.router.navigateByUrl('/login');
     this.dataProvider.loading = false;
+    // let url = window.location.href.split('/')
+    // url.pop()
+    // url.push('index.html')
+    // window.location.href = url.join('/') 
+    window.location.reload();
   }
 
   userExists(username: string) {

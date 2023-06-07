@@ -33,6 +33,8 @@ import { AnalyticsService } from '../database/analytics/analytics.service';
 import { TableService } from '../database/table/table.service';
 import { BillService } from '../database/bill/bill.service';
 
+
+var debug:boolean = true;
 @Injectable({
   providedIn: 'root',
 })
@@ -70,9 +72,19 @@ export class OnboardingService {
     private tableService: TableService,
     private billService: BillService
   ) {
+    console.log('Onboarding Service Initialized');
     this.loadingSteps.next('Checking User');
+    // fetchTimeout('https://firestore.googleapis.com/',{method:'GET'},2000).then((res)=>{
+    //   console.log("IP",res);
+    // }).catch((err)=>{
+    //   console.log("IP error",err);
+    //   this.dataProvider.
+    // })
+    if (this.dataProvider.offline){
+      console.log("Offline Mode");
+    }
     this.dataProvider.userSubject.subscribe((data) => {
-      // console.log('data', data);
+      if (debug) console.log('Checked user', data);
       this.stage = 'virajGettingReady';
       if (data.status) {
         this.loadingSteps.next('User Found');
@@ -114,7 +126,7 @@ export class OnboardingService {
   }
 
   loadBusiness(businessId: string) {
-    console.log('Loading business', businessId);
+    if (debug) console.log('Loading business', businessId);
     getDoc(doc(this.firestore, 'business', businessId)).then((business) => {
       if (business.exists()) {
         // console.log('business.data()', business.data());
@@ -135,6 +147,7 @@ export class OnboardingService {
   }
 
   startViraj(business: BusinessRecord) {
+    if(debug) console.log('Starting Viraj', business);
     firstValueFrom(this.dataProvider.settingsChanged).then(async (setting) => {
       // console.log(setting);
       this.dataProvider.businessId = business.businessId;
@@ -530,4 +543,13 @@ export class OnboardingService {
   startResetPassword(){
     this.stage = 'resetPasswordStage1';
   }
+}
+
+export default function fetchTimeout(url, options, timeout = 7000) {
+  return Promise.race([
+      fetch(url, options),
+      new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('timeout')), timeout)
+      )
+  ]);
 }

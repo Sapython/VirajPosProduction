@@ -40,7 +40,7 @@
     </div>
     <div class="actions" *ngIf="this.dataProvider.currentBill?.stage=='finalized'">
       <viraj-button (vclick)="settleBill()">Settle Bill</viraj-button>
-      <viraj-button (vclick)="splitAndSettle()">Split Bill</viraj-button>
+      <viraj-button [matTooltip]="!!this.dataProvider.currentBill?.nonChargeableDetail ? 'Cannot split an NC bill' : 'Click to apply'" [disabled]="!!this.dataProvider.currentBill?.nonChargeableDetail" (vclick)="splitAndSettle()">Split Bill</viraj-button>
       <viraj-button (vclick)="cancelBill()">Cancel</viraj-button>
     </div>
     <div class="actions" *ngIf="this.dataProvider.currentBill?.stage=='cancelled'">

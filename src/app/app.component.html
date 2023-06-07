@@ -6,7 +6,7 @@
     class="offlineBar"
     [@fadeInDownOnEnter]
     [@fadeOutUpOnLeave]
-    *ngIf="this.dataProvider.offline || this.dataProvider.updating"
+    *ngIf="this.dataProvider.offline"
     [ngClass]="{
       online: this.dataProvider.backOnline | async,
       updating: this.dataProvider.updating

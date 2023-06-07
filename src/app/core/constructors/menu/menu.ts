@@ -804,6 +804,7 @@ export class ModeConfig {
           localProduct.name = product.name;
           localProduct.price = product.price;
           localProduct.type = product.type;
+          localProduct.specificPrinter = product.specificPrinter || null;
         }
         this.alertify.presentToast('Recipe Updated Successfully');
       }

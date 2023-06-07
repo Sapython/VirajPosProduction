@@ -52,10 +52,18 @@ export class PrinterService {
     let groupedProducts: any = {};
     printableKotData.products.forEach((product: any) => {
       let category = this.dataprovider.currentMenu.mainCategories.find((category)=>category.id == product.category.id)
-      if (groupedProducts[category.printer]) {
-        groupedProducts[category.printer].push(product);
+      if (product.specificPrinter){
+        if (groupedProducts[product.specificPrinter]) {
+          groupedProducts[product.specificPrinter].push(product);
+        } else {
+          groupedProducts[product.specificPrinter] = [product];
+        }
       } else {
-        groupedProducts[category.printer] = [product];
+        if (groupedProducts[category.printer]) {
+          groupedProducts[category.printer].push(product);
+        } else {
+          groupedProducts[category.printer] = [product];
+        }
       }
     })
     console.log('grouped products', groupedProducts);
@@ -139,7 +147,8 @@ export class PrinterService {
           instruction:product.instruction,
           quantity:product.quantity,
           edited:product.cancelled,
-          category:product.category
+          category:product.category,
+          specificPrinter:product.specificPrinter
         }
       }),
     }

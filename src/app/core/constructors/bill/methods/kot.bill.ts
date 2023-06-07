@@ -210,7 +210,8 @@ export function printKot(
         instruction:product.instruction,
         quantity:product.quantity,
         edited:product.cancelled,
-        category:product.category
+        category:product.category,
+        specificPrinter:product.specificPrinter
       }
     }),
     table:this.table.id,

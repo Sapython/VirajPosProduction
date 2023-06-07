@@ -120,6 +120,7 @@ export class HistoryComponent {
             name: product.name,
             quantity:product.quantity,
             edited:product.cancelled,
+            specificPrinter:product.specificPrinter
           }
         }),
         table:bill.table as unknown as string,

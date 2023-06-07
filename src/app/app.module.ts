@@ -47,7 +47,7 @@ import { LoadingModule } from './pages/auth/loading/loading.module';
 // AoT requires an exported function for factories
 export const dbConfig: DBConfig = {
   name: 'Viraj',
-  version: 10,
+  version: 120,
   objectStoresMeta: [
     {
       store: 'business',

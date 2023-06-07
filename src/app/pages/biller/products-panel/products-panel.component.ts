@@ -40,6 +40,7 @@ export class ProductsPanelComponent implements OnInit{
       this.customResults = [];
       this.products = [];
       this.searchVisible = false;
+      this.currentCategory = undefined;
     })
     this.dataProvider.menuLoadSubject.subscribe((value)=>{
       if (value){

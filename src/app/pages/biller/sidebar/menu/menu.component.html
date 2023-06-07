@@ -2,20 +2,20 @@
     <div class="categories">
         <ng-container *ngIf="(currentMenu?.recommendedCategories | enabled).length > 0">
             <span>Viraj Categories</span>
-            <ng-container *ngFor="let category of currentMenu?.recommendedCategories | enabled">
-                <app-category-card (click)="openCategory(category)" [category]="category"></app-category-card>
+            <ng-container *ngFor="let category of (currentMenu?.recommendedCategories | enabled);let i = index">
+                <app-category-card [active]="activeIndex == 'viraj'+i" (click)="openCategory(category);activeIndex = 'viraj'+i" [category]="category"></app-category-card>
             </ng-container>
         </ng-container>
         <ng-container *ngIf="(currentMenu?.viewCategories | enabled).length > 0">
             <span>Your Categories</span>
-            <ng-container *ngFor="let category of currentMenu?.viewCategories | enabled">
-                <app-category-card (click)="openCategory(category)" [category]="category"></app-category-card>
+            <ng-container *ngFor="let category of (currentMenu?.viewCategories | enabled);let i = index">
+                <app-category-card [active]="activeIndex == 'your'+i" (click)="openCategory(category);activeIndex = 'your'+i" [category]="category"></app-category-card>
             </ng-container>
         </ng-container>
         <ng-container *ngIf="(currentMenu?.mainCategories | enabled).length > 0">
             <span>Main Categories</span>
-            <ng-container *ngFor="let category of currentMenu?.mainCategories | enabled">
-                <app-category-card (click)="openCategory(category)" [category]="category"></app-category-card>
+            <ng-container *ngFor="let category of (currentMenu?.mainCategories | enabled);let i = index">
+                <app-category-card [active]="activeIndex == 'main'+i" (click)="openCategory(category);activeIndex = 'main'+i" [category]="category"></app-category-card>
             </ng-container>
         </ng-container>
         <br>

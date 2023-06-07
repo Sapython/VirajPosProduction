@@ -2,6 +2,7 @@ import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Product, portionColor } from '../../../../../types/product.structure';
+import { ElectronService } from '../../../../../core/services';
 
 @Component({
   selector: 'app-add-dish',
@@ -48,19 +49,28 @@ export class AddDishComponent {
     }
   ]
   portions:{portionName:string,portionSize:number,portionColor:portionColor}[] = []
+  printers:string[] = [];
   newDishForm:FormGroup = new FormGroup({
     name: new FormControl('',Validators.required),
     price: new FormControl('',Validators.required),
     type: new FormControl('',Validators.required),
     tag: new FormControl('',Validators.required),
+    specificPrinter: new FormControl(''),
   });
 
-  constructor(private dialogRef:DialogRef,@Inject(DIALOG_DATA) public data:{mode:'add'|'edit',product?:Product}) {
+  constructor(private dialogRef:DialogRef,@Inject(DIALOG_DATA) public data:{mode:'add'|'edit',product?:Product},private electronService:ElectronService) {
     if(data.mode == 'edit') {
       this.newDishForm.patchValue(data.product)
       this.newDishForm.controls.tag.setValue(data.product.tags[0]);
     //  console.log(this.newDishForm.value,"this.tags",this.tags);
     }
+  }
+
+  async ngOnInit(): Promise<void> {
+    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //Add 'implements OnInit' to the class.
+    let localPrinters = (await this.electronService.getPrinters());
+    this.printers = localPrinters?.length > 0 ? localPrinters : ['Test 1','Test 2']
   }
 
   addVariant(){

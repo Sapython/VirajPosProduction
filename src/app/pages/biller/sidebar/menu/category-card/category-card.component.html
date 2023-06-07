@@ -1,4 +1,4 @@
-<div matRipple *ngIf="category" class="category">
+<div matRipple *ngIf="category" class="category" [ngClass]="{active:active}">
     <p class="name">{{category.name}}</p>
     <div>
         <p class="average">{{(dataProvider.clientWidth > 1618 && category.averagePrice) ? 'Avg ' : ''}}{{category.averagePrice | currency:'INR'}}</p>

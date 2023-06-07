@@ -53,4 +53,5 @@ export interface printableKotItem {
   quantity:number;
   category:any;
   edited?:boolean;
+  specificPrinter:string;
 }

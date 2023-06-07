@@ -25,6 +25,7 @@ export class MenuComponent implements OnInit,AfterViewInit {
   currentEvent:any = undefined;
   stockConsumption:number = 0;
   currentMenu:undefined|ModeConfig;
+  activeIndex:string = "";
   constructor(public viewContainerRef: ViewContainerRef,private dialog:Dialog,public dataProvider:DataProvider,private indexedDb:NgxIndexedDBService) {
     this.closeStockListPanelSubscription.pipe(debounceTime(600)).subscribe((data)=>{
       this.isStockListOpen = data;
@@ -32,10 +33,12 @@ export class MenuComponent implements OnInit,AfterViewInit {
     this.dataProvider.menuLoadSubject.subscribe((data)=>{
       // console.log("LOADED MENU",this.dataProvider.currentMenu);
       this.currentMenu = this.dataProvider.currentMenu;
+      this.activeIndex = "";
     })
     this.dataProvider.modeChanged.subscribe((data)=>{
       // console.log("MODE CHANGED",data);
       this.currentMenu = this.dataProvider.currentMenu;
+      this.activeIndex = "";
     })
   }
 
@@ -130,9 +133,11 @@ export class MenuComponent implements OnInit,AfterViewInit {
   }
 
   openCategory(category:Category){
+    console.log("openCategory",category);
     this.dataProvider.searchResults.next(false)
     this.dataProvider.menuProducts.next(category);
   }
+
 }
 
 // create a regex for console.log( to find all console.log( in the project and end it in )

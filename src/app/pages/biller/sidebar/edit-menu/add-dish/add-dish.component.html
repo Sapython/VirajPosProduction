@@ -25,6 +25,14 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Printer (Optional)</mat-label>
+            <mat-select formControlName="specificPrinter" name="label">
+                <mat-option *ngFor="let label of printers" [value]="label">
+                    {{label}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
         <!-- <div class="tags">
             <ol>
                 <li *ngFor="let tag of tags">

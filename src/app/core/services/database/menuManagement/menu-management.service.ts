@@ -289,8 +289,8 @@ export class MenuManagementService {
   async getViewCategoriesByMenu(menu: Menu) {
     let localMenu = await this.getLocalMenu(menu.id);
     // console.log("menu113 viewCategories",localMenu?.viewCategories);
-    if (localMenu?.viewCategories){
-      return localMenu?.viewCategories
+    if (localMenu?.viewCategories[this.dataProvider.currentUser.username]){
+      return localMenu?.viewCategories[this.dataProvider.currentUser.username]
     }
     let res = await getDocs(
       collection(
@@ -439,9 +439,11 @@ export class MenuManagementService {
         rootCategories: rootCategoriesFetch.docs.map((doc) => {
           return { ...doc.data(), id: doc.id };
         }),
-        viewCategories: viewCategoriesFetch.docs.map((doc) => {
-          return { ...doc.data(), id: doc.id };
-        }),
+        viewCategories: {
+          [this.dataProvider.currentUser.username]:viewCategoriesFetch.docs.map((doc) => {
+            return { ...doc.data(), id: doc.id };
+          })
+        },
         recommendedCategories: recommendedCategoriesFetch.docs.map((doc) => {
           return { ...doc.data(), id: doc.id };
         }),

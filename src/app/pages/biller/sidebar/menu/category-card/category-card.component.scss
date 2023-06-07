@@ -44,6 +44,18 @@ div.category{
         gap:10px;
         align-items: center;
     }
+    &.active{
+        background: var(--Viraj-primary);
+        color: white;
+        border-bottom: 2px solid var(--Viraj-primary-shade);
+        mat-icon{
+            color: white;
+        }
+        span{
+            background: white;
+            color: var(--Viraj-primary);
+        }
+    }
 }
 @media (max-width: 1366px) {
     div.category{

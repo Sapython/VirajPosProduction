@@ -11,6 +11,7 @@ import { Product } from '../../../../../types/product.structure';
 export class CategoryCardComponent {
   @Input() category:Category|undefined;
   @Input() full:boolean = false;
+  @Input() active:boolean = false;
   length:number = 0;
   constructor(public dataProvider:DataProvider){
     // console.log("this.category?.products",this.category?.products);

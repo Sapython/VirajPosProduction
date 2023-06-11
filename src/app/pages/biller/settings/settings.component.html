@@ -49,7 +49,7 @@
       >
         Settings
       </button>
-      <button
+      <!-- <button
         (click)="activeTab = 'loyalty'"
         [ngClass]="{ active: activeTab == 'loyalty' }"
       >
@@ -60,7 +60,7 @@
         [ngClass]="{ active: activeTab == 'offers' }"
       >
         Offers
-      </button>
+      </button> -->
     </div>
     <div class="active spaced" [ngSwitch]="activeTab">
       <app-printer *ngSwitchCase="'printer'"></app-printer>

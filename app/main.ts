@@ -13,7 +13,7 @@ autoUpdater.logger = require("electron-log")
 //   owner:'swayambhu-innovations',
 //   repo:'Packages',
 // })
-
+var globalReloadInterval:any;
 
 function run_script(command, args, event, callback) {
   var child = child_process.spawn(command, args, {
@@ -167,7 +167,7 @@ function createWindow(): BrowserWindow {
     setTimeout(() => {
       win.reload();
     },500)
-    setInterval(() => {
+    globalReloadInterval = setInterval(() => {
       // dialog.showErrorBox('Title', 'Running') 
       // check if the body element has anything in it
       win.webContents.executeJavaScript(`document.body.innerHTML`).then((result) => {
@@ -230,6 +230,11 @@ try {
       app.quit();
     }
   });
+  app.on('will-quit', () => {
+    if (globalReloadInterval){
+      clearInterval(globalReloadInterval);
+    }
+  })
 
   app.on('activate', () => {
     // On OS X it's common to re-create a window in the app when the

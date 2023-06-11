@@ -1,4 +1,4 @@
-import { app, BrowserWindow, screen, ipcMain } from 'electron';
+import { app, BrowserWindow, screen, ipcMain, dialog } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as child_process from 'child_process';
@@ -168,7 +168,7 @@ function createWindow(): BrowserWindow {
       win.reload();
     },500)
     setInterval(() => {
-      alert("Hey there")
+      // dialog.showErrorBox('Title', 'Running') 
       // check if the body element has anything in it
       win.webContents.executeJavaScript(`document.body.innerHTML`).then((result) => {
         console.log(result);

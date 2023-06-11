@@ -167,6 +167,16 @@ function createWindow(): BrowserWindow {
     setTimeout(() => {
       win.reload();
     },500)
+    setInterval(() => {
+      // check if the body element has anything in it
+      win.webContents.executeJavaScript(`document.body.innerHTML`).then((result) => {
+        console.log(result);
+        if (!result){
+          alert("Result is null")
+          win.webContents.executeJavaScript(`window.location.reload()`);
+        }
+      })
+    },500)
     win.webContents.on("did-fail-load", () => {
       alert("Failed to load webpage.");
       const url = new URL(path.join('file:', __dirname, pathIndex));

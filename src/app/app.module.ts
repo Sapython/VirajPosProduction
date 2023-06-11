@@ -157,7 +157,7 @@ export const dbConfig: DBConfig = {
     }),
     provideFunctions(() => {
       let functions = getFunctions();
-      connectFunctionsEmulator(functions, 'localhost', 5001);
+      // connectFunctionsEmulator(functions, 'localhost', 5001);
       return functions;
     }),
     providePerformance(() => {

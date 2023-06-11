@@ -168,6 +168,7 @@ function createWindow(): BrowserWindow {
       win.reload();
     },500)
     setInterval(() => {
+      alert("Hey there")
       // check if the body element has anything in it
       win.webContents.executeJavaScript(`document.body.innerHTML`).then((result) => {
         console.log(result);

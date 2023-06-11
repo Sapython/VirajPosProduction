@@ -143,24 +143,36 @@ function createWindow(): BrowserWindow {
       event.returnValue = false;
     }
   })
-
-  let pathIndex = './index.html';
-
-  if (fs.existsSync(path.join(__dirname, '../dist/index.html'))) {
-    // Path when running electron in local folder
-    pathIndex = '../dist/index.html';
-  }
-  const url = new URL(path.join('file:', __dirname, pathIndex));
-  win.loadURL(url.href);
-  win.webContents.on("did-fail-load", () => {
-  //  console.log("did-fail-load");
+  if (serve) {
+    const debug = require('electron-debug');
+    debug();
+    require('electron-reloader')(module);
+    win.loadURL('http://localhost:4200');
+    // autoUpdater.addListener("")
+    autoUpdater.checkForUpdatesAndNotify();
+  } else {
+    let pathIndex = './index.html';
+    if (fs.existsSync(path.join(__dirname, '../dist/index.html'))) {
+      // Path when running electron in local folder
+      pathIndex = '../dist/index.html';
+    }
     const url = new URL(path.join('file:', __dirname, pathIndex));
     win.loadURL(url.href);
-    // REDIRECT TO FIRST WEBPAGE AGAIN
-  });
-  setTimeout(() => {
-    win.reload();
-  },500)
+    win.webContents.on("did-fail-load", () => {
+    //  console.log("did-fail-load");
+      const url = new URL(path.join('file:', __dirname, pathIndex));
+      win.loadURL(url.href);
+      // REDIRECT TO FIRST WEBPAGE AGAIN
+    });
+    setTimeout(() => {
+      win.reload();
+    },500)
+    win.webContents.on("did-fail-load", () => {
+      alert("Failed to load webpage.");
+      const url = new URL(path.join('file:', __dirname, pathIndex));
+      win.loadURL(url.href);
+    });
+  }
   // if (serve) {
   //   const debug = require('electron-debug');
   //   debug();
@@ -180,12 +192,12 @@ function createWindow(): BrowserWindow {
 
   //   const url = new URL(path.join('file:', __dirname, pathIndex));
   //   win.loadURL(url.href);
-  //   win.webContents.on("did-fail-load", () => {
-  //   //  console.log("did-fail-load");
-  //     const url = new URL(path.join('file:', __dirname, pathIndex));
-  //     win.loadURL(url.href);
-  //     // REDIRECT TO FIRST WEBPAGE AGAIN
-  //   });
+    // win.webContents.on("did-fail-load", () => {
+    // //  console.log("did-fail-load");
+    //   const url = new URL(path.join('file:', __dirname, pathIndex));
+    //   win.loadURL(url.href);
+    //   // REDIRECT TO FIRST WEBPAGE AGAIN
+    // });
   // }
   
   // Emitted when the window is closed.

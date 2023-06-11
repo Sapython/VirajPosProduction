@@ -47,6 +47,9 @@ import { DiscountComponent } from './settings/sections/discount/discount.compone
 import { PaymentComponent } from './settings/sections/payment/payment.component';
 import { TaxesComponent } from './settings/sections/taxes/taxes.component';
 import { AddComponent } from './settings/sections/account/add/add.component'; 
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { LoyaltyComponent } from './settings/sections/loyalty/loyalty.component';
+import { OffersComponent } from './settings/sections/offers/offers.component'; 
 
 @NgModule({
   declarations: [
@@ -68,7 +71,9 @@ import { AddComponent } from './settings/sections/account/add/add.component';
     DiscountComponent,
     PaymentComponent,
     TaxesComponent,
-    AddComponent
+    AddComponent,
+    LoyaltyComponent,
+    OffersComponent
   ],
   imports: [
     CommonModule,
@@ -95,7 +100,8 @@ import { AddComponent } from './settings/sections/account/add/add.component';
     BaseComponentsModule,
     MatDialogModule,
     MatProgressSpinnerModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatAutocompleteModule
   ]
 })
 export class BillerModule { }

@@ -168,13 +168,18 @@ export class ActionsComponent {
     );
   }
 
-  splitAndSettle() {
-    const dialog = this.dialog.open(SplitBillComponent, {
-      data: this.dataProvider.currentBill,
-    });
-    dialog.closed.subscribe(async (value: any) => {
-      //  console.log(value);
-    });
+  async splitAndSettle() {
+    if (
+      await this.userManagementService.authenticateAction([
+        'admin',
+        'manager',
+        'accountant'
+      ])
+    ){
+      this.dialog.open(SplitBillComponent, {
+        data: this.dataProvider.currentBill,
+      });
+    }
   }
 
   async addDiscount() {
@@ -282,7 +287,11 @@ export class ActionsComponent {
     }
   }
 
-  showPreview() {
+  async showPreview() {
+    if (this.dataProvider.allProducts){
+      this.dataProvider.allProducts = false;
+      return;
+    }
     // check for any active kot if there is any active kot then show alert that you have to print the kot first
     if (
       this.dataProvider.currentBill?.kots.find(
@@ -290,7 +299,7 @@ export class ActionsComponent {
       )
     ) {
       if (
-        this.dataProvider.confirm(
+        await this.dataProvider.confirm(
           'You have to print the kot first to see the preview',
           [1],
           { buttons: ['Cancel', 'Print'] }
@@ -299,6 +308,8 @@ export class ActionsComponent {
         this.dataProvider.currentBill.finalizeAndPrintKot()
         this.dataProvider.allProducts = !this.dataProvider.allProducts;
       }
+    } else {
+      this.dataProvider.allProducts = !this.dataProvider.allProducts;
     }
   }
 }

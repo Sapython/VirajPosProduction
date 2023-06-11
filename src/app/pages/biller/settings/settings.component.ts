@@ -16,6 +16,8 @@ export class SettingsComponent {
     | 'config'
     | 'discount'
     | 'payment'
+    | 'loyalty'
+    | 'offers'
     | 'taxes' = 'config';
     constructor(public dialogRef:DialogRef,public dataProvider:DataProvider){}
 }

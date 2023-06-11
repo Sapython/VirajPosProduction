@@ -366,6 +366,30 @@ export class ModeConfig {
     this.fuseInstance.setCollection(this.selectedCategory.products);
   }
 
+  addMainCategory() {
+    const dialog = this.dialog.open(AddNewCategoryComponent, {
+      data: { products: this.products,noSave:true },
+    });
+    // dialog.closed.subscribe((data: any) => {
+    //   if (data) {
+    //     this.menuManagementService.addRootCategory({
+    //       {
+    //         name: catGroup.name,
+    //         enabled: true,
+    //         products: catGroup.products.map((product) => product.id),
+    //         productOrders:catGroup.products.map((product) => product.id),
+    //         averagePrice:catGroup.products.reduce((a,b)=>a+b.price,0)/catGroup.products.length,
+    //         order:index+1,
+    //         printer:'',
+    //         disabled:[],
+    //       }
+    //     })
+    //     this.mainCategories.push(data);
+    //     this.getMainCategories();
+    //   }
+    // });
+  }
+
   deleteViewCategory() {
     this.dataProvider.loading = true;
     this.menuManagementService

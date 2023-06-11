@@ -39,7 +39,6 @@ import {
   setAsNormal,
   setInstruction,
   settle,
-  splitBill,
 } from './methods/bill.bill';
 import {
   allFinalProducts,
@@ -54,6 +53,8 @@ import { addProduct, removeProduct } from './methods/product.bill';
 import { setTable } from './methods/table';
 import { PrinterService } from '../../services/printing/printer/printer.service';
 import { PrintableKot } from '../../../types/kot.structure';
+import { CustomerService } from '../../services/customer/customer.service';
+import { UserManagementService } from '../../services/auth/user/user-management.service';
 
 export class Bill implements BillConstructor {
   id: string;
@@ -128,6 +129,8 @@ export class Bill implements BillConstructor {
     public analyticsService: AnalyticsService,
     public billService: BillService,
     public printingService: PrinterService,
+    public customerService: CustomerService,
+    public userManagementService: UserManagementService,
     billNo?: string
   ) {
     this.optionalTax = this.dataProvider.optionalTax;
@@ -164,7 +167,7 @@ export class Bill implements BillConstructor {
     this.firebaseUpdate();
   }
 
-  // defnintions
+  // definitions
 
   // common functions
   public calculateBill = calculateBill;
@@ -177,7 +180,6 @@ export class Bill implements BillConstructor {
   public printBill = printBill;
   public settle = settle;
   public merge = merge;
-  public splitBill = splitBill;
 
   // cancel functions
   public cancel = cancel;

@@ -32,6 +32,8 @@ import { ProductsService } from '../database/products/products.service';
 import { AnalyticsService } from '../database/analytics/analytics.service';
 import { TableService } from '../database/table/table.service';
 import { BillService } from '../database/bill/bill.service';
+import { CustomerService } from '../customer/customer.service';
+import { Customer } from '../../../types/customer.structure';
 
 
 var debug:boolean = true;
@@ -64,13 +66,15 @@ export class OnboardingService {
     private alertify: AlertsAndNotificationsService,
     private menuManagementService: MenuManagementService,
     private dialog: Dialog,
+    private customerService:CustomerService,
     private printingService: PrinterService,
     private productService: ProductsService,
     private userService: UserManagementService,
     private settingsService: SettingsService,
     private analyticsService: AnalyticsService,
     private tableService: TableService,
-    private billService: BillService
+    private billService: BillService,
+    private userManagementService:UserManagementService
   ) {
     console.log('Onboarding Service Initialized');
     this.loadingSteps.next('Checking User');
@@ -312,8 +316,10 @@ export class OnboardingService {
     docData(doc(this.firestore, 'business', business.businessId), {
       idField: 'businessId',
     }).subscribe((res) => {
-      this.dataProvider.currentBusiness = res as BusinessRecord;
-      this.dataProvider.currentBusiness.billerPrinter = localStorage.getItem('billerPrinter');
+      if(res){
+        this.dataProvider.currentBusiness = res as BusinessRecord;
+        this.dataProvider.currentBusiness.billerPrinter = localStorage.getItem('billerPrinter');
+      }
       // console.log("Business Changed",res);
     });
     let date = new Date().toISOString().split('T')[0];
@@ -324,7 +330,9 @@ export class OnboardingService {
       )
     ).subscribe((res) => {
       // console.log("Sales Changed",res);
-      this.dataProvider.todaySales = res;
+      if(res){
+        this.dataProvider.todaySales = res;
+      }
     });
     docData(
       doc(
@@ -336,35 +344,91 @@ export class OnboardingService {
       )
     ).subscribe((res) => {
       // console.log("Settings Changed",res);
-      this.dataProvider.currentSettings = res;
-      this.dataProvider.billToken = res['billTokenNo'];
-      this.dataProvider.kotToken = res['kitchenTokenNo'];
-      this.dataProvider.ncBillToken = res['ncBillTokenNo'] || 0;
-      this.dataProvider.customBillNote = res['customBillNote'] || '';
-      this.dataProvider.tableTimeOutTime = res['tableTimeOutTime'] || 45;
-      this.dataProvider.billNoSuffix = res['billNoSuffix'] || '';
-      this.dataProvider.optionalTax = res['optionalTax'] || false;
-      this.dataProvider.printBillAfterSettle =
-        res['printBillAfterSettle'] || false;
-      this.dataProvider.printBillAfterFinalize =
-        res['printBillAfterFinalize'] || false;
-      this.dataProvider.takeawayToken = res['takeawayTokenNo'] || 0;
-      this.dataProvider.editKotTime = res['editKotTime'] || 0;
-      this.dataProvider.kotEditable = res['kotEditable'] || false;
-      this.dataProvider.onlineTokenNo = res['onlineTokenNo'] || 0;
-      this.dataProvider.orderTokenNo = res['orderTokenNo'] || 0;
-      // this.dataProvider.password = res['password'];
-      this.dataProvider.multipleDiscount = res['multipleDiscount'] || false;
-      this.dataProvider.activeModes = res['modes'];
-      this.dataProvider.dineInMenu = res['dineInMenu'];
-      this.dataProvider.takeawayMenu = res['takeawayMenu'];
-      this.dataProvider.onlineMenu = res['onlineMenu'];
-      this.dataProvider.dineInSales = res['dineInSales'];
-      this.dataProvider.takeawaySales = res['takeawaySales'];
-      this.dataProvider.onlineSales = res['onlineSales'];
-      this.dataProvider.nonChargeableSales = res['nonChargeableSales'];
-      this.dataProvider.settingsChanged.next(res);
+      if (res){
+        this.dataProvider.currentSettings = res;
+        this.dataProvider.billToken = res['billTokenNo'];
+        this.dataProvider.kotToken = res['kitchenTokenNo'];
+        this.dataProvider.ncBillToken = res['ncBillTokenNo'] || 0;
+        this.dataProvider.customBillNote = res['customBillNote'] || '';
+        this.dataProvider.tableTimeOutTime = res['tableTimeOutTime'] || 45;
+        this.dataProvider.billNoSuffix = res['billNoSuffix'] || '';
+        this.dataProvider.optionalTax = res['optionalTax'] || false;
+        this.dataProvider.printBillAfterSettle =
+          res['printBillAfterSettle'] || false;
+        this.dataProvider.printBillAfterFinalize =
+          res['printBillAfterFinalize'] || false;
+        this.dataProvider.takeawayToken = res['takeawayTokenNo'] || 0;
+        this.dataProvider.editKotTime = res['editKotTime'] || 0;
+        this.dataProvider.kotEditable = res['kotEditable'] || false;
+        this.dataProvider.onlineTokenNo = res['onlineTokenNo'] || 0;
+        this.dataProvider.orderTokenNo = res['orderTokenNo'] || 0;
+        this.dataProvider.kotRePrintable = res['kotRePrintable'] || false;
+        // this.dataProvider.password = res['password'];
+        this.dataProvider.multipleDiscount = res['multipleDiscount'] || false;
+        this.dataProvider.activeModes = res['modes'];
+        this.dataProvider.dineInMenu = res['dineInMenu'];
+        this.dataProvider.takeawayMenu = res['takeawayMenu'];
+        this.dataProvider.onlineMenu = res['onlineMenu'];
+        this.dataProvider.dineInSales = res['dineInSales'];
+        this.dataProvider.takeawaySales = res['takeawaySales'];
+        this.dataProvider.onlineSales = res['onlineSales'];
+        this.dataProvider.nonChargeableSales = res['nonChargeableSales'];
+        this.dataProvider.loyaltyEnabled = res['loyaltyEnabled'];
+        this.dataProvider.loyaltyOnDineIn = res['loyaltyOnDineIn'];
+        this.dataProvider.loyaltyOnTakeaway = res['loyaltyOnTakeaway'];
+        this.dataProvider.loyaltyOnOnline = res['loyaltyOnOnline'];
+        this.dataProvider.differentLoyaltyRate = res['differentLoyaltyRate'];
+        this.dataProvider.loyaltyRates = {
+          dineIn: 0,
+          dineInExpiry: 0,
+          takeaway: 0,
+          takeawayExpiry: 0,
+          online: 0,
+          onlineExpiry: 0,
+        };
+        if (res['loyaltyRates']){
+          this.dataProvider.loyaltyRates.dineIn = res['loyaltyRates']['dineIn'] || 0;
+          this.dataProvider.loyaltyRates.takeaway = res['loyaltyRates']['takeaway'] || 0;
+          this.dataProvider.loyaltyRates.online = res['loyaltyRates']['online'] || 0;
+        }
+        this.dataProvider.settingsChanged.next(res);
+        this.dataProvider.tableOrders = res['tableOrders'] || undefined;
+        this.dataProvider.groupedTables.forEach((group)=>{
+          if(this.dataProvider.tableOrders && this.dataProvider.tableOrders[group.name]){
+            let newGroup = [];
+            this.dataProvider.tableOrders[group.name].forEach((tableId)=>{
+              let table = group.tables.find((table)=>table.id==tableId);
+              if(table){
+                newGroup.push(table);
+              }
+            })
+            group.tables = newGroup;
+          }
+        })
+        this.dataProvider.groupOrders = res['groupOrders'] || [];
+        if(this.dataProvider.groupOrders){
+          let newGroup = [];
+          this.dataProvider.groupOrders.forEach((groupName)=>{
+            let group = this.dataProvider.groupedTables.find((group)=>group.name==groupName);
+            if(group){
+              newGroup.push(group);
+            }
+          })
+          console.log("newGroup",newGroup);
+          this.dataProvider.groupedTables = newGroup;
+        }
+      }
     });
+    docData(doc(this.firestore,'business',business.businessId,'customer','customerConfig')).subscribe((res)=>{
+      if(res){
+        this.dataProvider.customerDatabaseVersion = res['customerDbVersion'];
+      }
+    })
+    collectionData(collection(this.firestore, 'business/' + business.businessId + '/customers'),{idField:'id'}).subscribe((res)=>{
+      if (res){
+        this.dataProvider.customers = res as Customer[];
+      }
+    })
   }
 
   async getTables() {
@@ -383,23 +447,34 @@ export class OnboardingService {
           this.analyticsService,
           this.tableService,
           this.billService,
-          this.printingService
+          this.printingService,
+          this.customerService,
+          this.userManagementService
         );
       });
       let formedTable = await Promise.all(tables);
       formedTable.sort((a, b) => {
-        return a.tableNo - b.tableNo;
+        return (a.order || a.tableNo) - (b.order || b.tableNo);
       });
+      // create a grouping by name in format {name:string, tables:Table[]} where name is name.split(' ')[0]
       // group table by their first split string like group
-      // use name attribute to group like name.split(' ')[0]
-      let groupedTables = formedTable.reduce((r: any, a) => {
-        a.group = a.name.split(' ')[0];
-        r[a.name.split(' ')[0]] = [...(r[a.name.split(' ')[0]] || []), a];
-        return r;
-      }, {});
+      let groupedTables = []
+      formedTable.forEach((r) => {
+        let tableGroup = groupedTables.find(
+          (group) => group.name == r.name.split(' ')[0]
+        );
+        if (tableGroup) {
+          tableGroup.tables.push(r);
+        } else {
+          groupedTables.push({
+            name: r.name.split(' ')[0],
+            tables: [r],
+          });
+        }
+      });
       // console.log("groupedTables",groupedTables);
       this.dataProvider.tables = formedTable;
-      this.dataProvider.groupedTables = groupedTables;
+      this.dataProvider.groupedTables = Object.values(groupedTables);
     } else {
       if (this.dataProvider.tables.length == 0 && res.docs.length == 0) {
         this.dataProvider.tables = [];
@@ -423,7 +498,9 @@ export class OnboardingService {
         this.analyticsService,
         this.tableService,
         this.billService,
-        this.printingService
+        this.printingService,
+        this.customerService,
+        this.userManagementService
       );
       // if(table.bill){
       //   if(!tableClass.bill){
@@ -461,7 +538,9 @@ export class OnboardingService {
             this.analyticsService,
             this.tableService,
             this.billService,
-            this.printingService
+            this.printingService,
+            this.customerService,
+            this.userManagementService
           );
           let isTokenAlreadyPresent = this.dataProvider.tokens.find((token)=>token.id==table.id);
           if(!isTokenAlreadyPresent){
@@ -504,7 +583,9 @@ export class OnboardingService {
         this.analyticsService,
         this.tableService,
         this.billService,
-        this.printingService
+        this.printingService,
+        this.customerService,
+        this.userManagementService
       );
       return tableClass;
     });
@@ -529,7 +610,9 @@ export class OnboardingService {
             this.analyticsService,
             this.tableService,
             this.billService,
-            this.printingService
+            this.printingService,
+            this.customerService,
+            this.userManagementService
           );
           let isTokenAlreadyPresent = this.dataProvider.onlineTokens.find((token)=>token.id==table.id);
           if(!isTokenAlreadyPresent){

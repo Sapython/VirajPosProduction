@@ -5,10 +5,10 @@
         <ng-template matTabContent>
           <div class="view">
             <div class="sidebar">
-              <button mat-stroked-button color="primary" (click)="addNewMenu()">
+              <button mat-stroked-button color="primary" (click)="addNewMenu()" *ngIf="this.dataProvider.getAccess(['admin','manager'])">
                 Add New Menu
               </button>
-              <mat-select
+              <mat-select *ngIf="this.dataProvider.getAccess(['admin','manager'])"
                 placeholder="Menu"
                 [(ngModel)]="mode.selectedMenuId"
                 (selectionChange)="mode.updateMenu()"
@@ -22,17 +22,18 @@
                 </mat-option>
               </mat-select>
               <div class="categories">
-                <span>Product List</span>
+                <span *ngIf="this.dataProvider.getAccess(['admin','manager'])">Product List</span>
                 <app-category-card
                 [full]="true"
+                *ngIf="this.dataProvider.getAccess(['admin','manager'])"
                 (click)="
                   mode.selectCategory(mode.allProductsCategory);
                   mode.currentType = 'all'
                 "
                 [category]="mode.allProductsCategory"
               ></app-category-card>
-                <span>Recommended</span>
-                <div cdkDropList
+                <span *ngIf="this.dataProvider.getAccess(['admin','manager'])">Recommended</span>
+                <div cdkDropList *ngIf="this.dataProvider.getAccess(['admin','manager'])"
                   class="example-list"
                   (cdkDropListDropped)="mode.reorderRecommendedCategory($event)">
                     <app-category-card
@@ -67,8 +68,8 @@
                       [category]="category"
                     ></app-category-card>
                 </div>
-                <span>Main Categories</span>
-                <div cdkDropList
+                <span *ngIf="this.dataProvider.getAccess(['admin','manager'])">Main Categories</span>
+                <div cdkDropList *ngIf="this.dataProvider.getAccess(['admin','manager'])"
                   class="example-list"
                   (cdkDropListDropped)="mode.reorderMainCategory($event)"
                   >
@@ -117,7 +118,7 @@
                     Enable All
                   </button>
                   <button
-                    *ngIf="['all'].includes(mode.currentType)"
+                    *ngIf="['all'].includes(mode.currentType) && this.dataProvider.getAccess(['admin','manager'])"
                     mat-stroked-button
                     mat-button
                     (click)="mode.addRecipe(mode.selectedMenuId)"
@@ -167,7 +168,7 @@
                   </span>
                 </ng-container>
               </div>
-              <div class="printerSettings" *ngIf="mode.currentType == 'root'">
+              <div class="printerSettings" *ngIf="mode.currentType == 'root' && this.dataProvider.getAccess(['admin','manager'])">
                 <mat-form-field appearance="outline">
                   <mat-label>Select Printer</mat-label>
                   <mat-select
@@ -185,7 +186,7 @@
                   </mat-select>
                 </mat-form-field>
               </div>
-              <div class="filters">
+              <div class="filters" *ngIf="this.dataProvider.getAccess(['admin','manager'])">
                 <h4>Recommendation Setting</h4>
                 <ng-container
                   *ngIf="
@@ -347,9 +348,10 @@
                         </mat-option>
                       </mat-select> -->
                       <span *ngIf="!(product.taxes && product.taxes.length > 0)" class="danger">No Taxes</span>
-                      <viraj-button (click)="mode.setTaxes(product)">Set Taxes</viraj-button>
-                      <mat-slide-toggle
+                      <viraj-button *ngIf="this.dataProvider.getAccess(['admin','manager'])" (click)="mode.setTaxes(product)">Set Taxes</viraj-button>
+                      <mat-slide-toggle 
                         checked
+                        *ngIf="(this.dataProvider.getAccess(['admin','manager'])) || ['view'].includes(this.currentType)"
                         [(ngModel)]="product.visible"
                         (toggleChange)="
                           mode.productVisibilityChanged = true;
@@ -357,12 +359,12 @@
                           mode.selectedCategory.updated = true;
                         "
                       ></mat-slide-toggle>
-                      <viraj-button
+                      <viraj-button *ngIf="this.dataProvider.getAccess(['admin','manager'])"
                         (click)="mode.editRecipe(product, mode.selectedMenuId)"
                       >
                         <i class="ri-pencil-fill"></i>
                       </viraj-button>
-                      <viraj-button *ngIf="['root','view','all'].includes(this.currentType)"
+                      <viraj-button  *ngIf="(['root','view','all'].includes(this.currentType) && this.dataProvider.getAccess(['admin','manager'])) || ['view'].includes(this.currentType)"
                         (click)="mode.deleteRecipe(product,mode.selectedMenuId)"
                       >
                         <i class="ri-delete-bin-6-fill"></i>

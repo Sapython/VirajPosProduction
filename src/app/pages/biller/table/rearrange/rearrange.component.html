@@ -1,0 +1,14 @@
+<section>
+    <h3>Reorder Items</h3>
+    <div class="items" cdkDropList (cdkDropListDropped)="drop($event)">
+        <div class="item" *ngFor="let item of data.listItems" cdkDrag>
+            <p>
+                {{item[this.data.mainKey]}}
+            </p>
+        </div>
+    </div>
+    <div class="actions">
+        <viraj-button (click)="dialogRef.close(this.data.listItems)">Save</viraj-button>
+        <viraj-button (click)="dialogRef.close()">Cancel</viraj-button>
+    </div>
+</section>

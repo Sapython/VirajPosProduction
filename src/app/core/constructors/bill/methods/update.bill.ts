@@ -2,6 +2,8 @@ import { Bill } from '..';
 import { BillConstructor } from '../../../../types/bill.structure';
 import { KotConstructor } from '../../../../types/kot.structure';
 import { Product } from '../../../../types/product.structure';
+import { UserManagementService } from '../../../services/auth/user/user-management.service';
+import { CustomerService } from '../../../services/customer/customer.service';
 import { AnalyticsService } from '../../../services/database/analytics/analytics.service';
 import { BillService } from '../../../services/database/bill/bill.service';
 import { PrinterService } from '../../../services/printing/printer/printer.service';
@@ -104,7 +106,14 @@ export function toObject(this: Bill) {
     cancelledReason: this.cancelledReason || null,
     billingMode: this.billingMode,
     nonChargeableDetail: this.nonChargeableDetail || null,
-    customerInfo: this.customerInfo,
+    customerInfo: {
+      name: this.customerInfo.name || null,
+      phone: this.customerInfo.phone || null,
+      address: this.customerInfo.address || null,
+      gst: this.customerInfo.gst || null,
+      deliveryName: this.customerInfo.deliveryName || null,
+      deliveryPhone: this.customerInfo.deliveryPhone || null,
+    },
   };
 }
 
@@ -114,7 +123,9 @@ export function fromObject(
   dataprovider: DataProvider,
   analyticsService: AnalyticsService,
   billService: BillService,
-  printService: PrinterService
+  printService: PrinterService,
+  customerService: CustomerService,
+  userManagementService:UserManagementService
 ): Bill {
   if (dataprovider.currentMenu?.selectedMenu) {
     let instance = new Bill(
@@ -126,7 +137,9 @@ export function fromObject(
       dataprovider,
       analyticsService,
       billService,
-      printService
+      printService,
+      customerService,
+      userManagementService
     );
     instance.tokens = object.tokens;
     instance.createdDate = object.createdDate;

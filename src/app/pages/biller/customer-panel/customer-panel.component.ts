@@ -1,15 +1,17 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { Component, Inject, Injector, Input } from '@angular/core';
+import { Component, Inject, Injector, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { debounceTime } from 'rxjs';
+import { Subject, debounceTime } from 'rxjs';
 import { DataProvider } from '../../../core/services/provider/data-provider.service';
+import { Customer } from '../../../types/customer.structure';
+import Fuse from 'fuse.js';
 
 @Component({
   selector: 'app-customer-panel',
   templateUrl: './customer-panel.component.html',
   styleUrls: ['./customer-panel.component.scss'],
 })
-export class CustomerPanelComponent {
+export class CustomerPanelComponent implements OnInit {
   customerInfoForm: FormGroup = new FormGroup({
     name: new FormControl(
       {
@@ -55,7 +57,9 @@ export class CustomerPanelComponent {
   @Input() averageOrderPrice: number = 300;
   @Input() isDialog: boolean = true;
   @Input() lastOrderDish: string[] = ['Chicken', 'Rice', 'Salad'];
-
+  numberFuseInstance:Fuse<Customer> = new Fuse(this.dataProvider.customers,{keys:['phone']});
+  foundCustomers:Customer[] = [];
+  searchString:Subject<string> = new Subject<string>();
   constructor(public dataProvider: DataProvider, private injector: Injector) {
     if (this.dataProvider.currentBill) {
       this.customerInfoForm.enable();
@@ -109,6 +113,29 @@ export class CustomerPanelComponent {
         this.customerInfoForm.disable();
       }
     });
+    this.dataProvider.customersUpdated.subscribe(() => {
+      this.numberFuseInstance.setCollection(this.dataProvider.customers);
+    });
+
+    this.searchString.pipe(debounceTime(700)).subscribe((value) => {
+      console.log('searching', value,this.dataProvider.customers);
+      if (value) {
+        const results = this.numberFuseInstance.search(value).map((result) => result.item);
+        console.log('results', results);
+        this.foundCustomers = results;
+      } else {
+        this.foundCustomers = [];
+      }
+    })
+  }
+
+  selectCustomer(event:any){
+    this.customerInfoForm.patchValue(event.option.value);
+    this.dataProvider.currentBill?.setCustomerInfo(event.option.value);
+  }
+
+  ngOnInit(): void {
+    this.numberFuseInstance.setCollection(this.dataProvider.customers);
   }
 
   submit() {

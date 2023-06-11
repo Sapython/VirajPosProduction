@@ -82,8 +82,8 @@
       <ng-container *ngIf="currentDiscount">
         <div class="mode">
           <mat-button-toggle-group name="mode" value="Coupon Code" [(ngModel)]="currentDiscount.mode" aria-label="Font Style" #mode>
-            <mat-button-toggle *ngIf="this.dataProvider.getAccess('admin')" value="directPercent">Direct Percent</mat-button-toggle>
-            <mat-button-toggle *ngIf="this.dataProvider.getAccess('admin')" value="directFlat">Direct Flat</mat-button-toggle>
+            <mat-button-toggle value="directPercent">Direct Percent</mat-button-toggle>
+            <mat-button-toggle value="directFlat">Direct Flat</mat-button-toggle>
             <mat-button-toggle value="codeBased">Uploaded</mat-button-toggle>
           </mat-button-toggle-group>
         </div>

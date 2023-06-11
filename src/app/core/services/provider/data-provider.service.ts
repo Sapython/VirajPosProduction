@@ -19,6 +19,7 @@ import { updateRequest } from '../../../types/loader.structure';
 import { Timestamp } from '@angular/fire/firestore';
 import { optionalPromptParam } from '../../../types/prompt.strcuture';
 import { CheckingPasswordComponent } from '../../../shared/checking-password/checking-password.component';
+import { Customer } from '../../../types/customer.structure';
 
 @Injectable({
   providedIn: 'root',
@@ -109,6 +110,7 @@ export class DataProvider {
   public multipleDiscount:boolean = false;
   public editKotTime:number = 1;
   public kotEditable:boolean = false;
+  public kotRePrintable:boolean = false;
   
   // public access
   public discounts: CodeBaseDiscount[] = [];
@@ -129,9 +131,28 @@ export class DataProvider {
   public takeawayMenu: Menu | undefined;
   public onlineMenu: Menu | undefined;
   public tables: Table[] = [];
-  public groupedTables: { [key: string]: Table[] } = {};
+  public groupedTables: { tables: Table[],name:string }[] = [];
   public tokens: Table[] = [];
   public onlineTokens: Table[] = [];
+  public customers: Customer[] = [];
+  public customerDatabaseVersion: string = '';
+  public customersUpdated: Subject<void> = new Subject<void>();
+  public loyaltyEnabled: boolean = false;
+  public loyaltyOnDineIn: boolean = false;
+  public loyaltyOnDelivery: boolean = false;
+  public loyaltyOnTakeaway: boolean = false;
+  public loyaltyOnOnline: boolean = false;
+  public differentLoyaltyRate: boolean = false;
+  public tableOrders: any = undefined;
+  public groupOrders: string[] = [];
+  public loyaltyRates: { dineIn: number; dineInExpiry:number; takeaway: number; takeawayExpiry:number; online: number; onlineExpiry:number; } = {
+    dineIn: 0,
+    dineInExpiry: 0,
+    takeaway: 0,
+    takeawayExpiry: 0,
+    online: 0,
+    onlineExpiry: 0,
+  }
   
   // statuses
   public billingMode: 'dineIn' | 'takeaway' | 'online' = 'dineIn';

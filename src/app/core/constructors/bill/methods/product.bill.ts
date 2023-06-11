@@ -3,16 +3,22 @@ import { Product } from '../../../../types/product.structure';
 import { Kot } from '../../kot/Kot';
 
 export async function addProduct(this: Bill, product: Product) {
-  if (this.stage == 'finalized' && this.mode == 'takeaway') {
-    let reactiveReason = await this.dataProvider.prompt(
-      'Please enter reason for adding product'
-    );
-    if (reactiveReason) {
-      this.reactivateKotReasons.push(reactiveReason);
-      this.stage = 'active';
-    } else {
-      return;
+  if (this.stage == 'finalized') {
+    if (await this.userManagementService.authenticateAction([
+      'admin',
+      'manager'
+    ])){
+      let reactiveReason = await this.dataProvider.prompt(
+        'Please enter reason for adding product'
+      );
+      if (reactiveReason) {
+        this.reactivateKotReasons.push(reactiveReason);
+        this.stage = 'active';
+      } else {
+        return;
+      }
     }
+    return;
   }
   if (this.stage !== 'active') {
     alert('This bill is already finalized.');

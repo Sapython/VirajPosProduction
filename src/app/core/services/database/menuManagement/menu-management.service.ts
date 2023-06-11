@@ -30,6 +30,8 @@ import { AlertsAndNotificationsService } from '../../alerts-and-notification/ale
 import { Subject, debounceTime, first, firstValueFrom } from 'rxjs';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { dbConfig } from '../../../../app.module';
+import { CustomerService } from '../../customer/customer.service';
+import { UserManagementService } from '../../auth/user/user-management.service';
 
 @Injectable({
   providedIn: 'root',
@@ -45,7 +47,9 @@ export class MenuManagementService {
     private tableService: TableService,
     private billService: BillService,
     private alertify: AlertsAndNotificationsService,
-    private indexedDbService: NgxIndexedDBService
+    private indexedDbService: NgxIndexedDBService,
+    private customerService: CustomerService,
+    private userManagementService: UserManagementService,
   ) {
     // this.menuUpdated.pipe(debounceTime(1000)).subscribe(() => {
     //   let menus = this.updatableMenus.filter((v, i, a) => a.indexOf(v) === i);
@@ -185,7 +189,9 @@ export class MenuManagementService {
               this.analyticsService,
               this.tableService,
               this.billService,
-              this.printingService
+              this.printingService,
+              this.customerService,
+              this.userManagementService
             );
           });
           // console.log('tables ', tables);
@@ -224,7 +230,9 @@ export class MenuManagementService {
           this.analyticsService,
           this.tableService,
           this.billService,
-          this.printingService
+          this.printingService,
+          this.customerService,
+          this.userManagementService
         );
       });
       let formedTable = await Promise.all(tables);
@@ -250,7 +258,9 @@ export class MenuManagementService {
           this.analyticsService,
           this.tableService,
           this.billService,
-          this.printingService
+          this.printingService,
+          this.customerService,
+          this.userManagementService
         );
         // console.log('ONLINE TABLE', tableClass);
         return tableClass;

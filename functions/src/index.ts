@@ -127,16 +127,20 @@ export const signUpWithUserAndPassword = functions.https.onCall(
       userCreds['phoneNumber'] = request.phone;
     }
     // create user
-    auth.createUser({
-      uid: uidDoc.id,
-      displayName: uidDoc.id,
-      photoURL:
-        request.image ||
-        'https://api.dicebear.com/6.x/lorelei/svg?seed=' + uidDoc.id,
-      emailVerified: false,
-      disabled: false,
-      ...userCreds,
-    });
+    try {
+      await auth.createUser({
+        uid: uidDoc.id,
+        displayName: uidDoc.id,
+        photoURL:
+          request.image ||
+          'https://api.dicebear.com/6.x/lorelei/svg?seed=' + uidDoc.id,
+        emailVerified: false,
+        disabled: false,
+        ...userCreds,
+      });
+    } catch (error) {
+      return error;
+    }
     if (debug) console.log('created custom token');
     if (debug) console.log('trying updating email', request.email);
 
@@ -530,101 +534,87 @@ export const authenticateAction = functions.https.onCall(
   }
 )
 
-// export const resetPasswordByAdmin = functions.https.onCall(
-//   async (request, response) => {
-//     // here we will receive
-//     // username of admin
-//     // password of admin
-//     // username of user
-//     // new password of user
-//     // confirm password of user
-//     // first we will have to do password validation, then user validation for both admin and user
-//     // then we have to get all of the business of the admin user which is inside authData document it has business array we can fetch all the business one by one and then on every business we can check users array if in any one of them the user is found then it's valid if it's not found in anyone of them then it's invalid
-//     // then we have to update the password of the user
-//     // then we have to send the mail to the user that his password has been changed
-//     // then we have to send the mail to the admin that the password of the user has been changed
-
-//     // validate passwords
-//     validatePassword(request.newPassword);
-//     validatePassword(request.confirmPassword);
-//     validatePassword(request.adminPassword);
-//     validateName(request.username);
-//     validateName(request.adminUsername);
-//     // check if passwords match
-//     if (request.newPassword !== request.confirmPassword) {
-//       throw new HttpsError('invalid-argument', 'Passwords do not match');
-//     }
-//     // check if admin exists
-//     let adminUidDoc = await firestore
-//       .doc('authData/' + request.adminUsername)
-//       .get();
-//     if (!adminUidDoc.exists) {
-//       throw new HttpsError('not-found', 'Admin Username not found');
-//     }
-//     // check if user exists
-//     let userUidDoc = await firestore
-//       .doc('authData/' + request.userUsername)
-//       .get();
-//     if (!userUidDoc.exists) {
-//       throw new HttpsError('not-found', 'Admin Username not found');
-//     }
-//     // check if admin password is correct
-//     verifyPassword(
-//       request.adminPassword,
-//       adminUidDoc.data()?.password,
-//       adminUidDoc.id
-//     );
-//     // check if user is in admin's business
-//     let business = adminUidDoc.data()?.business;
-    
-//     if (!userFound) {
-//       throw new HttpsError(
-//         'permission-denied',
-//         'User is not in your business'
-//       );
-//     } else {
-//       // reset password
-//       let hashedPassword = generateHashedPassword(
-//         request.newPassword,
-//         userUidDoc.id
-//       );
-//       // update user
-//       await auth.updateUser(userUidDoc.id, {
-//         password: request.password,
-//       });
-//       // update password
-//       await firestore.doc('authData/' + userUidDoc.id).update({
-//         password: hashedPassword,
-//       });
-//       // sign in with custom token
-//       return { status: 'success', message: 'Password reset successfully' };
-//     }
-//   }
-// );
-
-// deprecated
-export const updateUser = functions.https.onCall(async (request, response) => {
-  let data: any = {
-    displayName: request.username,
-    photoURL:
-      request.image ||
-      'https://api.dicebear.com/6.x/lorelei/svg?seed=' + request.username,
-  };
-  if (request.email) {
-    //  console.log('updating email');
-    data.email = request.email;
-    data.emailVerified = false;
-  }
-  if (request.phone) {
-    if (!request.phone.startsWith('+91')) {
-      request.phone = '+91' + request.phone;
+export const calculateLoyaltyPoints = functions.https.onCall(
+  async (request,response)=>{
+    // here we will get billId, businessId, userId, and then we have to set the loyalty point upon that bill.
+    if(debug) console.log(request);
+    const billId:string = request.billId;
+    const businessId:string = request.businessId;
+    const userId:string = request.userId;
+    // check if the user is available in the business
+    let businessData = await firestore.doc(`business/${businessId}`).get();
+    if (businessData.exists && businessData.data()){
+      if (businessData.data()!['users'] && typeof businessData.data()!['users'] == 'object'){
+        let userFound = false;
+        businessData.data()!['users'].forEach((user:{username:string}) => {
+          if (user.username == userId){
+            userFound = true;
+          }
+        });
+        if (!userFound){
+          throw new HttpsError('aborted','User not found in the current business.')
+        }
+      } else {
+        throw new HttpsError('aborted','No users available in th current business')
+      }
+    } else {
+      throw new HttpsError('aborted','Business not found.')
     }
-    //  console.log('updating phone');
-    data.phoneNumber = request.phone;
+    // fetch the bill from firestore
+    const billReference = firestore.doc(`business/${businessId}/bills/${billId}`);
+    const bill = await billReference.get();
+    const billData = bill.data();
+    if (bill.exists && billData && billData['stage']=='settled' && billData['customerInfo']['phone']){
+      const settingsRes = await firestore.doc(`business/${businessId}/settings/settings`).get()
+      let settingsData = settingsRes.data();
+      if (settingsRes.exists && settingsData && settingsData['loyaltyRates']){
+        // loyaltyRates has 3 keys dineIn, takeaway, online. Check if they exists if not then use dine rate as default if dine in doesn't exists then return an error
+        let totalGainedLoyaltyPoint = 0;
+        let loyaltyRate = 0;
+        if (!settingsData.loyaltyRates.dineIn){
+          throw new HttpsError('aborted','Aborted due to missing rate')
+        } else if (billData.mode =='dineIn') {
+          loyaltyRate = settingsData.loyaltyRates.dineIn;
+        }
+        if (billData.mode=='takeaway'){
+          if (!settingsData.loyaltyRates.takeaway){
+            settingsData.loyaltyRates.takeaway = settingsData.loyaltyRates.dineIn;
+          }
+          loyaltyRate = settingsData.loyaltyRates.takeaway;
+        }
+        if (billData.mode=='online'){
+          if(!settingsData.loyaltyRates.online){
+            settingsData.loyaltyRates.online = settingsData.loyaltyRates.dineIn;
+          }
+          loyaltyRate = settingsData.loyaltyRates.online;
+        }
+        if (debug) console.log("loyaltyRate",billData.billing.grandTotal,loyaltyRate,billData.billing.grandTotal * loyaltyRate);
+        totalGainedLoyaltyPoint = Math.floor(billData.billing.grandTotal * loyaltyRate);
+        // update bill
+        try {
+          await billReference.update({totalGainedLoyaltyPoint})
+          return {status:true}
+        } catch (error) {
+          throw new HttpsError('aborted','Failed to update the bill.')
+        }
+      } else {
+        throw new HttpsError('aborted',"Business hasn't enabled loyalty")
+      }
+    } else {
+      if (bill.exists && billData){
+        if (!billData['customerInfo']['phone']){
+          throw new HttpsError('aborted','The bill does not have any customer.')
+        } else if (billData['stage']!='settled') {
+          throw new HttpsError('aborted','The bill is not settled')
+        } else {
+          throw new HttpsError('aborted','Some error occurred')
+        }
+      } else {
+        throw new HttpsError('aborted','The bill is not found')
+      }
+    }
   }
-  data.password = request.password;
-  return await auth.updateUser(request.username, data);
-});
+)
 interface AdditonalClaims {
   email?: string;
   providerId: string;

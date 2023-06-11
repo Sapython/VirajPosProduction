@@ -19,8 +19,8 @@
           </option>
         </select>
         <div class="quantity">
-          <viraj-button [noPropogation]="true" [minimalPadding]="true" iconSize="small" [disabled]="(dataProvider.manageKot==true && !editMode)" (vclick)="increase()">
-            <i class="ri-add-fill"></i>
+          <viraj-button [noPropogation]="true" [minimalPadding]="true" iconSize="small" (vclick)="decrease()" [disabled]="quantity <= 1 || (dataProvider.manageKot==true && !editMode)">
+            <i class="ri-subtract-fill"></i>
           </viraj-button>
           <input
           [disabled]="(dataProvider.manageKot==true && !editMode)"
@@ -29,8 +29,8 @@
             (change)="this.dataProvider.currentBill ? this.dataProvider.currentBill.calculateBill() : {}"
             [ngModelOptions]="{ standalone: true }"
           />
-          <viraj-button [noPropogation]="true" [minimalPadding]="true" iconSize="small" (vclick)="decrease()" [disabled]="quantity <= 1 || (dataProvider.manageKot==true && !editMode)">
-            <i class="ri-subtract-fill"></i>
+          <viraj-button [noPropogation]="true" [minimalPadding]="true" iconSize="small" [disabled]="(dataProvider.manageKot==true && !editMode)" (vclick)="increase()">
+            <i class="ri-add-fill"></i>
           </viraj-button>
         </div>
         <ng-container>

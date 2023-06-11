@@ -69,6 +69,13 @@
     />
   </div>
   <div class="item">
+    <p>Enable <strong>re-print</strong> kot option in manage kot panel.</p>
+    <mat-slide-toggle
+      [(ngModel)]="dataProvider.kotRePrintable"
+      (change)="updateSettings({kotRePrintable:dataProvider.kotRePrintable})"
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
     <p>Enable <strong>smart mode</strong> to make your work efficient</p>
     <mat-slide-toggle
       [(ngModel)]="dataProvider.smartMode"
@@ -146,4 +153,109 @@
       *ngIf="this.dataProvider.getAccess('admin')"
     ></mat-slide-toggle>
   </div>
+  <hr>
+  <h4>Loyalty Settings</h4>
+  <div class="item">
+    <p>Enable loyalty</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.loyaltyEnabled"
+      (change)="
+        updateSettings({ loyaltyEnabled: this.dataProvider.loyaltyEnabled })
+      "
+    ></mat-slide-toggle>
+  </div>
+  <ng-container *ngIf="this.dataProvider.loyaltyEnabled">
+    <div class="item">
+      <p>Enable loyalty</p>
+      <mat-slide-toggle
+        [(ngModel)]="this.dataProvider.loyaltyOnDineIn"
+        (change)="
+          updateSettings({ loyaltyOnDineIn: this.dataProvider.loyaltyOnDineIn })
+        "
+      >Dine In</mat-slide-toggle>
+      <mat-slide-toggle
+        [(ngModel)]="this.dataProvider.loyaltyOnTakeaway"
+        (change)="
+          updateSettings({ loyaltyOnTakeaway: this.dataProvider.loyaltyOnTakeaway })
+        "
+      >Takeaway</mat-slide-toggle>
+      <mat-slide-toggle
+        [(ngModel)]="this.dataProvider.loyaltyOnOnline"
+        (change)="
+          updateSettings({ loyaltyOnOnline: this.dataProvider.loyaltyOnOnline })
+        "
+      >Online</mat-slide-toggle>
+    </div>
+    <div class="item">
+      <p>Different rates for loyalty per mode.</p>
+      <mat-slide-toggle
+        [(ngModel)]="this.dataProvider.differentLoyaltyRate"
+        (change)="
+          updateSettings({ differentLoyaltyRate: this.dataProvider.differentLoyaltyRate })
+        "
+      ></mat-slide-toggle>
+    </div>
+    <div class="item" *ngIf="!this.dataProvider.differentLoyaltyRate">
+      <p>Loyalty Rate</p>
+      <input
+        type="number"
+        placeholder="Rate per rupee"
+        [(ngModel)]="this.dataProvider.loyaltyRates.dineIn"
+        (change)="isValidNumber(this.dataProvider.loyaltyRates.dineIn) ? updateSettings({loyaltyRates:{dineIn: this.dataProvider.loyaltyRates.dineIn,takeaway:this.dataProvider.loyaltyRates.dineIn,online:this.dataProvider.loyaltyRates.dineIn}}) : this.dataProvider.loyaltyRates.dineIn = 0;"
+      />
+      <input
+        type="number"
+        placeholder="Expiry in days"
+        [(ngModel)]="this.dataProvider.loyaltyRates.dineInExpiry"
+        (change)="isValidNumber(this.dataProvider.loyaltyRates.dineInExpiry) ? updateSettings({loyaltyRates:{dineInExpiry: this.dataProvider.loyaltyRates.dineInExpiry,takeawayExpiry:this.dataProvider.loyaltyRates.dineInExpiry,onlineExpiry:this.dataProvider.loyaltyRates.dineInExpiry}}) : this.dataProvider.loyaltyRates.dineInExpiry = 0;"
+      />
+    </div>
+    <ng-container *ngIf="this.dataProvider.differentLoyaltyRate">
+      <div class="item" *ngIf="this.dataProvider.loyaltyOnDineIn">
+        <p>Dine In Loyalty Rate</p>
+        <input
+          type="number"
+          placeholder="Rate per rupee"
+          [(ngModel)]="this.dataProvider.loyaltyRates.dineIn"
+          (change)="isValidNumber(this.dataProvider.loyaltyRates.dineIn) ? updateSettings({loyaltyRates:{dineIn: this.dataProvider.loyaltyRates.dineIn}}) : this.dataProvider.loyaltyRates.dineIn = 0;"
+        />
+        <input
+          type="number"
+          placeholder="Expiry in days"
+          [(ngModel)]="this.dataProvider.loyaltyRates.dineInExpiry"
+          (change)="isValidNumber(this.dataProvider.loyaltyRates.dineInExpiry) ? updateSettings({loyaltyRates:{dineInExpiry: this.dataProvider.loyaltyRates.dineInExpiry}}) : this.dataProvider.loyaltyRates.dineInExpiry = 0;"
+        />
+      </div>
+      <div class="item" *ngIf="this.dataProvider.loyaltyOnTakeaway">
+        <p>Takeaway Loyalty Rate</p>
+        <input
+          type="number"
+          placeholder="Rate per rupee"
+          [(ngModel)]="this.dataProvider.loyaltyRates.takeaway"
+          (change)="isValidNumber(this.dataProvider.loyaltyRates.takeaway) ? updateSettings({loyaltyRates:{takeaway: this.dataProvider.loyaltyRates.takeaway}}) : this.dataProvider.loyaltyRates.takeaway = 0;"
+        />
+        <input
+          type="number"
+          placeholder="Expiry in days"
+          [(ngModel)]="this.dataProvider.loyaltyRates.takeawayExpiry"
+          (change)="isValidNumber(this.dataProvider.loyaltyRates.takeawayExpiry) ? updateSettings({loyaltyRates:{takeawayExpiry: this.dataProvider.loyaltyRates.takeawayExpiry}}) : this.dataProvider.loyaltyRates.takeaway = 0;"
+        />
+      </div>
+      <div class="item" *ngIf="this.dataProvider.loyaltyOnOnline">
+        <p>Online Loyalty Rate</p>
+        <input
+          type="number"
+          placeholder="Rate per rupee"
+          [(ngModel)]="this.dataProvider.loyaltyRates.online"
+          (change)="isValidNumber(this.dataProvider.loyaltyRates.online) ? updateSettings({loyaltyRates:{online: this.dataProvider.loyaltyRates.online}}) : this.dataProvider.loyaltyRates.online = 0;"
+        />
+        <input
+          type="number"
+          placeholder="Expiry in days"
+          [(ngModel)]="this.dataProvider.loyaltyRates.onlineExpiry"
+          (change)="isValidNumber(this.dataProvider.loyaltyRates.onlineExpiry) ? updateSettings({loyaltyRates:{onlineExpiry: this.dataProvider.loyaltyRates.onlineExpiry}}) : this.dataProvider.loyaltyRates.onlineExpiry = 0;"
+        />
+      </div>
+    </ng-container>
+  </ng-container>
 </div>

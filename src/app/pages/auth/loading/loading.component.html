@@ -185,6 +185,9 @@
         <mat-spinner [diameter]="30"></mat-spinner>
       </div>
       <p class="textCenter">{{ onboardingService.loadingSteps | async }}</p>
+      <viraj-button color="primary" type="outline" (click)="logout()"
+        >Logout</viraj-button
+      >
     </ng-container>
     <ng-container *ngIf="onboardingService.stage == 'virajReady'">
       <p>Viraj is ready to use</p>

@@ -11,6 +11,7 @@ import {
   Firestore,
 } from '@angular/fire/firestore';
 import { DataProvider } from '../../provider/data-provider.service';
+import { Table } from '../../../constructors/table/Table';
 
 @Injectable({
   providedIn: 'root',
@@ -76,5 +77,37 @@ export class TableService {
         tableId
       )
     );
+  }
+
+  setOrder(table:Table[],groupName:string){
+    return setDoc(
+      doc(
+        this.firestore,
+        'business/' + this.dataProvider.businessId + '/settings/settings',
+      ),
+      {
+        tableOrders:{
+          [groupName]:table.map((table)=>table.id)
+        }
+      },
+      {
+        merge:true
+      }
+    )
+  }
+
+  setGroupOrder(table:{tables:Table[],name:string}[]){
+    return setDoc(
+      doc(
+        this.firestore,
+        'business/' + this.dataProvider.businessId + '/settings/settings',
+      ),
+      {
+        groupOrders: table.map((group)=>group.name)
+      },
+      {
+        merge:true
+      }
+    )
   }
 }

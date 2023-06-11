@@ -47,7 +47,7 @@ import { LoadingModule } from './pages/auth/loading/loading.module';
 // AoT requires an exported function for factories
 export const dbConfig: DBConfig = {
   name: 'Viraj',
-  version: 120,
+  version: 21,
   objectStoresMeta: [
     {
       store: 'business',
@@ -88,8 +88,27 @@ export const dbConfig: DBConfig = {
       storeSchema:[
         {name:'id',keypath:'id',options:{unique:true}},
         {name:'config',keypath:'config',options:{unique:false}},
+        {name:'customerDbVersion',keypath:'customerDbVersion',options:{unique:true}},
       ]
-    }
+    },
+    {
+      store: 'customers',
+      storeConfig: { keyPath: 'id', autoIncrement: true },
+      storeSchema: [
+        { name: 'id', keypath: 'customerId', options: { unique: true } },
+        { name: 'name', keypath: 'customer', options: { unique: false } },
+        { name: 'phone', keypath: 'phone', options: { unique: false } },
+        { name: 'address', keypath: 'address', options: { unique: false } },
+        { name: 'gst', keypath: 'gst', options: { unique: false } },
+        { name: 'loyaltyPoints', keypath: 'loyaltyPoints', options: { unique: false } },
+        { name: 'lastOrder', keypath: 'lastOrder', options: { unique: false } },
+        { name: 'lastOrderDate', keypath: 'lastOrderDate', options: { unique: false } },
+        { name: 'lastOrderDish', keypath: 'lastOrderDish', options: { unique: false } },
+        { name: 'orderFrequency', keypath: 'orderFrequency', options: { unique: false } },
+        { name: 'averageOrderPrice', keypath: 'averageOrderPrice', options: { unique: false } },
+        { name: 'lastMonth', keypath: 'lastMonth', options: { unique: false } },
+      ],
+    },
   ],
 };
 
@@ -138,7 +157,7 @@ export const dbConfig: DBConfig = {
     }),
     provideFunctions(() => {
       let functions = getFunctions();
-      // connectFunctionsEmulator(functions, 'localhost', 5001);
+      connectFunctionsEmulator(functions, 'localhost', 5001);
       return functions;
     }),
     providePerformance(() => {

@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph Layout="Sugiyama" ZoomLevel="-1" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+    <Node Label="ActionsModule" Id="ActionsModule" Bounds="-150,14,113.8271484375,36" UseManualLocation="True" Category="module" TypescriptFilepath="./src/app/pages/biller/actions/actions.module.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="CommonModule" Id="CommonModule" Bounds="-229,-278,124.7099609375,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatButtonModule" Id="MatButtonModule" Bounds="284,88,131.73046875,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatIconModule" Id="MatIconModule" Bounds="0,0,117.716796875,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="FormsModule" Id="FormsModule" Bounds="39,-149,107.5791015625,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ReactiveFormsModule" Id="ReactiveFormsModule" Bounds="443,185,162.0478515625,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatFormFieldModule" Id="MatFormFieldModule" Bounds="-90,-689,154.26171875,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatInputModule" Id="MatInputModule" Bounds="-30,-309,122.392578125,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatButtonToggleModule" Id="MatButtonToggleModule" Bounds="158,-374,172.9853515625,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="BaseComponentsModule" Id="BaseComponentsModule" Bounds="-169,306,179.20605468749997,36" UseManualLocation="True" Category="module" TypescriptFilepath="./src/app/shared/base-components/base-components.module.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatDialogModule" Id="MatDialogModule" Bounds="-126,-143,130.9443359375,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ActiveKotModule" Id="ActiveKotModule" Bounds="-337,-592,127.0546875,36" UseManualLocation="True" Category="module" TypescriptFilepath="./src/app/pages/biller/active-kot/active-kot.module.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatCheckboxModule" Id="MatCheckboxModule" Bounds="236,264,153.50976562499997,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="DialogModule" Id="DialogModule" Bounds="102,117,107.60644531250001,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatSlideToggleModule" Id="MatSlideToggleModule" Bounds="-338,526,163.640625,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatSelectModule" Id="MatSelectModule" Bounds="346,-80,130.1650390625,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatTooltipModule" Id="MatTooltipModule" Bounds="-272,147,131.7236328125,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ActionsComponent" Id="ActionsComponent" Bounds="-562,-654,140.2890625,36" UseManualLocation="True" Category="component" TypescriptFilepath="/src/app/pages/biller/actions/actions.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatMenuModule" Id="MatMenuModule" Bounds="-456,67,126.275390625,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ActiveKotComponent" Id="ActiveKotComponent" Bounds="-597,-343,153.5166015625,36" UseManualLocation="True" Category="component" TypescriptFilepath="/src/app/pages/biller/active-kot/active-kot.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="KotItemComponent" Id="KotItemComponent" Bounds="-261,-823,142.6201171875,36" UseManualLocation="True" Category="component" TypescriptFilepath="/src/app/pages/biller/active-kot/kot-item/kot-item.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="BillPreviewComponent" Id="BillPreviewComponent" Bounds="-27,-958,162.8408203125,36" UseManualLocation="True" Category="component" TypescriptFilepath="/src/app/pages/biller/active-kot/sections/bill-preview/bill-preview.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="AppRoutingModule" Id="AppRoutingModule" Bounds="842,137,141.08203125,36" UseManualLocation="True" Category="module" TypescriptFilepath="./src/app/app-routing.module.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="RouterModule.forRoot(routes{})" Id="RouterModule.forRoot(routes {})" Bounds="1112,273,221.212890625,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="RouterModule" Id="RouterModule" Bounds="845,455,109.9375,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="AppModule" Id="AppModule" Bounds="477,-208,92.8271484375,36" UseManualLocation="True" Category="module" TypescriptFilepath="./src/app/app.module.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="BrowserModule" Id="BrowserModule" Bounds="727,-101,119.26171875,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="HttpClientModule" Id="HttpClientModule" Bounds="802,-561,129.3857421875,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatSnackBarModule" Id="MatSnackBarModule" Bounds="498,-569,151.951171875,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatProgressSpinnerModule" Id="MatProgressSpinnerModule" Bounds="448,394,195.53027343749994,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatNativeDateModule" Id="MatNativeDateModule" Bounds="378,-369,160.509765625,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatSliderModule" Id="MatSliderModule" Bounds="246,446,127.04785156250003,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="NgxIndexedDBModule.forRoot(dbConfig)" Id="NgxIndexedDBModule.forRoot(dbConfig)" Bounds="670,-846,277.2470703125,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="LoadingModule" Id="LoadingModule" Bounds="158,-35,117.744140625,36" UseManualLocation="True" Category="module" TypescriptFilepath="./src/app/pages/auth/loading/loading.module.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="BillerModule" Id="BillerModule" Bounds="-67,143,99.0341796875,36" UseManualLocation="True" Category="module" TypescriptFilepath="./src/app/pages/biller/biller.module.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="BrowserAnimationsModule" Id="BrowserAnimationsModule" Bounds="368,-848,188.5166015625,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="provideFirebaseApp(()=&gt;initializeApp(A..." Id="provideFirebaseApp(() =&gt; initializeApp(APP_CONFIG.firebase))" Bounds="1229,-475,285.7919921875,36" UseManualLocation="True" Category="none">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="provideAnalytics(()=&gt;getAnalytics())" Id="provideAnalytics(() =&gt; getAnalytics())" Bounds="700,746,251.5234375,36" UseManualLocation="True" Category="none">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="provideAuth(()=&gt;{letauth=getAuth();..." Id="provideAuth(() =&gt; {let auth = getAuth();return auth;})" Bounds="1204,-48,274.533203125,35.99999999999999" UseManualLocation="True" Category="none">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="provideFirestore(()=&gt;{letfs=getFire..." Id="provideFirestore(() =&gt; {let fs = getFirestore();return fs})" Bounds="187,-1176,266.7060546875,36" UseManualLocation="True" Category="none">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="providePerformance(()=&gt;getPerformance(..." Id="providePerformance(() =&gt; getPerformance())" Bounds="567,-1185,302.1162109375,36" UseManualLocation="True" Category="none">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="provideStorage(()=&gt;{letstorageRef=g..." Id="provideStorage(() =&gt; {let storageRef = getStorage();return storageRef;})" Bounds="991,-929,282.3125,36" UseManualLocation="True" Category="none">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="provideFunctions(()=&gt;{letfunctions=..." Id="provideFunctions(() =&gt; {let functions = getFunctions();connectFunctionsEmulator(functions &apos;localhost&apos; 5001);return functions;})" Bounds="694,-351,273.740234375,36" UseManualLocation="True" Category="none">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="providePerformance(()=&gt;{returngetPerf..." Id="providePerformance(() =&gt; {return getPerformance();})" Bounds="987,-269,288.1230468750001,36" UseManualLocation="True" Category="none">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatRippleModule" Id="MatRippleModule" Bounds="-581,-110,130.9443359375,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ButtonComponent" Id="ButtonComponent" Bounds="263,-545,134.8544921875,36" UseManualLocation="True" Category="component" TypescriptFilepath="/src/app/shared/base-components/button/button.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="IconButtonComponent" Id="IconButtonComponent" Bounds="-577,244,161.31640625,36" UseManualLocation="True" Category="component" TypescriptFilepath="/src/app/shared/base-components/icon-button/icon-button.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="RoundOffPipe" Id="RoundOffPipe" Bounds="208,-201,109.69140625,36" UseManualLocation="True" Category="pipe" TypescriptFilepath="/src/app/shared/base-components/round-off.pipe.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="PromptComponent" Id="PromptComponent" Bounds="146,-733,139.5029296875,36" UseManualLocation="True" Category="component" TypescriptFilepath="/src/app/shared/base-components/prompt/prompt.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="BillerRoutingModule" Id="BillerRoutingModule" Bounds="641,223,147.2890625,36" UseManualLocation="True" Category="module" TypescriptFilepath="./src/app/pages/biller/biller-routing.module.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="RouterModule.forChild(routes)" Id="RouterModule.forChild(routes)" Bounds="852,962,210.302734375,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="SidebarModule" Id="SidebarModule" Bounds="47,447,116.171875,36" UseManualLocation="True" Category="module" TypescriptFilepath="./src/app/pages/biller/sidebar/sidebar.module.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="SearchPanelModule" Id="SearchPanelModule" Bounds="-305,-43,148.08203125,36" UseManualLocation="True" Category="module" TypescriptFilepath="./src/app/pages/biller/search-panel/search-panel.module.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ProductsPanelModule" Id="ProductsPanelModule" Bounds="-172,-467,158.9716796875,36" UseManualLocation="True" Category="module" TypescriptFilepath="./src/app/pages/biller/products-panel/products-panel.module.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="RecommendedModule" Id="RecommendedModule" Bounds="31,-522,162.8544921875,36" UseManualLocation="True" Category="module" TypescriptFilepath="./src/app/pages/biller/recommended/recommended.module.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="EmergencyModule" Id="EmergencyModule" Bounds="-771,-495,138.7236328125,36.00000000000006" UseManualLocation="True" Category="module" TypescriptFilepath="./src/app/pages/biller/emergency/emergency.module.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="SystemModule" Id="SystemModule" Bounds="35,274,114.5927734375,36" UseManualLocation="True" Category="module" TypescriptFilepath="./src/app/pages/biller/system/system.module.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="TableModule" Id="TableModule" Bounds="-390,-185,101.3857421875,36" UseManualLocation="True" Category="module" TypescriptFilepath="./src/app/pages/biller/table/table.module.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatTabsModule" Id="MatTabsModule" Bounds="-122,666,120.8271484375,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatOptionModule" Id="MatOptionModule" Bounds="537,-1,132.5029296875,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatAutocompleteModule" Id="MatAutocompleteModule" Bounds="-144,484,176.861328125,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="EmergencyComponent" Id="EmergencyComponent" Bounds="-847,-772,165.185546875,36" UseManualLocation="True" Category="component" TypescriptFilepath="/src/app/pages/biller/emergency/emergency.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="HelpersModule" Id="HelpersModule" Bounds="-369,309,116.158203125,36" UseManualLocation="True" Category="module" TypescriptFilepath="./src/app/shared/helpers/helpers.module.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="LoadingRoutingModule" Id="LoadingRoutingModule" Bounds="628,493,165.9990234375,36" UseManualLocation="True" Category="module" TypescriptFilepath="./src/app/pages/auth/loading/loading-routing.module.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatStepperModule" Id="MatStepperModule" Bounds="142,639,140.2890625,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="PopoverModule" Id="PopoverModule" Bounds="-792,-226,120.0615234375,36" UseManualLocation="True" Category="module" TypescriptFilepath="./src/app/shared/popover/popover.module.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="OverlayModule" Id="OverlayModule" Bounds="-743,615,116.1513671875,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="PopoverDirective" Id="PopoverDirective" Bounds="-698,73,128.599609375,36" UseManualLocation="True" Category="directive" TypescriptFilepath="/src/app/shared/popover/popover.directive.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="PopoverContainerComponent" Id="PopoverContainerComponent" Bounds="-1144,142,207.2265625,36" UseManualLocation="True" Category="component" TypescriptFilepath="/src/app/shared/popover/popover-container/popover-container.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatCardModule" Id="MatCardModule" Bounds="-467,-928,121.599609375,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ProductsPanelComponent" Id="ProductsPanelComponent" Bounds="-407,-403,185.43359375,36" UseManualLocation="True" Category="component" TypescriptFilepath="/src/app/pages/biller/products-panel/products-panel.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ProductCardComponent" Id="ProductCardComponent" Bounds="-1067,-398,172.9716796875,36" UseManualLocation="True" Category="component" TypescriptFilepath="/src/app/pages/biller/products-panel/product-card/product-card.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="RecommendedComponent" Id="RecommendedComponent" Bounds="245,862,189.31640624999997,36" UseManualLocation="True" Category="component" TypescriptFilepath="/src/app/pages/biller/recommended/recommended.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="SearchPanelComponent" Id="SearchPanelComponent" Bounds="-844,309,174.5439453125,36" UseManualLocation="True" Category="component" TypescriptFilepath="/src/app/pages/biller/search-panel/search-panel.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatDatepickerModule" Id="MatDatepickerModule" Bounds="-20,855,158.171875,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatRadioModule" Id="MatRadioModule" Bounds="-468,681,127.833984375,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="DragDropModule" Id="DragDropModule" Bounds="-551,908,128.6064453125,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatPaginatorModule" Id="MatPaginatorModule" Bounds="-922,-24,151.185546875,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="SidebarComponent" Id="SidebarComponent" Bounds="77,1083,142.6337890625,36" UseManualLocation="True" Category="component" TypescriptFilepath="/src/app/pages/biller/sidebar/sidebar.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="AddDishComponent" Id="AddDishComponent" Bounds="-575,451,147.2958984375,36" UseManualLocation="True" Category="component" TypescriptFilepath="/src/app/pages/biller/sidebar/edit-menu/add-dish/add-dish.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="AddNewCategoryComponent" Id="AddNewCategoryComponent" Bounds="-1063,520,204.1025390625,36" UseManualLocation="True" Category="component" TypescriptFilepath="/src/app/pages/biller/sidebar/edit-menu/add-new-category/add-new-category.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="SelectRecipeComponent" Id="SelectRecipeComponent" Bounds="-274,924,176.8681640625,36" UseManualLocation="True" Category="component" TypescriptFilepath="/src/app/pages/biller/sidebar/edit-menu/select-recipe/select-recipe.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatExpansionModule" Id="MatExpansionModule" Bounds="404,636,156.6337890625,36" UseManualLocation="True" Category="module">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="SystemComponent" Id="SystemComponent" Bounds="470,941,141.05468750000006,36" UseManualLocation="True" Category="component" TypescriptFilepath="/src/app/pages/biller/system/system.component.ts">
+      <Category Ref="File"/>
+    </Node>
+  </Nodes>
+  <Links>
+    <Link Source="CommonModule" Target="ActionsModule" Category="import" Label="ActionsModule imports CommonModule"/>
+    <Link Source="MatButtonModule" Target="ActionsModule" Category="import" Label="ActionsModule imports MatButtonModule"/>
+    <Link Source="MatIconModule" Target="ActionsModule" Category="import" Label="ActionsModule imports MatIconModule"/>
+    <Link Source="FormsModule" Target="ActionsModule" Category="import" Label="ActionsModule imports FormsModule"/>
+    <Link Source="ReactiveFormsModule" Target="ActionsModule" Category="import" Label="ActionsModule imports ReactiveFormsModule"/>
+    <Link Source="MatFormFieldModule" Target="ActionsModule" Category="import" Label="ActionsModule imports MatFormFieldModule"/>
+    <Link Source="MatInputModule" Target="ActionsModule" Category="import" Label="ActionsModule imports MatInputModule"/>
+    <Link Source="MatButtonToggleModule" Target="ActionsModule" Category="import" Label="ActionsModule imports MatButtonToggleModule"/>
+    <Link Source="BaseComponentsModule" Target="ActionsModule" Category="import" Label="ActionsModule imports BaseComponentsModule"/>
+    <Link Source="MatDialogModule" Target="ActionsModule" Category="import" Label="ActionsModule imports MatDialogModule"/>
+    <Link Source="ActiveKotModule" Target="ActionsModule" Category="import" Label="ActionsModule imports ActiveKotModule"/>
+    <Link Source="MatCheckboxModule" Target="ActionsModule" Category="import" Label="ActionsModule imports MatCheckboxModule"/>
+    <Link Source="DialogModule" Target="ActionsModule" Category="import" Label="ActionsModule imports DialogModule"/>
+    <Link Source="MatSlideToggleModule" Target="ActionsModule" Category="import" Label="ActionsModule imports MatSlideToggleModule"/>
+    <Link Source="MatSelectModule" Target="ActionsModule" Category="import" Label="ActionsModule imports MatSelectModule"/>
+    <Link Source="MatTooltipModule" Target="ActionsModule" Category="import" Label="ActionsModule imports MatTooltipModule"/>
+    <Link Source="ActionsModule" Target="ActionsComponent" Category="export" Label="ActionsComponent exports ActionsModule"/>
+    <Link Source="CommonModule" Target="ActiveKotModule" Category="import" Label="ActiveKotModule imports CommonModule"/>
+    <Link Source="FormsModule" Target="ActiveKotModule" Category="import" Label="ActiveKotModule imports FormsModule"/>
+    <Link Source="ReactiveFormsModule" Target="ActiveKotModule" Category="import" Label="ActiveKotModule imports ReactiveFormsModule"/>
+    <Link Source="MatButtonModule" Target="ActiveKotModule" Category="import" Label="ActiveKotModule imports MatButtonModule"/>
+    <Link Source="MatIconModule" Target="ActiveKotModule" Category="import" Label="ActiveKotModule imports MatIconModule"/>
+    <Link Source="BaseComponentsModule" Target="ActiveKotModule" Category="import" Label="ActiveKotModule imports BaseComponentsModule"/>
+    <Link Source="MatMenuModule" Target="ActiveKotModule" Category="import" Label="ActiveKotModule imports MatMenuModule"/>
+    <Link Source="MatButtonToggleModule" Target="ActiveKotModule" Category="import" Label="ActiveKotModule imports MatButtonToggleModule"/>
+    <Link Source="MatFormFieldModule" Target="ActiveKotModule" Category="import" Label="ActiveKotModule imports MatFormFieldModule"/>
+    <Link Source="MatInputModule" Target="ActiveKotModule" Category="import" Label="ActiveKotModule imports MatInputModule"/>
+    <Link Source="ActiveKotModule" Target="ActiveKotComponent" Category="export" Label="ActiveKotComponent exports ActiveKotModule"/>
+    <Link Source="ActiveKotModule" Target="KotItemComponent" Category="export" Label="KotItemComponent exports ActiveKotModule"/>
+    <Link Source="ActiveKotModule" Target="BillPreviewComponent" Category="export" Label="BillPreviewComponent exports ActiveKotModule"/>
+    <Link Source="RouterModule.forRoot(routes {})" Target="AppRoutingModule" Category="import" Label="AppRoutingModule imports RouterModule.forRoot(routes {})"/>
+    <Link Source="AppRoutingModule" Target="RouterModule" Category="export" Label="RouterModule exports AppRoutingModule"/>
+    <Link Source="BrowserModule" Target="AppModule" Category="import" Label="AppModule imports BrowserModule"/>
+    <Link Source="FormsModule" Target="AppModule" Category="import" Label="AppModule imports FormsModule"/>
+    <Link Source="ReactiveFormsModule" Target="AppModule" Category="import" Label="AppModule imports ReactiveFormsModule"/>
+    <Link Source="HttpClientModule" Target="AppModule" Category="import" Label="AppModule imports HttpClientModule"/>
+    <Link Source="AppRoutingModule" Target="AppModule" Category="import" Label="AppModule imports AppRoutingModule"/>
+    <Link Source="MatSnackBarModule" Target="AppModule" Category="import" Label="AppModule imports MatSnackBarModule"/>
+    <Link Source="BaseComponentsModule" Target="AppModule" Category="import" Label="AppModule imports BaseComponentsModule"/>
+    <Link Source="MatButtonToggleModule" Target="AppModule" Category="import" Label="AppModule imports MatButtonToggleModule"/>
+    <Link Source="MatProgressSpinnerModule" Target="AppModule" Category="import" Label="AppModule imports MatProgressSpinnerModule"/>
+    <Link Source="MatNativeDateModule" Target="AppModule" Category="import" Label="AppModule imports MatNativeDateModule"/>
+    <Link Source="DialogModule" Target="AppModule" Category="import" Label="AppModule imports DialogModule"/>
+    <Link Source="MatFormFieldModule" Target="AppModule" Category="import" Label="AppModule imports MatFormFieldModule"/>
+    <Link Source="MatSelectModule" Target="AppModule" Category="import" Label="AppModule imports MatSelectModule"/>
+    <Link Source="MatInputModule" Target="AppModule" Category="import" Label="AppModule imports MatInputModule"/>
+    <Link Source="MatSliderModule" Target="AppModule" Category="import" Label="AppModule imports MatSliderModule"/>
+    <Link Source="MatButtonModule" Target="AppModule" Category="import" Label="AppModule imports MatButtonModule"/>
+    <Link Source="MatIconModule" Target="AppModule" Category="import" Label="AppModule imports MatIconModule"/>
+    <Link Source="NgxIndexedDBModule.forRoot(dbConfig)" Target="AppModule" Category="import" Label="AppModule imports NgxIndexedDBModule.forRoot(dbConfig)"/>
+    <Link Source="LoadingModule" Target="AppModule" Category="import" Label="AppModule imports LoadingModule"/>
+    <Link Source="BillerModule" Target="AppModule" Category="import" Label="AppModule imports BillerModule"/>
+    <Link Source="BrowserAnimationsModule" Target="AppModule" Category="import" Label="AppModule imports BrowserAnimationsModule"/>
+    <Link Source="provideFirebaseApp(() =&gt; initializeApp(APP_CONFIG.firebase))" Target="AppModule" Category="import" Label="AppModule imports provideFirebaseApp(() =&gt; initializeApp(APP_CONFIG.firebase))"/>
+    <Link Source="provideAnalytics(() =&gt; getAnalytics())" Target="AppModule" Category="import" Label="AppModule imports provideAnalytics(() =&gt; getAnalytics())"/>
+    <Link Source="provideAuth(() =&gt; {let auth = getAuth();return auth;})" Target="AppModule" Category="import" Label="AppModule imports provideAuth(() =&gt; {let auth = getAuth();return auth;})"/>
+    <Link Source="provideFirestore(() =&gt; {let fs = getFirestore();return fs})" Target="AppModule" Category="import" Label="AppModule imports provideFirestore(() =&gt; {let fs = getFirestore();return fs})"/>
+    <Link Source="providePerformance(() =&gt; getPerformance())" Target="AppModule" Category="import" Label="AppModule imports providePerformance(() =&gt; getPerformance())"/>
+    <Link Source="provideStorage(() =&gt; {let storageRef = getStorage();return storageRef;})" Target="AppModule" Category="import" Label="AppModule imports provideStorage(() =&gt; {let storageRef = getStorage();return storageRef;})"/>
+    <Link Source="provideFunctions(() =&gt; {let functions = getFunctions();connectFunctionsEmulator(functions &apos;localhost&apos; 5001);return functions;})" Target="AppModule" Category="import" Label="AppModule imports provideFunctions(() =&gt; {let functions = getFunctions();connectFunctionsEmulator(functions &apos;localhost&apos; 5001);return functions;})"/>
+    <Link Source="providePerformance(() =&gt; {return getPerformance();})" Target="AppModule" Category="import" Label="AppModule imports providePerformance(() =&gt; {return getPerformance();})"/>
+    <Link Source="CommonModule" Target="BaseComponentsModule" Category="import" Label="BaseComponentsModule imports CommonModule"/>
+    <Link Source="MatRippleModule" Target="BaseComponentsModule" Category="import" Label="BaseComponentsModule imports MatRippleModule"/>
+    <Link Source="MatInputModule" Target="BaseComponentsModule" Category="import" Label="BaseComponentsModule imports MatInputModule"/>
+    <Link Source="MatFormFieldModule" Target="BaseComponentsModule" Category="import" Label="BaseComponentsModule imports MatFormFieldModule"/>
+    <Link Source="FormsModule" Target="BaseComponentsModule" Category="import" Label="BaseComponentsModule imports FormsModule"/>
+    <Link Source="ReactiveFormsModule" Target="BaseComponentsModule" Category="import" Label="BaseComponentsModule imports ReactiveFormsModule"/>
+    <Link Source="MatButtonModule" Target="BaseComponentsModule" Category="import" Label="BaseComponentsModule imports MatButtonModule"/>
+    <Link Source="BaseComponentsModule" Target="ButtonComponent" Category="export" Label="ButtonComponent exports BaseComponentsModule"/>
+    <Link Source="BaseComponentsModule" Target="IconButtonComponent" Category="export" Label="IconButtonComponent exports BaseComponentsModule"/>
+    <Link Source="BaseComponentsModule" Target="RoundOffPipe" Category="export" Label="RoundOffPipe exports BaseComponentsModule"/>
+    <Link Source="BaseComponentsModule" Target="PromptComponent" Category="export" Label="PromptComponent exports BaseComponentsModule"/>
+    <Link Source="RouterModule.forChild(routes)" Target="BillerRoutingModule" Category="import" Label="BillerRoutingModule imports RouterModule.forChild(routes)"/>
+    <Link Source="BillerRoutingModule" Target="RouterModule" Category="export" Label="RouterModule exports BillerRoutingModule"/>
+    <Link Source="CommonModule" Target="BillerModule" Category="import" Label="BillerModule imports CommonModule"/>
+    <Link Source="BillerRoutingModule" Target="BillerModule" Category="import" Label="BillerModule imports BillerRoutingModule"/>
+    <Link Source="SidebarModule" Target="BillerModule" Category="import" Label="BillerModule imports SidebarModule"/>
+    <Link Source="SearchPanelModule" Target="BillerModule" Category="import" Label="BillerModule imports SearchPanelModule"/>
+    <Link Source="ProductsPanelModule" Target="BillerModule" Category="import" Label="BillerModule imports ProductsPanelModule"/>
+    <Link Source="RecommendedModule" Target="BillerModule" Category="import" Label="BillerModule imports RecommendedModule"/>
+    <Link Source="EmergencyModule" Target="BillerModule" Category="import" Label="BillerModule imports EmergencyModule"/>
+    <Link Source="SystemModule" Target="BillerModule" Category="import" Label="BillerModule imports SystemModule"/>
+    <Link Source="ActiveKotModule" Target="BillerModule" Category="import" Label="BillerModule imports ActiveKotModule"/>
+    <Link Source="ActionsModule" Target="BillerModule" Category="import" Label="BillerModule imports ActionsModule"/>
+    <Link Source="MatButtonModule" Target="BillerModule" Category="import" Label="BillerModule imports MatButtonModule"/>
+    <Link Source="TableModule" Target="BillerModule" Category="import" Label="BillerModule imports TableModule"/>
+    <Link Source="MatFormFieldModule" Target="BillerModule" Category="import" Label="BillerModule imports MatFormFieldModule"/>
+    <Link Source="MatInputModule" Target="BillerModule" Category="import" Label="BillerModule imports MatInputModule"/>
+    <Link Source="MatSelectModule" Target="BillerModule" Category="import" Label="BillerModule imports MatSelectModule"/>
+    <Link Source="FormsModule" Target="BillerModule" Category="import" Label="BillerModule imports FormsModule"/>
+    <Link Source="ReactiveFormsModule" Target="BillerModule" Category="import" Label="BillerModule imports ReactiveFormsModule"/>
+    <Link Source="MatTabsModule" Target="BillerModule" Category="import" Label="BillerModule imports MatTabsModule"/>
+    <Link Source="MatOptionModule" Target="BillerModule" Category="import" Label="BillerModule imports MatOptionModule"/>
+    <Link Source="MatIconModule" Target="BillerModule" Category="import" Label="BillerModule imports MatIconModule"/>
+    <Link Source="MatCheckboxModule" Target="BillerModule" Category="import" Label="BillerModule imports MatCheckboxModule"/>
+    <Link Source="MatSlideToggleModule" Target="BillerModule" Category="import" Label="BillerModule imports MatSlideToggleModule"/>
+    <Link Source="BaseComponentsModule" Target="BillerModule" Category="import" Label="BillerModule imports BaseComponentsModule"/>
+    <Link Source="MatDialogModule" Target="BillerModule" Category="import" Label="BillerModule imports MatDialogModule"/>
+    <Link Source="MatProgressSpinnerModule" Target="BillerModule" Category="import" Label="BillerModule imports MatProgressSpinnerModule"/>
+    <Link Source="MatTooltipModule" Target="BillerModule" Category="import" Label="BillerModule imports MatTooltipModule"/>
+    <Link Source="MatAutocompleteModule" Target="BillerModule" Category="import" Label="BillerModule imports MatAutocompleteModule"/>
+    <Link Source="CommonModule" Target="EmergencyModule" Category="import" Label="EmergencyModule imports CommonModule"/>
+    <Link Source="MatButtonModule" Target="EmergencyModule" Category="import" Label="EmergencyModule imports MatButtonModule"/>
+    <Link Source="MatIconModule" Target="EmergencyModule" Category="import" Label="EmergencyModule imports MatIconModule"/>
+    <Link Source="BaseComponentsModule" Target="EmergencyModule" Category="import" Label="EmergencyModule imports BaseComponentsModule"/>
+    <Link Source="EmergencyModule" Target="EmergencyComponent" Category="export" Label="EmergencyComponent exports EmergencyModule"/>
+    <Link Source="CommonModule" Target="HelpersModule" Category="import" Label="HelpersModule imports CommonModule"/>
+    <Link Source="DialogModule" Target="HelpersModule" Category="import" Label="HelpersModule imports DialogModule"/>
+    <Link Source="MatButtonModule" Target="HelpersModule" Category="import" Label="HelpersModule imports MatButtonModule"/>
+    <Link Source="RouterModule.forChild(routes)" Target="LoadingRoutingModule" Category="import" Label="LoadingRoutingModule imports RouterModule.forChild(routes)"/>
+    <Link Source="LoadingRoutingModule" Target="RouterModule" Category="export" Label="RouterModule exports LoadingRoutingModule"/>
+    <Link Source="CommonModule" Target="LoadingModule" Category="import" Label="LoadingModule imports CommonModule"/>
+    <Link Source="LoadingRoutingModule" Target="LoadingModule" Category="import" Label="LoadingModule imports LoadingRoutingModule"/>
+    <Link Source="MatFormFieldModule" Target="LoadingModule" Category="import" Label="LoadingModule imports MatFormFieldModule"/>
+    <Link Source="MatInputModule" Target="LoadingModule" Category="import" Label="LoadingModule imports MatInputModule"/>
+    <Link Source="FormsModule" Target="LoadingModule" Category="import" Label="LoadingModule imports FormsModule"/>
+    <Link Source="ReactiveFormsModule" Target="LoadingModule" Category="import" Label="LoadingModule imports ReactiveFormsModule"/>
+    <Link Source="BaseComponentsModule" Target="LoadingModule" Category="import" Label="LoadingModule imports BaseComponentsModule"/>
+    <Link Source="MatProgressSpinnerModule" Target="LoadingModule" Category="import" Label="LoadingModule imports MatProgressSpinnerModule"/>
+    <Link Source="MatStepperModule" Target="LoadingModule" Category="import" Label="LoadingModule imports MatStepperModule"/>
+    <Link Source="MatButtonModule" Target="LoadingModule" Category="import" Label="LoadingModule imports MatButtonModule"/>
+    <Link Source="MatSelectModule" Target="LoadingModule" Category="import" Label="LoadingModule imports MatSelectModule"/>
+    <Link Source="MatIconModule" Target="LoadingModule" Category="import" Label="LoadingModule imports MatIconModule"/>
+    <Link Source="SidebarModule" Target="LoadingModule" Category="import" Label="LoadingModule imports SidebarModule"/>
+    <Link Source="MatCheckboxModule" Target="LoadingModule" Category="import" Label="LoadingModule imports MatCheckboxModule"/>
+    <Link Source="MatSlideToggleModule" Target="LoadingModule" Category="import" Label="LoadingModule imports MatSlideToggleModule"/>
+    <Link Source="CommonModule" Target="PopoverModule" Category="import" Label="PopoverModule imports CommonModule"/>
+    <Link Source="OverlayModule" Target="PopoverModule" Category="import" Label="PopoverModule imports OverlayModule"/>
+    <Link Source="PopoverModule" Target="PopoverDirective" Category="export" Label="PopoverDirective exports PopoverModule"/>
+    <Link Source="PopoverModule" Target="PopoverContainerComponent" Category="export" Label="PopoverContainerComponent exports PopoverModule"/>
+    <Link Source="CommonModule" Target="ProductsPanelModule" Category="import" Label="ProductsPanelModule imports CommonModule"/>
+    <Link Source="MatCardModule" Target="ProductsPanelModule" Category="import" Label="ProductsPanelModule imports MatCardModule"/>
+    <Link Source="MatButtonModule" Target="ProductsPanelModule" Category="import" Label="ProductsPanelModule imports MatButtonModule"/>
+    <Link Source="MatIconModule" Target="ProductsPanelModule" Category="import" Label="ProductsPanelModule imports MatIconModule"/>
+    <Link Source="MatRippleModule" Target="ProductsPanelModule" Category="import" Label="ProductsPanelModule imports MatRippleModule"/>
+    <Link Source="MatFormFieldModule" Target="ProductsPanelModule" Category="import" Label="ProductsPanelModule imports MatFormFieldModule"/>
+    <Link Source="MatInputModule" Target="ProductsPanelModule" Category="import" Label="ProductsPanelModule imports MatInputModule"/>
+    <Link Source="ProductsPanelModule" Target="ProductsPanelComponent" Category="export" Label="ProductsPanelComponent exports ProductsPanelModule"/>
+    <Link Source="ProductsPanelModule" Target="ProductCardComponent" Category="export" Label="ProductCardComponent exports ProductsPanelModule"/>
+    <Link Source="CommonModule" Target="RecommendedModule" Category="import" Label="RecommendedModule imports CommonModule"/>
+    <Link Source="ProductsPanelModule" Target="RecommendedModule" Category="import" Label="RecommendedModule imports ProductsPanelModule"/>
+    <Link Source="RecommendedModule" Target="RecommendedComponent" Category="export" Label="RecommendedComponent exports RecommendedModule"/>
+    <Link Source="CommonModule" Target="SearchPanelModule" Category="import" Label="SearchPanelModule imports CommonModule"/>
+    <Link Source="MatIconModule" Target="SearchPanelModule" Category="import" Label="SearchPanelModule imports MatIconModule"/>
+    <Link Source="MatButtonModule" Target="SearchPanelModule" Category="import" Label="SearchPanelModule imports MatButtonModule"/>
+    <Link Source="TableModule" Target="SearchPanelModule" Category="import" Label="SearchPanelModule imports TableModule"/>
+    <Link Source="MatButtonToggleModule" Target="SearchPanelModule" Category="import" Label="SearchPanelModule imports MatButtonToggleModule"/>
+    <Link Source="FormsModule" Target="SearchPanelModule" Category="import" Label="SearchPanelModule imports FormsModule"/>
+    <Link Source="BaseComponentsModule" Target="SearchPanelModule" Category="import" Label="SearchPanelModule imports BaseComponentsModule"/>
+    <Link Source="SearchPanelModule" Target="SearchPanelComponent" Category="export" Label="SearchPanelComponent exports SearchPanelModule"/>
+    <Link Source="CommonModule" Target="SidebarModule" Category="import" Label="SidebarModule imports CommonModule"/>
+    <Link Source="PopoverModule" Target="SidebarModule" Category="import" Label="SidebarModule imports PopoverModule"/>
+    <Link Source="MatIconModule" Target="SidebarModule" Category="import" Label="SidebarModule imports MatIconModule"/>
+    <Link Source="MatButtonModule" Target="SidebarModule" Category="import" Label="SidebarModule imports MatButtonModule"/>
+    <Link Source="MatTooltipModule" Target="SidebarModule" Category="import" Label="SidebarModule imports MatTooltipModule"/>
+    <Link Source="MatRippleModule" Target="SidebarModule" Category="import" Label="SidebarModule imports MatRippleModule"/>
+    <Link Source="OverlayModule" Target="SidebarModule" Category="import" Label="SidebarModule imports OverlayModule"/>
+    <Link Source="DialogModule" Target="SidebarModule" Category="import" Label="SidebarModule imports DialogModule"/>
+    <Link Source="MatInputModule" Target="SidebarModule" Category="import" Label="SidebarModule imports MatInputModule"/>
+    <Link Source="MatSlideToggleModule" Target="SidebarModule" Category="import" Label="SidebarModule imports MatSlideToggleModule"/>
+    <Link Source="MatSliderModule" Target="SidebarModule" Category="import" Label="SidebarModule imports MatSliderModule"/>
+    <Link Source="MatCheckboxModule" Target="SidebarModule" Category="import" Label="SidebarModule imports MatCheckboxModule"/>
+    <Link Source="MatFormFieldModule" Target="SidebarModule" Category="import" Label="SidebarModule imports MatFormFieldModule"/>
+    <Link Source="MatTabsModule" Target="SidebarModule" Category="import" Label="SidebarModule imports MatTabsModule"/>
+    <Link Source="FormsModule" Target="SidebarModule" Category="import" Label="SidebarModule imports FormsModule"/>
+    <Link Source="ReactiveFormsModule" Target="SidebarModule" Category="import" Label="SidebarModule imports ReactiveFormsModule"/>
+    <Link Source="HelpersModule" Target="SidebarModule" Category="import" Label="SidebarModule imports HelpersModule"/>
+    <Link Source="MatStepperModule" Target="SidebarModule" Category="import" Label="SidebarModule imports MatStepperModule"/>
+    <Link Source="MatSelectModule" Target="SidebarModule" Category="import" Label="SidebarModule imports MatSelectModule"/>
+    <Link Source="MatMenuModule" Target="SidebarModule" Category="import" Label="SidebarModule imports MatMenuModule"/>
+    <Link Source="BaseComponentsModule" Target="SidebarModule" Category="import" Label="SidebarModule imports BaseComponentsModule"/>
+    <Link Source="MatButtonToggleModule" Target="SidebarModule" Category="import" Label="SidebarModule imports MatButtonToggleModule"/>
+    <Link Source="MatProgressSpinnerModule" Target="SidebarModule" Category="import" Label="SidebarModule imports MatProgressSpinnerModule"/>
+    <Link Source="MatDatepickerModule" Target="SidebarModule" Category="import" Label="SidebarModule imports MatDatepickerModule"/>
+    <Link Source="MatRadioModule" Target="SidebarModule" Category="import" Label="SidebarModule imports MatRadioModule"/>
+    <Link Source="DragDropModule" Target="SidebarModule" Category="import" Label="SidebarModule imports DragDropModule"/>
+    <Link Source="MatPaginatorModule" Target="SidebarModule" Category="import" Label="SidebarModule imports MatPaginatorModule"/>
+    <Link Source="SidebarModule" Target="SidebarComponent" Category="export" Label="SidebarComponent exports SidebarModule"/>
+    <Link Source="SidebarModule" Target="AddDishComponent" Category="export" Label="AddDishComponent exports SidebarModule"/>
+    <Link Source="SidebarModule" Target="AddNewCategoryComponent" Category="export" Label="AddNewCategoryComponent exports SidebarModule"/>
+    <Link Source="SidebarModule" Target="SelectRecipeComponent" Category="export" Label="SelectRecipeComponent exports SidebarModule"/>
+    <Link Source="FormsModule" Target="SystemModule" Category="import" Label="SystemModule imports FormsModule"/>
+    <Link Source="ReactiveFormsModule" Target="SystemModule" Category="import" Label="SystemModule imports ReactiveFormsModule"/>
+    <Link Source="CommonModule" Target="SystemModule" Category="import" Label="SystemModule imports CommonModule"/>
+    <Link Source="MatIconModule" Target="SystemModule" Category="import" Label="SystemModule imports MatIconModule"/>
+    <Link Source="DialogModule" Target="SystemModule" Category="import" Label="SystemModule imports DialogModule"/>
+    <Link Source="BaseComponentsModule" Target="SystemModule" Category="import" Label="SystemModule imports BaseComponentsModule"/>
+    <Link Source="MatFormFieldModule" Target="SystemModule" Category="import" Label="SystemModule imports MatFormFieldModule"/>
+    <Link Source="MatDatepickerModule" Target="SystemModule" Category="import" Label="SystemModule imports MatDatepickerModule"/>
+    <Link Source="MatProgressSpinnerModule" Target="SystemModule" Category="import" Label="SystemModule imports MatProgressSpinnerModule"/>
+    <Link Source="MatInputModule" Target="SystemModule" Category="import" Label="SystemModule imports MatInputModule"/>
+    <Link Source="MatExpansionModule" Target="SystemModule" Category="import" Label="SystemModule imports MatExpansionModule"/>
+    <Link Source="MatButtonModule" Target="SystemModule" Category="import" Label="SystemModule imports MatButtonModule"/>
+    <Link Source="SystemModule" Target="SystemComponent" Category="export" Label="SystemComponent exports SystemModule"/>
+    <Link Source="CommonModule" Target="TableModule" Category="import" Label="TableModule imports CommonModule"/>
+    <Link Source="MatButtonToggleModule" Target="TableModule" Category="import" Label="TableModule imports MatButtonToggleModule"/>
+    <Link Source="BaseComponentsModule" Target="TableModule" Category="import" Label="TableModule imports BaseComponentsModule"/>
+    <Link Source="MatIconModule" Target="TableModule" Category="import" Label="TableModule imports MatIconModule"/>
+    <Link Source="MatRippleModule" Target="TableModule" Category="import" Label="TableModule imports MatRippleModule"/>
+    <Link Source="FormsModule" Target="TableModule" Category="import" Label="TableModule imports FormsModule"/>
+    <Link Source="MatTabsModule" Target="TableModule" Category="import" Label="TableModule imports MatTabsModule"/>
+    <Link Source="MatCheckboxModule" Target="TableModule" Category="import" Label="TableModule imports MatCheckboxModule"/>
+    <Link Source="DialogModule" Target="TableModule" Category="import" Label="TableModule imports DialogModule"/>
+  </Links>
+  <Categories>
+    <Category Id="module" Label="Module" Background="#e53935" IsTag="True"/>
+    <Category Id="File" Icon="File" IsTag="True"/>
+    <Category Id="component" Label="Component" Background="#0288d1" IsTag="True"/>
+    <Category Id="pipe" Label="Pipe" Background="#00897b" IsTag="True"/>
+    <Category Id="directive" Label="Directive" Background="#ffc107" IsTag="True"/>
+    <Category Id="import" Label="import" Stroke="#43a047" IsTag="True"/>
+    <Category Id="export" Label="export" Stroke="#0288d1" IsTag="True"/>
+  </Categories>
+  <Properties>
+    <Property Id="TypescriptFilepath" DataType="System.String" Label="Typescript filepath" IsReference="true"/>
+    <Property Id="Background" DataType="System.Windows.Media.Brush"/>
+    <Property Id="GraphDirection" DataType="Microsoft.VisualStudio.Diagrams.Layout.LayoutOrientation"/>
+    <Property Id="UseManualLocation" DataType="System.Boolean"/>
+    <Property Id="Label" DataType="System.String"/>
+    <Property Id="Layout" DataType="System.String"/>
+    <Property Id="ZoomLevel" DataType="System.String"/>
+    <Property Id="Bounds" DataType="System.Windows.Rect"/>
+  </Properties>
+</DirectedGraph>

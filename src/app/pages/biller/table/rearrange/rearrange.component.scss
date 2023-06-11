@@ -1,0 +1,43 @@
+section{
+    display: flex;
+    gap:10px;
+    flex-direction: column;
+    border-radius: 10px;
+    background: white;
+    max-height: 80vh;
+    overflow-y: auto;
+    h3{
+        background: white;
+        margin:0px;
+        padding: 20px 10px;
+        position: sticky;
+        top:0px;
+    }
+    .items{
+        margin: 20px;
+        display: flex;
+        flex-direction: column;
+        gap:6px;
+        // width: 100%;
+        box-sizing: border-box;
+    }
+    .actions{
+        position: sticky;
+        bottom:0px;
+        display: flex;
+        justify-content: flex-end;
+        gap:15px;
+        background: white;
+        padding: 20px 10px;
+    }
+}
+
+.item{
+    min-width: 250px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: white;
+    box-shadow: 0px 2px 10px rgba(0,0,0,0.1);
+}

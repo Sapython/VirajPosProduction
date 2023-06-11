@@ -17,7 +17,7 @@
     <span *ngIf="!kot.editMode">
       <viraj-button
         type="icon"
-        *ngIf="kot.stage != 'cancelled'"
+        *ngIf="kot.stage != 'cancelled' && this.dataProvider.kotRePrintable"
         (vclick)="printKot.emit(kot)"
         ><i class="ri-printer-fill"></i
       ></viraj-button>

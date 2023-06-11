@@ -522,6 +522,7 @@ export class LoadingComponent {
           name:`Table ${i+1}`,
           status:'available',
           id:`${i+1}`,
+          order:i,
           bill:null,
           billPrice:0,
           maxOccupancy:'4',

@@ -211,7 +211,7 @@ export class SplitBillComponent {
   }
 
   get allSettled(){
-    return this.splittedBills.every(bill=>bill.stage=='settled');
+    return this.splittedBills.length && this.splittedBills.every(bill=>bill.stage=='settled');
   }
 }
 

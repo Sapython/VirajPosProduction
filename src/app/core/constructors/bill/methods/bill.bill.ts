@@ -193,8 +193,33 @@ export async function settle(
   if (this.dataProvider.showTableOnBillAction) {
     this.dataProvider.openTableView.next(true);
   }
+  if (this.customerInfo.phone){
+    let customer = this.dataProvider.customers.find((customer) => customer.phone == this.customerInfo.phone);
+    if (customer){
+      console.log('Customer found updating', customer);
+      // check if any of the details are different
+      if (customer.name != this.customerInfo.name || customer.address != this.customerInfo.address || customer.gst != this.customerInfo.gst){
+        // update the customer
+        this.customerService.updateCustomer({
+          address:this.customerInfo.address,
+          gst:this.customerInfo.gst,
+          name:this.customerInfo.name,
+          phone:this.customerInfo.phone,
+        },this);
+      }
+    } else {
+      console.log('Added as new customer info', this.customerInfo);
+      this.customerService.addCustomer({
+        address:this.customerInfo.address,
+        gst:this.customerInfo.gst,
+        name:this.customerInfo.name,
+        phone:this.customerInfo.phone,
+      },this);
+    }
+    console.log('Customer info', this.customerInfo);
+  }
+  this.customerService.addLoyaltyPoint(this)
   console.log('Bill settled');
-  
   return this.billNo;
 }
 
@@ -208,8 +233,6 @@ export function merge(this: Bill, bill: Bill) {
   bill.table.status = 'available';
   this.updated.next();
 }
-
-export function splitBill(this: Bill, bills: BillConstructor[]) {}
 
 export function breakBill(
   this: Bill,

@@ -1,27 +1,20 @@
 <section class="customerInfo" [ngClass]="{'pad':padding}">
     <h4>Customer Info</h4>
     <form [formGroup]="customerInfoForm" (ngSubmit)="submit()">
+        <span *ngIf="this.dataProvider.currentBill" class="danger"><sup>*</sup> You need to add phone number to save or fetch details.</span>
         <div>
             <input type="text" formControlName="name" placeholder="Customer Info">
-            <input type="tel" formControlName="phone" placeholder="Phone Number">
-            <input type="tel" formControlName="gst" placeholder="Gst">
+            <input (input)="this.searchString.next(phoneInput.value)" type="tel" [matAutocomplete]="auto" formControlName="phone" placeholder="Phone Number" #phoneInput>
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectCustomer($event)">
+                <mat-option *ngFor="let street of foundCustomers" [value]="street">
+                  {{street.phone}}
+                </mat-option>
+            </mat-autocomplete>
+            <input type="text" formControlName="gst" placeholder="Gst">
             <input matInput placeholder="Address" formControlName="address">
             <input *ngIf="this.dataProvider.currentBill?.mode=='online'" type="text" formControlName="deliveryName" placeholder="Agent Name">
             <input *ngIf="this.dataProvider.currentBill?.mode=='online'" type="tel" formControlName="deliveryPhone" placeholder="Agent Phone">
-            <!-- <mat-form-field appearance="outline" >
-                <mat-label>Customer Name</mat-label>
-                <input matInput type="text" formControlName="name" placeholder="Customer Info">
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-                <mat-label>Customer Name</mat-label>
-                <input matInput type="tel" formControlName="phone" placeholder="Phone Number">
-            </mat-form-field> -->
         </div>
-        <!-- <mat-form-field appearance="outline">
-            <mat-label>Customer Name</mat-label>
-            <textarea matInput placeholder="Address" formControlName="address"></textarea>
-        </mat-form-field> -->
-        <!-- <textarea matInput placeholder="Address" formControlName="address"></textarea> -->
         <button *ngIf="this.isDialog" type="submit" mat-flat-button color="primary">Submit</button>
     </form>
 </section>

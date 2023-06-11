@@ -10,6 +10,8 @@ import { TableService } from '../../services/database/table/table.service';
 import { BillService } from '../../services/database/bill/bill.service';
 import { UserConstructor } from '../../../types/user.structure';
 import { PrinterService } from '../../services/printing/printer/printer.service';
+import { CustomerService } from '../../services/customer/customer.service';
+import { UserManagementService } from '../../services/auth/user/user-management.service';
 
 export class Table implements TableConstructor {
   id: string;
@@ -19,6 +21,7 @@ export class Table implements TableConstructor {
   group?: string;
   maxOccupancy: string;
   billPrice: number;
+  order: number;
   completed?: boolean;
   name: string;
   occupiedStart: Timestamp;
@@ -32,15 +35,19 @@ export class Table implements TableConstructor {
     id: string,
     tableNo: number,
     name: string,
+    order:number,
     maxOccupancy: string,
     type: 'table' | 'room' | 'token' | 'online',
     private dataProvider: DataProvider,
     public analyticsService:AnalyticsService,
     public tableService:TableService,
     public billService:BillService,
-    private printingService: PrinterService
+    private printingService: PrinterService,
+    private customerService:CustomerService,
+    private userManagementService:UserManagementService
   ) {
     this.id = id;
+    this.order = order;
     this.occupiedStart = Timestamp.now();
     this.billPrice = 0;
     this.maxOccupancy = maxOccupancy;
@@ -110,7 +117,9 @@ export class Table implements TableConstructor {
                 this.dataProvider,
                 this.analyticsService,
                 this.billService,
-                this.printingService
+                this.printingService,
+                this.customerService,
+                this.userManagementService
               );
               this.maxOccupancy = table.maxOccupancy;
               this.billPrice = table.billPrice;
@@ -176,7 +185,9 @@ export class Table implements TableConstructor {
     analyticsService: AnalyticsService,
     tableService:TableService,
     billService:BillService,
-    printingService: PrinterService
+    printingService: PrinterService,
+    customerService:CustomerService,
+    userManagementService:UserManagementService
   ) {
     // if(typeof object.bill == 'string'){
     //   let bill = await this.databaseService.getBill(object.bill)
@@ -198,11 +209,12 @@ export class Table implements TableConstructor {
       object.id,
       object.tableNo,
       object.name,
+      object.order,
       object.maxOccupancy,
       object.type,
       dataProvider,
       analyticsService,
-      tableService,billService,printingService
+      tableService,billService,printingService,customerService,userManagementService
     );
     // console.log('object.bill', object.bill);
     if (typeof object.bill == 'string') {
@@ -215,11 +227,12 @@ export class Table implements TableConstructor {
         instance.bill = Bill.fromObject(
           billData,
           instance,
-          dataProvider,analyticsService,billService,printingService
+          dataProvider,analyticsService,billService,printingService,customerService,userManagementService
         );
         instance.maxOccupancy = object.maxOccupancy;
         instance.billPrice = object.billPrice;
         instance.name = object.name;
+        instance.order = object.order;
         instance.occupiedStart = object.occupiedStart;
         instance.status = object.status;
         instance.tableNo = object.tableNo;
@@ -239,12 +252,14 @@ export class Table implements TableConstructor {
         // console.log('bill', bill);
         // console.log('object', object);
         // alert('bill does not exist');
+        instance.order = object.order;
         instance.billPrice = object.billPrice;
         instance.occupiedStart = object.occupiedStart;
         instance.status = 'available';
         return instance;
       }
     } else if (object.bill instanceof Bill) {
+      instance.order = object.order;
       instance.bill = object.bill;
       instance.maxOccupancy = object.maxOccupancy;
       instance.billPrice = object.billPrice;
@@ -264,6 +279,7 @@ export class Table implements TableConstructor {
       }
       return instance;
     } else {
+      instance.order = object.order;
       instance.bill = object.bill;
       instance.billPrice = object.billPrice;
       instance.occupiedStart = object.occupiedStart;
@@ -350,7 +366,7 @@ export class Table implements TableConstructor {
           user,
           this.dataProvider.currentMenu?.selectedMenu,
           this.dataProvider,
-          this.analyticsService,this.billService,this.printingService
+          this.analyticsService,this.billService,this.printingService,this.customerService,this.userManagementService
         );
         this.occupiedStart = Timestamp.now();
         this.status = 'occupied';
@@ -407,7 +423,7 @@ export class Table implements TableConstructor {
             user,
             this.dataProvider.currentMenu?.selectedMenu,
             this.dataProvider,
-            this.analyticsService,this.billService,this.printingService
+            this.analyticsService,this.billService,this.printingService,this.customerService,this.userManagementService
           );
           this.occupiedStart = Timestamp.now();
           this.status = 'occupied';

@@ -51,16 +51,20 @@
             </mat-button-toggle-group>
         </div>
         <div class="tableWrapper" *ngIf="this.dataProvider.billingMode=='dineIn'">
-            <div class="groupedTables" *ngFor="let tableGroup of this.dataProvider.groupedTables|keyvalue">
+            <div class="groupedTables" *ngFor="let tableGroup of this.dataProvider.groupedTables">
                 <div class="heading">
-                    <h2>{{tableGroup.key}}</h2>
+                    <h2><viraj-button type="icon" (click)="reorderTables(this.dataProvider.groupedTables)"><i class="ri-arrow-up-down-line"></i></viraj-button> {{tableGroup.name}}</h2>
                     <button *ngIf="this.dataProvider.getAccess(['admin','manager'])" class="moveKotButton" [ngClass]="{'active':moveKotMode}" (click)="moveKotMode=!moveKotMode">
                         <span></span>
                         <p>Move KOT/Item</p>
                     </button>
+                    <button *ngIf="this.dataProvider.getAccess(['admin','manager'])" class="moveKotButton" [ngClass]="{'active':moveKotMode}" (click)="rearrangeTables(tableGroup.tables,tableGroup.name)">
+                        <span></span>
+                        <p>Re-Arrange Items</p>
+                    </button>
                 </div>
                 <div class="tables">
-                    <button class="table" [ngClass]="{'active':table.status=='occupied','late':this.dataProvider.tableTimeOutTime <= table.minutes,'finalized':table.bill?.stage=='finalized','medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}" *ngFor="let table of tableGroup.value" matRipple (click)="openTable(table,$event)">
+                    <button class="table" [ngClass]="{'active':table.status=='occupied','late':this.dataProvider.tableTimeOutTime <= table.minutes,'finalized':table.bill?.stage=='finalized','medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}" *ngFor="let table of tableGroup.tables" matRipple (click)="openTable(table,$event)">
                         <p class="name">{{table.name}}</p>
                         <p class="cost" *ngIf="table.bill?.billing?.grandTotal != undefined && table.bill?.billing?.grandTotal != null && isNumber(table.bill?.billing?.grandTotal)"><strong>{{table.bill?.billing?.grandTotal | currency:'INR'}}</strong></p>
                         <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">{{ table.timeSpent }}</p>
@@ -73,9 +77,9 @@
                             <viraj-button [noPropogation]="true" [minimalPadding]="true" type="icon" (vclick)="deleteTable(table)"><i class="ri-delete-bin-fill"></i></viraj-button>
                         </div>
                     </button>
-                    <button class="table empty" (click)="addTable(tableGroup.key)" [ngClass]="{'medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}" *ngIf="this.dataProvider.getAccess(['admin','manager'])">
+                    <button class="table empty" (click)="addTable(tableGroup.name)" [ngClass]="{'medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}" *ngIf="this.dataProvider.getAccess(['admin','manager'])">
                         <mat-icon>add</mat-icon>
-                        <p>Add New {{tableGroup.key}}</p>
+                        <p>Add New {{tableGroup.name}}</p>
                     </button>
                 </div>
             </div>
@@ -153,9 +157,9 @@
             </mat-button-toggle-group>
         </div>
         <div class="tableWrapper">
-            <div class="groupedTables" *ngFor="let tableGroup of this.dataProvider.groupedTables|keyvalue">
+            <div class="groupedTables" *ngFor="let tableGroup of this.dataProvider.groupedTables">
                 <div class="heading">
-                    <h2>{{tableGroup.key}}</h2>
+                    <h2>{{tableGroup.name}}</h2>
                     <button class="moveKotButton" [ngClass]="{'active':moveKotMode}" (click)="moveKotMode=!moveKotMode">
                         <span></span>
                         <p *ngIf="moveKotMode">Back to normal </p>
@@ -163,7 +167,7 @@
                     </button>
                 </div>
                 <div class="tables">
-                    <button class="table" [disabled]="table.status!='occupied'" [ngClass]="{'active':table.status=='occupied','disabled':table.status!='occupied','late':this.dataProvider.tableTimeOutTime <= table.minutes,'finalized':table.bill?.stage=='finalized','medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}" matRipple [matRippleDisabled]="table.status!='occupied'" *ngFor="let table of tableGroup.value" matRipple (click)="moveKot(table,$event)">
+                    <button class="table" [disabled]="table.status!='occupied'" [ngClass]="{'active':table.status=='occupied','disabled':table.status!='occupied','late':this.dataProvider.tableTimeOutTime <= table.minutes,'finalized':table.bill?.stage=='finalized','medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}" matRipple [matRippleDisabled]="table.status!='occupied'" *ngFor="let table of tableGroup.tables" matRipple (click)="moveKot(table,$event)">
                         <p class="name">{{table.name}}</p>
                         <p class="cost" *ngIf="table.bill?.billing?.grandTotal != undefined && table.bill?.billing?.grandTotal != null && isNumber(table.bill?.billing?.grandTotal)"><strong>{{table.bill?.billing?.grandTotal | currency:'INR'}}</strong></p>
                         <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">{{ table.timeSpent }}</p>
@@ -182,9 +186,9 @@
             <div class="tableWise">
                 <div class="from tableWrapper">
                     <h2>From</h2>
-                    <div class="groupedTables" *ngFor="let tableGroup of this.dataProvider.groupedTables|keyvalue">
+                    <div class="groupedTables" *ngFor="let tableGroup of this.dataProvider.groupedTables">
                         <div class="heading">
-                            <h3>{{tableGroup.key}}</h3>
+                            <h3>{{tableGroup.name}}</h3>
                             <button class="moveKotButton" [ngClass]="{'active':moveKotMode}" (click)="moveKotMode=!moveKotMode">
                                 <span></span>
                                 <p *ngIf="moveKotMode">Back to normal </p>
@@ -192,7 +196,7 @@
                             </button>
                         </div>
                         <div class="tables">
-                            <button class="table" [disabled]="table.status!='occupied' || this.transferTableWise.toTable?.id == table.id" [ngClass]="{'active':table.status=='occupied','highlight':this.transferTableWise.fromTable?.id == table.id,'disabled':table.status!='occupied','late':this.dataProvider.tableTimeOutTime <= table.minutes,'finalized':table.bill?.stage=='finalized','medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}" matRipple [matRippleDisabled]="table.status!='occupied'" *ngFor="let table of tableGroup.value" matRipple (click)="this.transferTableWise.fromTable = table;">
+                            <button class="table" [disabled]="table.status!='occupied' || this.transferTableWise.toTable?.id == table.id" [ngClass]="{'active':table.status=='occupied','highlight':this.transferTableWise.fromTable?.id == table.id,'disabled':table.status!='occupied','late':this.dataProvider.tableTimeOutTime <= table.minutes,'finalized':table.bill?.stage=='finalized','medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}" matRipple [matRippleDisabled]="table.status!='occupied'" *ngFor="let table of tableGroup.tables" matRipple (click)="this.transferTableWise.fromTable = table;">
                                 <p class="name">{{table.name}}</p>
                                 <p class="cost" *ngIf="table.bill?.billing?.grandTotal != undefined && table.bill?.billing?.grandTotal != null && isNumber(table.bill?.billing?.grandTotal)"><strong>{{table.bill?.billing?.grandTotal | currency:'INR'}}</strong></p>
                                 <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">{{ table.timeSpent }}</p>
@@ -202,9 +206,9 @@
                 </div>
                 <div class="to tableWrapper">
                     <h2>To</h2>
-                    <div class="groupedTables" *ngFor="let tableGroup of this.dataProvider.groupedTables|keyvalue">
+                    <div class="groupedTables" *ngFor="let tableGroup of this.dataProvider.groupedTables">
                         <div class="heading">
-                            <h3>{{tableGroup.key}}</h3>
+                            <h3>{{tableGroup.name}}</h3>
                             <button class="moveKotButton" [ngClass]="{'active':moveKotMode}" (click)="moveKotMode=!moveKotMode">
                                 <span></span>
                                 <p *ngIf="moveKotMode">Back to normal </p>
@@ -212,7 +216,7 @@
                             </button>
                         </div>
                         <div class="tables">
-                            <button [disabled]="table.status!='occupied' || this.transferTableWise.fromTable?.id == table.id" class="table" [ngClass]="{'active':table.status=='occupied','highlight':this.transferTableWise.toTable?.id == table.id,'disabled':table.status!='occupied','late':this.dataProvider.tableTimeOutTime <= table.minutes,'finalized':table.bill?.stage=='finalized','medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}" matRipple [matRippleDisabled]="table.status!='occupied'" *ngFor="let table of tableGroup.value" matRipple (click)="this.transferTableWise.toTable = table;">
+                            <button [disabled]="table.status!='occupied' || this.transferTableWise.fromTable?.id == table.id" class="table" [ngClass]="{'active':table.status=='occupied','highlight':this.transferTableWise.toTable?.id == table.id,'disabled':table.status!='occupied','late':this.dataProvider.tableTimeOutTime <= table.minutes,'finalized':table.bill?.stage=='finalized','medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}" matRipple [matRippleDisabled]="table.status!='occupied'" *ngFor="let table of tableGroup.tables" matRipple (click)="this.transferTableWise.toTable = table;">
                                 <p class="name">{{table.name}}</p>
                                 <p class="cost" *ngIf="table.bill?.billing?.grandTotal != undefined && table.bill?.billing?.grandTotal != null && isNumber(table.bill?.billing?.grandTotal)"><strong>{{table.bill?.billing?.grandTotal | currency:'INR'}}</strong></p>
                                 <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">{{ table.timeSpent }}</p>

@@ -5,7 +5,7 @@ import { MenuManagementService } from '../../../../../core/services/database/men
 import { FormControl, FormGroup } from '@angular/forms';
 import { debounceTime } from 'rxjs';
 import { zoomInOnEnterAnimation, zoomOutOnLeaveAnimation } from 'angular-animations';
-
+var debug:boolean = true;
 @Component({
   selector: 'app-view',
   templateUrl: './view.component.html',
@@ -61,6 +61,8 @@ export class ViewComponent {
   }
 
   updateSettings(data: any) {
+    if (debug) console.log("Updating settings Data",data);
+    
     this.menuManagementService
       .updateRootSettings(data, this.dataProvider.currentBusiness?.businessId!)
       .then(() => {
@@ -72,7 +74,8 @@ export class ViewComponent {
   }
 
   isValidNumber(number:any){
-    if (isNaN(Number(number)) || typeof(number) !== "number" || number < 0){
+    console.log("number",number,!Number(number) || typeof(number) !== "number" || number < 0);
+    if (!Number(number) || typeof(number) !== "number" || number < 0){
       alert("Please enter a valid number");
       return false;
     } else {

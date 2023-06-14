@@ -96,18 +96,46 @@ export class TableService {
     )
   }
 
-  setGroupOrder(table:{tables:Table[],name:string}[]){
+  setGroupOrder(table:{tables:Table[],id:string}[]){
     return setDoc(
       doc(
         this.firestore,
         'business/' + this.dataProvider.businessId + '/settings/settings',
       ),
       {
-        groupOrders: table.map((group)=>group.name)
+        groupOrders: table.map((group)=>group.id)
       },
       {
         merge:true
       }
     )
+  }
+
+  reOrderTable(){
+    let groupedTables = []
+      this.dataProvider.tables.forEach((r) => {
+        let tableGroup = groupedTables.find(
+          (group) => group.name == r.name.split(' ')[0]
+        );
+        if (tableGroup) {
+          tableGroup.tables.push(r);
+        } else {
+          groupedTables.push({
+            name: r.name.split(' ')[0],
+            tables: [r],
+          });
+        }
+      });
+      this.dataProvider.groupedTables.forEach((group) => {
+        // sort tables by order or by name
+        group.tables.sort((a, b) => {
+          if (a.order!=undefined && b.order!=undefined){
+            return a.order - b.order;
+          } else {
+            return a.name.localeCompare(b.name);
+          }
+        });
+      })
+      this.dataProvider.groupedTables = groupedTables;
   }
 }

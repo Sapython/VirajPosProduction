@@ -1,6 +1,6 @@
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { Component, OnInit } from '@angular/core';
-import { Timestamp, firestoreInstance$ } from '@angular/fire/firestore';
+import { Timestamp } from '@angular/fire/firestore';
 import { AlertsAndNotificationsService } from '../../../core/services/alerts-and-notification/alerts-and-notifications.service';
 import { SettleComponent } from '../actions/settle/settle.component';
 import { Table } from '../../../core/constructors/table/Table';
@@ -12,7 +12,6 @@ import { AnalyticsService } from '../../../core/services/database/analytics/anal
 import { BillService } from '../../../core/services/database/bill/bill.service';
 import { Product } from '../../../types/product.structure';
 import { CustomerService } from '../../../core/services/customer/customer.service';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { RearrangeComponent } from './rearrange/rearrange.component';
 import { firstValueFrom } from 'rxjs';
 import { UserManagementService } from '../../../core/services/auth/user/user-management.service';
@@ -45,6 +44,7 @@ export class TableComponent implements OnInit {
     private customerService:CustomerService,
     private userManagementService:UserManagementService
   ) {}
+
   ngOnInit(): void {
 
   //  console.log('this.dataProvider.tables ', this.dataProvider.tables,this.dataProvider.currentMenu?.type,this.dataProvider.billingMode);
@@ -72,32 +72,7 @@ export class TableComponent implements OnInit {
     this.dataProvider.tables.sort((a, b) => {
       return a.tableNo - b.tableNo;
     });
-    // this.dataProvider.tables.forEach((table)=>{
-    //   this.tables.push(new Table(table.id,table.tableNo,table.name,table.maxOccupancy,table.type,this.dataProvider))
-    // })
-    this.dataProvider.groupedTables.forEach((group)=>{
-      if(this.dataProvider.tableOrders && this.dataProvider.tableOrders[group.name]){
-        let newGroup = [];
-        this.dataProvider.tableOrders[group.name].forEach((tableId)=>{
-          let table = group.tables.find((table)=>table.id==tableId);
-          if(table){
-            newGroup.push(table);
-          }
-        })
-        group.tables = newGroup;
-      }
-    })
-    if(this.dataProvider.groupOrders.length > 0){
-      let newGroup = [];
-      this.dataProvider.groupOrders.forEach((groupName)=>{
-        let group = this.dataProvider.groupedTables.find((group)=>group.name==groupName);
-        if(group){
-          newGroup.push(group);
-        }
-      })
-      console.log("newGroup",newGroup);
-      this.dataProvider.groupedTables = newGroup;
-    }
+    this.tableService.reOrderTable();
   }
 
   getTime(date: Timestamp) {
@@ -136,11 +111,15 @@ export class TableComponent implements OnInit {
         let entity = this.dataProvider.tables.slice().reverse().find((table)=>{
           return table.name.split(' ')[0] == groupName;
         });
-        let entityNo = entity.name.split(' ')[(entity.name.split(' ').length)-1];
+        let mainEntityNo = entity.name.split(' ')[(entity.name.split(' ').length)-1];
+        let rgx = /(\d+)\D*$/g
+        let entityNo = rgx.exec(mainEntityNo)?.[1];
+        // additionalText is the text attached to main entity no and entityNo like tableName = groupName + mainEntity + entityNo
+        let additionalText  = mainEntityNo.replace(entityNo,'');
         if (Number(entityNo)){
           console.log("Entity",entityNo);
           if (entityNo){
-            tableName = groupName + ' ' + (Number(entityNo)+1).toString();
+            tableName = groupName + ' ' +additionalText+ (Number(entityNo)+1).toString();
           }
         } else {
           alert("Cannot add auto table no number found in end. Please add manually");
@@ -162,20 +141,7 @@ export class TableComponent implements OnInit {
     );
     table.clearTable();
     this.dataProvider.tables.push(table);
-    let foundGroup = this.dataProvider.groupedTables.find((group)=>group.name == groupName);
-    if (foundGroup){
-      foundGroup.tables.push(table);
-    } else {
-      this.dataProvider.groupedTables.push({
-        name:groupName,
-        tables:[table]
-      })
-    }
-    // if(!this.dataProvider.groupedTables[groupName]){
-    //   this.dataProvider.groupedTables[groupName] = [];
-    // }
-    // this.dataProvider.groupedTables[groupName].push(table);
-    //  console.log('this.dataProvider.tables ', this.dataProvider.tables);
+    this.tableService.reOrderTable();
   }
 
   addToken() {
@@ -247,17 +213,13 @@ export class TableComponent implements OnInit {
         return;
       }
       if (await this.dataProvider.confirm("Alert! Do you want to delete it?",[1],{buttons:["No","Yes"]})){
+        this.dataProvider.loading = true;
         this.dataProvider.tables = this.dataProvider.tables.filter((t)=>{
           return t.id != table.id;
-        });
-        this.dataProvider.groupedTables = [];
-        this.dataProvider.tables.forEach((t)=>{
-          if(!this.dataProvider.groupedTables[t.name.split(' ')[0]]){
-            this.dataProvider.groupedTables[t.name.split(' ')[0]] = [];
-          }
-          this.dataProvider.groupedTables[t.name.split(' ')[0]].push(t);
         })
+        this.tableService.reOrderTable();
         await this.tableService.deleteTable(table.id);
+        this.dataProvider.loading = false;
       } else {
         this.alertify.presentToast("Table delete cancelled");
       }

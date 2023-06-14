@@ -393,30 +393,7 @@ export class OnboardingService {
         }
         this.dataProvider.settingsChanged.next(res);
         this.dataProvider.tableOrders = res['tableOrders'] || undefined;
-        this.dataProvider.groupedTables.forEach((group)=>{
-          if(this.dataProvider.tableOrders && this.dataProvider.tableOrders[group.name]){
-            let newGroup = [];
-            this.dataProvider.tableOrders[group.name].forEach((tableId)=>{
-              let table = group.tables.find((table)=>table.id==tableId);
-              if(table){
-                newGroup.push(table);
-              }
-            })
-            group.tables = newGroup;
-          }
-        })
-        this.dataProvider.groupOrders = res['groupOrders'] || [];
-        if(this.dataProvider.groupOrders){
-          let newGroup = [];
-          this.dataProvider.groupOrders.forEach((groupName)=>{
-            let group = this.dataProvider.groupedTables.find((group)=>group.name==groupName);
-            if(group){
-              newGroup.push(group);
-            }
-          })
-          console.log("newGroup",newGroup);
-          this.dataProvider.groupedTables = newGroup;
-        }
+        this.tableService.reOrderTable();
       }
     });
     docData(doc(this.firestore,'business',business.businessId,'customer','customerConfig')).subscribe((res)=>{
@@ -453,28 +430,10 @@ export class OnboardingService {
         );
       });
       let formedTable = await Promise.all(tables);
-      formedTable.sort((a, b) => {
-        return (a.order || a.tableNo) - (b.order || b.tableNo);
-      });
+      this.dataProvider.tables = formedTable;
       // create a grouping by name in format {name:string, tables:Table[]} where name is name.split(' ')[0]
       // group table by their first split string like group
-      let groupedTables = []
-      formedTable.forEach((r) => {
-        let tableGroup = groupedTables.find(
-          (group) => group.name == r.name.split(' ')[0]
-        );
-        if (tableGroup) {
-          tableGroup.tables.push(r);
-        } else {
-          groupedTables.push({
-            name: r.name.split(' ')[0],
-            tables: [r],
-          });
-        }
-      });
-      // console.log("groupedTables",groupedTables);
-      this.dataProvider.tables = formedTable;
-      this.dataProvider.groupedTables = Object.values(groupedTables);
+      this.tableService.reOrderTable();
     } else {
       if (this.dataProvider.tables.length == 0 && res.docs.length == 0) {
         this.dataProvider.tables = [];

@@ -20,6 +20,8 @@ import { Timestamp } from '@angular/fire/firestore';
 import { optionalPromptParam } from '../../../types/prompt.strcuture';
 import { CheckingPasswordComponent } from '../../../shared/checking-password/checking-password.component';
 import { Customer } from '../../../types/customer.structure';
+import { Combo, ComboCategoryCategorized, ComboTypeCategorized, ComboTypeProductWiseCategorized } from '../../../types/combo.structure';
+import { ApplicableCombo } from '../../constructors/comboKot/comboKot';
 
 @Injectable({
   providedIn: 'root',
@@ -66,6 +68,9 @@ export class DataProvider {
         window.onbeforeunload = () => null;
       }
     },500)
+    this.productPanelState.subscribe((state)=>{
+      this.productPanelStateValue = state;
+    })
   }
 
   private passwordCheck = httpsCallable(this.functions,'checkPassword');
@@ -154,6 +159,12 @@ export class DataProvider {
     onlineExpiry: 0,
   }
   
+  // combo statuses
+  public currentCombo: Combo | undefined;
+  public currentComboType: ComboTypeProductWiseCategorized | undefined;
+  public currentComboTypeCategory:ComboCategoryCategorized | undefined;
+  public currentApplicableCombo: ApplicableCombo | undefined;
+  public currentPendingProduct: Product | undefined;
   // statuses
   public billingMode: 'dineIn' | 'takeaway' | 'online' = 'dineIn';
   public isAuthStateAvaliable: boolean = false;
@@ -200,7 +211,9 @@ export class DataProvider {
   public productsLoaded: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   public billUpdated: Subject<void> = new Subject<void>();
   public settingsChanged: Subject<any> = new Subject<any>();
-
+  public comboSelected: Subject<Combo[]> = new Subject<Combo[]>();
+  public productPanelState: ReplaySubject<'products'|'combos'> = new ReplaySubject<'products'|'combos'>(1);
+  public productPanelStateValue: 'products'|'combos' = 'products';
   public offline: boolean = false;
   public updating:boolean = false;
   public backOnline: Subject<boolean> = new Subject<boolean>();

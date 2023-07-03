@@ -55,6 +55,7 @@ import { PrinterService } from '../../services/printing/printer/printer.service'
 import { PrintableKot } from '../../../types/kot.structure';
 import { CustomerService } from '../../services/customer/customer.service';
 import { UserManagementService } from '../../services/auth/user/user-management.service';
+import { ApplicableCombo } from '../comboKot/comboKot';
 
 export class Bill implements BillConstructor {
   id: string;
@@ -87,8 +88,8 @@ export class Bill implements BillConstructor {
   billing: Billing;
   instruction: string;
   editKotMode: null | {
-    previousKot: Product[];
-    newKot: Product[];
+    previousKot: (Product|ApplicableCombo)[];
+    newKot: (Product|ApplicableCombo)[];
     kot: Kot;
     kotIndex: number;
   } = null;
@@ -206,7 +207,7 @@ export class Bill implements BillConstructor {
     return totalProducts.call(this)
   };
 
-  public getPrintableBillData(products:Product[]):PrintableBill{
+  public getPrintableBillData(products:(Product|ApplicableCombo)[]):PrintableBill{
     return getPrintableBill.call(this,products,this.dataProvider)
   };
 

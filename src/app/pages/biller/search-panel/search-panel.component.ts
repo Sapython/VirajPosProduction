@@ -4,6 +4,8 @@ import Fuse from 'fuse.js';
 import { Dialog } from '@angular/cdk/dialog';
 import { DataProvider } from '../../../core/services/provider/data-provider.service';
 import { BillService } from '../../../core/services/database/bill/bill.service';
+import { Combo } from '../../../types/combo.structure';
+import { Product } from '../../../types/product.structure';
 @Component({
   selector: 'app-search-panel',
   templateUrl: './search-panel.component.html',
@@ -26,17 +28,16 @@ export class SearchPanelComponent implements OnInit {
   active:boolean = false;
   dynamicPlaceholder:string = this.placeholders[0];
   selectedMode:'dineIn'|'takeAway'|'online' = "dineIn";
-  searchSubcription:Subject<string> = new Subject<string>();
+  searchSubscription:Subject<string> = new Subject<string>();
   currentSearchTerm:string = "";
-  billListnerActive:boolean = false;
-  billListner:Subscription = Subscription.EMPTY;
-  searchInstance = new Fuse(this.dataProvider.products, {
-    keys: ['name','price'],
+  billListenerActive:boolean = false;
+  billListener:Subscription = Subscription.EMPTY;
+  searchInstance:Fuse<Product|Combo> = new Fuse(this.dataProvider.products, {
+    keys: ['name'],
   })
   searchVisible:boolean = false;
   constructor(public dataProvider:DataProvider,private billsService:BillService) {
-    this.searchSubcription.pipe(debounceTime(400)).subscribe((value)=>{
-      // console.log(value);
+    this.searchSubscription.pipe(debounceTime(400)).subscribe((value)=>{
       this.fetchAdvancedResults(value)
     })
     this.dataProvider.menuLoadSubject.subscribe((value)=>{
@@ -45,6 +46,7 @@ export class SearchPanelComponent implements OnInit {
         this.searchInstance.setCollection(this.dataProvider.currentMenu?.products)
       }
     })
+
     this.dataProvider.modeChanged.subscribe(()=>{
       // console.log("this.dataProvider.modeChanged",mode,this.dataProvider.currentMenu?.products);
       this.searchResults = [];
@@ -53,16 +55,24 @@ export class SearchPanelComponent implements OnInit {
         this.searchInstance.setCollection(this.dataProvider.currentMenu?.products)
       }
     })
-    this.searchSubcription.pipe(debounceTime(200)).subscribe((value)=>{
+    this.searchSubscription.pipe(debounceTime(200)).subscribe((value)=>{
       // console.log(value);
       this.currentSearchTerm = value;
       this.basicSearch(value)
     })
+    
+    this.dataProvider.productPanelState.subscribe((value)=>{
+      if (value=='combos'){
+        this.searchInstance.setCollection(this.dataProvider.currentMenu?.combos)
+      } else {
+        this.searchInstance.setCollection(this.dataProvider.currentMenu?.products)
+      }
+    })
   }
 
   getBills(){
-    this.billListnerActive = true;
-    this.billListner = this.billsService.getBillsSubscription().subscribe((bills)=>{
+    this.billListenerActive = true;
+    this.billListener = this.billsService.getBillsSubscription().subscribe((bills)=>{
       this.allBills = bills;
     })
   }
@@ -87,7 +97,7 @@ export class SearchPanelComponent implements OnInit {
 
   fetchAdvancedResults(value:string){
     if (value.startsWith('#')){
-      if (!this.billListnerActive){
+      if (!this.billListenerActive){
         this.getBills();
       }
       if (this.allBills.length > 0){

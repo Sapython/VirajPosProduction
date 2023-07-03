@@ -15,6 +15,7 @@ import { CustomerService } from '../../../core/services/customer/customer.servic
 import { RearrangeComponent } from './rearrange/rearrange.component';
 import { firstValueFrom } from 'rxjs';
 import { UserManagementService } from '../../../core/services/auth/user/user-management.service';
+import { ApplicableCombo } from '../../../core/constructors/comboKot/comboKot';
 
 @Component({
   selector: 'app-table',
@@ -37,19 +38,19 @@ export class TableComponent implements OnInit {
     public dataProvider: DataProvider,
     private tableService: TableService,
     private alertify: AlertsAndNotificationsService,
-    private printingService:PrinterService,
+    private printingService: PrinterService,
     private dialog: Dialog,
-    private analyticsService:AnalyticsService,
-    private billService:BillService,
-    private customerService:CustomerService,
-    private userManagementService:UserManagementService
+    private analyticsService: AnalyticsService,
+    private billService: BillService,
+    private customerService: CustomerService,
+    private userManagementService: UserManagementService
   ) {}
 
   ngOnInit(): void {
-
-  //  console.log('this.dataProvider.tables ', this.dataProvider.tables,this.dataProvider.currentMenu?.type,this.dataProvider.billingMode);
-    if(this.dataProvider.currentMenu){
-      this.dataProvider.billingMode = this.dataProvider.currentMenu.type || 'dineIn';
+    //  console.log('this.dataProvider.tables ', this.dataProvider.tables,this.dataProvider.currentMenu?.type,this.dataProvider.billingMode);
+    if (this.dataProvider.currentMenu) {
+      this.dataProvider.billingMode =
+        this.dataProvider.currentMenu.type || 'dineIn';
     }
     this.tables = this.dataProvider.tables;
     if (this.interval) {
@@ -93,36 +94,75 @@ export class TableComponent implements OnInit {
     this.dataProvider.currentBill = table.occupyTable();
     this.dataProvider.currentTable = table;
     this.dataProvider.billAssigned.next();
-    if(this.dataProvider.tempProduct && this.dataProvider.currentBill){
+    if (this.dataProvider.tempProduct && this.dataProvider.currentBill) {
       this.dataProvider.currentBill.addProduct(this.dataProvider.tempProduct);
       this.dataProvider.tempProduct = undefined;
+    }
+    if (
+      this.dataProvider.currentPendingProduct &&
+      this.dataProvider.currentBill
+    ) {
+      if (this.dataProvider.currentApplicableCombo) {
+        this.dataProvider.currentApplicableCombo.addProduct(
+          this.dataProvider.currentComboType,
+          this.dataProvider.currentComboTypeCategory,
+          this.dataProvider.currentPendingProduct
+        );
+      } else {
+        this.dataProvider.currentApplicableCombo = new ApplicableCombo(
+          this.dataProvider.currentCombo,
+          this.dataProvider.currentBill
+        );
+        this.dataProvider.currentApplicableCombo.addProduct(
+          this.dataProvider.currentComboType,
+          this.dataProvider.currentComboTypeCategory,
+          this.dataProvider.currentPendingProduct
+        );
+        if (this.dataProvider.currentBill) {
+          this.dataProvider.currentBill.addProduct(
+            this.dataProvider.currentApplicableCombo
+          );
+        }
+      }
     }
     this.dialogRef.close();
   }
 
-  async addTable(groupName:string){
+  async addTable(groupName: string) {
     let index = this.dataProvider.tables.length + 1;
-    let tableName = await this.dataProvider.prompt('Enter table name',{value:groupName})
+    let tableName = await this.dataProvider.prompt('Enter table name', {
+      value: groupName,
+    });
     if (!tableName) {
       return;
     }
-    if (tableName.split(' ')[0] == groupName){
-      if (tableName == groupName){
-        let entity = this.dataProvider.tables.slice().reverse().find((table)=>{
-          return table.name.split(' ')[0] == groupName;
-        });
-        let mainEntityNo = entity.name.split(' ')[(entity.name.split(' ').length)-1];
-        let rgx = /(\d+)\D*$/g
+    if (tableName.split(' ')[0] == groupName) {
+      if (tableName == groupName) {
+        let entity = this.dataProvider.tables
+          .slice()
+          .reverse()
+          .find((table) => {
+            return table.name.split(' ')[0] == groupName;
+          });
+        let mainEntityNo =
+          entity.name.split(' ')[entity.name.split(' ').length - 1];
+        let rgx = /(\d+)\D*$/g;
         let entityNo = rgx.exec(mainEntityNo)?.[1];
         // additionalText is the text attached to main entity no and entityNo like tableName = groupName + mainEntity + entityNo
-        let additionalText  = mainEntityNo.replace(entityNo,'');
-        if (Number(entityNo)){
-          console.log("Entity",entityNo);
-          if (entityNo){
-            tableName = groupName + ' ' +additionalText+ (Number(entityNo)+1).toString();
+        let additionalText = mainEntityNo.replace(entityNo, '');
+        if (Number(entityNo)) {
+          console.log('Entity', entityNo);
+          if (entityNo) {
+            tableName =
+              groupName +
+              ' ' +
+              additionalText +
+              (Number(entityNo) + 1).toString();
           }
         } else {
-          alert("Cannot add auto table no number found in end. Please add manually");
+          alert(
+            'Cannot add auto table no number found in end. Please add manually'
+          );
           return;
         }
       }
@@ -137,7 +177,13 @@ export class TableComponent implements OnInit {
       index,
       '4',
       'table',
-      this.dataProvider,this.analyticsService,this.tableService,this.billService,this.printingService,this.customerService,this.userManagementService
+      this.dataProvider,
+      this.analyticsService,
+      this.tableService,
+      this.billService,
+      this.printingService,
+      this.customerService,
+      this.userManagementService
     );
     table.clearTable();
     this.dataProvider.tables.push(table);
@@ -160,12 +206,18 @@ export class TableComponent implements OnInit {
       this.dataProvider.takeawayToken,
       '1',
       'token',
-      this.dataProvider,this.analyticsService,this.tableService,this.billService,this.printingService,this.customerService,this.userManagementService
+      this.dataProvider,
+      this.analyticsService,
+      this.tableService,
+      this.billService,
+      this.printingService,
+      this.customerService,
+      this.userManagementService
     );
     this.dataProvider.currentBill = table.occupyTable();
     this.dataProvider.currentTable = table;
     this.dataProvider.billAssigned.next();
-    if(this.dataProvider.tempProduct && this.dataProvider.currentBill){
+    if (this.dataProvider.tempProduct && this.dataProvider.currentBill) {
       this.dataProvider.currentBill.addProduct(this.dataProvider.tempProduct);
       this.dataProvider.tempProduct = undefined;
     }
@@ -187,12 +239,18 @@ export class TableComponent implements OnInit {
       this.dataProvider.onlineTokenNo,
       '1',
       'online',
-      this.dataProvider,this.analyticsService,this.tableService,this.billService,this.printingService,this.customerService,this.userManagementService
+      this.dataProvider,
+      this.analyticsService,
+      this.tableService,
+      this.billService,
+      this.printingService,
+      this.customerService,
+      this.userManagementService
     );
     this.dataProvider.currentBill = table.occupyTable();
     this.dataProvider.currentTable = table;
     this.dataProvider.billAssigned.next();
-    if(this.dataProvider.tempProduct && this.dataProvider.currentBill){
+    if (this.dataProvider.tempProduct && this.dataProvider.currentBill) {
       this.dataProvider.currentBill.addProduct(this.dataProvider.tempProduct);
       this.dataProvider.tempProduct = undefined;
     }
@@ -202,29 +260,35 @@ export class TableComponent implements OnInit {
 
   moveKot(table: Table, event: any) {
     this.moveKotSelectedTable = table;
-  //  console.log('this.moveKotSelectedTable ', this.moveKotSelectedTable, event);
+    //  console.log('this.moveKotSelectedTable ', this.moveKotSelectedTable, event);
   }
 
-  async deleteTable(table:Table){
-  //  console.log("table",table);
-    if (table.type == 'table'){
-      if (table.status == 'occupied'){
-        this.alertify.presentToast("Table is occupied");
+  async deleteTable(table: Table) {
+    //  console.log("table",table);
+    if (table.type == 'table') {
+      if (table.status == 'occupied') {
+        this.alertify.presentToast('Table is occupied');
         return;
       }
-      if (await this.dataProvider.confirm("Alert! Do you want to delete it?",[1],{buttons:["No","Yes"]})){
+      if (
+        await this.dataProvider.confirm(
+          'Alert! Do you want to delete it?',
+          [1],
+          { buttons: ['No', 'Yes'] }
+        )
+      ) {
         this.dataProvider.loading = true;
-        this.dataProvider.tables = this.dataProvider.tables.filter((t)=>{
+        this.dataProvider.tables = this.dataProvider.tables.filter((t) => {
           return t.id != table.id;
-        })
+        });
         this.tableService.reOrderTable();
         await this.tableService.deleteTable(table.id);
         this.dataProvider.loading = false;
       } else {
-        this.alertify.presentToast("Table delete cancelled");
+        this.alertify.presentToast('Table delete cancelled');
       }
     } else {
-      this.alertify.presentToast("Only tables can be deleted");
+      this.alertify.presentToast('Only tables can be deleted');
     }
   }
 
@@ -268,7 +332,7 @@ export class TableComponent implements OnInit {
 
   changeTable(event: any, kot: Kot) {
     // add kot to selectedKotsForKotTransfer
-  //  console.log('event ', event);
+    //  console.log('event ', event);
     if (event.checked) {
       this.selectedKotsForKotTransfer.push(kot);
     } else {
@@ -286,11 +350,11 @@ export class TableComponent implements OnInit {
     }
     // get all selected productcs from selected kots from moveKotSelectedTable?.bill?.kots
     let kots: Kot[] = [];
-    let products: Product[] = [];
+    let products: (Product | ApplicableCombo)[] = [];
     this.moveKotSelectedTable?.bill?.kots.forEach((kot) => {
       if (kot.allSelected) {
         kots.push(kot);
-      //  console.log('Adding kot ', kot.products);
+        //  console.log('Adding kot ', kot.products);
       } else {
         products.push(...kot.products.filter((p) => p.selected));
         console.log(
@@ -299,8 +363,8 @@ export class TableComponent implements OnInit {
         );
       }
     });
-  //  console.log('kots ', kots);
-  //  console.log('products ', products);
+    //  console.log('kots ', kots);
+    //  console.log('products ', products);
     // now shift the kots to the new table and add products to a new kot
     if (kots.length > 0) {
       kots.forEach((kot) => {
@@ -315,10 +379,8 @@ export class TableComponent implements OnInit {
     }
     if (products.length > 0) {
       products.forEach((product) => {
-        table.bill!.addProduct({
-          ...product,
-          transferred: this.moveKotSelectedTable?.id,
-        });
+        product.transferred = this.moveKotSelectedTable?.id;
+        table.bill!.addProduct(product);
       });
       // remove products from old table
       this.moveKotSelectedTable!.bill!.kots.forEach((kot) => {
@@ -331,127 +393,150 @@ export class TableComponent implements OnInit {
     table.bill?.calculateBill();
   }
 
-  switchTableSize(event:any){
-  //  console.log("event",event);
-    localStorage.setItem('tableSize',event.value);
+  switchTableSize(event: any) {
+    //  console.log("event",event);
+    localStorage.setItem('tableSize', event.value);
     this.dataProvider.currentTableSize = event.value;
   }
 
-  switchMode(mode:any){
-  //  console.log("mode",mode);
+  switchMode(mode: any) {
+    //  console.log("mode",mode);
     this.dataProvider.billingMode = mode.value;
     this.dataProvider.modeChanged.next();
-    if (mode.value == 'dineIn'){
-    //  console.log("this.dataProvider.dineInMenu",this.dataProvider.dineInMenu);
-      if(!this.dataProvider.dineInMenu){
-        alert("No dine-in menu found");
+    if (mode.value == 'dineIn') {
+      //  console.log("this.dataProvider.dineInMenu",this.dataProvider.dineInMenu);
+      if (!this.dataProvider.dineInMenu) {
+        alert('No dine-in menu found');
         return;
       }
-      this.dataProvider.currentMenu = this.dataProvider.menus.find((menu)=>{
-        return menu.selectedMenu?.id == this.dataProvider.dineInMenu?.id
+      this.dataProvider.currentMenu = this.dataProvider.menus.find((menu) => {
+        return menu.selectedMenu?.id == this.dataProvider.dineInMenu?.id;
       });
-      if (this.dataProvider.currentMenu){
+      if (this.dataProvider.currentMenu) {
         this.dataProvider.currentMenu.type = 'dineIn';
         this.dataProvider.products = this.dataProvider.currentMenu.products;
       } else {
-      //  console.log("this.dataProvider.menus",this.dataProvider.menus);
+        //  console.log("this.dataProvider.menus",this.dataProvider.menus);
       }
-    //  console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
-    } else if (mode.value == 'takeaway'){
-    //  console.log("this.dataProvider.takeawayMenu",this.dataProvider.takeawayMenu);
-      if(!this.dataProvider.takeawayMenu){
-        alert("No takeaway menu found");
+      //  console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
+    } else if (mode.value == 'takeaway') {
+      //  console.log("this.dataProvider.takeawayMenu",this.dataProvider.takeawayMenu);
+      if (!this.dataProvider.takeawayMenu) {
+        alert('No takeaway menu found');
         return;
       }
-      this.dataProvider.currentMenu = this.dataProvider.menus.find((menu)=>{
-        return menu.selectedMenu?.id == this.dataProvider.takeawayMenu?.id
+      this.dataProvider.currentMenu = this.dataProvider.menus.find((menu) => {
+        return menu.selectedMenu?.id == this.dataProvider.takeawayMenu?.id;
       });
-      if (this.dataProvider.currentMenu){
+      if (this.dataProvider.currentMenu) {
         this.dataProvider.currentMenu.type = 'takeaway';
         this.dataProvider.products = this.dataProvider.currentMenu.products;
       } else {
-      //  console.log("this.dataProvider.menus",this.dataProvider.menus);
+        //  console.log("this.dataProvider.menus",this.dataProvider.menus);
       }
-    //  console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
-    } else if (mode.value == 'online'){
-    //  console.log("this.dataProvider.onlineMenu",this.dataProvider.onlineMenu);
-      if(!this.dataProvider.onlineMenu){
-        alert("No online menu found");
+      //  console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
+    } else if (mode.value == 'online') {
+      //  console.log("this.dataProvider.onlineMenu",this.dataProvider.onlineMenu);
+      if (!this.dataProvider.onlineMenu) {
+        alert('No online menu found');
         return;
       }
-      this.dataProvider.currentMenu = this.dataProvider.menus.find((menu)=>{
-        return menu.selectedMenu?.id == this.dataProvider.onlineMenu?.id
+      this.dataProvider.currentMenu = this.dataProvider.menus.find((menu) => {
+        return menu.selectedMenu?.id == this.dataProvider.onlineMenu?.id;
       });
-      if (this.dataProvider.currentMenu){
+      if (this.dataProvider.currentMenu) {
         this.dataProvider.currentMenu.type = 'online';
         this.dataProvider.products = this.dataProvider.currentMenu.products;
       } else {
-      //  console.log("this.dataProvider.menus",this.dataProvider.menus);
+        //  console.log("this.dataProvider.menus",this.dataProvider.menus);
       }
-    //  console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
+      //  console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
     }
   }
 
-  settleTable(table:Table,event){
+  settleTable(table: Table, event) {
     if (table.bill) {
-      let dialog = this.dialog.open(SettleComponent,{data:table.bill.billing.grandTotal});
+      let dialog = this.dialog.open(SettleComponent, {
+        data: table.bill.billing.grandTotal,
+      });
       dialog.closed.subscribe(async (result: any) => {
-      //  console.log('Result', result);
+        //  console.log('Result', result);
         if (result && table.bill && result.settling && result.paymentMethods) {
-          await table.bill.settle(result.paymentMethods,'external',result.detail || null);
+          await table.bill.settle(
+            result.paymentMethods,
+            'external',
+            result.detail || null
+          );
         }
       });
     }
   }
 
-  isNumber(value:any){
+  isNumber(value: any) {
     return !isNaN(Number(value));
   }
 
-  rearrangeTables(tables:Table[],groupName:string){
-    const rearrangeDialog = this.dialog.open(RearrangeComponent,{data:{
-      listItems:tables,
-      mainKey:'name'
-    }})
-    firstValueFrom(rearrangeDialog.closed).then((result:any)=>{
-      console.log("Result",result);
-      this.dataProvider.loading = true;
-      this.tableService.setOrder(result,groupName).then(()=>{
-        this.alertify.presentToast("Tables rearranged successfully");
-      }).catch((error)=>{
-        console.log("Error ",error);
-      }).finally(()=>{
-        this.dataProvider.loading = false;
+  rearrangeTables(tables: Table[], groupName: string) {
+    const rearrangeDialog = this.dialog.open(RearrangeComponent, {
+      data: {
+        listItems: tables,
+        mainKey: 'name',
+      },
+    });
+    firstValueFrom(rearrangeDialog.closed)
+      .then((result: any) => {
+        console.log('Result', result);
+        this.dataProvider.loading = true;
+        this.tableService
+          .setOrder(result, groupName)
+          .then(() => {
+            this.alertify.presentToast('Tables rearranged successfully');
+          })
+          .catch((error) => {
+            console.log('Error ', error);
+          })
+          .finally(() => {
+            this.dataProvider.loading = false;
+          });
       })
-    }).catch((error)=>{
-      this.alertify.presentToast("Error rearranging tables");
-      console.log("Error ",error);
-    }).finally(()=>{
-      this.dataProvider.loading = false;
-    })
+      .catch((error) => {
+        this.alertify.presentToast('Error rearranging tables');
+        console.log('Error ', error);
+      })
+      .finally(() => {
+        this.dataProvider.loading = false;
+      });
   }
 
-  reorderTables(tableGroups:{tables:Table[],name:string}[]){
-    const rearrangeDialog = this.dialog.open(RearrangeComponent,{data:{
-      listItems:tableGroups,
-      mainKey:'name'
-    }})
-    firstValueFrom(rearrangeDialog.closed).then((result:any)=>{
-      console.log("Result",result);
-      this.dataProvider.loading = true;
-      this.tableService.setGroupOrder(result).then(()=>{
-        this.alertify.presentToast("Tables rearranged successfully");
-      }).catch((error)=>{
-        console.log("Error ",error);
-      }).finally(()=>{
-        this.dataProvider.loading = false;
+  reorderTables(tableGroups: { tables: Table[]; name: string }[]) {
+    const rearrangeDialog = this.dialog.open(RearrangeComponent, {
+      data: {
+        listItems: tableGroups,
+        mainKey: 'name',
+      },
+    });
+    firstValueFrom(rearrangeDialog.closed)
+      .then((result: any) => {
+        console.log('Result', result);
+        this.dataProvider.loading = true;
+        this.tableService
+          .setGroupOrder(result)
+          .then(() => {
+            this.alertify.presentToast('Tables rearranged successfully');
+          })
+          .catch((error) => {
+            console.log('Error ', error);
+          })
+          .finally(() => {
+            this.dataProvider.loading = false;
+          });
       })
-    }).catch((error)=>{
-      this.alertify.presentToast("Error rearranging tables");
-      console.log("Error ",error);
-    }).finally(()=>{
-      this.dataProvider.loading = false;
-    })
+      .catch((error) => {
+        this.alertify.presentToast('Error rearranging tables');
+        console.log('Error ', error);
+      })
+      .finally(() => {
+        this.dataProvider.loading = false;
+      });
   }
-
 }

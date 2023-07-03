@@ -11,6 +11,7 @@ export interface Product {
   name: string;
   price: number;
   taxedPrice?: number;
+  itemType: 'product';
   type: 'veg' | 'non-veg';
   tags: { name: string; color: string; contrast: string; important: boolean }[];
   images: string[];

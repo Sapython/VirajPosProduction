@@ -78,7 +78,8 @@ export class ConfigComponent implements OnInit {
               this.menuManagementService,
               this.productService,
               this.alertify,
-              this.dialog
+              this.dialog,
+              this.settingsService
             );
             this.dataProvider.menus.push(inst);
             this.modes[0] = true;
@@ -112,7 +113,8 @@ export class ConfigComponent implements OnInit {
               this.menuManagementService,
               this.productService,
               this.alertify,
-              this.dialog
+              this.dialog,
+              this.settingsService
             );
             this.dataProvider.menus.push(inst);
             this.modes[0] = true;
@@ -146,7 +148,8 @@ export class ConfigComponent implements OnInit {
               this.menuManagementService,
               this.productService,
               this.alertify,
-              this.dialog
+              this.dialog,
+              this.settingsService
             );
             this.dataProvider.menus.push(inst);
             this.modes[0] = true;

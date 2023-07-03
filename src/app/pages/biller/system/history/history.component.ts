@@ -100,6 +100,28 @@ export class HistoryComponent {
     const dialog = this.dialog.open(ReprintReasonComponent)
     let res = await firstValueFrom(dialog.closed)
     if(res && typeof res == 'string'){
+      let products = [];
+      kot.products.forEach((product) => {
+        if (product.itemType == 'product'){
+          products.push(product);
+        } else if (product.itemType == 'combo'){
+          product.productSelection.forEach((item) => {
+            item.products.forEach((product) => {
+              products.push(product);
+            })
+          })
+        }
+      })
+      // remove duplicates by adding quantity
+      products = products.reduce((acc, current) => {
+        const x = acc.find((item) => item.id === current.id);
+        if (!x) {
+          return acc.concat([current]);
+        } else {
+          x.quantity += current.quantity;
+          return acc;
+        }
+      }, []);
       let printableKot:PrintableKot = {
         billingMode:bill.mode,
         // date in dd/mm/yyyy format
@@ -112,7 +134,7 @@ export class HistoryComponent {
         }),
         mode:'reprintKot',
         orderNo:bill.orderNo,
-        products:kot.products.map((product)=>{
+        products:products.map((product)=>{
           return {
             id:product.id,
             category:product.category,

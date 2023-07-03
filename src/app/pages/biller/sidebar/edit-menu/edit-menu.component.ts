@@ -15,7 +15,8 @@ import { Menu } from '../../../../types/menu.structure';
 export class EditMenuComponent implements OnInit {
   public recommended:Category[] = []
   printers:string[] = [];
-
+  activeTab:string = 'Products';
+  currentMode:string = this.dataProvider.menus[0].name;
   currentType:'recommended'|'root'|'view'|'all' = 'all';
   constructor(private dialog:Dialog,public dataProvider:DataProvider,private menuManagementService:MenuManagementService,private alertify:AlertsAndNotificationsService,public dialogRef:DialogRef,private electronService:ElectronService){
     this.dialogRef.closed.subscribe(()=>{

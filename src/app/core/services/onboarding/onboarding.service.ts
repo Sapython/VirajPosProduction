@@ -172,7 +172,8 @@ export class OnboardingService {
               this.menuManagementService,
               this.productService,
               this.alertify,
-              this.dialog
+              this.dialog,
+              this.settingsService
             );
             menuInits.push('takeaway');
             this.dataProvider.menus.push(inst);
@@ -188,7 +189,8 @@ export class OnboardingService {
               this.menuManagementService,
               this.productService,
               this.alertify,
-              this.dialog
+              this.dialog,
+              this.settingsService
             );
             menuInits.push('online');
             this.dataProvider.menus.push(inst);
@@ -204,7 +206,8 @@ export class OnboardingService {
               this.menuManagementService,
               this.productService,
               this.alertify,
-              this.dialog
+              this.dialog,
+              this.settingsService
             );
             menuInits.push('dineIn');
             this.dataProvider.menus.push(inst);

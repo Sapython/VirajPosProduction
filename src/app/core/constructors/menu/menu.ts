@@ -9,7 +9,7 @@ import { ProductCostingComponent } from '../../../pages/biller/sidebar/edit-menu
 import { SelectCategoryComponent } from '../../../pages/biller/sidebar/edit-menu/select-category/select-category.component';
 import { SelectRecipeComponent } from '../../../pages/biller/sidebar/edit-menu/select-recipe/select-recipe.component';
 import { SetTaxComponent } from '../../../pages/biller/sidebar/edit-menu/set-tax/set-tax.component';
-import { Category } from '../../../types/category.structure';
+import { Category, ComboCategory } from '../../../types/category.structure';
 import { AlertsAndNotificationsService } from '../../services/alerts-and-notification/alerts-and-notifications.service';
 import { DataProvider } from '../../services/provider/data-provider.service';
 import { Menu } from '../../../types/menu.structure';
@@ -17,6 +17,15 @@ import { Product } from '../../../types/product.structure';
 import { MenuManagementService } from '../../services/database/menuManagement/menu-management.service';
 import { Dialog } from '@angular/cdk/dialog';
 import { ProductsService } from '../../services/database/products/products.service';
+import { Tax } from '../../../types/tax.structure';
+import { SettingsService } from '../../services/database/settings/settings.service';
+import { AddTaxComponent } from '../../../pages/biller/sidebar/edit-menu/add-tax/add-tax.component';
+import { CodeBaseDiscount } from '../../../types/discount.structure';
+import { AddDiscountComponent } from '../../../pages/biller/sidebar/edit-menu/add-discount/add-discount.component';
+import { AddTypeComponent } from '../../../pages/biller/sidebar/edit-menu/add-type/add-type.component';
+import { Combo, ComboType, ComboTypeCategorized, TimeGroup } from '../../../types/combo.structure';
+import { AddComboComponent } from '../../../pages/biller/sidebar/edit-menu/add-combo/add-combo.component';
+import { AddTimeGroupComponent } from '../../../pages/biller/sidebar/edit-menu/add-time-group/add-time-group.component';
 
 
 var debug:boolean = true;
@@ -31,6 +40,7 @@ export class ModeConfig {
   filteredProducts: Product[];
   productVisibilityChanged: boolean = false;
   allProductsCategory: Category;
+  comboCategory: ComboCategory;
   products: Product[] = [];
   recommendedCategories: Category[] = [];
   viewCategories: Category[] = [];
@@ -78,9 +88,22 @@ export class ModeConfig {
     ]),
     max: new FormControl(this.dataProvider.newDishesConfig.max),
   });
-
+  taxSearchControl:string = '';
+  taxes: Tax[] = [];
+  discounts: CodeBaseDiscount[] = [];
+  loadingDiscount:boolean = false;
+  loadingTax:boolean = false;
+  combos:Combo[] = [];
+  loadingCombos:boolean = false;
+  comboTypes:any[] = [];
+  loadingTypes:boolean = false;
+  types:ComboType[] = [];
+  loadingComboTypes:boolean = false;
+  loadingTimeGroups:boolean = false;
+  timeGroups:TimeGroup[] = [];
   // temps
   activateCategory: Category | undefined;
+  discountSearchControl:string = '';
   constructor(
     name: string,
     type: 'dineIn' | 'takeaway' | 'online',
@@ -91,6 +114,7 @@ export class ModeConfig {
     private productService: ProductsService,
     private alertify: AlertsAndNotificationsService,
     private dialog: Dialog,
+    private settingsService:SettingsService,
   ) {
     this.name = name;
     this.type = type;
@@ -162,6 +186,9 @@ export class ModeConfig {
         this.products.length;
       this.fuseInstance.setCollection(this.products);
       this.selectedCategory = this.allProductsCategory;
+      this.products = this.products.map((p) => {
+        return { ...p, itemType: 'product' };
+      })
     }
   }
 
@@ -302,12 +329,58 @@ export class ModeConfig {
     }
   }
 
+  async getComboCategories() {
+    this.menuManagementService.getCombos(this.selectedMenu.id).then((data) => {
+      data.forEach((doc) => {
+        this.combos.push({
+          ...doc.data(),
+          types:doc.data()["types"].map((type:ComboTypeCategorized)=>{
+            if (type.image){
+              var img=new Image();
+              img.src=type.image;
+            }
+            // load products for each type
+            return {
+              ...type,
+              categories:type.categories.map((category)=>{
+                return {
+                  ...category,
+                  products:category.products.map((product)=>{
+                    return this.products.find((p)=>p.id==product.id)
+                  })
+                }
+              })
+            }
+          }),
+          id: doc.id,
+        } as Combo);
+        if (doc.data()["offerImage"]){
+          var img=new Image();
+          img.src=doc.data()["offerImage"];
+        }
+      });
+      console.log("COMBOS",this.combos);
+      this.comboCategory = {
+        combos: this.combos,
+        name: 'Combos',
+        id: 'combos',
+        enabled: true,
+        averagePrice: 0,
+      }
+    })
+  }
+
   async getAllData() {
     this.dataProvider.loading = true;
     await this.getProducts();
     await this.getMainCategories();
     await this.getRecommendedCategories();
     await this.getViewCategories();
+    await this.getTaxes();
+    await this.getDiscounts();
+    await this.getTypes();
+    await this.getTimeGroups();
+    await this.getComboCategories();
     this.dataProvider.menuLoadSubject.next({
       type: this.type,
     });
@@ -705,6 +778,7 @@ export class ModeConfig {
           this.dataProvider.loading = true;
           let product: Product = {
             category: category.mainCategory,
+            itemType:'product',
             createdDate: Timestamp.now(),
             images: [],
             name: data.name,
@@ -1071,5 +1145,398 @@ export class ModeConfig {
 
   openProductCosting(product: Product) {
     this.dialog.open(ProductCostingComponent, { data: product });
+  }
+
+  // new implementations
+
+  getTaxes() {
+    this.settingsService.getTaxes().then((res) => {
+      this.taxes = res.docs.map((d) => {
+        return { ...d.data(), id: d.id } as Tax;
+      });
+    });
+  }
+  
+  addTax() {
+    const dialog = this.dialog.open(AddTaxComponent, { data: { mode: 'add' } });
+    firstValueFrom(dialog.closed)
+      .then((data: any) => {
+      //  console.log('data', data);
+        if (data) {
+          this.dataProvider.loading = true;
+          this.settingsService
+            .addTax({
+              ...data,
+              creationDate: new Date(),
+              updateDate: new Date(),
+            })
+            .then((res) => {
+              this.alertify.presentToast('Tax added successfully');
+              this.getTaxes();
+            })
+            .catch((err) => {
+              this.alertify.presentToast('Error while adding tax');
+            })
+            .finally(() => {
+              this.dataProvider.loading = false;
+            });
+        } else {
+          this.alertify.presentToast('Cancelled adding tax');
+        }
+      })
+      .catch((err: any) => {
+        this.alertify.presentToast('Error while adding tax');
+      });
+  }
+
+  editTax(tax: Tax) {
+    const dialog = this.dialog.open(AddTaxComponent, {
+      data: { mode: 'edit', setting: tax },
+    });
+    firstValueFrom(dialog.closed)
+      .then((data: any) => {
+      //  console.log('data', data);
+        if (data) {
+          this.settingsService
+            .updateTax(tax.id, { ...data, updateDate: Timestamp.now() })
+            .then((res) => {
+              this.alertify.presentToast('Tax updated successfully');
+              this.getTaxes();
+            })
+            .catch((err) => {
+              this.alertify.presentToast('Error while updating tax');
+            });
+        } else {
+          this.alertify.presentToast('Cancelled updating tax');
+        }
+      })
+      .catch((err: any) => {
+        this.alertify.presentToast('Error while updating tax');
+      });
+  }
+
+  async deleteTax(id: string) {
+    if (
+      await this.dataProvider.confirm('Are you sure you want to delete tax ?', [
+        1,
+      ])
+    ) {
+      this.settingsService
+        .deleteTax(id)
+        .then((res) => {
+          this.alertify.presentToast('Tax deleted successfully');
+        })
+        .catch((err) => {
+          this.alertify.presentToast('Error while deleting tax');
+        });
+    }
+  }
+
+  // discounts
+
+  updateSettings(){
+    this.dataProvider.loading = true;
+    this.menuManagementService.updateRootSettings({multipleDiscount:this.dataProvider.multipleDiscount},this.dataProvider.businessId).then(()=>{
+      this.alertify.presentToast('Settings updated successfully');
+    }).catch((err)=>{
+      this.alertify.presentToast('Error while updating settings');
+    }).finally(()=>{
+      this.dataProvider.loading = false;
+    });
+  }
+
+  addDiscount() {
+    const dialog = this.dialog.open(AddDiscountComponent, {
+      data: { mode: 'add' },
+    });
+    dialog.closed.subscribe((data: any) => {
+    //  console.log('data', data);
+      if (data) {
+        if (data.menus.length === 0) {
+          data.menus = null;
+        }
+      //  console.log('adding', data);
+        this.settingsService
+          .addDiscount({
+            ...data,
+            mode: 'codeBased',
+            totalAppliedDiscount: 0,
+            creationDate: Timestamp.now(),
+            reason: '',
+          } as CodeBaseDiscount)
+          .then((res) => {
+          //  console.log('res', res);
+            this.getDiscounts();
+            this.alertify.presentToast('Discount added successfully');
+          })
+          .catch((err) => {
+          //  console.log('err', err);
+            this.alertify.presentToast('Error adding discount');
+          });
+      } else {
+      //  console.log('no data', data);
+      }
+    });
+  }
+
+  getDiscounts() {
+    this.loadingDiscount = true;
+    this.settingsService
+      .getDiscounts()
+      .then((res) => {
+        this.discounts = [];
+        res.forEach((data) => {
+          this.discounts.push({
+            ...data.data(),
+            id: data.id,
+          } as CodeBaseDiscount);
+        });
+      })
+      .catch((err: any) => {
+      //  console.log(err);
+        this.alertify.presentToast('Error while fetching discounts');
+      })
+      .finally(() => {
+        this.loadingDiscount = false;
+      });
+  }
+
+  getMappedMenu(menus?: string[]) {
+    if (!menus) return [];
+    return this.dataProvider.allMenus.filter((menu) =>
+      menus.includes(menu.id!)
+    );
+  }
+
+  editDiscount(discount: CodeBaseDiscount) {
+  //  console.log('discount', discount);
+    const dialog = this.dialog.open(AddDiscountComponent, {
+      data: { mode: 'edit', discount: discount },
+    });
+    dialog.closed.subscribe((data: any) => {
+    //  console.log('data', data);
+      if (data) {
+        if (data.menus.length === 0) {
+          data.menus = null;
+        }
+      //  console.log('adding', data);
+        this.settingsService
+          .updateDiscount({ ...discount, ...data } as CodeBaseDiscount)
+          .then((res) => {
+          //  console.log('res', res);
+            this.getDiscounts();
+            this.alertify.presentToast('Discount update successfully');
+          })
+          .catch((err) => {
+          //  console.log('err', err);
+            this.alertify.presentToast('Error updating discount');
+          });
+      } else {
+      //  console.log('no data', data);
+      }
+    });
+  }
+
+  deleteDiscount(discountId: string) {
+    this.dataProvider.loading = true;
+    this.settingsService
+      .deleteDiscount(discountId)
+      .then(() => {
+        this.alertify.presentToast('Discount deleted successfully');
+        this.getDiscounts();
+      })
+      .catch((err) => {
+        this.alertify.presentToast('Error while deleting discount');
+      })
+      .finally(() => {
+        this.dataProvider.loading = false;
+      });
+  }
+
+  // combos
+
+  addType() {
+    const dialog = this.dialog.open(AddTypeComponent,{data:{mode:'add'}});
+    dialog.closed.subscribe((data: any) => {
+      console.log('data', data);
+      if (data) {
+        this.dataProvider.loading = true;
+        this.menuManagementService
+          .addType({
+            ...data,
+            creationDate: Timestamp.now(),
+            updateDate: Timestamp.now(),
+          },this.selectedMenu,data.image)
+          .then((res) => {
+            this.alertify.presentToast('Type added successfully');
+            this.getTypes();
+          })
+          .catch((err) => {
+            this.alertify.presentToast('Error while adding type');
+          }).finally(()=>{
+            this.dataProvider.loading = false;
+          });
+      } else {
+        this.alertify.presentToast('Cancelled adding type');
+      }
+    })
+  }
+
+  getTypes(){
+    this.loadingTypes = true;
+    this.menuManagementService.getTypes(this.selectedMenu.id).then((res)=>{
+      this.types = [];
+      res.forEach((data)=>{
+        this.types.push({...data.data(),id:data.id} as ComboType);
+      });
+    }).catch((err)=>{
+      this.alertify.presentToast('Error while fetching types');
+    }).finally(()=>{
+      this.loadingTypes = false;
+    });
+  }
+
+  editType(type:ComboType){
+    const dialog = this.dialog.open(AddTypeComponent,{
+      data:{type:type,mode:'edit'}
+    });
+    dialog.closed.subscribe((data:any)=>{
+      if(data){
+        this.menuManagementService.updateType({...type,...data},this.selectedMenu).then((res)=>{
+          this.alertify.presentToast('Type updated successfully');
+          this.getTypes();
+        }).catch((err)=>{
+          this.alertify.presentToast('Error while updating type');
+        });
+      }else{
+        this.alertify.presentToast('Cancelled updating type');
+      }
+    });
+  }
+
+  deleteType(type:ComboType){
+    this.menuManagementService.deleteType(type,this.selectedMenu).then(()=>{
+      this.alertify.presentToast('Type deleted successfully');
+      this.getTypes();
+    }).catch((err)=>{
+      this.alertify.presentToast('Error while deleting type');
+    });
+  }
+
+  // combo
+
+  getCombos(){
+    this.loadingCombos = true;
+    this.menuManagementService.getCombos(this.selectedMenu.id).then((res)=>{
+      console.log('COMBOS res',res.docs);
+      this.combos = [];
+      res.forEach((data)=>{
+        this.combos.push({...data.data(),id:data.id} as Combo);
+      });
+    }).catch((err)=>{
+      this.alertify.presentToast('Error while fetching combos');
+    }).finally(()=>{
+      this.loadingCombos = false;
+    });
+  }
+
+  addCombo(){
+    const dialog = this.dialog.open(AddComboComponent,{data:{mode:'add',menu:this}});
+    dialog.closed.subscribe((data:any)=>{
+      console.log('data',data);
+
+      if(data){
+        this.menuManagementService.addCombo({...data,creationDate:Timestamp.now(),updateDate:Timestamp.now()},this.selectedMenu).then((res)=>{
+          this.alertify.presentToast('Combo added successfully');
+          this.menuManagementService.getCombos(this.selectedMenu.id);
+        }).catch((err)=>{
+          this.alertify.presentToast('Error while adding combo');
+        });
+      }else{
+        this.alertify.presentToast('Cancelled adding combo');
+      }
+    })
+  }
+
+  editCombo(combo:Combo){
+    const dialog = this.dialog.open(AddComboComponent,{data:{mode:'edit',combo:combo,menu:this}});
+    dialog.closed.subscribe((data:any)=>{
+      if(data){
+        this.menuManagementService.updateCombo({...combo,...data},this.selectedMenu).then((res)=>{
+          this.alertify.presentToast('Combo updated successfully');
+          this.menuManagementService.getCombos(this.selectedMenu.id);
+        }).catch((err)=>{
+          this.alertify.presentToast('Error while updating combo');
+        });
+      }else{
+        this.alertify.presentToast('Cancelled updating combo');
+      }
+    });
+  }
+
+  deleteCombo(combo:Combo){
+    this.menuManagementService.deleteCombo(combo,this.selectedMenu).then(()=>{
+      this.alertify.presentToast('Combo deleted successfully');
+      this.menuManagementService.getCombos(this.selectedMenu.id);
+    }).catch((err)=>{
+      this.alertify.presentToast('Error while deleting combo');
+    });
+  }
+
+  // time group
+
+  getTimeGroups(){
+    this.loadingTimeGroups = true;
+    this.menuManagementService.getTimeGroups(this.selectedMenu.id).then((res)=>{
+      this.timeGroups = [];
+      res.forEach((data)=>{
+        this.timeGroups.push({...data.data(),id:data.id} as TimeGroup);
+      });
+    }).catch((err)=>{
+      this.alertify.presentToast('Error while fetching time groups');
+    }).finally(()=>{
+      this.loadingTimeGroups = false;
+    });
+  }
+
+  addTimeGroup(){
+    const dialog = this.dialog.open(AddTimeGroupComponent,{data:{mode:'add'}});
+    dialog.closed.subscribe((data:any)=>{
+      if(data){
+        this.menuManagementService.addTimeGroup({...data,creationDate:Timestamp.now()},this.selectedMenu).then((res)=>{
+          this.alertify.presentToast('Time group added successfully');
+          this.menuManagementService.getTimeGroups(this.selectedMenu.id);
+        }).catch((err)=>{
+          this.alertify.presentToast('Error while adding time group');
+        });
+      }else{
+        this.alertify.presentToast('Cancelled adding time group');
+      }
+    });
+  }
+
+  editTimeGroup(timeGroup:TimeGroup){
+    const dialog = this.dialog.open(AddTimeGroupComponent,{data:{mode:'edit',timeGroup:timeGroup}});
+    dialog.closed.subscribe((data:any)=>{
+      if(data){
+        this.menuManagementService.updateTimeGroup({...timeGroup,...data},this.selectedMenu).then((res)=>{
+          this.alertify.presentToast('Time group updated successfully');
+          this.menuManagementService.getTimeGroups(this.selectedMenu.id);
+        }).catch((err)=>{
+          this.alertify.presentToast('Error while updating time group');
+        });
+      }else{
+        this.alertify.presentToast('Cancelled updating time group');
+      }
+    });
+  }
+
+  deleteTimeGroup(timeGroup:TimeGroup){
+    this.menuManagementService.deleteTimeGroup(timeGroup,this.selectedMenu).then(()=>{
+      this.alertify.presentToast('Time group deleted successfully');
+      this.menuManagementService.getTimeGroups(this.selectedMenu.id);
+    }).catch((err)=>{
+      this.alertify.presentToast('Error while deleting time group');
+    });
   }
 }

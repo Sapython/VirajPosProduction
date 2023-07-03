@@ -2,13 +2,15 @@ import { Timestamp } from '@angular/fire/firestore';
 import { Product } from '../../../types/product.structure';
 import { KotConstructor } from '../../../types/kot.structure';
 import { UserConstructor } from '../../../types/user.structure';
+import { ApplicableCombo } from '../comboKot/comboKot';
+import { ComboProductSelection } from '../../../types/combo.structure';
 
 export class Kot implements KotConstructor {
   id?: string;
   createdDate: Timestamp;
   unmade?: boolean;
   stage: 'active' | 'finalized' | 'cancelled' | 'edit';
-  products: Product[];
+  products: (Product|ApplicableCombo)[];
   mode;
   editMode: boolean;
   selected: boolean;
@@ -17,7 +19,7 @@ export class Kot implements KotConstructor {
   totalTimeTaken: string;
   totalTimeTakenNumber: number;
   someSelected: boolean;
-  constructor(product: Product,kotObject?:KotConstructor) {
+  constructor(product: Product|ApplicableCombo,kotObject?:KotConstructor) {
     this.createdDate = Timestamp.now();
     this.stage = 'active';
     this.id = "new"
@@ -59,50 +61,84 @@ export class Kot implements KotConstructor {
 
   convertProductsToObject():Product[] {
     return this.products.map((product) => {
-      return {
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        type: product.type,
-        category: product.category,
-        tags: product.tags || [],
-        quantity: product.quantity,
-        variants: product.variants || [],
-        selected: product.selected,
-        images: product.images || [],
-        createdDate: product.createdDate,
-        visible: product.visible,
-        lineDiscount: product.lineDiscount || null,
-        sales: product.sales || 0,
-        instruction: product.instruction || null,
-        order: product.order || null,
-        taxedPrice: product.taxedPrice || null,
-        taxes: product.taxes || []
-      };
-    });
+      if (product.itemType == 'product'){
+        return {
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          type: product.type,
+          category: product.category,
+          itemType: product.itemType,
+          tags: product.tags || [],
+          quantity: product.quantity,
+          variants: product.variants || [],
+          selected: product.selected,
+          images: product.images || [],
+          createdDate: product.createdDate,
+          visible: product.visible,
+          lineDiscount: product.lineDiscount || null,
+          sales: product.sales || 0,
+          instruction: product.instruction || null,
+          order: product.order || null,
+          taxedPrice: product.taxedPrice || null,
+          taxes: product.taxes || []
+        };
+      } else if (product.itemType == 'combo'){
+        return product.productSelection.map((item) => {
+          return item.products.map((product) => {
+            return {
+              id: product.id,
+              name: product.name,
+              price: product.price,
+              type: product.type,
+              itemType: product.itemType,
+              category: product.category,
+              tags: product.tags || [],
+              quantity: product.quantity,
+              variants: product.variants || [],
+              selected: product.selected,
+              images: product.images || [],
+              createdDate: product.createdDate,
+              visible: product.visible,
+              lineDiscount: product.lineDiscount || null,
+              sales: product.sales || 0,
+              instruction: product.instruction || null,
+              order: product.order || null,
+              taxedPrice: product.taxedPrice || null,
+              taxes: product.taxes || []
+            };
+          })
+        }).flat();
+      }
+    }).flat();
   }
 
-  deductProductQuantity(product: Product) {
-    let index = this.products.findIndex((item) => item.id === product.id);
-    if (index > -1) {
-      this.products[index].quantity -= 1;
-    }
+  getAllProducts():Product[] {
+    let products = [];
+    this.products.forEach((product) => {
+      if (product.itemType == 'product'){
+        products.push(product);
+      } else if (product.itemType == 'combo'){
+        product.productSelection.forEach((item) => {
+          item.products.forEach((product) => {
+            products.push(product);
+          })
+        })
+      }
+    })
+    // remove duplicates by adding quantity
+    products = products.reduce((acc, current) => {
+      const x = acc.find((item) => item.id === current.id);
+      if (!x) {
+        return acc.concat([current]);
+      } else {
+        x.quantity += current.quantity;
+        return acc;
+      }
+    }, []);
+    return products;
   }
 
-  addProductQuantity(product: Product) {
-    let index = this.products.findIndex((item) => item.id === product.id);
-    if (index > -1) {
-      this.products[index].quantity += 1;
-    }
-  }
-
-  setProductQuantity(product: Product, quantity: number) {
-    let index = this.products.findIndex((item) => item.id === product.id);
-    if (index > -1) {
-      this.products[index].quantity = quantity;
-    }
-  }
-  
   getTime(date:Timestamp){
     let milliseconds =(new Date()).getTime() - (date.toDate().getTime());
     // convert milliseconds to minutes and seconds
@@ -134,3 +170,5 @@ export class Kot implements KotConstructor {
     };
   }
 }
+
+

@@ -3,10 +3,10 @@ import { AlertsAndNotificationsService } from '../../../../../core/services/aler
 import { Dialog } from '@angular/cdk/dialog';
 import { SettingsService } from '../../../../../core/services/database/settings/settings.service';
 import { DataProvider } from '../../../../../core/services/provider/data-provider.service';
-import { AddTaxComponent } from '../../add-tax/add-tax.component';
 import { firstValueFrom } from 'rxjs';
 import { Tax } from '../../../../../types/tax.structure';
 import { Timestamp } from '@angular/fire/firestore';
+import { AddTaxComponent } from '../../../sidebar/edit-menu/add-tax/add-tax.component';
 
 @Component({
   selector: 'app-taxes',
@@ -25,6 +25,7 @@ export class TaxesComponent implements OnInit {
   ngOnInit(): void {
     this.getTaxes();
   }
+  
   getTaxes() {
     this.settingsService.getTaxes().then((res) => {
       this.taxes = res.docs.map((d) => {

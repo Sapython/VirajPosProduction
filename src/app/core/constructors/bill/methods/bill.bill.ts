@@ -108,16 +108,18 @@ export async function settle(
 ) {
   this.calculateBill();
   // update every product and increase their sales counter by their quantity
-  let products: Product[] = [];
-  let allProducts = this.kots.reduce((acc, cur) => {
-    return acc.concat(cur.products);
-  }, products);
-  allProducts.forEach((product) => {
-    if (!product.sales) {
-      product.sales = 0;
-    }
-    product.sales += product.quantity;
-  });
+  return
+  // TODO to be refixed
+  // let products: Product[]|ApplicableCombo[] = [];
+  // let allProducts = this.kots.reduce((acc, cur) => {
+  //   return acc.concat(cur.products);
+  // }, products);
+  // allProducts.forEach((product) => {
+  //   if (!product.sales) {
+  //     product.sales = 0;
+  //   }
+  //   product.sales += product.quantity;
+  // });
   if (!this.billNo) {
     if (this.nonChargeableDetail) {
       this.billNo = 'NC-' + this.dataProvider.ncBillToken.toString();
@@ -143,8 +145,9 @@ export async function settle(
       }
     }
   }
-  // update in databse
-  this.billService.addSales(allProducts.map((product) => product.id));
+  // update in database
+  // TODO to be refixed
+  // this.billService.addSales(allProducts.map((product) => product.id));
   // this.stage = 'settled';
   this.settlement = {
     payments: payments,

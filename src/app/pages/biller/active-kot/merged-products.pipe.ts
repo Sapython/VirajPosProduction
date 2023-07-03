@@ -13,16 +13,16 @@ export class MergedProductsPipe implements PipeTransform {
       return [];
     }
     let products:Product[] = [];
-    value.forEach((kot)=>{
-      kot.products.forEach((product)=>{
-        let index = products.findIndex((p)=>p.id == product.id);
-        if(index == -1){
-          products.push(product);
-        }else{
-          products[index].quantity += product.quantity;
-        }
-      })
-    })
+    // value.forEach((kot)=>{
+    //   kot.products.forEach((product)=>{
+    //     let index = products.findIndex((p)=>p.id == product.id);
+    //     if(index == -1){
+    //       products.push(product);
+    //     }else{
+    //       products[index].quantity += product.quantity;
+    //     }
+    //   })
+    // })
     return products;
   }
 

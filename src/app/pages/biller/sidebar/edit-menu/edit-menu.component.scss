@@ -1,32 +1,71 @@
 section{
-    width: 70vw;
+    width: 100vw;
+    height: 100vh;
     display: flex;
     flex-direction: column;
-    border-radius: 20px;
     background: white;
     padding: 20px;
+    box-sizing: border-box;
     .actions{
         display: flex;
         justify-content: center;
         margin-top: 20px;
     }
-    .view{
+    .mode{
+        padding: 20px;
+        box-sizing: border-box;
+        background: #eee;
+        height: calc(100% - 100px);
+        display: flex;
+        flex-direction: column;
+        .view{
+            height: 100%;
+            box-sizing: border-box;
+        }
+    }
+    .tabs{
+        display: flex;
+        gap:20px;
+        button{
+            background: white;
+            color:var(--Viraj-primary);
+            padding: 7px 30px;
+            border:2px solid var(--Viraj-primary);
+            border-radius: 5px 5px 0px 0px;
+            border-bottom: none;
+            box-shadow: 0px 1px 10px 0px rgba(0,0,0,0.1) inset;
+            &.active{
+                background: var(--Viraj-primary);
+                color:white;
+                border:none;
+                border:2px solid var(--Viraj-primary);
+                box-shadow: none;
+            }
+            &:hover{
+                background: var(--Viraj-primary);
+                color: white;
+                border:none;
+                border:2px solid rgba(var(--Viraj-primary-rgb),0.3);
+            }
+        }
+    }
+    .productsView{
         display: grid;
         grid-template-columns: 1fr 3fr;
         background: white;
         gap:20px;
         overflow-y: auto;
-        border-radius: 20px 20px 0px 0px;
+        height: 100%;
+        box-sizing: border-box;
         .sidebar{
             display: flex;
             flex-direction: column;
             gap: 30px;
-            padding: 20px 0px 0px 20px;
+            padding: 0px 0px 0px 20px;
+            overflow-y: auto;
             .categories{
                 height: 100%;
-                overflow-y: auto;
                 margin-left: -20px;
-                height: calc(60vh - 30px);
                 span{
                     position: sticky;
                     z-index: 1;
@@ -49,6 +88,7 @@ section{
             display: flex;
             flex-direction: column;
             padding-right: 50px;
+            overflow-y: scroll;
             .title{
                 display: flex;
                 justify-content: space-between;
@@ -87,7 +127,6 @@ section{
             .productList{
                 display: flex;
                 flex-direction: column;
-                height: calc( 70vh - 200px);
                 overflow-y: auto;
                 gap:6px;
                 .product{
@@ -108,13 +147,93 @@ section{
             }
         }
     }
-    .action{
-        display: flex;
-        justify-content: center;
-        height: 70px;
-        background: white;
-        border-radius: 0px 0px 20px 20px;
+    .tableView{
+        overflow: auto;
+        .row{
+            display: flex;
+            justify-content: space-between;
+        }
+        .comboCards{
+            display: flex;
+            gap:20px;
+            flex-wrap: wrap;
+            .card{
+                width: 200px;
+                background: white;
+                height: 150px;
+                box-shadow: 2px 2px 20px 0px rgba(0,0,0,0.1);
+                border: 2px solid var(--Viraj-primary);
+                border-radius: 10px;
+                transition: scale 0.2s ease-in-out;
+                scale: 0.9;
+                &:hover{
+                    scale: 1;
+                }
+            }
+            .new{
+                display: grid;
+                place-items: center;
+                p{
+                    i{
+                        color: var(--Viraj-primary);
+                        font-size: 40px;
+                    }
+                }
+            }
+            .combo{
+                display: flex;
+                flex-direction: column;
+                background: white;
+                box-shadow: 2px 2px 20px 0px rgba(0,0,0,0.1);
+                img{
+                    height: 100px;
+                    width: 100%;
+                    object-fit: cover;
+                }
+                p{
+
+                }
+            }
+        }
+        .tableContainer{
+            height: 100%;
+            overflow-y: auto;
+            table{
+                width: 100%;
+                border-collapse: collapse;
+                background: white;
+                thead{
+                    position: sticky;
+                    top: 0;
+                    background: white;
+                    tr{
+                        padding: 15px;
+                        border: 1px solid #ddd;
+                        th{
+                            padding: 10px;
+                            border: 1px solid #ddd;
+                        }
+                    }
+                }
+                tbody{
+                    tr{
+                        td{
+                            padding: 10px;
+                            border: 1px solid #ddd;
+                            background: white;
+                        }
+                    }
+                }
+            }
+        }
     }
+    // .action{
+    //     display: flex;
+    //     justify-content: center;
+    //     height: 70px;
+    //     background: white;
+    //     border-radius: 0px 0px 20px 20px;
+    // }
 }
 .product{
     display: flex;

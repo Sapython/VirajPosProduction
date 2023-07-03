@@ -1,395 +1,585 @@
 <section>
-  <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
-    <ng-container *ngFor="let mode of this.dataProvider.menus">
-      <mat-tab [label]="mode.name" *ngIf="mode.active">
-        <ng-template matTabContent>
-          <div class="view">
-            <div class="sidebar">
-              <button mat-stroked-button color="primary" (click)="addNewMenu()" *ngIf="this.dataProvider.getAccess(['admin','manager'])">
-                Add New Menu
-              </button>
-              <mat-select *ngIf="this.dataProvider.getAccess(['admin','manager'])"
-                placeholder="Menu"
-                [(ngModel)]="mode.selectedMenuId"
-                (selectionChange)="mode.updateMenu()"
-                name="menu"
-              >
-                <mat-option
-                  *ngFor="let menu of this.dataProvider.allMenus"
-                  [value]="menu.id"
-                >
-                  {{ menu.name }}
-                </mat-option>
-              </mat-select>
-              <div class="categories">
-                <span *ngIf="this.dataProvider.getAccess(['admin','manager'])">Product List</span>
-                <app-category-card
-                [full]="true"
-                *ngIf="this.dataProvider.getAccess(['admin','manager'])"
-                (click)="
-                  mode.selectCategory(mode.allProductsCategory);
-                  mode.currentType = 'all'
-                "
-                [category]="mode.allProductsCategory"
-              ></app-category-card>
-                <span *ngIf="this.dataProvider.getAccess(['admin','manager'])">Recommended</span>
-                <div cdkDropList *ngIf="this.dataProvider.getAccess(['admin','manager'])"
-                  class="example-list"
-                  (cdkDropListDropped)="mode.reorderRecommendedCategory($event)">
-                    <app-category-card
-                    cdkDrag
-                    [full]="true"
-                    *ngFor="let category of mode.recommendedCategories"
-                    (click)="
-                      mode.selectCategory(category);
-                      mode.currentType = 'recommended'
-                    "
-                    [category]="category"
-                  ></app-category-card>
-                </div>
-                <span
-                  >View Categories<viraj-button
-                    type="icon"
-                    (vclick)="mode.addViewCategory()"
-                    ><i class="ri-add-box-fill"></i></viraj-button
-                ></span>
-                <div
-                  cdkDropList
-                  class="example-list"
-                  (cdkDropListDropped)="mode.reorderViewCategory($event)"
-                >
-                  <app-category-card
-                      [full]="true"
-                      cdkDrag
-                      *ngFor="let category of mode.viewCategories"
-                      (click)="
-                        mode.selectCategory(category); mode.currentType = 'view'
-                      "
-                      [category]="category"
-                    ></app-category-card>
-                </div>
-                <span *ngIf="this.dataProvider.getAccess(['admin','manager'])">Main Categories</span>
-                <div cdkDropList *ngIf="this.dataProvider.getAccess(['admin','manager'])"
-                  class="example-list"
-                  (cdkDropListDropped)="mode.reorderMainCategory($event)"
-                  >
-                  <app-category-card
-                    [full]="true"
-                    cdkDrag
-                    *ngFor="let category of mode.mainCategories"
-                    (click)="
-                      mode.selectCategory(category); mode.currentType = 'root'
-                    "
-                    [category]="category"
-                  ></app-category-card>
-                </div>
+  <div class="tabs">
+    <button [ngClass]="{active:currentMode==mode.name}" *ngFor="let mode of this.dataProvider.menus"
+      (click)="currentMode=mode.name">
+      {{mode.name}}
+    </button>
+    <button color="primary" (click)="addNewMenu()" *ngIf="this.dataProvider.getAccess(['admin','manager'])">
+      Add New Menu
+    </button>
+  </div>
+  <ng-container *ngFor="let mode of this.dataProvider.menus">
+    <div class="mode" *ngIf="mode.active && mode.name == currentMode">
+      <div class="tabs">
+        <button (click)="activeTab='Products'" [ngClass]="{active:activeTab=='Products'}">Products</button>
+        <button (click)="activeTab='Taxes'" [ngClass]="{active:activeTab=='Taxes'}">Taxes</button>
+        <button (click)="activeTab='Discounts'" [ngClass]="{active:activeTab=='Discounts'}">Discounts</button>
+        <button (click)="activeTab='Combos'" [ngClass]="{active:activeTab=='Combos'}">Combos</button>
+        <button (click)="activeTab='Types'" [ngClass]="{active:activeTab=='Types'}">Types</button>
+        <button (click)="activeTab='Settings'" [ngClass]="{active:activeTab=='Settings'}">Settings</button>
+      </div>
+      <div class="productsView" *ngIf="activeTab == 'Products'">
+        <ng-container *ngIf="activeTab == 'Products'">
+          <div class="sidebar">
+            <div class="categories">
+              <span *ngIf="this.dataProvider.getAccess(['admin','manager'])">Product List</span>
+              <app-category-card [full]="true" *ngIf="this.dataProvider.getAccess(['admin','manager'])" (click)="
+            mode.selectCategory(mode.allProductsCategory);
+            mode.currentType = 'all'
+          " [category]="mode.allProductsCategory"></app-category-card>
+              <span *ngIf="this.dataProvider.getAccess(['admin','manager'])">Recommended</span>
+              <div cdkDropList *ngIf="this.dataProvider.getAccess(['admin','manager'])" class="example-list"
+                (cdkDropListDropped)="mode.reorderRecommendedCategory($event)">
+                <app-category-card cdkDrag [full]="true" *ngFor="let category of mode.recommendedCategories" (click)="
+                mode.selectCategory(category);
+                mode.currentType = 'recommended'
+              " [category]="category"></app-category-card>
               </div>
-            </div>
-            <div class="main" *ngIf="mode.selectedCategory">
-              <div class="title">
-                <div class="actions">
-                  <h2>{{ mode.selectedCategory.name }}</h2>
-                </div>
+              <span>View Categories<viraj-button type="icon" (vclick)="mode.addViewCategory()"><i
+                    class="ri-add-box-fill"></i></viraj-button></span>
+              <div cdkDropList class="example-list" (cdkDropListDropped)="mode.reorderViewCategory($event)">
+                <app-category-card [full]="true" cdkDrag *ngFor="let category of mode.viewCategories" (click)="
+                  mode.selectCategory(category); mode.currentType = 'view'
+                " [category]="category"></app-category-card>
               </div>
-              <div class="filters">
-                <mat-form-field appearance="outline">
-                  <mat-label>Search Item</mat-label>
-                  <input
-                    type="text"
-                    placeholder="Search Item"
-                    matInput
-                    (input)="mode.searchSubject.next(text.value)"
-                    #text
-                  />
-                </mat-form-field>
-                <ng-container class="actions">
-                  <button
-                    mat-stroked-button
-                    color="primary"
-                    (click)="mode.disableAll()"
-                  >
-                    Disable All
-                  </button>
-                  <button
-                    mat-stroked-button
-                    color="primary"
-                    (click)="mode.enableAll()"
-                  >
-                    Enable All
-                  </button>
-                  <button
-                    *ngIf="['all'].includes(mode.currentType) && this.dataProvider.getAccess(['admin','manager'])"
-                    mat-stroked-button
-                    mat-button
-                    (click)="mode.addRecipe(mode.selectedMenuId)"
-                    color="primary"
-                  >
-                    Add Recipe
-                  </button>
-                  <button
-                    *ngIf="['view'].includes(mode.currentType)"
-                    mat-stroked-button
-                    mat-button
-                    (click)="mode.addUploadedRecipe()"
-                    color="primary"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    *ngIf="['view'].includes(mode.currentType)"
-                    mat-stroked-button
-                    mat-button
-                    (click)="mode.deleteViewCategory()"
-                    color="primary"
-                  >
-                    Delete
-                  </button>
-                  <mat-menu #menu="matMenu">
-                    <button
-                      mat-menu-item
-                      (click)="mode.addRecipe(mode.selectedMenuId)"
-                    >
-                      New Dish
-                    </button>
-                    <button mat-menu-item (click)="mode.selectRecipe()">
-                      Old Dish
-                    </button>
-                    <button mat-menu-item>Upload From Excel</button>
-                    <button mat-menu-item (click)="mode.getExcelFormat()">
-                      Get Excel Format
-                    </button>
-                  </mat-menu>
-                  <span *ngIf="mode.currentType != 'all'">
-                    <mat-slide-toggle
-                      color="primary"
-                      [(ngModel)]="mode.selectedCategory.enabled"
-                      (change)="mode.selectedCategory.updated = true"
-                    ></mat-slide-toggle>
-                  </span>
-                </ng-container>
-              </div>
-              <div class="printerSettings" *ngIf="mode.currentType == 'root' && this.dataProvider.getAccess(['admin','manager'])">
-                <mat-form-field appearance="outline">
-                  <mat-label>Select Printer</mat-label>
-                  <mat-select
-                    [(ngModel)]="mode.selectedCategory.printer"
-                    (selectionChange)="mode.updatePrinter(mode.selectedCategory)"
-                    name="printer"
-                  >
-                    <mat-option> Select </mat-option>
-                    <mat-option
-                      [value]="printer"
-                      *ngFor="let printer of printers"
-                    >
-                      {{ printer }}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div>
-              <div class="filters" *ngIf="this.dataProvider.getAccess(['admin','manager'])">
-                <h4>Recommendation Setting</h4>
-                <ng-container
-                  *ngIf="
-                    ['recommended'].includes(mode.currentType) &&
-                    mode.selectedCategory.id == 'highRange'
-                  "
-                >
-                  <form
-                    [formGroup]="mode.highRangeForm"
-                    (ngSubmit)="mode.recommendationSave('highRange')"
-                  >
-                    <mat-form-field appearance="outline">
-                      <mat-label>Min Price</mat-label>
-                      <input type="number" formControlName="min" matInput />
-                    </mat-form-field>
-                    <mat-form-field appearance="outline">
-                      <mat-label>Max Price</mat-label>
-                      <input type="number" formControlName="max" matInput />
-                    </mat-form-field>
-                    <button
-                      color="primary"
-                      mat-flat-button
-                      *ngIf="mode.highRangeForm.touched"
-                    >
-                      Save
-                    </button>
-                  </form>
-                </ng-container>
-                <ng-container
-                  *ngIf="
-                    ['recommended'].includes(mode.currentType) &&
-                    mode.selectedCategory.id == 'lowRange'
-                  "
-                >
-                  <form
-                    [formGroup]="mode.lowRangeForm"
-                    (ngSubmit)="mode.recommendationSave('lowRange')"
-                  >
-                    <mat-form-field appearance="outline">
-                      <mat-label>Min Price</mat-label>
-                      <input type="number" matInput formControlName="min" />
-                    </mat-form-field>
-                    <mat-form-field appearance="outline">
-                      <mat-label>Max Price</mat-label>
-                      <input type="number" matInput formControlName="max" />
-                    </mat-form-field>
-                    <button
-                      color="primary"
-                      mat-flat-button
-                      *ngIf="mode.lowRangeForm.touched"
-                    >
-                      Save
-                    </button>
-                  </form>
-                </ng-container>
-                <ng-container
-                  *ngIf="
-                    ['recommended'].includes(mode.currentType) &&
-                    mode.selectedCategory.id == 'mostSelling'
-                  "
-                >
-                  <form
-                    [formGroup]="mode.mostSellingForm"
-                    (ngSubmit)="mode.recommendationSave('mostSelling')"
-                  >
-                    <mat-form-field appearance="outline">
-                      <mat-label>Min Sales</mat-label>
-                      <input type="number" matInput formControlName="min" />
-                    </mat-form-field>
-                    <mat-form-field appearance="outline">
-                      <mat-label>Max Sales</mat-label>
-                      <input type="number" matInput formControlName="max" />
-                    </mat-form-field>
-                    <button
-                      color="primary"
-                      mat-flat-button
-                      *ngIf="mode.mostSellingForm.touched"
-                    >
-                      Save
-                    </button>
-                  </form>
-                </ng-container>
-                <ng-container
-                  *ngIf="
-                    ['recommended'].includes(mode.currentType) &&
-                    mode.selectedCategory.id == 'newDishes'
-                  "
-                >
-                  <form
-                    [formGroup]="mode.newDishesForm"
-                    (ngSubmit)="mode.recommendationSave('newDishes')"
-                  >
-                    <mat-form-field appearance="outline">
-                      <mat-label>Minimum date *</mat-label>
-                      <input
-                        matInput
-                        [matDatepicker]="minPicker"
-                        required
-                        formControlName="min"
-                      />
-                      <mat-hint>MM/DD/YYYY</mat-hint>
-                      <mat-datepicker-toggle
-                        matIconSuffix
-                        [for]="minPicker"
-                      ></mat-datepicker-toggle>
-                      <mat-datepicker #minPicker></mat-datepicker>
-                    </mat-form-field>
-                    <mat-form-field appearance="outline">
-                      <mat-label>Maximum date (Optional)</mat-label>
-                      <input
-                        matInput
-                        [matDatepicker]="picker"
-                        formControlName="max"
-                      />
-                      <mat-hint>MM/DD/YYYY</mat-hint>
-                      <mat-datepicker-toggle
-                        matIconSuffix
-                        [for]="picker"
-                      ></mat-datepicker-toggle>
-                      <mat-datepicker #picker></mat-datepicker>
-                    </mat-form-field>
-                    <button
-                      color="primary"
-                      mat-flat-button
-                      *ngIf="mode.newDishesForm.touched"
-                    >
-                      Save
-                    </button>
-                  </form>
-                </ng-container>
-              </div>
-              <div class="productList">
-                <p>Total {{ mode.selectedCategory.products.length }} Products</p>
-                <mat-spinner
-                  mode="indeterminate"
-                  *ngIf="mode.selectedCategory.loading"
-                ></mat-spinner>
-                <div
-                  class="productList"
-                  cdkDropList
-                  (cdkDropListDropped)="mode.reorderProduct($event)"
-                >
-                  <div
-                    cdkDrag
-                    class="product"
-                    *ngFor="
-                      let product of mode.filteredProducts.length > 0
-                        ? mode.filteredProducts
-                        : mode.selectedCategory.products
-                    "
-                  >
-                    <p>{{ product.name }}</p>
-                    <div class="pricing">
-                      <strong>{{ product.price | currency : "INR" }}</strong>
-                      <!-- <mat-select [multiple]="true" (change)="mode.setTax(product,$event)" placeholder="Select Tax" [value]="product.tax?.id" name="tax" #val>
-                        <mat-option value="">Not Selected</mat-option>
-                        <mat-option *ngFor="let tax of this.dataProvider.taxes" [value]="tax.id">
-                          {{tax.name}} {{tax.mode | titlecase}}
-                        </mat-option>
-                      </mat-select> -->
-                      <span *ngIf="!(product.taxes && product.taxes.length > 0)" class="danger">No Taxes</span>
-                      <viraj-button *ngIf="this.dataProvider.getAccess(['admin','manager'])" (click)="mode.setTaxes(product)">Set Taxes</viraj-button>
-                      <mat-slide-toggle 
-                        checked
-                        *ngIf="(this.dataProvider.getAccess(['admin','manager'])) || ['view'].includes(this.currentType)"
-                        [(ngModel)]="product.visible"
-                        (toggleChange)="
-                          mode.productVisibilityChanged = true;
-                          product.updated = true;
-                          mode.selectedCategory.updated = true;
-                        "
-                      ></mat-slide-toggle>
-                      <viraj-button *ngIf="this.dataProvider.getAccess(['admin','manager'])"
-                        (click)="mode.editRecipe(product, mode.selectedMenuId)"
-                      >
-                        <i class="ri-pencil-fill"></i>
-                      </viraj-button>
-                      <viraj-button  *ngIf="(['root','view','all'].includes(this.currentType) && this.dataProvider.getAccess(['admin','manager'])) || ['view'].includes(this.currentType)"
-                        (click)="mode.deleteRecipe(product,mode.selectedMenuId)"
-                      >
-                        <i class="ri-delete-bin-6-fill"></i>
-                      </viraj-button>
-                      <!-- <viraj-button
-                        *ngIf="mode.currentType == 'all'"
-                        (vclick)="mode.openProductCosting(product)"
-                        >Costing</viraj-button
-                      > -->
-                    </div>
-                  </div>
-                  <mat-paginator *ngIf="mode.filteredProducts.length == 0 && mode.currentType == 'all'" [length]="mode.products.length"
-                                [pageSize]="10"
-                                [pageSizeOptions]="[5, 10, 25, 100]"
-                                (page)="mode.pageChanged($event)"
-                                aria-label="Select page">
-                  </mat-paginator>
-                </div>
+              <span *ngIf="this.dataProvider.getAccess(['admin','manager'])">Main Categories</span>
+              <div cdkDropList *ngIf="this.dataProvider.getAccess(['admin','manager'])" class="example-list"
+                (cdkDropListDropped)="mode.reorderMainCategory($event)">
+                <app-category-card [full]="true" cdkDrag *ngFor="let category of mode.mainCategories" (click)="
+                mode.selectCategory(category); mode.currentType = 'root'
+              " [category]="category"></app-category-card>
               </div>
             </div>
           </div>
+          <div class="main" *ngIf="mode.selectedCategory">
+            <div class="title">
+              <div class="actions">
+                <h2>{{ mode.selectedCategory.name }}</h2>
+              </div>
+            </div>
+            <div class="filters">
+              <mat-form-field appearance="outline">
+                <mat-label>Search Item</mat-label>
+                <input type="text" placeholder="Search Item" matInput (input)="mode.searchSubject.next(text.value)"
+                  #text />
+              </mat-form-field>
+              <ng-container class="actions">
+                <button mat-stroked-button color="primary" (click)="mode.disableAll()">
+                  Disable All
+                </button>
+                <button mat-stroked-button color="primary" (click)="mode.enableAll()">
+                  Enable All
+                </button>
+                <button *ngIf="['all'].includes(mode.currentType) && this.dataProvider.getAccess(['admin','manager'])"
+                  mat-stroked-button mat-button (click)="mode.addRecipe(mode.selectedMenuId)" color="primary">
+                  Add Recipe
+                </button>
+                <button *ngIf="['view'].includes(mode.currentType)" mat-stroked-button mat-button
+                  (click)="mode.addUploadedRecipe()" color="primary">
+                  Edit
+                </button>
+                <button *ngIf="['view'].includes(mode.currentType)" mat-stroked-button mat-button
+                  (click)="mode.deleteViewCategory()" color="primary">
+                  Delete
+                </button>
+                <mat-menu #menu="matMenu">
+                  <button mat-menu-item (click)="mode.addRecipe(mode.selectedMenuId)">
+                    New Dish
+                  </button>
+                  <button mat-menu-item (click)="mode.selectRecipe()">
+                    Old Dish
+                  </button>
+                  <button mat-menu-item>Upload From Excel</button>
+                  <button mat-menu-item (click)="mode.getExcelFormat()">
+                    Get Excel Format
+                  </button>
+                </mat-menu>
+                <span *ngIf="mode.currentType != 'all'">
+                  <mat-slide-toggle color="primary" [(ngModel)]="mode.selectedCategory.enabled"
+                    (change)="mode.selectedCategory.updated = true"></mat-slide-toggle>
+                </span>
+              </ng-container>
+            </div>
+            <div class="printerSettings"
+              *ngIf="mode.currentType == 'root' && this.dataProvider.getAccess(['admin','manager'])">
+              <mat-form-field appearance="outline">
+                <mat-label>Select Printer</mat-label>
+                <mat-select [(ngModel)]="mode.selectedCategory.printer"
+                  (selectionChange)="mode.updatePrinter(mode.selectedCategory)" name="printer">
+                  <mat-option> Select </mat-option>
+                  <mat-option [value]="printer" *ngFor="let printer of printers">
+                    {{ printer }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="filters" *ngIf="this.dataProvider.getAccess(['admin','manager'])">
+              <h4>Recommendation Setting</h4>
+              <ng-container *ngIf="
+              ['recommended'].includes(mode.currentType) &&
+              mode.selectedCategory.id == 'highRange'
+            ">
+                <form [formGroup]="mode.highRangeForm" (ngSubmit)="mode.recommendationSave('highRange')">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Min Price</mat-label>
+                    <input type="number" formControlName="min" matInput />
+                  </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Max Price</mat-label>
+                    <input type="number" formControlName="max" matInput />
+                  </mat-form-field>
+                  <button color="primary" mat-flat-button *ngIf="mode.highRangeForm.touched">
+                    Save
+                  </button>
+                </form>
+              </ng-container>
+              <ng-container *ngIf="
+              ['recommended'].includes(mode.currentType) &&
+              mode.selectedCategory.id == 'lowRange'
+            ">
+                <form [formGroup]="mode.lowRangeForm" (ngSubmit)="mode.recommendationSave('lowRange')">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Min Price</mat-label>
+                    <input type="number" matInput formControlName="min" />
+                  </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Max Price</mat-label>
+                    <input type="number" matInput formControlName="max" />
+                  </mat-form-field>
+                  <button color="primary" mat-flat-button *ngIf="mode.lowRangeForm.touched">
+                    Save
+                  </button>
+                </form>
+              </ng-container>
+              <ng-container *ngIf="
+              ['recommended'].includes(mode.currentType) &&
+              mode.selectedCategory.id == 'mostSelling'
+            ">
+                <form [formGroup]="mode.mostSellingForm" (ngSubmit)="mode.recommendationSave('mostSelling')">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Min Sales</mat-label>
+                    <input type="number" matInput formControlName="min" />
+                  </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Max Sales</mat-label>
+                    <input type="number" matInput formControlName="max" />
+                  </mat-form-field>
+                  <button color="primary" mat-flat-button *ngIf="mode.mostSellingForm.touched">
+                    Save
+                  </button>
+                </form>
+              </ng-container>
+              <ng-container *ngIf="
+              ['recommended'].includes(mode.currentType) &&
+              mode.selectedCategory.id == 'newDishes'
+            ">
+                <form [formGroup]="mode.newDishesForm" (ngSubmit)="mode.recommendationSave('newDishes')">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Minimum date *</mat-label>
+                    <input matInput [matDatepicker]="minPicker" required formControlName="min" />
+                    <mat-hint>MM/DD/YYYY</mat-hint>
+                    <mat-datepicker-toggle matIconSuffix [for]="minPicker"></mat-datepicker-toggle>
+                    <mat-datepicker #minPicker></mat-datepicker>
+                  </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Maximum date (Optional)</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="max" />
+                    <mat-hint>MM/DD/YYYY</mat-hint>
+                    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                  </mat-form-field>
+                  <button color="primary" mat-flat-button *ngIf="mode.newDishesForm.touched">
+                    Save
+                  </button>
+                </form>
+              </ng-container>
+            </div>
+            <div class="productList">
+              <p>Total {{ mode.selectedCategory.products.length }} Products</p>
+              <mat-spinner mode="indeterminate" *ngIf="mode.selectedCategory.loading"></mat-spinner>
+              <div class="productList" cdkDropList (cdkDropListDropped)="mode.reorderProduct($event)">
+                <div cdkDrag class="product" *ngFor="
+                let product of mode.filteredProducts.length > 0
+                  ? mode.filteredProducts
+                  : mode.selectedCategory.products
+              ">
+                  <p>{{ product.name }}</p>
+                  <div class="pricing">
+                    <strong>{{ product.price | currency : "INR" }}</strong>
+                    <span *ngIf="!(product.taxes && product.taxes.length > 0)" class="danger">No Taxes</span>
+                    <viraj-button *ngIf="this.dataProvider.getAccess(['admin','manager'])"
+                      (click)="mode.setTaxes(product)">Set Taxes</viraj-button>
+                    <mat-slide-toggle checked
+                      *ngIf="(this.dataProvider.getAccess(['admin','manager'])) || ['view'].includes(this.currentType)"
+                      [(ngModel)]="product.visible" (toggleChange)="
+                    mode.productVisibilityChanged = true;
+                    product.updated = true;
+                    mode.selectedCategory.updated = true;
+                  "></mat-slide-toggle>
+                    <viraj-button *ngIf="this.dataProvider.getAccess(['admin','manager'])"
+                      (click)="mode.editRecipe(product, mode.selectedMenuId)">
+                      <i class="ri-pencil-fill"></i>
+                    </viraj-button>
+                    <viraj-button
+                      *ngIf="(['root','view','all'].includes(this.currentType) && this.dataProvider.getAccess(['admin','manager'])) || ['view'].includes(this.currentType)"
+                      (click)="mode.deleteRecipe(product,mode.selectedMenuId)">
+                      <i class="ri-delete-bin-6-fill"></i>
+                    </viraj-button>
+                  </div>
+                </div>
+                <mat-paginator *ngIf="mode.filteredProducts.length == 0 && mode.currentType == 'all'"
+                  [length]="mode.products.length" [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 100]"
+                  (page)="mode.pageChanged($event)" aria-label="Select page">
+                </mat-paginator>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div class="tableView">
+        <ng-container *ngIf="activeTab == 'Taxes'">
+          <h3>Taxes</h3>
+          <div class="row">
+            <mat-form-field appearance="outline">
+              <mat-label>Search</mat-label>
+              <input matInput [(ngModel)]="mode.taxSearchControl"/>
+            </mat-form-field>
+            <viraj-button (vclick)="mode.addTax()">Add Tax</viraj-button>
+          </div>
+          <p>Total {{mode.taxes.length}} taxes</p>
+          <div class="tableContainer">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tax Name</th>
+                  <th>Tax Cost</th>
+                  <th>Type</th>
+                  <th>Mode</th>
+                  <th>Add Date</th>
+                  <th>Update Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let tax of mode.taxes">
+                  <td>{{ tax.name }}</td>
+                  <td>{{ tax.cost }}</td>
+                  <td>{{ tax.type | titlecase }}</td>
+                  <td>{{ tax.mode | titlecase }}</td>
+                  <td>{{ tax.creationDate.toDate() | date }}</td>
+                  <td>{{ tax.updateDate.toDate() | date }}</td>
+                  <td>
+                    <viraj-button (vclick)="mode.editTax(tax)" type="icon"><i class="ri-pencil-line"></i></viraj-button>
+                    <viraj-button (vclick)="mode.deleteTax(tax.id)" type="icon"><i
+                        class="ri-delete-bin-line"></i></viraj-button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="activeTab == 'Discounts'">
+          <h3>Discounts</h3>
+          <div class="row">
+            <mat-form-field appearance="outline">
+              <mat-label>Search</mat-label>
+              <input matInput [(ngModel)]="mode.discountSearchControl" />
+            </mat-form-field>
+            <viraj-button (vclick)="mode.addTax()">Add Tax</viraj-button>
+          </div>
+          <div class="tableContainer">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Value</th>
+                  <th>Type</th>
+                  <th>Min Amount</th>
+                  <th>Min Products</th>
+                  <th>Max Discount</th>
+                  <th>Created On</th>
+                  <th>Menus</th>
+                  <th>Access</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let discount of mode.discounts">
+                  <td>{{ discount.name }}</td>
+                  <td>{{ discount.value }}</td>
+                  <td>{{ discount.type }}</td>
+                  <td>{{ discount.minimumAmount }}</td>
+                  <td>{{ discount.minimumProducts }}</td>
+                  <td>{{ discount.maximumDiscount }}</td>
+                  <td>
+                    {{
+                    discount.creationDate
+                    ? (discount.creationDate.toDate() | date)
+                    : "N/A"
+                    }}
+                  </td>
+                  <td>
+                    <li *ngFor="let item of mode.getMappedMenu(discount.menus)">
+                      {{ item.name }}
+                    </li>
+                  </td>
+                  <td>
+                    <li *ngFor="let item of discount.accessLevels">
+                      {{ item }}
+                    </li>
+                  </td>
+                  <td>
+                    <viraj-button (vclick)="mode.editDiscount(discount)" type="icon"><i
+                        class="ri-pencil-fill"></i></viraj-button>
+                    <viraj-button (vclick)="mode.deleteDiscount(discount.id)" type="icon"><i
+                        class="ri-delete-bin-2-fill"></i></viraj-button>
+                  </td>
+                </tr>
+                <tr *ngIf="mode.loadingDiscount">
+                  <td colspan="8">
+                    <mat-spinner mode="indeterminate"> </mat-spinner>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="activeTab == 'Types'">
+          <h3>Types</h3>
+          <div class="row">
+            <mat-form-field>
+              <mat-label>Search</mat-label>
+              <input matInput formControlName="mode.discountSearchControl" />
+            </mat-form-field>
+            <viraj-button (vclick)="mode.addType()">Add Type</viraj-button>
+          </div>
+          <div class="tableContainer">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Image</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let type of mode.comboTypes">
+                  <td>{{ type.name }}</td>
+                  <td><img [src]="type.image"></td>
+                  <td>
+                    <viraj-button (vclick)="mode.editType(type)" type="icon"><i
+                        class="ri-pencil-fill"></i></viraj-button>
+                    <viraj-button (vclick)="mode.deleteType(type.id)" type="icon"><i
+                        class="ri-delete-bin-2-fill"></i></viraj-button>
+                  </td>
+                </tr>
+                <tr *ngIf="mode.loadingComboTypes">
+                  <td colspan="8">
+                    <mat-spinner mode="indeterminate"> </mat-spinner>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="activeTab == 'Settings'">
+          <div class="panel">
+            <mat-select *ngIf="this.dataProvider.getAccess(['admin','manager'])" placeholder="Menu"
+              [(ngModel)]="mode.selectedMenuId" (selectionChange)="mode.updateMenu()" name="menu">
+              <mat-option *ngFor="let menu of this.dataProvider.allMenus" [value]="menu.id">
+                {{ menu.name }}
+              </mat-option>
+            </mat-select>
+            <div class="tableContainer">
+              <table>
+                <tr>
+                  <td>Version</td>
+                  <td>{{mode.selectedMenu.name}}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="activeTab == 'Combos'">
+          <h3>Combos</h3>
+          <div class="comboCards">
+            <div class="card new" (click)="mode.addCombo()">
+              <p><i class="ri-add-fill"></i>Add New Combo</p>
+            </div>
+            <div class="card combo" *ngFor="let combo of mode.combos">
+              <img [src]="combo.offerImage">
+              <p>{{combo.name}}</p>
+            </div>
+            <div class="card new" *ngIf="mode.combos.length > 10">
+              <p><i class="ri-add-fill"></i>Add New Combo</p>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
+  <!-- <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+    <ng-container *ngFor="let mode of this.dataProvider.menus">
+      <mat-tab [label]="mode.name" *ngIf="mode.active">
+        <ng-template matTabContent>
+          <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+            <mat-tab label="Products">
+            </mat-tab>
+            <mat-tab label="Taxes">
+              
+            </mat-tab>
+            <mat-tab label="Discounts">
+              <h3>Discounts</h3>
+              <div class="row">
+                <mat-form-field>
+                  <mat-label>Search</mat-label>
+                  <input matInput formControlName="mode.discountSearchControl" />
+                </mat-form-field>
+                <viraj-button (vclick)="mode.addTax()">Add Tax</viraj-button>
+              </div>
+              <div class="tableContainer">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Value</th>
+                      <th>Type</th>
+                      <th>Min Amount</th>
+                      <th>Min Products</th>
+                      <th>Max Discount</th>
+                      <th>Created On</th>
+                      <th>Menus</th>
+                      <th>Access</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let discount of mode.discounts">
+                      <td>{{ discount.name }}</td>
+                      <td>{{ discount.value }}</td>
+                      <td>{{ discount.type }}</td>
+                      <td>{{ discount.minimumAmount }}</td>
+                      <td>{{ discount.minimumProducts }}</td>
+                      <td>{{ discount.maximumDiscount }}</td>
+                      <td>
+                        {{
+                          discount.creationDate
+                            ? (discount.creationDate.toDate() | date)
+                            : "N/A"
+                        }}
+                      </td>
+                      <td>
+                        <li *ngFor="let item of mode.getMappedMenu(discount.menus)">
+                          {{ item.name }}
+                        </li>
+                      </td>
+                      <td>
+                        <li *ngFor="let item of discount.accessLevels">
+                          {{ item }}
+                        </li>
+                      </td>
+                      <td>
+                        <viraj-button (vclick)="mode.editDiscount(discount)" type="icon"
+                          ><i class="ri-pencil-fill"></i
+                        ></viraj-button>
+                        <viraj-button (vclick)="mode.deleteDiscount(discount.id)" type="icon"
+                          ><i class="ri-delete-bin-2-fill"></i
+                        ></viraj-button>
+                      </td>
+                    </tr>
+                    <tr *ngIf="mode.loadingDiscount">
+                      <td colspan="8">
+                        <mat-spinner mode="indeterminate"> </mat-spinner>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </mat-tab>
+            <mat-tab label="Combos">
+              <h3>Combos</h3>
+              <div class="comboCards">
+                <div class="new">
+                  <p>Add New Combo</p>
+                </div>
+                <div class="combo" *ngFor="let combo of mode.combos">
+                  <img [src]="combo.image">
+                  <p>{{combo.name}}</p>
+                </div>
+                <div class="new">
+                  <p>Add New Combo</p>
+                </div>
+              </div>
+            </mat-tab>
+            <mat-tab label="Types">
+              <h3>Types</h3>
+              <div class="row">
+                <mat-form-field>
+                  <mat-label>Search</mat-label>
+                  <input matInput formControlName="mode.discountSearchControl" />
+                </mat-form-field>
+                <viraj-button (vclick)="mode.addType()">Add Type</viraj-button>
+              </div>
+              <div class="tableContainer">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Image</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let type of mode.comboTypes">
+                      <td>{{ type.name }}</td>
+                      <td><img [src]="type.image"></td>
+                      <td>
+                        <viraj-button (vclick)="mode.editType(type)" type="icon"
+                          ><i class="ri-pencil-fill"></i
+                        ></viraj-button>
+                        <viraj-button (vclick)="mode.deleteType(type.id)" type="icon"
+                          ><i class="ri-delete-bin-2-fill"></i
+                        ></viraj-button>
+                      </td>
+                    </tr>
+                    <tr *ngIf="mode.loadingComboTypes">
+                      <td colspan="8">
+                        <mat-spinner mode="indeterminate"> </mat-spinner>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </mat-tab>
+            <mat-tab label="Settings">
+              <div class="panel">
+                <mat-select *ngIf="this.dataProvider.getAccess(['admin','manager'])" placeholder="Menu"
+                    [(ngModel)]="mode.selectedMenuId" (selectionChange)="mode.updateMenu()" name="menu">
+                    <mat-option *ngFor="let menu of this.dataProvider.allMenus" [value]="menu.id">
+                      {{ menu.name }}
+                    </mat-option>
+                  </mat-select>
+                  <div class="tableContainer">
+                    <table>
+                      <tr>
+                        <td>Version</td>
+                        <td>{{mode.selectedMenu.version}}</td>
+                      </tr>
+                    </table>
+                  </div>
+              </div>
+              settings related to 
+                1. current selected menu 
+                2. info about changes to the menu
+                3. Which user changed what 
+                4. Menu version
+              
+            </mat-tab>
+          </mat-tab-group>
         </ng-template>
       </mat-tab>
     </ng-container>
-  </mat-tab-group>
+  </mat-tab-group> -->
   <div class="actions">
     <button color="primary" mat-flat-button (click)="this.dialogRef.close()">Save</button>
   </div>

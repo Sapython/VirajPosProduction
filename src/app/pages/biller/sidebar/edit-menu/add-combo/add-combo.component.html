@@ -1,0 +1,123 @@
+<section>
+    <h1>Combo</h1>
+    <form [formGroup]="comboFormGroup">
+        <mat-form-field appearance="outline">
+            <mat-label>Offer Name</mat-label>
+            <input matInput formControlName="name" type="text">
+        </mat-form-field>
+        <input (change)="setImage($event)" type="file" hidden #imageUpload formControlName="offerImage">
+        <viraj-button (click)="imageUpload.click()">Offer Image</viraj-button>
+        <mat-checkbox formControlName="discounted">Can Be Discounted</mat-checkbox>
+        <mat-form-field appearance="outline">
+            <mat-label>Number Of Products</mat-label>
+            <input matInput type="text" formControlName="numberOfProducts">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Maximum Number Of Purchases</mat-label>
+            <input matInput type="text" formControlName="maximumNoOfPurchases">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Select Type</mat-label>
+            <mat-select placeholder="Type" formControlName="type" name="type">
+                <mat-option value="combo">Combo</mat-option>
+                <mat-option value="offer">Offer</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Offer Price</mat-label>
+            <input matInput type="text" formControlName="offerPrice">
+        </mat-form-field>
+    </form>
+    <h3>Time Group (Optional)</h3>
+    <div class="types">
+        <div class="card" *ngFor="let timeGroup of this.dialogData.menu.timeGroups">
+            <mat-checkbox [(ngModel)]="timeGroup.selected"></mat-checkbox>
+            <i class="ri-timer-flash-fill"></i>
+            <p>{{timeGroup.name}}</p>
+            <!-- <li *ngFor="let item of timeGroup.conditions">
+                {{item.type}} - {{item.condition}} - {{item.value}}
+            </li> -->
+        </div>
+        <div class="card add" (click)="addTimeGroup()">
+            <i class="ri-add-fill"></i>
+            <p>Add More</p>
+        </div>
+    </div>
+    <h3>Available Types</h3>
+    <div class="types">
+        <div class="card" *ngFor="let type of dialogData.menu.types">
+            <mat-checkbox [(ngModel)]="type.selected" (change)="buildSelectedTypes()"></mat-checkbox>
+            <img [src]="type.image">
+            <p>{{type.name}}</p>
+        </div>
+        <div class="card add" (click)="addTypeCategory()">
+            <i class="ri-add-fill"></i>
+            <p>Add More</p>
+        </div>
+        <!-- <viraj-button (vclick)="addTypeCategory()">Add More</viraj-button> -->
+    </div>
+    <h3>Selected Types</h3>
+    <div class="tabs">
+        <button *ngFor="let type of configurations" (click)="selectType(type)" [ngClass]="{active:this.selectedType?.id == type.id}">
+            {{type.name}}
+        </button>
+    </div>
+    <div class="categories" *ngIf="selectedType">
+        <div class="tabs vertical">
+            <button [ngClass]="{active:category.name == currentTypeCategory?.name}" *ngFor="let category of selectedType.categories" (click)="selectTypeCategory(category)">{{category.name}}</button>
+            <button (click)="addCategory(selectedType)">Add Category</button>
+        </div>
+        <div class="config" *ngIf="currentTypeCategory">
+            <div class="detail">
+                <mat-form-field appearance="outline">
+                    <mat-label>Name</mat-label>
+                    <input matInput type="text" [(ngModel)]="currentTypeCategory.name">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Maximum Products</mat-label>
+                    <input matInput type="number" [(ngModel)]="currentTypeCategory.maximumProducts">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Minimum Products</mat-label>
+                    <input matInput type="number" [(ngModel)]="currentTypeCategory.minimumProducts">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Offer Type</mat-label>
+                    <mat-select placeholder="Type" [(ngModel)]="currentTypeCategory.offerType" name="type">
+                        <mat-option value="discount">Discount</mat-option>
+                        <mat-option value="free">Free</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label *ngIf="currentTypeCategory.offerType=='discount'">Offer Value</mat-label>
+                    <mat-label *ngIf="currentTypeCategory.offerType=='free'">Maximum Free Products</mat-label>
+                    <!-- <mat-select placeholder="Type" [(ngModel)]="currentTypeCategory.offerValue" name="offerValue">
+                        <mat-option value="discount">Discount</mat-option>
+                        <mat-option value="free">Free</mat-option>
+                    </mat-select> -->
+                    <input type="number" matInput [(ngModel)]="currentTypeCategory.offerValue">
+                </mat-form-field>
+            </div>
+            <div class="products">
+                <div class="treeView">
+                    <ol *ngFor="let category of currentTypeCategory.productTree">
+                        <li><mat-checkbox (ngModelChange)="selectAll(category);generateSelectedProducts(currentTypeCategory)" [indeterminate]="someSelected(category)" [checked]="allSelected(category)" [(ngModel)]="category.selected">{{category.categoryName}}</mat-checkbox></li>
+                        <ol>
+                            <li *ngFor="let product of category.products"><mat-checkbox (change)="checkAll(category);generateSelectedProducts(currentTypeCategory);" [(ngModel)]="product.selected">{{product.name}}</mat-checkbox></li>
+                        </ol>
+                    </ol>
+                </div>
+                <div class="selectedProducts">
+                    <li *ngFor="let item of currentTypeCategory.products">
+                        {{item.name}} <strong>{{item.price | currency:'INR'}}</strong>
+                    </li>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <viraj-button (vclick)="save()">Save</viraj-button>
+        <viraj-button type="outline" (vclick)="cancel()">Cancel</viraj-button>
+    </div>
+    <div class="bottomMargin"></div>
+</section>

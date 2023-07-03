@@ -30,12 +30,10 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { BaseComponentsModule } from '../../shared/base-components/base-components.module';
 import { SidebarModule } from './sidebar/sidebar.module';
 import { MatDialogModule } from '@angular/material/dialog';
-import { AddDiscountComponent } from './settings/add-discount/add-discount.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ReactivateKotComponent } from './reactivate-kot/reactivate-kot.component';
 import { SelectMenuComponent } from './settings/select-menu/select-menu.component';
 import { AddMethodComponent } from './settings/add-method/add-method.component';
-import { AddTaxComponent } from './settings/add-tax/add-tax.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CheckPasswordComponent } from './settings/check-password/check-password.component';
 import { PrinterComponent } from './settings/sections/printer/printer.component';
@@ -57,11 +55,9 @@ import { OffersComponent } from './settings/sections/offers/offers.component';
     LockedComponent,
     SettingsComponent,
     CustomerPanelComponent,
-    AddDiscountComponent,
     ReactivateKotComponent,
     SelectMenuComponent,
     AddMethodComponent,
-    AddTaxComponent,
     CheckPasswordComponent,
     PrinterComponent,
     AccountComponent,

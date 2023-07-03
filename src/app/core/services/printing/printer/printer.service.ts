@@ -132,6 +132,28 @@ export class PrinterService {
   }
 
   reprintKot(kot: KotConstructor, table: string, billConstructor: BillConstructor) {
+    let products = [];
+    kot.products.forEach((product) => {
+      if (product.itemType == 'product'){
+        products.push(product);
+      } else if (product.itemType == 'combo'){
+        product.productSelection.forEach((item) => {
+          item.products.forEach((product) => {
+            products.push(product);
+          })
+        })
+      }
+    })
+    // remove duplicates by adding quantity
+    products = products.reduce((acc, current) => {
+      const x = acc.find((item) => item.id === current.id);
+      if (!x) {
+        return acc.concat([current]);
+      } else {
+        x.quantity += current.quantity;
+        return acc;
+      }
+    }, []);
     let printableKotData:PrintableKot = {
       date:kot.createdDate.toDate().toLocaleDateString(),
       time:kot.createdDate.toDate().toLocaleTimeString(),
@@ -140,7 +162,7 @@ export class PrinterService {
       table:billConstructor.table as unknown as string,
       token:kot.id,
       billingMode:billConstructor.mode,
-      products:kot.products.map((product)=>{
+      products:products.map((product)=>{
         return {
           id:product.id,
           name:product.name,

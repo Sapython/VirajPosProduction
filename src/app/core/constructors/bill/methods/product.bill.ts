@@ -1,8 +1,9 @@
 import { Bill } from '..';
 import { Product } from '../../../../types/product.structure';
+import { ApplicableCombo } from '../../comboKot/comboKot';
 import { Kot } from '../../kot/Kot';
 
-export async function addProduct(this: Bill, product: Product) {
+export async function addProduct(this: Bill, product: Product|ApplicableCombo) {
   if (this.stage == 'finalized') {
     if (await this.userManagementService.authenticateAction([
       'admin',

@@ -1,8 +1,8 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { DataProvider } from '../../../../core/services/provider/data-provider.service';
-import { CodeBaseDiscount } from '../../../../types/discount.structure';
+import { DataProvider } from '../../../../../core/services/provider/data-provider.service';
+import { CodeBaseDiscount } from '../../../../../types/discount.structure';
 
 @Component({
   selector: 'app-add-discount',

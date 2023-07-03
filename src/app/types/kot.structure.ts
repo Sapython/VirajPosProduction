@@ -1,13 +1,13 @@
 import { Timestamp } from '@angular/fire/firestore';
 import { UserConstructor } from './user.structure';
 import { Product } from './product.structure';
-import { Category } from './category.structure';
+import { ApplicableCombo } from '../core/constructors/comboKot/comboKot';
 
 export interface KotConstructor {
   id?: string;
   createdDate: Timestamp;
   stage: 'active' | 'finalized' | 'cancelled' | 'edit';
-  products: Product[];
+  products: (Product|ApplicableCombo)[];
   editMode: boolean;
   selected: boolean;
   allSelected: boolean;

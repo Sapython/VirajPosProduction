@@ -1,0 +1,56 @@
+<section>
+    <h1>Time Group</h1>
+    <form [formGroup]="timeGroupForm" (ngSubmit)="submit()">
+        <mat-form-field appearance="outline">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" placeholder="Group Name">
+        </mat-form-field>
+        <div class="conditions">
+            <div class="day">
+                Day
+            </div>
+            <div class="parameters">
+                <div class="param" *ngFor="let item of conditions; let i = index;">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Condition</mat-label>
+                        <mat-select placeholder="Select" [ngModelOptions]="{standalone:true}" [(ngModel)]="item.condition" name="condition">
+                            <mat-option value="is">is</mat-option>
+                            <mat-option value="is not">is not</mat-option>
+                            <mat-option value="is before">is before</mat-option>
+                            <mat-option value="is after">is after</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Applied On</mat-label>
+                        <mat-select placeholder="Select" [ngModelOptions]="{standalone:true}" [(ngModel)]="item.type" name="condition">
+                            <mat-option value="day">Day</mat-option>
+                            <mat-option value="date">Date</mat-option>
+                            <mat-option value="time">Time</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" *ngIf="item.type=='date'">
+                        <mat-label>Choose a date</mat-label>
+                        <input matInput [ngModelOptions]="{standalone:true}" [(ngModel)]="item.value" [matDatepicker]="picker">
+                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline" *ngIf="item.type == 'day'">
+                        <mat-label>Select Day</mat-label>
+                        <mat-select multiple placeholder="Day" [ngModelOptions]="{standalone:true}" [(ngModel)]="item.value" name="item">
+                            <mat-option *ngFor="let item of days" [value]="item">
+                                {{item | titlecase}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <input type="time" *ngIf="item.type == 'time'" [ngModelOptions]="{standalone:true}" [(ngModel)]="item.value">
+                    <viraj-button type="icon" (vclick)="removeCondition(i)"><i class="ri-delete-bin-2-line"></i></viraj-button>
+                </div>
+                <viraj-button [disabled]="this.conditions.length==5" (vclick)="addCondition()">Add Condition</viraj-button>
+            </div>
+        </div>
+        <div class="actions">
+            <button color="primary" mat-flat-button>Submit</button>
+            <button color="primary" mat-stroked-button (click)="cancel()">Cancel</button>
+        </div>
+    </form>
+</section>

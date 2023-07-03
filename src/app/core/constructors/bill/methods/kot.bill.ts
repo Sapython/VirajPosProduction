@@ -3,6 +3,7 @@ import { Bill } from '..';
 import { Product } from '../../../../types/product.structure';
 import { Kot } from '../../kot/Kot';
 import { PrintableKot } from '../../../../types/kot.structure';
+import { ApplicableCombo } from '../../comboKot/comboKot';
 
 var debug:boolean = true;
 
@@ -50,9 +51,9 @@ export function editKot(this: Bill, kot: Kot, reason) {
       return;
     }
   } else {
-    let clonedArray: Product[] = [];
+    let clonedArray: (Product|ApplicableCombo)[] = [];
     kot.products.forEach((product) => {
-      clonedArray.push({ ...product });
+      clonedArray.push(product);
     });
     this.editKotMode = {
       newKot: clonedArray,
@@ -81,11 +82,9 @@ export function finalizeAndPrintKot(this: Bill) {
     );
   //  console.log('Kot index', kotIndex);
     if (kotIndex != -1) {
-      let cancelledProducts:Product[] = this.kots[kotIndex].products.map((product)=>{
-        return {
-          ...product,
-          cancelled:true,
-        }
+      let cancelledProducts:(Product|ApplicableCombo)[] = this.kots[kotIndex].products.map((product)=>{
+        product.cancelled = true;
+        return product;
       })
       this.editKotMode.newKot.forEach((product)=>{
         product.cancelled = false;
@@ -203,7 +202,7 @@ export function printKot(
     mode:mode,
     billingMode:this.mode,
     token:kot.id,
-    products:kot.products.map((product)=>{
+    products:kot.getAllProducts().map((product)=>{
       return {
         id:product.id,
         name: product.name,

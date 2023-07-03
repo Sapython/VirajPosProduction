@@ -1,6 +1,6 @@
 <section>
     <div id="search" [class]="active ? 'active' :''" *ngIf="dataProvider.clientWidth >= 900 || searchVisible">
-        <input (input)="searchSubcription.next(search.value)" #search (focus)="active = true" (blur)="active=false" type="search" [placeholder]="dynamicPlaceholder">
+        <input (input)="searchSubscription.next(search.value)" #search (focus)="active = true" (blur)="active=false" type="search" [placeholder]="dynamicPlaceholder">
         <viraj-button *ngIf="dataProvider.clientWidth < 900" [minimalPadding]="true" type="icon"><i class="ri-search-line"></i></viraj-button>
         <viraj-button *ngIf="dataProvider.clientWidth < 900" [minimalPadding]="true" type="icon" (vclick)="searchVisible=false"><i class="ri-close-fill"></i></viraj-button>
     </div>

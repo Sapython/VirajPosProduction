@@ -2,31 +2,11 @@ import { Bill } from '..';
 import { KotConstructor } from '../../../../types/kot.structure';
 import { Product } from '../../../../types/product.structure';
 import { Tax } from '../../../../types/tax.structure';
+import { ApplicableCombo } from '../../comboKot/comboKot';
 import { Kot } from '../../kot/Kot';
 
 export function calculateBill(this: Bill, noUpdate: boolean = false) {
-  // let allProducts: Product[] = [];
-  // this.kots.forEach((kot) => {
-  //   if (kot.stage === 'finalized' || kot.stage === 'active') {
-  //     // add product or increase quantity
-  //     kot.products.forEach((product) => {
-  //       let item = allProducts.find((item) => item.id === product.id);
-  //       if (product.cancelled){
-  //         return;
-  //       }
-  //       if (item) {
-  //         item.quantity += product.quantity;
-  //       } else {
-  //         allProducts.push(
-  //           JSON.parse(
-  //             JSON.stringify({ ...product, quantity: product.quantity })
-  //           )
-  //         );
-  //       }
-  //     });
-  //   }
-  // });
-
+  // console.log("Running using calculateBill");
   // check individual product for tax and if the tax.mode is inclusive then add the applicable tax to totalTaxValue or if the tax.mode is exclusive then decrease the price of product by tax rate and add the applicableValue to totalTaxValue
   let calculationResults =  calculateProducts(this.kots);
   let allProducts = calculationResults.allProducts;
@@ -34,8 +14,10 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   let finalAdditionalTax = calculationResults.finalAdditionalTax;
   this.billing.subTotal = allProducts.reduce((acc, cur) => {
     return acc + (cur.untaxedValue);
-  }, 0); 
+  }, 0);
+  // console.log("this.billing.subTotal",this.billing.subTotal);
   let applicableDiscount = 0;
+  console.log("bill allProducts",allProducts);
   // apply discount to subTotal
   this.billing.discount.forEach((discount) => {
     discount.totalAppliedDiscount = 0;
@@ -73,7 +55,7 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
 }
 
 export function calculateProducts(kots:(Kot|KotConstructor)[]){
-  let allProducts: Product[] = [];
+  let allProducts: (Product|ApplicableCombo)[] = [];
   kots.forEach((kot) => {
     if (kot.stage === 'finalized' || kot.stage === 'active') {
       // add product or increase quantity
@@ -95,23 +77,23 @@ export function calculateProducts(kots:(Kot|KotConstructor)[]){
     }
   });
 
-  // console.log("FINAL allProducts",allProducts);
+  // console.log("FINAL allProducts",allProducts,kots);
 
   // check individual product for tax and if the tax.mode is inclusive then add the applicable tax to totalTaxValue or if the tax.mode is exclusive then decrease the price of product by tax rate and add the applicableValue to totalTaxValue
   let finalAdditionalTax: number = 0;
   let finalTaxes: Tax[] = [];
   let modifiedAllProducts = [];
   allProducts.forEach((product) => {
-    if (product.taxes) {
+    if (product.itemType == 'product' && product.taxes) {
     //  console.log('product taxes', product.taxes);
       let inclusive = product.taxes.find((tax) => tax.nature === 'inclusive')
         ? true
         : false;
-    //  console.log('Mode', inclusive);
+      // console.log('Mode', inclusive);
       // console.log("product.price * product.quantity",product.price * product.quantity,product.price,product.quantity);
       let totalAmount = product.price * product.quantity;
       if (product.lineDiscount) {
-        console.log("Applying linediscount",product.name,product.lineDiscount);
+        // console.log("Applying linediscount",product.name,product.lineDiscount);
         if (product.lineDiscount.mode === 'directPercent') {
           totalAmount = totalAmount - ((totalAmount / 100) * product.lineDiscount.value);
         } else {
@@ -148,7 +130,7 @@ export function calculateProducts(kots:(Kot|KotConstructor)[]){
           }
         }
       });
-    //  console.log("Previous tax",finalTaxes);
+      //  console.log("Previous tax",finalTaxes);
       let additionalTax = 0;
       finalTaxes.forEach((tax: Tax) => {
         if (tax.mode === 'bill') {
@@ -195,6 +177,18 @@ export function calculateProducts(kots:(Kot|KotConstructor)[]){
       } else {
         modifiedAllProducts.push(JSON.parse(JSON.stringify(product)));
       }
+    } else {
+      // calculation for combo
+      // combo is an ApplicableCombo class
+      let combo = product as ApplicableCombo;
+      // console.log("UNAPPLIED COMBO",combo);
+      finalTaxes.forEach((tax: Tax) => {
+        combo.finalTaxes.forEach((comboTax: Tax) => {
+          if (tax.id === comboTax.id) {
+            tax.amount += comboTax.amount;
+          }
+        })
+      });
     }
   });
   return {allProducts,finalTaxes,finalAdditionalTax};

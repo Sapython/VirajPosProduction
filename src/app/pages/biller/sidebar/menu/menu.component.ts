@@ -6,6 +6,7 @@ import { StockListComponent } from './stock-list/stock-list.component';
 import { Category, ViewCategory } from '../../../../types/category.structure';
 import { DataProvider } from '../../../../core/services/provider/data-provider.service';
 import { ModeConfig } from '../../../../core/constructors/menu/menu';
+import { Combo } from '../../../../types/combo.structure';
 declare var Hammer:any;
 @Component({
   selector: 'app-menu',
@@ -132,10 +133,27 @@ export class MenuComponent implements OnInit,AfterViewInit {
     })
   }
 
-  openCategory(category:Category){
+  async openCategory(category:Category){
     console.log("openCategory",category);
+    let state = this.dataProvider.productPanelStateValue;
+    if (state =='combos'){
+      console.log("switched",state);
+      this.dataProvider.productPanelState.next('products');
+    }
     this.dataProvider.searchResults.next(false)
     this.dataProvider.menuProducts.next(category);
+  }
+
+  async openCombo(combos:any){
+    let state = this.dataProvider.productPanelStateValue;
+    if (state=='products'){
+      console.log("switched",state);
+      this.dataProvider.productPanelState.next('combos');
+    }
+    this.dataProvider.searchResults.next(false)
+    console.log("openCombo",combos.combos);
+    this.dataProvider.comboSelected.next(combos.combos);
+    console.log("openCombo",combos);
   }
 
 }

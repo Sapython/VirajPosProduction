@@ -20,13 +20,14 @@ import { EditKotComponent } from './sections/edit-kot/edit-kot.component';
 import { QuickKotViewComponent } from './sections/quick-kot-view/quick-kot-view.component';
 import { BillPreviewComponent } from './sections/bill-preview/bill-preview.component';
 import { CancelKOtComponent } from './cancel-kot/cancel-kot.component';
+import { ComboItemComponent } from './combo-item/combo-item.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 @NgModule({
   declarations: [
     ActiveKotComponent,
     KotItemComponent,
-    MergedProductsPipe,
     LineDiscountComponent,
     LineCancelComponent,
     ReasonComponent,
@@ -35,7 +36,8 @@ import { CancelKOtComponent } from './cancel-kot/cancel-kot.component';
     EditKotComponent,
     QuickKotViewComponent,
     BillPreviewComponent,
-    CancelKOtComponent
+    CancelKOtComponent,
+    ComboItemComponent
   ],
   imports: [
     CommonModule,

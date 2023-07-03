@@ -132,7 +132,29 @@ export class ReportsComponent implements OnInit {
             //  console.log("bills",localBills);
             let kotReport = localBills.map((bill) => {
               return bill.kots.map((kot) => {
-                return kot.products.map((product) => {
+                let products = [];
+                kot.products.forEach((product) => {
+                  if (product.itemType == 'product'){
+                    products.push(product);
+                  } else if (product.itemType == 'combo'){
+                    product.productSelection.forEach((item) => {
+                      item.products.forEach((product) => {
+                        products.push(product);
+                      })
+                    })
+                  }
+                })
+                // remove duplicates by adding quantity
+                products = products.reduce((acc, current) => {
+                  const x = acc.find((item) => item.id === current.id);
+                  if (!x) {
+                    return acc.concat([current]);
+                  } else {
+                    x.quantity += current.quantity;
+                    return acc;
+                  }
+                }, []);
+                return products.map((product) => {
                   return {
                     ...product,
                     billNo: bill.billNo!,

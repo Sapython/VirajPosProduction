@@ -4,10 +4,11 @@ import { BillConstructor, PrintableBill } from '../../../../types/bill.structure
 import { Product } from '../../../../types/product.structure';
 import { Kot } from '../../kot/Kot';
 import { DataProvider } from '../../../services/provider/data-provider.service';
+import { ApplicableCombo } from '../../comboKot/comboKot';
 
 export function allProducts(this: Bill) {
   // return all products from all kots and merge with their quantity
-  let products: Product[] = [];
+  let products: (Product|ApplicableCombo)[] = [];
   this.kots.forEach((kot) => {
     kot.products.forEach((product) => {
       let index = products.findIndex((item) => item.id === product.id);
@@ -21,8 +22,8 @@ export function allProducts(this: Bill) {
   return products;
 }
 
-export function allFinalProducts(this: Bill): Product[] {
-  let products: Product[] = [];
+export function allFinalProducts(this: Bill): (Product|ApplicableCombo)[] {
+  let products: (Product|ApplicableCombo)[] = [];
   this.kots.forEach((kot) => {
     if (kot.stage == 'finalized') {
       kot.products.forEach((product) => {
@@ -58,11 +59,11 @@ export function getPrintableBill(this: Bill,products:Product[],dataProvider:Data
   return printableBillGenerator(bill,products,dataProvider);
 }
 
-export function getPrintableBillConstructor(bill:BillConstructor,products:Product[],dataProvider:DataProvider): PrintableBill {
+export function getPrintableBillConstructor(bill:BillConstructor,products:(Product|ApplicableCombo)[],dataProvider:DataProvider): PrintableBill {
   return printableBillGenerator(bill,products,dataProvider);
 }
 
-function printableBillGenerator(bill:BillConstructor|Bill,products:Product[],dataProvider:DataProvider): PrintableBill {
+function printableBillGenerator(bill:BillConstructor|Bill,products:(Product|ApplicableCombo)[],dataProvider:DataProvider): PrintableBill {
   return {
     businessDetails: {
       address: dataProvider.currentBusiness.address,

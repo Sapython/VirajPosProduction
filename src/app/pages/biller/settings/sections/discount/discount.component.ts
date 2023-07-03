@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CodeBaseDiscount } from '../../../../../types/discount.structure';
-import { AddDiscountComponent } from '../../add-discount/add-discount.component';
 import { Dialog } from '@angular/cdk/dialog';
 import { SettingsService } from '../../../../../core/services/database/settings/settings.service';
 import { Timestamp } from '@angular/fire/firestore';
 import { AlertsAndNotificationsService } from '../../../../../core/services/alerts-and-notification/alerts-and-notifications.service';
 import { DataProvider } from '../../../../../core/services/provider/data-provider.service';
 import { MenuManagementService } from '../../../../../core/services/database/menuManagement/menu-management.service';
+import { AddDiscountComponent } from '../../../actions/add-discount/add-discount.component';
 
 @Component({
   selector: 'app-discount',

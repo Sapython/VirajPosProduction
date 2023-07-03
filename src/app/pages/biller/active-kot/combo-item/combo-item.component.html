@@ -1,0 +1,27 @@
+<div class="main">
+    <div class="title">
+        <p>{{combo.name}}</p>
+        <div class="quantity">
+            <viraj-button type="icon" (vclick)="combo.decreaseQuantity()"><i class="ri-subtract-line"></i></viraj-button>
+            <input type="number" [(ngModel)]="combo.quantity">
+            <viraj-button type="icon" (vclick)="combo.increaseQuantity()"><i class="ri-add-fill"></i></viraj-button>
+        </div>
+        <viraj-button>Delete</viraj-button>
+    </div>
+    <div class="types">
+        <div class="type" *ngFor="let type of combo.combo.types">
+            <div class="header">
+                <p>Type:</p>
+                <p>{{type.name}}</p>
+            </div>
+            <div class="categories">
+                <div class="category" *ngFor="let category of type.categories">
+                    <app-kot-item [@zoomInOnEnter] [@zoomOutOnLeave] (delete)="combo.deleteProduct(type, category, item)"
+                            [product]="item" [kotNo]="activeKotIndex" [info]="item.instruction || null"
+                            [quantity]="item.quantity" [productName]="item.name" [nonVeg]="item.type == 'non-veg'"
+                            [price]="item.price" *ngFor="let item of category.selectedProducts"></app-kot-item>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -18,31 +18,31 @@ import { ReceivingComponent } from './stock/receiving/receiving.component';
 import { SidebarComponent } from './sidebar.component';
 import { BrandingComponent } from './info-panel/branding/branding.component';
 import { PopoverModule } from '../../../shared/popover/popover.module';
-import {MatIconModule} from '@angular/material/icon'; 
+import { MatIconModule } from '@angular/material/icon'; 
 import { MatButtonModule } from '@angular/material/button';
-import {MatTooltipModule} from '@angular/material/tooltip'; 
-import {MatRippleModule} from '@angular/material/core'; 
+import { MatTooltipModule } from '@angular/material/tooltip'; 
+import { MatRippleModule } from '@angular/material/core'; 
 
-import {OverlayModule} from '@angular/cdk/overlay';
+import { OverlayModule } from '@angular/cdk/overlay';
 import { SalesSummaryComponent } from './info-panel/sales-summary/sales-summary.component';
 import { OrderSummaryComponent } from './info-panel/order-summary/order-summary.component';
 import { StockListComponent } from './menu/stock-list/stock-list.component';
 import { StockValuationComponent } from './stock/stock-valuation/stock-valuation.component';
 import { CashCounterComponent } from './stock/cash-counter/cash-counter.component'; 
 import { DialogModule } from '@angular/cdk/dialog';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle'; 
+import { MatSlideToggleModule } from '@angular/material/slide-toggle'; 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import {MatCheckboxModule} from '@angular/material/checkbox'; 
-import {MatSliderModule} from '@angular/material/slider'; 
+import { MatCheckboxModule } from '@angular/material/checkbox'; 
+import { MatSliderModule } from '@angular/material/slider'; 
 import { AddNewCategoryComponent } from './edit-menu/add-new-category/add-new-category.component';
-import {MatTabsModule} from '@angular/material/tabs'; 
+import { MatTabsModule } from '@angular/material/tabs'; 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HelpersModule } from '../../../shared/helpers/helpers.module';
-import {MatStepperModule} from '@angular/material/stepper';
+import { MatStepperModule } from '@angular/material/stepper';
 import { AddDishComponent } from './edit-menu/add-dish/add-dish.component';
 import { MatSelectModule } from '@angular/material/select';
-import {MatMenuModule} from '@angular/material/menu';
+import { MatMenuModule } from '@angular/material/menu';
 import { ReportsComponent } from './info-panel/sales-summary/reports/reports.component'; 
 import { BaseComponentsModule } from '../../../shared/base-components/base-components.module';
 import { ProductCostingComponent } from './edit-menu/product-costing/product-costing.component';
@@ -50,14 +50,19 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { SelectRecipeComponent } from './edit-menu/select-recipe/select-recipe.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { UpgradeComponent } from './info-panel/upgrade/upgrade.component';
-import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { AddMenuComponent } from './edit-menu/add-menu/add-menu.component';
 import { SelectCategoryComponent } from './edit-menu/select-category/select-category.component'; 
-import {MatRadioModule} from '@angular/material/radio'; 
-import {DragDropModule} from '@angular/cdk/drag-drop';
+import { MatRadioModule } from '@angular/material/radio'; 
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SetTaxComponent } from './edit-menu/set-tax/set-tax.component';
 import { EnabledPipe } from './menu/enabled.pipe'; 
-import {MatPaginatorModule} from '@angular/material/paginator'; 
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { AddComboComponent } from './edit-menu/add-combo/add-combo.component';
+import { AddTypeComponent } from './edit-menu/add-type/add-type.component'; 
+import { AddTaxComponent } from './edit-menu/add-tax/add-tax.component';
+import { AddDiscountComponent } from './edit-menu/add-discount/add-discount.component';
+import { AddTimeGroupComponent } from './edit-menu/add-time-group/add-time-group.component';
 @NgModule({
   declarations: [
     InfoPanelComponent,
@@ -92,6 +97,11 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     SelectCategoryComponent,
     SetTaxComponent,
     EnabledPipe,
+    AddComboComponent,
+    AddTypeComponent,
+    AddTaxComponent,
+    AddDiscountComponent,
+    AddTimeGroupComponent
   ],
   imports: [
     CommonModule,
@@ -120,7 +130,7 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     MatDatepickerModule,
     MatRadioModule,
     DragDropModule,
-    MatPaginatorModule
+    MatPaginatorModule,
   ],
   exports:[SidebarComponent,AddDishComponent,AddNewCategoryComponent,SelectRecipeComponent]
 })

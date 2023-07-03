@@ -32,6 +32,8 @@ import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { dbConfig } from '../../../../app.module';
 import { CustomerService } from '../../customer/customer.service';
 import { UserManagementService } from '../../auth/user/user-management.service';
+import { Combo, ComboType, TimeGroup } from '../../../../types/combo.structure';
+import { FileStorageService } from '../fileStorage/file-storage.service';
 
 @Injectable({
   providedIn: 'root',
@@ -50,6 +52,7 @@ export class MenuManagementService {
     private indexedDbService: NgxIndexedDBService,
     private customerService: CustomerService,
     private userManagementService: UserManagementService,
+    private fileStorageService: FileStorageService,
   ) {
     // this.menuUpdated.pipe(debounceTime(1000)).subscribe(() => {
     //   let menus = this.updatableMenus.filter((v, i, a) => a.indexOf(v) === i);
@@ -1025,4 +1028,201 @@ export class MenuManagementService {
       )
     );
   }
+
+  getTypes(menuId: string) {
+    return getDocs(
+      collection(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menuId +
+          '/comboTypes'
+      )
+    )
+  }
+
+  async addType(data:ComboType,menu:Menu,imageFile:File) {
+    let imageUrl = await this.fileStorageService.upload(`business/${this.dataProvider.currentBusiness.businessId}/menus/${menu.id}/combos/types/images/${(new Date()).getTime()}_${imageFile.name}`,imageFile)
+    this.updatableMenus.push(menu.id);
+    this.menuUpdated.next();
+    data.image = imageUrl;
+    return addDoc(
+      collection(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menu.id +
+          '/comboTypes'
+      ),
+      data
+    );
+  }
+
+  updateType(data:ComboType,menu:Menu) {
+    this.updatableMenus.push(menu.id);
+    this.menuUpdated.next();
+    return setDoc(
+      doc(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menu.id +
+          '/comboTypes/' +
+          data.id
+      ),
+      data,
+      { merge: true }
+    );
+  }
+
+  deleteType(data:ComboType,menu:Menu) {
+    this.updatableMenus.push(menu.id);
+    this.menuUpdated.next();
+    return deleteDoc(
+      doc(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menu.id +
+          '/comboTypes/' +
+          data.id
+      )
+    );
+  }
+
+  // time group
+
+  getTimeGroups(menuId: string) {
+    return getDocs(
+      collection(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menuId +
+          '/timeGroups'
+      )
+    )
+  }
+
+  async addTimeGroup(data:TimeGroup,menu:Menu) {
+    this.updatableMenus.push(menu.id);
+    this.menuUpdated.next();
+    return addDoc(
+      collection(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menu.id +
+          '/timeGroups'
+      ),
+      data
+    );
+  }
+
+  updateTimeGroup(data:TimeGroup,menu:Menu) {
+    this.updatableMenus.push(menu.id);
+    this.menuUpdated.next();
+    return setDoc(
+      doc(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menu.id +
+          '/timeGroups/' +
+          data.id
+      ),
+      data,
+      { merge: true }
+    );
+  }
+
+  deleteTimeGroup(data:TimeGroup,menu:Menu) {
+    this.updatableMenus.push(menu.id);
+    this.menuUpdated.next();
+    return deleteDoc(
+      doc(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menu.id +
+          '/timeGroups/' +
+          data.id
+      )
+    );
+  }
+
+  // combo
+
+  getCombos(menuId: string) {
+    return getDocs(
+      collection(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menuId +
+          '/combos'
+      )
+    )
+  }
+
+  addCombo(data:Combo,menu:Menu){
+    this.updatableMenus.push(menu.id);
+    this.menuUpdated.next();
+    console.log("Add Combo: ",data);
+    return addDoc(
+      collection(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menu.id +
+          '/combos'
+      ),
+      data
+    );
+  }
+
+  updateCombo(data:Combo,menu:Menu){
+    this.updatableMenus.push(menu.id);
+    this.menuUpdated.next();
+    return setDoc(
+      doc(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menu.id +
+          '/combos/' +
+          data.id
+      ),
+      data,
+      { merge: true }
+    );
+  }
+
+  deleteCombo(data:Combo,menu:Menu){
+    this.updatableMenus.push(menu.id);
+    this.menuUpdated.next();
+    return deleteDoc(
+      doc(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menu.id +
+          '/combos/' +
+          data.id
+      )
+    );
+  }
+  
 }

@@ -1,11 +1,11 @@
 {
   "name": "virajpos",
-  "description": "Angular Electron sample",
+  "description": "Viraj POS system",
   "author": {
-    "name": "Maxime GRIS",
-    "email": "maxime.gris@gmail.com"
+    "name": "Shreeva",
+    "email": "create@shreeva.com"
   },
-  "version": "12.0.0",
+  "version": "0.1.83",
   "main": "main.js",
   "private": true,
   "dependencies": {

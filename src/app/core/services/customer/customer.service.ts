@@ -20,14 +20,14 @@ export class CustomerService {
     private functions:Functions,
     private alertify:AlertsAndNotificationsService
   ) {
-    console.log('Customers');
+    // console.log('Customers');
     this.getCustomers();
   }
 
   getCustomers() {
     this.indexedDbService.getByKey('config', 'customerDbVersion').subscribe(
       (customer) => {
-        console.log('customer', customer);
+        // console.log('customer', customer);
         firstValueFrom(this.dataProvider.menuLoadSubject).then((menu) => {
           if (!customer) {
             this.fetchCustomers();
@@ -42,14 +42,14 @@ export class CustomerService {
         console.log('error', error);
       }
     );
-    console.log('Started customer version fetch');
+    // console.log('Started customer version fetch');
   }
 
   fetchCustomers() {
     getDocs(collection(this.firestore,'business',this.dataProvider.currentBusiness.businessId,'customers')).then((customers) => {
-      console.log('customers', customers);
+      // console.log('customers', customers);
     }).catch((error) => {
-      console.log('error', error);
+      // console.log('error', error);
     });
   }
 

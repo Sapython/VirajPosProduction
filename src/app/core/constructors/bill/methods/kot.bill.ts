@@ -115,8 +115,10 @@ export function finalizeAndPrintKot(this: Bill) {
       if (this.kots.length > 1) {
         if (this.nonChargeableDetail) {
           // running nonchargeable kot
+          this.billService.provideAnalytics().logKot(activeKot,'new');
           this.printKot(activeKot, 'runningNonChargeable');
         } else {
+          this.billService.provideAnalytics().logKot(activeKot,'new');
           // running chargeable kot
         //  console.log('running chargeable');
           this.printKot(activeKot, 'runningChargeable');
@@ -124,9 +126,11 @@ export function finalizeAndPrintKot(this: Bill) {
       } else {
         if (this.nonChargeableDetail) {
           // first nonchargeable kot
+          this.billService.provideAnalytics().logKot(activeKot,'new');
           this.printKot(activeKot, 'firstNonChargeable');
         } else {
           // first chargeable kot
+          this.billService.provideAnalytics().logKot(activeKot,'new');
           this.printKot(activeKot, 'firstChargeable');
         }
       }
@@ -148,6 +152,7 @@ export function deleteKot(this: Bill, kot: Kot) {
   kot.products.forEach((product) => {
     product.cancelled = true;
   })
+  this.billService.provideAnalytics().logKot(kot,'cancelled');
   this.printKot(kot,'cancelledKot');
   this.calculateBill();
   this.updated.next();
@@ -214,8 +219,24 @@ export function printKot(
       }
     }),
     table:this.table.id,
-  }
+  };
+  this.dataProvider.currentApplicableCombo = undefined;
   if(debug) console.log("Kot data",data);
   this.printingService.printKot(data);
 //  console.log('Send to service');
+}
+
+export function checkCanPrintKot(this:Bill){
+  let hasAnyActiveKot = this.kots.some((kot)=>kot.stage == 'active' || kot.stage == 'edit');
+  // check if any product of item type combo is incomplete if yes return false
+  let isEveryProductValid = this.kots.every((kot)=>{
+    return kot.products.every((product)=>{
+      if(product instanceof ApplicableCombo){
+        return product.incomplete;
+      }else{
+        return true;
+      }
+    })
+  });
+  return hasAnyActiveKot && isEveryProductValid;
 }

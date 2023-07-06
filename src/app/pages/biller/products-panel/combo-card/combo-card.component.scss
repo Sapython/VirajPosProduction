@@ -17,4 +17,19 @@ main{
     &:hover{
         scale: 1.05;
     }
+    &.disabled{
+        pointer-events: none;
+        cursor: not-allowed;
+        img,p{
+            filter: saturate(0);
+            opacity: 0.5;
+        }
+        span{
+            opacity: 1;
+            filter: saturate(1);
+        }
+    }
+    span.danger{
+        color:tomato;
+    }
 }

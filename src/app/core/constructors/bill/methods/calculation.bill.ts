@@ -17,7 +17,7 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   }, 0);
   // console.log("this.billing.subTotal",this.billing.subTotal);
   let applicableDiscount = 0;
-  console.log("bill allProducts",allProducts);
+  // console.log("bill allProducts",allProducts);
   // apply discount to subTotal
   this.billing.discount.forEach((discount) => {
     discount.totalAppliedDiscount = 0;
@@ -51,6 +51,7 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
     this.billing.grandTotal = 0;
   }
   this.printableBillData = this.getPrintableBillData(allProducts);
+  this.checkCanPrintKot()
   this.updated.next(noUpdate);
 }
 
@@ -67,11 +68,7 @@ export function calculateProducts(kots:(Kot|KotConstructor)[]){
         if (item) {
           item.quantity += product.quantity;
         } else {
-          allProducts.push(
-            JSON.parse(
-              JSON.stringify({ ...product, quantity: product.quantity })
-            )
-          );
+          allProducts.push(product);
         }
       });
     }
@@ -191,5 +188,6 @@ export function calculateProducts(kots:(Kot|KotConstructor)[]){
       });
     }
   });
+  // this.checkCanPrintKot(this);
   return {allProducts,finalTaxes,finalAdditionalTax};
 }

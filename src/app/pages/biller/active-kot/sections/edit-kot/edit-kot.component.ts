@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { DataProvider } from '../../../../../core/services/provider/data-provider.service';
 import { Product } from '../../../../../types/product.structure';
 import { zoomInOnEnterAnimation, zoomOutOnLeaveAnimation } from 'angular-animations';
+import { Kot } from '../../../../../core/constructors/kot/Kot';
 
 @Component({
   selector: 'app-edit-kot',
@@ -12,5 +13,7 @@ import { zoomInOnEnterAnimation, zoomOutOnLeaveAnimation } from 'angular-animati
 })
 export class EditKotComponent {
   constructor(public dataProvider:DataProvider){}
+  @Input() kots:Kot[] = [];
+  @Input() activeKotIndex:number = 0;
   @Output() delete = new EventEmitter<Product>();
 }

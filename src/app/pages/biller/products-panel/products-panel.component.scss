@@ -23,6 +23,7 @@ section {
   align-content: flex-start;
 }
 .noPadding {
+  min-height: 50px;
   padding: 0;
   position: sticky;
   top: 0px;
@@ -80,6 +81,7 @@ section {
     background: white;
     box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.2);
     display: flex;
+    align-items: center;
     width: calc(100% + 40px);
     margin: -20px;
     border-radius: 0px 0px 10px 10px;

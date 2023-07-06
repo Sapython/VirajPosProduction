@@ -65,7 +65,7 @@ export function firebaseUpdate(this: Bill) {
         bill['kots'].forEach((kot: KotConstructor) => {
           let index = this.kots.findIndex((item) => item.id === kot.id);
           if (index === -1) {
-            this.kots.push(new Kot(kot.products[0], kot));
+            this.kots.push(new Kot(kot.products[0],this, kot));
           }
         });
         // this.billUpdated.next();
@@ -157,7 +157,7 @@ export function fromObject(
     // create kots classes from objects and add them to the bill
     object.kots.forEach((kot) => {
     //  console.log('Creating kot', kot);
-      instance.addKot(new Kot(kot.products[0], kot));
+      instance.addKot(new Kot(kot.products[0], this, kot));
     });
     // instance.currentKot = instance.kots.find((kot) => {
     //   return kot.stage === 'active';

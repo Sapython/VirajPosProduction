@@ -6,6 +6,7 @@
             <input type="number" [(ngModel)]="combo.quantity">
             <viraj-button type="icon" (vclick)="combo.increaseQuantity()"><i class="ri-add-fill"></i></viraj-button>
         </div>
+        <viraj-button (vclick)="activateCombo()">Activate</viraj-button>
         <viraj-button>Delete</viraj-button>
     </div>
     <div class="types">
@@ -16,7 +17,7 @@
             </div>
             <div class="categories">
                 <div class="category" *ngFor="let category of type.categories">
-                    <app-kot-item [@zoomInOnEnter] [@zoomOutOnLeave] (delete)="combo.deleteProduct(type, category, item)"
+                    <app-kot-item [disabled]="disabled" [propagateFunctions]="true" (addQuantityFunction)="addProductQuantity(type,category,item)" (removeQuantityFunction)="removeProductQuantity(type,category,item)" (setQuantityFunction)="setProductQuantity(type,category,item,$event)" [kotId]="kotId" [@zoomInOnEnter] [@zoomOutOnLeave] (delete)="combo.deleteProduct(type, category, item)"
                             [product]="item" [kotNo]="activeKotIndex" [info]="item.instruction || null"
                             [quantity]="item.quantity" [productName]="item.name" [nonVeg]="item.type == 'non-veg'"
                             [price]="item.price" *ngFor="let item of category.selectedProducts"></app-kot-item>

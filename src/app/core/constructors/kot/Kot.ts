@@ -3,7 +3,8 @@ import { Product } from '../../../types/product.structure';
 import { KotConstructor } from '../../../types/kot.structure';
 import { UserConstructor } from '../../../types/user.structure';
 import { ApplicableCombo } from '../comboKot/comboKot';
-import { ComboProductSelection } from '../../../types/combo.structure';
+import { ApplicableComboConstructor, ComboProductSelection } from '../../../types/combo.structure';
+import { Bill } from '../bill';
 
 export class Kot implements KotConstructor {
   id?: string;
@@ -19,13 +20,21 @@ export class Kot implements KotConstructor {
   totalTimeTaken: string;
   totalTimeTakenNumber: number;
   someSelected: boolean;
-  constructor(product: Product|ApplicableCombo,kotObject?:KotConstructor) {
+  constructor(product: Product|ApplicableCombo,bill:Bill,kotObject?:KotConstructor) {
     this.createdDate = Timestamp.now();
     this.stage = 'active';
     this.id = "new"
     if(kotObject){
       this.id = kotObject.id;
-      this.products = kotObject.products;
+      // this.products = kotObject.products;
+      // loop through products and convert them to product objects or ApplicableCombo objects
+      this.products = kotObject.products.map((product) => {
+        if (product.itemType == 'product'){
+          return product;
+        } else {
+          return ApplicableCombo.fromObject(product,bill);
+        }
+      })
       this.editMode = kotObject.editMode;
       this.selected = kotObject.selected;
       this.allSelected = kotObject.allSelected;
@@ -59,7 +68,7 @@ export class Kot implements KotConstructor {
       this.products.some((item) => item.selected) && !this.allSelected;
   }
 
-  convertProductsToObject():Product[] {
+  convertProductsToObject():(Product|ApplicableComboConstructor)[] {
     return this.products.map((product) => {
       if (product.itemType == 'product'){
         return {
@@ -84,31 +93,8 @@ export class Kot implements KotConstructor {
           taxes: product.taxes || []
         };
       } else if (product.itemType == 'combo'){
-        return product.productSelection.map((item) => {
-          return item.products.map((product) => {
-            return {
-              id: product.id,
-              name: product.name,
-              price: product.price,
-              type: product.type,
-              itemType: product.itemType,
-              category: product.category,
-              tags: product.tags || [],
-              quantity: product.quantity,
-              variants: product.variants || [],
-              selected: product.selected,
-              images: product.images || [],
-              createdDate: product.createdDate,
-              visible: product.visible,
-              lineDiscount: product.lineDiscount || null,
-              sales: product.sales || 0,
-              instruction: product.instruction || null,
-              order: product.order || null,
-              taxedPrice: product.taxedPrice || null,
-              taxes: product.taxes || []
-            };
-          })
-        }).flat();
+        let comboData = product.toObject();
+        return comboData;
       }
     }).flat();
   }

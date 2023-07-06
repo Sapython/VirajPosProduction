@@ -135,6 +135,8 @@ export class MenuComponent implements OnInit,AfterViewInit {
 
   async openCategory(category:Category){
     console.log("openCategory",category);
+    // reset vars of combo
+    this.dataProvider.comboSelected.next(undefined);
     let state = this.dataProvider.productPanelStateValue;
     if (state =='combos'){
       console.log("switched",state);

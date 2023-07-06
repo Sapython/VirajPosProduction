@@ -9,6 +9,7 @@ import {
   DirectFlatDiscount,
   DirectPercentDiscount,
 } from '../../../../types/discount.structure';
+import { ApplicableCombo } from '../../comboKot/comboKot';
 
 export function setAsNonChargeable(
   name: string,
@@ -108,18 +109,20 @@ export async function settle(
 ) {
   this.calculateBill();
   // update every product and increase their sales counter by their quantity
-  return
+  // return
   // TODO to be refixed
-  // let products: Product[]|ApplicableCombo[] = [];
-  // let allProducts = this.kots.reduce((acc, cur) => {
-  //   return acc.concat(cur.products);
-  // }, products);
-  // allProducts.forEach((product) => {
-  //   if (!product.sales) {
-  //     product.sales = 0;
-  //   }
-  //   product.sales += product.quantity;
-  // });
+  let products: (Product|ApplicableCombo)[] = [];
+  let allProducts = this.kots.reduce((acc, cur) => {
+    return acc.concat(cur.products);
+  }, products);
+  allProducts.forEach((product) => {
+    if (product.itemType == 'product') {
+      if (!product.sales) {
+        product.sales = 0;
+      }
+      product.sales += product.quantity;
+    }
+  });
   if (!this.billNo) {
     if (this.nonChargeableDetail) {
       this.billNo = 'NC-' + this.dataProvider.ncBillToken.toString();
@@ -173,6 +176,7 @@ export async function settle(
       }
     }
   }
+  this.billService.provideAnalytics().logBill(this);
   if (this.nonChargeableDetail) {
     this.analyticsService.addSales(
       this.billing.grandTotal,

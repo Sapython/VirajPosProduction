@@ -31,7 +31,9 @@
       <viraj-button *ngIf="this.dataProvider.currentBill?.stage=='active'" [small]="true" [minimalPadding]="true" type="outline" [disabled]="!this.dataProvider.currentBill" (vclick)="dataProvider.manageKot=!dataProvider.manageKot;dataProvider.kotViewVisible=false;dataProvider.manageKotChanged.next(dataProvider.manageKot);toggleManageKot()">{{dataProvider.manageKot==true ? 'Back' : 'Manage KOT'}}</viraj-button>
     </div>
     <div class="actions" *ngIf="this.dataProvider.currentBill?.stage=='active'">
-      <viraj-button (click)="dataProvider.currentBill ? dataProvider.currentBill.finalizeAndPrintKot() : {}">Print KOT</viraj-button>
+      <ng-container *ngIf="dataProvider.currentBill">
+        <viraj-button (vclick)="dataProvider.currentBill.finalizeAndPrintKot()" [disabled]="this.dataProvider.currentBill.canPrintKot">Print KOT</viraj-button>
+      </ng-container>
       <viraj-button (vclick)="finalizeBill()">Finalize Bill</viraj-button>
       <viraj-button [disabled]="!!this.dataProvider.currentBill?.nonChargeableDetail" [matTooltip]="!!this.dataProvider.currentBill?.nonChargeableDetail ? 'Cannot apply discount to NC bill' : 'Click to apply'" (vclick)="addDiscount()">Discount</viraj-button>
       <viraj-button (vclick)="showPreview()">Preview</viraj-button>

@@ -16,7 +16,7 @@ export class CategoryCardComponent implements OnInit {
   constructor(public dataProvider:DataProvider){
   }
   ngOnInit(): void {
-    console.log("this.category?.products",this.category);
+    // console.log("this.category?.products",this.category);
     if (this.category && this.category['products']){
       this.category as Category;
       this.category['products'].forEach((product)=>{
@@ -25,7 +25,7 @@ export class CategoryCardComponent implements OnInit {
         }
       })
     } else if (this.category && this.category['combos']){
-      console.log("this.category['combos']",this.category['combos']);
+      // console.log("this.category['combos']",this.category['combos']);
       this.length = this.category['combos'].length;
     }
   }

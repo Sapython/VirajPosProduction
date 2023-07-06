@@ -186,6 +186,7 @@ export class TableComponent implements OnInit {
       this.userManagementService
     );
     table.clearTable();
+    this.analyticsService.newTable(table,'dine');
     this.dataProvider.tables.push(table);
     this.tableService.reOrderTable();
   }
@@ -215,6 +216,7 @@ export class TableComponent implements OnInit {
       this.userManagementService
     );
     this.dataProvider.currentBill = table.occupyTable();
+    this.analyticsService.newTable(table,'takeaway');
     this.dataProvider.currentTable = table;
     this.dataProvider.billAssigned.next();
     if (this.dataProvider.tempProduct && this.dataProvider.currentBill) {
@@ -249,6 +251,7 @@ export class TableComponent implements OnInit {
     );
     this.dataProvider.currentBill = table.occupyTable();
     this.dataProvider.currentTable = table;
+    this.analyticsService.newTable(table,'online');
     this.dataProvider.billAssigned.next();
     if (this.dataProvider.tempProduct && this.dataProvider.currentBill) {
       this.dataProvider.currentBill.addProduct(this.dataProvider.tempProduct);

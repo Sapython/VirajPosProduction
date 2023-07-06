@@ -9,6 +9,7 @@ import { MatRippleModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ComboCardComponent } from './combo-card/combo-card.component';
+import { BaseComponentsModule } from '../../../shared/base-components/base-components.module';
 
 @NgModule({
   declarations: [ProductsPanelComponent, ProductCardComponent, ComboCardComponent],
@@ -19,7 +20,8 @@ import { ComboCardComponent } from './combo-card/combo-card.component';
     MatIconModule,
     MatRippleModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    BaseComponentsModule
   ],
   exports:[ProductsPanelComponent,ProductCardComponent]
 })

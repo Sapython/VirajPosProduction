@@ -28,7 +28,7 @@ import { AddComboComponent } from '../../../pages/biller/sidebar/edit-menu/add-c
 import { AddTimeGroupComponent } from '../../../pages/biller/sidebar/edit-menu/add-time-group/add-time-group.component';
 
 
-var debug:boolean = true;
+var debug:boolean = false;
 
 export class ModeConfig {
   name: string;
@@ -330,6 +330,7 @@ export class ModeConfig {
   }
 
   async getComboCategories() {
+    this.combos = []
     this.menuManagementService.getCombos(this.selectedMenu.id).then((data) => {
       data.forEach((doc) => {
         this.combos.push({
@@ -359,7 +360,7 @@ export class ModeConfig {
           img.src=doc.data()["offerImage"];
         }
       });
-      console.log("COMBOS",this.combos);
+      // console.log("COMBOS",this.combos);
       this.comboCategory = {
         combos: this.combos,
         name: 'Combos',

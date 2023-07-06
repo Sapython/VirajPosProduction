@@ -1,4 +1,6 @@
+import { DirectFlatDiscount, DirectPercentDiscount } from "./discount.structure";
 import { Product } from "./product.structure";
+import { Tax } from "./tax.structure";
 
 export interface Combo {
     id: string;
@@ -95,6 +97,19 @@ export interface ApplicableComboConstructor {
     productSelection:ComboProductSelection[];
     quantity:number;
     cancelled:boolean;
+    price:number;
+    name:string;
+    instruction: string;
+    transferred?: string;
+    incomplete: boolean;
+    canBeDiscounted: boolean;
+    canBeApplied: boolean;
+    untaxedValue: number;
+    lineDiscount?: DirectPercentDiscount | DirectFlatDiscount;
+    lineDiscounted: boolean;
+    totalAppliedTax: number;
+    totalAppliedPercentage: number;
+    finalTaxes: Tax[];
 }
 export interface ComboProductSelection {
     id:string;

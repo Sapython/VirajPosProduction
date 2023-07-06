@@ -1,25 +1,30 @@
 <ng-container *ngIf="!this.selectedCombo">
     <section class="noPadding" *ngIf="currentCategory">
         <h3>{{currentCategory.name | titlecase}}</h3>
-        <input type="search" placeholder="Search In Category" (input)="customSearchSubject.next(customSearch.value)" #customSearch>
+        <input type="search" placeholder="Search In Category" (input)="categoryWiseSearchSubject.next(customSearch.value)" #customSearch>
     </section>
-    <section class="productArea" [ngClass]="{'align':(products.length > 5 || (searchVisible && searchResults.length > 5) || (customSearchVisible && customResults.length > 5))}">
-        <ng-container *ngFor="let item of searchVisible ? this.searchResults : (customSearchVisible ? customResults : products)">
-            <app-product-card [taxes]="item.taxes" (click)="item.taxes ? selectProduct(item) : {}" [tags]="item.tags" [category]="item.category.name" [productName]="item.name" [veg]="item.type == 'veg'" [price]="item.price" *ngIf="item.visible"></app-product-card>
+    <section class="productArea" [ngClass]="{'align':(products.length > 5 || (searchVisible && searchResults.length > 5) || (customSearchVisible && (categoryProductSearchResults.length || categoryComboSearchResults.length || categoryComboSearchResults.length || categoryComboTypeSearchResults.length) > 5))}">
+        <ng-container *ngIf="mode == 'products'">
+            <ng-container *ngFor="let item of (this.categoryProductSearchResults.length > 0 ? categoryProductSearchResults : products)">
+                <app-product-card [taxes]="item.taxes" (click)="item.taxes ? selectProduct(item) : {}" [tags]="item.tags" [category]="item.category.name" [productName]="item.name" [veg]="item.type == 'veg'" [price]="item.price" *ngIf="item.visible"></app-product-card>
+            </ng-container>
         </ng-container>
-        <ng-container *ngFor="let item of combos">
-            <app-combo-card [combo]="item" (open)="selectCombo($event)"></app-combo-card>
+        <ng-container *ngIf="mode == 'combos'">
+            <ng-container *ngFor="let item of (this.categoryComboSearchResults.length > 0 ? categoryComboSearchResults : combos)">
+                <app-combo-card [combo]="item" (open)="selectCombo($event)"></app-combo-card>
+            </ng-container>
         </ng-container>
     </section>
 </ng-container>
 <ng-container *ngIf="this.selectedCombo">
     <section class="noPadding" *ngIf="this.selectedCombo">
+        <viraj-button type="icon" (vclick)="selectedCombo = undefined"><i class="ri-close-fill"></i></viraj-button>
         <h3>{{this.selectedCombo.name | titlecase}}</h3>
     </section>
     <section class="productArea combos">
         <!-- types -->
         <div class="types" *ngIf="!selectedType">
-            <div class="type" *ngFor="let type of selectedCombo.types" (click)="selectedType=type">
+            <div class="type" *ngFor="let type of categoryComboTypeSearchResults.length ? categoryComboTypeSearchResults : selectedCombo.types" (click)="selectType(type)">
                 <img [src]="type.image" alt="">
                 <p>{{type.name}}</p>
             </div>
@@ -27,6 +32,7 @@
         <!-- selected type -->
         <div class="selectedType" *ngIf="selectedType">
             <div class="type">
+                <viraj-button type="icon" (vclick)="selectedType = undefined"><i class="ri-arrow-left-fill"></i></viraj-button>
                 <img [src]="selectedType.image" alt="">
                 <p>{{selectedType.name}}</p>
             </div>

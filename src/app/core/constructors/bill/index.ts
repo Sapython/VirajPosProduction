@@ -25,6 +25,7 @@ import {
 } from './methods/update.bill';
 import {
   addKot,
+  checkCanPrintKot,
   clearAllKots,
   deleteKot,
   editKot,
@@ -120,6 +121,7 @@ export class Bill implements BillConstructor {
   currentKot: Kot | null =
     this.kots.find((kot) => kot.stage === 'active') || null;
   billUpdated: Subject<boolean | void> = new Subject<boolean | void>();
+  canPrintKot:boolean = false;
   constructor(
     id: string,
     table: Table,
@@ -218,6 +220,8 @@ export class Bill implements BillConstructor {
   public finalizeAndPrintKot = finalizeAndPrintKot;
   public deleteKot = deleteKot;
   public printKot = printKot;
+  public checkCanPrintKot = checkCanPrintKot;
+
 
   // product functions
   public addProduct = addProduct;

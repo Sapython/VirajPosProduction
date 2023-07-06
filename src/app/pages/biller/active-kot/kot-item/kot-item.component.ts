@@ -15,6 +15,7 @@ import { firstValueFrom } from 'rxjs';
 import { Product } from '../../../../types/product.structure';
 import { DataProvider } from '../../../../core/services/provider/data-provider.service';
 import { DirectFlatDiscount, DirectPercentDiscount } from '../../../../types/discount.structure';
+import { ComboCategoryCategorized, ComboTypeProductWiseCategorized } from '../../../../types/combo.structure';
 @Component({
   selector: 'app-kot-item',
   templateUrl: './kot-item.component.html',
@@ -33,9 +34,14 @@ export class KotItemComponent implements OnChanges {
   @Input() product: Product | undefined;
   @Input() manageKot: boolean = false;
   @Input() cancelled: boolean = false;
+  @Input() disabled: boolean = false;
   @Output() delete: EventEmitter<any> = new EventEmitter();
   @Output() lineCancelled: EventEmitter<any> = new EventEmitter();
   @Output() lineDiscounted: EventEmitter<any> = new EventEmitter();
+  @Input() propagateFunctions: boolean = false;
+  @Output() addQuantityFunction:EventEmitter<void> = new EventEmitter<void>()
+  @Output() removeQuantityFunction:EventEmitter<void> = new EventEmitter<void>()
+  @Output() setQuantityFunction:EventEmitter<number> = new EventEmitter<number>()
   showKotNo: boolean = false;
   constructor(public dataProvider: DataProvider, private dialog: Dialog) {}
   kotNoColors: { color: string; contrast: string }[] = [
@@ -123,10 +129,27 @@ export class KotItemComponent implements OnChanges {
     });
   }
   increase(){
-    this.product.quantity = this.product.quantity + 1;this.dataProvider.currentBill?.calculateBill()
+    if (!this.propagateFunctions){
+      this.product.quantity = this.product.quantity + 1;this.dataProvider.currentBill?.calculateBill()
+    } else {
+      console.log("Adding through",this.addQuantityFunction);
+      this.addQuantityFunction.emit()
+    }
   }
   decrease(){
-    this.product.quantity = this.product.quantity - 1;this.dataProvider.currentBill?.calculateBill()
+    if (!this.propagateFunctions){
+      this.product.quantity = this.product.quantity - 1;this.dataProvider.currentBill?.calculateBill()
+    } else {
+      this.removeQuantityFunction.emit()
+    }
+  }
+
+  setQuantity(quantityValue){
+    if (!this.propagateFunctions){
+      this.product.quantity = quantityValue;this.dataProvider.currentBill?.calculateBill()
+    } else {
+      this.setQuantityFunction.emit(quantityValue)
+    }
   }
 
   get isHalf() {

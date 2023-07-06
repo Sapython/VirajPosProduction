@@ -43,11 +43,12 @@ export class ApplicableCombo implements ApplicableComboConstructor {
     "friday",
     "saturday"
   ]
-  constructor(combo: Combo, bill:Bill) {
+  constructor(combo: Combo,private bill:Bill) {
     this.generateId();
     if (this.checkDateIsAvailable(combo.timeGroups)) {
       this.canBeApplied = true;
     } else {
+      this.canBeApplied = false;
       alert('Combo cannot be applied. Please check the validity of the combo.');
     }
     this.name = combo.name;
@@ -62,6 +63,10 @@ export class ApplicableCombo implements ApplicableComboConstructor {
     category: ComboCategoryCategorized,
     product: Product
   ) {
+    if (!this.canBeApplied){
+      alert("Not allowed combo is not available.")
+      return
+    }
     // check if type, category, product exists in combo
     const comboType = this.combo.types.find((t) => t.id == type.id);
     const comboCategory = comboType?.categories.find(
@@ -126,6 +131,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
     category: ComboCategoryCategorized,
     product: Product
   ) {
+    console.log("this.combo",this.combo);
     const comboType = this.combo.types.find((t) => t.id == type.id);
     const comboCategory = comboType?.categories.find(
       (c) => c.id == category.id
@@ -134,22 +140,21 @@ export class ApplicableCombo implements ApplicableComboConstructor {
       (p) => p.id == product.id
     );
     if (comboProduct) {
-      let productIndex = comboCategory.selectedProducts.findIndex(
-        (p) => p.id == product.id
+      let totalQuantity = comboCategory.selectedProducts.reduce(
+        (a, b) => a + (b.quantity || 1),
+        0
       );
-      if (productIndex != -1) {
-        if (
-          comboCategory.selectedProducts.length <=
-            (comboCategory.maximumProducts || comboCategory.minimumProducts) &&
-          comboCategory.selectedProducts.length >=
-            (comboCategory.minimumProducts || 0)
-        ) {
-          comboCategory.selectedProducts.splice(productIndex, 1);
-        } else {
-          alert('Cannot add more products to this category.');
-        }
+      console.log("Laden",totalQuantity,comboCategory.maximumProducts || comboCategory.minimumProducts);
+      if (
+        (comboCategory.maximumProducts || comboCategory.minimumProducts) &&
+        totalQuantity >= Number(comboCategory.maximumProducts || comboCategory.minimumProducts)
+      ) {
+        alert('Cannot add more products to this category.');
+        return;
       }
+      product.quantity++;
     }
+    this.calculatePrice();
   }
 
   decreaseProductQuantity(
@@ -165,22 +170,11 @@ export class ApplicableCombo implements ApplicableComboConstructor {
       (p) => p.id == product.id
     );
     if (comboProduct) {
-      let productIndex = comboCategory.selectedProducts.findIndex(
-        (p) => p.id == product.id
-      );
-      if (productIndex != -1) {
-        if (
-          comboCategory.selectedProducts.length <=
-            (comboCategory.maximumProducts || comboCategory.minimumProducts) &&
-          comboCategory.selectedProducts.length >=
-            (comboCategory.minimumProducts || 0)
-        ) {
-          comboCategory.selectedProducts.splice(productIndex, 1);
-        } else {
-          alert('Cannot add more products to this category.');
-        }
+      if (product.quantity > 1) {
+        product.quantity--;
       }
     }
+    this.calculatePrice();
   }
 
   setProductQuantity(
@@ -189,6 +183,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
     product: Product,
     quantity: number
   ) {
+    console.log("this.combo",this.combo);
     const comboType = this.combo.types.find((t) => t.id == type.id);
     const comboCategory = comboType?.categories.find(
       (c) => c.id == category.id
@@ -197,22 +192,26 @@ export class ApplicableCombo implements ApplicableComboConstructor {
       (p) => p.id == product.id
     );
     if (comboProduct) {
-      let productIndex = comboCategory.selectedProducts.findIndex(
-        (p) => p.id == product.id
+      let totalQuantity = comboCategory.selectedProducts.reduce(
+        (a, b) => {
+          if (b.id == product.id) {
+            return a + quantity;
+          }
+          return a + (b.quantity || 1)
+        },
+        0
       );
-      if (productIndex != -1) {
-        if (
-          comboCategory.selectedProducts.length <=
-            (comboCategory.maximumProducts || comboCategory.minimumProducts) &&
-          comboCategory.selectedProducts.length >=
-            (comboCategory.minimumProducts || 0)
-        ) {
-          comboCategory.selectedProducts.splice(productIndex, 1);
-        } else {
-          alert('Cannot add more products to this category.');
-        }
+      if (
+        (comboCategory.maximumProducts || comboCategory.minimumProducts) &&
+        totalQuantity > Number(comboCategory.maximumProducts || comboCategory.minimumProducts)
+      ) {
+        product.quantity = 1;
+        alert('Cannot add more products to this category.');
+        return;
       }
+      product.quantity = quantity;
     }
+    this.calculatePrice();
   }
 
   deleteProduct(
@@ -258,7 +257,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
           (a, b) => a + (b.quantity || 1),
           0
         );
-        if (totalQuantity == 0) {
+        if (totalQuantity == 0 || totalQuantity < (category.minimumProducts || 0)) {
           this.incomplete = true;
           this.price = 0;
         }
@@ -322,6 +321,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
     let finalTaxes: Tax[] = [];
     let modifiedAllProducts = [];
     console.log("ALL products",allProducts);
+    this.price = 0;
     allProducts.forEach((product) => {
       if (product.itemType == 'product' && product.taxes) {
         // console.log('product taxes', product.taxes);
@@ -335,8 +335,10 @@ export class ApplicableCombo implements ApplicableComboConstructor {
           // console.log("Applying linediscount",product.name,product.lineDiscount);
           if (product.lineDiscount.mode === 'directPercent') {
             totalAmount = totalAmount - ((totalAmount / 100) * product.lineDiscount.value);
+            // this.price += this.price - ((this.price / 100) * product.lineDiscount.value);
           } else {
             totalAmount = totalAmount - product.lineDiscount.value;
+            // this.price += this.price - product.lineDiscount.value;
           }
           product.lineDiscounted = true;
         }
@@ -424,8 +426,18 @@ export class ApplicableCombo implements ApplicableComboConstructor {
     allProducts.forEach((product) => {
       this.untaxedValue = this.untaxedValue + (product.untaxedValue * product.quantity);
       console.log("PRD",product.untaxedValue,product.price,product.quantity);
-      this.price = this.price + (product.price * product.quantity);
+      if(!product.lineDiscounted){
+        this.price = this.price + (product.price * product.quantity);
+      }
     });
+    console.log(":this.untaxedValue",this.untaxedValue,this.quantity);
+    this.untaxedValue = this.untaxedValue * this.quantity;
+    finalTaxes.forEach((tax) => {
+      // multiply tax amount with quantity
+      tax.amount = tax.amount * this.quantity;
+    })
+    console.log(":Final price",this.price,this.quantity);
+    this.bill.calculateBill();
     console.log("untaxedValue",this.untaxedValue,"finalTaxes",finalTaxes);
     // console.log("Price",this.price);
     // console.log("allProducts,finalTaxes,finalAdditionalTax",allProducts,finalTaxes,finalAdditionalTax);
@@ -501,5 +513,57 @@ export class ApplicableCombo implements ApplicableComboConstructor {
 
   getDayFromIndex(dayIndex:number){
     return this.days[dayIndex];
+  }
+
+  toObject():ApplicableComboConstructor{
+    return {
+      itemType: 'combo',
+      id:this.id,
+      combo:this.combo,
+      selected:this.selected,
+      productSelection:this.productSelection,
+      quantity:this.quantity,
+      cancelled:this.cancelled,
+      price:this.price,
+      name:this.name,
+      instruction: this.instruction,
+      transferred: this.transferred,
+      incomplete: this.incomplete,
+      canBeDiscounted: this.canBeDiscounted,
+      canBeApplied: this.canBeApplied,
+      untaxedValue: this.untaxedValue,
+      lineDiscount: this.lineDiscount,
+      lineDiscounted: this.lineDiscounted,
+      totalAppliedTax: this.totalAppliedTax,
+      totalAppliedPercentage: this.totalAppliedPercentage,
+      finalTaxes: this.finalTaxes
+    }
+  }
+
+  static fromObject(applicableCombo:ApplicableComboConstructor,billInstance:Bill):ApplicableCombo{
+    if (applicableCombo.combo){
+      let newCombo = new ApplicableCombo(applicableCombo.combo,billInstance);
+      newCombo.itemType = 'combo';
+      newCombo.id = applicableCombo.id;
+      newCombo.combo = applicableCombo.combo;
+      newCombo.selected = applicableCombo.selected;
+      newCombo.productSelection = applicableCombo.productSelection;
+      newCombo.quantity = applicableCombo.quantity;
+      newCombo.cancelled = applicableCombo.cancelled;
+      newCombo.price = applicableCombo.price;
+      newCombo.name = applicableCombo.name;
+      newCombo.instruction = applicableCombo.instruction;
+      newCombo.transferred = applicableCombo.transferred;
+      newCombo.incomplete = applicableCombo.incomplete;
+      newCombo.canBeDiscounted = applicableCombo.canBeDiscounted;
+      newCombo.canBeApplied = applicableCombo.canBeApplied;
+      newCombo.untaxedValue = applicableCombo.untaxedValue;
+      newCombo.lineDiscount = applicableCombo.lineDiscount;
+      newCombo.lineDiscounted = applicableCombo.lineDiscounted;
+      newCombo.totalAppliedTax = applicableCombo.totalAppliedTax;
+      newCombo.totalAppliedPercentage = applicableCombo.totalAppliedPercentage;
+      newCombo.finalTaxes = applicableCombo.finalTaxes;
+      return newCombo;
+    }
   }
 }

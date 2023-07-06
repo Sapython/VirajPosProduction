@@ -37,7 +37,7 @@ export async function addProduct(this: Bill, product: Product|ApplicableCombo) {
   } else {
     const kotIndex = this.kots.findIndex((kot) => kot.stage === 'active');
     if (kotIndex === -1) {
-      let kot = new Kot(product);
+      let kot = new Kot(product,this);
       this.kots.push(kot);
     } else {
       // if the item exists in the kot, increase the quantity by 1 else add the item to the kot

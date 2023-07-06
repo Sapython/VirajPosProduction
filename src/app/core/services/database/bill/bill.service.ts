@@ -3,13 +3,14 @@ import { Firestore, addDoc, collection, collectionChanges, collectionData, doc, 
 import { DataProvider } from '../../provider/data-provider.service';
 import { Product } from '../../../../types/product.structure';
 import { BillConstructor } from '../../../../types/bill.structure';
+import { AnalyticsService } from '../analytics/analytics.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BillService {
   updateHistory:any[] = []
-  constructor(private firestore:Firestore,private dataProvider:DataProvider) {
+  constructor(private firestore:Firestore,private dataProvider:DataProvider,public analyticsService:AnalyticsService) {
     // this.dataProvider.menuLoadSubject.subscribe((menu)=>{
     //   let res = this.watchToken().subscribe((tokens)=>{
     //     let filtered = tokens.filter((token)=>token.doc.id=='18')
@@ -152,5 +153,7 @@ export class BillService {
     );
   }
 
-
+  provideAnalytics(){
+    return this.analyticsService;
+  }
 }

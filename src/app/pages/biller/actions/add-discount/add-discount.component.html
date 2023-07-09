@@ -19,13 +19,6 @@
       </aside>
       <div class="main">
         <ng-container *ngIf="currentDiscount">
-          <!-- <div class="mode">
-            <mat-button-toggle-group name="mode" value="Coupon Code" [(ngModel)]="currentDiscount.mode" aria-label="Font Style" #mode>
-              <mat-button-toggle *ngIf="this.dataProvider.getAccess('admin')" value="directPercent">Direct Percent</mat-button-toggle>
-              <mat-button-toggle *ngIf="this.dataProvider.getAccess('admin')" value="directFlat">Direct Flat</mat-button-toggle>
-              <mat-button-toggle value="codeBased">Uploaded</mat-button-toggle>
-            </mat-button-toggle-group>
-          </div> -->
           <mat-form-field appearance="outline" *ngIf="currentDiscount.mode=='directPercent'">
             <mat-label>Direct Percent</mat-label>
             <input type="text" (keydown.enter)="reasonInput.focus()" matInput [(ngModel)]="currentDiscount.value" />
@@ -37,7 +30,7 @@
           <mat-form-field appearance="outline" *ngIf="currentDiscount.mode=='codeBased'">
             <mat-label>Select Discount</mat-label>
             <mat-select placeholder="Discount" (keydown.enter)="reasonInput.focus()" [(ngModel)]="currentDiscount.id" (valueChange)="switchDiscount($event,currentIndex)" name="discount">
-              <ng-container *ngFor="let discount of this.dataProvider.discounts">
+              <ng-container *ngFor="let discount of this.dataProvider.currentBill.availableDiscounts">
                 <mat-option [value]="discount.id" *ngIf="this.dataProvider.getAccess(discount.accessLevels)">
                   <ng-container *ngIf="discount.name">
                     {{discount.name}}
@@ -95,10 +88,11 @@
           <mat-label>Direct Flat</mat-label>
           <input type="number" (keydown.enter)="reasonInput.focus()" matInput [(ngModel)]="currentDiscount.value" />
         </mat-form-field>
+        <strong><p *ngIf="this.dataProvider.currentBill.availableDiscounts">*No discounts available</p></strong>
         <mat-form-field appearance="outline" *ngIf="currentDiscount.mode=='codeBased'">
           <mat-label>Select Discount</mat-label>
           <mat-select placeholder="Discount" (keydown.enter)="reasonInput.focus()" [(ngModel)]="currentDiscount.id" (valueChange)="switchDiscount($event,currentIndex)" name="discount">
-            <ng-container *ngFor="let discount of this.dataProvider.discounts">
+            <ng-container *ngFor="let discount of this.dataProvider.currentBill.availableDiscounts">
               <mat-option [value]="discount.id" *ngIf="this.dataProvider.getAccess(discount.accessLevels)">
                 <ng-container *ngIf="discount.name">
                   {{discount.name}}

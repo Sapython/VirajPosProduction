@@ -57,6 +57,7 @@ import { PrintableKot } from '../../../types/kot.structure';
 import { CustomerService } from '../../services/customer/customer.service';
 import { UserManagementService } from '../../services/auth/user/user-management.service';
 import { ApplicableCombo } from '../comboKot/comboKot';
+import { CodeBaseDiscount } from '../../../types/discount.structure';
 
 export class Bill implements BillConstructor {
   id: string;
@@ -115,6 +116,7 @@ export class Bill implements BillConstructor {
     phone: string;
     user: User;
   };
+  availableDiscounts:CodeBaseDiscount[] = [];
   printableBillData: PrintableBill | null = null;
   billSubscriptionCallerStarted: boolean = false;
   updated: Subject<boolean | void> = new Subject<boolean | void>();
@@ -166,6 +168,8 @@ export class Bill implements BillConstructor {
       totalTax: 0,
       grandTotal: 0,
     };
+    this.availableDiscounts = this.dataProvider.menus.find(menu=>menu.selectedMenu.id === this.menu.id)?.discounts || [];
+    console.log("this.availableDiscounts",this.availableDiscounts,this.dataProvider.menus,this.menu.id);
     this.updated.next();
     this.firebaseUpdate();
   }

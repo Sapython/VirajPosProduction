@@ -51,7 +51,13 @@ export class ModeConfig {
   selectedCategory: Category | undefined;
   type: 'dineIn' | 'takeaway' | 'online' | undefined;
   searchSubject: Subject<string> = new Subject<string>();
+  typeSearchSubject: Subject<string> = new Subject<string>();
+  discountsSearchSubject: Subject<string> = new Subject<string>();
+  taxesSearchSubject: Subject<string> = new Subject<string>();
   fuseInstance: Fuse<Product> = new Fuse([], { keys: ['name'] });
+  typesSearchInstance: Fuse<ComboType> = new Fuse([], { keys: ['name'] });
+  taxesSearchInstance: Fuse<Tax> = new Fuse([], { keys: ['name'] });
+  discountsSearchInstance: Fuse<CodeBaseDiscount> = new Fuse([], { keys: ['name'] });
   highCostForm: FormGroup = new FormGroup({
     min: new FormControl(this.dataProvider.highCostConfig.min, [
       Validators.required,
@@ -90,7 +96,9 @@ export class ModeConfig {
   });
   taxSearchControl:string = '';
   taxes: Tax[] = [];
+  filteredTaxes: Tax[] = [];
   discounts: CodeBaseDiscount[] = [];
+  filteredDiscounts: CodeBaseDiscount[] = [];
   loadingDiscount:boolean = false;
   loadingTax:boolean = false;
   combos:Combo[] = [];
@@ -98,6 +106,7 @@ export class ModeConfig {
   comboTypes:any[] = [];
   loadingTypes:boolean = false;
   types:ComboType[] = [];
+  filteredTypes:ComboType[] = [];
   loadingComboTypes:boolean = false;
   loadingTimeGroups:boolean = false;
   timeGroups:TimeGroup[] = [];
@@ -143,6 +152,34 @@ export class ModeConfig {
         this.filteredProducts = [];
       }
     });
+    this.typeSearchSubject.pipe(debounceTime(500)).subscribe((searchString) => {
+      if (searchString) {
+        let res = this.typesSearchInstance.search(searchString);
+        this.filteredTypes = res.map((result) => result.item);
+      } else {
+        this.filteredTypes = [];
+      }
+    });
+    this.discountsSearchSubject
+      .pipe(debounceTime(500))
+      .subscribe((searchString) => {
+        if (searchString) {
+          let res = this.discountsSearchInstance.search(searchString);
+          this.filteredDiscounts = res.map((result) => result.item);
+        } else {
+          this.filteredDiscounts = [];
+        }
+      }
+    );
+    this.taxesSearchSubject.pipe(debounceTime(500)).subscribe((searchString) => {
+      if (searchString) {
+        let res = this.taxesSearchInstance.search(searchString);
+        this.filteredTaxes = res.map((result) => result.item);
+      } else {
+        this.filteredTaxes = [];
+      }
+    }
+    );
   }
 
   get isActive() {
@@ -418,6 +455,7 @@ export class ModeConfig {
     this.selectedMenu = this.dataProvider.allMenus.find(
       (menu) => menu.id == this.selectedMenuId
     );
+    console.log('this.selectedMenu', this.selectedMenu);
     // console.log('updating menu', this.selectedMenu, this.type);
     if (this.selectedMenu && this.type) {
       this.menuManagementService
@@ -824,7 +862,7 @@ export class ModeConfig {
   }
 
   setTaxes(product: Product) {
-    const dialog = this.dialog.open(SetTaxComponent, { data: product });
+    const dialog = this.dialog.open(SetTaxComponent, { data: {product,menu:this},});
     firstValueFrom(dialog.closed).then((data: any) => {
       // console.log('data', data);
       if (data) {
@@ -1151,10 +1189,11 @@ export class ModeConfig {
   // new implementations
 
   getTaxes() {
-    this.settingsService.getTaxes().then((res) => {
+    this.menuManagementService.getTaxes(this.selectedMenu.id).then((res) => {
       this.taxes = res.docs.map((d) => {
         return { ...d.data(), id: d.id } as Tax;
       });
+      this.taxesSearchInstance.setCollection(this.taxes);
     });
   }
   
@@ -1165,12 +1204,12 @@ export class ModeConfig {
       //  console.log('data', data);
         if (data) {
           this.dataProvider.loading = true;
-          this.settingsService
+          this.menuManagementService
             .addTax({
               ...data,
               creationDate: new Date(),
               updateDate: new Date(),
-            })
+            },this.selectedMenu.id)
             .then((res) => {
               this.alertify.presentToast('Tax added successfully');
               this.getTaxes();
@@ -1198,8 +1237,8 @@ export class ModeConfig {
       .then((data: any) => {
       //  console.log('data', data);
         if (data) {
-          this.settingsService
-            .updateTax(tax.id, { ...data, updateDate: Timestamp.now() })
+          this.menuManagementService
+            .updateTax(tax.id, { ...data, updateDate: Timestamp.now() },this.selectedMenu.id)
             .then((res) => {
               this.alertify.presentToast('Tax updated successfully');
               this.getTaxes();
@@ -1222,8 +1261,8 @@ export class ModeConfig {
         1,
       ])
     ) {
-      this.settingsService
-        .deleteTax(id)
+      this.menuManagementService
+        .deleteTax(id,this.selectedMenu.id)
         .then((res) => {
           this.alertify.presentToast('Tax deleted successfully');
         })
@@ -1257,14 +1296,14 @@ export class ModeConfig {
           data.menus = null;
         }
       //  console.log('adding', data);
-        this.settingsService
+        this.menuManagementService
           .addDiscount({
             ...data,
             mode: 'codeBased',
             totalAppliedDiscount: 0,
             creationDate: Timestamp.now(),
             reason: '',
-          } as CodeBaseDiscount)
+          } as CodeBaseDiscount,this.selectedMenu.id)
           .then((res) => {
           //  console.log('res', res);
             this.getDiscounts();
@@ -1282,8 +1321,8 @@ export class ModeConfig {
 
   getDiscounts() {
     this.loadingDiscount = true;
-    this.settingsService
-      .getDiscounts()
+    this.menuManagementService
+      .getDiscounts(this.selectedMenu.id)
       .then((res) => {
         this.discounts = [];
         res.forEach((data) => {
@@ -1292,6 +1331,7 @@ export class ModeConfig {
             id: data.id,
           } as CodeBaseDiscount);
         });
+        this.discountsSearchInstance.setCollection(this.discounts);
       })
       .catch((err: any) => {
       //  console.log(err);
@@ -1321,8 +1361,8 @@ export class ModeConfig {
           data.menus = null;
         }
       //  console.log('adding', data);
-        this.settingsService
-          .updateDiscount({ ...discount, ...data } as CodeBaseDiscount)
+        this.menuManagementService
+          .updateDiscount(discount.id,{ ...discount, ...data } as CodeBaseDiscount,this.selectedMenu.id)
           .then((res) => {
           //  console.log('res', res);
             this.getDiscounts();
@@ -1340,8 +1380,8 @@ export class ModeConfig {
 
   deleteDiscount(discountId: string) {
     this.dataProvider.loading = true;
-    this.settingsService
-      .deleteDiscount(discountId)
+    this.menuManagementService
+      .deleteDiscount(discountId,this.selectedMenu.id)
       .then(() => {
         this.alertify.presentToast('Discount deleted successfully');
         this.getDiscounts();
@@ -1390,6 +1430,7 @@ export class ModeConfig {
       res.forEach((data)=>{
         this.types.push({...data.data(),id:data.id} as ComboType);
       });
+      this.typesSearchInstance.setCollection(this.types);
     }).catch((err)=>{
       this.alertify.presentToast('Error while fetching types');
     }).finally(()=>{

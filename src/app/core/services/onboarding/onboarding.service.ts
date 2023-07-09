@@ -213,7 +213,6 @@ export class OnboardingService {
             this.dataProvider.menus.push(inst);
             this.loadingSteps.next('Found Dine In Menu');
           }
-          let discountRes = await this.settingsService.getDiscounts();
           let menus = await this.menuManagementService.getMenus();
           this.dataProvider.allMenus = [];
           menus.docs.forEach((menu) => {
@@ -221,13 +220,6 @@ export class OnboardingService {
               ...menu.data(),
               id: menu.id,
             } as Menu);
-          });
-          this.dataProvider.discounts = [];
-          discountRes.docs.forEach((discount) => {
-            this.dataProvider.discounts.push({
-              ...discount.data(),
-              id: discount.id,
-            } as CodeBaseDiscount);
           });
           // console.log("loaded discounts",this.dataProvider.discounts);
           let verifiedMenus = [];
@@ -239,14 +231,6 @@ export class OnboardingService {
               // check if all menus are loaded
               if (verifiedMenus.length == menuInits.length) {
                 this.loadingSteps.next('All menus loaded');
-                // console.log("setting.modes",setting.modes);
-                this.settingsService
-                  .getTaxesSubscription()
-                  .subscribe((taxes) => {
-                    this.dataProvider.taxes = taxes.map((tax) => {
-                      return tax as Tax;
-                    });
-                  });
                 // set current menu in order of dineIn, takeaway, online
                 let currentMenu = this.dataProvider.menus.find(
                   (menu) =>

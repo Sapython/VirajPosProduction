@@ -34,6 +34,8 @@ import { CustomerService } from '../../customer/customer.service';
 import { UserManagementService } from '../../auth/user/user-management.service';
 import { Combo, ComboType, TimeGroup } from '../../../../types/combo.structure';
 import { FileStorageService } from '../fileStorage/file-storage.service';
+import { Tax } from '../../../../types/tax.structure';
+import { CodeBaseDiscount } from '../../../../types/discount.structure';
 
 @Injectable({
   providedIn: 'root',
@@ -1223,6 +1225,132 @@ export class MenuManagementService {
           data.id
       )
     );
+  }
+
+  getTaxes(menuId:string){
+    return getDocs(
+      collection(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menuId +
+          '/taxes'
+      )
+    )
+  }
+
+  addTax(data:Tax,menuId:string){
+    this.updatableMenus.push(menuId);
+    this.menuUpdated.next();
+    return addDoc(
+      collection(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menuId +
+          '/taxes'
+      ),
+      data
+    );
+  }
+
+  updateTax(taxId:string,data:Tax,menuId:string){
+    this.updatableMenus.push(menuId);
+    this.menuUpdated.next();
+    return setDoc(
+      doc(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menuId +
+          '/taxes/' +
+          taxId
+      ),
+      data,
+      { merge: true }
+    );
+  }
+
+  deleteTax(taxId:string,menuId:string){
+    this.updatableMenus.push(menuId);
+    this.menuUpdated.next();
+    return deleteDoc(
+      doc(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menuId +
+          '/taxes/' +
+          taxId
+      )
+    );
+  }
+
+  addDiscount(data:CodeBaseDiscount,menuId:string){
+    this.updatableMenus.push(menuId);
+    this.menuUpdated.next();
+    return addDoc(
+      collection(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menuId +
+          '/discounts'
+      ),
+      data
+    );
+  }
+
+  updateDiscount(discountId:string,data:CodeBaseDiscount,menuId:string){
+    this.updatableMenus.push(menuId);
+    this.menuUpdated.next();
+    return setDoc(
+      doc(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menuId +
+          '/discounts/' +
+          discountId
+      ),
+      data,
+      { merge: true }
+    );
+  }
+
+  deleteDiscount(discountId:string,menuId:string){
+    this.updatableMenus.push(menuId);
+    this.menuUpdated.next();
+    return deleteDoc(
+      doc(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menuId +
+          '/discounts/' +
+          discountId
+      )
+    );
+  }
+
+  getDiscounts(menuId:string){
+    return getDocs(
+      collection(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menuId +
+          '/discounts'
+      )
+    )
   }
   
 }

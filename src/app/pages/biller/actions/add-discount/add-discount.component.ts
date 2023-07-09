@@ -32,7 +32,7 @@ export class AddDiscountComponent implements OnInit {
   }
 
   switchDiscount(discount,index:number){
-    this.appliedDiscounts[index] = {...this.dataProvider.discounts.find(d=>d.id == discount),reason:''};
+    this.appliedDiscounts[index] = {...this.dataProvider.currentBill.availableDiscounts.find(d=>d.id == discount),reason:''};
     this.appliedDiscounts[index].mode = 'codeBased';
   //  console.log("Set",this.currentDiscount);
   }

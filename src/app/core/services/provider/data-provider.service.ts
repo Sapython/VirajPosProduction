@@ -111,14 +111,12 @@ export class DataProvider {
   public currentSettings:any;
   public customBillNote:string = '';
   public todaySales:any = {};
-  public taxes:Tax[] = [];
   public multipleDiscount:boolean = false;
   public editKotTime:number = 1;
   public kotEditable:boolean = false;
   public kotRePrintable:boolean = false;
   
   // public access
-  public discounts: CodeBaseDiscount[] = [];
   public menus: ModeConfig[] = [];
   public products: Product[] = [];
   public categories: Category[] = [];

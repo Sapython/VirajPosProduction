@@ -1,5 +1,5 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AlertsAndNotificationsService } from '../../../../../core/services/alerts-and-notification/alerts-and-notifications.service';
 
@@ -8,7 +8,7 @@ import { AlertsAndNotificationsService } from '../../../../../core/services/aler
   templateUrl: './add-type.component.html',
   styleUrls: ['./add-type.component.scss']
 })
-export class AddTypeComponent {
+export class AddTypeComponent implements OnInit {
   imageFile:File = null;
   output:string = '';
   newTypeForm:FormGroup = new FormGroup({
@@ -19,6 +19,13 @@ export class AddTypeComponent {
   constructor(private dialogRef:DialogRef,@Inject(DIALOG_DATA) public data:{mode:'add'|'edit'},private alertify:AlertsAndNotificationsService) {
     if(data.mode === 'edit'){
       this.newTypeForm.patchValue(data);
+    }
+  }
+
+  ngOnInit(): void {
+    // CHECK THE MODE AND SET THE FORM ACCORDINGLY
+    if (this.data.mode === 'edit'){
+      this.newTypeForm.patchValue(this.data);
     }
   }
 

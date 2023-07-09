@@ -40,6 +40,11 @@ export class ElectronService {
       //  console.log(`stdout:\n${stdout}`);
       });
 
+      this.ipcRenderer.on('checking-for-update',(event, args)=>{
+        alert("CHECKING FOR UPDATES")
+        console.log('checking-for-update', args,event);
+      })
+
       // Notes :
       // * A NodeJS's dependency imported with 'window.require' MUST BE present in `dependencies` of both `app/package.json`
       // and `package.json (root folder)` in order to make it work here in Electron's Renderer process (src folder)

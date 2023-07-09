@@ -90,7 +90,7 @@ function createWindow(): BrowserWindow {
     },
     autoHideMenuBar: true,
   });
-
+  autoUpdater.checkForUpdates();
   win.on('closed', () => {
     // Dereference the window object, usually you would store window
     // in an array if your app supports multi windows, this is the time
@@ -136,13 +136,19 @@ function createWindow(): BrowserWindow {
     }
   })
 
-  ipcMain.on("checkForUpdate", async (event, arg) => {
-    try {
-      event.returnValue = autoUpdater.checkForUpdatesAndNotify();
-    } catch (error) {
-      event.returnValue = false;
-    }
+  autoUpdater.on('checking-for-update', () => {
+    win.webContents.send('checking-for-update');
   })
+
+  // ipcMain.on("checkForUpdate", async (event, arg) => {
+  //   try {
+  //     event.returnValue = autoUpdater.checkForUpdatesAndNotify();
+  //   } catch (error) {
+  //     event.returnValue = false;
+  //   }
+  // })
+
+
   if (serve) {
     const debug = require('electron-debug');
     debug();

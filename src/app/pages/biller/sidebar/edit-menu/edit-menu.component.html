@@ -1,22 +1,32 @@
 <section>
   <div class="tabs">
-    <button [ngClass]="{active:currentMode==mode.name}" *ngFor="let mode of this.dataProvider.menus"
-      (click)="currentMode=mode.name">
-      {{mode.name}}
-    </button>
-    <button color="primary" (click)="addNewMenu()" *ngIf="this.dataProvider.getAccess(['admin','manager'])">
-      Add New Menu
-    </button>
+    <div class="tabList">
+      <button [ngClass]="{active:currentMode==mode.name}" *ngFor="let mode of this.dataProvider.menus"
+        (click)="currentMode=mode.name">
+        {{mode.name}}
+      </button>
+      <button color="primary" (click)="addNewMenu()" *ngIf="this.dataProvider.getAccess(['admin','manager'])">
+        Add New Menu
+      </button>
+    </div>
+    <button (click)="this.dialogRef.close();"><i class="ri-close-fill"></i></button>
   </div>
   <ng-container *ngFor="let mode of this.dataProvider.menus">
     <div class="mode" *ngIf="mode.active && mode.name == currentMode">
       <div class="tabs">
-        <button (click)="activeTab='Products'" [ngClass]="{active:activeTab=='Products'}">Products</button>
-        <button (click)="activeTab='Taxes'" [ngClass]="{active:activeTab=='Taxes'}">Taxes</button>
-        <button (click)="activeTab='Discounts'" [ngClass]="{active:activeTab=='Discounts'}">Discounts</button>
-        <button (click)="activeTab='Combos'" [ngClass]="{active:activeTab=='Combos'}">Combos</button>
-        <button (click)="activeTab='Types'" [ngClass]="{active:activeTab=='Types'}">Types</button>
-        <button (click)="activeTab='Settings'" [ngClass]="{active:activeTab=='Settings'}">Settings</button>
+        <div class="tabList">
+          <button (click)="activeTab='Products'" [ngClass]="{active:activeTab=='Products'}">Products</button>
+          <button (click)="activeTab='Taxes'" [ngClass]="{active:activeTab=='Taxes'}">Taxes</button>
+          <button (click)="activeTab='Discounts'" [ngClass]="{active:activeTab=='Discounts'}">Discounts</button>
+          <button (click)="activeTab='Combos'" [ngClass]="{active:activeTab=='Combos'}">Combos</button>
+          <button (click)="activeTab='Types'" [ngClass]="{active:activeTab=='Types'}">Types</button>
+        </div>
+        <select *ngIf="this.dataProvider.getAccess(['admin','manager'])" [(ngModel)]="mode.selectedMenuId"
+          (change)="mode.updateMenu()" placeholder="Menu">
+          <option *ngFor="let menu of this.dataProvider.allMenus" [value]="menu.id">
+            {{ menu.name }}
+          </option>
+        </select>
       </div>
       <div class="productsView" *ngIf="activeTab == 'Products'">
         <ng-container *ngIf="activeTab == 'Products'">
@@ -242,7 +252,7 @@
           <div class="row">
             <mat-form-field appearance="outline">
               <mat-label>Search</mat-label>
-              <input matInput [(ngModel)]="mode.taxSearchControl"/>
+              <input matInput (input)="mode.taxesSearchSubject.next(search.value)" #search/>
             </mat-form-field>
             <viraj-button (vclick)="mode.addTax()">Add Tax</viraj-button>
           </div>
@@ -261,7 +271,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let tax of mode.taxes">
+                <tr *ngFor="let tax of mode.filteredTaxes.length ? mode.filteredTaxes : mode.taxes">
                   <td>{{ tax.name }}</td>
                   <td>{{ tax.cost }}</td>
                   <td>{{ tax.type | titlecase }}</td>
@@ -283,9 +293,9 @@
           <div class="row">
             <mat-form-field appearance="outline">
               <mat-label>Search</mat-label>
-              <input matInput [(ngModel)]="mode.discountSearchControl" />
+              <input matInput (input)="mode.discountsSearchSubject.next(search.value)" #search />
             </mat-form-field>
-            <viraj-button (vclick)="mode.addTax()">Add Tax</viraj-button>
+            <viraj-button (vclick)="mode.addDiscount()">Add Discount</viraj-button>
           </div>
           <div class="tableContainer">
             <table>
@@ -304,7 +314,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let discount of mode.discounts">
+                <tr *ngFor="let discount of mode.filteredDiscounts.length ? mode.filteredDiscounts : mode.discounts">
                   <td>{{ discount.name }}</td>
                   <td>{{ discount.value }}</td>
                   <td>{{ discount.type }}</td>
@@ -347,29 +357,29 @@
         <ng-container *ngIf="activeTab == 'Types'">
           <h3>Types</h3>
           <div class="row">
-            <mat-form-field>
+            <mat-form-field appearance="outline">
               <mat-label>Search</mat-label>
-              <input matInput formControlName="mode.discountSearchControl" />
+              <input matInput (input)="mode.typeSearchSubject.next(search.value)" #search />
             </mat-form-field>
             <viraj-button (vclick)="mode.addType()">Add Type</viraj-button>
           </div>
-          <div class="tableContainer">
+          <div class="tableContainer typesTable">
             <table>
               <thead>
                 <tr>
-                  <th>Name</th>
                   <th>Image</th>
+                  <th>Name</th>
                   <th>Action</th>
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let type of mode.comboTypes">
-                  <td>{{ type.name }}</td>
+                <tr *ngFor="let type of mode.filteredTypes.length ? mode.filteredTypes : mode.types" class="type">
                   <td><img [src]="type.image"></td>
+                  <td>{{ type.name }}</td>
                   <td>
                     <viraj-button (vclick)="mode.editType(type)" type="icon"><i
                         class="ri-pencil-fill"></i></viraj-button>
-                    <viraj-button (vclick)="mode.deleteType(type.id)" type="icon"><i
+                    <viraj-button (vclick)="mode.deleteType(type)" type="icon"><i
                         class="ri-delete-bin-2-fill"></i></viraj-button>
                   </td>
                 </tr>
@@ -416,6 +426,7 @@
           </div>
         </ng-container>
       </div>
+
     </div>
   </ng-container>
   <!-- <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">

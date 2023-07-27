@@ -1,33 +1,30 @@
 <h3>Payment Methods</h3>
-<button color="primary" mat-raised-button (click)="addMethod()">
-  Add Method
-</button>
-<div class="tableContainer">
-  <table>
-    <thead>
-      <tr>
-        <th>Method Name</th>
-        <th>Detail</th>
-        <th>Add Date</th>
-        <th>Update Date</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let item of paymentMethods">
-        <td>{{ item.name }}</td>
-        <td>{{ item.detail ? "Required" : "Not Required" }}</td>
-        <td>{{ item.addDate.toDate() | date : "short" }}</td>
-        <td>{{ item.updateDate.toDate() | date : "short" }}</td>
-        <td>
-          <viraj-button (vclick)="editMethod(item)" type="icon"
-            ><i class="ri-pencil-line"></i
-          ></viraj-button>
-          <viraj-button (vclick)="deleteMethod(item.id)" type="icon"
-            ><i class="ri-delete-bin-line"></i
-          ></viraj-button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+<table class="styled-table">
+  <thead>
+    <tr>
+      <th>Method Name</th>
+      <th>Detail</th>
+      <th>Add Date</th>
+      <th>Update Date</th>
+      <th><button *ngIf="this.dataProvider.getAccess('newMethod')" mat-raised-button (click)="addMethod()">
+        Add Method
+      </button></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of paymentMethods">
+      <td>{{ item.name }}</td>
+      <td>{{ item.detail ? "Required" : "Not Required" }}</td>
+      <td>{{ item.addDate.toDate() | date : "short" }}</td>
+      <td>{{ item.updateDate.toDate() | date : "short" }}</td>
+      <td>
+        <viraj-button (vclick)="editMethod(item)" *ngIf="this.dataProvider.getAccess('editMethod')" type="icon"
+          ><i class="ri-pencil-line"></i
+        ></viraj-button>
+        <viraj-button (vclick)="deleteMethod(item.id)" *ngIf="this.dataProvider.getAccess('deleteMethod')" type="icon"
+          ><i class="ri-delete-bin-line"></i
+        ></viraj-button>
+      </td>
+    </tr>
+  </tbody>
+</table>

@@ -17,7 +17,7 @@ import { DialogComponent } from '../../../shared/base-components/dialog/dialog.c
 import { CodeBaseDiscount } from '../../../types/discount.structure';
 import { TableConstructor } from '../../../types/table.structure';
 import { Tax } from '../../../types/tax.structure';
-import { BusinessRecord } from '../../../types/user.structure';
+import { BusinessRecord, Member } from '../../../types/user.structure';
 import { AlertsAndNotificationsService } from '../alerts-and-notification/alerts-and-notifications.service';
 import { AuthService } from '../auth/auth.service';
 import { MenuManagementService } from '../database/menuManagement/menu-management.service';

@@ -93,8 +93,7 @@ export class SettleComponent implements OnInit {
         // adjust the last method
         this.methods[this.methods.length - 1].amount -= this.totalPaid - this.billSum
       }
-      let paymentMethods = this.methods.map((method)=>method.paymentMethod)
-      let uniquePaymentMethods = [...new Set(paymentMethods)]
+      let paymentMethods = this.methods.map((method)=>method)
       // if (paymentMethods.length !== uniquePaymentMethods.length){
       //   this.alertify.presentToast('Conflicting payment methods')
       //   return

@@ -9,6 +9,7 @@ import { DataProvider } from '../../../core/services/provider/data-provider.serv
 import { Product } from '../../../types/product.structure';
 import { CancelKOtComponent } from './cancel-kot/cancel-kot.component';
 import { UserManagementService } from '../../../core/services/auth/user/user-management.service';
+import { ApplicableCombo } from '../../../core/constructors/comboKot/comboKot';
 @Component({
   selector: 'app-active-kot',
   templateUrl: './active-kot.component.html',
@@ -100,7 +101,7 @@ export class ActiveKotComponent implements OnChanges {
   //  console.log('this.labels', this.labels);
   }
 
-  async delete(product: Product) {
+  async delete(product: Product|ApplicableCombo) {
     if (this.dataProvider.currentBill?.editKotMode) {
       const index = this.dataProvider.currentBill?.editKotMode.newKot.findIndex(
         (item) => item.id === product.id
@@ -146,7 +147,9 @@ export class ActiveKotComponent implements OnChanges {
             access: this.dataProvider.currentBusinessUser.access.accessLevel,
             username: this.dataProvider.currentBusinessUser.name,
           },
-        }
+        };
+        console.log("Cancel reason kot: ",kot.cancelReason);
+        
         this.dataProvider.currentBill?.deleteKot(kot);
       }
       // this.dataProvider.currentBill?.deleteKot(kot);
@@ -165,7 +168,7 @@ export class ActiveKotComponent implements OnChanges {
       let dialog = this.dialog.open(ReasonComponent);
       firstValueFrom(dialog.closed).then((reason:string) => {
         this.dataProvider.currentBill?.editKot(kot,reason);
-      })
+      });
     }
   }
 

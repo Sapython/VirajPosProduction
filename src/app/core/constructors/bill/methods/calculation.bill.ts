@@ -9,6 +9,7 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   // console.log("Running using calculateBill");
   // check individual product for tax and if the tax.mode is inclusive then add the applicable tax to totalTaxValue or if the tax.mode is exclusive then decrease the price of product by tax rate and add the applicableValue to totalTaxValue
   let calculationResults =  calculateProducts(this.kots);
+  console.log("calculationResults",calculationResults);
   let allProducts = calculationResults.allProducts;
   let finalTaxes: Tax[] = calculationResults.finalTaxes;
   let finalAdditionalTax = calculationResults.finalAdditionalTax;
@@ -40,7 +41,9 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
     }
   });
 
-  this.billing.taxes = finalTaxes.filter((tax) => tax.amount > 0);
+  console.log("Prev final taxes",finalTaxes);
+  this.billing.taxes = finalTaxes.filter((tax) => tax.amount);
+  console.log("Billing taxes",this.billing.taxes);
   let totalApplicableTax = this.billing.taxes.reduce((acc, cur) => {
     return acc + cur.amount;
   }, 0)
@@ -179,15 +182,26 @@ export function calculateProducts(kots:(Kot|KotConstructor)[]){
       // combo is an ApplicableCombo class
       let combo = product as ApplicableCombo;
       // console.log("UNAPPLIED COMBO",combo);
-      finalTaxes.forEach((tax: Tax) => {
-        combo.finalTaxes.forEach((comboTax: Tax) => {
+      combo.finalTaxes.forEach((comboTax: Tax) => {
+        finalTaxes.forEach((tax: Tax) => {
           if (tax.id === comboTax.id) {
             tax.amount += comboTax.amount;
+          } else {
+            finalTaxes.push(JSON.parse(JSON.stringify(comboTax)));
           }
-        })
+        });
+        // console.log("combo.finalTaxes",combo.finalTaxes,"finalTaxes",finalTaxes);
+        // add missing taxes to finalTaxes
+      });
+      combo.finalTaxes.forEach((comboTax: Tax) => {
+        let index = finalTaxes.findIndex((item: Tax) => item.id === comboTax.id);
+        if (index === -1) {
+          finalTaxes.push(JSON.parse(JSON.stringify(comboTax)));
+        }
       });
     }
   });
+  console.log("Final taxes",finalTaxes);
   // this.checkCanPrintKot(this);
   return {allProducts,finalTaxes,finalAdditionalTax};
 }

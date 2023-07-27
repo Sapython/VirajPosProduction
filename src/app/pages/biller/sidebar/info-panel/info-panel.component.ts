@@ -6,7 +6,8 @@ import { OrderSummaryComponent } from './order-summary/order-summary.component';
 import { UpgradeComponent } from './upgrade/upgrade.component';
 import { APP_CONFIG } from '../../../../../environments/environment';
 import { DataProvider } from '../../../../core/services/provider/data-provider.service';
-import { ElectronService } from '../../../../core/services';
+import { ElectronService } from '../../../../core/services/electron/electron.service';
+import { UpdaterComponent } from './updater/updater.component';
 declare var Hammer:any;
 @Component({
   selector: 'app-info-panel',
@@ -21,6 +22,7 @@ export class InfoPanelComponent implements OnInit,OnChanges, AfterViewInit{
   height:number = 0;
   closeOrdersPanelSubscription:Subject<boolean> = new Subject<boolean>();
   closeSalesPanelSubscription:Subject<boolean> = new Subject<boolean>();
+  downloadPercentage:number = 0;
   constructor(public dataProvider:DataProvider,private el:ElementRef,private dialog:Dialog,private electronService:ElectronService) {
     this.dataProvider.closeAllPanel.subscribe((data)=>{
       this.isOpen = false;
@@ -29,6 +31,16 @@ export class InfoPanelComponent implements OnInit,OnChanges, AfterViewInit{
     this.version = APP_CONFIG.appVersion
     // console.log("this.el.nativeElement",this.el.nativeElement.offsetHeight);
     this.height = this.el.nativeElement.offsetHeight;
+    this.dataProvider.softwareUpdateFilteredSubject.subscribe((data)=>{
+      console.log("softwareUpdateSubject",data);
+      alert("New update available");
+      if (data.stage && data.stage == 'update-available'){
+        const dialog = this.dialog.open(UpdaterComponent,{data:data.info});
+      }
+      if (data.stage && data.stage == 'update-downloaded'){
+        const dialog = this.dialog.open(UpdaterComponent,{data:data.info});
+      }
+    })
   }
 
   ngAfterViewInit(): void {
@@ -91,23 +103,24 @@ export class InfoPanelComponent implements OnInit,OnChanges, AfterViewInit{
   }
 
   openUpgrade(){
-    alert("Checking for updates")
-    this.dataProvider.loading = true;
-    let res = this.electronService.checkForUpdate()
-    if (res){
-      res.then((res)=>{
-      //  console.log("UPDATE RES",res);
-      }).catch((error)=>{
-      //  console.log("UPDATE RES error",error);
-      }).finally(()=>{
-        this.dataProvider.loading = false;
-      })
-    } else {
-      this.dataProvider.loading = false;
-    }
-    // const dialog = this.dialog.open(UpgradeComponent)
-    // dialog.closed.subscribe((data)=>{
-    //   // dialog.close();
-    // })
+    // alert("Checking for updates")
+    // this.dataProvider.loading = true;
+    // let res = this.electronService.checkForUpdate()
+    // if (res){
+    //   res.then((res)=>{
+    //   //  console.log("UPDATE RES",res);
+    //   }).catch((error)=>{
+    //   //  console.log("UPDATE RES error",error);
+    //   }).finally(()=>{
+    //     this.dataProvider.loading = false;
+    //   })
+    // } else {
+    //   this.dataProvider.loading = false;
+    // }
+    // // const dialog = this.dialog.open(UpgradeComponent)
+    // // dialog.closed.subscribe((data)=>{
+    // //   // dialog.close();
+    // // })
+    this.electronService.checkForUpdate();
   }
 }

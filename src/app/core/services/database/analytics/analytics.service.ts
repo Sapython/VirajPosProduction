@@ -41,6 +41,7 @@ export class AnalyticsService {
   }
 
   addBillToken() {
+    alert("Adding bill token");
     logEvent(this.analytics,'add_bill_token',{billTokenNo:this.dataProvider.billToken})
     return updateDoc(
       doc(
@@ -74,6 +75,7 @@ export class AnalyticsService {
   }
 
   addTakeawayToken() {
+    alert("Adding takeaway token");
     logEvent(this.analytics,'add_takeaway_token',{takeawayTokenNo:this.dataProvider.takeawayToken})
     return updateDoc(
       doc(

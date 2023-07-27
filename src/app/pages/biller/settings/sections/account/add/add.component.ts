@@ -141,7 +141,8 @@ export class AddComponent {
           {
             business: {
               access: {
-                accessLevel: this.loginForm.value.accessLevel,
+                accessType: 'role',
+                role:this.loginForm.value.accessLevel,
                 lastUpdated: Timestamp.now(),
                 updatedBy: this.dataProvider.currentUser.username,
               },

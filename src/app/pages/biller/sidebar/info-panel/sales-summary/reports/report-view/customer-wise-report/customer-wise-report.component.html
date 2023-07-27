@@ -1,0 +1,39 @@
+<table class="styled-table" *ngIf="!loading">
+	<thead>
+	  <tr>
+		<th>Customer Phone</th>
+		<th>Name</th>
+		<th>Loyalty Points</th>
+		<th>Average Bill</th>
+		<th>Bills</th>
+		<th>Items</th>
+		<th>Total Amount</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr *ngFor="let bill of customerWiseReport">
+		<td>
+		  {{ bill.phone || "N/A" }}
+		</td>
+		<td>
+		  {{ bill.name }}
+		</td>
+		<td>
+		  {{ bill.loyaltyPoints }}
+		</td>
+		<td>
+		  {{ bill.averageBillPrice }}
+		</td>
+		<td>
+		  {{ bill.bills }}
+		</td>
+		<td>
+		  {{ bill.items }}
+		</td>
+		<td>
+		  {{ bill.totalAmount }}
+		</td>
+	  </tr>
+	</tbody>
+  </table>
+  

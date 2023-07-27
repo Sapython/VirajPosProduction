@@ -1,6 +1,6 @@
 {
   "name": "virajpos",
-  "version": "0.1.83",
+  "version": "0.1.125",
   "description": "Viraj POS system.",
   "homepage": "https://virajworld.in/",
   "author": {
@@ -8,20 +8,6 @@
     "email": "create@shreeva.com"
   },
   "repository": "github:swayambhu-innovations/Packages",
-  "keywords": [
-    "angular",
-    "angular 15",
-    "electron",
-    "electron 22",
-    "nodejs",
-    "typescript",
-    "playwright",
-    "eslint",
-    "sass",
-    "windows",
-    "mac",
-    "linux"
-  ],
   "main": "app/main.js",
   "private": true,
   "scripts": {
@@ -30,7 +16,7 @@
     "ng": "ng",
     "start": "npm-run-all -p electron:serve ng:serve",
     "ng:serve": "ng serve -c web -o",
-    "ng:serve:external": "ng serve -c web -o --host 192.168.29.239",
+    "ng:serve:external": "ng serve -c web -o --host 192.168.29.182",
     "build": "npm run electron:serve-tsc && ng build --aot --base-href ./ --stats-json",
     "analyze": "webpack-bundle-analyzer dist/stats.json",
     "analyze:build": "npm run build && npm run analyze",
@@ -60,6 +46,7 @@
     "@angular/forms": "15.1.5",
     "@angular/language-service": "15.1.5",
     "@angular/material": "~15.2.9",
+    "@angular/material-moment-adapter": "15.2.9",
     "@angular/platform-browser": "15.1.5",
     "@angular/platform-browser-dynamic": "15.1.5",
     "@angular/router": "15.1.5",
@@ -70,6 +57,7 @@
     "fuse.js": "6.6.2",
     "jspdf": "2.5.1",
     "jspdf-autotable": "3.5.28",
+    "moment": "2.29.4",
     "ngx-indexed-db": "16.0.0",
     "remixicon": "3.2.0",
     "rxjs": "7.8.0",

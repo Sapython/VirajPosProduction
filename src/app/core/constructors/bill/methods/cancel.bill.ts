@@ -16,6 +16,12 @@ export function lineCancelled(this: Bill, item: Product, event: any, kot: Kot) {
   this.cancelledProducts.push({ product: item, kot: kot.id });
   // remove product from kot
   item.cancelled = true;
+  this.billService.addActivity(this, {
+    type: 'lineCancelled',
+    message: 'Line cancelled by ' + this.user.username,
+    user: this.user.username,
+    data: { item, kot:kot.toObject() },
+  });
   this.updateToFirebase();
   // kot.products = kot.products.filter((product) => product.id !== item.id);
   this.calculateBill();
@@ -41,5 +47,10 @@ export function cancel(this: Bill, reason: string, phone: string) {
   if (this.dataProvider.showTableOnBillAction) {
     this.dataProvider.openTableView.next(true);
   }
+  this.billService.addActivity(this, {
+    type: 'billCancelled',
+    message: 'Bill cancelled by ' + this.user.username,
+    user: this.user.username,
+  });
   this.updated.next();
 }

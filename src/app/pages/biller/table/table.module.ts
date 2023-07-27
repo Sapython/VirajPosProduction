@@ -11,9 +11,15 @@ import { DialogModule } from '@angular/cdk/dialog';
 import { BaseComponentsModule } from '../../../shared/base-components/base-components.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { RearrangeComponent } from './rearrange/rearrange.component';
+import { MatSelectModule } from '@angular/material/select';
+import { GroupComponent } from './group/group.component';
+import { MatInputModule } from '@angular/material/input';
+import {MatExpansionModule} from '@angular/material/expansion';
+import { MoveKotItemComponent } from './move-kot-item/move-kot-item.component';
+import { MergeExchangeTableComponent } from './merge-exchange-table/merge-exchange-table.component'; 
 
 @NgModule({
-  declarations: [TableComponent, RearrangeComponent],
+  declarations: [TableComponent, RearrangeComponent, GroupComponent, MoveKotItemComponent, MergeExchangeTableComponent],
   imports: [
     CommonModule,
     MatButtonToggleModule,
@@ -25,6 +31,9 @@ import { RearrangeComponent } from './rearrange/rearrange.component';
     MatCheckboxModule,
     DialogModule,
     DragDropModule,
+    MatSelectModule,
+    MatInputModule,
+    MatExpansionModule,
   ],
 })
 export class TableModule {}

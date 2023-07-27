@@ -217,6 +217,10 @@ export class DataProvider {
   public backOnline: Subject<boolean> = new Subject<boolean>();
   public queueUpdate:Subject<number> = new Subject<number>();
   public updateRequests:updateRequest[] = [];
+  // public globalUpdateState:'checking-for-update'|'not-available'|'update-available'|'download-progress'|'update-downloaded' = 'checking-for-update';
+  public softwareUpdateFilteredSubject:ReplaySubject<any> = new ReplaySubject<any>(1);
+  public currentUpdateStage:'checking-for-update'|'update-not-available'|'update-available'|'download-progress'|'update-downloaded'|'installing' = 'checking-for-update';
+  public currentUpdateProgress:number = 0;
 
   public isTimeElapsed():boolean{
     return this.updateRequests.filter((request)=>{
@@ -242,7 +246,7 @@ export class DataProvider {
         return user.username == this.currentUser?.username;
       });
       if (user) {
-        return user.access;
+        return user.accessType == 'custom' ? user.accessType : user.role;
       } else {
         return 'waiter';
       }
@@ -251,16 +255,58 @@ export class DataProvider {
     }
   }
 
-  public getAccess(level: string | string[]) {
+  public getAccess(property: string | string[]) {
     if (this.currentBusiness && this.currentUser) {
       let user = this.currentBusiness.users.find((user) => {
         return user.username == this.currentUser?.username;
       });
       if (user) {
-        if (Array.isArray(level)) {
-          return level.includes(user.access);
+        if (Array.isArray(property)) {
+          if (property.every((prop) => this.propertyList.includes(prop))) {
+            if (user.accessType == 'role'){
+              // check if every property is included in this.defaultAccess[user.role]
+              if (property.every((prop)=>user.accessType=='role' && this.defaultAccess[user.role].includes(prop))){
+                return true;
+              } else {
+                return false;
+              }
+            } else if (user.accessType == 'custom') {
+              // check if every property is included in user.propertiesAllowed
+              if (property.every((prop)=>user.accessType=='custom' && user.propertiesAllowed.includes(prop))){
+                return true;
+              } else {
+                return false;
+              }
+            } else {
+              return false;
+            }
+          } else {
+            // throw new Error('Invalid properties '+property.join(', '));
+            return false;
+          }
         } else {
-          return user.access == level;
+          if (this.propertyList.includes(property)) {
+            if (user.accessType == 'role'){
+              // check if every property is included in this.defaultAccess[user.role]
+              if (user.accessType=='role' && this.defaultAccess[user.role].includes(property)){
+                return true;
+              } else {
+                return false;
+              }
+            } else if (user.accessType == 'custom') {
+              // check if every property is included in user.propertiesAllowed
+              if (user.accessType=='custom' && user.propertiesAllowed.includes(property)){
+                return true;
+              } else {
+                return false;
+              }
+            } else {
+              return false;
+            }
+          } else {
+            // throw new Error('Invalid property '+property);
+            return false;
+          }
         }
       } else {
         return false;
@@ -339,6 +385,123 @@ export class DataProvider {
   public modeChanged: Subject<void> = new Subject<void>();
   public currentBusiness: BusinessRecord | undefined;
   public businessId: string = '';
+
+
+  // access management
+  propertyList = [
+    "updateBiller",
+    "seeSaleSummary",
+    "seeReports", //TODO: new
+    "seeOrderSummary",
+    "seeVirajCategories",
+    "seeCombos",
+    "seeLoyalty", // TODO: new
+    "addNewMenu", // TODO: new
+    "addNewLoyaltySettings", // TODO: new
+    "multipleDiscounts", // TODO: new
+    "seeYourCategories",
+    "seeMainCategories",
+    "editMenu",
+    "editTakeawayMenu",
+    "editOnlineMenu",
+    "editDineInMenu",
+    "seeAllProducts",
+    "addNewProduct",
+    "enableDisableProducts",
+    "setTaxesOnProducts",
+    "editProduct",
+    "canEditDetails",
+    "canSetPrinter",
+    "deleteProduct",
+    "recommendedCategories",
+    "editRecommendedCategorySettings",
+    "enableDisableRecommendedProducts",
+    "setTaxesOnRecommendedProducts",
+    "editRecommendedProduct",
+    "deleteRecommendedProduct",
+    "viewCategories",
+    "addViewCategory",
+    "editViewCategory",
+    "deleteViewCategory",
+    "enableDisableViewProducts",
+    "setTaxesOnViewProducts",
+    "editViewProduct",
+    "deleteViewProduct",
+    "mainCategories",
+    "enableDisableMainProducts",
+    "setTaxesOnMainProducts",
+    "editMainProduct",
+    "deleteMainProduct",
+    "editTaxes",
+    "seeTaxes",
+    "addNewTaxes",
+    "deleteTaxes",
+    "editTax",
+    "discount",
+    "seeDiscount",
+    "addNewDiscounts",
+    "deleteDiscounts",
+    "editDiscount",
+    "combos",
+    "seeCombos",
+    "addNewCombos",
+    "deleteCombos",
+    "editCombo",
+    "types",
+    "seeTypes",
+    "addNewTypes",
+    "deleteTypes",
+    "editTypes",
+    "addNewMenu",
+    "switchMenu",
+    "viewTable",
+    "reArrangeGroupOrder",
+    "settleFromTable",
+    "addTable",
+    "deleteTable",
+    "addNewTakeawayToken",
+    "addNewOnlineToken",
+    "moveAndMergeOptions",
+    "seeHistory",
+    "settings",
+    "about",
+    "readAboutSettings",
+    "changeAboutSettings",
+    "businessSettings",
+    "readBusinessSettings",
+    "switchModes",
+    "changeConfig",
+    "changePrinter",
+    "accountSettings",
+    "readAccountSettings",
+    "addAccount",
+    "removeAccount",
+    "paymentMethods",
+    "newMethod",
+    "editMethod",
+    "deleteMethod",
+    "advancedSettings",
+    "generalSettings",
+    "loyaltySettings",
+    "punchKot",
+    "manageKot",
+    "editKot",
+    "deleteKot",
+    "lineDiscount",
+    "lineCancel",
+    "applyDiscount",
+    "seePreview",
+    "splitBill",
+    "setNonChargeable",
+    "billNote",
+    "cancelBill",
+    "settleBill",
+    "writeCustomerInfo"
+  ]
+  
+  defaultAccess = {
+    admin: [
+      ...this.propertyList
+    ],
+  }
 }
-
-

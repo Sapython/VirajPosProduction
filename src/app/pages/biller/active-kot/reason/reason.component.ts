@@ -26,7 +26,7 @@ export class ReasonComponent {
       return
     }
     if ((await this.dataProvider.checkPassword(this.reasonForm.value.password))){
-      this.dialogRef.close({...this.reasonForm.value.reason})
+      this.dialogRef.close(this.reasonForm.value.reason)
     } else {
       alert('Wrong Password')
     }

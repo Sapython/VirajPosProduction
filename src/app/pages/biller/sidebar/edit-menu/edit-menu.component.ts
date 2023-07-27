@@ -2,11 +2,11 @@ import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { Component, OnInit } from '@angular/core';
 import { AlertsAndNotificationsService } from '../../../../core/services/alerts-and-notification/alerts-and-notifications.service';
 import { AddMenuComponent } from './add-menu/add-menu.component';
-import { ElectronService } from '../../../../core/services';
 import { Category } from '../../../../types/category.structure';
 import { DataProvider } from '../../../../core/services/provider/data-provider.service';
 import { MenuManagementService } from '../../../../core/services/database/menuManagement/menu-management.service';
 import { Menu } from '../../../../types/menu.structure';
+import { ElectronService } from '../../../../core/services/electron/electron.service';
 @Component({
   selector: 'app-edit-menu',
   templateUrl: './edit-menu.component.html',

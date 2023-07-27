@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Combo, ComboCategoryCategorized, ComboTypeProductWiseCategorized } from '../../../../types/combo.structure';
 import { ApplicableCombo } from '../../../../core/constructors/comboKot/comboKot';
 import { zoomInOnEnterAnimation, zoomOutOnLeaveAnimation } from 'angular-animations';
@@ -17,6 +17,9 @@ export class ComboItemComponent {
   @Input() activeKotIndex:number = 0;
   @Input() kotId:string = '';
   @Input() active: boolean = true;
+  @Input() editMode:boolean = false;
+  @Input() newCombo:boolean = false;
+  @Output() delete: EventEmitter<any> = new EventEmitter();
   
   constructor(private dataProvider:DataProvider){}
   addProductQuantity(type:ComboTypeProductWiseCategorized,category:ComboCategoryCategorized,item:Product){
@@ -34,6 +37,15 @@ export class ComboItemComponent {
     this.dataProvider.currentCombo = this.combo.combo;
     this.dataProvider.currentComboType = undefined;
     this.dataProvider.currentComboTypeCategory = undefined;
+    let state = this.dataProvider.productPanelStateValue;
+    if (state=='products'){
+      console.log("switched",state);
+      this.dataProvider.productPanelState.next('combos');
+    }
+    this.dataProvider.searchResults.next(false)
+    console.log("openCombo",this.dataProvider.currentMenu.combos);
+    this.dataProvider.comboSelected.next(this.dataProvider.currentMenu.combos);
+    console.log("openCombo",this.dataProvider.currentMenu.combos);
   }
 
   get disabled(){

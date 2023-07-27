@@ -3,6 +3,7 @@ import { DataProvider } from '../../../../../core/services/provider/data-provide
 import { Product } from '../../../../../types/product.structure';
 import { zoomInOnEnterAnimation, zoomOutOnLeaveAnimation } from 'angular-animations';
 import { Kot } from '../../../../../core/constructors/kot/Kot';
+import { ApplicableCombo } from '../../../../../core/constructors/comboKot/comboKot';
 
 @Component({
   selector: 'app-edit-kot',
@@ -15,5 +16,5 @@ export class EditKotComponent {
   constructor(public dataProvider:DataProvider){}
   @Input() kots:Kot[] = [];
   @Input() activeKotIndex:number = 0;
-  @Output() delete = new EventEmitter<Product>();
+  @Output() delete = new EventEmitter<Product|ApplicableCombo>();
 }

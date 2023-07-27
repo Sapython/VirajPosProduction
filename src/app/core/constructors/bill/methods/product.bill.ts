@@ -14,6 +14,12 @@ export async function addProduct(this: Bill, product: Product|ApplicableCombo) {
       );
       if (reactiveReason) {
         this.reactivateKotReasons.push(reactiveReason);
+        this.billService.addActivity(this, {
+          type: 'billReactivated',
+          message: 'Bill reactivated by ' + this.user.username,
+          user: this.user.username,
+          data: { reason: reactiveReason },
+        })
         this.stage = 'active';
       } else {
         return;
@@ -50,7 +56,7 @@ export async function addProduct(this: Bill, product: Product|ApplicableCombo) {
   this.calculateBill(true);
 }
 
-export function removeProduct(this: Bill, product: Product, kotIndex: number) {
+export function removeProduct(this: Bill, product: Product|ApplicableCombo, kotIndex: number) {
   const index = this.kots[kotIndex].products.findIndex(
     (item) => item.id === product.id
   );

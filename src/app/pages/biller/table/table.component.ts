@@ -10,12 +10,15 @@ import { PrinterService } from '../../../core/services/printing/printer/printer.
 import { TableService } from '../../../core/services/database/table/table.service';
 import { AnalyticsService } from '../../../core/services/database/analytics/analytics.service';
 import { BillService } from '../../../core/services/database/bill/bill.service';
-import { Product } from '../../../types/product.structure';
 import { CustomerService } from '../../../core/services/customer/customer.service';
 import { RearrangeComponent } from './rearrange/rearrange.component';
 import { firstValueFrom } from 'rxjs';
 import { UserManagementService } from '../../../core/services/auth/user/user-management.service';
 import { ApplicableCombo } from '../../../core/constructors/comboKot/comboKot';
+import { GroupComponent } from './group/group.component';
+import { MoveKotItemComponent } from './move-kot-item/move-kot-item.component';
+import { MergeExchangeTableComponent } from './merge-exchange-table/merge-exchange-table.component';
+import { OnboardingService } from '../../../core/services/onboarding/onboarding.service';
 
 @Component({
   selector: 'app-table',
@@ -43,7 +46,8 @@ export class TableComponent implements OnInit {
     private analyticsService: AnalyticsService,
     private billService: BillService,
     private customerService: CustomerService,
-    private userManagementService: UserManagementService
+    private userManagementService: UserManagementService,
+    private onboardingService:OnboardingService
   ) {}
 
   ngOnInit(): void {
@@ -53,6 +57,7 @@ export class TableComponent implements OnInit {
         this.dataProvider.currentMenu.type || 'dineIn';
     }
     this.tables = this.dataProvider.tables;
+    console.log("TABLES::",this.tables);
     if (this.interval) {
       clearInterval(this.interval);
     }
@@ -130,50 +135,56 @@ export class TableComponent implements OnInit {
 
   async addTable(groupName: string) {
     let index = this.dataProvider.tables.length + 1;
-    let tableName = await this.dataProvider.prompt('Enter table name', {
-      value: groupName,
-    });
+    // let tableName = await this.dataProvider.prompt('Enter table name', {
+    //   value: groupName,
+    // });
+    let tableName = groupName;
     if (!tableName) {
       return;
     }
-    if (tableName.split(' ')[0] == groupName) {
-      if (tableName == groupName) {
-        let entity = this.dataProvider.tables
-          .slice()
-          .reverse()
-          .find((table) => {
-            return table.name.split(' ')[0] == groupName;
-          });
-        let mainEntityNo =
-          entity.name.split(' ')[entity.name.split(' ').length - 1];
-        let rgx = /(\d+)\D*$/g;
-        let entityNo = rgx.exec(mainEntityNo)?.[1];
-        // additionalText is the text attached to main entity no and entityNo like tableName = groupName + mainEntity + entityNo
-        let additionalText = mainEntityNo.replace(entityNo, '');
-        if (Number(entityNo)) {
-          console.log('Entity', entityNo);
-          if (entityNo) {
-            tableName =
-              groupName +
-              ' ' +
-              additionalText +
-              (Number(entityNo) + 1).toString();
-          }
-        } else {
-          alert(
-            'Cannot add auto table no number found in end. Please add manually'
-          );
-          return;
+    if (tableName == groupName) {
+      let entity = this.dataProvider.tables
+        .slice()
+        .reverse()
+        .find((table) => {
+          return table.group == groupName;
+        });
+      let mainEntityNo =
+        entity.name.split(' ')[entity.name.split(' ').length - 1];
+      let rgx = /(\d+)\D*$/g;
+      let entityNo = rgx.exec(mainEntityNo)?.[1];
+      // additionalText is the text attached to main entity no and entityNo like tableName = groupName + mainEntity + entityNo
+      let additionalText = mainEntityNo.replace(entityNo, '');
+      if (Number(entityNo)) {
+        console.log('Entity', entityNo);
+        if (entityNo) {
+          tableName =
+            groupName +
+            ' ' +
+            additionalText +
+            (Number(entityNo) + 1).toString();
         }
+      } else {
+        alert(
+          'Cannot add auto table no number found in end. Please add manually'
+        );
+        return;
       }
-    } else {
-      groupName = tableName.split(' ')[0];
+    }
+    // check if the any table called tableName exists in the group groupName if yes then return an alert
+    let foundTable = this.dataProvider.tables.find((table) => {
+      return table.group == groupName && table.name == tableName;
+    });
+    if (foundTable) {
+      alert('Table already exists');
+      return;
     }
     // console.log('tableName ', tableName,groupName);
     let table = new Table(
       index.toString(),
       index,
       tableName,
+      groupName,
       index,
       '4',
       'table',
@@ -204,6 +215,7 @@ export class TableComponent implements OnInit {
       this.dataProvider.takeawayToken.toString(),
       this.dataProvider.takeawayToken,
       this.dataProvider.takeawayToken.toString(),
+      'token',
       this.dataProvider.takeawayToken,
       '1',
       'token',
@@ -238,6 +250,7 @@ export class TableComponent implements OnInit {
       this.dataProvider.onlineTokenNo.toString(),
       this.dataProvider.onlineTokenNo,
       this.dataProvider.onlineTokenNo.toString(),
+      'online',
       this.dataProvider.onlineTokenNo,
       '1',
       'online',
@@ -295,44 +308,6 @@ export class TableComponent implements OnInit {
     }
   }
 
-  exchange() {
-    if (this.transferTableWise.fromTable && this.transferTableWise.toTable) {
-      try {
-        this.transferTableWise.fromTable.exchange(
-          this.transferTableWise.toTable
-        );
-        this.alertify.presentToast('Table exchanged successfully');
-        // reset vars and switch mode
-        this.transferTableWise = { fromTable: undefined, toTable: undefined };
-        this.moveKotMode = false;
-        this.moveKotSelectedTable = undefined;
-      } catch (error: any) {
-        this.alertify.presentToast(error);
-      }
-    }
-  }
-
-  merge() {
-    if (this.transferTableWise.fromTable && this.transferTableWise.toTable) {
-      try {
-        this.transferTableWise.fromTable.merge(this.transferTableWise.toTable);
-        this.alertify.presentToast('Table merged successfully');
-        // reset vars and switch mode
-        this.transferTableWise = { fromTable: undefined, toTable: undefined };
-        this.moveKotMode = false;
-        this.moveKotSelectedTable = undefined;
-      } catch (error: any) {
-        this.alertify.presentToast(error);
-      }
-    }
-  }
-
-  cancel() {
-    this.transferTableWise = { fromTable: undefined, toTable: undefined };
-    this.moveKotMode = false;
-    this.moveKotSelectedTable = undefined;
-  }
-
   changeTable(event: any, kot: Kot) {
     // add kot to selectedKotsForKotTransfer
     //  console.log('event ', event);
@@ -345,55 +320,6 @@ export class TableComponent implements OnInit {
         }
       );
     }
-  }
-
-  moveSelectedKots(table: Table, event: any) {
-    if (!table.bill) {
-      throw new Error('Bill not found');
-    }
-    // get all selected productcs from selected kots from moveKotSelectedTable?.bill?.kots
-    let kots: Kot[] = [];
-    let products: (Product | ApplicableCombo)[] = [];
-    this.moveKotSelectedTable?.bill?.kots.forEach((kot) => {
-      if (kot.allSelected) {
-        kots.push(kot);
-        //  console.log('Adding kot ', kot.products);
-      } else {
-        products.push(...kot.products.filter((p) => p.selected));
-        console.log(
-          'Adding products ',
-          ...kot.products.filter((p) => p.selected)
-        );
-      }
-    });
-    //  console.log('kots ', kots);
-    //  console.log('products ', products);
-    // now shift the kots to the new table and add products to a new kot
-    if (kots.length > 0) {
-      kots.forEach((kot) => {
-        table.bill!.kots.push(kot);
-        table.bill!.tokens.push(kot.id);
-        // remove kot from old table
-        this.moveKotSelectedTable!.bill!.kots =
-          this.moveKotSelectedTable!.bill!.kots.filter((k) => {
-            return k.id != kot.id;
-          });
-      });
-    }
-    if (products.length > 0) {
-      products.forEach((product) => {
-        product.transferred = this.moveKotSelectedTable?.id;
-        table.bill!.addProduct(product);
-      });
-      // remove products from old table
-      this.moveKotSelectedTable!.bill!.kots.forEach((kot) => {
-        kot.products = kot.products.filter((p) => {
-          return !p.selected;
-        });
-      });
-    }
-    this.moveKotSelectedTable!.bill?.calculateBill();
-    table.bill?.calculateBill();
   }
 
   switchTableSize(event: any) {
@@ -479,36 +405,8 @@ export class TableComponent implements OnInit {
     return !isNaN(Number(value));
   }
 
-  rearrangeTables(tables: Table[], groupName: string) {
-    const rearrangeDialog = this.dialog.open(RearrangeComponent, {
-      data: {
-        listItems: tables,
-        mainKey: 'name',
-      },
-    });
-    firstValueFrom(rearrangeDialog.closed)
-      .then((result: any) => {
-        console.log('Result', result);
-        this.dataProvider.loading = true;
-        this.tableService
-          .setOrder(result, groupName)
-          .then(() => {
-            this.alertify.presentToast('Tables rearranged successfully');
-          })
-          .catch((error) => {
-            console.log('Error ', error);
-          })
-          .finally(() => {
-            this.dataProvider.loading = false;
-          });
-      })
-      .catch((error) => {
-        this.alertify.presentToast('Error rearranging tables');
-        console.log('Error ', error);
-      })
-      .finally(() => {
-        this.dataProvider.loading = false;
-      });
+  rearrangeTables() {
+    const rearrangeDialog = this.dialog.open(RearrangeComponent);
   }
 
   reorderTables(tableGroups: { tables: Table[]; name: string }[]) {
@@ -541,5 +439,120 @@ export class TableComponent implements OnInit {
       .finally(() => {
         this.dataProvider.loading = false;
       });
+  }
+
+  editGroup(groupName:string){
+    const comp = this.dialog.open(GroupComponent, {
+      data:{groupName}
+    })
+    comp.closed.subscribe((result:any)=>{
+      if(result && result.groupName){
+        this.dataProvider.loading = true;
+        this.tableService.editSection(groupName,result.groupName).then(()=>{
+          this.alertify.presentToast('Group name changed successfully');
+        }).catch((error)=>{
+          this.alertify.presentToast('Error changing group name');
+          console.log('Error ', error);
+        }).finally(()=>{
+          this.dataProvider.loading = false;
+        });
+      }
+    });
+  }
+
+  addSection(){
+    let comp = this.dialog.open(GroupComponent, {data:{groupName:''}})
+    comp.closed.subscribe((result:any)=>{
+      if(result && result.groupName){
+        let index = this.dataProvider.tables.length + 1;
+        let table = new Table(
+          index.toString(),
+          index,
+          result.groupName + ' 1',
+          result.groupName,
+          index,
+          '4',
+          'table',
+          this.dataProvider,
+          this.analyticsService,
+          this.tableService,
+          this.billService,
+          this.printingService,
+          this.customerService,
+          this.userManagementService
+        );
+        table.clearTable();
+        this.analyticsService.newTable(table,'dine');
+        this.dataProvider.tables.push(table);
+        this.tableService.reOrderTable();
+      }
+    })
+  }
+
+  async editTable(table:Table){
+    let tableName = await this.dataProvider.prompt('Enter table name', {
+      value: table.name,
+    });
+    if (!tableName) {
+      return;
+    }
+    if (tableName == table.name) {
+      return;
+    }
+    // check if the any table called tableName exists in the group groupName if yes then return an alert
+    let foundTable = this.dataProvider.tables.find((t) => {
+      return t.group == table.group && t.name == tableName;
+    });
+    if (foundTable) {
+      alert('Table already exists');
+      return;
+    }
+    table.name = tableName;
+    this.dataProvider.loading = true;
+    this.tableService.updateTable(table.toObject()).then(()=>{
+      this.alertify.presentToast('Table name changed successfully');
+      // console.log("table.toObject()",table.toObject(),table.toObject().id);
+      // let tableIndex = this.dataProvider.tables.findIndex((t)=>{
+      //   return t.id == table.id;
+      // });
+      // if (tableIndex){
+      //   this.dataProvider.tables[tableIndex].name = tableName;
+      // }
+    }).catch((error)=>{
+      this.alertify.presentToast('Error changing table name');
+      console.log('Error ', error);
+    }).finally(()=>{
+      this.dataProvider.loading = false;
+    });
+  }
+
+  async deleteSection(groupName:string){
+    this.dataProvider.loading = true;
+    this.tableService.deleteSection(groupName).then(()=>{
+      this.alertify.presentToast('Section deleted successfully');
+      this.onboardingService.getTables();
+    }).catch((error)=>{
+      this.alertify.presentToast('Error deleting section');
+      console.log('Error ', error);
+    }).finally(()=>{
+      this.dataProvider.loading = false;
+    })
+  }
+
+  // new functions
+
+  moveKotItem(table:Table){
+    this.moveKotSelectedTable = table;
+    const dialog = this.dialog.open(MoveKotItemComponent,{data:{table}});
+    dialog.closed.subscribe((res)=>{
+      console.log("Result move-kot-item",res);
+    })
+  }
+
+  mergeExchangeTable(){
+    const dialog = this.dialog.open(MergeExchangeTableComponent);
+    dialog.closed.subscribe((res)=>{
+      console.log("Result merge-exchange",res);
+    })
   }
 }

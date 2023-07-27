@@ -73,7 +73,8 @@ export class SignupService {
     password: string,
     params:{
       business: {
-        access: { accessLevel: string; lastUpdated: Timestamp; updatedBy: string };
+        access: { accessType: 'role', role:string, lastUpdated:Timestamp; updatedBy: string } | 
+        { accessType: 'custom',propertiesAllowed:string[], lastUpdated:Timestamp; updatedBy: string };
         address: string;
         businessId: string;
         joiningDate: Timestamp;

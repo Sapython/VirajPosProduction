@@ -47,7 +47,8 @@ import { TaxesComponent } from './settings/sections/taxes/taxes.component';
 import { AddComponent } from './settings/sections/account/add/add.component'; 
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { LoyaltyComponent } from './settings/sections/loyalty/loyalty.component';
-import { OffersComponent } from './settings/sections/offers/offers.component'; 
+import { OffersComponent } from './settings/sections/offers/offers.component';
+import { ReportsComponent } from './info-panel/sales-summary/reports/reports.component'; 
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import { OffersComponent } from './settings/sections/offers/offers.component';
     TaxesComponent,
     AddComponent,
     LoyaltyComponent,
-    OffersComponent
+    OffersComponent,
+    ReportsComponent
   ],
   imports: [
     CommonModule,

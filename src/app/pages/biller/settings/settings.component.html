@@ -1,4 +1,4 @@
-<section>
+<!-- <section>
   <div class="close">
     <viraj-button type="icon" (vclick)="dialogRef.close()"
       ><i class="ri-close-line"></i
@@ -7,12 +7,14 @@
   <div class="main">
     <div class="tabs">
       <button
+       *ngIf="this.dataProvider.getAccess('about')"
         (click)="activeTab = 'about'"
         [ngClass]="{ active: activeTab == 'about' }"
       >
         About
       </button>
       <button
+      *ngIf="this.dataProvider.getAccess('businessSettings')"
         (click)="activeTab = 'config'"
         [ngClass]="{ active: activeTab == 'config' }"
       >
@@ -20,47 +22,25 @@
       </button>
       <button
         (click)="activeTab = 'account'"
-        *ngIf="this.dataProvider.getAccess(['admin'])"
+        *ngIf="this.dataProvider.getAccess('accountSettings')"
         [ngClass]="{ active: activeTab == 'account' }"
       >
         Account
       </button>
-      <!-- <button
-        (click)="activeTab = 'discount'"
-        [ngClass]="{ active: activeTab == 'discount' }"
-      >
-        Discounts
-      </button> -->
       <button
+        *ngIf="this.dataProvider.getAccess('paymentMethods')"
         (click)="activeTab = 'payment'"
         [ngClass]="{ active: activeTab == 'payment' }"
       >
         Payments
       </button>
-      <!-- <button
-        (click)="activeTab = 'taxes'"
-        [ngClass]="{ active: activeTab == 'taxes' }"
-      >
-        Taxes
-      </button> -->
       <button
+        *ngIf="this.dataProvider.getAccess('advancedSettings')"
         (click)="activeTab = 'view'"
         [ngClass]="{ active: activeTab == 'view' }"
       >
         Settings
       </button>
-      <!-- <button
-        (click)="activeTab = 'loyalty'"
-        [ngClass]="{ active: activeTab == 'loyalty' }"
-      >
-        Loyalty
-      </button>
-      <button
-        (click)="activeTab = 'offers'"
-        [ngClass]="{ active: activeTab == 'offers' }"
-      >
-        Offers
-      </button> -->
     </div>
     <div class="active spaced" [ngSwitch]="activeTab">
       <app-printer *ngSwitchCase="'printer'"></app-printer>
@@ -75,4 +55,28 @@
       <app-offers *ngSwitchCase="'offers'"></app-offers>
     </div>
   </div>
+</section> -->
+
+<section>
+  <div class="header">
+    <h1>Settings</h1>
+    <button mat-icon-button (click)="dialogRef.close()"><mat-icon>close</mat-icon></button>
+  </div>
+  <mat-tab-group>
+    <mat-tab label="About">
+      <app-about></app-about>
+    </mat-tab>
+    <mat-tab label="Business">
+      <app-config></app-config>
+    </mat-tab>
+    <mat-tab label="Account">
+      <app-account></app-account>
+    </mat-tab>
+    <mat-tab label="Pay Methods">
+      <app-payment></app-payment>
+    </mat-tab>
+    <mat-tab label="Advanced">
+      <app-view></app-view>
+    </mat-tab>
+  </mat-tab-group>
 </section>

@@ -66,9 +66,9 @@ export class SplitBillComponent {
 
   constructor(
     @Inject(DIALOG_DATA) private bill: Bill,
-    private dialogRef: DialogRef,
+    public dialogRef: DialogRef,
     private alertify: AlertsAndNotificationsService,
-    private dataProvider: DataProvider,
+    public dataProvider: DataProvider,
     private dialog:Dialog,
     private billService:BillService,
     private printingService:PrinterService

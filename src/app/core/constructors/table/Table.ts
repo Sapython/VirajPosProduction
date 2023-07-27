@@ -18,7 +18,7 @@ export class Table implements TableConstructor {
   bill: Bill | null = null;
   timeSpent: string = '';
   minutes: number = 0;
-  group?: string;
+  group: string;
   maxOccupancy: string;
   billPrice: number;
   order: number;
@@ -35,6 +35,7 @@ export class Table implements TableConstructor {
     id: string,
     tableNo: number,
     name: string,
+    groupName:string,
     order:number,
     maxOccupancy: string,
     type: 'table' | 'room' | 'token' | 'online',
@@ -52,6 +53,7 @@ export class Table implements TableConstructor {
     this.billPrice = 0;
     this.maxOccupancy = maxOccupancy;
     this.name = name;
+    this.group = groupName;
     this.status = 'available';
     this.tableNo = tableNo;
     this.type = type;
@@ -68,9 +70,9 @@ export class Table implements TableConstructor {
 
   triggerUpdate(){
     if (this.type == 'table') {
-      this.updateBill(this.toObject());
+      this.updateTable(this.toObject());
     } else if (this.type == 'room') {
-      this.updateBill(this.toObject());
+      this.updateTable(this.toObject());
     } else if (this.type == 'token') {
       // if (this.bill){
       //   if(!this.toObject().bill){
@@ -149,7 +151,7 @@ export class Table implements TableConstructor {
     this.billService.updateToken(data);
   }
 
-  updateBill(data: any) {
+  updateTable(data: any) {
     this.tableService.updateTable(data);
   }
 
@@ -209,6 +211,7 @@ export class Table implements TableConstructor {
       object.id,
       object.tableNo,
       object.name,
+      object.group,
       object.order,
       object.maxOccupancy,
       object.type,
@@ -316,9 +319,11 @@ export class Table implements TableConstructor {
       status: this.status,
       tableNo: this.tableNo,
       type: this.type,
+      order: this.order || 0,
       completed: this.completed || false,
       minutes:this.minutes || 0,
-      timeSpent:this.timeSpent || ''
+      timeSpent:this.timeSpent || '',
+      group:this.group
     };
   }
 

@@ -2,12 +2,14 @@
     <div class="title">
         <p>{{combo.name}}</p>
         <div class="quantity">
-            <viraj-button type="icon" (vclick)="combo.decreaseQuantity()"><i class="ri-subtract-line"></i></viraj-button>
-            <input type="number" [(ngModel)]="combo.quantity">
-            <viraj-button type="icon" (vclick)="combo.increaseQuantity()"><i class="ri-add-fill"></i></viraj-button>
+            <viraj-button [disabled]="!(editMode || newCombo) " type="icon" (vclick)="combo.decreaseQuantity()"><i class="ri-subtract-line"></i></viraj-button>
+            <input [disabled]="!(editMode || newCombo)" type="number" [(ngModel)]="combo.quantity">
+            <viraj-button [disabled]="!(editMode || newCombo)" type="icon" (vclick)="combo.increaseQuantity()"><i class="ri-add-fill"></i></viraj-button>
         </div>
-        <viraj-button (vclick)="activateCombo()">Activate</viraj-button>
-        <viraj-button>Delete</viraj-button>
+        <ng-container *ngIf="editMode && !newCombo">
+            <viraj-button (vclick)="activateCombo()">Activate</viraj-button>
+        </ng-container>
+        <viraj-button [disabled]="editMode || newCombo" (vclick)="delete.emit()">Delete</viraj-button>
     </div>
     <div class="types">
         <div class="type" *ngFor="let type of combo.combo.types">

@@ -7,7 +7,9 @@ import * as childProcess from 'child_process';
 import * as fs from 'fs';
 import { Dialog } from '@angular/cdk/dialog';
 import { DialogComponent } from '../../../shared/base-components/dialog/dialog.component';
-
+import { ReplaySubject, Subject } from 'rxjs';
+import { DataProvider } from '../provider/data-provider.service';
+const updateStages = ['checking-for-update','update-available','update-not-available','download-progress','update-downloaded','installing'];
 @Injectable({
   providedIn: 'root'
 })
@@ -17,8 +19,20 @@ export class ElectronService {
   childProcess: typeof childProcess;
   contextBridge: typeof contextBridge;
   fs: typeof fs;
-
-  constructor(private dialog:Dialog) {
+  softwareUpdateSubject:ReplaySubject<any> = new ReplaySubject<any>(1);
+  
+  constructor(private dialog:Dialog,private dataProvider:DataProvider) {
+    // setTimeout(()=>{
+    //   this.softwareUpdateSubject.next({
+    //     stage:"update-available",
+    //     info:{
+    //       releaseDate:'2023-07-09T15:15:44.776Z',
+    //       releaseName:'1.5.85',
+    //       releaseNotes:'Test Release Notes',
+    //       version:'1.5.85'
+    //     }
+    //   });
+    // },4000)
     // Conditional imports
     if (this.isElectron) {
       this.ipcRenderer = window.require('electron').ipcRenderer;
@@ -40,9 +54,20 @@ export class ElectronService {
       //  console.log(`stdout:\n${stdout}`);
       });
 
-      this.ipcRenderer.on('checking-for-update',(event, args)=>{
-        alert("CHECKING FOR UPDATES")
-        console.log('checking-for-update', args,event);
+      this.ipcRenderer.on('updateAvailable',(event, args)=>{
+        console.log('Update Service: ', args);
+        this.softwareUpdateSubject.next(args);
+        // send filtered args to this.dataProvider.softwareUpdateFilteredSubject
+        // filtering is done in increasing order of priority taken from updateStages
+        // if updateStages.indexOf(args.stage) > updateStages.indexOf(this.currentUpdateStage) then send to this.dataProvider.softwareUpdateFilteredSubject and update this.currentUpdateStage
+        // if updateStages.indexOf(args.stage) < updateStages.indexOf(this.currentUpdateStage) then ignore
+        // if updateStages.indexOf(args.stage) == updateStages.indexOf(this.currentUpdateStage) then send to this.dataProvider.softwareUpdateFilteredSubject
+        // if updateStages.indexOf(args.stage) == updateStages.indexOf(this.currentUpdateStage) == updateStages.length-1 then send to this.dataProvider.softwareUpdateFilteredSubject
+
+        if (updateStages.indexOf(args.stage) > updateStages.indexOf(this.dataProvider.currentUpdateStage)){
+          this.dataProvider.currentUpdateStage = args.stage;
+          this.dataProvider.softwareUpdateFilteredSubject.next(args);
+        }
       })
 
       // Notes :
@@ -111,6 +136,16 @@ export class ElectronService {
   checkForUpdate(){
     if (!this.isElectron) return;
     return this.ipcRenderer.sendSync("checkForUpdate");
+  }
+
+  downloadUpdate(){
+    if (!this.isElectron) return;
+    return this.ipcRenderer.sendSync("downloadUpdate");
+  }
+
+  installNow(){
+    if (!this.isElectron) return;
+    return this.ipcRenderer.sendSync("quitAndInstall");
   }
 
 }

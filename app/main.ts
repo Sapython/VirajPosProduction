@@ -1,4 +1,4 @@
-import { app, BrowserWindow, screen, ipcMain, dialog } from 'electron';
+import { app, BrowserWindow, Notification,contextBridge,  screen, ipcMain } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as child_process from 'child_process';
@@ -8,6 +8,8 @@ const store = new Store();
 let win: BrowserWindow = null;
 const args = process.argv.slice(1),serve = args.some((val) => val === '--serve');
 autoUpdater.logger = require("electron-log")
+autoUpdater.autoDownload = false;
+autoUpdater.autoInstallOnAppQuit = false;
 // const updater = new NsisUpdater({
 //   provider:'github',
 //   owner:'swayambhu-innovations',
@@ -90,7 +92,8 @@ function createWindow(): BrowserWindow {
     },
     autoHideMenuBar: true,
   });
-  autoUpdater.checkForUpdates();
+  // set title to current version
+  win.title = 'Viraj POS '+app.getVersion();
   win.on('closed', () => {
     // Dereference the window object, usually you would store window
     // in an array if your app supports multi windows, this is the time
@@ -135,27 +138,78 @@ function createWindow(): BrowserWindow {
       event.returnValue = false;
     }
   })
+  // contextBridge.exposeInIsolatedWorld(1004,"electron", {autoUpdater:autoUpdater});
 
   autoUpdater.on('checking-for-update', () => {
-    win.webContents.send('checking-for-update');
+    const NOTIFICATION_TITLE = 'Checking for updates.'
+    const NOTIFICATION_BODY = 'Viraj is running and checking for updates in background.'
+    
+    new Notification({
+      title: NOTIFICATION_TITLE,
+      body: NOTIFICATION_BODY
+    }).show()
+    setTimeout(() => {
+      win.webContents.send('updateAvailable', { stage: 'checking-for-update',currentVersion:app.getVersion(),channel:autoUpdater.channel, allowDowngrade:autoUpdater.allowDowngrade});
+    },2000)
   })
-
-  // ipcMain.on("checkForUpdate", async (event, arg) => {
-  //   try {
-  //     event.returnValue = autoUpdater.checkForUpdatesAndNotify();
-  //   } catch (error) {
-  //     event.returnValue = false;
-  //   }
-  // })
-
-
+  autoUpdater.on('update-available', (info) => {
+    const NOTIFICATION_TITLE = 'Update available.'
+    const NOTIFICATION_BODY = 'A new version of Viraj is available.'
+    
+    new Notification({
+      title: NOTIFICATION_TITLE,
+      body: NOTIFICATION_BODY
+    }).show()
+    if (win){
+      win.webContents.send('updateAvailable', { stage: 'update-available',currentVersion:app.getVersion(), info });
+    }
+  })
+  autoUpdater.on('update-not-available', (info) => {
+    if (win){
+      win.webContents.send('updateAvailable', { stage: 'update-not-available',currentVersion:app.getVersion(), info });
+    }
+  })
+  autoUpdater.on('download-progress', (progressObj) => {
+    if (win){
+      win.webContents.send('updateAvailable', { stage: 'download-progress',currentVersion:app.getVersion(), progressObj });
+    }
+  })
+  autoUpdater.on('update-downloaded', (info) => {
+    const NOTIFICATION_TITLE = 'Update downloaded.'
+    const NOTIFICATION_BODY = 'It will be installed the next time you restart the application.'
+    
+    new Notification({
+      title: NOTIFICATION_TITLE,
+      body: NOTIFICATION_BODY
+    }).show()
+    if (win){
+      win.webContents.send('updateAvailable', { stage: 'update-downloaded',currentVersion:app.getVersion(), info });
+    }
+  })
+  ipcMain.on('downloadUpdate', async (event, arg) => {
+    event.returnValue = await autoUpdater.downloadUpdate();
+  })
+  ipcMain.on("checkForUpdate", async (event, arg) => {
+    try {
+      event.returnValue = autoUpdater.checkForUpdatesAndNotify();
+    } catch (error) {
+      event.returnValue = false;
+    }
+  })
+  ipcMain.on("quitAndInstall", async (event, arg) => {
+    try {
+      event.returnValue = autoUpdater.quitAndInstall(false,true);
+    } catch (error) {
+      event.returnValue = false;
+    }
+  })
   if (serve) {
     const debug = require('electron-debug');
     debug();
     require('electron-reloader')(module);
     win.loadURL('http://localhost:4200');
     // autoUpdater.addListener("")
-    autoUpdater.checkForUpdatesAndNotify();
+    // autoUpdater.checkForUpdatesAndNotify();
   } else {
     let pathIndex = './index.html';
     if (fs.existsSync(path.join(__dirname, '../dist/index.html'))) {
@@ -176,20 +230,23 @@ function createWindow(): BrowserWindow {
     globalReloadInterval = setInterval(() => {
       // dialog.showErrorBox('Title', 'Running') 
       // check if the body element has anything in it
-      win.webContents.executeJavaScript(`document.body.innerHTML`).then((result) => {
-        console.log(result);
-        if (!result){
-          alert("Result is null")
-          win.webContents.executeJavaScript(`window.location.reload()`);
-        }
-      })
+      if (win){
+        win.webContents.executeJavaScript(`document.body.innerHTML`).then((result) => {
+          console.log(result);
+          if (!result){
+            // alert("Result is null")
+            win.webContents.executeJavaScript(`window.location.reload()`);
+          }
+        })
+      }
     },500)
     win.webContents.on("did-fail-load", () => {
-      alert("Failed to load webpage.");
+      // alert("Failed to load webpage.");
       const url = new URL(path.join('file:', __dirname, pathIndex));
       win.loadURL(url.href);
     });
   }
+  autoUpdater.checkForUpdates();
   // if (serve) {
   //   const debug = require('electron-debug');
   //   debug();

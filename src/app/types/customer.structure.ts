@@ -1,3 +1,5 @@
+import { FieldValue, Timestamp } from "@angular/fire/firestore";
+
 export interface Customer {
     id:string;
     name: string;
@@ -11,4 +13,5 @@ export interface Customer {
     orderFrequency: number;
     averageOrderPrice: number;
     lastMonth: string;
+    createdDate:Timestamp;
 }

@@ -1,0 +1,60 @@
+<section>
+	<div class="heading">
+		<h4 *ngIf="dialogData.stage == 'billWise'">All Bills Wise Report</h4>
+		<h4 *ngIf="dialogData.stage == 'kotWise'">Kot Wise Report</h4>
+		<h4 *ngIf="dialogData.stage == 'itemWise'">Item Wise Sales Report</h4>
+		<h4 *ngIf="dialogData.stage == 'discounted'">Discounted Bills Report</h4>
+		<h4 *ngIf="dialogData.stage == 'ncBills'">Non Chargeable Bills Report</h4>
+		<h4 *ngIf="dialogData.stage == 'takeawayBills'">Takeaway Bills Report</h4>
+		<h4 *ngIf="dialogData.stage == 'onlineBills'">Online Bills Report</h4>
+		<h4 *ngIf="dialogData.stage == 'daySummary'">Day Summary Report</h4>
+		<h4 *ngIf="dialogData.stage == 'consolidated'">Consolidated Report</h4>
+		<h4 *ngIf="dialogData.stage == 'takeawayTokenWise'">Takeaway Token Wise Report</h4>
+		<h4 *ngIf="dialogData.stage == 'onlineTokenWise'">Online Token Wise Report</h4>
+		<h4 *ngIf="dialogData.stage == 'tableWise'">Table Wise Report</h4>
+		<h4 *ngIf="dialogData.stage == 'billEdits'">Bill Edits Report</h4>
+		<h4 *ngIf="dialogData.stage == 'customerWiseReport'">Customer Wise Report</h4>
+		<h4 *ngIf="dialogData.stage == 'dineInBills'">Dine In Bills Report</h4>
+		<h4 *ngIf="dialogData.stage == 'hourlyItemSales'">Hourly Item Sales Report</h4>
+		<h4 *ngIf="dialogData.stage == 'kotEdits'">Kot Edits Report</h4>
+		<h4 *ngIf="dialogData.stage == 'paymentWise'">Payment Wise Report</h4>
+		<h4 *ngIf="dialogData.stage == 'waiterWiseItems'">Waiter Wise Items Report</h4>
+		{{dialogData.stage}}
+		<div class="actions">
+			<mat-date-range-picker #picker></mat-date-range-picker>
+			<mat-date-range-input tabindex="-1" hidden [formGroup]="reportService.dateRangeFormGroup" [rangePicker]="picker">
+				<input matStartDate formControlName="startDate" placeholder="Start date">
+				<input matEndDate formControlName="endDate" placeholder="End date">
+			</mat-date-range-input>
+			<viraj-button>Download As Excel</viraj-button>
+			<viraj-button>Download As PDF</viraj-button>
+			<viraj-button type="outline" (vclick)="picker.open()">Select Date Range <i class="ri-calendar-2-fill"></i></viraj-button>
+		</div>
+	</div>
+	<div class="body">
+		<div class="tableContainer">
+			<app-bill-wise *ngIf="dialogData.stage == 'billWise'"></app-bill-wise>
+			<app-kot-wise-report *ngIf="dialogData.stage == 'kotWise'"></app-kot-wise-report>
+			<app-item-wise-report *ngIf="dialogData.stage == 'itemWise'"></app-item-wise-report>
+			<app-discounted-bills *ngIf="dialogData.stage == 'discounted'"></app-discounted-bills>
+			<app-non-chargeable-bills *ngIf="dialogData.stage == 'ncBills'"></app-non-chargeable-bills>
+			<app-takeaway-bills *ngIf="dialogData.stage == 'takeawayBills'"></app-takeaway-bills>
+			<app-online-bills *ngIf="dialogData.stage == 'onlineBills'"></app-online-bills>
+			<app-day-summary *ngIf="dialogData.stage == 'daySummary'"></app-day-summary>
+			<app-consolidated *ngIf="dialogData.stage == 'consolidated'"></app-consolidated>
+			<app-takeaway-bills *ngIf="dialogData.stage == 'takeawayTokenWise'"></app-takeaway-bills>
+			<app-online-bills *ngIf="dialogData.stage == 'onlineTokenWise'"></app-online-bills>
+			<app-table-wise *ngIf="dialogData.stage == 'tableWise'"></app-table-wise>
+			<app-bill-edits *ngIf="dialogData.stage == 'billEdits'"></app-bill-edits>
+			<app-customer-wise-report *ngIf="dialogData.stage == 'customerWiseReport'"></app-customer-wise-report>
+			<app-dine-in-bills *ngIf="dialogData.stage == 'dineInBills'"></app-dine-in-bills>
+			<app-hourly-item-sales *ngIf="dialogData.stage == 'hourlyItemSales'"></app-hourly-item-sales>
+			<app-kot-edits *ngIf="dialogData.stage == 'kotEdits'"></app-kot-edits>
+			<app-payment-wise *ngIf="dialogData.stage == 'paymentWise'"></app-payment-wise>
+			<app-waiter-wise-items *ngIf="dialogData.stage == 'waiterWiseItems'"></app-waiter-wise-items>
+			<div class="loader"></div>
+			<div class="spacer"></div>
+		</div>
+	</div>
+
+</section>

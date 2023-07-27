@@ -1,4 +1,4 @@
-<section *ngIf="product" [ngClass]="{cancelled:product.cancelled}" [matMenuTriggerFor]="(manageKot && this.dataProvider.getAccess(['admin','manager']) && !cancelled && !disabled && product.itemType == 'product') ? menu : null">
+<section *ngIf="product" [ngClass]="{cancelled:product.cancelled}" [matMenuTriggerFor]="(manageKot && (this.dataProvider.getAccess('lineDiscount') || this.dataProvider.getAccess('lineCancel')) && !cancelled && !disabled && product.itemType == 'product') ? menu : null">
   <div class="border" (mouseenter)="showKotNo=true" (mouseleave)="showKotNo=false" [ngStyle]="{background:this.kotNoColors[kotNo % this.kotNoColors.length].color,padding:showKotNo ? '10px' : '0px'}">
     <p *ngIf="showKotNo" [ngStyle]="{'color':this.kotNoColors[kotNo % this.kotNoColors.length].contrast}">{{kotId}}</p>
   </div>
@@ -51,11 +51,11 @@
 </section>
 <mat-menu #menu="matMenu">
   <p mat-menu-item>{{productName}}</p>
-  <button mat-menu-item (click)="lineDiscount()">
+  <button mat-menu-item (click)="lineDiscount()" *ngIf="this.dataProvider.getAccess('lineDiscount')">
     <mat-icon>percent</mat-icon>
     <span>Line Discount</span>
   </button>
-  <button mat-menu-item (click)="lineCancel()">
+  <button mat-menu-item (click)="lineCancel()" *ngIf="this.dataProvider.getAccess('lineCancel')">
     <mat-icon>cancel</mat-icon>
     <span>Line Cancel</span>
   </button>

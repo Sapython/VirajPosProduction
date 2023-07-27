@@ -1,44 +1,62 @@
-<h3>About</h3>
-<table [cellSpacing]="0">
-  <tr>
-    <td>Username</td>
-    <td class="containsAction">
-      {{this.dataProvider.currentBusinessUser?.name}}
-      <div class="badge warning clickable" (click)="resetPassword()">
-        Reset password
-      </div>
-    </td>
-  </tr>
-  <tr>
-    <td>Business Id</td>
-    <td>{{this.dataProvider.currentBusinessUser?.businessId}}</td>
-  </tr>
-  <tr>
-    <td>Joining Date</td>
-    <td>{{this.dataProvider.currentBusinessUser?.joiningDate.toDate() | date:'short'}}</td>
-  </tr>
-  <tr>
-    <td>Access</td>
-    <td>
-      <span class="badge success">
-        {{this.dataProvider.currentBusinessUser?.access.accessLevel}}
-      </span>
-    </td>
-  </tr>
-  <tr>
-    <td>Name</td>
-    <td>Viraj</td>
-  </tr>
-  <tr>
-    <td>Version</td>
-    <td>
-      {{ version }}
-    </td>
-  </tr>
-  <tr>
-    <td>Server Version</td>
-    <td>
-      {{ version }}
-    </td>
-  </tr>
-</table>
+<section>
+  <div class="header">
+    <h3>Your Account</h3>
+    <div class="actions">
+      <strong>Access:</strong>
+      <span>{{this.dataProvider.currentBusinessUser?.access.accessLevel}}</span>
+    </div>
+  </div>
+  <div class="item">
+    <p>
+      <mat-icon>person</mat-icon>
+      Username
+    </p>
+    <p>{{this.dataProvider.currentBusinessUser?.name}}</p>
+  </div>
+  <div class="item">
+    <p>
+      <mat-icon>storefront</mat-icon>
+      Business Id
+    </p>
+    <p>{{this.dataProvider.currentBusinessUser?.businessId}}</p>
+  </div>
+  <div class="item">
+    <p>
+      <mat-icon>title</mat-icon>
+      Name
+    </p>
+    <p>{{this.dataProvider.currentBusinessUser?.name}}</p>
+  </div>
+  <div class="item">
+    <p>
+      <mat-icon>date_range</mat-icon>
+      Date Of Joining
+    </p>
+    <p>{{this.dataProvider.currentBusinessUser?.joiningDate.toDate() | date}}</p>
+  </div>
+  <button mat-stroked-button color="primary" (click)="resetPassword()">
+    Reset Password
+  </button>
+</section>
+<section>
+  <div class="header">
+    <h3>Server Info</h3>
+  </div>
+  <div class="item">
+    <p>
+      <mat-icon>person</mat-icon>
+      Biller Version
+    </p>
+    <p>{{version}}</p>
+  </div>
+  <div class="item">
+    <p>
+      <mat-icon>storefront</mat-icon>
+      Server Version
+    </p>
+    <p>1.0.0</p>
+  </div>
+  <button mat-stroked-button color="primary" (click)="electronService.checkForUpdate()">
+    Check For Updates
+  </button>
+</section>

@@ -8,7 +8,7 @@ import { AlertsAndNotificationsService } from '../../../../../core/services/aler
 import { Dialog } from '@angular/cdk/dialog';
 import { SettingsService } from '../../../../../core/services/database/settings/settings.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ElectronService } from '../../../../../core/services';
+import { ElectronService } from '../../../../../core/services/electron/electron.service';
 
 @Component({
   selector: 'app-config',
@@ -30,7 +30,11 @@ export class ConfigComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     let localPrinters = (await this.electronService.getPrinters());
-    this.printers = localPrinters?.length > 0 ? localPrinters : ['Test 1','Test 2']
+    this.printers = localPrinters?.length > 0 ? localPrinters : ['Test 1','Test 2'];
+    this.settingsForm.disable();
+    if (this.dataProvider.getAccess('changeConfig')){
+      this.settingsForm.enable();
+    }
   }
 
   settingsForm: FormGroup = new FormGroup({

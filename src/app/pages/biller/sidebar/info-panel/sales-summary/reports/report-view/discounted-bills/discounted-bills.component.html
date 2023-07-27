@@ -1,0 +1,35 @@
+<table class="styled-table" *ngIf="!loading">
+	<thead>
+	  <tr>
+		<th>Bill No</th>
+		<th>Order No</th>
+		<th>Bill Amount</th>
+		<th>Discounts</th>
+		<th>Total Applied Discount</th>
+		<th>Date-Time</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr *ngFor="let bill of bills | async">
+		<td>
+		  {{ bill.billNo || "Unsettled" }}
+		</td>
+		<td>
+		  {{ bill.orderNo }}
+		</td>
+		<td>
+		  {{ bill.billing.grandTotal }}
+		</td>
+		<td>
+		  {{ bill.billing.discount.length }}
+		</td>
+		<td>
+		  {{ bill.billing.discount | discountedBills }}
+		</td>
+		<td>
+		  {{ bill.createdDate.toDate() | date : "short" }}
+		</td>
+	  </tr>
+	</tbody>
+  </table>
+  

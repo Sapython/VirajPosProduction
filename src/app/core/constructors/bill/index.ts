@@ -169,7 +169,6 @@ export class Bill implements BillConstructor {
       grandTotal: 0,
     };
     this.availableDiscounts = this.dataProvider.menus.find(menu=>menu.selectedMenu.id === this.menu.id)?.discounts || [];
-    console.log("this.availableDiscounts",this.availableDiscounts,this.dataProvider.menus,this.menu.id);
     this.updated.next();
     this.firebaseUpdate();
   }

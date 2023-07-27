@@ -14,6 +14,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatInputModule } from '@angular/material/input';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { ReprintReasonComponent } from './history/reprint-reason/reprint-reason.component'; 
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { ActiveKotModule } from '../active-kot/active-kot.module';
+import { TableGroupsPipe } from './history/table-groups.pipe';
+import { DateGroupPipe } from './history/date-group.pipe';
+import { ModePipe } from './history/mode.pipe';
+import { MatMenuModule } from '@angular/material/menu';
 
 
 @NgModule({
@@ -21,7 +28,10 @@ import { ReprintReasonComponent } from './history/reprint-reason/reprint-reason.
     SystemComponent,
     ChatComponent,
     HistoryComponent,
-    ReprintReasonComponent
+    ReprintReasonComponent,
+    TableGroupsPipe,
+    DateGroupPipe,
+    ModePipe,
   ],
   imports: [
     FormsModule,
@@ -35,7 +45,11 @@ import { ReprintReasonComponent } from './history/reprint-reason/reprint-reason.
     MatProgressSpinnerModule,
     MatInputModule,
     MatExpansionModule,
-    MatButtonModule
+    MatButtonModule,
+    MatTabsModule,
+    MatSlideToggleModule,
+    ActiveKotModule,
+    MatMenuModule
   ],
   exports:[
     SystemComponent

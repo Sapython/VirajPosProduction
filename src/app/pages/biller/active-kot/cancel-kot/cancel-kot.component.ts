@@ -13,7 +13,7 @@ export class CancelKOtComponent {
   reasonForm:FormGroup = new FormGroup({
     reason:new FormControl('',Validators.required),
     password:new FormControl('',Validators.required)
-  })
+  });
 
   constructor(private dataProvider:DataProvider,private dialogRef:DialogRef){}
 

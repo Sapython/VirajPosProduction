@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -15,6 +15,9 @@ import {
   Product,
   productReport,
 } from '../../../../../../types/product.structure';
+import { Chart } from 'chart.js';
+import { Dialog, DialogRef } from '@angular/cdk/dialog';
+import { ReportViewComponent } from './report-view/report-view.component';
 
 @Component({
   selector: 'app-reports',
@@ -22,12 +25,16 @@ import {
   styleUrls: ['./reports.component.scss'],
 })
 export class ReportsComponent implements OnInit {
+  
+  @ViewChild('salesChart') salesChart: {nativeElement:HTMLCanvasElement}|undefined;
+  @ViewChild('orderChart') orderChart: {nativeElement:HTMLCanvasElement}|undefined;
   constructor(
     private billService: BillService,
-    private dataProvider: DataProvider
+    private dataProvider: DataProvider,
+    private dialog:Dialog
   ) {}
   selectedDate: Date = new Date();
-
+  barThickness = 40;
   // Reports
   daySummary = {
     totalBills: 0,
@@ -63,7 +70,7 @@ export class ReportsComponent implements OnInit {
   tables: TableConstructor[] = [];
   loading: boolean = false;
   reportMode:
-    | 'billWise'
+    'billWise'
     | 'kotWise'
     | 'itemWise'
     | 'discounted'
@@ -845,5 +852,79 @@ export class ReportsComponent implements OnInit {
 
   spaceOut(text: string) {
     return text.replace(/([A-Z])/g, ' $1').trim();
+  }
+
+  ngAfterViewInit(): void {
+    const ctx = document.getElementById('myChart');
+    new Chart(this.salesChart.nativeElement, {
+      type: 'line',
+      data: {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [{
+          label: '# of Votes',
+          data: [12, 19, 3, 5, 2, 3],
+          borderWidth: 1,
+          tension: 0.4,
+        }],
+      },
+      options: {
+        responsive:true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+    new Chart(this.orderChart.nativeElement, {
+      type: 'line',
+      data: {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [{
+          label: '# of Votes',
+          data: [12, 19, 3, 5, 2, 3],
+          borderWidth: 1,
+          tension: 0.4,
+        }],
+      },
+      options: {
+        responsive:true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+
+  }
+
+  // report functions
+
+  openReport(stage:'billWise'
+  | 'kotWise'
+  | 'itemWise'
+  | 'discounted'
+  | 'ncBills'
+  | 'takeawayBills'
+  | 'onlineBills'
+  | 'daySummary'
+  | 'consolidated'
+  | 'takeawayTokenWise'
+  | 'onlineTokenWise'
+  | 'tableWise'
+  | 'billEdits'
+  | 'customerWiseReport'
+  | 'dineInBills'
+  | 'hourlyItemSales'
+  | 'kotEdits'
+  | 'paymentWise'
+  | 'waiterWiseItems'){
+    const dialog = this.dialog.open(ReportViewComponent,{data:{stage:stage,data:{}}});
+    dialog.closed.subscribe((res) => {
+      console.log("Closed",res);
+    })
   }
 }

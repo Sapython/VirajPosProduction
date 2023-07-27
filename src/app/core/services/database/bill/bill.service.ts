@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Firestore, addDoc, collection, collectionChanges, collectionData, doc, docData, getDoc, getDocs, increment, query, setDoc, updateDoc, where } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, collectionChanges, collectionData, doc, docData, getDoc, getDocs, increment, query, serverTimestamp, setDoc, updateDoc, where } from '@angular/fire/firestore';
 import { DataProvider } from '../../provider/data-provider.service';
 import { Product } from '../../../../types/product.structure';
 import { BillConstructor } from '../../../../types/bill.structure';
 import { AnalyticsService } from '../analytics/analytics.service';
+import { Bill } from '../../../constructors/bill';
+import { BillActivity } from '../../../../types/activity.structure';
 
 @Injectable({
   providedIn: 'root'
@@ -70,6 +72,12 @@ export class BillService {
         where('createdDate', '>=', minTime),
         where('createdDate', '<=', maxTime)
       )
+    );
+  }
+
+  getActivity(billId:string){
+    return getDocs(
+      collection(this.firestore, 'business/'+this.dataProvider.businessId+'/bills/'+billId+'/billActivities')
     );
   }
 
@@ -156,4 +164,13 @@ export class BillService {
   provideAnalytics(){
     return this.analyticsService;
   }
+
+  addActivity(bill:Bill,activity:BillActivity){
+    console.log("ACTIVITY",activity);
+    return addDoc(
+      collection(this.firestore, 'business/'+this.dataProvider.businessId+'/bills/'+bill.id+'/billActivities'),
+      {activity:activity,createdDate:serverTimestamp(),deviceTime:new Date()}
+    );
+  }
 }
+

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Auth, signOut } from '@angular/fire/auth';
-import { getDoc, doc, Firestore } from '@angular/fire/firestore';
+import { getDoc, doc, Firestore, getDocs, collection, updateDoc } from '@angular/fire/firestore';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 import { Router } from '@angular/router';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
@@ -11,6 +11,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { ElectronService } from '../../electron/electron.service';
 import { dbConfig } from '../../../../app.module';
 import { RequiresPrivilegeComponent } from '../../../../shared/requires-privilege/requires-privilege.component';
+import { Member } from '../../../../types/user.structure';
 
 @Injectable({
   providedIn: 'root',
@@ -32,7 +33,30 @@ export class UserManagementService {
     private dataProvider: DataProvider,
     private dialog:Dialog,
     private electronService:ElectronService
-  ) {}
+  ) {
+    // getDocs(collection(this.firestore,'business')).then((res)=>{
+    //   res.docs.forEach((document)=>{
+    //     let users = document.data()['users']
+    //     if (users && typeof users == 'object' && users.length > 0){
+    //       users = users.map((user)=>{
+    //         if (user['accessType']){
+    //           return user
+    //         }
+    //         let access = user['access'];
+    //         delete user['access'];
+    //         return {
+    //           ...user,
+    //           accessType:'role',
+    //           role:access
+    //         } as Member;
+    //       })
+    //       updateDoc(doc(this.firestore,'business',document.id),{
+    //         users:users
+    //       });
+    //     }
+    //   })
+    // })
+  }
   getUser(uid: string) {
     return getDoc(doc(this.firestore, 'users/' + uid));
   }

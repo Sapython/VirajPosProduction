@@ -1,14 +1,33 @@
 <section>
-    <h3>Reorder Items</h3>
-    <div class="items" cdkDropList (cdkDropListDropped)="drop($event)">
-        <div class="item" *ngFor="let item of data.listItems" cdkDrag>
-            <p>
-                {{item[this.data.mainKey]}}
-            </p>
+  <h3>Reorder Items</h3>
+  <mat-accordion>
+    <mat-expansion-panel
+      hideToggle
+      *ngFor="let group of this.dataProvider.groupedTables"
+    >
+      <mat-expansion-panel-header>
+        <mat-panel-title> {{ group.name }} </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div cdkDropListGroup>
+        <div class="example-container">
+          <h4>Tables</h4>
+          <div
+            cdkDropList
+            [cdkDropListData]="group.tables"
+            class="example-list"
+            (cdkDropListDropped)="drop($event,group)"
+          >
+            <div class="example-box" *ngFor="let item of group.tables" cdkDrag>
+              {{ item.name }}
+            </div>
+          </div>
         </div>
-    </div>
-    <div class="actions">
-        <viraj-button (click)="dialogRef.close(this.data.listItems)">Save</viraj-button>
-        <viraj-button (click)="dialogRef.close()">Cancel</viraj-button>
-    </div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+  <div class="actions">
+    <viraj-button (click)="dialogRef.close()"
+      >Done</viraj-button
+    >
+  </div>
 </section>

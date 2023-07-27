@@ -16,6 +16,7 @@
   "main": "lib/index.js",
   "dependencies": {
     "@google-cloud/secret-manager": "^4.2.2",
+    "better-firebase-functions": "^6.0.0",
     "firebase-admin": "^10.0.2",
     "firebase-functions": "^3.18.0",
     "node-mailjet": "^6.0.2"

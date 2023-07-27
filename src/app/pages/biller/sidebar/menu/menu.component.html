@@ -1,19 +1,23 @@
 <section>
     <div class="categories">
-        <ng-container *ngIf="(currentMenu?.recommendedCategories | enabled).length > 0">
+        <ng-container *ngIf="(((currentMenu?.recommendedCategories | enabled).length > 0) || currentMenu?.comboCategory) && (this.dataProvider.getAccess('seeVirajCategories') || this.dataProvider.getAccess('seeCombos'))">
             <span>Viraj Categories</span>
-            <ng-container *ngFor="let category of (currentMenu?.recommendedCategories | enabled);let i = index">
-                <app-category-card [active]="activeIndex == 'viraj'+i" (click)="openCategory(category);activeIndex = 'viraj'+i" [category]="category"></app-category-card>
+            <ng-container *ngIf="this.dataProvider.getAccess('seeVirajCategories')">
+                <ng-container *ngFor="let category of (currentMenu?.recommendedCategories | enabled);let i = index">
+                    <app-category-card [active]="activeIndex == 'viraj'+i" (click)="openCategory(category);activeIndex = 'viraj'+i" [category]="category"></app-category-card>
+                </ng-container>
             </ng-container>
-            <app-category-card [active]="activeIndex == 'combo'" (click)="openCombo(currentMenu?.comboCategory);activeIndex = 'combo'" [category]="currentMenu?.comboCategory"></app-category-card>
+            <ng-container *ngIf="this.dataProvider.getAccess('seeCombos')">
+                <app-category-card [active]="activeIndex == 'combo'" (click)="openCombo(currentMenu?.comboCategory);activeIndex = 'combo'" [category]="currentMenu?.comboCategory"></app-category-card>
+            </ng-container>
         </ng-container>
-        <ng-container *ngIf="(currentMenu?.viewCategories | enabled).length > 0">
+        <ng-container *ngIf="(currentMenu?.viewCategories | enabled).length > 0 && this.dataProvider.getAccess('seeYourCategories')">
             <span>Your Categories</span>
             <ng-container *ngFor="let category of (currentMenu?.viewCategories | enabled);let i = index">
                 <app-category-card [active]="activeIndex == 'your'+i" (click)="openCategory(category);activeIndex = 'your'+i" [category]="category"></app-category-card>
             </ng-container>
         </ng-container>
-        <ng-container *ngIf="(currentMenu?.mainCategories | enabled).length > 0">
+        <ng-container *ngIf="(currentMenu?.mainCategories | enabled).length > 0 && this.dataProvider.getAccess('seeMainCategories')">
             <span>Main Categories</span>
             <ng-container *ngFor="let category of (currentMenu?.mainCategories | enabled);let i = index">
                 <app-category-card [active]="activeIndex == 'main'+i" (click)="openCategory(category);activeIndex = 'main'+i" [category]="category"></app-category-card>

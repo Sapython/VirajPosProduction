@@ -11,7 +11,7 @@ import {
 } from '../../../../types/discount.structure';
 import { ApplicableCombo } from '../../comboKot/comboKot';
 
-export function setAsNonChargeable(
+export function setAsNonChargeable(this:Bill,
   name: string,
   contact: string,
   reason: string
@@ -24,6 +24,12 @@ export function setAsNonChargeable(
     phone: contact,
     name,
   };
+  this.billService.addActivity(this, {
+    message: `Bill set as non chargeable by ${this.user.username}`,
+    type: 'billNC',
+    user: this.user.username,
+    data:this.nonChargeableDetail,
+  })
   this.calculateBill();
   this.updated.next();
 }
@@ -31,6 +37,11 @@ export function setAsNonChargeable(
 export function setAsNormal(this: Bill) {
   this.billingMode = 'cash';
   this.nonChargeableDetail = undefined;
+  this.billService.addActivity(this, {
+    message: `Bill set as normal by ${this.user.username}`,
+    type: 'billNormal',
+    user: this.user.username,
+  })
   this.calculateBill();
   this.updated.next();
 }
@@ -79,7 +90,11 @@ export async function finalize(this: Bill) {
       this.printBill();
     }
   }
-
+  this.billService.addActivity(this, {
+    message: `Bill finalized by ${this.user.username}`,
+    type: 'billFinalized',
+    user: this.user.username,
+  });
   this.updated.next();
   if (this.dataProvider.showTableOnBillAction) {
     this.dataProvider.openTableView.next(true);
@@ -92,11 +107,21 @@ export async function setInstruction(this: Bill) {
       value: this.instruction,
       multiline: false,
     })) || '';
-//  console.log('THIS INSTRUCTION', this.instruction);
+  //  console.log('THIS INSTRUCTION', this.instruction);
+  this.billService.addActivity(this, {
+    message: `Instruction set by ${this.user.username}`,
+    type: 'instructionSet',
+    user: this.user.username,
+  });
   this.calculateBill();
 }
 
 export async function printBill(this: Bill) {
+  this.billService.addActivity(this, {
+    message: `Bill printed by ${this.user.username}`,
+    type: 'billPrinted',
+    user: this.user.username,
+  });
   this.printingService.printBill(this.printableBillData);
 }
 
@@ -135,8 +160,8 @@ export async function settle(
         this.analyticsService.addBillToken();
       } else if (this.mode == 'takeaway') {
         this.billNo = this.dataProvider.takeawayToken.toString();
-        this.dataProvider.takeawayToken++;
-        this.analyticsService.addTakeawayToken();
+        // this.dataProvider.takeawayToken++;
+        // this.analyticsService.addTakeawayToken();
       } else if (this.mode == 'online') {
         (this.billNo = this.dataProvider.onlineTokenNo.toString()),
         this.dataProvider.onlineTokenNo++;
@@ -150,18 +175,24 @@ export async function settle(
   }
   // update in database
   // TODO to be refixed
-  // this.billService.addSales(allProducts.map((product) => product.id));
-  // this.stage = 'settled';
+  this.billService.addSales(allProducts.map((product) => {
+    if (product.itemType == 'product') {
+      return product.id;
+    } else if (product.itemType == 'combo') {
+      return product.selectedProductsIds;
+    }
+  }).flat());
+  this.stage = 'settled';
   this.settlement = {
     payments: payments,
     time: Timestamp.now(),
     user: this.user,
     additionalInfo: additionalInfo,
   };
-  // console.log(
-  //   'this.dataProvider.printBillAfterFinalize',
-  //   this.dataProvider.printBillAfterFinalize
-  // );
+  console.log(
+    'this.dataProvider.printBillAfterFinalize',
+    this.dataProvider.printBillAfterFinalize
+  );
   if (splitSave) {
     if (this.dataProvider.printBillAfterFinalize) {
       this.printingService.printBill(this.printableBillData);
@@ -225,6 +256,12 @@ export async function settle(
     }
     console.log('Customer info', this.customerInfo);
   }
+  this.billService.addActivity(this, {
+    type: 'billSettled',
+    message: 'Bill settled by ' + this.user.username,
+    user: this.user.username,
+  });
+
   this.customerService.addLoyaltyPoint(this)
   console.log('Bill settled');
   return this.billNo;

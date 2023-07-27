@@ -1,0 +1,34 @@
+<table id="report-table" *ngIf="!loading">
+	<thead>
+	  <tr>
+		<th>Product</th>
+		<th>Bills</th>
+		<th>Kots</th>
+		<th>Quantity</th>
+		<th>Price</th>
+		<th>Amount</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr *ngFor="let product of products | async">
+		<td>
+		  {{ product.name }}
+		</td>
+		<td>
+		  {{ product.bills }}
+		</td>
+		<td>
+		  {{ product.kots }}
+		</td>
+		<td>
+		  {{ product.quantity }}
+		</td>
+		<td>
+		  {{ product.price }}
+		</td>
+		<td>
+		  {{ product.quantity * product.price }}
+		</td>
+	  </tr>
+	</tbody>
+  </table>

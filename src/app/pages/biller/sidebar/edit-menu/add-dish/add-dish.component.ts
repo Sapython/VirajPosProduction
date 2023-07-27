@@ -2,7 +2,7 @@ import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Product, portionColor } from '../../../../../types/product.structure';
-import { ElectronService } from '../../../../../core/services';
+import { ElectronService } from '../../../../../core/services/electron/electron.service';
 
 @Component({
   selector: 'app-add-dish',

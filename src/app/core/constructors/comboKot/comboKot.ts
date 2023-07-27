@@ -7,7 +7,6 @@ import {
   ComboTypeProductWiseCategorized,
   TimeGroup,
 } from '../../../types/combo.structure';
-import { DataProvider } from '../../services/provider/data-provider.service';
 import { DirectFlatDiscount, DirectPercentDiscount } from '../../../types/discount.structure';
 import { Tax } from '../../../types/tax.structure';
 import { Timestamp } from '@angular/fire/firestore';
@@ -21,15 +20,16 @@ export class ApplicableCombo implements ApplicableComboConstructor {
   productSelection: ComboProductSelection[] = [];
   quantity: number = 1;
   price: number = 0;
-  cancelled: boolean;
+  cancelled: boolean = false;
   name: string;
-  instruction: string;
-  transferred?: string;
+  selectedProductsIds: string[] = [];
+  instruction: string = '';
+  transferred?: string = null;
   incomplete: boolean = false;
   canBeDiscounted: boolean = false;
   canBeApplied: boolean = false;
   untaxedValue: number = 0;
-  lineDiscount?: DirectPercentDiscount | DirectFlatDiscount;
+  lineDiscount?: DirectPercentDiscount | DirectFlatDiscount = null;
   lineDiscounted: boolean = false;
   totalAppliedTax: number = 0;
   totalAppliedPercentage: number = 0;
@@ -105,6 +105,8 @@ export class ApplicableCombo implements ApplicableComboConstructor {
         console.log('adding product to combo', product.name);
         comboCategory.selectedProducts.push({ ...product, quantity: 1 });
       }
+    } else {
+      alert('Product not found in combo.');
     }
     this.calculatePrice();
   }
@@ -320,7 +322,6 @@ export class ApplicableCombo implements ApplicableComboConstructor {
     let finalAdditionalTax: number = 0;
     let finalTaxes: Tax[] = [];
     let modifiedAllProducts = [];
-    console.log("ALL products",allProducts);
     this.price = 0;
     allProducts.forEach((product) => {
       if (product.itemType == 'product' && product.taxes) {
@@ -421,7 +422,6 @@ export class ApplicableCombo implements ApplicableComboConstructor {
         }
       }
     });
-    console.log("ALL products 2",allProducts);
     // calculate price
     allProducts.forEach((product) => {
       this.untaxedValue = this.untaxedValue + (product.untaxedValue * product.quantity);
@@ -430,18 +430,18 @@ export class ApplicableCombo implements ApplicableComboConstructor {
         this.price = this.price + (product.price * product.quantity);
       }
     });
-    console.log(":this.untaxedValue",this.untaxedValue,this.quantity);
+    this.selectedProductsIds = allProducts.map((p)=>p.id);
     this.untaxedValue = this.untaxedValue * this.quantity;
     finalTaxes.forEach((tax) => {
       // multiply tax amount with quantity
       tax.amount = tax.amount * this.quantity;
-    })
-    console.log(":Final price",this.price,this.quantity);
-    this.bill.calculateBill();
+    });
+    this.finalTaxes = finalTaxes;
+    if (this.bill && this.bill.calculateBill){
+      console.log("Calculate bill",this.bill,this.bill.calculateBill)
+      this.bill.calculateBill()
+    }
     console.log("untaxedValue",this.untaxedValue,"finalTaxes",finalTaxes);
-    // console.log("Price",this.price);
-    // console.log("allProducts,finalTaxes,finalAdditionalTax",allProducts,finalTaxes,finalAdditionalTax);
-    // this.bill.calculateBill();
   }
 
   checkDateIsAvailable(timeGroups: TimeGroup[]) {

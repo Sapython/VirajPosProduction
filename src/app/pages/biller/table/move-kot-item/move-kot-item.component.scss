@@ -1,0 +1,237 @@
+section.moveKot{
+    background: white;
+    padding: 20px;
+    width: 90vw;
+    height: 80vh;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0px 2px 30px rgba(0,0,0,0.2);
+    .heading{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .kotWise{
+        display: grid;
+        grid-template-columns: 1.2fr 3fr;
+        gap:30px;
+        height: 100%;
+        .kotSpan{
+            max-height: calc( 80vh - 100px);
+            overflow-y: scroll;
+            border-radius: 8px;
+            border: 1px solid #B3B3B3;
+            background: #FFF;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.05);
+            .heading{
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap:20px;
+                border-radius: 10px 10px 0px 0px;
+                border-bottom: 2px solid #B3B3B3;
+                span{
+                    display: flex;
+                    gap:5px;
+                    align-items: center;
+                }
+                &.heading.kotHead{
+                    color: #444;
+                    font-size: 14px;
+                    font-style: normal;
+                    font-weight: 600;
+                    line-height: normal;
+                    padding: 0px 10px;
+                }
+            }
+            .kots{
+                display: flex;
+                flex-direction: column;
+                gap:20px;
+                padding: 10px;
+                .kot{
+                    border: 2px solid #ccc;
+                    border-radius: 8px;
+                    ol{
+                        list-style: none;
+                        padding: 10px;
+                        li{
+                            display: flex;
+                            justify-content: flex-start;
+                            align-items: center;
+                            gap:20px;
+                        }
+                    }
+                }
+            }
+        }
+        .tablesSpan{
+            border-radius: 8px;
+            border: 1px solid #B3B3B3;
+            background: #FFF;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.05);
+            overflow-y: scroll;
+            height: 100%;
+            position: relative;
+            height:calc(100% - 100px);
+            .heading{
+                border-bottom: 1px solid #B3B3B3;
+                padding: 0px 20px;
+                p{
+                    color: #444;
+                    font-size: 14px;
+                    font-style: normal;
+                    font-weight: 600;
+                    line-height: normal;
+                }
+            }
+            .sticky{
+                position: sticky;
+                top:0px;
+                background: white;
+                z-index: 9;
+            }
+            .sections{
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                gap:20px;
+                .tableSection{
+                    border-radius: 8px;
+                    border: 1px solid #B3B3B3;
+                    background: #FFF;
+                    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.05);
+                    .heading{
+                        display: flex;
+                        justify-content: flex-start;
+                        gap:10px;
+                        border-bottom: 1px solid #B3B3B3;
+                        padding: 0px 10px;
+                    }
+                    .tables{
+                        display: flex;
+                        flex-wrap: wrap;
+                        justify-content: flex-start;
+                        gap:20px;
+                        padding: 20px;
+                        button.table{
+                            width: 120px;
+                            height: 120px;
+                            background: #f4f4f4;
+                            border: 2px solid #ccc;
+                            padding: 10px;
+                            border-radius: 10px;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                            box-shadow: 0px 0px 30px rgba(0,0,0,0.1);
+                            gap:4px;
+                            transition: scale 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+                            box-sizing: content-box;
+                            *{
+                                font-size: var(--Viraj-font-xlarge);
+                            }
+                            p{
+                                margin:0px;
+                            }
+                            p.name{
+                                font-size: var(--Viraj-font-large);
+                                font-weight: 500;
+                            }
+                            &:hover{
+                                cursor: pointer;
+                                background: #fff1e2;
+                                border-color: var(--Viraj-primary);
+                                scale: 1.05;
+                            }
+                            .actions{
+                                display: flex;
+                            }
+                        }
+                        .table.active{
+                            background: #FFF1E2;
+                            border-color: var(--Viraj-primary);
+                        }
+                        .table.late{
+                            border: 3px solid var(--Viraj-danger);
+                            background: #ff4848;
+                            *{
+                                color:white !important;
+                            }
+                            &:hover{
+                                cursor: pointer;
+                                background: #ff5656;
+                                border-color: var(--Viraj-primary);
+                                scale: 1.05;
+                            }
+                        }
+                        .table.finalized{
+                            background: #4080c4;
+                            border: #4484bd 2px solid;
+                            *{
+                                color:white !important;
+                            }
+                            &:hover{
+                                cursor: pointer;
+                                background: #6aade8;
+                                border-color: #4080c4;
+                                scale: 1.05;
+                            }
+                        }
+                        .empty{
+                            border-radius: 8px;
+                            border: 1px dashed #B3B3B3;
+                            background: #FCFCFC;
+                            color:black;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                        }
+                        .table.disabled{
+                            opacity: 0.5;
+                            cursor: not-allowed;
+                            pointer-events: none;
+                        }
+                        button.medium{
+                            width: 90px !important;
+                            height: 90px !important;
+                            *{
+                                font-size: var(--Viraj-font-large) !important;
+                            }
+                        }
+                        button.small{
+                            width: 60px !important;
+                            height: 60px !important;
+                            *{
+                                font-size: var(--Viraj-font-medium) !important;
+                            }
+                        }
+                        .table.inactive{
+                            background: #f4f4f4;
+                            color:#444;
+                            border-color: #ccc;
+                            &:hover{
+                                cursor: pointer;
+                                background: #f4f4f4;
+                                border-color: #ccc;
+                                scale: 1.05;
+                            }
+                        }
+                        .table.highlight{
+                            border: 3px solid var(--Viraj-success);
+                            background: #e4ffe8;
+                            &:hover{
+                                cursor: pointer;
+                                background: #e4ffe8;
+                                border-color: var(--Viraj-success);
+                                scale: 1.05;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

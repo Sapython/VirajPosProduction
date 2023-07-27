@@ -84,10 +84,10 @@ export class LoadingComponent {
   });
   onboardingStarted:boolean = false;
 
-  accounts:{username:string,access:string}[] = [
+  accounts:{username:string,access:"manager" | "waiter" | "accountant" | "admin"}[] = [
     {
       username:"",
-      access:"",
+      access:"manager",
     }
   ]
 
@@ -413,7 +413,8 @@ export class LoadingComponent {
           sgst:2.5,
           phone:this.onboardingBusinessForm.value.phone,
           users:[{
-            access:'admin',
+            role:'admin',
+            accessType:'role',
             username:this.onboardingBusinessForm.value.username,
             lastUpdated:Timestamp.fromDate(new Date()),
             updatedBy:'system',
@@ -424,7 +425,8 @@ export class LoadingComponent {
         this.signUpService.signUpWithUserAndPassword(username,password,{
           business:{
             access:{
-              accessLevel:'admin',
+              accessType:'role',
+              role:'admin',
               lastUpdated:Timestamp.fromDate(new Date()),
               updatedBy:'system',
             },
@@ -497,7 +499,8 @@ export class LoadingComponent {
         sgst:2.5,
         phone:this.onboardingBusinessForm.value.phone,
         users:[{
-          access:'admin',
+          role:'admin',
+          accessType:'role',
           username:this.onboardingBusinessForm.value.username,
           lastUpdated:Timestamp.fromDate(new Date()),
           updatedBy:'system',
@@ -520,6 +523,7 @@ export class LoadingComponent {
       for(let i=0;i<10;i++){
         tables.push({
           name:`Table ${i+1}`,
+          group:'Table',
           status:'available',
           id:`${i+1}`,
           order:i,
@@ -574,7 +578,8 @@ export class LoadingComponent {
       this.loginStage.next('Adding other accounts')
       let accountRef = await Promise.all(this.accounts.map((account)=>{
         return this.settingsService.addAccount({
-          access:account.access,
+          role:account.access,
+          accessType:'role',
           username:account.username,
           lastUpdated:Timestamp.fromDate(new Date()),
           updatedBy:'system',

@@ -10,6 +10,7 @@ export type TableConstructor = {
     name: string;
     timeSpent:string;
     minutes:number;
+    group:string;
     order:number;
     occupiedStart: Timestamp;
     billPrice: number;

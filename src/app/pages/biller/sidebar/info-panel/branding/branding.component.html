@@ -7,7 +7,7 @@
                 <strong><p>Stage &nbsp;&nbsp;<i>{{stageNumber}}</i></p></strong>
                 <p class="version">Version &nbsp;{{version}}</p>
             </div>
-            <viraj-button [minimalPadding]="true" [noPropogation]="true" (vclick)="upgrade.emit()">
+            <viraj-button [minimalPadding]="true" [noPropogation]="true" (vclick)="upgrade.emit()" *ngIf="this.dataProvider.getAccess('updateBiller')">
                 <ng-container *ngIf="dataProvider.clientWidth >= 1366">Update</ng-container>
                 <!-- <mat-icon>upgrade</mat-icon>/ -->
                 <i *ngIf="dataProvider.clientWidth < 1366" class="ri-upload-cloud-line"></i>

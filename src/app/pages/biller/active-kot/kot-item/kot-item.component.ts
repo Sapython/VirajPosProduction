@@ -16,6 +16,7 @@ import { Product } from '../../../../types/product.structure';
 import { DataProvider } from '../../../../core/services/provider/data-provider.service';
 import { DirectFlatDiscount, DirectPercentDiscount } from '../../../../types/discount.structure';
 import { ComboCategoryCategorized, ComboTypeProductWiseCategorized } from '../../../../types/combo.structure';
+import { BillService } from '../../../../core/services/database/bill/bill.service';
 @Component({
   selector: 'app-kot-item',
   templateUrl: './kot-item.component.html',
@@ -43,7 +44,7 @@ export class KotItemComponent implements OnChanges {
   @Output() removeQuantityFunction:EventEmitter<void> = new EventEmitter<void>()
   @Output() setQuantityFunction:EventEmitter<number> = new EventEmitter<number>()
   showKotNo: boolean = false;
-  constructor(public dataProvider: DataProvider, private dialog: Dialog) {}
+  constructor(public dataProvider: DataProvider, private dialog: Dialog,private billService:BillService) {}
   kotNoColors: { color: string; contrast: string }[] = [
     { color: '#4dc9f6', contrast: '#000000' },
     { color: '#f67019', contrast: '#000000' },
@@ -113,6 +114,12 @@ export class KotItemComponent implements OnChanges {
             totalAppliedDiscount: 0,
           };
           this.product.lineDiscount = discount;
+          this.billService.addActivity(this.dataProvider.currentBill,{
+            type:'lineDiscounted',
+            message:`Line Discounted by ${data.value}% for ${this.product.name} by ${this.dataProvider.currentUser?.username}`,
+            user:this.dataProvider.currentBusinessUser.name,
+            data:this.product
+          })
           this.lineDiscounted.emit(discount);
         } else {
           let discount: DirectFlatDiscount = {

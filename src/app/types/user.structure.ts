@@ -49,13 +49,27 @@ export interface Access {
   updatedBy: string;
   accessLevel: 'manager' | 'waiter' | 'accountant' | 'admin';
 }
-export interface Member {
-  access: string;
+export type Member  = {
   updatedBy: string;
   lastUpdated: Timestamp;
   new?: boolean;
   username: string;
+} & (RoleProps | CustomProps);
+
+type RoleProps ={
+  accessType: 'role';
+  role: 'manager' | 'waiter' | 'accountant' | 'admin';
 }
+type CustomProps = {
+  accessType: 'custom';
+  propertiesAllowed: string[];
+}
+// } & {
+  
+// } or {
+//   accessType:'role' | 'custom';
+//   propertyAllowed: string;
+// }
 
 export interface AdditonalClaims {
   email?: string;
@@ -63,7 +77,8 @@ export interface AdditonalClaims {
   image?: string;
   phone?: string;
   business: {
-    access: { accessLevel: string; lastUpdated: Timestamp; updatedBy: string };
+    access: { accessType: 'role', role:string, lastUpdated:Timestamp; updatedBy: string } | 
+    { accessType: 'custom',propertiesAllowed:string[], lastUpdated:Timestamp; updatedBy: string };
     address: string;
     businessId: string;
     joiningDate: Timestamp;

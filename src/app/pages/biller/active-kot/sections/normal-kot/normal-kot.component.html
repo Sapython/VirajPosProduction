@@ -3,6 +3,6 @@
                 [product]="item" [kotNo]="activeKotIndex" [info]="item.instruction || null"
                 [quantity]="item.quantity" [productName]="item.name" [nonVeg]="item.type == 'non-veg'"
                 [price]="item.price" *ngIf="item.itemType =='product'"></app-kot-item>
-        <app-combo-item [kotId]="kots[0].id" [@zoomInOnEnter] [@zoomOutOnLeave] [combo]="item" [activeKotIndex]="activeKotIndex" *ngIf="item.itemType == 'combo'">
+        <app-combo-item (delete)="delete.emit(item)" [newCombo]="true" [kotId]="kots[0].id" [@zoomInOnEnter] [@zoomOutOnLeave] [combo]="item" [activeKotIndex]="activeKotIndex" *ngIf="item.itemType == 'combo'">
         </app-combo-item>
 </ng-container>

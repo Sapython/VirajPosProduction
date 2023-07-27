@@ -249,13 +249,57 @@ section{
             }
         }
     }
-    // .action{
-    //     display: flex;
-    //     justify-content: center;
-    //     height: 70px;
-    //     background: white;
-    //     border-radius: 0px 0px 20px 20px;
-    // }
+    .loyaltySettings{
+        display: flex;
+        flex-direction: column;
+        .settings{
+            display: flex;
+            flex-direction: column;
+            .heading{
+                display: flex;
+                justify-content: space-between;
+                .actions{
+                    display: flex;
+                    gap:20px;
+                }
+            }
+            .setting{
+                display: flex;
+                flex-direction: column;
+                .body{
+                    form{
+                        display: flex;
+                    }
+                    .products{
+                        display: flex;
+                        flex-direction: column;
+                        max-height: 300px;
+                        overflow-y: auto;
+                        gap:10px;
+                        .product{
+                            display: grid;
+                            grid-template-columns: 5fr 3fr 3fr;
+                            gap:20px;
+                            padding: 10px;
+                            border-radius: 5px;
+                            input{
+                                padding: 5px 10px;
+                                background: white;
+                                box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+                                border-radius: 5px;
+                                border: none;
+                            }
+                        }
+                    }
+                    .actions{
+                        display: flex;
+                        justify-content: flex-end;
+                        gap:20px;
+                    }
+                }
+            }
+        }
+    }
 }
 .product{
     display: flex;

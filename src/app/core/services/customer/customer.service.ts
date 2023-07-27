@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, addDoc, collection, doc, getDocs, serverTimestamp, updateDoc } from '@angular/fire/firestore';
+import { Firestore, Timestamp, addDoc, collection, doc, getDocs, serverTimestamp, updateDoc } from '@angular/fire/firestore';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { DataProvider } from '../provider/data-provider.service';
 import { firstValueFrom } from 'rxjs';
@@ -66,10 +66,11 @@ export class CustomerService {
       lastOrderDish:bill.printableBillData.products.map((product)=>product.name),
       loyaltyPoints:0,
       orderFrequency:0,
-      id:''
+      id:'',
+      createdDate:Timestamp.now(),
     }
     console.log("ADDING CUSTOMER",customerData);
-    let res = await addDoc(collection(this.firestore,'business',this.dataProvider.currentBusiness.businessId,'customers'),customer)
+    let res = await addDoc(collection(this.firestore,'business',this.dataProvider.currentBusiness.businessId,'customers'),customerData)
     customerData['id'] = res.id
     this.dataProvider.customers = [...this.dataProvider.customers,customerData];
     this.dataProvider.customersUpdated.next();

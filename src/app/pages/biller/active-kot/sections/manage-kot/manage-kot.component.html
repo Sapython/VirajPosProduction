@@ -40,35 +40,37 @@
       >
     </span>
   </div>
-  <app-kot-item
-    [@zoomInOnEnter]
-    [@zoomOutOnLeave]
-    [kotId]="kot.id"
-    [kotNo]="i"
-    [product]="item"
-    [manageKot]="true"
-    [cancelled]="kot.stage == 'cancelled'"
-    (delete)="delete.emit($event)"
-    (lineDiscounted)="
-      this.dataProvider.currentBill
-        ? this.dataProvider.currentBill.calculateBill()
-        : {}
-    "
-    (lineCancelled)="
-      this.dataProvider.currentBill
-        ? this.dataProvider.currentBill.lineCancelled(item, $event, kot)
-        : {}
-    "
-    [editMode]="kot.editMode"
-    [quantity]="item.quantity"
-    [productName]="item.name"
-    (lineDiscounted)="
-      this.dataProvider.currentBill
-        ? this.dataProvider.currentBill.calculateBill()
-        : {}
-    "
-    [nonVeg]="item.type == 'non-veg'"
-    [price]="item.price"
-    *ngFor="let item of kot.products"
-  ></app-kot-item>
+  <ng-container *ngFor="let item of kot.products">
+    <app-kot-item *ngIf="item.itemType == 'product'"
+      [@zoomInOnEnter]
+      [@zoomOutOnLeave]
+      [kotId]="kot.id"
+      [kotNo]="i"
+      [product]="item"
+      [manageKot]="true"
+      [cancelled]="kot.stage == 'cancelled'"
+      (delete)="delete.emit($event)"
+      (lineDiscounted)="
+        this.dataProvider.currentBill
+          ? this.dataProvider.currentBill.calculateBill()
+          : {}
+      "
+      (lineCancelled)="
+        this.dataProvider.currentBill
+          ? this.dataProvider.currentBill.lineCancelled(item, $event, kot)
+          : {}
+      "
+      [editMode]="kot.editMode"
+      [quantity]="item.quantity"
+      [productName]="item.name"
+      (lineDiscounted)="
+        this.dataProvider.currentBill
+          ? this.dataProvider.currentBill.calculateBill()
+          : {}
+      "
+      [nonVeg]="item.type == 'non-veg'"
+      [price]="item.price"
+    ></app-kot-item>
+    <app-combo-item [combo]="item" *ngIf="item.itemType == 'combo'" [activeKotIndex]="i" [kotId]="kot.id"></app-combo-item>
+  </ng-container>
 </div>

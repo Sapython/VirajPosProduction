@@ -146,9 +146,12 @@ export class ProductsPanelComponent implements OnInit{
       this.dataProvider.openTableView.next(true)
       return;
     }
-    if (this.dataProvider.currentApplicableCombo){
+    console.log("this.dataProvider.currentApplicableCombo?.id == this.selectedCombo?.id",this.dataProvider.currentApplicableCombo?.combo, this.selectedCombo);
+    if (this.dataProvider.currentApplicableCombo?.combo.id == this.selectedCombo?.id){
+      console.log("Adding to existing combo");
       this.dataProvider.currentApplicableCombo.addProduct(selectedType,category,product);
     } else {
+      console.log("Adding to new combo");
       this.dataProvider.currentCombo = this.selectedCombo;
       this.dataProvider.currentComboType = selectedType;
       this.dataProvider.currentComboTypeCategory = category;

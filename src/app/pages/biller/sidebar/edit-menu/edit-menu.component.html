@@ -1,11 +1,17 @@
 <section>
   <div class="tabs">
     <div class="tabList">
-      <button [ngClass]="{active:currentMode==mode.name}" *ngFor="let mode of this.dataProvider.menus"
-        (click)="currentMode=mode.name">
-        {{mode.name}}
-      </button>
-      <button color="primary" (click)="addNewMenu()" *ngIf="this.dataProvider.getAccess(['admin','manager'])">
+      <ng-container *ngFor="let mode of this.dataProvider.menus">
+       <button [ngClass]="{active:currentMode==mode.name}" *ngIf="
+          (mode.name == 'Takeaway' && this.dataProvider.getAccess('editTakeawayMenu')) ||
+          (mode.name == 'Online' && this.dataProvider.getAccess('editOnlineMenu')) ||
+          (mode.name == 'Dine In' && this.dataProvider.getAccess('editDineInMenu'))
+       "
+         (click)="currentMode=mode.name">
+         {{mode.name}}
+       </button>
+      </ng-container>
+      <button color="primary" (click)="addNewMenu()" *ngIf="this.dataProvider.getAccess('addNewMenu')">
         Add New Menu
       </button>
     </div>
@@ -16,12 +22,13 @@
       <div class="tabs">
         <div class="tabList">
           <button (click)="activeTab='Products'" [ngClass]="{active:activeTab=='Products'}">Products</button>
-          <button (click)="activeTab='Taxes'" [ngClass]="{active:activeTab=='Taxes'}">Taxes</button>
-          <button (click)="activeTab='Discounts'" [ngClass]="{active:activeTab=='Discounts'}">Discounts</button>
-          <button (click)="activeTab='Combos'" [ngClass]="{active:activeTab=='Combos'}">Combos</button>
-          <button (click)="activeTab='Types'" [ngClass]="{active:activeTab=='Types'}">Types</button>
+          <button (click)="activeTab='Taxes'" *ngIf="this.dataProvider.getAccess('seeTaxes')" [ngClass]="{active:activeTab=='Taxes'}">Taxes</button>
+          <button (click)="activeTab='Discounts'" *ngIf="this.dataProvider.getAccess('seeDiscount')" [ngClass]="{active:activeTab=='Discounts'}">Discounts</button>
+          <button (click)="activeTab='Combos'" *ngIf="this.dataProvider.getAccess('seeCombos')" [ngClass]="{active:activeTab=='Combos'}">Combos</button>
+          <button (click)="activeTab='Types'" *ngIf="this.dataProvider.getAccess('seeTypes')" [ngClass]="{active:activeTab=='Types'}">Types</button>
+          <button (click)="activeTab='Loyalty'" *ngIf="this.dataProvider.getAccess('seeLoyalty')" [ngClass]="{active:activeTab=='Loyalty'}">Loyalty</button>
         </div>
-        <select *ngIf="this.dataProvider.getAccess(['admin','manager'])" [(ngModel)]="mode.selectedMenuId"
+        <select *ngIf="this.dataProvider.getAccess('switchMenu')" [(ngModel)]="mode.selectedMenuId"
           (change)="mode.updateMenu()" placeholder="Menu">
           <option *ngFor="let menu of this.dataProvider.allMenus" [value]="menu.id">
             {{ menu.name }}
@@ -32,28 +39,28 @@
         <ng-container *ngIf="activeTab == 'Products'">
           <div class="sidebar">
             <div class="categories">
-              <span *ngIf="this.dataProvider.getAccess(['admin','manager'])">Product List</span>
-              <app-category-card [full]="true" *ngIf="this.dataProvider.getAccess(['admin','manager'])" (click)="
+              <span *ngIf="this.dataProvider.getAccess('seeAllProducts')">Product List</span>
+              <app-category-card [full]="true" *ngIf="this.dataProvider.getAccess('seeAllProducts')" (click)="
             mode.selectCategory(mode.allProductsCategory);
             mode.currentType = 'all'
           " [category]="mode.allProductsCategory"></app-category-card>
-              <span *ngIf="this.dataProvider.getAccess(['admin','manager'])">Recommended</span>
-              <div cdkDropList *ngIf="this.dataProvider.getAccess(['admin','manager'])" class="example-list"
+              <span *ngIf="this.dataProvider.getAccess('recommendedCategories')">Recommended</span>
+              <div cdkDropList *ngIf="this.dataProvider.getAccess('recommendedCategories')" class="example-list"
                 (cdkDropListDropped)="mode.reorderRecommendedCategory($event)">
                 <app-category-card cdkDrag [full]="true" *ngFor="let category of mode.recommendedCategories" (click)="
                 mode.selectCategory(category);
                 mode.currentType = 'recommended'
               " [category]="category"></app-category-card>
               </div>
-              <span>View Categories<viraj-button type="icon" (vclick)="mode.addViewCategory()"><i
+              <span *ngIf="this.dataProvider.getAccess('viewCategories')">View Categories<viraj-button *ngIf="this.dataProvider.getAccess('addViewCategory')" type="icon" (vclick)="mode.addViewCategory()"><i
                     class="ri-add-box-fill"></i></viraj-button></span>
-              <div cdkDropList class="example-list" (cdkDropListDropped)="mode.reorderViewCategory($event)">
+              <div *ngIf="this.dataProvider.getAccess('viewCategories')" cdkDropList class="example-list" (cdkDropListDropped)="mode.reorderViewCategory($event)">
                 <app-category-card [full]="true" cdkDrag *ngFor="let category of mode.viewCategories" (click)="
                   mode.selectCategory(category); mode.currentType = 'view'
                 " [category]="category"></app-category-card>
               </div>
-              <span *ngIf="this.dataProvider.getAccess(['admin','manager'])">Main Categories</span>
-              <div cdkDropList *ngIf="this.dataProvider.getAccess(['admin','manager'])" class="example-list"
+              <span *ngIf="this.dataProvider.getAccess('mainCategories')">Main Categories</span>
+              <div cdkDropList *ngIf="this.dataProvider.getAccess('mainCategories')" class="example-list"
                 (cdkDropListDropped)="mode.reorderMainCategory($event)">
                 <app-category-card [full]="true" cdkDrag *ngFor="let category of mode.mainCategories" (click)="
                 mode.selectCategory(category); mode.currentType = 'root'
@@ -74,21 +81,28 @@
                   #text />
               </mat-form-field>
               <ng-container class="actions">
-                <button mat-stroked-button color="primary" (click)="mode.disableAll()">
-                  Disable All
-                </button>
-                <button mat-stroked-button color="primary" (click)="mode.enableAll()">
-                  Enable All
-                </button>
-                <button *ngIf="['all'].includes(mode.currentType) && this.dataProvider.getAccess(['admin','manager'])"
+                <ng-container *ngIf="
+                  (mode.currentType == 'all' && this.dataProvider.getAccess('enableDisableProducts')) || 
+                  (mode.currentType == 'recommended' && this.dataProvider.getAccess('enableDisableRecommendedProducts')) ||
+                  (mode.currentType == 'view' && this.dataProvider.getAccess('enableDisableViewProducts')) ||
+                  (mode.currentType == 'root' && this.dataProvider.getAccess('enableDisableMainProducts'))
+                ">
+                  <button mat-stroked-button color="primary" (click)="mode.disableAll()">
+                    Disable All
+                  </button>
+                  <button mat-stroked-button color="primary" (click)="mode.enableAll()">
+                    Enable All
+                  </button>
+                </ng-container>
+                <button *ngIf="['all'].includes(mode.currentType) && this.dataProvider.getAccess('addNewProduct')"
                   mat-stroked-button mat-button (click)="mode.addRecipe(mode.selectedMenuId)" color="primary">
                   Add Recipe
                 </button>
-                <button *ngIf="['view'].includes(mode.currentType)" mat-stroked-button mat-button
+                <button *ngIf="['view'].includes('editViewCategory')" mat-stroked-button mat-button
                   (click)="mode.addUploadedRecipe()" color="primary">
                   Edit
                 </button>
-                <button *ngIf="['view'].includes(mode.currentType)" mat-stroked-button mat-button
+                <button *ngIf="['view'].includes('deleteViewCategory')" mat-stroked-button mat-button
                   (click)="mode.deleteViewCategory()" color="primary">
                   Delete
                 </button>
@@ -123,7 +137,7 @@
                 </mat-select>
               </mat-form-field>
             </div>
-            <div class="filters" *ngIf="this.dataProvider.getAccess(['admin','manager'])">
+            <div class="filters" *ngIf="this.dataProvider.getAccess('editRecommendedCategorySettings')">
               <h4>Recommendation Setting</h4>
               <ng-container *ngIf="
               ['recommended'].includes(mode.currentType) &&
@@ -217,21 +231,40 @@
                   <div class="pricing">
                     <strong>{{ product.price | currency : "INR" }}</strong>
                     <span *ngIf="!(product.taxes && product.taxes.length > 0)" class="danger">No Taxes</span>
-                    <viraj-button *ngIf="this.dataProvider.getAccess(['admin','manager'])"
+                    <viraj-button *ngIf="
+                    (mode.currentType == 'all' && this.dataProvider.getAccess('setTaxesOnProducts')) || 
+                    (mode.currentType == 'recommended' && this.dataProvider.getAccess('setTaxesOnRecommendedProducts')) ||
+                    (mode.currentType == 'view' && this.dataProvider.getAccess('setTaxesOnViewProducts')) ||
+                    (mode.currentType == 'root' && this.dataProvider.getAccess('setTaxesOnMainProducts'))
+                    "
                       (click)="mode.setTaxes(product)">Set Taxes</viraj-button>
                     <mat-slide-toggle checked
-                      *ngIf="(this.dataProvider.getAccess(['admin','manager'])) || ['view'].includes(this.currentType)"
+                      *ngIf="
+                      (mode.currentType == 'all' && this.dataProvider.getAccess('enableDisableProducts')) || 
+                      (mode.currentType == 'recommended' && this.dataProvider.getAccess('enableDisableRecommendedProducts')) ||
+                      (mode.currentType == 'view' && this.dataProvider.getAccess('enableDisableViewProducts')) ||
+                      (mode.currentType == 'root' && this.dataProvider.getAccess('enableDisableMainProducts'))
+                      "
                       [(ngModel)]="product.visible" (toggleChange)="
                     mode.productVisibilityChanged = true;
                     product.updated = true;
                     mode.selectedCategory.updated = true;
                   "></mat-slide-toggle>
-                    <viraj-button *ngIf="this.dataProvider.getAccess(['admin','manager'])"
+                    <viraj-button *ngIf="
+                    (mode.currentType == 'all' && this.dataProvider.getAccess('editProduct')) || 
+                    (mode.currentType == 'recommended' && this.dataProvider.getAccess('editRecommendedProduct')) ||
+                    (mode.currentType == 'view' && this.dataProvider.getAccess('editViewProduct')) ||
+                    (mode.currentType == 'root' && this.dataProvider.getAccess('editMainProduct'))"
                       (click)="mode.editRecipe(product, mode.selectedMenuId)">
                       <i class="ri-pencil-fill"></i>
                     </viraj-button>
                     <viraj-button
-                      *ngIf="(['root','view','all'].includes(this.currentType) && this.dataProvider.getAccess(['admin','manager'])) || ['view'].includes(this.currentType)"
+                      *ngIf="
+                      (mode.currentType == 'all' && this.dataProvider.getAccess('deleteProduct')) || 
+                      (mode.currentType == 'recommended' && this.dataProvider.getAccess('deleteRecommendedProduct')) ||
+                      (mode.currentType == 'view' && this.dataProvider.getAccess('deleteViewProduct')) ||
+                      (mode.currentType == 'root' && this.dataProvider.getAccess('deleteMainProduct'))
+                      "
                       (click)="mode.deleteRecipe(product,mode.selectedMenuId)">
                       <i class="ri-delete-bin-6-fill"></i>
                     </viraj-button>
@@ -254,7 +287,7 @@
               <mat-label>Search</mat-label>
               <input matInput (input)="mode.taxesSearchSubject.next(search.value)" #search/>
             </mat-form-field>
-            <viraj-button (vclick)="mode.addTax()">Add Tax</viraj-button>
+            <viraj-button (vclick)="mode.addTax()" *ngIf="this.dataProvider.getAccess('addNewTaxes')">Add Tax</viraj-button>
           </div>
           <p>Total {{mode.taxes.length}} taxes</p>
           <div class="tableContainer">
@@ -279,8 +312,8 @@
                   <td>{{ tax.creationDate.toDate() | date }}</td>
                   <td>{{ tax.updateDate.toDate() | date }}</td>
                   <td>
-                    <viraj-button (vclick)="mode.editTax(tax)" type="icon"><i class="ri-pencil-line"></i></viraj-button>
-                    <viraj-button (vclick)="mode.deleteTax(tax.id)" type="icon"><i
+                    <viraj-button *ngIf="this.dataProvider.getAccess('editTaxes')" (vclick)="mode.editTax(tax)" type="icon"><i class="ri-pencil-line"></i></viraj-button>
+                    <viraj-button ngIf="this.dataProvider.getAccess('deleteTaxes')" (vclick)="mode.deleteTax(tax.id)" type="icon"><i
                         class="ri-delete-bin-line"></i></viraj-button>
                   </td>
                 </tr>
@@ -295,7 +328,7 @@
               <mat-label>Search</mat-label>
               <input matInput (input)="mode.discountsSearchSubject.next(search.value)" #search />
             </mat-form-field>
-            <viraj-button (vclick)="mode.addDiscount()">Add Discount</viraj-button>
+            <viraj-button (vclick)="mode.addDiscount()" *ngIf="this.dataProvider.getAccess('addNewDiscounts')">Add Discount</viraj-button>
           </div>
           <div class="tableContainer">
             <table>
@@ -339,9 +372,9 @@
                     </li>
                   </td>
                   <td>
-                    <viraj-button (vclick)="mode.editDiscount(discount)" type="icon"><i
+                    <viraj-button *ngIf="this.dataProvider.getAccess('editDiscount')" (vclick)="mode.editDiscount(discount)" type="icon"><i
                         class="ri-pencil-fill"></i></viraj-button>
-                    <viraj-button (vclick)="mode.deleteDiscount(discount.id)" type="icon"><i
+                    <viraj-button *ngIf="this.dataProvider.getAccess('deleteDiscounts')" (vclick)="mode.deleteDiscount(discount.id)" type="icon"><i
                         class="ri-delete-bin-2-fill"></i></viraj-button>
                   </td>
                 </tr>
@@ -361,7 +394,7 @@
               <mat-label>Search</mat-label>
               <input matInput (input)="mode.typeSearchSubject.next(search.value)" #search />
             </mat-form-field>
-            <viraj-button (vclick)="mode.addType()">Add Type</viraj-button>
+            <viraj-button *ngIf="this.dataProvider.getAccess('addNewTypes')" (vclick)="mode.addType()">Add Type</viraj-button>
           </div>
           <div class="tableContainer typesTable">
             <table>
@@ -377,9 +410,9 @@
                   <td><img [src]="type.image"></td>
                   <td>{{ type.name }}</td>
                   <td>
-                    <viraj-button (vclick)="mode.editType(type)" type="icon"><i
+                    <viraj-button *ngIf="this.dataProvider.getAccess('editTypes')" (vclick)="mode.editType(type)" type="icon"><i
                         class="ri-pencil-fill"></i></viraj-button>
-                    <viraj-button (vclick)="mode.deleteType(type)" type="icon"><i
+                    <viraj-button *ngIf="this.dataProvider.getAccess('deleteTypes')" (vclick)="mode.deleteType(type)" type="icon"><i
                         class="ri-delete-bin-2-fill"></i></viraj-button>
                   </td>
                 </tr>
@@ -392,7 +425,7 @@
             </table>
           </div>
         </ng-container>
-        <ng-container *ngIf="activeTab == 'Settings'">
+        <!-- <ng-container *ngIf="activeTab == 'Settings'">
           <div class="panel">
             <mat-select *ngIf="this.dataProvider.getAccess(['admin','manager'])" placeholder="Menu"
               [(ngModel)]="mode.selectedMenuId" (selectionChange)="mode.updateMenu()" name="menu">
@@ -409,24 +442,74 @@
               </table>
             </div>
           </div>
-        </ng-container>
+        </ng-container> -->
         <ng-container *ngIf="activeTab == 'Combos'">
           <h3>Combos</h3>
           <div class="comboCards">
-            <div class="card new" (click)="mode.addCombo()">
+            <div class="card new" *ngIf="this.dataProvider.getAccess('addNewCombos')" (click)="mode.addCombo()">
               <p><i class="ri-add-fill"></i>Add New Combo</p>
             </div>
             <div class="card combo" *ngFor="let combo of mode.combos">
               <img [src]="combo.offerImage">
               <p>{{combo.name}}</p>
             </div>
-            <div class="card new" *ngIf="mode.combos.length > 10">
+            <div class="card new" *ngIf="mode.combos.length > 10 && this.dataProvider.getAccess('addNewCombos')">
               <p><i class="ri-add-fill"></i>Add New Combo</p>
             </div>
           </div>
         </ng-container>
       </div>
-
+      <div class="loyaltySettings" *ngIf="activeTab == 'Loyalty'">
+        <h2>Loyalty Settings</h2>
+        <div class="settings">
+          <div class="heading">
+            <h3>All Settings</h3>
+            <div class="actions">
+              <mat-form-field>
+                <mat-label>Base Loyalty Rate</mat-label>
+                <input type="number" matInput placeholder="Loyalty Rate per inr">
+              </mat-form-field>
+              <mat-form-field>
+                <mat-label>Base Expiry Days</mat-label>
+                <input type="number" matInput placeholder="Days in number">
+              </mat-form-field>
+              <viraj-button *ngIf="this.dataProvider.getAccess('addNewLoyaltySettings')" (vclick)="mode.addLoyaltySettings()">Add New</viraj-button>
+            </div>
+          </div>
+          <div class="setting" *ngFor="let setting of mode.loyaltySettings; let i = index;">
+            <div class="head">
+              <h3>{{setting.name}}</h3>
+            </div>
+            <div class="body">
+              <form [formGroup]="setting.newLoyaltyForm">
+                <mat-form-field>
+                  <mat-label>Setting Name</mat-label>
+                  <input formControlName="name" type="text" matInput>
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-label>Select Time Group</mat-label>
+                  <mat-select formControlName="timeGroup" placeholder="Select Time Group" name="group">
+                    <mat-option *ngFor="let group of mode.timeGroups" [value]="group.id">
+                      {{group.name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </form>
+              <div class="products">
+                <div class="product" *ngFor="let item of setting.products">
+                  <mat-checkbox [(ngModel)]="item.selected">{{item.name}}</mat-checkbox>
+                  <input type="number" [(ngModel)]="item.loyaltyPoint" placeholder="Loyalty Point">
+                  <input type="number" [(ngModel)]="item.expiryInDays" placeholder="Expiry in days">
+                </div>
+              </div>
+              <div class="actions">
+                <viraj-button (click)="mode.saveLoyaltySetting(setting)">Save</viraj-button>
+                <viraj-button (click)="mode.cancelLoyaltySetting(setting,i)" type="outline">Cancel</viraj-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </ng-container>
   <!-- <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">

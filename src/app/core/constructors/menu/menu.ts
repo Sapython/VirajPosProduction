@@ -58,6 +58,7 @@ export class ModeConfig {
   typesSearchInstance: Fuse<ComboType> = new Fuse([], { keys: ['name'] });
   taxesSearchInstance: Fuse<Tax> = new Fuse([], { keys: ['name'] });
   discountsSearchInstance: Fuse<CodeBaseDiscount> = new Fuse([], { keys: ['name'] });
+  loyaltySettings:any[] = [];
   highCostForm: FormGroup = new FormGroup({
     min: new FormControl(this.dataProvider.highCostConfig.min, [
       Validators.required,
@@ -1580,5 +1581,37 @@ export class ModeConfig {
     }).catch((err)=>{
       this.alertify.presentToast('Error while deleting time group');
     });
+  }
+
+  addLoyaltySettings(){
+    this.loyaltySettings.push({
+      newLoyaltyForm:new FormGroup({
+        name:new FormControl('',[Validators.required]),
+        timeGroup:new FormControl('',[Validators.required]),
+      }),
+      products:this.products.map((p:Product)=>{
+        return {...p,selected:false,loyaltyPoint:0,expiryInDays:0};
+      }),
+    })
+  }
+
+  saveLoyaltySetting(setting){
+    console.log('setting',setting);
+    if(setting.newLoyaltyForm.valid){
+      let loyaltySettingData = {
+        ...setting.newLoyaltyForm.value,
+        products:setting.products.filter((p:Product)=>p.selected).map((p:any)=>{
+          return {
+            id:p.id,
+            loyaltyPoint:p.loyaltyPoint,
+            expiryInDays:p.expiryInDays,
+          }
+        })
+      }
+    }
+  }
+
+  cancelLoyaltySetting(setting,index:number){
+    this.loyaltySettings.splice(index,1);
   }
 }

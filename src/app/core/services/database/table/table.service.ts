@@ -115,18 +115,18 @@ export class TableService {
     let groupedTables = []
       this.dataProvider.tables.forEach((r) => {
         let tableGroup = groupedTables.find(
-          (group) => group.name == r.name.split(' ')[0]
+          (group) => group.name == r.group
         );
         if (tableGroup) {
           tableGroup.tables.push(r);
         } else {
           groupedTables.push({
-            name: r.name.split(' ')[0],
+            name: r.group,
             tables: [r],
           });
         }
       });
-      this.dataProvider.groupedTables.forEach((group) => {
+      groupedTables.forEach((group) => {
         // sort tables by order or by name
         group.tables.sort((a, b) => {
           if (a.order!=undefined && b.order!=undefined){
@@ -138,4 +138,22 @@ export class TableService {
       })
       this.dataProvider.groupedTables = groupedTables;
   }
+
+  editSection(prevGroupname:string,newGroupName:string){
+    return Promise.all(this.dataProvider.tables.filter((table)=>table.group==prevGroupname).map(async (table)=>{
+      table.group = newGroupName;
+      // remove group name from table name
+      return await this.updateTable({
+        ...table.toObject(),
+      });
+    }))
+  }
+
+  deleteSection(groupName:string){
+    return Promise.all(this.dataProvider.tables.filter((table)=>table.group==groupName).map(async (table)=>{
+      return await this.deleteTable(table.id);
+    }))
+  }
+
+
 }

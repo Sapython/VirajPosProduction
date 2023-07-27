@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Kot } from '../../../../../core/constructors/kot/Kot';
 import { Product } from '../../../../../types/product.structure';
 import { zoomInOnEnterAnimation, zoomOutOnLeaveAnimation } from 'angular-animations';
+import { ApplicableCombo } from '../../../../../core/constructors/comboKot/comboKot';
 
 @Component({
   selector: 'app-normal-kot',
@@ -13,5 +14,5 @@ import { zoomInOnEnterAnimation, zoomOutOnLeaveAnimation } from 'angular-animati
 export class NormalKotComponent {
   @Input() kots:Kot[] = [];
   @Input() activeKotIndex:number = 0;
-  @Output() delete = new EventEmitter<Product>();
+  @Output() delete = new EventEmitter<Product|ApplicableCombo>();
 }

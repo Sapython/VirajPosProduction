@@ -28,22 +28,24 @@
       <span *ngIf="this.dataProvider.currentBill?.stage=='active'">
         <mat-slide-toggle [matTooltip]="this.dataProvider.currentBill?.billing.discount.length>0 ? 'Cannot apply NC to discounted bill' : 'Click to apply'" [disabled]="this.dataProvider.currentBill?.stage!='active' || (this.dataProvider.currentBill?.billing.discount.length>0)" [(ngModel)]="isNonChargeable" (change)="nonChargeable($event)">Non Chargable</mat-slide-toggle>
       </span>
-      <viraj-button *ngIf="this.dataProvider.currentBill?.stage=='active'" [small]="true" [minimalPadding]="true" type="outline" [disabled]="!this.dataProvider.currentBill" (vclick)="dataProvider.manageKot=!dataProvider.manageKot;dataProvider.kotViewVisible=false;dataProvider.manageKotChanged.next(dataProvider.manageKot);toggleManageKot()">{{dataProvider.manageKot==true ? 'Back' : 'Manage KOT'}}</viraj-button>
+      <viraj-button *ngIf="this.dataProvider.currentBill?.stage=='active' && this.dataProvider.getAccess('manageKot')" [small]="true" [minimalPadding]="true" type="outline" [disabled]="!this.dataProvider.currentBill" (vclick)="dataProvider.manageKot=!dataProvider.manageKot;dataProvider.kotViewVisible=false;dataProvider.manageKotChanged.next(dataProvider.manageKot);toggleManageKot()">{{dataProvider.manageKot==true ? 'Back' : 'Manage KOT'}}</viraj-button>
     </div>
     <div class="actions" *ngIf="this.dataProvider.currentBill?.stage=='active'">
-      <ng-container *ngIf="dataProvider.currentBill">
+      <ng-container *ngIf="dataProvider.currentBill && this.dataProvider.getAccess('punchKot')">
         <viraj-button (vclick)="dataProvider.currentBill.finalizeAndPrintKot()" [disabled]="this.dataProvider.currentBill.canPrintKot">Print KOT</viraj-button>
       </ng-container>
       <viraj-button (vclick)="finalizeBill()">Finalize Bill</viraj-button>
-      <viraj-button [disabled]="!!this.dataProvider.currentBill?.nonChargeableDetail" [matTooltip]="!!this.dataProvider.currentBill?.nonChargeableDetail ? 'Cannot apply discount to NC bill' : 'Click to apply'" (vclick)="addDiscount()">Discount</viraj-button>
-      <viraj-button (vclick)="showPreview()">Preview</viraj-button>
+      <ng-container *ngIf="this.dataProvider.getAccess('applyDiscount')">
+        <viraj-button [disabled]="!!this.dataProvider.currentBill?.nonChargeableDetail" [matTooltip]="!!this.dataProvider.currentBill?.nonChargeableDetail ? 'Cannot apply discount to NC bill' : 'Click to apply'" (vclick)="addDiscount()">Discount</viraj-button>
+      </ng-container>
+      <viraj-button (vclick)="showPreview()" *ngIf="this.dataProvider.getAccess('seePreview')">Preview</viraj-button>
       <!-- <button [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant','waiter'])" mat-flat-button (click)="dataProvider.moreActions=!dataProvider.moreActions">More</button> -->
-      <viraj-button matTooltip="Add a bill note on the printed bill." [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant','waiter'])" (vclick)="dataProvider.currentBill ? dataProvider.currentBill.setInstruction() : {}">Note</viraj-button>
+      <viraj-button matTooltip="Add a bill note on the printed bill." *ngIf="this.dataProvider.getAccess('billNote')" [disabled]="!this.dataProvider.getAccess(['admin','manager','accountant','waiter'])" (vclick)="dataProvider.currentBill ? dataProvider.currentBill.setInstruction() : {}">Note</viraj-button>
     </div>
     <div class="actions" *ngIf="this.dataProvider.currentBill?.stage=='finalized'">
-      <viraj-button (vclick)="settleBill()">Settle Bill</viraj-button>
-      <viraj-button [matTooltip]="!!this.dataProvider.currentBill?.nonChargeableDetail ? 'Cannot split an NC bill' : 'Click to apply'" [disabled]="!!this.dataProvider.currentBill?.nonChargeableDetail" (vclick)="splitAndSettle()">Split Bill</viraj-button>
-      <viraj-button (vclick)="cancelBill()">Cancel</viraj-button>
+      <viraj-button (vclick)="settleBill()" *ngIf="this.dataProvider.getAccess('settleBill')">Settle Bill</viraj-button>
+      <viraj-button *ngIf="this.dataProvider.getAccess('splitBill')" [matTooltip]="!!this.dataProvider.currentBill?.nonChargeableDetail ? 'Cannot split an NC bill' : 'Click to apply'" [disabled]="!!this.dataProvider.currentBill?.nonChargeableDetail" (vclick)="splitAndSettle()">Split Bill</viraj-button>
+      <viraj-button *ngIf="this.dataProvider.getAccess('cancelBill')" (vclick)="cancelBill()">Cancel</viraj-button>
     </div>
     <div class="actions" *ngIf="this.dataProvider.currentBill?.stage=='cancelled'">
       <viraj-button [disabled]="!this.dataProvider.currentBill">Open Table</viraj-button>

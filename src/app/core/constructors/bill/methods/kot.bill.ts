@@ -30,7 +30,9 @@ export function clearAllKots(this: Bill) {
   this.updated.next();
 }
 
-export function editKot(this: Bill, kot: Kot, reason) {
+export function editKot(this: Bill, kot: Kot, reason:string) {
+  console.log("EDITED KOT REASON",reason);
+  
   if (this.currentKot?.stage === 'active') {
     if (
       confirm(
@@ -46,6 +48,12 @@ export function editKot(this: Bill, kot: Kot, reason) {
     //  console.log('edit kot mode 1', this.editKotMode);
       this.dataProvider.manageKot = false;
       this.dataProvider.manageKotChanged.next(false);
+      this.billService.addActivity(this, {
+        type: 'kotEdited',
+        message: 'Kot edited by ' + this.user.username,
+        user: this.user.username,
+        data: {...kot.toObject(),editReason:reason},
+      });
       this.updated.next();
     } else {
       return;
@@ -65,6 +73,12 @@ export function editKot(this: Bill, kot: Kot, reason) {
   //  console.log('edit kot mode', this.editKotMode);
     this.dataProvider.manageKot = false;
     this.dataProvider.manageKotChanged.next(false);
+    this.billService.addActivity(this, {
+      type: 'kotEdited',
+      message: 'Kot edited by ' + this.user.username,
+      user: this.user.username,
+      data: {...kot.toObject(),editReason:reason},
+    });
     this.updated.next();
   }
 }
@@ -152,6 +166,12 @@ export function deleteKot(this: Bill, kot: Kot) {
   kot.products.forEach((product) => {
     product.cancelled = true;
   })
+  this.billService.addActivity(this, {
+    type: 'kotCancelled',
+    message: 'Kot cancelled by ' + this.user.username,
+    user: this.user.username,
+    data: kot.toObject(),
+  })
   this.billService.provideAnalytics().logKot(kot,'cancelled');
   this.printKot(kot,'cancelledKot');
   this.calculateBill();
@@ -211,16 +231,22 @@ export function printKot(
       return {
         id:product.id,
         name: product.name,
-        instruction:product.instruction,
+        instruction:product.instruction || null,
         quantity:product.quantity,
         edited:product.cancelled,
         category:product.category,
-        specificPrinter:product.specificPrinter
+        specificPrinter:product.specificPrinter || null
       }
     }),
     table:this.table.id,
   };
   this.dataProvider.currentApplicableCombo = undefined;
+  this.billService.addActivity(this, {
+    type: 'kotPrinted',
+    message: 'Kot finalized by ' + this.user.username,
+    user: this.user.username,
+    data: data,
+  });
   if(debug) console.log("Kot data",data);
   this.printingService.printKot(data);
 //  console.log('Send to service');

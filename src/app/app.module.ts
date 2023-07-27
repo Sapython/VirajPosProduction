@@ -31,7 +31,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
-
 import { AlertsAndNotificationsService } from './core/services/alerts-and-notification/alerts-and-notifications.service';
 
 import * as Sentry from "@sentry/angular-ivy";
@@ -43,6 +42,21 @@ import { CheckingPasswordComponent } from './shared/checking-password/checking-p
 import { RequiresPrivilegeComponent } from './shared/requires-privilege/requires-privilege.component';
 import { BillerModule } from './pages/biller/biller.module';
 import { LoadingModule } from './pages/auth/loading/loading.module';
+import { AuthService } from './core/services/auth/auth.service';
+import { CustomerService } from './core/services/customer/customer.service';
+import { MenuManagementService } from './core/services/database/menuManagement/menu-management.service';
+import { AnalyticsService } from './core/services/database/analytics/analytics.service';
+import { BillService } from './core/services/database/bill/bill.service';
+import { CategoryService } from './core/services/database/category/category.service';
+import { FileStorageService } from './core/services/database/fileStorage/file-storage.service';
+import { HistoryService } from './core/services/database/history/history.service';
+import { ProductsService } from './core/services/database/products/products.service';
+import { ReportsService } from './core/services/database/reports/reports.service';
+import { SearchService } from './core/services/database/search/search.service';
+import { SettingsService } from './core/services/database/settings/settings.service';
+import { SystemService } from './core/services/database/system/system.service';
+import { TableService } from './core/services/database/table/table.service';
+import { ElectronService } from './core/services/electron/electron.service';
 
 // AoT requires an exported function for factories
 export const dbConfig: DBConfig = {
@@ -168,6 +182,22 @@ export const dbConfig: DBConfig = {
     ScreenTrackingService,
     UserTrackingService,
     AlertsAndNotificationsService,
+    ElectronService,
+    AuthService,
+    CustomerService,
+    MenuManagementService,
+    AnalyticsService,
+    BillService,
+    CategoryService,
+    FileStorageService,
+    HistoryService,
+    MenuManagementService,
+    ProductsService,
+    ReportsService,
+    SearchService,
+    SettingsService,
+    SystemService,
+    TableService
   ],
   bootstrap: [AppComponent],
 })

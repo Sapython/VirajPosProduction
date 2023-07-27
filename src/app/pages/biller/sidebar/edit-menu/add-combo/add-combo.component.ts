@@ -1,9 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ComboType, TimeGroup, TypeCategory, productTree } from '../../../../../types/combo.structure';
-import { DIALOG_DATA, Dialog, DialogRef } from '@angular/cdk/dialog';
-import { AddTypeComponent } from '../add-type/add-type.component';
-import { Menu } from '../../../../../types/menu.structure';
+import { ComboType, TypeCategory, productTree } from '../../../../../types/combo.structure';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { ModeConfig } from '../../../../../core/constructors/menu/menu';
 import { FileStorageService } from '../../../../../core/services/database/fileStorage/file-storage.service';
 import { DataProvider } from '../../../../../core/services/provider/data-provider.service';

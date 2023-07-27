@@ -1,0 +1,34 @@
+<table id="report-table" *ngIf="!loading">
+	<thead>
+	  <tr>
+		<th>Kot No</th>
+		<th>Kot Amount</th>
+		<th>Products</th>
+		<th>Bill No</th>
+		<th>Token No</th>
+		<th>Date-Time</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr *ngFor="let kot of kots">
+		<td>
+		  {{ kot.id }}
+		</td>
+		<td>
+		  {{ kot.grandTotal }}
+		</td>
+		<td>
+		  {{ kot.products.length }}
+		</td>
+		<td>
+		  {{ kot.billNo }}
+		</td>
+		<td>
+		  {{ kot.tokenNo }}
+		</td>
+		<td>
+		  {{ kot.createdDate.toDate() | date : "short" }}
+		</td>
+	  </tr>
+	</tbody>
+  </table>

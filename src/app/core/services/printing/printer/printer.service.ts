@@ -77,7 +77,7 @@ export class PrinterService {
           const dialog = this.dialog.open(DialogComponent, {
             data: {
               title: 'No printer found for printing kot.',
-              description: 'Please select a printer in settings panel. Not printed: '+printableKotData.products.map((product)=>product.name).join(', '),
+              description: 'Please select a printer in settings panel. \n Not printed: \n '+printableKotData.products.map((product)=>product.name).join(', '),
               buttons: ['Ok'],
               primary: [0],
             },

@@ -249,7 +249,7 @@ body {
   font-weight: 600;
   cursor: pointer;
 }
-button[mat-flat-button],button[mat-raised-button]{
+button[mat-flat-button][color="primary"],button[mat-raised-button][color="primary"]{
   color:white !important;
 }
 
@@ -384,3 +384,4 @@ i[class^="ri-"]{
 .passwordAlert{
   z-index: 99999999999;
 }
+

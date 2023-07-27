@@ -1,20 +1,146 @@
 <section>
   <div class="heading">
+    <h1>Reports</h1>
+    <viraj-button type="icon">
+      <i class="ri-close-fill"></i>
+    </viraj-button>
+  </div>
+  <ng-container>
+    <div class="charts">
+      <div class="heading">
+        <h3>Graph & Summary</h3>
+      </div>
+      <div class="graphs">
+        <div class="chartContainer">
+          <canvas height="250px"#salesChart></canvas>
+        </div>
+        <div class="chartContainer">
+          <canvas height="250px" #orderChart></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="reportsGroup">
+      <div class="heading">
+        <h3>Common Reports</h3>
+      </div>
+      <div class="grid">
+        <div class="reportCard">
+          <h4>Day Summary</h4>
+          <p>Full day summary with all bills, kots, sales, settlements, etc.</p>
+          <button (click)="openReport('daySummary')">View Report <i class="ri-file-chart-line"></i></button>
+        </div>
+        <div class="reportCard">
+          <h4>Item Wise Sales</h4>
+          <p>List of items and their sales, with bills and kots.</p>
+          <button (click)="openReport('itemWise')">View Report <i class="ri-file-chart-line"></i></button>
+        </div>
+        <div class="reportCard">
+          <h4>Dine In Bills</h4>
+          <p>List of bills from dine in channel, with their sales and settlements.</p>
+          <button (click)="openReport('dineInBills')">View Report <i class="ri-file-chart-line"></i></button>
+        </div>
+        <div class="reportCard">
+          <h4>Takeaway Bills</h4>
+          <p>List of bills from takeaway channel, with their sales and settlements.</p>
+          <button (click)="openReport('takeawayBills')">View Report <i class="ri-file-chart-line"></i></button>
+        </div>
+        <div class="reportCard">
+          <h4>Online Bills</h4>
+          <p>List of bills from online channel, with their sales and settlements.</p>
+          <button (click)="openReport('onlineBills')">View Report <i class="ri-file-chart-line"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="reportsGroup">
+      <div class="heading">
+        <h3>All Reports</h3>
+        <div class="searchBar">
+          <input type="search">
+          <i class="ri-search-line"></i>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="reportCard">
+          <h4>Item Wise Sales</h4>
+          <p>List of items and their sales, with bills and kots.</p>
+          <button (click)="openReport('itemWise')">View Report <i class="ri-file-chart-line"></i></button>
+        </div>
+        <div class="reportCard">
+          <h4>All Bills</h4>
+          <p>List of bills from all channels, with their sales and settlements.</p>
+          <button (click)="openReport('billWise')">View Report <i class="ri-file-chart-line"></i></button>
+        </div>
+        <div class="reportCard">
+          <h4>Dine In Bills</h4>
+          <p>List of bills from dine in channel, with their sales and settlements.</p>
+          <button (click)="openReport('dineInBills')">View Report <i class="ri-file-chart-line"></i></button>
+        </div>
+        <div class="reportCard">
+          <h4>Takeaway Bills</h4>
+          <p>List of bills from takeaway channel, with their sales and settlements.</p>
+          <button (click)="openReport('takeawayBills')">View Report <i class="ri-file-chart-line"></i></button>
+        </div>
+        <div class="reportCard">
+          <h4>Online Bills</h4>
+          <p>List of bills from online channel, with their sales and settlements.</p>
+          <button (click)="openReport('onlineBills')">View Report <i class="ri-file-chart-line"></i></button>
+        </div>
+        <div class="reportCard">
+          <h4>Day Summary</h4>
+          <p>Full day summary with all bills, kots, sales, settlements, etc.</p>
+          <button (click)="openReport('daySummary')">View Report <i class="ri-file-chart-line"></i></button>
+        </div>
+        <div class="reportCard">
+          <h4>KOT wise report</h4>
+          <p>List of KOTs with their timings, waiter, items.</p>
+          <button (click)="openReport('kotWise')">View Report <i class="ri-file-chart-line"></i></button>
+        </div>
+        <div class="reportCard">
+          <h4>Discounted Bills</h4>
+          <p>List of bills on which discount has been applied, and discounted amount.</p>
+          <button (click)="openReport('discounted')">View Report <i class="ri-file-chart-line"></i></button>
+        </div>
+        <div class="reportCard">
+          <h4>Non Chargeable Bills</h4>
+          <p>List of bills which have been marked as NC.</p>
+          <button (click)="openReport('ncBills')">View Report <i class="ri-file-chart-line"></i></button>
+        </div>
+        <div class="reportCard">
+          <h4>Bill Edits</h4>
+          <p>List of bills which have been edited, with name and timings.</p>
+          <button (click)="openReport('billEdits')">View Report <i class="ri-file-chart-line"></i></button>
+        </div>
+        <div class="reportCard">
+          <h4>Customer Wise Report</h4>
+          <p>List of customers and their spending with loyalty points.</p>
+          <button (click)="openReport('customerWiseReport')">View Report <i class="ri-file-chart-line"></i></button>
+        </div>
+        <div class="reportCard">
+          <h4>Hourly Item Sales</h4>
+          <p>List of items sold by per hour basis in 24 hours.</p>
+          <button (click)="openReport('hourlyItemSales')">View Report <i class="ri-file-chart-line"></i></button>
+        </div>
+        <div class="reportCard">
+          <!-- TODO:  -->
+          <h4>Kot Edits</h4> 
+          <p>List of KOTs that has been edited, with name and timings.</p>
+          <button (click)="openReport('kotEdits')">View Report <i class="ri-file-chart-line"></i></button>
+        </div>
+        <div class="reportCard">
+          <h4>Payment Wise</h4>
+          <p>List of payment channels and their total received money.</p>
+          <button (click)="openReport('paymentWise')">View Report <i class="ri-file-chart-line"></i></button>
+        </div>
+        <div class="reportCard">
+          <h4>Waiter wise items</h4>
+          <p>List of items and what waiter has ordered.</p>
+          <button (click)="openReport('waiterWiseItems')">View Report <i class="ri-file-chart-line"></i></button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <!-- <div class="heading">
     <h2>Reports</h2>
-    <!-- <mat-form-field appearance="outline">
-      <mat-label>Choose a date</mat-label>
-      <input
-        matInput
-        [matDatepicker]="picker"
-        (dateChange)="getReport()"
-        [(ngModel)]="selectedDate"
-      />
-      <mat-datepicker-toggle
-        matIconSuffix
-        [for]="picker"
-      ></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field> -->
     <mat-form-field appearance="outline">
       <mat-label>Enter a date range</mat-label>
       <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
@@ -61,10 +187,10 @@
       <h3 *ngIf="reportMode == 'takeawayBills'">Takeaway Bills</h3>
       <h3 *ngIf="reportMode == 'onlineBills'">Online Bills</h3>
       <div class="actions">
-        <button mat-flat-button color="primary" (click)="downloadPdf()">
+        <button (click)="downloadPdf()">
           <span> Export PDF <i class="ri-download-cloud-2-fill"></i> </span>
         </button>
-        <button mat-flat-button color="primary" (click)="downloadExcel()">
+        <button (click)="downloadExcel()">
           <span> Export Excel <i class="ri-file-excel-2-fill"></i> </span>
         </button>
         <button mat-icon-button (click)="reportMode = false">
@@ -157,7 +283,7 @@
         <tbody>
           <tr *ngFor="let bill of consolidatedSummary.bills">
             <td>
-              {{ bill.billNo || "N/A" }}
+              {{ bill.billNo || "Unsettled" }}
             </td>
             <td>
               {{ bill.orderNo }}
@@ -219,7 +345,7 @@
             {{ bill.table }}
           </td>
           <td>
-            {{ bill.billNo || "N/A" }}
+            {{ bill.billNo || "Unsettled" }}
           </td>
           <td>
             {{ bill.billing.grandTotal }}
@@ -237,7 +363,7 @@
       <thead>
         <tr>
           <th>Bill No</th>
-          <th>Token No</th>
+          <th>Order No</th>
           <th>Bill Amount</th>
           <th>Bill Kots</th>
           <th>Date-Time</th>
@@ -246,7 +372,7 @@
       <tbody>
         <tr *ngFor="let bill of bills">
           <td>
-            {{ bill.billNo || "N/A" }}
+            {{ bill.billNo || "Unsettled" }}
           </td>
           <td>
             {{ bill.orderNo }}
@@ -340,7 +466,7 @@
       <tbody>
         <tr *ngFor="let bill of discountedBills">
           <td>
-            {{ bill.billNo || "N/A" }}
+            {{ bill.billNo || "Unsettled" }}
           </td>
           <td>
             {{ bill.orderNo }}
@@ -370,7 +496,7 @@
       <tbody>
         <tr *ngFor="let bill of ncBills">
           <td>
-            {{ bill.billNo || "N/A" }}
+            {{ bill.billNo || "Unsettled" }}
           </td>
           <td>
             {{ bill.orderNo }}
@@ -400,7 +526,7 @@
       <tbody>
         <tr *ngFor="let bill of takeawayBills">
           <td>
-            {{ bill.billNo || "N/A" }}
+            {{ bill.billNo || "Unsettled" }}
           </td>
           <td>
             {{ bill.orderNo }}
@@ -430,7 +556,7 @@
       <tbody>
         <tr *ngFor="let bill of onlineBills">
           <td>
-            {{ bill.billNo || "N/A" }}
+            {{ bill.billNo || "Unsettled" }}
           </td>
           <td>
             {{ bill.orderNo }}
@@ -570,5 +696,5 @@
         View Report
       </button>
     </div>
-  </div>
+  </div> -->
 </section>

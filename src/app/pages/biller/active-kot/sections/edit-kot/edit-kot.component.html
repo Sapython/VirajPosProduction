@@ -15,7 +15,7 @@ let i = index
     [price]="item.price"
     *ngIf="item.itemType =='product'"
   ></app-kot-item>
-  <app-combo-item [kotId]="this.dataProvider.currentBill?.editKotMode?.kot?.id" [@zoomInOnEnter] [@zoomOutOnLeave] [combo]="item" [activeKotIndex]="this.dataProvider.currentBill?.editKotMode?.kotIndex || 0" *ngIf="item.itemType == 'combo'">
+  <app-combo-item (delete)="delete.emit(item)" [editMode]="true" [kotId]="this.dataProvider.currentBill?.editKotMode?.kot?.id" [@zoomInOnEnter] [@zoomOutOnLeave] [combo]="item" [activeKotIndex]="this.dataProvider.currentBill?.editKotMode?.kotIndex || 0" *ngIf="item.itemType == 'combo'">
   </app-combo-item>
 
 </ng-container>

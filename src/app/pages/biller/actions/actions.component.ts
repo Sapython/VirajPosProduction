@@ -141,7 +141,7 @@ export class ActionsComponent {
           data: this.dataProvider.currentBill.billing.grandTotal,
         });
         dialog.closed.subscribe((result: any) => {
-          //  console.log('Result', result);
+          console.log('Settle Result', result);
           if (
             result &&
             this.dataProvider.currentBill &&

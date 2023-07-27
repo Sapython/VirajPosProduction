@@ -63,6 +63,33 @@ import { AddTypeComponent } from './edit-menu/add-type/add-type.component';
 import { AddTaxComponent } from './edit-menu/add-tax/add-tax.component';
 import { AddDiscountComponent } from './edit-menu/add-discount/add-discount.component';
 import { AddTimeGroupComponent } from './edit-menu/add-time-group/add-time-group.component';
+import {MatProgressBarModule} from '@angular/material/progress-bar'; 
+import { UpdaterComponent } from './info-panel/updater/updater.component';
+import { ReportViewComponent } from './info-panel/sales-summary/reports/report-view/report-view.component';
+import { DaySummaryComponent } from './info-panel/sales-summary/reports/report-view/day-summary/day-summary.component';
+import { ItemWiseSalesComponent } from './info-panel/sales-summary/reports/report-view/item-wise-sales/item-wise-sales.component';
+import { DineInBillsComponent } from './info-panel/sales-summary/reports/report-view/dine-in-bills/dine-in-bills.component';
+import { TakeawayBillsComponent } from './info-panel/sales-summary/reports/report-view/takeaway-bills/takeaway-bills.component';
+import { OnlineBillsComponent } from './info-panel/sales-summary/reports/report-view/online-bills/online-bills.component';
+import { KotWiseReportComponent } from './info-panel/sales-summary/reports/report-view/kot-wise-report/kot-wise-report.component';
+import { ItemWiseReportComponent } from './info-panel/sales-summary/reports/report-view/item-wise-report/item-wise-report.component';
+import { DiscountedBillsComponent } from './info-panel/sales-summary/reports/report-view/discounted-bills/discounted-bills.component';
+import { NonChargeableBillsComponent } from './info-panel/sales-summary/reports/report-view/non-chargeable-bills/non-chargeable-bills.component';
+import { BillEditsComponent } from './info-panel/sales-summary/reports/report-view/bill-edits/bill-edits.component';
+import { CustomerWiseReportComponent } from './info-panel/sales-summary/reports/report-view/customer-wise-report/customer-wise-report.component';
+import { HourlyItemSalesComponent } from './info-panel/sales-summary/reports/report-view/hourly-item-sales/hourly-item-sales.component';
+import { KotEditsComponent } from './info-panel/sales-summary/reports/report-view/kot-edits/kot-edits.component';
+import { PaymentWiseComponent } from './info-panel/sales-summary/reports/report-view/payment-wise/payment-wise.component';
+import { WaiterWiseItemsComponent } from './info-panel/sales-summary/reports/report-view/waiter-wise-items/waiter-wise-items.component';
+import { BillWiseComponent } from './info-panel/sales-summary/reports/report-view/bill-wise/bill-wise.component';
+import { ConsolidatedComponent } from './info-panel/sales-summary/reports/report-view/consolidated/consolidated.component';
+import { TableWiseComponent } from './info-panel/sales-summary/reports/report-view/table-wise/table-wise.component';
+import { DiscountedBillsPipe } from './info-panel/sales-summary/reports/report-view/discounted-bills.pipe';
+import { ComboComponent } from './info-panel/sales-summary/reports/report-view/combo/combo.component';
+import { TableMergesComponent } from './info-panel/sales-summary/reports/report-view/table-merges/table-merges.component';
+import { TableExchangesComponent } from './info-panel/sales-summary/reports/report-view/table-exchanges/table-exchanges.component';
+import { TableSplitsComponent } from './info-panel/sales-summary/reports/report-view/table-splits/table-splits.component';
+import { SplitBillsComponent } from './info-panel/sales-summary/reports/report-view/split-bills/split-bills.component';
 @NgModule({
   declarations: [
     InfoPanelComponent,
@@ -101,7 +128,33 @@ import { AddTimeGroupComponent } from './edit-menu/add-time-group/add-time-group
     AddTypeComponent,
     AddTaxComponent,
     AddDiscountComponent,
-    AddTimeGroupComponent
+    AddTimeGroupComponent,
+    UpdaterComponent,
+    ReportViewComponent,
+    DaySummaryComponent,
+    ItemWiseSalesComponent,
+    DineInBillsComponent,
+    TakeawayBillsComponent,
+    OnlineBillsComponent,
+    KotWiseReportComponent,
+    ItemWiseReportComponent,
+    DiscountedBillsComponent,
+    NonChargeableBillsComponent,
+    BillEditsComponent,
+    CustomerWiseReportComponent,
+    HourlyItemSalesComponent,
+    KotEditsComponent,
+    PaymentWiseComponent,
+    WaiterWiseItemsComponent,
+    BillWiseComponent,
+    ConsolidatedComponent,
+    TableWiseComponent,
+    DiscountedBillsPipe,
+    ComboComponent,
+    TableMergesComponent,
+    TableExchangesComponent,
+    TableSplitsComponent,
+    SplitBillsComponent
   ],
   imports: [
     CommonModule,
@@ -131,6 +184,8 @@ import { AddTimeGroupComponent } from './edit-menu/add-time-group/add-time-group
     MatRadioModule,
     DragDropModule,
     MatPaginatorModule,
+    MatProgressSpinnerModule,
+    MatProgressBarModule
   ],
   exports:[SidebarComponent,AddDishComponent,AddNewCategoryComponent,SelectRecipeComponent]
 })

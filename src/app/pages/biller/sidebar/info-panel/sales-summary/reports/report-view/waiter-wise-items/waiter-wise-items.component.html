@@ -1,0 +1,21 @@
+<table class="styled-table" *ngIf="!loading">
+	<thead>
+	  <tr>
+		<th>Product Name</th>
+		<th *ngFor="let user of (waiterWiseSales | async).users">
+			{{user}}
+		</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr *ngFor="let product of (waiterWiseSales | async).productSales">
+		<td>
+		  {{ product.product.name }}
+		</td>
+		<td *ngFor="let item of product.users">
+			{{item.sales}}
+		</td>
+	  </tr>
+	</tbody>
+  </table>
+  

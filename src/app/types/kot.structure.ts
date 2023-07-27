@@ -19,6 +19,7 @@ export interface KotConstructor {
     time: Timestamp;
     user: UserConstructor;
   };
+  user: UserConstructor;
   mode?:'firstChargeable'
   | 'cancelledKot'
   | 'editedKot'

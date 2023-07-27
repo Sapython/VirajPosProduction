@@ -26,16 +26,7 @@ export class CustomerPanelComponent implements OnInit {
     ),
     phone: new FormControl(
       {
-        value:this.dataProvider.currentBill?.customerInfo.phone,
-        disabled: this.dataProvider.currentBill?.stage != 'active',
-      }, [
-      this.dataProvider.currentBill?.mode == 'takeaway'
-        ? Validators.required
-        : Validators.nullValidator,
-    ]),
-    address: new FormControl(
-      {
-        value:this.dataProvider.currentBill?.customerInfo.address,
+        value: this.dataProvider.currentBill?.customerInfo.phone,
         disabled: this.dataProvider.currentBill?.stage != 'active',
       },
       [
@@ -44,12 +35,23 @@ export class CustomerPanelComponent implements OnInit {
           : Validators.nullValidator,
       ]
     ),
-    gst: new FormControl(
+    address: new FormControl(
       {
-        value:this.dataProvider.currentBill?.customerInfo.gst,
+        value: this.dataProvider.currentBill?.customerInfo.address,
         disabled: this.dataProvider.currentBill?.stage != 'active',
-      }
+      },
+      [
+        this.dataProvider.currentBill?.mode == 'takeaway'
+          ? Validators.required
+          : Validators.nullValidator,
+      ]
     ),
+    gst: new FormControl({
+      value: this.dataProvider.currentBill?.customerInfo.gst,
+      disabled: this.dataProvider.currentBill?.stage != 'active',
+    }),
+    deliveryName: new FormControl(),
+    deliveryPhone: new FormControl(),
   });
   @Input() padding: boolean = true;
   @Input() orderFrequency: number = 0;
@@ -57,9 +59,11 @@ export class CustomerPanelComponent implements OnInit {
   @Input() averageOrderPrice: number = 300;
   @Input() isDialog: boolean = true;
   @Input() lastOrderDish: string[] = ['Chicken', 'Rice', 'Salad'];
-  numberFuseInstance:Fuse<Customer> = new Fuse(this.dataProvider.customers,{keys:['phone']});
-  foundCustomers:Customer[] = [];
-  searchString:Subject<string> = new Subject<string>();
+  numberFuseInstance: Fuse<Customer> = new Fuse(this.dataProvider.customers, {
+    keys: ['phone'],
+  });
+  foundCustomers: Customer[] = [];
+  searchString: Subject<string> = new Subject<string>();
   constructor(public dataProvider: DataProvider, private injector: Injector) {
     if (this.dataProvider.currentBill) {
       this.customerInfoForm.enable();
@@ -71,70 +75,89 @@ export class CustomerPanelComponent implements OnInit {
       .subscribe((value) => {
         if (value.name || value.phone || value.address) {
           this.dataProvider.currentBill?.setCustomerInfo(value);
-        //  console.log('value', this.dataProvider.currentBill?.customerInfo);
+          //  console.log('value', this.dataProvider.currentBill?.customerInfo);
         }
       });
-    this.dataProvider.billAssigned.subscribe(() => {
-      if (this.dataProvider.currentBill) {
-        if (this.dataProvider.currentBill.mode == 'online') {
-          this.customerInfoForm.addControl(
-            'deliveryName',
-            new FormControl(
-              {
-                value:this.dataProvider.currentBill?.customerInfo.deliveryName,
-                disabled: this.dataProvider.currentBill?.stage != 'active',
-              },
-              [Validators.required]
-            )
-          );
-          this.customerInfoForm.addControl(
-            'deliveryPhone',
-            new FormControl(
-              {
-                value:this.dataProvider.currentBill?.customerInfo.deliveryPhone,
-                disabled: this.dataProvider.currentBill?.stage != 'active',
-              },
-              [Validators.required]
-            )
-          );
-        }
-        // set values
-        this.customerInfoForm.patchValue({
-          name: this.dataProvider.currentBill?.customerInfo.name,
-          phone: this.dataProvider.currentBill?.customerInfo.phone,
-          address: this.dataProvider.currentBill?.customerInfo.address,
-          deliveryName:
-            this.dataProvider.currentBill?.customerInfo.deliveryName,
-          deliveryPhone:
-            this.dataProvider.currentBill?.customerInfo.deliveryPhone,
-        });
-        this.customerInfoForm.enable();
-      } else {
-        this.customerInfoForm.disable();
-      }
-    });
+      this.dataProvider.billAssigned.subscribe(() => { 
+        this.dataProvider.modeChanged.subscribe(()=>{
+          if (this.dataProvider.currentBill) {
+            if (this.dataProvider.currentBill.mode == 'online') {
+              // update controls instead of adding them
+              this.customerInfoForm.controls['deliveryName'].setValidators([
+                Validators.required,
+              ]);
+              this.customerInfoForm.controls['deliveryPhone'].setValidators([
+                Validators.required,
+              ]);
+            }
+            console.log("CUSTOM:",this.dataProvider.currentBill?.customerInfo);
+            
+            // set values
+            this.customerInfoForm.patchValue({
+              name: this.dataProvider.currentBill?.customerInfo.name,
+              phone: this.dataProvider.currentBill?.customerInfo.phone,
+              address: this.dataProvider.currentBill?.customerInfo.address,
+              deliveryName:
+                this.dataProvider.currentBill?.customerInfo.deliveryName,
+              deliveryPhone:
+                this.dataProvider.currentBill?.customerInfo.deliveryPhone,
+            });
+            this.customerInfoForm.enable();
+          } else {
+            this.customerInfoForm.disable();
+          }
+        })
+      });
     this.dataProvider.customersUpdated.subscribe(() => {
       this.numberFuseInstance.setCollection(this.dataProvider.customers);
     });
 
     this.searchString.pipe(debounceTime(700)).subscribe((value) => {
-      console.log('searching', value,this.dataProvider.customers);
+      console.log('searching', value, this.dataProvider.customers);
       if (value) {
-        const results = this.numberFuseInstance.search(value).map((result) => result.item);
+        const results = this.numberFuseInstance
+          .search(value)
+          .map((result) => result.item);
         console.log('results', results);
         this.foundCustomers = results;
       } else {
         this.foundCustomers = [];
       }
-    })
+    });
   }
 
-  selectCustomer(event:any){
+  selectCustomer(event: any) {
     this.customerInfoForm.patchValue(event.option.value);
     this.dataProvider.currentBill?.setCustomerInfo(event.option.value);
   }
 
   ngOnInit(): void {
+    let controls = Object.keys(this.customerInfoForm.controls);
+    console.log('controls', controls);
+    if (
+      !controls.includes('deliveryName') ||
+      !controls.includes('deliveryPhone')
+    ) {
+      if (this.dataProvider.currentBill.mode == 'online') {
+        // update controls instead of adding them
+        this.customerInfoForm.controls['deliveryName'].setValue(
+          this.dataProvider.currentBill?.customerInfo.deliveryName
+        );
+        this.customerInfoForm.controls['deliveryName'].setValidators([
+          Validators.required,
+        ]);
+        this.customerInfoForm.controls['deliveryPhone'].setValue(
+          this.dataProvider.currentBill?.customerInfo.deliveryPhone
+        );
+        this.customerInfoForm.controls['deliveryPhone'].setValidators([
+          Validators.required,
+        ]);
+      }
+    }
+    this.customerInfoForm.disable();
+    if (this.dataProvider.getAccess('writeCustomerInfo')) {
+      this.customerInfoForm.enable();
+    }
     this.numberFuseInstance.setCollection(this.dataProvider.customers);
   }
 

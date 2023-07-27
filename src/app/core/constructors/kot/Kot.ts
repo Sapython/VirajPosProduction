@@ -13,6 +13,7 @@ export class Kot implements KotConstructor {
   stage: 'active' | 'finalized' | 'cancelled' | 'edit';
   products: (Product|ApplicableCombo)[];
   mode;
+  user: UserConstructor;
   editMode: boolean;
   selected: boolean;
   allSelected: boolean;
@@ -34,7 +35,8 @@ export class Kot implements KotConstructor {
         } else {
           return ApplicableCombo.fromObject(product,bill);
         }
-      })
+      });
+      this.user = kotObject.user;
       this.editMode = kotObject.editMode;
       this.selected = kotObject.selected;
       this.allSelected = kotObject.allSelected;
@@ -45,6 +47,7 @@ export class Kot implements KotConstructor {
       this.totalTimeTaken = '0h 0m 0s';
       this.unmade = kotObject.unmade || null;
       this.cancelReason = kotObject.cancelReason || null;
+      this.user = kotObject.user || null;
     } else {
       this.products = [product];
       this.editMode = false;
@@ -53,6 +56,10 @@ export class Kot implements KotConstructor {
       this.totalTimeTaken = '0h 0m 0s';
       this.allSelected = false;
       this.someSelected = false;
+      this.user = {
+        access:bill.dataProvider.currentAccessLevel,
+        username:bill.dataProvider.currentUser.username,
+      }
     }
     this.toObject = this.toObject.bind(this);
     this.calculateTotalTimeTaken();
@@ -90,6 +97,7 @@ export class Kot implements KotConstructor {
           instruction: product.instruction || null,
           order: product.order || null,
           taxedPrice: product.taxedPrice || null,
+          untaxedValue: product.untaxedValue || null,
           taxes: product.taxes || []
         };
       } else if (product.itemType == 'combo'){
@@ -153,6 +161,7 @@ export class Kot implements KotConstructor {
       someSelected: this.someSelected,
       unmade:this.unmade || null,
       cancelReason:this.cancelReason || null,
+      user: this.user,
     };
   }
 }

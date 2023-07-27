@@ -242,7 +242,7 @@
     class="onboarding"
   >
     <!-- <p>onboarding</p> -->
-    <mat-stepper [linear]="true">
+    <mat-stepper [linear]="false">
       <mat-step label="Welcome" state="flag">
         <div>
           <h1>Welcome to <strong>Viraj</strong></h1>
@@ -506,7 +506,7 @@
           <button
             mat-fab
             color="primary"
-            (click)="accounts.push({ username: '', access: '' })"
+            (click)="accounts.push({ username: '', access: 'manager' })"
           >
             <mat-icon>add</mat-icon>
           </button>

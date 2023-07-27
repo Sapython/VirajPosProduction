@@ -36,226 +36,138 @@
 <hr /> -->
 <!-- line -->
 <div class="items">
-  <div class="item">
-    <p>Total time to mark a table as late <strong>(in minutes)</strong>
-    </p>
-    <input
-      type="number"
-      placeholder="45 Min"
-      [(ngModel)]="this.dataProvider.tableTimeOutTime"
-      (change)="isValidNumber(this.dataProvider.tableTimeOutTime) ? updateSettings({ tableTimeOutTime: this.dataProvider.tableTimeOutTime }) : this.dataProvider.tableTimeOutTime = 0;"
-    />
-  </div>
-  <div class="item">
-    <p>This text will be added as a note on printed bill</p>
-    <input
-      type="text"
-      placeholder="Thank you for visiting us"
-      [(ngModel)]="this.dataProvider.customBillNote"
-      (change)="
-        updateSettings({ customBillNote: this.dataProvider.customBillNote })
-      "
-    />
-  </div>
-  <div class="item">
-    <p>Prefix will be added to printed bill no</p>
-    <input
-      type="text"
-      placeholder="2023-"
-      [(ngModel)]="this.dataProvider.billNoSuffix"
-      (change)="
-        updateSettings({ billNoSuffix: this.dataProvider.billNoSuffix })
-      "
-    />
-  </div>
-  <div class="item">
-    <p>Enable <strong>re-print</strong> kot option in manage kot panel.</p>
-    <mat-slide-toggle
-      [(ngModel)]="dataProvider.kotRePrintable"
-      (change)="updateSettings({kotRePrintable:dataProvider.kotRePrintable})"
-    ></mat-slide-toggle>
-  </div>
-  <div class="item">
-    <p>Enable <strong>smart mode</strong> to make your work efficient</p>
-    <mat-slide-toggle
-      [(ngModel)]="dataProvider.smartMode"
-      [disabled]="true"
-      matTooltip="Smart mode is currently disabled for this account"
-      (change)="setLocalShowTable($event)"
-    ></mat-slide-toggle>
-  </div>
-  <div class="item">
-    <p>Enable <strong>touch mode</strong> if you have touch screen POS</p>
-    <mat-slide-toggle
-      [(ngModel)]="dataProvider.touchMode"
-      (change)="setLocalShowTable($event)"
-    ></mat-slide-toggle>
-  </div>
-  <div class="item">
-    <p>Allow kot edit</p>
-    <mat-slide-toggle
-      [(ngModel)]="dataProvider.kotEditable"
-      (change)="updateSettings({ kotEditable: this.dataProvider.kotEditable })"
-    ></mat-slide-toggle>
-  </div>
-  <div
-    class="item"
-    *ngIf="this.dataProvider.kotEditable"
-    [@zoomInOnEnterAnimation]
-    [@zoomOutOnLeaveAnimation]
-  >
-    <p>Total time till you can edit KOT <strong>(in seconds)</strong></p>
-    <input
-      type="number"
-      placeholder="60"
-      [(ngModel)]="this.dataProvider.editKotTime"
-      (change)="isValidNumber(this.dataProvider.editKotTime) ? this.updateSettings({ editKotTime: this.dataProvider.editKotTime }) : this.dataProvider.editKotTime = 0;"
-    />
-  </div>
-  <div class="item">
-    <p>Show table view after kot, bill, nc, settle and discount</p>
-    <mat-slide-toggle
-      [(ngModel)]="dataProvider.showTableOnBillAction"
-      (change)="setLocalShowTable($event)"
-    ></mat-slide-toggle>
-  </div>
-  <div class="item">
-    <p>Directly print a bill when finalized</p>
-    <mat-slide-toggle
-      matTooltip="Print Bill After Finalize"
-      [(ngModel)]="dataProvider.printBillAfterFinalize"
-      (change)="
-        updateSettings({
-          printBillAfterFinalize: dataProvider.printBillAfterFinalize
-        })
-      "
-    ></mat-slide-toggle>
-  </div>
-  <div class="item">
-    <p>Directly print a bill when settled</p>
-    <mat-slide-toggle
-      matTooltip="Print Bill After Settle"
-      [(ngModel)]="dataProvider.printBillAfterSettle"
-      (change)="
-        updateSettings({
-          printBillAfterSettle: dataProvider.printBillAfterSettle
-        })
-      "
-    ></mat-slide-toggle>
-  </div>
-  <div class="item">
-    <p>Allow to add multiple discounts to a bill</p>
-    <mat-slide-toggle
-      [(ngModel)]="this.dataProvider.multipleDiscount"
-      (change)="
-        updateSettings({ multipleDiscount: this.dataProvider.multipleDiscount })
-      "
-      *ngIf="this.dataProvider.getAccess('admin')"
-    ></mat-slide-toggle>
-  </div>
-  <hr>
-  <h4>Loyalty Settings</h4>
-  <div class="item">
-    <p>Enable loyalty</p>
-    <mat-slide-toggle
-      [(ngModel)]="this.dataProvider.loyaltyEnabled"
-      (change)="
-        updateSettings({ loyaltyEnabled: this.dataProvider.loyaltyEnabled })
-      "
-    ></mat-slide-toggle>
-  </div>
-  <ng-container *ngIf="this.dataProvider.loyaltyEnabled">
+  <ng-container *ngIf="this.dataProvider.getAccess('generalSettings')">
+    <div class="item">
+      <p>Total time to mark a table as late <strong>(in minutes)</strong>
+      </p>
+      <input type="number" placeholder="45 Min" [(ngModel)]="this.dataProvider.tableTimeOutTime"
+        (change)="isValidNumber(this.dataProvider.tableTimeOutTime) ? updateSettings({ tableTimeOutTime: this.dataProvider.tableTimeOutTime }) : this.dataProvider.tableTimeOutTime = 0;" />
+    </div>
+    <div class="item">
+      <p>This text will be added as a note on printed bill</p>
+      <input type="text" placeholder="Thank you for visiting us" [(ngModel)]="this.dataProvider.customBillNote"
+        (change)="
+          updateSettings({ customBillNote: this.dataProvider.customBillNote })
+        " />
+    </div>
+    <div class="item">
+      <p>Prefix will be added to printed bill no</p>
+      <input type="text" placeholder="2023-" [(ngModel)]="this.dataProvider.billNoSuffix" (change)="
+          updateSettings({ billNoSuffix: this.dataProvider.billNoSuffix })
+        " />
+    </div>
+    <div class="item">
+      <p>Enable <strong>re-print</strong> kot option in manage kot panel.</p>
+      <mat-slide-toggle [(ngModel)]="dataProvider.kotRePrintable"
+        (change)="updateSettings({kotRePrintable:dataProvider.kotRePrintable})"></mat-slide-toggle>
+    </div>
+    <div class="item">
+      <p>Enable <strong>smart mode</strong> to make your work efficient</p>
+      <mat-slide-toggle [(ngModel)]="dataProvider.smartMode" [disabled]="true"
+        matTooltip="Smart mode is currently disabled for this account"
+        (change)="setLocalShowTable($event)"></mat-slide-toggle>
+    </div>
+    <div class="item">
+      <p>Enable <strong>touch mode</strong> if you have touch screen POS</p>
+      <mat-slide-toggle [(ngModel)]="dataProvider.touchMode" (change)="setLocalShowTable($event)"></mat-slide-toggle>
+    </div>
+    <div class="item">
+      <p>Allow kot edit</p>
+      <mat-slide-toggle [(ngModel)]="dataProvider.kotEditable"
+        (change)="updateSettings({ kotEditable: this.dataProvider.kotEditable })"></mat-slide-toggle>
+    </div>
+    <div class="item" *ngIf="this.dataProvider.kotEditable" [@zoomInOnEnterAnimation] [@zoomOutOnLeaveAnimation]>
+      <p>Total time till you can edit KOT <strong>(in seconds)</strong></p>
+      <input type="number" placeholder="60" [(ngModel)]="this.dataProvider.editKotTime"
+        (change)="isValidNumber(this.dataProvider.editKotTime) ? this.updateSettings({ editKotTime: this.dataProvider.editKotTime }) : this.dataProvider.editKotTime = 0;" />
+    </div>
+    <div class="item">
+      <p>Show table view after kot, bill, nc, settle and discount</p>
+      <mat-slide-toggle [(ngModel)]="dataProvider.showTableOnBillAction"
+        (change)="setLocalShowTable($event)"></mat-slide-toggle>
+    </div>
+    <div class="item">
+      <p>Directly print a bill when finalized</p>
+      <mat-slide-toggle matTooltip="Print Bill After Finalize" [(ngModel)]="dataProvider.printBillAfterFinalize"
+        (change)="
+          updateSettings({
+            printBillAfterFinalize: dataProvider.printBillAfterFinalize
+          })
+        "></mat-slide-toggle>
+    </div>
+    <div class="item">
+      <p>Directly print a bill when settled</p>
+      <mat-slide-toggle matTooltip="Print Bill After Settle" [(ngModel)]="dataProvider.printBillAfterSettle" (change)="
+          updateSettings({
+            printBillAfterSettle: dataProvider.printBillAfterSettle
+          })
+        "></mat-slide-toggle>
+    </div>
+    <div class="item">
+      <p>Allow to add multiple discounts to a bill</p>
+      <mat-slide-toggle [(ngModel)]="this.dataProvider.multipleDiscount" (change)="
+          updateSettings({ multipleDiscount: this.dataProvider.multipleDiscount })
+        " *ngIf="this.dataProvider.getAccess('multipleDiscounts')"></mat-slide-toggle>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="this.dataProvider.getAccess('loyaltySettings')">
+    <hr>
+    <h4>Loyalty Settings</h4>
     <div class="item">
       <p>Enable loyalty</p>
-      <mat-slide-toggle
-        [(ngModel)]="this.dataProvider.loyaltyOnDineIn"
-        (change)="
+      <mat-slide-toggle [(ngModel)]="this.dataProvider.loyaltyEnabled" (change)="
+        updateSettings({ loyaltyEnabled: this.dataProvider.loyaltyEnabled })
+      "></mat-slide-toggle>
+    </div>
+    <ng-container *ngIf="this.dataProvider.loyaltyEnabled">
+      <div class="item">
+        <p>Enable loyalty</p>
+        <mat-slide-toggle [(ngModel)]="this.dataProvider.loyaltyOnDineIn" (change)="
           updateSettings({ loyaltyOnDineIn: this.dataProvider.loyaltyOnDineIn })
-        "
-      >Dine In</mat-slide-toggle>
-      <mat-slide-toggle
-        [(ngModel)]="this.dataProvider.loyaltyOnTakeaway"
-        (change)="
+        ">Dine In</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]="this.dataProvider.loyaltyOnTakeaway" (change)="
           updateSettings({ loyaltyOnTakeaway: this.dataProvider.loyaltyOnTakeaway })
-        "
-      >Takeaway</mat-slide-toggle>
-      <mat-slide-toggle
-        [(ngModel)]="this.dataProvider.loyaltyOnOnline"
-        (change)="
+        ">Takeaway</mat-slide-toggle>
+        <mat-slide-toggle [(ngModel)]="this.dataProvider.loyaltyOnOnline" (change)="
           updateSettings({ loyaltyOnOnline: this.dataProvider.loyaltyOnOnline })
-        "
-      >Online</mat-slide-toggle>
-    </div>
-    <div class="item">
-      <p>Different rates for loyalty per mode.</p>
-      <mat-slide-toggle
-        [(ngModel)]="this.dataProvider.differentLoyaltyRate"
-        (change)="
+        ">Online</mat-slide-toggle>
+      </div>
+      <div class="item">
+        <p>Different rates for loyalty per mode.</p>
+        <mat-slide-toggle [(ngModel)]="this.dataProvider.differentLoyaltyRate" (change)="
           updateSettings({ differentLoyaltyRate: this.dataProvider.differentLoyaltyRate })
-        "
-      ></mat-slide-toggle>
-    </div>
-    <div class="item" *ngIf="!this.dataProvider.differentLoyaltyRate">
-      <p>Loyalty Rate</p>
-      <input
-        type="number"
-        placeholder="Rate per rupee"
-        [(ngModel)]="this.dataProvider.loyaltyRates.dineIn"
-        (change)="isValidNumber(this.dataProvider.loyaltyRates.dineIn) ? updateSettings({loyaltyRates:{dineIn: this.dataProvider.loyaltyRates.dineIn,takeaway:this.dataProvider.loyaltyRates.dineIn,online:this.dataProvider.loyaltyRates.dineIn}}) : this.dataProvider.loyaltyRates.dineIn = 0;"
-      />
-      <input
-        type="number"
-        placeholder="Expiry in days"
-        [(ngModel)]="this.dataProvider.loyaltyRates.dineInExpiry"
-        (change)="isValidNumber(this.dataProvider.loyaltyRates.dineInExpiry) ? updateSettings({loyaltyRates:{dineInExpiry: this.dataProvider.loyaltyRates.dineInExpiry,takeawayExpiry:this.dataProvider.loyaltyRates.dineInExpiry,onlineExpiry:this.dataProvider.loyaltyRates.dineInExpiry}}) : this.dataProvider.loyaltyRates.dineInExpiry = 0;"
-      />
-    </div>
-    <ng-container *ngIf="this.dataProvider.differentLoyaltyRate">
-      <div class="item" *ngIf="this.dataProvider.loyaltyOnDineIn">
-        <p>Dine In Loyalty Rate</p>
-        <input
-          type="number"
-          placeholder="Rate per rupee"
-          [(ngModel)]="this.dataProvider.loyaltyRates.dineIn"
-          (change)="isValidNumber(this.dataProvider.loyaltyRates.dineIn) ? updateSettings({loyaltyRates:{dineIn: this.dataProvider.loyaltyRates.dineIn}}) : this.dataProvider.loyaltyRates.dineIn = 0;"
-        />
-        <input
-          type="number"
-          placeholder="Expiry in days"
-          [(ngModel)]="this.dataProvider.loyaltyRates.dineInExpiry"
-          (change)="isValidNumber(this.dataProvider.loyaltyRates.dineInExpiry) ? updateSettings({loyaltyRates:{dineInExpiry: this.dataProvider.loyaltyRates.dineInExpiry}}) : this.dataProvider.loyaltyRates.dineInExpiry = 0;"
-        />
+        "></mat-slide-toggle>
       </div>
-      <div class="item" *ngIf="this.dataProvider.loyaltyOnTakeaway">
-        <p>Takeaway Loyalty Rate</p>
-        <input
-          type="number"
-          placeholder="Rate per rupee"
-          [(ngModel)]="this.dataProvider.loyaltyRates.takeaway"
-          (change)="isValidNumber(this.dataProvider.loyaltyRates.takeaway) ? updateSettings({loyaltyRates:{takeaway: this.dataProvider.loyaltyRates.takeaway}}) : this.dataProvider.loyaltyRates.takeaway = 0;"
-        />
-        <input
-          type="number"
-          placeholder="Expiry in days"
-          [(ngModel)]="this.dataProvider.loyaltyRates.takeawayExpiry"
-          (change)="isValidNumber(this.dataProvider.loyaltyRates.takeawayExpiry) ? updateSettings({loyaltyRates:{takeawayExpiry: this.dataProvider.loyaltyRates.takeawayExpiry}}) : this.dataProvider.loyaltyRates.takeaway = 0;"
-        />
+      <div class="item" *ngIf="!this.dataProvider.differentLoyaltyRate">
+        <p>Loyalty Rate</p>
+        <input type="number" placeholder="Rate per rupee" [(ngModel)]="this.dataProvider.loyaltyRates.dineIn"
+          (change)="isValidNumber(this.dataProvider.loyaltyRates.dineIn) ? updateSettings({loyaltyRates:{dineIn: this.dataProvider.loyaltyRates.dineIn,takeaway:this.dataProvider.loyaltyRates.dineIn,online:this.dataProvider.loyaltyRates.dineIn}}) : this.dataProvider.loyaltyRates.dineIn = 0;" />
+        <input type="number" placeholder="Expiry in days" [(ngModel)]="this.dataProvider.loyaltyRates.dineInExpiry"
+          (change)="isValidNumber(this.dataProvider.loyaltyRates.dineInExpiry) ? updateSettings({loyaltyRates:{dineInExpiry: this.dataProvider.loyaltyRates.dineInExpiry,takeawayExpiry:this.dataProvider.loyaltyRates.dineInExpiry,onlineExpiry:this.dataProvider.loyaltyRates.dineInExpiry}}) : this.dataProvider.loyaltyRates.dineInExpiry = 0;" />
       </div>
-      <div class="item" *ngIf="this.dataProvider.loyaltyOnOnline">
-        <p>Online Loyalty Rate</p>
-        <input
-          type="number"
-          placeholder="Rate per rupee"
-          [(ngModel)]="this.dataProvider.loyaltyRates.online"
-          (change)="isValidNumber(this.dataProvider.loyaltyRates.online) ? updateSettings({loyaltyRates:{online: this.dataProvider.loyaltyRates.online}}) : this.dataProvider.loyaltyRates.online = 0;"
-        />
-        <input
-          type="number"
-          placeholder="Expiry in days"
-          [(ngModel)]="this.dataProvider.loyaltyRates.onlineExpiry"
-          (change)="isValidNumber(this.dataProvider.loyaltyRates.onlineExpiry) ? updateSettings({loyaltyRates:{onlineExpiry: this.dataProvider.loyaltyRates.onlineExpiry}}) : this.dataProvider.loyaltyRates.onlineExpiry = 0;"
-        />
-      </div>
+      <ng-container *ngIf="this.dataProvider.differentLoyaltyRate">
+        <div class="item" *ngIf="this.dataProvider.loyaltyOnDineIn">
+          <p>Dine In Loyalty Rate</p>
+          <input type="number" placeholder="Rate per rupee" [(ngModel)]="this.dataProvider.loyaltyRates.dineIn"
+            (change)="isValidNumber(this.dataProvider.loyaltyRates.dineIn) ? updateSettings({loyaltyRates:{dineIn: this.dataProvider.loyaltyRates.dineIn}}) : this.dataProvider.loyaltyRates.dineIn = 0;" />
+          <input type="number" placeholder="Expiry in days" [(ngModel)]="this.dataProvider.loyaltyRates.dineInExpiry"
+            (change)="isValidNumber(this.dataProvider.loyaltyRates.dineInExpiry) ? updateSettings({loyaltyRates:{dineInExpiry: this.dataProvider.loyaltyRates.dineInExpiry}}) : this.dataProvider.loyaltyRates.dineInExpiry = 0;" />
+        </div>
+        <div class="item" *ngIf="this.dataProvider.loyaltyOnTakeaway">
+          <p>Takeaway Loyalty Rate</p>
+          <input type="number" placeholder="Rate per rupee" [(ngModel)]="this.dataProvider.loyaltyRates.takeaway"
+            (change)="isValidNumber(this.dataProvider.loyaltyRates.takeaway) ? updateSettings({loyaltyRates:{takeaway: this.dataProvider.loyaltyRates.takeaway}}) : this.dataProvider.loyaltyRates.takeaway = 0;" />
+          <input type="number" placeholder="Expiry in days" [(ngModel)]="this.dataProvider.loyaltyRates.takeawayExpiry"
+            (change)="isValidNumber(this.dataProvider.loyaltyRates.takeawayExpiry) ? updateSettings({loyaltyRates:{takeawayExpiry: this.dataProvider.loyaltyRates.takeawayExpiry}}) : this.dataProvider.loyaltyRates.takeaway = 0;" />
+        </div>
+        <div class="item" *ngIf="this.dataProvider.loyaltyOnOnline">
+          <p>Online Loyalty Rate</p>
+          <input type="number" placeholder="Rate per rupee" [(ngModel)]="this.dataProvider.loyaltyRates.online"
+            (change)="isValidNumber(this.dataProvider.loyaltyRates.online) ? updateSettings({loyaltyRates:{online: this.dataProvider.loyaltyRates.online}}) : this.dataProvider.loyaltyRates.online = 0;" />
+          <input type="number" placeholder="Expiry in days" [(ngModel)]="this.dataProvider.loyaltyRates.onlineExpiry"
+            (change)="isValidNumber(this.dataProvider.loyaltyRates.onlineExpiry) ? updateSettings({loyaltyRates:{onlineExpiry: this.dataProvider.loyaltyRates.onlineExpiry}}) : this.dataProvider.loyaltyRates.onlineExpiry = 0;" />
+        </div>
+      </ng-container>
     </ng-container>
   </ng-container>
 </div>

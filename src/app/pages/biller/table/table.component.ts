@@ -450,6 +450,7 @@ export class TableComponent implements OnInit {
         this.dataProvider.loading = true;
         this.tableService.editSection(groupName,result.groupName).then(()=>{
           this.alertify.presentToast('Group name changed successfully');
+          this.onboardingService.getTables();
         }).catch((error)=>{
           this.alertify.presentToast('Error changing group name');
           console.log('Error ', error);

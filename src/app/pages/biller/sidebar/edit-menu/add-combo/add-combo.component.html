@@ -1,42 +1,471 @@
 <section>
-    <h1>Combo</h1>
-    <form [formGroup]="comboFormGroup">
+  <h1>Combo</h1>
+  <form [formGroup]="comboFormGroup">
+    <mat-form-field appearance="outline">
+      <mat-label>Offer Name</mat-label>
+      <input matInput formControlName="name" type="text" />
+    </mat-form-field>
+    <input
+      (change)="setImage($event)"
+      type="file"
+      hidden
+      #imageUpload
+      formControlName="offerImage"
+    />
+    <viraj-button (click)="imageUpload.click()">Offer Image</viraj-button>
+    <mat-checkbox formControlName="discounted">Can Be Discounted</mat-checkbox>
+    <mat-form-field appearance="outline">
+      <mat-label>Number Of Products</mat-label>
+      <input matInput type="text" formControlName="numberOfProducts" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Maximum Number Of Purchases</mat-label>
+      <input matInput type="text" formControlName="maximumNoOfPurchases" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Select Type</mat-label>
+      <mat-select placeholder="Type" formControlName="type" name="type">
+        <mat-option value="combo">Combo</mat-option>
+        <mat-option value="offer">Offer</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Offer Price</mat-label>
+      <input matInput type="text" formControlName="offerPrice" />
+    </mat-form-field>
+  </form>
+  <div class="config">
+    <mat-form-field class="selectCategory" appearance="outline">
+      <mat-label>Select Category</mat-label>
+      <mat-chip-grid #categoryChipGrid aria-label="Category selection">
+        <mat-chip-row
+          *ngFor="let category of selectedCategories"
+          (removed)="removeCategory(category.category)"
+        >
+          {{ category.category.name }}
+          <button
+            matChipRemove
+            [attr.aria-label]="'remove ' + category.category.name"
+          >
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+      </mat-chip-grid>
+      <input
+        placeholder="New Fruit..."
+        #fruitInput
+        [formControl]="categorySearchControl"
+        [matChipInputFor]="categoryChipGrid"
+        [matAutocomplete]="auto"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+      />
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        (optionSelected)="selected($event)"
+      >
+        <mat-option
+          *ngFor="let category of filteredCategories | async"
+          [value]="category"
+        >
+          {{ category.name }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <mat-slide-toggle [(ngModel)]="visibilityEnabled"
+      >Enable Visibility</mat-slide-toggle
+    >
+  </div>
+  <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+    <mat-tab
+      [label]="selectedCategory.category.name"
+      *ngFor="let selectedCategory of selectedCategories"
+    >
+      <div class="fields">
         <mat-form-field appearance="outline">
-            <mat-label>Offer Name</mat-label>
-            <input matInput formControlName="name" type="text">
-        </mat-form-field>
-        <input (change)="setImage($event)" type="file" hidden #imageUpload formControlName="offerImage">
-        <viraj-button (click)="imageUpload.click()">Offer Image</viraj-button>
-        <mat-checkbox formControlName="discounted">Can Be Discounted</mat-checkbox>
-        <mat-form-field appearance="outline">
-            <mat-label>Number Of Products</mat-label>
-            <input matInput type="text" formControlName="numberOfProducts">
+          <mat-label>Offer Type</mat-label>
+          <mat-select placeholder="Offer Type" name="type">
+            <mat-option value="fixed">Fixed Price</mat-option>
+            <mat-option value="free">Free</mat-option>
+            <mat-option value="discount">Discount</mat-option>
+          </mat-select>
         </mat-form-field>
         <mat-form-field appearance="outline">
-            <mat-label>Maximum Number Of Purchases</mat-label>
-            <input matInput type="text" formControlName="maximumNoOfPurchases">
+          <mat-label>Applied On</mat-label>
+          <mat-select placeholder="Applied On" name="type">
+            <mat-option value="item">Item</mat-option>
+            <mat-option value="group">Group</mat-option>
+          </mat-select>
         </mat-form-field>
         <mat-form-field appearance="outline">
-            <mat-label>Select Type</mat-label>
-            <mat-select placeholder="Type" formControlName="type" name="type">
-                <mat-option value="combo">Combo</mat-option>
-                <mat-option value="offer">Offer</mat-option>
-            </mat-select>
+          <mat-label>Amount</mat-label>
+          <input type="number" matInput />
         </mat-form-field>
         <mat-form-field appearance="outline">
-            <mat-label>Offer Price</mat-label>
-            <input matInput type="text" formControlName="offerPrice">
+          <mat-label>Minimum Products</mat-label>
+          <input type="number" matInput />
         </mat-form-field>
-    </form>
-    <h3>Time Group (Optional)</h3>
+        <mat-form-field appearance="outline">
+          <mat-label>Maximum Products</mat-label>
+          <input type="number" matInput />
+        </mat-form-field>
+      </div>
+      <div class="products">
+        <div class="selectProducts">
+          <div class="heading">
+            <mat-checkbox
+              (change)="
+                selectProducts(
+                  selectedCategory.category.products,
+                  allProductsSelect.checked
+                )
+              "
+              #allProductsSelect
+              >Product Name</mat-checkbox
+            >
+            <p>Price</p>
+          </div>
+          <div
+            class="product"
+            *ngFor="let product of selectedCategory.category.products"
+          >
+            <mat-checkbox [(ngModel)]="product.selected">{{
+              product.name
+            }}</mat-checkbox>
+            <strong>{{ product.price }}</strong>
+          </div>
+        </div>
+        <div class="selectedProducts">
+          <div class="heading">
+            <p>Product Name</p>
+            <p>Price</p>
+          </div>
+          <ng-container
+            *ngFor="let product of selectedCategory.category.products"
+          >
+            <div class="product" *ngIf="product.selected">
+              <p>{{
+                product.name
+              }}</p>
+              <strong>{{ product.price }}</strong>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <div class="visibilitySettings" *ngIf="visibilityEnabled">
+        <mat-accordion>
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title> Visibility Settings </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="settings">
+              <div class="actions">
+                <mat-form-field>
+                  <mat-label>Monthly / Weekly</mat-label>
+                  <mat-select
+                    placeholder="Select Mode"
+                    [(ngModel)]="visibilitySettings.mode"
+                    name="type"
+                    #monthlyWeeklyMode
+                  >
+                    <mat-option value="monthly">Monthly</mat-option>
+                    <mat-option value="weekly">Weekly</mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <ng-container *ngIf="monthlyWeeklyMode.value == 'monthly'">
+                  <mat-radio-group
+                    aria-label="Select repeat mode"
+                    [(ngModel)]="visibilitySettings.repeating"
+                  >
+                    <mat-radio-button [value]="false"
+                      >Not Repeating</mat-radio-button
+                    >
+                    <mat-radio-button [value]="true"
+                      >Repeating Yearly</mat-radio-button
+                    >
+                  </mat-radio-group>
+                  <mat-date-range-picker
+                    [(ngModel)]="visibilitySettings.dateRange"
+                    #picker
+                  ></mat-date-range-picker>
+                  <mat-date-range-input
+                    tabindex="-1"
+                    hidden
+                    [rangePicker]="picker"
+                  >
+                    <input
+                      matStartDate
+                      formControlName="startDate"
+                      placeholder="Start date"
+                    />
+                    <input
+                      matEndDate
+                      formControlName="endDate"
+                      placeholder="End date"
+                    />
+                  </mat-date-range-input>
+                  <viraj-button type="outline" (vclick)="picker.open()"
+                    >Select Date Range <i class="ri-calendar-2-fill"></i
+                  ></viraj-button>
+                </ng-container>
+                <ng-container *ngIf="monthlyWeeklyMode.value == 'weekly'">
+                  <mat-form-field class="example-chip-list">
+                    <mat-label>Select Months</mat-label>
+                    <mat-chip-grid #chipGrid aria-label="Month Selection">
+                      <mat-chip-row
+                        *ngFor="let month of selectedMonths"
+                        (removed)="removeMonth(month)"
+                      >
+                        {{ month }}
+                        <button
+                          matChipRemove
+                          [attr.aria-label]="'remove ' + month"
+                        >
+                          <mat-icon>cancel</mat-icon>
+                        </button>
+                      </mat-chip-row>
+                    </mat-chip-grid>
+                    <input
+                      placeholder="Select Month..."
+                      #fruitInput
+                      [formControl]="categorySearchControl"
+                      [matChipInputFor]="chipGrid"
+                      [matAutocomplete]="auto"
+                      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                    />
+                    <mat-autocomplete
+                      #auto="matAutocomplete"
+                      (optionSelected)="selectMonth($event)"
+                    >
+                      <mat-option
+                        *ngFor="let fruit of filteredMonths | async"
+                        [value]="fruit"
+                      >
+                        {{ fruit }}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                </ng-container>
+              </div>
+              <div class="weeks" *ngIf="monthlyWeeklyMode.value == 'weekly'">
+                <div class="selectWeeks">
+                  <p>Select Weeks</p>
+                  <mat-checkbox #week1st>1st Week</mat-checkbox>
+                  <mat-checkbox #week2nd>2nd Week</mat-checkbox>
+                  <mat-checkbox #week3rd>3rd Week</mat-checkbox>
+                  <mat-checkbox #week4th>4th Week</mat-checkbox>
+                  <mat-checkbox #week5th>5th Week</mat-checkbox>
+                  <mat-checkbox>All Weeks</mat-checkbox>
+                </div>
+                <div class="tableContainer">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>
+                          <mat-checkbox
+                            [checked]="allSelected.checked"
+                            #allSunday
+                            >All Sun</mat-checkbox
+                          >
+                        </th>
+                        <th>
+                          <mat-checkbox
+                            [checked]="allSelected.checked"
+                            #allMonday
+                            >All Mon</mat-checkbox
+                          >
+                        </th>
+                        <th>
+                          <mat-checkbox
+                            [checked]="allSelected.checked"
+                            #allTuesday
+                            >All Tue</mat-checkbox
+                          >
+                        </th>
+                        <th>
+                          <mat-checkbox
+                            [checked]="allSelected.checked"
+                            #allWednesday
+                            >All Wed</mat-checkbox
+                          >
+                        </th>
+                        <th>
+                          <mat-checkbox
+                            [checked]="allSelected.checked"
+                            #allThursday
+                            >All Thr</mat-checkbox
+                          >
+                        </th>
+                        <th>
+                          <mat-checkbox
+                            [checked]="allSelected.checked"
+                            #allFriday
+                            >All Fri</mat-checkbox
+                          >
+                        </th>
+                        <th>
+                          <mat-checkbox
+                            [checked]="allSelected.checked"
+                            #allSaturday
+                            >All Sat</mat-checkbox
+                          >
+                        </th>
+                        <th>
+                          <mat-checkbox #allSelected>Select All</mat-checkbox>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let month of selectedMonths">
+                        <td>
+                          <mat-checkbox>{{ month | titlecase }}</mat-checkbox>
+                        </td>
+                        <td>
+                          <div class="days">
+                            <div class="day" *ngIf="week1st.checked">Sun</div>
+                            <div class="day" *ngIf="week2nd.checked">Sun</div>
+                            <div class="day" *ngIf="week3rd.checked">Sun</div>
+                            <div class="day" *ngIf="week4th.checked">Sun</div>
+                            <div class="day" *ngIf="week5th.checked">Sun</div>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="days">
+                            <div class="day" *ngIf="week1st.checked">Mon</div>
+                            <div class="day" *ngIf="week2nd.checked">Mon</div>
+                            <div class="day" *ngIf="week3rd.checked">Mon</div>
+                            <div class="day" *ngIf="week4th.checked">Mon</div>
+                            <div class="day" *ngIf="week5th.checked">Mon</div>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="days">
+                            <div class="day" *ngIf="week1st.checked">Tue</div>
+                            <div class="day" *ngIf="week2nd.checked">Tue</div>
+                            <div class="day" *ngIf="week3rd.checked">Tue</div>
+                            <div class="day" *ngIf="week4th.checked">Tue</div>
+                            <div class="day" *ngIf="week5th.checked">Tue</div>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="days">
+                            <div class="day" *ngIf="week1st.checked">Wed</div>
+                            <div class="day" *ngIf="week2nd.checked">Wed</div>
+                            <div class="day" *ngIf="week3rd.checked">Wed</div>
+                            <div class="day" *ngIf="week4th.checked">Wed</div>
+                            <div class="day" *ngIf="week5th.checked">Wed</div>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="days">
+                            <div class="day" *ngIf="week1st.checked">Thur</div>
+                            <div class="day" *ngIf="week2nd.checked">Thur</div>
+                            <div class="day" *ngIf="week3rd.checked">Thur</div>
+                            <div class="day" *ngIf="week4th.checked">Thur</div>
+                            <div class="day" *ngIf="week5th.checked">Thur</div>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="days">
+                            <div class="day" *ngIf="week1st.checked">Fri</div>
+                            <div class="day" *ngIf="week2nd.checked">Fri</div>
+                            <div class="day" *ngIf="week3rd.checked">Fri</div>
+                            <div class="day" *ngIf="week4th.checked">Fri</div>
+                            <div class="day" *ngIf="week5th.checked">Fri</div>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="days">
+                            <div class="day" *ngIf="week1st.checked">Sat</div>
+                            <div class="day" *ngIf="week2nd.checked">Sat</div>
+                            <div class="day" *ngIf="week3rd.checked">Sat</div>
+                            <div class="day" *ngIf="week4th.checked">Sat</div>
+                            <div class="day" *ngIf="week5th.checked">Sat</div>
+                          </div>
+                        </td>
+                        <td>
+                          <div class="days">
+                            <div class="day" *ngIf="week1st.checked">
+                              <mat-checkbox>1st Week</mat-checkbox>
+                            </div>
+                            <div class="day" *ngIf="week2nd.checked">
+                              <mat-checkbox>1st Week</mat-checkbox>
+                            </div>
+                            <div class="day" *ngIf="week3rd.checked">
+                              <mat-checkbox>1st Week</mat-checkbox>
+                            </div>
+                            <div class="day" *ngIf="week4th.checked">
+                              <mat-checkbox>1st Week</mat-checkbox>
+                            </div>
+                            <div class="day" *ngIf="week5th.checked">
+                              <mat-checkbox>1st Week</mat-checkbox>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>
+                      <mat-checkbox>Time Slot Name</mat-checkbox>
+                    </th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><mat-checkbox>Breakfast</mat-checkbox></td>
+                    <td>6:00 AM</td>
+                    <td>1:00 PM</td>
+                  </tr>
+                  <tr>
+                    <td><mat-checkbox>Lunch</mat-checkbox></td>
+                    <td>1:00 AM</td>
+                    <td>6:00 PM</td>
+                  </tr>
+                  <tr>
+                    <td><mat-checkbox>Dinner</mat-checkbox></td>
+                    <td>6:00 AM</td>
+                    <td>1:00 AM</td>
+                  </tr>
+                  <tr>
+                    <td><mat-checkbox>Night</mat-checkbox></td>
+                    <td>1:00 AM</td>
+                    <td>6:00 AM</td>
+                  </tr>
+                  <tr>
+                    <td><mat-checkbox>Night</mat-checkbox></td>
+                    <td>
+                      <select>
+                        <option
+                          [value]="item.value"
+                          *ngFor="let item of availableTimes"
+                        >
+                          {{ item.value }}
+                        </option>
+                      </select>
+                    </td>
+                    <td>6:00 AM</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+  <!-- <h3>Time Group (Optional)</h3>
     <div class="types">
         <div class="card" *ngFor="let timeGroup of this.dialogData.menu.timeGroups">
             <mat-checkbox [(ngModel)]="timeGroup.selected"></mat-checkbox>
             <i class="ri-timer-flash-fill"></i>
             <p>{{timeGroup.name}}</p>
-            <!-- <li *ngFor="let item of timeGroup.conditions">
-                {{item.type}} - {{item.condition}} - {{item.value}}
-            </li> -->
         </div>
         <div class="card add" (click)="addTimeGroup()">
             <i class="ri-add-fill"></i>
@@ -54,9 +483,8 @@
             <i class="ri-add-fill"></i>
             <p>Add More</p>
         </div>
-        <!-- <viraj-button (vclick)="addTypeCategory()">Add More</viraj-button> -->
-    </div>
-    <h3>Selected Types</h3>
+    </div> -->
+  <!-- <h3>Selected Types</h3>
     <div class="tabs">
         <button *ngFor="let type of configurations" (click)="selectType(type)" [ngClass]="{active:this.selectedType?.id == type.id}">
             {{type.name}}
@@ -91,10 +519,6 @@
                 <mat-form-field appearance="outline">
                     <mat-label *ngIf="currentTypeCategory.offerType=='discount'">Offer Value</mat-label>
                     <mat-label *ngIf="currentTypeCategory.offerType=='free'">Maximum Free Products</mat-label>
-                    <!-- <mat-select placeholder="Type" [(ngModel)]="currentTypeCategory.offerValue" name="offerValue">
-                        <mat-option value="discount">Discount</mat-option>
-                        <mat-option value="free">Free</mat-option>
-                    </mat-select> -->
                     <input type="number" matInput [(ngModel)]="currentTypeCategory.offerValue">
                 </mat-form-field>
             </div>
@@ -114,10 +538,10 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="actions">
-        <viraj-button (vclick)="save()">Save</viraj-button>
-        <viraj-button type="outline" (vclick)="cancel()">Cancel</viraj-button>
-    </div>
-    <div class="bottomMargin"></div>
+    </div> -->
+  <div class="mainActions">
+    <viraj-button (vclick)="save()">Save</viraj-button>
+    <viraj-button type="outline" (vclick)="cancel()">Cancel</viraj-button>
+  </div>
+  <div class="bottomMargin"></div>
 </section>

@@ -7,6 +7,7 @@ import { DataProvider } from '../../../../core/services/provider/data-provider.s
 import { MenuManagementService } from '../../../../core/services/database/menuManagement/menu-management.service';
 import { Menu } from '../../../../types/menu.structure';
 import { ElectronService } from '../../../../core/services/electron/electron.service';
+import { ModeConfig } from '../../../../core/constructors/menu/menu';
 @Component({
   selector: 'app-edit-menu',
   templateUrl: './edit-menu.component.html',
@@ -18,6 +19,12 @@ export class EditMenuComponent implements OnInit {
   activeTab:string = 'Products';
   currentMode:string = this.dataProvider.menus[0].name;
   currentType:'recommended'|'root'|'view'|'all' = 'all';
+  menus:{
+    name:string,
+    toggled:boolean,
+    menuSwitcher:boolean;
+    menu:ModeConfig;
+  }[] = []
   constructor(private dialog:Dialog,public dataProvider:DataProvider,private menuManagementService:MenuManagementService,private alertify:AlertsAndNotificationsService,public dialogRef:DialogRef,private electronService:ElectronService){
     this.dialogRef.closed.subscribe(()=>{
       this.dataProvider.loading = true;
@@ -47,12 +54,30 @@ export class EditMenuComponent implements OnInit {
   getMenus(){
     this.menuManagementService.getMenus().then((menus)=>{
       this.dataProvider.allMenus = menus.docs.map((doc)=>{ return {...doc.data(),id:doc.id} as Menu});
+      this.dataProvider.allMenus.forEach((menu)=>{
+        // this.menus.push({
+        //   name:menu.name,
+        //   toggled:false,
+        //   menuSwitcher:false,
+        //   menu:new ModeConfig(),
+        // });
+      });
     })
   };
 
   async ngOnInit(): Promise<void> {
     let localPrinters = (await this.electronService.getPrinters());
-    this.printers = localPrinters?.length > 0 ? localPrinters : ['Test 1','Test 2']
+    this.printers = localPrinters?.length > 0 ? localPrinters : ['Test 1','Test 2'];
+    this.dataProvider.menus.forEach((menu)=>{
+      this.menus.push({
+        name:menu.type == 'dineIn' ? 'Dine In' : menu.type == 'takeaway' ? 'Take Away' : 'Delivery',
+        toggled:false,
+        menuSwitcher:false,
+        menu:menu,
+      });
+      console.log("Menu",menu);
+      
+    })
   }
 
   addNewMenu(){

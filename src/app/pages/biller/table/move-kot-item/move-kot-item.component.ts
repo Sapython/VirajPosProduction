@@ -5,6 +5,8 @@ import { ApplicableCombo } from '../../../../core/constructors/comboKot/comboKot
 import { Kot } from '../../../../core/constructors/kot/Kot';
 import { Product } from '../../../../types/product.structure';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { TableService } from '../../../../core/services/database/table/table.service';
+import { serverTimestamp } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-move-kot-item',
@@ -15,7 +17,7 @@ export class MoveKotItemComponent {
   moveKotSelectedTable: Table | undefined;
   tables: Table[] = [];
   moveKotMode: boolean = false;
-  constructor(public dataProvider:DataProvider,@Inject(DIALOG_DATA) data:any,public dialogRef:DialogRef){
+  constructor(public dataProvider:DataProvider,@Inject(DIALOG_DATA) data:any,public dialogRef:DialogRef,private tableService:TableService){
     this.moveKotSelectedTable = data.table;
     this.tables = this.dataProvider.tables.filter((table)=>table.id!=this.moveKotSelectedTable?.id);
   }
@@ -65,6 +67,13 @@ export class MoveKotItemComponent {
         });
       });
     }
+    this.tableService.addTableActivity({
+      type:'move',
+      from:this.moveKotSelectedTable.toObject(),
+      to:table.toObject(),
+      items:products,
+      time:serverTimestamp(),
+    });
     this.moveKotSelectedTable!.bill?.calculateBill();
     table.bill?.calculateBill();
   }

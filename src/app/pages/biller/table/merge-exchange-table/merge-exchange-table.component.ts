@@ -3,6 +3,8 @@ import { DataProvider } from '../../../../core/services/provider/data-provider.s
 import { Table } from '../../../../core/constructors/table/Table';
 import { AlertsAndNotificationsService } from '../../../../core/services/alerts-and-notification/alerts-and-notifications.service';
 import { DialogRef } from '@angular/cdk/dialog';
+import { TableService } from '../../../../core/services/database/table/table.service';
+import { serverTimestamp } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-merge-exchange-table',
@@ -16,7 +18,7 @@ export class MergeExchangeTableComponent {
     toTable: Table | undefined;
   } = { fromTable: undefined, toTable: undefined };
   moveKotSelectedTable: Table | undefined;
-  constructor(public dataProvider:DataProvider,private alertify: AlertsAndNotificationsService, public dialogRef:DialogRef){}
+  constructor(public dataProvider:DataProvider,private alertify: AlertsAndNotificationsService, public dialogRef:DialogRef, private tableService:TableService){}
 
   isNumber(value: any) {
     return !isNaN(Number(value));
@@ -30,6 +32,12 @@ export class MergeExchangeTableComponent {
         );
         this.alertify.presentToast('Table exchanged successfully');
         // reset vars and switch mode
+        this.tableService.addTableActivity({
+          time:serverTimestamp(),
+          from:this.transferTableWise.fromTable.toObject(),
+          to:this.transferTableWise.toTable.toObject(),
+          type:'exchange',
+        });
         this.transferTableWise = { fromTable: undefined, toTable: undefined };
         this.moveKotMode = false;
         this.moveKotSelectedTable = undefined;
@@ -43,6 +51,12 @@ export class MergeExchangeTableComponent {
     if (this.transferTableWise.fromTable && this.transferTableWise.toTable) {
       try {
         this.transferTableWise.fromTable.merge(this.transferTableWise.toTable);
+        this.tableService.addTableActivity({
+          time:serverTimestamp(),
+          from:this.transferTableWise.fromTable.toObject(),
+          to:this.transferTableWise.toTable.toObject(),
+          type:'merge',
+        });
         this.alertify.presentToast('Table merged successfully');
         // reset vars and switch mode
         this.transferTableWise = { fromTable: undefined, toTable: undefined };

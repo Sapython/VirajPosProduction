@@ -45,7 +45,7 @@ export class WaiterWiseItemsComponent {
                 if (kot.user){
                   if (users.findIndex((res)=>res == kot.user.username) == -1) {
                     users.push(kot.user.username);
-                  }
+                  } 
                   kot.products.forEach((product) => {
                     let findIndex = products.findIndex(
                       (res) => res.product.id == product.id

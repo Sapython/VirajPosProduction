@@ -9,6 +9,7 @@ import {
   getDocs,
   docData,
   Firestore,
+  Timestamp,
 } from '@angular/fire/firestore';
 import { DataProvider } from '../../provider/data-provider.service';
 import { Table } from '../../../constructors/table/Table';
@@ -155,5 +156,21 @@ export class TableService {
     }))
   }
 
+  addTableActivity(activity:TableActivity){
+    return addDoc(
+      collection(
+        this.firestore,
+        'business/' + this.dataProvider.businessId + '/tableActivity'
+      ),
+      activity
+    );
+  }
+}
 
+export interface TableActivity {
+  time:Timestamp|any;
+  from:any;
+  to:any;
+  items?:any[];
+  type:'move'|'merge'|'exchange';
 }

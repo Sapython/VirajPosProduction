@@ -31,8 +31,11 @@ export class ReportsComponent implements OnInit {
   constructor(
     private billService: BillService,
     private dataProvider: DataProvider,
-    private dialog:Dialog
-  ) {}
+    private dialog:Dialog,
+    public dialogRef:DialogRef
+  ) {};
+  salesChartJS:Chart|undefined;
+  paymentChartJS:any;
   selectedDate: Date = new Date();
   barThickness = 40;
   // Reports
@@ -85,9 +88,75 @@ export class ReportsComponent implements OnInit {
     | false = false;
   range = new FormGroup({
     start: new FormControl<Date | null>(new Date(), [Validators.required]),
-    end: new FormControl<Date | null>(new Date()),
+    end: new FormControl<Date | null>(new Date(), [Validators.required]),
   });
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.fetchChartSalesData({value:new Date()});
+    this.fetchChartPaymentData({value:new Date()});
+  }
+
+  fetchChartSalesData(event:{value:Date}){
+    console.log("Event",event);
+    this.billService.getAnalyticsReport(event.value).then((res)=>{
+      console.log("Analytics data Res",res.data());
+      let resData = res.data();
+      if (resData){
+        let labels = [];
+      // generate labels for 24 hour format like 1:00 AM, 2:00 AM, 3:00 AM
+      for (let i = 0; i < 24; i++) {
+        let hour = i % 12;
+        if (hour == 0) hour = 12;
+        labels.push(hour + ':00 ' + (i < 12 ? 'AM' : 'PM'));
+      }
+      this.salesChartJS.data = {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Sale Per Hour',
+            data: [...resData.salesChannels.all.hourlySales],
+            borderWidth: 1,
+            tension: 0.4,
+          },
+          {
+            label: 'Average Sales',
+            data: [...resData.salesChannels.all.averageHourlySales],
+            borderWidth: 1,
+            tension: 0.4,
+          },
+        ],
+      };
+      this.salesChartJS.update();
+      } else {
+        alert("No data found for this date");
+      }
+    });
+  }
+
+  fetchChartPaymentData(event:any){
+    console.log("Event",event);
+    this.billService.getAnalyticsReport(event.value).then((res)=>{
+      console.log("Analytics data Res",res);
+      let resData = res.data();
+      if (resData){
+        let labels = Object.keys(resData.salesChannels.all.paymentReceived);
+        let payments = Object.values(resData.salesChannels.all.paymentReceived);
+        this.paymentChartJS.data = {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Payment Received',
+              data: payments,
+              borderWidth: 1,
+              hoverOffset: 4
+            }
+          ],
+        };
+        this.paymentChartJS.update();
+      } else {
+        alert("No data found for this date");
+      }
+    });
+  }
 
   getReport() {
     if (this.range.valid) {
@@ -856,7 +925,7 @@ export class ReportsComponent implements OnInit {
 
   ngAfterViewInit(): void {
     const ctx = document.getElementById('myChart');
-    new Chart(this.salesChart.nativeElement, {
+    this.salesChartJS = new Chart(this.salesChart.nativeElement, {
       type: 'line',
       data: {
         labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
@@ -877,15 +946,15 @@ export class ReportsComponent implements OnInit {
         }
       }
     });
-    new Chart(this.orderChart.nativeElement, {
-      type: 'line',
+    this.paymentChartJS = new Chart(this.orderChart.nativeElement, {
+      type: 'pie',
       data: {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        labels: ['Method'],
         datasets: [{
-          label: '# of Votes',
-          data: [12, 19, 3, 5, 2, 3],
+          label: 'Payment Received',
+          data: [],
           borderWidth: 1,
-          tension: 0.4,
+          hoverOffset: 4
         }],
       },
       options: {
@@ -921,7 +990,9 @@ export class ReportsComponent implements OnInit {
   | 'hourlyItemSales'
   | 'kotEdits'
   | 'paymentWise'
-  | 'waiterWiseItems'){
+  | 'waiterWiseItems'
+  | 'tableWiseSales'
+  | 'tableWiseActivity'){
     const dialog = this.dialog.open(ReportViewComponent,{data:{stage:stage,data:{}}});
     dialog.closed.subscribe((res) => {
       console.log("Closed",res);

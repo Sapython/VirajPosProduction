@@ -1,1 +1,31 @@
-<p>table-merges works!</p>
+<table class="styled-table" *ngIf="!loading">
+	<thead>
+	  <tr>
+		<th>From Table</th>
+		<th>To Table</th>
+		<th>Time</th>
+		<th>Date</th>
+		<th>Type</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr *ngFor="let activity of tableMergeReport | async">
+		<td>
+		  {{ activity.from.name }}
+		</td>
+		<td>
+		  {{ activity.to.name }}
+		</td>
+		<td>
+		  {{ activity.time.toDate() | date : "shortTime" }}
+		</td>
+		<td>
+		  {{ activity.time.toDate() | date : "short" }}
+		</td>
+		<td>
+		  {{ activity.type }}
+		</td>
+	  </tr>
+	</tbody>
+  </table>
+  

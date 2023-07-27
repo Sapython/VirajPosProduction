@@ -1,4 +1,51 @@
 <section>
+  <!-- <div class="heading">
+    <span>
+      <button (click)="this.dialogRef.close()">
+        <i class="ri-arrow-left-line"></i>
+        <p>Back</p>
+      </button>
+      <h3>Menu Management</h3>
+    </span>
+    <viraj-button [animated]="true">New Menu</viraj-button>
+  </div> -->
+  <!-- <div class="sidebar">
+    <div class="menus">
+      <div class="menu" *ngFor="let menu of menus">
+        <div class="head" (click)="menu.toggled = !menu.toggled">
+          <p>{{menu.name}}</p>
+          <i *ngIf="menu.toggled" class="ri-arrow-down-s-line"></i>
+          <i *ngIf="!menu.toggled" class="ri-arrow-up-s-line"></i>
+        </div>
+        <div class="subItems" *ngIf="menu.toggled">
+          <div class="section" (click)="activeTab = 'products'" [ngClass]="{active:activeTab=='products'}">
+            <span>Products </span>
+            <i class="ri-arrow-right-s-line"></i>
+          </div>
+          <div class="section" (click)="activeTab = 'taxes'" [ngClass]="{active:activeTab=='taxes'}">
+            <span>Taxes </span>
+            <i class="ri-arrow-right-s-line"></i>
+          </div>
+          <div class="section" (click)="activeTab = 'discount'" [ngClass]="{active:activeTab=='discount'}">
+            <span>Discounts </span>
+            <i class="ri-arrow-right-s-line"></i>
+          </div>
+          <div class="section" (click)="activeTab = 'combos'" [ngClass]="{active:activeTab=='combos'}">
+            <span>Combos </span>
+            <i class="ri-arrow-right-s-line"></i>
+          </div>
+          <div class="section" (click)="activeTab = 'types'" [ngClass]="{active:activeTab=='types'}">
+            <span>Combos Types </span>
+            <i class="ri-arrow-right-s-line"></i>
+          </div>
+          <div class="section" (click)="activeTab = 'loyalty'" [ngClass]="{active:activeTab=='loyalty'}">
+            <span>Loyalty</span>
+            <i class="ri-arrow-right-s-line"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
   <div class="tabs">
     <div class="tabList">
       <ng-container *ngFor="let mode of this.dataProvider.menus">
@@ -425,26 +472,8 @@
             </table>
           </div>
         </ng-container>
-        <!-- <ng-container *ngIf="activeTab == 'Settings'">
-          <div class="panel">
-            <mat-select *ngIf="this.dataProvider.getAccess(['admin','manager'])" placeholder="Menu"
-              [(ngModel)]="mode.selectedMenuId" (selectionChange)="mode.updateMenu()" name="menu">
-              <mat-option *ngFor="let menu of this.dataProvider.allMenus" [value]="menu.id">
-                {{ menu.name }}
-              </mat-option>
-            </mat-select>
-            <div class="tableContainer">
-              <table>
-                <tr>
-                  <td>Version</td>
-                  <td>{{mode.selectedMenu.name}}</td>
-                </tr>
-              </table>
-            </div>
-          </div>
-        </ng-container> -->
         <ng-container *ngIf="activeTab == 'Combos'">
-          <h3>Combos</h3>
+          <h3>All Combos</h3>
           <div class="comboCards">
             <div class="card new" *ngIf="this.dataProvider.getAccess('addNewCombos')" (click)="mode.addCombo()">
               <p><i class="ri-add-fill"></i>Add New Combo</p>
@@ -512,168 +541,6 @@
       </div>
     </div>
   </ng-container>
-  <!-- <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
-    <ng-container *ngFor="let mode of this.dataProvider.menus">
-      <mat-tab [label]="mode.name" *ngIf="mode.active">
-        <ng-template matTabContent>
-          <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
-            <mat-tab label="Products">
-            </mat-tab>
-            <mat-tab label="Taxes">
-              
-            </mat-tab>
-            <mat-tab label="Discounts">
-              <h3>Discounts</h3>
-              <div class="row">
-                <mat-form-field>
-                  <mat-label>Search</mat-label>
-                  <input matInput formControlName="mode.discountSearchControl" />
-                </mat-form-field>
-                <viraj-button (vclick)="mode.addTax()">Add Tax</viraj-button>
-              </div>
-              <div class="tableContainer">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Value</th>
-                      <th>Type</th>
-                      <th>Min Amount</th>
-                      <th>Min Products</th>
-                      <th>Max Discount</th>
-                      <th>Created On</th>
-                      <th>Menus</th>
-                      <th>Access</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let discount of mode.discounts">
-                      <td>{{ discount.name }}</td>
-                      <td>{{ discount.value }}</td>
-                      <td>{{ discount.type }}</td>
-                      <td>{{ discount.minimumAmount }}</td>
-                      <td>{{ discount.minimumProducts }}</td>
-                      <td>{{ discount.maximumDiscount }}</td>
-                      <td>
-                        {{
-                          discount.creationDate
-                            ? (discount.creationDate.toDate() | date)
-                            : "N/A"
-                        }}
-                      </td>
-                      <td>
-                        <li *ngFor="let item of mode.getMappedMenu(discount.menus)">
-                          {{ item.name }}
-                        </li>
-                      </td>
-                      <td>
-                        <li *ngFor="let item of discount.accessLevels">
-                          {{ item }}
-                        </li>
-                      </td>
-                      <td>
-                        <viraj-button (vclick)="mode.editDiscount(discount)" type="icon"
-                          ><i class="ri-pencil-fill"></i
-                        ></viraj-button>
-                        <viraj-button (vclick)="mode.deleteDiscount(discount.id)" type="icon"
-                          ><i class="ri-delete-bin-2-fill"></i
-                        ></viraj-button>
-                      </td>
-                    </tr>
-                    <tr *ngIf="mode.loadingDiscount">
-                      <td colspan="8">
-                        <mat-spinner mode="indeterminate"> </mat-spinner>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </mat-tab>
-            <mat-tab label="Combos">
-              <h3>Combos</h3>
-              <div class="comboCards">
-                <div class="new">
-                  <p>Add New Combo</p>
-                </div>
-                <div class="combo" *ngFor="let combo of mode.combos">
-                  <img [src]="combo.image">
-                  <p>{{combo.name}}</p>
-                </div>
-                <div class="new">
-                  <p>Add New Combo</p>
-                </div>
-              </div>
-            </mat-tab>
-            <mat-tab label="Types">
-              <h3>Types</h3>
-              <div class="row">
-                <mat-form-field>
-                  <mat-label>Search</mat-label>
-                  <input matInput formControlName="mode.discountSearchControl" />
-                </mat-form-field>
-                <viraj-button (vclick)="mode.addType()">Add Type</viraj-button>
-              </div>
-              <div class="tableContainer">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Image</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let type of mode.comboTypes">
-                      <td>{{ type.name }}</td>
-                      <td><img [src]="type.image"></td>
-                      <td>
-                        <viraj-button (vclick)="mode.editType(type)" type="icon"
-                          ><i class="ri-pencil-fill"></i
-                        ></viraj-button>
-                        <viraj-button (vclick)="mode.deleteType(type.id)" type="icon"
-                          ><i class="ri-delete-bin-2-fill"></i
-                        ></viraj-button>
-                      </td>
-                    </tr>
-                    <tr *ngIf="mode.loadingComboTypes">
-                      <td colspan="8">
-                        <mat-spinner mode="indeterminate"> </mat-spinner>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </mat-tab>
-            <mat-tab label="Settings">
-              <div class="panel">
-                <mat-select *ngIf="this.dataProvider.getAccess(['admin','manager'])" placeholder="Menu"
-                    [(ngModel)]="mode.selectedMenuId" (selectionChange)="mode.updateMenu()" name="menu">
-                    <mat-option *ngFor="let menu of this.dataProvider.allMenus" [value]="menu.id">
-                      {{ menu.name }}
-                    </mat-option>
-                  </mat-select>
-                  <div class="tableContainer">
-                    <table>
-                      <tr>
-                        <td>Version</td>
-                        <td>{{mode.selectedMenu.version}}</td>
-                      </tr>
-                    </table>
-                  </div>
-              </div>
-              settings related to 
-                1. current selected menu 
-                2. info about changes to the menu
-                3. Which user changed what 
-                4. Menu version
-              
-            </mat-tab>
-          </mat-tab-group>
-        </ng-template>
-      </mat-tab>
-    </ng-container>
-  </mat-tab-group> -->
   <div class="actions">
     <button color="primary" mat-flat-button (click)="this.dialogRef.close()">Save</button>
   </div>

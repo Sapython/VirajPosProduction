@@ -172,5 +172,13 @@ export class BillService {
       {activity:activity,createdDate:serverTimestamp(),deviceTime:new Date()}
     );
   }
+
+  getAnalyticsReport(date:Date){
+    // fetch this path /business/uqd9dm0its2v9xx6fey2q/analyticsData/2023/7/21
+    console.log("Fetching analytics data for ",'business/'+this.dataProvider.businessId+'/analyticsData/'+date.getFullYear()+'/'+(date.getMonth()+1)+'/'+date.getDate());
+    return getDoc(
+      doc(this.firestore, 'business/'+this.dataProvider.businessId+'/analyticsData/'+date.getFullYear()+'/'+(date.getMonth()+1)+'/'+date.getDate())
+    );
+  }
 }
 

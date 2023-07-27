@@ -1,33 +1,25 @@
 <table id="report-table" *ngIf="!loading">
 	<thead>
 	  <tr>
-		<th>Kot No</th>
-		<th>Kot Amount</th>
-		<th>Products</th>
-		<th>Bill No</th>
-		<th>Token No</th>
-		<th>Date-Time</th>
+		<th>Table Name</th>
+		<th>Sales</th>
+		<th>Number Of Orders</th>
+		<th>Average Sales</th>
 	  </tr>
 	</thead>
 	<tbody>
-	  <tr *ngFor="let kot of kots">
+	  <tr *ngFor="let table of tableWiseSales | async">
 		<td>
-		  {{ kot.id }}
+		  {{ table.table }}
 		</td>
 		<td>
-		  {{ kot.grandTotal }}
+		  {{ table.sales }}
 		</td>
 		<td>
-		  {{ kot.products.length }}
+		  {{ table.numberOfOrders }}
 		</td>
 		<td>
-		  {{ kot.billNo }}
-		</td>
-		<td>
-		  {{ kot.tokenNo }}
-		</td>
-		<td>
-		  {{ kot.createdDate.toDate() | date : "short" }}
+		  {{ table.averageSales }}
 		</td>
 	  </tr>
 	</tbody>

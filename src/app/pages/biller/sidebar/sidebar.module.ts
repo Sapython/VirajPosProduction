@@ -90,6 +90,10 @@ import { TableMergesComponent } from './info-panel/sales-summary/reports/report-
 import { TableExchangesComponent } from './info-panel/sales-summary/reports/report-view/table-exchanges/table-exchanges.component';
 import { TableSplitsComponent } from './info-panel/sales-summary/reports/report-view/table-splits/table-splits.component';
 import { SplitBillsComponent } from './info-panel/sales-summary/reports/report-view/split-bills/split-bills.component';
+import {MatChipsModule} from '@angular/material/chips'; 
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import {MatExpansionModule} from '@angular/material/expansion'; 
+
 @NgModule({
   declarations: [
     InfoPanelComponent,
@@ -185,7 +189,10 @@ import { SplitBillsComponent } from './info-panel/sales-summary/reports/report-v
     DragDropModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatChipsModule,
+    MatAutocompleteModule,
+    MatExpansionModule
   ],
   exports:[SidebarComponent,AddDishComponent,AddNewCategoryComponent,SelectRecipeComponent]
 })

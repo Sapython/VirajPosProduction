@@ -24,7 +24,8 @@ export interface ComboCategoryCategorized {
     name:string;
     products:Product[],
     selectedProducts:Product[],
-    offerType: 'discount' | 'free';
+    offerType: 'discount' | 'free' | 'fixed';
+    appliedOn: 'all' | 'selected';
     offerValue?:number;
     maximumProducts?:number;
     minimumProducts?:number;

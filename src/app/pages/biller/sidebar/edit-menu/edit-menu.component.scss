@@ -2,10 +2,81 @@ section{
     width: 100vw;
     height: 100vh;
     display: flex;
+    padding: 20px;
     flex-direction: column;
     background: white;
-    padding: 20px;
     box-sizing: border-box;
+    // .heading{
+    //     display: flex;
+    //     justify-content: space-between;
+    //     align-items: center;
+    //     border-bottom: 2px solid #c7c7c7;
+    //     span{
+    //         display: flex;
+    //         align-items: center;
+    //         gap:30px;
+    //     }
+    //     span:nth-child(1){
+    //         button{
+    //             display: flex;
+    //             border: none;
+    //             background: white;
+    //             color:var(--Viraj-primary);
+    //             gap:10px;
+    //             font-size: var(--Viraj-font-xlarge);
+    //             i{
+    //                 color:var(--Viraj-primary);
+    //                 font-size: var(--Viraj-font-xxlarge);
+    //             }
+    //         }
+    //     }
+    //     span:nth-child(2){
+    //         .selector{
+    //             width: 150px;
+    //             background: white;
+    //             display: flex;
+    //             color: var(--Viraj-primary);
+    //             gap: 10px;
+    //             border: 2px solid var(--Viraj-primary);
+    //             padding: 10px;
+    //             border-radius: 5px;
+    //         }
+    //     }
+    // }
+    // .sidebar{
+    //     .menus{
+    //         width: 300px;
+    //         .menu{
+    //             background: #FFD1A2;
+    //             .head{
+    //                 display: flex;
+    //                 justify-content: space-between;
+    //                 align-items: center;
+    //                 border-bottom: 3px solid #962E40;
+    //                 padding: 20px 10px;
+    //                 font-size: var(--Viraj-font-xxlarge);
+    //                 font-weight: 700;
+    //                 color:var(--Viraj-primary-text);
+    //                 i{
+    //                     color:var(--Viraj-primary);
+    //                 }
+    //             }
+    //             .subItems{
+    //                 .section{
+    //                     background:#FFF1E3;
+    //                     padding: 20px 10px;
+    //                     border-bottom: 3px solid var(--Viraj-primary);
+    //                     display: flex;
+    //                     align-items: center;
+    //                     justify-content: space-between;
+    //                 }
+    //                 .active{
+    //                     background: #FFE1C2;
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
     .actions{
         display: flex;
         justify-content: center;

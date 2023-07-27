@@ -19,6 +19,8 @@
 		<h4 *ngIf="dialogData.stage == 'kotEdits'">Kot Edits Report</h4>
 		<h4 *ngIf="dialogData.stage == 'paymentWise'">Payment Wise Report</h4>
 		<h4 *ngIf="dialogData.stage == 'waiterWiseItems'">Waiter Wise Items Report</h4>
+		<h4 *ngIf="dialogData.stage == 'tableWiseActivity'">Table Wise Activity</h4>
+		<h4 *ngIf="dialogData.stage == 'tableWiseSales'">Table Wise Sales</h4>
 		{{dialogData.stage}}
 		<div class="actions">
 			<mat-date-range-picker #picker></mat-date-range-picker>
@@ -52,6 +54,8 @@
 			<app-kot-edits *ngIf="dialogData.stage == 'kotEdits'"></app-kot-edits>
 			<app-payment-wise *ngIf="dialogData.stage == 'paymentWise'"></app-payment-wise>
 			<app-waiter-wise-items *ngIf="dialogData.stage == 'waiterWiseItems'"></app-waiter-wise-items>
+			<app-table-merges *ngIf="dialogData.stage == 'tableWiseActivity'"></app-table-merges>
+			<app-table-wise *ngIf="dialogData.stage == 'tableWiseSales'"></app-table-wise>
 			<div class="loader"></div>
 			<div class="spacer"></div>
 		</div>

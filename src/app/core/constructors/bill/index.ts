@@ -58,6 +58,8 @@ import { CustomerService } from '../../services/customer/customer.service';
 import { UserManagementService } from '../../services/auth/user/user-management.service';
 import { ApplicableCombo } from '../comboKot/comboKot';
 import { CodeBaseDiscount } from '../../../types/discount.structure';
+import { ModeConfig } from '../menu/menu';
+import { calculateLoyalty } from './methods/loyalty.bill';
 
 export class Bill implements BillConstructor {
   id: string;
@@ -116,6 +118,7 @@ export class Bill implements BillConstructor {
     phone: string;
     user: User;
   };
+  currentModeConfig: ModeConfig | undefined;
   availableDiscounts:CodeBaseDiscount[] = [];
   printableBillData: PrintableBill | null = null;
   billSubscriptionCallerStarted: boolean = false;
@@ -158,6 +161,11 @@ export class Bill implements BillConstructor {
     this.mode = mode;
     this.customerInfo = {};
     this.menu = menu;
+    this.dataProvider.menus.forEach((menu) => {
+      if (menu.selectedMenuId === this.menu.id) {
+        this.currentModeConfig = menu;
+      }
+    });
     this.table = table;
     this.user = billerUser;
     this.billNo = billNo;
@@ -173,10 +181,21 @@ export class Bill implements BillConstructor {
     this.firebaseUpdate();
   }
 
+  currentLoyalty = {
+    loyaltySettingId:'',
+    totalLoyaltyCost:0,
+    totalLoyaltyPoints:0,
+    totalToBeRedeemedPoints:0,
+    totalToBeRedeemedCost:0,
+    receiveLoyalty: false,
+    redeemLoyalty: false,
+  }
+
   // definitions
 
   // common functions
   public calculateBill = calculateBill;
+  public calculateLoyalty = calculateLoyalty;
 
   // bill functions
   public setAsNonChargeable = setAsNonChargeable;

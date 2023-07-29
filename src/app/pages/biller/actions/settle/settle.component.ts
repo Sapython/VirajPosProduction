@@ -4,6 +4,9 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AlertsAndNotificationsService } from '../../../../core/services/alerts-and-notification/alerts-and-notifications.service';
 import { DataProvider } from '../../../../core/services/provider/data-provider.service';
 import { SettingsService } from '../../../../core/services/database/settings/settings.service';
+import { Menu } from '../../../../types/menu.structure';
+import { ModeConfig } from '../../../../core/constructors/menu/menu';
+import { Bill } from '../../../../core/constructors/bill';
 
 @Component({
   selector: 'app-settle',
@@ -36,7 +39,8 @@ export class SettleComponent implements OnInit {
     recipents: new FormControl(''),
     splitMethod: new FormControl(''),
     percentageSplitForm:this.percentageSplitForm
-  })
+  });
+  currentModeConfig:ModeConfig|undefined;
   // @ViewChild('method') method:QueryList<any>;
   
   constructor(private dialogRef:DialogRef,public dataProvider:DataProvider,private settingService:SettingsService,private alertify:AlertsAndNotificationsService,@Inject(DIALOG_DATA) public billSum:number){
@@ -94,10 +98,6 @@ export class SettleComponent implements OnInit {
         this.methods[this.methods.length - 1].amount -= this.totalPaid - this.billSum
       }
       let paymentMethods = this.methods.map((method)=>method)
-      // if (paymentMethods.length !== uniquePaymentMethods.length){
-      //   this.alertify.presentToast('Conflicting payment methods')
-      //   return
-      // }
       this.dialogRef.close({paymentMethods,settling:true,detail:this.detailForm.value});
       this.alertify.presentToast('Bill Settled')
     } else {

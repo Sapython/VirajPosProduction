@@ -20,7 +20,7 @@ export class ComboCardComponent implements OnInit{
     "saturday"
   ]
   ngOnInit(): void {
-    this.disabled = !this.checkDateIsAvailable(this.combo.timeGroups)
+    // this.disabled = !this.checkDateIsAvailable(this.combo.timeGroups) TODO: checker
   }
   checkDateIsAvailable(timeGroups: TimeGroup[]) {
     let available = true;

@@ -1,4 +1,4 @@
-import { Timestamp } from '@angular/fire/firestore';
+import { Timestamp, increment } from '@angular/fire/firestore';
 import { Bill } from '..';
 import { Payment } from '../../../../types/payment.structure';
 import { BillConstructor } from '../../../../types/bill.structure';

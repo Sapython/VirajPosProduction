@@ -36,6 +36,7 @@ import { Combo, ComboType, TimeGroup } from '../../../../types/combo.structure';
 import { FileStorageService } from '../fileStorage/file-storage.service';
 import { Tax } from '../../../../types/tax.structure';
 import { CodeBaseDiscount } from '../../../../types/discount.structure';
+import { LoyaltySetting } from '../../../../types/loyalty.structure';
 
 @Injectable({
   providedIn: 'root',
@@ -1352,5 +1353,83 @@ export class MenuManagementService {
       )
     )
   }
-  
+
+  getLoyaltySettings(menuId:string){
+    return getDocs(
+      collection(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menuId +
+          '/loyaltySettings'
+      )
+    )
+  }
+
+  addLoyaltySetting(loyaltySetting:LoyaltySetting,menuId:string){
+    this.updatableMenus.push(menuId);
+    this.menuUpdated.next();
+    return addDoc(
+      collection(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menuId +
+          '/loyaltySettings'
+      ),
+      loyaltySetting
+    )
+  }
+
+  editLoyalSetting(loyaltySetting:LoyaltySetting,menuId:string){
+    this.updatableMenus.push(menuId);
+    this.menuUpdated.next();
+    return setDoc(
+      doc(
+        this.firestore,
+        'business/' +
+        this.dataProvider.businessId +
+        '/menus/' +
+        menuId +
+        '/loyaltySettings/' +
+        loyaltySetting.id
+      ),
+      loyaltySetting,
+      { merge: true }
+    )
+  }
+
+  deleteLoyaltySetting(loyaltySettingId:string,menuId:string){
+    this.updatableMenus.push(menuId);
+    this.menuUpdated.next();
+    return deleteDoc(
+      doc(
+        this.firestore,
+        'business/' +
+        this.dataProvider.businessId +
+        '/menus/' +
+        menuId +
+        '/loyaltySettings/' +
+        loyaltySettingId
+      )
+    )
+  }
+
+  selectLoyalty(loyaltyId:string,menuId:string){
+    this.updatableMenus.push(menuId);
+    this.menuUpdated.next();
+    return setDoc(
+      doc(
+        this.firestore,
+        'business/' +
+        this.dataProvider.businessId +
+        '/menus/'+menuId
+      ),
+      {selectedLoyaltyId:loyaltyId},
+      { merge: true }
+    )
+  }
+
 }

@@ -21,6 +21,7 @@ import { Product } from '../../../../../types/product.structure';
 })
 export class AddComboComponent {
   offerImageFile: File = null;
+  imagePreviewData: string = null;
   availableTimes:{
     value:number;
     time:string;
@@ -28,13 +29,20 @@ export class AddComboComponent {
   separatorKeysCodes: number[] = [ENTER, COMMA];
   categorySearchControl = new FormControl('');
   categorySearchFuseInstance: Fuse<Category>;
+  monthSearchControl = new FormControl('');
+  monthSearchFuseInstance: Fuse<string>;
+
   filteredCategories: Observable<Category[]>;
-  selectedCategories: {category:Category,offerType:'fixed'|'free'|'discount',appliedOn:'item'|'group',amount:number,minimumProducts:number,maximumProducts:number}[] = [];
+  selectedCategories: {category:Category,offerType:'fixed'|'free'|'discount'|'mustBuy',discountType?:'flat'|'percentage',appliedOn:'item'|'group',amount:number,minimumProducts:number,maximumProducts:number,id:string}[] = [];
   allCategories: Category[] = [];
 
   selectedMonths:string[] = []
+  days:string[] = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
   allMonths:string[] = ["January","February","March","April","May","June","July","August","September","October","November","December"]
   filteredMonths: Observable<string[]>;
+
+  offerApplicableOnNumberOfProducts:number = 1;
+  numberOfProductsNumbers:number[] = [];
 
   @ViewChild('fruitInput') fruitInput: ElementRef<HTMLInputElement>;
 
@@ -42,9 +50,7 @@ export class AddComboComponent {
 
   comboFormGroup = new FormGroup({
     name: new FormControl('', Validators.required),
-    offerImage: new FormControl('', Validators.required),
     discounted: new FormControl(''),
-    numberOfProducts: new FormControl('', Validators.required),
     maximumNoOfPurchases: new FormControl(''),
     type: new FormControl('', Validators.required),
     offerPrice: new FormControl('', Validators.required),
@@ -56,6 +62,58 @@ export class AddComboComponent {
     repeating:false,
     dateRange:{},
     selectedMonths:this.selectedMonths,
+    visibilityDateRangeForm:new FormGroup({
+      startDate:new FormControl(),
+      endDate:new FormControl(),
+    }),
+    selectedWeeks:{
+      week1:true,
+      week2:true,
+      week3:true,
+      week4:true,
+      week5:true,
+      week6:true,
+    },
+    activatedWeeks:()=>{
+      return Object.keys(this.visibilitySettings.selectedWeeks).filter(key => this.visibilitySettings.selectedWeeks[key]).length;
+    },
+    daysSelected:{
+      allSunday:false,
+      allMonday:false,
+      allTuesday:false,
+      allWednesday:false,
+      allThursday:false,
+      allFriday:false,
+      allSaturday:false,
+    },
+    daysSetting:[],
+    timeSlotSelected:{
+      breakfast:{
+        selected:false,
+        timeStart:6,
+        timeEnd:13,
+      },
+      lunch:{
+        selected:false,
+        timeStart:13,
+        timeEnd:18,
+      },
+      dinner:{
+        selected:false,
+        timeStart:18,
+        timeEnd:1,
+      },
+      night:{
+        selected:false,
+        timeStart:1,
+        timeEnd:6,
+      },
+      custom:{
+        selected:false,
+        timeStart:0,
+        timeEnd:0,
+      }
+    }
   }
   constructor(private dialogRef:DialogRef,@Inject(DIALOG_DATA) public dialogData:{mode:'add'|'edit',menu:ModeConfig},private fileService:FileStorageService,private dataProvider:DataProvider) {
     if (dialogData.menu){
@@ -67,6 +125,7 @@ export class AddComboComponent {
         this.allCategories.push(category);
       });
       this.categorySearchFuseInstance = new Fuse(this.allCategories, {keys:['name']});
+      this.monthSearchFuseInstance = new Fuse(this.allMonths);
       this.types = dialogData.menu.types;
     }
     this.comboFormGroup.get('type').valueChanges.subscribe(value => {
@@ -91,6 +150,19 @@ export class AddComboComponent {
         }
       }),
     );
+    
+    this.filteredMonths = this.monthSearchControl.valueChanges.pipe(
+      startWith(null),
+      map((searchQuery: string|null) => {
+        if (searchQuery && typeof searchQuery == 'string'){
+          return this.monthSearchFuseInstance.search(searchQuery).map((month)=>{
+            return month.item;
+          })
+        } else {
+          return this.allMonths.map(category => category);
+        }
+      })
+    )
 
     // add time at intervals of 30 minutes from 00:00 to 23:30
     for (let i = 1; i < 48; i++){
@@ -109,6 +181,11 @@ export class AddComboComponent {
   types:ComboType[] = [];
   selectedType:ExtendedComboType = null;
   currentTypeCategory:TypeCategory = null;
+
+  droppedImage(event){
+    console.log("droppedImage",event);
+  }
+
 
   buildSelectedTypes() {
     this.types = this.dialogData.menu.types;
@@ -150,6 +227,10 @@ export class AddComboComponent {
     }
     if (event.target.files){
       this.offerImageFile = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = e => this.imagePreviewData = reader.result as string;
+      reader.readAsDataURL(this.offerImageFile);
+      
     }
   }
 
@@ -250,18 +331,33 @@ export class AddComboComponent {
       this.dataProvider.loading = true;
       let url = await this.fileService.upload(`business/${this.dataProvider.currentBusiness.businessId}/menus/${this.dialogData.menu.selectedMenu.id}/combos/images/${(new Date()).getTime()}_${this.offerImageFile.name}`,this.offerImageFile);
       console.log(url);
+      delete this.visibilitySettings.activatedWeeks;
+      this.visibilitySettings.daysSetting.forEach(month => {
+        month.days.forEach(week => {
+          delete week.selectAllDays;
+        });
+      });
+      this.selectedCategories = this.selectedCategories.map((category)=>{
+        category.id = this.generateID();
+        return category;
+      })
       let data = {
         ...this.comboFormGroup.value,
         offerImage: url,
-        types: this.configurations,
-        timeGroups: this.dialogData.menu.timeGroups.filter(group => group.selected)
-      }
+        selectedCategories:this.selectedCategories,
+        visibilitySettings:{
+          ...this.visibilitySettings,visibilityDateRangeForm:this.visibilitySettings.visibilityDateRangeForm.value}
+      };
       this.dialogRef.close(data);
       console.log("data",data);
       this.dataProvider.loading = false;
     } else {
       alert("Please select offer image");
     }
+  }
+
+  generateID(){
+    return Math.floor(Math.random() * 1000000000).toString(36);
   }
 
   cancel(){
@@ -298,7 +394,7 @@ export class AddComboComponent {
 
   selected(event: MatAutocompleteSelectedEvent): void {
     let category:any = {
-      category: event.option.value,
+      category: structuredClone(event.option.value),
       offerType:'discount',
       appliedOn:'item',
       amount:0,
@@ -312,8 +408,13 @@ export class AddComboComponent {
 
   selectMonth(event: MatAutocompleteSelectedEvent){
     this.selectedMonths.push(event.option.value);
+    // reorder months
+    this.selectedMonths.sort((a,b)=>{
+      return this.allMonths.indexOf(a) - this.allMonths.indexOf(b);
+    })
     this.fruitInput.nativeElement.value = '';
     this.categorySearchControl.setValue(null);
+    this.generateMonthsData();
   }
 
   removeMonth(monthString:string){
@@ -331,6 +432,168 @@ export class AddComboComponent {
       item.selected = selected;
     })
   }
+
+  generateMonthsData(){
+    console.log("Selected weeks",this.visibilitySettings);
+    let monthWiseDays:any[] = [];
+
+    this.selectedMonths.forEach(month => {
+      // generate a full calendar for each month
+      // every day must have three var day, possible, selected
+      let monthDays:any[] = [];
+      // example format
+      // let singleMonth =  {
+      //   weekOne: [
+      //     {
+      //       day:'Sunday',
+      //       possible:false,
+      //     },
+      //     {
+      //       day:'Monday',
+      //       possible:false,
+      //     },
+      //     {
+      //       day:'Tuesday',
+      //       possible:true,
+      //     },
+      //     {
+      //       day:'Wednesday',
+      //       possible:true,
+      //     },
+      //     {
+      //       day:'Thursday',
+      //       possible:true,
+      //     },
+      //     {
+      //       day:'Friday',
+      //       possible:true,
+      //     },
+      //     {
+      //       day:'Saturday',
+      //       possible:true,
+      //     },
+      //   ]
+      // };
+
+      let date = new Date();
+      date.setMonth(this.allMonths.indexOf(month));
+      date.setDate(1);
+      let day = date.getDay();
+      let days:{day:string,possible:boolean,selected:boolean}[] = [];
+      for (let i = 0; i < day; i++){
+        days.push({
+          day:this.days[i],
+          possible:false,
+          selected:false
+        })
+      }
+      let monthLength = new Date(date.getFullYear(), date.getMonth()+1, 0).getDate();
+      console.log("monthLength",monthLength);
+      for (let i = 1; i <= monthLength; i++){
+        let day = new Date(date.getFullYear(), date.getMonth(), i).toLocaleDateString('en-US', { weekday: 'long' });
+        days.push({
+          day: day,
+          possible:true,
+          selected:false
+        })
+      }
+      // split days into weeks
+      let weeks:any[] = [];
+      let week:any[] = [];
+      let weekCounter = 0;
+      days.forEach((day,index) => {
+        week.push(day);
+        if (index % 7 == 6){
+          console.log("weekCounter",weekCounter + 1,this.visibilitySettings.selectedWeeks,'week' + (weekCounter+1),this.visibilitySettings.selectedWeeks['week' + (weekCounter+1)]);
+          if (this.visibilitySettings.selectedWeeks['week' + (weekCounter+1)]){
+            weeks.push({
+              week:week,
+              selectAllDays:(select:boolean)=>{
+                week.forEach(day => {
+                  day.selected = select;
+                })
+              },
+              weekName: weekCounter == 0 ? '1st week' : weekCounter == 1 ? '2nd week' : weekCounter == 2 ? '3rd week' : weekCounter == 3 ? '4th week' : weekCounter == 4 ? '5th week' : '6th week',
+            });
+          }
+          week = [];
+          weekCounter++;
+        } else if (index == days.length - 1){
+          // fill remaining days
+          let counter = 7 - week.length;
+          let initialWeekLength = week.length;
+          console.log("weekCounter",weekCounter + 1,this.visibilitySettings.selectedWeeks,'week' + (weekCounter+1),this.visibilitySettings.selectedWeeks['week' + (weekCounter+1)]);
+          for (let j = 0; j < (counter); j++){
+            console.log("ran",j,j+week.length);
+            week.push({
+              day:this.days[j+initialWeekLength],
+              possible:false,
+              selected:false
+            })
+          }
+          // check if the week is enabled
+          if (this.visibilitySettings.selectedWeeks['week' + (weekCounter+1)]){
+            weeks.push({
+              week:week,
+              weekName: weekCounter == 0 ? '1st week' : weekCounter == 1 ? '2nd week' : weekCounter == 2 ? '3rd week' : weekCounter == 3 ? '4th week' : weekCounter == 4 ? '5th week' : '6th week',
+              selectAllDays:(select:boolean)=>{
+                week.forEach(day => {
+                  day.selected = select;
+                })
+              },
+            });
+          }
+          weekCounter++;
+        }
+      });
+      let weekLength = weeks.length;
+        if(weekLength < 6){
+          for (let index = 0; index < (6 - weekLength); index++) {
+            let week = [];
+            for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
+              week.push({
+                day:this.days[dayIndex],
+                possible:false,
+                selected:false
+              });
+            }
+            console.log("Adding Week ",week);
+            weeks.push({
+              week:week,
+              weekName: weekCounter == 0 ? '1st week' : weekCounter == 1 ? '2nd week' : weekCounter == 2 ? '3rd week' : weekCounter == 3 ? '4th week' : weekCounter == 4 ? '5th week' : '6th week',
+              selectAllDays:(select:boolean)=>{
+                week.forEach(day => {
+                  day.selected = select;
+                })
+              },
+            });
+            console.log("Adding Week ",weeks);
+          }
+        }
+        monthDays = weeks;
+      monthWiseDays.push({
+        month:month,
+        days:monthDays
+      });
+    });
+    console.log("monthWiseDays",monthWiseDays);
+    this.visibilitySettings.daysSetting = monthWiseDays;
+  }
+
+  selectAllWeekDays(week:any[],select:boolean){
+    week.forEach(day => {
+      day.selected = select;
+    });
+  }
+
+  checkAllWeekDays(dayNumber:number,value:boolean){
+    this.visibilitySettings.daysSetting.forEach(month => {
+      month.days.forEach(week => {
+        week.week[dayNumber].selected = value;
+      });
+    });
+  }
+
 }
 
 interface ExtendedComboType extends ComboType {

@@ -114,6 +114,7 @@ export function toObject(this: Bill) {
       deliveryName: this.customerInfo.deliveryName || null,
       deliveryPhone: this.customerInfo.deliveryPhone || null,
     },
+    currentLoyalty:this.currentLoyalty
   };
 }
 
@@ -154,6 +155,15 @@ export function fromObject(
     instance.optionalTax = object.optionalTax || false;
     instance.billReprints = object.billReprints || [];
     instance.instruction = object.instruction || '';
+    instance.currentLoyalty = object.currentLoyalty || {
+      loyaltySettingId:'',
+      totalLoyaltyCost:0,
+      totalLoyaltyPoints:0,
+      totalToBeRedeemedPoints:0,
+      totalToBeRedeemedCost:0,
+      receiveLoyalty: false,
+      redeemLoyalty: false,
+    }
     // create kots classes from objects and add them to the bill
     object.kots.forEach((kot) => {
     //  console.log('Creating kot', kot);

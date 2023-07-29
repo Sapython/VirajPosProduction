@@ -15,6 +15,9 @@ export class ReportService {
   loading: boolean = false;
   cachedData: CachedData[] = [];
 
+  downloadPdf: Subject<void> = new Subject<void>();
+  downloadExcel: Subject<void> = new Subject<void>();
+
   dateRangeFormGroup: FormGroup = new FormGroup({
     startDate: new FormControl('', [Validators.required]),
     endDate: new FormControl('', [Validators.required]),

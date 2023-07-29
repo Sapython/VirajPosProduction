@@ -12,18 +12,16 @@
         <viraj-button [disabled]="editMode || newCombo" (vclick)="delete.emit()">Delete</viraj-button>
     </div>
     <div class="types">
-        <div class="type" *ngFor="let type of combo.combo.types">
+        <div class="type" *ngFor="let category of combo.combo.selectedCategories">
             <div class="header">
                 <p>Type:</p>
-                <p>{{type.name}}</p>
+                <p>{{category.category.name}}</p>
             </div>
             <div class="categories">
-                <div class="category" *ngFor="let category of type.categories">
-                    <app-kot-item [disabled]="disabled" [propagateFunctions]="true" (addQuantityFunction)="addProductQuantity(type,category,item)" (removeQuantityFunction)="removeProductQuantity(type,category,item)" (setQuantityFunction)="setProductQuantity(type,category,item,$event)" [kotId]="kotId" [@zoomInOnEnter] [@zoomOutOnLeave] (delete)="combo.deleteProduct(type, category, item)"
+                <app-kot-item [disabled]="disabled" [propagateFunctions]="true" (addQuantityFunction)="addProductQuantity(category,item)" (removeQuantityFunction)="removeProductQuantity(category,item)" (setQuantityFunction)="setProductQuantity(category,item,$event)" [kotId]="kotId" [@zoomInOnEnter] [@zoomOutOnLeave] (delete)="combo.deleteProduct(category, item)"
                             [product]="item" [kotNo]="activeKotIndex" [info]="item.instruction || null"
                             [quantity]="item.quantity" [productName]="item.name" [nonVeg]="item.type == 'non-veg'"
                             [price]="item.price" *ngFor="let item of category.selectedProducts"></app-kot-item>
-                </div>
             </div>
         </div>
     </div>

@@ -3,8 +3,8 @@ import { Component, Inject, Injector, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subject, debounceTime } from 'rxjs';
 import { DataProvider } from '../../../core/services/provider/data-provider.service';
-import { Customer } from '../../../types/customer.structure';
 import Fuse from 'fuse.js';
+import { CustomerInfo } from '../../../types/user.structure';
 
 @Component({
   selector: 'app-customer-panel',
@@ -33,6 +33,7 @@ export class CustomerPanelComponent implements OnInit {
         this.dataProvider.currentBill?.mode == 'takeaway'
           ? Validators.required
           : Validators.nullValidator,
+        Validators.pattern('^[0-9]*$'),
       ]
     ),
     address: new FormControl(
@@ -53,16 +54,26 @@ export class CustomerPanelComponent implements OnInit {
     deliveryName: new FormControl(),
     deliveryPhone: new FormControl(),
   });
+  loyaltySettingForm: FormGroup = new FormGroup({
+    receiveLoyalty: new FormControl(),
+    redeemLoyalty: new FormControl(),
+    totalToBeRedeemedPoints: new FormControl(0, [
+      Validators.min(0),
+      Validators.max(
+        this.dataProvider.currentBill.customerInfo.loyaltyPoints
+      ),
+    ]),
+  });
   @Input() padding: boolean = true;
   @Input() orderFrequency: number = 0;
   @Input() lastMonth: string = 'Jan';
   @Input() averageOrderPrice: number = 300;
   @Input() isDialog: boolean = true;
   @Input() lastOrderDish: string[] = ['Chicken', 'Rice', 'Salad'];
-  numberFuseInstance: Fuse<Customer> = new Fuse(this.dataProvider.customers, {
+  numberFuseInstance: Fuse<CustomerInfo> = new Fuse(this.dataProvider.customers, {
     keys: ['phone'],
   });
-  foundCustomers: Customer[] = [];
+  foundCustomers: CustomerInfo[] = [];
   searchString: Subject<string> = new Subject<string>();
   constructor(public dataProvider: DataProvider, private injector: Injector) {
     if (this.dataProvider.currentBill) {
@@ -78,36 +89,36 @@ export class CustomerPanelComponent implements OnInit {
           //  console.log('value', this.dataProvider.currentBill?.customerInfo);
         }
       });
-      this.dataProvider.billAssigned.subscribe(() => { 
-        this.dataProvider.modeChanged.subscribe(()=>{
-          if (this.dataProvider.currentBill) {
-            if (this.dataProvider.currentBill.mode == 'online') {
-              // update controls instead of adding them
-              this.customerInfoForm.controls['deliveryName'].setValidators([
-                Validators.required,
-              ]);
-              this.customerInfoForm.controls['deliveryPhone'].setValidators([
-                Validators.required,
-              ]);
-            }
-            console.log("CUSTOM:",this.dataProvider.currentBill?.customerInfo);
-            
-            // set values
-            this.customerInfoForm.patchValue({
-              name: this.dataProvider.currentBill?.customerInfo.name,
-              phone: this.dataProvider.currentBill?.customerInfo.phone,
-              address: this.dataProvider.currentBill?.customerInfo.address,
-              deliveryName:
-                this.dataProvider.currentBill?.customerInfo.deliveryName,
-              deliveryPhone:
-                this.dataProvider.currentBill?.customerInfo.deliveryPhone,
-            });
-            this.customerInfoForm.enable();
-          } else {
-            this.customerInfoForm.disable();
+    this.dataProvider.billAssigned.subscribe(() => {
+      this.dataProvider.modeChanged.subscribe(() => {
+        if (this.dataProvider.currentBill) {
+          if (this.dataProvider.currentBill.mode == 'online') {
+            // update controls instead of adding them
+            this.customerInfoForm.controls['deliveryName'].setValidators([
+              Validators.required,
+            ]);
+            this.customerInfoForm.controls['deliveryPhone'].setValidators([
+              Validators.required,
+            ]);
           }
-        })
+          console.log('CUSTOM:', this.dataProvider.currentBill?.customerInfo);
+
+          // set values
+          this.customerInfoForm.patchValue({
+            name: this.dataProvider.currentBill?.customerInfo.name,
+            phone: this.dataProvider.currentBill?.customerInfo.phone,
+            address: this.dataProvider.currentBill?.customerInfo.address,
+            deliveryName:
+              this.dataProvider.currentBill?.customerInfo.deliveryName,
+            deliveryPhone:
+              this.dataProvider.currentBill?.customerInfo.deliveryPhone,
+          });
+          this.customerInfoForm.enable();
+        } else {
+          this.customerInfoForm.disable();
+        }
       });
+    });
     this.dataProvider.customersUpdated.subscribe(() => {
       this.numberFuseInstance.setCollection(this.dataProvider.customers);
     });
@@ -123,6 +134,14 @@ export class CustomerPanelComponent implements OnInit {
       } else {
         this.foundCustomers = [];
       }
+    });
+
+    this.loyaltySettingForm.valueChanges.subscribe((value) => {
+      console.log('value', value);
+      this.dataProvider.currentBill.currentLoyalty = {
+        ...this.dataProvider.currentBill.currentLoyalty,
+        ...value,
+      };
     });
   }
 
@@ -185,5 +204,18 @@ export class CustomerPanelComponent implements OnInit {
       }
     }
     return sentence;
+  }
+
+  setLoyaltyCost(value: number | null | string) {
+    // check if value is number only
+    if (typeof value == 'string') {
+      value = Number(value);
+    }
+    if (value) {
+      this.dataProvider.currentBill.currentLoyalty.totalToBeRedeemedCost =
+        (this.dataProvider.currentBill.currentLoyalty.totalLoyaltyCost /
+          this.dataProvider.currentBill.currentLoyalty.totalLoyaltyPoints) *
+        Number(value);
+    }
   }
 }

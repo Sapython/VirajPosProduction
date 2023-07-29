@@ -487,57 +487,54 @@
             </div>
           </div>
         </ng-container>
-      </div>
-      <div class="loyaltySettings" *ngIf="activeTab == 'Loyalty'">
-        <h2>Loyalty Settings</h2>
-        <div class="settings">
-          <div class="heading">
-            <h3>All Settings</h3>
-            <div class="actions">
-              <mat-form-field>
-                <mat-label>Base Loyalty Rate</mat-label>
-                <input type="number" matInput placeholder="Loyalty Rate per inr">
+        <ng-container *ngIf="activeTab == 'Loyalty'">
+          <h3>Loyalty</h3>
+          <mat-radio-group aria-label="Select an option" (change)="mode.selectLoyaltySetting($event)" [value]="mode.selectedLoyaltyId" #loyaltySelector>
+            <div class="row">
+              <mat-form-field appearance="outline">
+                <mat-label>Search</mat-label>
+                <input matInput (input)="mode.loyaltySearchSubject.next(search.value)" #search/>
               </mat-form-field>
-              <mat-form-field>
-                <mat-label>Base Expiry Days</mat-label>
-                <input type="number" matInput placeholder="Days in number">
-              </mat-form-field>
-              <viraj-button *ngIf="this.dataProvider.getAccess('addNewLoyaltySettings')" (vclick)="mode.addLoyaltySettings()">Add New</viraj-button>
+              <p>
+                <!-- <input type="radio" name="currentLoyalty" (change)="mode.selectLoyaltySetting(settingRadio.value)" [value]="null" #settingRadio> -->
+                <mat-radio-button value="none">Disable Loyalty</mat-radio-button>
+              </p>
+              <viraj-button (vclick)="mode.addLoyaltySettings()" *ngIf="this.dataProvider.getAccess('addNewLoyaltySettings')">Add Loyalty Setting</viraj-button>
             </div>
-          </div>
-          <div class="setting" *ngFor="let setting of mode.loyaltySettings; let i = index;">
-            <div class="head">
-              <h3>{{setting.name}}</h3>
+            <p>Total {{mode.loyaltySettings.length}} Configurations</p>
+            <div class="tableContainer">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Loyalty Setting Name</th>
+                    <th>Base rate</th>
+                    <th>Expiry Days</th>
+                    <th>Added Date</th>
+                    <th>Added By</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let loyaltySetting of mode.filteredLoyaltySettings.length ? mode.filteredLoyaltySettings : mode.loyaltySettings">
+                    <td>
+                      <mat-radio-button [value]="loyaltySetting.id">{{ loyaltySetting.name }}</mat-radio-button>
+                      <!-- <input type="radio" name="currentLoyalty" [value]="loyaltySetting.id" #settingRadio> -->
+                    </td>
+                    <td>{{ loyaltySetting.baseRate }}</td>
+                    <td>{{ loyaltySetting.expiryDays }}</td>
+                    <td>{{ loyaltySetting.creationDate.toDate() | date }}</td>
+                    <td>{{ loyaltySetting.addedBy}}</td>
+                    <td>
+                      <viraj-button *ngIf="this.dataProvider.getAccess('editLoyaltySetting')" (vclick)="mode.editLoyaltySetting(loyaltySetting)" type="icon"><i class="ri-pencil-line"></i></viraj-button>
+                      <viraj-button *ngIf="this.dataProvider.getAccess('deleteLoyaltySetting')" (vclick)="mode.deleteLoyaltySetting(loyaltySetting)" type="icon"><i
+                          class="ri-delete-bin-line"></i></viraj-button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
-            <div class="body">
-              <form [formGroup]="setting.newLoyaltyForm">
-                <mat-form-field>
-                  <mat-label>Setting Name</mat-label>
-                  <input formControlName="name" type="text" matInput>
-                </mat-form-field>
-                <mat-form-field>
-                  <mat-label>Select Time Group</mat-label>
-                  <mat-select formControlName="timeGroup" placeholder="Select Time Group" name="group">
-                    <mat-option *ngFor="let group of mode.timeGroups" [value]="group.id">
-                      {{group.name}}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </form>
-              <div class="products">
-                <div class="product" *ngFor="let item of setting.products">
-                  <mat-checkbox [(ngModel)]="item.selected">{{item.name}}</mat-checkbox>
-                  <input type="number" [(ngModel)]="item.loyaltyPoint" placeholder="Loyalty Point">
-                  <input type="number" [(ngModel)]="item.expiryInDays" placeholder="Expiry in days">
-                </div>
-              </div>
-              <div class="actions">
-                <viraj-button (click)="mode.saveLoyaltySetting(setting)">Save</viraj-button>
-                <viraj-button (click)="mode.cancelLoyaltySetting(setting,i)" type="outline">Cancel</viraj-button>
-              </div>
-            </div>
-          </div>
-        </div>
+          </mat-radio-group>
+        </ng-container>
       </div>
     </div>
   </ng-container>

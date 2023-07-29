@@ -1,36 +1,125 @@
-<section class="customerInfo" [ngClass]="{'pad':padding}">
-    <h4>Customer Info</h4>
-    <form [formGroup]="customerInfoForm" (ngSubmit)="submit()">
-        <span *ngIf="this.dataProvider.currentBill" class="danger"><sup>*</sup> You need to add phone number to save or fetch details.</span>
-        <div>
-            <input type="text" formControlName="name" placeholder="Customer Info">
-            <input (input)="this.searchString.next(phoneInput.value)" type="tel" [matAutocomplete]="auto" formControlName="phone" placeholder="Phone Number" #phoneInput>
-            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selectCustomer($event)">
-                <mat-option *ngFor="let street of foundCustomers" [value]="street">
-                  {{street.phone}}
-                </mat-option>
-            </mat-autocomplete>
-            <input type="text" formControlName="gst" placeholder="Gst">
-            <input matInput placeholder="Address" formControlName="address">
-            <input *ngIf="this.dataProvider.currentBill?.mode=='online'" type="text" formControlName="deliveryName" placeholder="Agent Name">
-            <input *ngIf="this.dataProvider.currentBill?.mode=='online'" type="tel" formControlName="deliveryPhone" placeholder="Agent Phone">
-        </div>
-        <button *ngIf="this.isDialog" type="submit" mat-flat-button color="primary">Submit</button>
-    </form>
+<section
+  class="customerInfo"
+  [ngClass]="{ pad: padding }"
+  *ngIf="this.dataProvider.currentBill"
+>
+  <h4>Customer Info</h4>
+  <form [formGroup]="customerInfoForm" (ngSubmit)="submit()">
+    <ng-container *ngIf="this.dataProvider.currentBill">
+      <span class="danger"
+        ><sup>*</sup> You need to add phone number to save or fetch
+        details.</span
+      >
+      <div>
+        <input type="text" formControlName="name" placeholder="Customer Info" />
+        <input
+          (input)="this.searchString.next(phoneInput.value)"
+          type="tel"
+          [matAutocomplete]="auto"
+          formControlName="phone"
+          placeholder="Phone Number"
+          #phoneInput
+        />
+        <mat-autocomplete
+          #auto="matAutocomplete"
+          (optionSelected)="selectCustomer($event)"
+        >
+          <mat-option *ngFor="let street of foundCustomers" [value]="street">
+            {{ street.phone }}
+          </mat-option>
+        </mat-autocomplete>
+        <input type="text" formControlName="gst" placeholder="Gst" />
+        <input matInput placeholder="Address" formControlName="address" />
+        <input
+          *ngIf="this.dataProvider.currentBill?.mode == 'online'"
+          type="text"
+          formControlName="deliveryName"
+          placeholder="Agent Name"
+        />
+        <input
+          *ngIf="this.dataProvider.currentBill?.mode == 'online'"
+          type="tel"
+          formControlName="deliveryPhone"
+          placeholder="Agent Phone"
+        />
+      </div>
+      <ng-container
+        *ngIf="
+          this.dataProvider.currentBill &&
+          this.customerInfoForm.controls.phone.valid
+        "
+      >
+        <hr />
+        <h4>Loyalty Settings</h4>
+        <form [formGroup]="loyaltySettingForm" class="loyaltyForm">
+          <mat-checkbox formControlName="receiveLoyalty"
+            >Avail New Points</mat-checkbox
+          >
+          <div
+            class="redeem"
+            *ngIf="this.dataProvider.currentBill?.customerInfo?.loyaltyPoints"
+          >
+            <mat-checkbox
+              formControlName="redeemLoyalty"
+              *ngIf="!this.loyaltySettingForm.value.redeemLoyalty"
+              >Redeem Loyalty</mat-checkbox
+            >
+            <mat-checkbox
+              formControlName="redeemLoyalty"
+              *ngIf="this.loyaltySettingForm.value.redeemLoyalty"
+            >
+              <input
+                type="number"
+                [attr.placeholder]="
+                  'Max: ' +
+                  this.dataProvider.currentBill?.customerInfo?.loyaltyPoints
+                "
+                (input)="setLoyaltyCost(toBeRedeemedPoints.value)"
+                formControlName="totalToBeRedeemedPoints"
+                #toBeRedeemedPoints
+              />
+              <span>
+                =
+                <strong>{{
+                  this.dataProvider.currentBill?.currentLoyalty
+                    ?.totalToBeRedeemedCost | currency : "INR"
+                }}</strong></span
+              >
+            </mat-checkbox>
+          </div>
+        </form>
+      </ng-container>
+      <button
+        *ngIf="this.isDialog"
+        type="submit"
+        mat-flat-button
+        color="primary"
+      >
+        Submit
+      </button>
+    </ng-container>
+  </form>
 </section>
-<section class="orders" *ngIf="dataProvider.smartMode" [ngClass]="{'pad':padding}">
-    <p><b>Order Frequency : </b>
-        <span>
-            {{orderFrequency}}%
-            in {{lastMonth}}
-            <ng-container *ngIf="orderFrequency>=0">
-                <i class="ri-arrow-up-line"></i>
-            </ng-container>
-            <ng-container *ngIf="orderFrequency<0">
-                <i class="ri-arrow-down-line"></i>
-            </ng-container>
-        </span>
-    </p>
-    <p><b>Avg Order Price : </b> <strong>{{averageOrderPrice | currency:'INR'}}</strong></p>
-    <p><b>Last Order : </b> {{wordsToSentence(lastOrderDish)}}</p>
+<section
+  class="orders"
+  *ngIf="dataProvider.smartMode"
+  [ngClass]="{ pad: padding }"
+>
+  <p>
+    <b>Order Frequency : </b>
+    <span>
+      {{ orderFrequency }}% in {{ lastMonth }}
+      <ng-container *ngIf="orderFrequency >= 0">
+        <i class="ri-arrow-up-line"></i>
+      </ng-container>
+      <ng-container *ngIf="orderFrequency < 0">
+        <i class="ri-arrow-down-line"></i>
+      </ng-container>
+    </span>
+  </p>
+  <p>
+    <b>Avg Order Price : </b>
+    <strong>{{ averageOrderPrice | currency : "INR" }}</strong>
+  </p>
+  <p><b>Last Order : </b> {{ wordsToSentence(lastOrderDish) }}</p>
 </section>

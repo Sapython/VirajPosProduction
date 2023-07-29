@@ -9,7 +9,8 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   // console.log("Running using calculateBill");
   // check individual product for tax and if the tax.mode is inclusive then add the applicable tax to totalTaxValue or if the tax.mode is exclusive then decrease the price of product by tax rate and add the applicableValue to totalTaxValue
   let calculationResults =  calculateProducts(this.kots);
-  console.log("calculationResults",calculationResults);
+  this.calculateLoyalty(calculationResults.allProducts);
+  // console.log("calculationResults",calculationResults);
   let allProducts = calculationResults.allProducts;
   let finalTaxes: Tax[] = calculationResults.finalTaxes;
   let finalAdditionalTax = calculationResults.finalAdditionalTax;
@@ -41,20 +42,21 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
     }
   });
 
-  console.log("Prev final taxes",finalTaxes);
+  // console.log("Prev final taxes",finalTaxes);
   this.billing.taxes = finalTaxes.filter((tax) => tax.amount);
-  console.log("Billing taxes",this.billing.taxes);
+  // console.log("Billing taxes",this.billing.taxes);
   let totalApplicableTax = this.billing.taxes.reduce((acc, cur) => {
     return acc + cur.amount;
   }, 0)
-//  console.log('totalApplicableTax',this.billing.taxes,finalTaxes, totalApplicableTax,finalAdditionalTax);
+  // console.log('totalApplicableTax',this.billing.taxes,finalTaxes, totalApplicableTax,finalAdditionalTax);
   this.billing.grandTotal = (this.billing.subTotal - applicableDiscount) + totalApplicableTax;
   if (this.billingMode === 'nonChargeable') {
     // this.billing.subTotal = 0;
     this.billing.grandTotal = 0;
   }
   this.printableBillData = this.getPrintableBillData(allProducts);
-  this.checkCanPrintKot()
+  this.checkCanPrintKot();
+  console.log("currentLoyalty",this.currentLoyalty);
   this.updated.next(noUpdate);
 }
 
@@ -201,7 +203,7 @@ export function calculateProducts(kots:(Kot|KotConstructor)[]){
       });
     }
   });
-  console.log("Final taxes",finalTaxes);
+  // console.log("Final taxes",finalTaxes);
   // this.checkCanPrintKot(this);
   return {allProducts,finalTaxes,finalAdditionalTax};
 }

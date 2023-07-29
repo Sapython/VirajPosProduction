@@ -37,6 +37,8 @@ export interface Product {
   applicableTax?:number;
   applicableDiscount?:number;
   cancelled?:boolean;
+  loyaltyCost?:number;
+  loyaltyPoints?:number;
 }
 
 interface Variant {

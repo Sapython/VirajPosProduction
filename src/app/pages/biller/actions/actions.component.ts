@@ -138,7 +138,10 @@ export class ActionsComponent {
     ){
       if (this.dataProvider.currentBill) {
         let dialog = this.dialog.open(SettleComponent, {
-          data: this.dataProvider.currentBill.billing.grandTotal,
+          data: {
+            total:this.dataProvider.currentBill.billing.grandTotal,
+            menu:this.dataProvider.currentBill.menu,
+          },
         });
         dialog.closed.subscribe((result: any) => {
           console.log('Settle Result', result);

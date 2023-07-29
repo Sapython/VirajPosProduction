@@ -1,12 +1,19 @@
 import { Timestamp } from '@angular/fire/firestore';
 
 export interface CustomerInfo {
+  id?:string;
   name?: string;
   phone?: string;
   address?: string;
   gst?: string;
   deliveryName?: string;
   deliveryPhone?: string;
+  loyaltyPoints?:number;
+  averageBill?:number;
+  totalBills?:number;
+  lastBillDate?:Timestamp;
+  lastBillAmount?:number;
+  lastBillId?:string;
 }
 
 export interface UserConstructor {

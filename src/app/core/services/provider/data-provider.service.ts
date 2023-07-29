@@ -7,7 +7,7 @@ import { PromptComponent } from '../../../shared/base-components/prompt/prompt.c
 import { Category, ViewCategory, RootCategory } from '../../../types/category.structure';
 import { CodeBaseDiscount } from '../../../types/discount.structure';
 import { Tax } from '../../../types/tax.structure';
-import { UserRecord, BusinessRecord, userState } from '../../../types/user.structure';
+import { UserRecord, BusinessRecord, userState, CustomerInfo } from '../../../types/user.structure';
 import { Bill } from '../../constructors/bill';
 import { Device } from '../../constructors/device/Device';
 import { ModeConfig } from '../../constructors/menu/menu';
@@ -19,8 +19,7 @@ import { updateRequest } from '../../../types/loader.structure';
 import { Timestamp } from '@angular/fire/firestore';
 import { optionalPromptParam } from '../../../types/prompt.strcuture';
 import { CheckingPasswordComponent } from '../../../shared/checking-password/checking-password.component';
-import { Customer } from '../../../types/customer.structure';
-import { Combo, ComboCategoryCategorized, ComboTypeCategorized, ComboTypeProductWiseCategorized } from '../../../types/combo.structure';
+import { Combo, ComboCategoryCategorized } from '../../../types/combo.structure';
 import { ApplicableCombo } from '../../constructors/comboKot/comboKot';
 
 @Injectable({
@@ -29,6 +28,8 @@ import { ApplicableCombo } from '../../constructors/comboKot/comboKot';
 export class DataProvider {
   constructor(private dialog: Dialog,private functions:Functions) {
     // read viewSettings from localStorage every 2 seconds
+    this.clientWidth.next(window.innerWidth);
+    this.clientHeight.next(window.innerHeight);
     setInterval(() => {
       this.smartMode = (
         localStorage.getItem('viewSettings')
@@ -40,8 +41,8 @@ export class DataProvider {
       this.confirm('Alert',[0],{description:message,buttons:['ok'],primary:[0]});
     };
     window.addEventListener('resize', () => {
-      this.clientWidth = window.innerWidth;
-      this.clientHeight = window.innerHeight;
+      this.clientWidth.next(window.innerWidth);
+      this.clientHeight.next(window.innerHeight);
     });
     window.addEventListener('online', () => {
       this.backOnline.next(true);
@@ -137,7 +138,7 @@ export class DataProvider {
   public groupedTables: { tables: Table[],name:string }[] = [];
   public tokens: Table[] = [];
   public onlineTokens: Table[] = [];
-  public customers: Customer[] = [];
+  public customers: CustomerInfo[] = [];
   public customerDatabaseVersion: string = '';
   public customersUpdated: Subject<void> = new Subject<void>();
   public loyaltyEnabled: boolean = false;
@@ -159,7 +160,6 @@ export class DataProvider {
   
   // combo statuses
   public currentCombo: Combo | undefined;
-  public currentComboType: ComboTypeProductWiseCategorized | undefined;
   public currentComboTypeCategory:ComboCategoryCategorized | undefined;
   public currentApplicableCombo: ApplicableCombo | undefined;
   public currentPendingProduct: Product | undefined;
@@ -177,8 +177,8 @@ export class DataProvider {
   public manageKot: boolean = false;
   public manageKotChanged: Subject<boolean> = new Subject<boolean>();
   public totalSales: number = 0;
-  public clientWidth: number = window.innerWidth;
-  public clientHeight: number = window.innerHeight;
+  public clientWidth: ReplaySubject<number> = new ReplaySubject(1);
+  public clientHeight: ReplaySubject<number> = new ReplaySubject(1);
   
   public get currentBusinessUser(){
     if (this.currentBusiness && this.currentUser){
@@ -398,6 +398,8 @@ export class DataProvider {
     "seeLoyalty", // TODO: new
     "addNewMenu", // TODO: new
     "addNewLoyaltySettings", // TODO: new
+    "editLoyaltySetting", // TODO: new
+    "deleteLoyaltySetting", // TODO: new
     "multipleDiscounts", // TODO: new
     "seeYourCategories",
     "seeMainCategories",

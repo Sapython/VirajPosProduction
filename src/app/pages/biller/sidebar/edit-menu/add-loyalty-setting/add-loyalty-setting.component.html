@@ -1,0 +1,59 @@
+<section>
+  <div class="heading">
+    <h3>Loyalty Setting</h3>
+    <viraj-button type="icon">
+      <i class="ri-close-fill"></i>
+    </viraj-button>
+  </div>
+  <div class="content">
+	<form [formGroup]="addNewLoyaltyForm">
+		<mat-form-field appearance="outline">
+		  <mat-label>Loyalty Setting Name</mat-label>
+		  <input type="text" formControlName="name" matInput />
+		</mat-form-field>
+		<mat-form-field appearance="outline">
+		  <mat-label>Base Loyalty Point</mat-label>
+		  <input type="number" (change)="setBaseLoyaltyPoint(baseRate.value);calculateLoyaltyCost(conversionRate.value)" #baseRate formControlName="baseRate" matInput  />
+		</mat-form-field>
+		<div class="rate">
+			<input placeholder="Base Rate" type="number" value="1" (change)="setBaseLoyaltyPoint(baseRate.value);calculateLoyaltyCost(conversionRate.value)" formControlName="conversionRate" #conversionRate matInput />
+			<span> = {{1 | currency:'INR'}}</span>
+		</div>
+		<mat-form-field appearance="outline">
+		  <mat-label>Expiry Days</mat-label>
+		  <input type="number" formControlName="expiryDays" matInput />
+		</mat-form-field>
+	  </form>
+	  <mat-accordion>
+		<mat-expansion-panel *ngFor="let category of usableMainCategories">
+		  <mat-expansion-panel-header>
+			<mat-panel-title>
+			  <h4>{{ category.categoryName }}</h4>
+			</mat-panel-title>
+		  </mat-expansion-panel-header>
+		  <div class="items">
+			<div class="itemHead">
+				<p>Product Name</p>
+			  	<p>Price</p>
+			  	<p>Loyalty Rates</p>
+			  	<p>Final</p>
+			</div>
+			<div class="item" *ngFor="let product of category.products">
+				<p><strong>{{product.productName}}</strong></p>
+				<p>{{product.price | currency:'INR'}}</p>
+				<p>
+					<input type="number" (input)="setLoyaltyCost(product)" [(ngModel)]="product.loyaltyRate">
+				</p>
+				<p>
+					<strong>{{product.loyaltyCost | currency:'INR'}}</strong>
+				</p>
+			</div>
+		  </div>
+		</mat-expansion-panel>
+	  </mat-accordion>
+	</div>
+	<div class="stickyActions">
+	  <viraj-button type="outline" (click)="dialogRef.close()">Cancel</viraj-button>
+	  <viraj-button (click)="submit()">Submit</viraj-button>
+	</div>
+</section>

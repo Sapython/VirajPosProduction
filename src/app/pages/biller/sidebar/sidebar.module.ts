@@ -92,7 +92,8 @@ import { TableSplitsComponent } from './info-panel/sales-summary/reports/report-
 import { SplitBillsComponent } from './info-panel/sales-summary/reports/report-view/split-bills/split-bills.component';
 import {MatChipsModule} from '@angular/material/chips'; 
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import {MatExpansionModule} from '@angular/material/expansion'; 
+import {MatExpansionModule} from '@angular/material/expansion';
+import { AddLoyaltySettingComponent } from './edit-menu/add-loyalty-setting/add-loyalty-setting.component'; 
 
 @NgModule({
   declarations: [
@@ -158,7 +159,8 @@ import {MatExpansionModule} from '@angular/material/expansion';
     TableMergesComponent,
     TableExchangesComponent,
     TableSplitsComponent,
-    SplitBillsComponent
+    SplitBillsComponent,
+    AddLoyaltySettingComponent
   ],
   imports: [
     CommonModule,

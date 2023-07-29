@@ -74,6 +74,9 @@ section {
 .selectedType{
   width: 100%;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
   .type{
     height: 100px;
     box-sizing: border-box;
@@ -96,15 +99,38 @@ section {
     }
   }
   .categories{
+    display: flex;
+    flex-direction: column;
+    gap:20px;
     .category{
       width: 100%;
       padding: 20px;
     }
     .products{
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+      flex-direction: column;
+      gap: 30px;
       justify-content: space-around;
+      .heading{
+        background: white;
+        box-shadow: 0px 2px 20px rgba(0, 0, 0, 0.07);
+        display: flex;
+        align-items: center;
+        padding: 0px 15px;
+        border-radius: 10px;
+        border:2px solid var(--Viraj-primary);
+        h4{
+          color:var(--Viraj-primary);
+        }
+      }
+      .productsContainer{
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        justify-items: center;
+        align-items: center;
+        gap:10px;
+      }
     }
   }
 }

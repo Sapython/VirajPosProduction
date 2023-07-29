@@ -27,6 +27,22 @@
             height: calc(40px - 10px);
         }
     }
+    form.loyaltyForm{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        *{
+            font-size: var(--Viraj-font-medium);
+        }
+        .redeem{
+            display: flex;
+            gap:20px;
+            input{
+                height:30px;
+                width: 100px;
+            }
+        }
+    }
 }
 .orders{
     padding: 0px 20px 0px 20px;

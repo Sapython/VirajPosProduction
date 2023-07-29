@@ -15,7 +15,6 @@ import { firstValueFrom } from 'rxjs';
 import { Product } from '../../../../types/product.structure';
 import { DataProvider } from '../../../../core/services/provider/data-provider.service';
 import { DirectFlatDiscount, DirectPercentDiscount } from '../../../../types/discount.structure';
-import { ComboCategoryCategorized, ComboTypeProductWiseCategorized } from '../../../../types/combo.structure';
 import { BillService } from '../../../../core/services/database/bill/bill.service';
 @Component({
   selector: 'app-kot-item',

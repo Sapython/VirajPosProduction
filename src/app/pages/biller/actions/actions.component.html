@@ -50,6 +50,6 @@
     <div class="actions" *ngIf="this.dataProvider.currentBill?.stage=='cancelled'">
       <viraj-button [disabled]="!this.dataProvider.currentBill">Open Table</viraj-button>
     </div>
-    <viraj-button [disabled]="!this.dataProvider.currentBill" (vclick)="addCustomerInfo()" *ngIf="dataProvider.clientHeight < 890">Add Customer Info</viraj-button>
+    <viraj-button [disabled]="!this.dataProvider.currentBill" (vclick)="addCustomerInfo()" *ngIf="(dataProvider.clientHeight | async) < 1000">Add Customer Info</viraj-button>
   </div>
 </section>

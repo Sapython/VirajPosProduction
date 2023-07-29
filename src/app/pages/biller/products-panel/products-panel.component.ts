@@ -4,7 +4,7 @@ import { Subject, debounceTime } from 'rxjs';
 import { Product } from '../../../types/product.structure';
 import { DataProvider } from '../../../core/services/provider/data-provider.service';
 import { Category } from '../../../types/category.structure';
-import { Combo, ComboCategoryCategorized, ComboTypeProductWiseCategorized } from '../../../types/combo.structure';
+import { Combo, ComboCategoryCategorized } from '../../../types/combo.structure';
 import { ApplicableCombo } from '../../../core/constructors/comboKot/comboKot';
 var debug:boolean = true;
 @Component({
@@ -20,14 +20,12 @@ export class ProductsPanelComponent implements OnInit{
   customSearchVisible:boolean = false;
   categoryProductSearchResults:Product[] = [];
   categoryComboSearchResults:Combo[] = [];
-  categoryComboTypeSearchResults:ComboTypeProductWiseCategorized[] = [];
   currentCategory:Category|undefined = undefined;
   categoryWiseSearchSubject:Subject<string> = new Subject<string>();
   customSearcher:Fuse<any> = new Fuse([], {keys:['name']});
   combos:Combo[] = [];
   mode:'combos'|'products'|'types' = 'products';
   selectedCombo:Combo|undefined = undefined;
-  selectedType:ComboTypeProductWiseCategorized|undefined = undefined;
   
   constructor(private dataProvider:DataProvider){
     this.dataProvider.menuProducts.subscribe((menu:Category)=>{
@@ -44,7 +42,6 @@ export class ProductsPanelComponent implements OnInit{
       this.customSearchVisible = false;
       this.combos = combo;
       this.selectedCombo = undefined;
-      this.selectedType = undefined;
       this.currentCategory = {
         enabled:true,
         id:'',
@@ -85,20 +82,12 @@ export class ProductsPanelComponent implements OnInit{
       if(debug) console.log("GOT VALUE: ",value);
       if (this.mode == 'combos'){
         this.categoryProductSearchResults = [];
-        this.categoryComboTypeSearchResults = [];
         this.categoryComboSearchResults = this.customSearcher.search(value).map((result)=>{
           return result.item;
         })
       } else if (this.mode == 'products'){
-        this.categoryComboTypeSearchResults = [];
         this.categoryComboSearchResults = [];
         this.categoryProductSearchResults = this.customSearcher.search(value).map((result)=>{
-          return result.item;
-        })
-      } else if(this.mode =='types') {
-        this.categoryProductSearchResults = [];
-        this.categoryComboSearchResults = [];
-        this.categoryComboTypeSearchResults = this.customSearcher.search(value).map((result)=>{
           return result.item;
         })
       }
@@ -141,7 +130,7 @@ export class ProductsPanelComponent implements OnInit{
     }
   }
 
-  selectComboProduct(product:Product,selectedType:ComboTypeProductWiseCategorized,category:ComboCategoryCategorized){
+  selectComboProduct(product:Product,category:ComboCategoryCategorized){
     if (!this.dataProvider.currentBill){
       this.dataProvider.openTableView.next(true)
       return;
@@ -149,15 +138,14 @@ export class ProductsPanelComponent implements OnInit{
     console.log("this.dataProvider.currentApplicableCombo?.id == this.selectedCombo?.id",this.dataProvider.currentApplicableCombo?.combo, this.selectedCombo);
     if (this.dataProvider.currentApplicableCombo?.combo.id == this.selectedCombo?.id){
       console.log("Adding to existing combo");
-      this.dataProvider.currentApplicableCombo.addProduct(selectedType,category,product);
+      this.dataProvider.currentApplicableCombo.addProduct(category,product);
     } else {
       console.log("Adding to new combo");
       this.dataProvider.currentCombo = this.selectedCombo;
-      this.dataProvider.currentComboType = selectedType;
       this.dataProvider.currentComboTypeCategory = category;
       this.dataProvider.currentApplicableCombo = new ApplicableCombo(this.selectedCombo,this.dataProvider.currentBill);
       if (this.dataProvider.currentApplicableCombo.canBeApplied){
-        this.dataProvider.currentApplicableCombo.addProduct(selectedType,category,product);
+        this.dataProvider.currentApplicableCombo.addProduct(category,product);
         if(this.dataProvider.currentBill){
           this.dataProvider.currentBill.addProduct(this.dataProvider.currentApplicableCombo)
         }
@@ -168,11 +156,6 @@ export class ProductsPanelComponent implements OnInit{
   selectCombo(item:Combo){
     console.log("Combo Selected: ",item);
     this.selectedCombo = item;
-    this.searcher.setCollection(item.types);
-  }
-
-  selectType(type:ComboTypeProductWiseCategorized){
-    this.selectedType = type;
   }
 
 }

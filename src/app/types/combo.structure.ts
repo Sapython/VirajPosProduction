@@ -1,32 +1,48 @@
+import { Timestamp } from "@angular/fire/firestore";
 import { DirectFlatDiscount, DirectPercentDiscount } from "./discount.structure";
 import { Product } from "./product.structure";
 import { Tax } from "./tax.structure";
+import { Category } from "./category.structure";
 
 export interface Combo {
     id: string;
     name:string;
     offerImage:string;
     discounted:boolean;
-    numberOfProducts:number;
     maximumNoOfPurchases:number;
     type:'combo'|'offer';
     offerPrice?:number;
-    timeGroups:TimeGroup[];
-    types:ComboTypeProductWiseCategorized[];
+    updateDate:Timestamp;
+    creationDate:Timestamp;
+    selectedCategories:ComboCategoryCategorized[];
+    visibilitySettings:VisibilitySettings;
 }
 
-export interface ComboTypeProductWiseCategorized extends ComboType {
-    categories:ComboCategoryCategorized[];
+export interface VisibilitySettings {
+    mode:'weekly'|'monthly';
+    repeating:boolean;
+    daysSetting:{
+        month:'January'|'February'|'March'|'April'|'May'|'June'|'July'|'August'|'September'|'October'|'November'|'December';
+        days:{
+            weekName:string,
+            week:{
+                day:'Sunday'|'Monday'|'Tuesday'|'Wednesday'|'Thursday'|'Friday'|'Saturday';
+                possible:boolean;
+                selected:boolean;
+            }[]
+        }[]
+    }[];
 }
 
 export interface ComboCategoryCategorized {
     id:string;
     name:string;
-    products:Product[],
-    selectedProducts:Product[],
-    offerType: 'discount' | 'free' | 'fixed';
-    appliedOn: 'all' | 'selected';
-    offerValue?:number;
+    category:Category;
+    selectedProducts?:Product[],
+    offerType: 'discount' | 'free' | 'fixed' | 'mustBuy';
+    appliedOn: 'item' | 'group';
+    discountType:'flat'|'percentage';
+    amount?:number;
     maximumProducts?:number;
     minimumProducts?:number;
 }

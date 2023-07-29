@@ -75,7 +75,7 @@ export class AnalyticsService {
   }
 
   addTakeawayToken() {
-    alert("Adding takeaway token");
+    // alert("Adding takeaway token");
     logEvent(this.analytics,'add_takeaway_token',{takeawayTokenNo:this.dataProvider.takeawayToken})
     return updateDoc(
       doc(

@@ -4,8 +4,8 @@ import {
   Combo,
   ComboCategoryCategorized,
   ComboProductSelection,
-  ComboTypeProductWiseCategorized,
   TimeGroup,
+  VisibilitySettings,
 } from '../../../types/combo.structure';
 import { DirectFlatDiscount, DirectPercentDiscount } from '../../../types/discount.structure';
 import { Tax } from '../../../types/tax.structure';
@@ -45,7 +45,8 @@ export class ApplicableCombo implements ApplicableComboConstructor {
   ]
   constructor(combo: Combo,private bill:Bill) {
     this.generateId();
-    if (this.checkDateIsAvailable(combo.timeGroups)) {
+    console.log("combo.from jadoo",combo.updateDate.toDate());
+    if (this.checkDateIsAvailable(combo.visibilitySettings,combo.updateDate.toDate())) {
       this.canBeApplied = true;
     } else {
       this.canBeApplied = false;
@@ -59,7 +60,6 @@ export class ApplicableCombo implements ApplicableComboConstructor {
   }
 
   addProduct(
-    type: ComboTypeProductWiseCategorized,
     category: ComboCategoryCategorized,
     product: Product
   ) {
@@ -68,11 +68,10 @@ export class ApplicableCombo implements ApplicableComboConstructor {
       return
     }
     // check if type, category, product exists in combo
-    const comboType = this.combo.types.find((t) => t.id == type.id);
-    const comboCategory = comboType?.categories.find(
+    const comboCategory = this.combo.selectedCategories?.find(
       (c) => c.id == category.id
     );
-    const comboProduct = comboCategory?.products.find(
+    const comboProduct = comboCategory?.category.products.find(
       (p) => p.id == product.id
     );
     if (comboProduct) {
@@ -84,6 +83,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
         (a, b) => a + (b.quantity || 1),
         0
       );
+      console.log("Combo category",comboCategory);
       if (
         (comboCategory.maximumProducts || comboCategory.minimumProducts) &&
         (totalQuantity >=
@@ -129,16 +129,14 @@ export class ApplicableCombo implements ApplicableComboConstructor {
   }
 
   increaseProductQuantity(
-    type: ComboTypeProductWiseCategorized,
     category: ComboCategoryCategorized,
     product: Product
   ) {
     console.log("this.combo",this.combo);
-    const comboType = this.combo.types.find((t) => t.id == type.id);
-    const comboCategory = comboType?.categories.find(
+    const comboCategory = this.combo?.selectedCategories.find(
       (c) => c.id == category.id
     );
-    const comboProduct = comboCategory?.products.find(
+    const comboProduct = comboCategory?.category.products.find(
       (p) => p.id == product.id
     );
     if (comboProduct) {
@@ -160,15 +158,13 @@ export class ApplicableCombo implements ApplicableComboConstructor {
   }
 
   decreaseProductQuantity(
-    type: ComboTypeProductWiseCategorized,
     category: ComboCategoryCategorized,
     product: Product
   ) {
-    const comboType = this.combo.types.find((t) => t.id == type.id);
-    const comboCategory = comboType?.categories.find(
+    const comboCategory = this.combo?.selectedCategories.find(
       (c) => c.id == category.id
     );
-    const comboProduct = comboCategory?.products.find(
+    const comboProduct = comboCategory?.category.products.find(
       (p) => p.id == product.id
     );
     if (comboProduct) {
@@ -180,17 +176,15 @@ export class ApplicableCombo implements ApplicableComboConstructor {
   }
 
   setProductQuantity(
-    type: ComboTypeProductWiseCategorized,
     category: ComboCategoryCategorized,
     product: Product,
     quantity: number
   ) {
     console.log("this.combo",this.combo);
-    const comboType = this.combo.types.find((t) => t.id == type.id);
-    const comboCategory = comboType?.categories.find(
+    const comboCategory = this.combo.selectedCategories?.find(
       (c) => c.id == category.id
     );
-    const comboProduct = comboCategory?.products.find(
+    const comboProduct = comboCategory?.category.products.find(
       (p) => p.id == product.id
     );
     if (comboProduct) {
@@ -217,15 +211,13 @@ export class ApplicableCombo implements ApplicableComboConstructor {
   }
 
   deleteProduct(
-    type: ComboTypeProductWiseCategorized,
     category: ComboCategoryCategorized,
     product: Product
   ) {
-    const comboType = this.combo.types.find((t) => t.id == type.id);
-    const comboCategory = comboType?.categories.find(
+    const comboCategory = this.combo?.selectedCategories.find(
       (c) => c.id == category.id
     );
-    const comboProduct = comboCategory?.products.find(
+    const comboProduct = comboCategory?.category.products.find(
       (p) => p.id == product.id
     );
     if (comboProduct) {
@@ -248,8 +240,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
     this.untaxedValue = 0;
     let allProducts: Product[] = [];
     // calculate price for the whole combo and check if the combo config is incomplete
-    this.combo.types.forEach((type) => {
-      type.categories.forEach((category) => {
+    this.combo.selectedCategories.forEach((category) => {
         if (!category.selectedProducts){
           // console.log('no selected products');
           this.incomplete = true;
@@ -274,49 +265,60 @@ export class ApplicableCombo implements ApplicableComboConstructor {
           // console.log("Incomplete by length",totalQuantity);
           this.incomplete = true;
         }
-        // write better version of this where we incorporate combo offer 
-        // if combo offer type (this.combo.type) is combo then the price is combo.offerValue
-        // if combo offer type (this.combo.type) is free then don't calculate price combo.offerValue number of items in where products are sorted in increasing order of price
-        let normalizedSelectedProducts: Product[] = [];
-        if (category.offerType == 'free'){
-          category.selectedProducts.forEach((product) => {
-            console.log("DIS",product);
-            
-            if (product.quantity > 1){
-              for (let index = 0; index < product.quantity; index++) {
-                normalizedSelectedProducts.push(structuredClone({...product,quantity:1}));
-              }
-            } else {
-              normalizedSelectedProducts.push(structuredClone(product));
-            }
-          })
-        }
-        console.log("normalizedSelectedProducts",normalizedSelectedProducts);
-        normalizedSelectedProducts.sort((a,b) => a.price - b.price);
-        let totalAppliedFreeProducts: number = 0;
-        normalizedSelectedProducts.forEach((product) => {
-          // console.log("item index",item);
-          if (product.cancelled){
-            return;
+        // if category offerType is fixedPrice then check if the appliedOn is item then replace the price of each product with the offerPrice and if appliedOn is group then replace the price of each product with the offerPrice divided by the total quantity of products in the category
+        if (category.offerType == 'fixed') {
+          if (category.appliedOn == 'item') {
+            category.selectedProducts.forEach((product) => {
+              product.price = category.amount;
+            });
+          } else {
+            category.selectedProducts.forEach((product) => {
+              product.price = category.amount / totalQuantity;
+            });
           }
-          if (category.offerType == 'free'){
-            if (totalAppliedFreeProducts < category.offerValue){
-              totalAppliedFreeProducts++;
+        } else if (category.offerType == 'free') {
+          // if category offerType is free then distribute products into array.
+          category.selectedProducts.forEach((product) => {
+            product.lineDiscount = {
+              creationDate: Timestamp.now(),
+              mode: 'directPercent',
+              reason: 'Free',
+              totalAppliedDiscount: 0,
+              value: 100,
+            };
+            product.lineDiscounted = true;
+          });
+        } else if (category.offerType == 'discount') {
+          // apply this discount to all products in the category
+          category.selectedProducts.forEach((product) => {
+            if (category.discountType == 'flat') {
+              product.lineDiscount = {
+                creationDate: Timestamp.now(),
+                mode: 'directFlat',
+                reason: 'Discount',
+                totalAppliedDiscount: 0,
+                value: category.amount,
+              };
+            } else {
               product.lineDiscount = {
                 creationDate: Timestamp.now(),
                 mode: 'directPercent',
-                totalAppliedDiscount:100,
-                reason: 'Combo Offer',
-                value: 100,
-              }
+                reason: 'Discount',
+                totalAppliedDiscount: 0,
+                value: category.amount,
+              };
             }
-          } else {
-            product.lineDiscount = undefined;
-          }
-          allProducts.push(structuredClone(product));
-        })
-      });
-    })
+            product.lineDiscounted = true;
+          })
+        } else if (category.offerType == 'mustBuy') {
+          // no price change
+          category.selectedProducts.forEach((product) => {
+            product.lineDiscount = null;
+            product.lineDiscounted = false;
+          });
+        }
+        allProducts = allProducts.concat(category.selectedProducts);
+    });
     // console.log("FINAL allProducts",allProducts);
     // check individual product for tax and if the tax.mode is inclusive then add the applicable tax to totalTaxValue or if the tax.mode is exclusive then decrease the price of product by tax rate and add the applicableValue to totalTaxValue
     let finalAdditionalTax: number = 0;
@@ -422,9 +424,10 @@ export class ApplicableCombo implements ApplicableComboConstructor {
         }
       }
     });
+    
     // calculate price
     allProducts.forEach((product) => {
-      this.untaxedValue = this.untaxedValue + (product.untaxedValue * product.quantity);
+      this.untaxedValue += product.untaxedValue;
       console.log("PRD",product.untaxedValue,product.price,product.quantity);
       if(!product.lineDiscounted){
         this.price = this.price + (product.price * product.quantity);
@@ -438,75 +441,40 @@ export class ApplicableCombo implements ApplicableComboConstructor {
     });
     this.finalTaxes = finalTaxes;
     if (this.bill && this.bill.calculateBill){
-      console.log("Calculate bill",this.bill,this.bill.calculateBill)
       this.bill.calculateBill()
     }
     console.log("untaxedValue",this.untaxedValue,"finalTaxes",finalTaxes);
   }
 
-  checkDateIsAvailable(timeGroups: TimeGroup[]) {
+  checkDateIsAvailable(visibilitySettings: VisibilitySettings,date:Date) {
     let available = true;
-    timeGroups.forEach((timeGroup) => {
-      timeGroup.conditions.forEach((condition) => {
-        if (condition.type == 'date') {
-          if (condition.condition == 'is') {
-            if (condition.value != new Date().toISOString().split('T')[0]) {
-              available = false;
-            }
-          } else if (condition.condition == 'is not') {
-            if (condition.value == new Date().toISOString().split('T')[0]) {
-              available = false;
-            }
-          } else if (condition.condition == 'is before') {
-            if (condition.value >= new Date().toISOString().split('T')[0]) {
-              available = false;
-            }
-          } else if (condition.condition == 'is after') {
-            if (condition.value <= new Date().toISOString().split('T')[0]) {
-              available = false;
-            }
-          }
-        } else if (condition.type == 'day') {
-          console.log("IS day");
-          if (condition.condition == 'is') {
-            console.log("IS day",condition.value,new Date().getDay());
-            if (!condition.value.includes(this.getDayFromIndex(new Date().getDay()))) {
-              available = false;
-            }
-          } else if (condition.condition == 'is not') {
-            if (!condition.value.includes(this.getDayFromIndex(new Date().getDay()))) {
-              available = false;
-            }
-          } else if (condition.condition == 'is before') {
-            if (!condition.value.includes(this.getDayFromIndex(new Date().getDay()))) {
-              available = false;
-            }
-          } else if (condition.condition == 'is after') {
-            if (!condition.value.includes(this.getDayFromIndex(new Date().getDay()))) {
-              available = false;
-            }
-          }
-        } else if (condition.type == 'time') {
-          if (condition.condition == 'is') {
-            if (condition.value != new Date().getHours()) {
-              available = false;
-            }
-          } else if (condition.condition == 'is not') {
-            if (condition.value == new Date().getHours()) {
-              available = false;
-            }
-          } else if (condition.condition == 'is before') {
-            if (condition.value >= new Date().getHours()) {
-              available = false;
-            }
-          } else if (condition.condition == 'is after') {
-            if (condition.value <= new Date().getHours()) {
-              available = false;
-            }
-          }
+    if(visibilitySettings.mode == 'monthly'){
+      if (visibilitySettings.repeating){
+        let todayYear = (new Date()).getFullYear();
+        let comboYear = date.getFullYear();
+        if (todayYear != comboYear){
+          available = false;
+          return
         }
-      });
-    });
+      }
+        let currentMonth = (new Date()).toLocaleDateString('en-US', { month: 'long' });
+        let currentDay = (new Date()).toLocaleDateString('en-US', { weekday: 'long' });
+        let currentMonthVisibility = visibilitySettings.daysSetting.find((month) => month.month == currentMonth);
+        let availableDays = currentMonthVisibility.days.filter((day) => day.week.find((week) => week.day == currentDay && week.possible && week.selected));
+        if(availableDays.length == 0){
+          available = false;
+        } else {
+          available = true;
+        }
+    } else if (visibilitySettings.mode == 'weekly'){
+      let currentDay = (new Date()).toLocaleDateString('en-US', { weekday: 'long' });
+      let availableDays = visibilitySettings.daysSetting[0].days.filter((day) => day.week.find((week) => week.day == currentDay && week.possible && week.selected));
+      if(availableDays.length == 0){
+        available = false;
+      } else {
+        available = true;
+      }
+    }
     console.log("IS DAY VALID",available);
     return available;
   }

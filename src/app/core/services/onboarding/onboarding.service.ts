@@ -17,7 +17,7 @@ import { DialogComponent } from '../../../shared/base-components/dialog/dialog.c
 import { CodeBaseDiscount } from '../../../types/discount.structure';
 import { TableConstructor } from '../../../types/table.structure';
 import { Tax } from '../../../types/tax.structure';
-import { BusinessRecord, Member } from '../../../types/user.structure';
+import { BusinessRecord, CustomerInfo, Member } from '../../../types/user.structure';
 import { AlertsAndNotificationsService } from '../alerts-and-notification/alerts-and-notifications.service';
 import { AuthService } from '../auth/auth.service';
 import { MenuManagementService } from '../database/menuManagement/menu-management.service';
@@ -33,7 +33,7 @@ import { AnalyticsService } from '../database/analytics/analytics.service';
 import { TableService } from '../database/table/table.service';
 import { BillService } from '../database/bill/bill.service';
 import { CustomerService } from '../customer/customer.service';
-import { Customer } from '../../../types/customer.structure';
+import { Router } from '@angular/router';
 
 
 var debug:boolean = true;
@@ -74,7 +74,8 @@ export class OnboardingService {
     private analyticsService: AnalyticsService,
     private tableService: TableService,
     private billService: BillService,
-    private userManagementService:UserManagementService
+    private userManagementService:UserManagementService,
+    private router:Router
   ) {
     console.log('Onboarding Service Initialized');
     this.loadingSteps.next('Checking User');
@@ -159,10 +160,21 @@ export class OnboardingService {
       if (setting.modes.filter((mode: boolean) => mode).length >= 1) {
         this.loadingSteps.next('Checking available modes');
         if (setting.dineInMenu || setting.takeawayMenu || setting.onlineMenu) {
+          let menus = await this.menuManagementService.getMenus();
+          this.dataProvider.allMenus = [];
+          menus.docs.forEach((menu) => {
+            this.dataProvider.allMenus.push({
+              ...menu.data(),
+              id: menu.id
+            } as Menu);
+          });
           // get whatever menu is available in currentMenu and set it to currentMenu
           let menuInits = [];
           this.dataProvider.menus = [];
           if (setting.takeawayMenu) {
+            setting.takeawayMenu = this.dataProvider.allMenus.find(
+              (menu) => menu.id == setting.takeawayMenu.id
+            ) || setting.takeawayMenu;
             let inst = new ModeConfig(
               'Takeaway',
               'takeaway',
@@ -180,6 +192,9 @@ export class OnboardingService {
             this.loadingSteps.next('Found Takeaway Menu');
           }
           if (setting.onlineMenu) {
+            setting.onlineMenu = this.dataProvider.allMenus.find(
+              (menu) => menu.id == setting.onlineMenu.id
+            ) || setting.onlineMenu;
             let inst = new ModeConfig(
               'Online',
               'online',
@@ -197,6 +212,9 @@ export class OnboardingService {
             this.loadingSteps.next('Found Online Menu');
           }
           if (setting.dineInMenu) {
+            setting.dineInMenu = this.dataProvider.allMenus.find(
+              (menu) => menu.id == setting.dineInMenu.id
+            ) || setting.dineInMenu;
             let inst = new ModeConfig(
               'Dine In',
               'dineIn',
@@ -213,14 +231,7 @@ export class OnboardingService {
             this.dataProvider.menus.push(inst);
             this.loadingSteps.next('Found Dine In Menu');
           }
-          let menus = await this.menuManagementService.getMenus();
-          this.dataProvider.allMenus = [];
-          menus.docs.forEach((menu) => {
-            this.dataProvider.allMenus.push({
-              ...menu.data(),
-              id: menu.id,
-            } as Menu);
-          });
+          console.log("menus.docs.map",menus.docs.map((doc)=>{ return {...doc.data(),id:doc.id,selectedLoyaltyId:doc.data()['selectedLoyaltyId'] ? doc.data()['selectedLoyaltyId'] : null} as Menu}))
           // console.log("loaded discounts",this.dataProvider.discounts);
           let verifiedMenus = [];
           this.loadingSteps.next('Waiting for menus to load');
@@ -288,6 +299,7 @@ export class OnboardingService {
                 this.message = 'Viraj is ready to use.';
                 this.dataProvider.loading = false;
                 this.stage = 'virajReady';
+                this.router.navigate(['biller'])
               }
             }
           );
@@ -390,7 +402,7 @@ export class OnboardingService {
     })
     collectionData(collection(this.firestore, 'business/' + business.businessId + '/customers'),{idField:'id'}).subscribe((res)=>{
       if (res){
-        this.dataProvider.customers = res as Customer[];
+        this.dataProvider.customers = res as CustomerInfo[];
       }
     })
   }

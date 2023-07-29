@@ -1,5 +1,5 @@
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import { Timestamp } from '@angular/fire/firestore';
+import { Timestamp, doc, serverTimestamp, setDoc } from '@angular/fire/firestore';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import Fuse from 'fuse.js';
 import { Subject, debounceTime, firstValueFrom } from 'rxjs';
@@ -26,6 +26,8 @@ import { AddTypeComponent } from '../../../pages/biller/sidebar/edit-menu/add-ty
 import { Combo, ComboType, ComboTypeCategorized, TimeGroup } from '../../../types/combo.structure';
 import { AddComboComponent } from '../../../pages/biller/sidebar/edit-menu/add-combo/add-combo.component';
 import { AddTimeGroupComponent } from '../../../pages/biller/sidebar/edit-menu/add-time-group/add-time-group.component';
+import { LoyaltySetting } from '../../../types/loyalty.structure';
+import { AddLoyaltySettingComponent } from '../../../pages/biller/sidebar/edit-menu/add-loyalty-setting/add-loyalty-setting.component';
 
 
 var debug:boolean = false;
@@ -54,11 +56,15 @@ export class ModeConfig {
   typeSearchSubject: Subject<string> = new Subject<string>();
   discountsSearchSubject: Subject<string> = new Subject<string>();
   taxesSearchSubject: Subject<string> = new Subject<string>();
+  loyaltySearchSubject: Subject<string> = new Subject<string>();
   fuseInstance: Fuse<Product> = new Fuse([], { keys: ['name'] });
   typesSearchInstance: Fuse<ComboType> = new Fuse([], { keys: ['name'] });
   taxesSearchInstance: Fuse<Tax> = new Fuse([], { keys: ['name'] });
+  loyaltySearchInstance: Fuse<Tax> = new Fuse([], { keys: ['name'] });
   discountsSearchInstance: Fuse<CodeBaseDiscount> = new Fuse([], { keys: ['name'] });
-  loyaltySettings:any[] = [];
+  loyaltySettings:LoyaltySetting[] = [];
+  filteredLoyaltySettings:LoyaltySetting[] = [];
+  loadingLoyaltySettings:boolean = false;
   highCostForm: FormGroup = new FormGroup({
     min: new FormControl(this.dataProvider.highCostConfig.min, [
       Validators.required,
@@ -114,6 +120,7 @@ export class ModeConfig {
   // temps
   activateCategory: Category | undefined;
   discountSearchControl:string = '';
+  selectedLoyaltyId:string = '';
   constructor(
     name: string,
     type: 'dineIn' | 'takeaway' | 'online',
@@ -132,6 +139,9 @@ export class ModeConfig {
     this.filteredProducts = [];
     this.selectedMenuId = selectedMenuId;
     this.selectedMenu = selectedMenu;
+    this.selectedLoyaltyId = selectedMenu.selectedLoyaltyId;
+    console.log("HERHERHEHRE",this.selectedLoyaltyId,selectedMenu);
+    
     this.categoryUpdated = false;
     this.currentType = 'all';
     this.allProductsCategory = {
@@ -373,24 +383,24 @@ export class ModeConfig {
       data.forEach((doc) => {
         this.combos.push({
           ...doc.data(),
-          types:doc.data()["types"].map((type:ComboTypeCategorized)=>{
-            if (type.image){
-              var img=new Image();
-              img.src=type.image;
-            }
-            // load products for each type
-            return {
-              ...type,
-              categories:type.categories.map((category)=>{
-                return {
-                  ...category,
-                  products:category.products.map((product)=>{
-                    return this.products.find((p)=>p.id==product.id)
-                  })
-                }
-              })
-            }
-          }),
+          // types:doc.data()["types"].map((type:ComboTypeCategorized)=>{
+          //   if (type.image){
+          //     var img=new Image();
+          //     img.src=type.image;
+          //   }
+          //   // load products for each type
+          //   return {
+          //     ...type,
+          //     categories:type.categories.map((category)=>{
+          //       return {
+          //         ...category,
+          //         products:category.products.map((product)=>{
+          //           return this.products.find((p)=>p.id==product.id)
+          //         })
+          //       }
+          //     })
+          //   }
+          // }),
           id: doc.id,
         } as Combo);
         if (doc.data()["offerImage"]){
@@ -420,6 +430,7 @@ export class ModeConfig {
     await this.getTypes();
     await this.getTimeGroups();
     await this.getComboCategories();
+    await this.getLoyaltySettings();
     this.dataProvider.menuLoadSubject.next({
       type: this.type,
     });
@@ -1487,9 +1498,8 @@ export class ModeConfig {
     const dialog = this.dialog.open(AddComboComponent,{data:{mode:'add',menu:this}});
     dialog.closed.subscribe((data:any)=>{
       console.log('data',data);
-
       if(data){
-        this.menuManagementService.addCombo({...data,creationDate:Timestamp.now(),updateDate:Timestamp.now()},this.selectedMenu).then((res)=>{
+        this.menuManagementService.addCombo({...data,creationDate:serverTimestamp(),updateDate:serverTimestamp()},this.selectedMenu).then((res)=>{
           this.alertify.presentToast('Combo added successfully');
           this.menuManagementService.getCombos(this.selectedMenu.id);
         }).catch((err)=>{
@@ -1583,35 +1593,56 @@ export class ModeConfig {
     });
   }
 
-  addLoyaltySettings(){
-    this.loyaltySettings.push({
-      newLoyaltyForm:new FormGroup({
-        name:new FormControl('',[Validators.required]),
-        timeGroup:new FormControl('',[Validators.required]),
-      }),
-      products:this.products.map((p:Product)=>{
-        return {...p,selected:false,loyaltyPoint:0,expiryInDays:0};
-      }),
-    })
+  // Loyalty CRUD
+
+  getLoyaltySettings(){
+    this.loadingLoyaltySettings = true;
+    this.menuManagementService.getLoyaltySettings(this.selectedMenuId).then((res)=>{
+      this.loyaltySettings = [];
+      res.forEach((data)=>{
+        this.loyaltySettings.push({...data.data(),id:data.id} as LoyaltySetting);
+      });
+      console.log("this.loyaltySettings",this.loyaltySettings);
+    }).catch((err)=>{
+      this.alertify.presentToast('Error while fetching loyalty settings');
+    }).finally(()=>{
+      this.loadingLoyaltySettings = false;
+    });
   }
 
-  saveLoyaltySetting(setting){
-    console.log('setting',setting);
-    if(setting.newLoyaltyForm.valid){
-      let loyaltySettingData = {
-        ...setting.newLoyaltyForm.value,
-        products:setting.products.filter((p:Product)=>p.selected).map((p:any)=>{
-          return {
-            id:p.id,
-            loyaltyPoint:p.loyaltyPoint,
-            expiryInDays:p.expiryInDays,
-          }
-        })
+  addLoyaltySettings(){
+    const comp = this.dialog.open(AddLoyaltySettingComponent,{data:{menu:this}});
+    firstValueFrom(comp.closed).then((data:any)=>{
+      console.log("Data",data);
+      if(data && typeof data == 'object'){
+        this.menuManagementService.addLoyaltySetting(data,this.selectedMenuId).then((res)=>{
+          this.alertify.presentToast('Loyalty Setting added');
+        }).catch((error)=>{
+          console.log(error);
+          this.alertify.presentToast('Unable to add loyalty setting','error')
+        });
+      } else {
+        this.alertify.presentToast("Operation cancelled !!!")
       }
-    }
+    })
   }
 
   cancelLoyaltySetting(setting,index:number){
     this.loyaltySettings.splice(index,1);
+  }
+
+  editLoyaltySetting(loyaltySetting:LoyaltySetting){
+    
+  }
+
+  deleteLoyaltySetting(loyaltySetting:LoyaltySetting){
+
+  }
+
+  selectLoyaltySetting(value:any){
+    console.log("Log",value);
+    this.menuManagementService.selectLoyalty(value.value,this.selectedMenuId).then(()=>{
+      this.alertify.presentToast('Loyalty Setting selected');
+    })
   }
 }

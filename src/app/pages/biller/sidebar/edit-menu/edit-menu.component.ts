@@ -54,14 +54,6 @@ export class EditMenuComponent implements OnInit {
   getMenus(){
     this.menuManagementService.getMenus().then((menus)=>{
       this.dataProvider.allMenus = menus.docs.map((doc)=>{ return {...doc.data(),id:doc.id} as Menu});
-      this.dataProvider.allMenus.forEach((menu)=>{
-        // this.menus.push({
-        //   name:menu.name,
-        //   toggled:false,
-        //   menuSwitcher:false,
-        //   menu:new ModeConfig(),
-        // });
-      });
     })
   };
 

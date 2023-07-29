@@ -5,35 +5,30 @@ section{
     padding: 30px;
     overflow-y: scroll;
     box-sizing: border-box;
+    .dragArea{
+        border: 3px dashed #c7c7c7;
+        display: grid;
+        place-items: center;
+        height: 300px;
+        width: 100%;
+        margin-bottom: 30px;
+        border-radius: 30px;
+        .noImage{
+            display: grid;
+            place-items: center;
+            color:var(--Viraj-primary);
+        }
+        img{
+            height: 80%;
+            width: auto;
+            object-fit: contain;
+        }
+    }
     form{
         display: grid;
-        grid-template-areas:
-        "a a b c" 
-        "d e f g";
-        gap: 10px;
+        grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+        gap:20px;
         align-items: center;
-        width: 100%;
-        mat-form-field:nth-child(1){
-            grid-area: a;
-        }
-        viraj-button{
-            grid-area: b;
-        }
-        mat-checkbox{
-            grid-area: c;
-        }
-        mat-form-field:nth-child(5){
-            grid-area: d;
-        }
-        mat-form-field:nth-child(6){
-            grid-area: e;
-        }
-        mat-form-field:nth-child(7){
-            grid-area: f;
-        }
-        mat-form-field:nth-child(8){
-            grid-area: g;
-        }
     }
     .config{
         display: flex;
@@ -260,59 +255,63 @@ section{
                 }
             }
         }
-        .visibilitySettings{
-            margin-top: 30px;
-            border:2px solid #c7c7c7;
-            border-radius: 8px;
-            .settings{
-                .actions{
+    }
+    .visibilitySettings{
+        margin-top: 30px;
+        border:2px solid #c7c7c7;
+        border-radius: 8px;
+        .settings{
+            .actions{
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+                gap:20px;
+            }
+            .weeks{
+                .selectWeeks{
                     display: flex;
-                    justify-content: flex-start;
-                    align-items: center;
                     gap:20px;
                 }
-                .weeks{
-                    .selectWeeks{
-                        display: flex;
-                        gap:20px;
-                    }
-                    .tableContainer{
-                        table{
-                            // circular border radius
-                            border-radius: 20px;
-                            border-collapse: collapse;
-                            tbody{
-                                tr{
-                                    td{
-                                        .days{
-                                            display: flex;
-                                            flex-direction: column;
-                                            gap:20px;
-                                            .day{
-                                                font-weight: 700;
-                                                font-size: 20px;
-                                            }
-                                            .day.inactive{
-                                                width: 100.513px;
-                                                height: 45.725px;
-                                                flex-shrink: 0;
-                                                border-radius: 8px;
-                                                border: 1px solid #D7D7D7;
-                                                background: #FFF;
-                                                box-shadow: 0px 5px 16px 0px rgba(0, 0, 0, 0.10);
-                                            }
-                                            .day.active{
-                                                border-radius: 8px;
-                                                background: #FF5E35;
-                                                color:white;
-                                                box-shadow: 0px 5px 16px 0px rgba(0, 0, 0, 0.10);
-                                            }
-                                            .day.disabled{
-                                                border-radius: 8px;
-                                                border: 1px solid #D7D7D7;
-                                                background: #FFF;
-                                                color: #D7D7D7;
-                                            }
+                .tableContainer{
+                    table{
+                        // circular border radius
+                        border-radius: 20px;
+                        border-collapse: collapse;
+                        tbody{
+                            tr{
+                                td{
+                                    .day{
+                                        font-weight: 500;
+                                        font-size: 15px;
+                                        width: 100.513px;
+                                        height: 45.725px;
+                                        flex-shrink: 0;
+                                        border-radius: 8px;
+                                        border: 1px solid #D7D7D7;
+                                        background: #FFF;
+                                        box-shadow: 0px 5px 16px 0px rgba(0, 0, 0, 0.10);
+                                        display: grid;
+                                        place-items: center;
+                                        cursor: pointer;
+                                        scale: 0.9;
+                                        transition: scale 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+                                        &:hover{
+                                            scale:1;
+                                        }
+                                    }
+                                    .day.active{
+                                        border-radius: 8px;
+                                        background: #FF5E35;
+                                        color:white;
+                                        box-shadow: 0px 5px 16px 0px rgba(0, 0, 0, 0.10);
+                                    }
+                                    .day.impossible{
+                                        border-radius: 8px;
+                                        border: 1px solid #D7D7D7;
+                                        background: #FFF;
+                                        color: #D7D7D7;
+                                        &:hover{
+                                            scale:0.9;
                                         }
                                     }
                                 }
@@ -320,7 +319,22 @@ section{
                         }
                     }
                 }
-
+            }
+            .timeSlots{
+                width: 100%;
+                border:2px solid #c7c7c7;
+                border-collapse: collapse;
+                border-spacing: 0;
+                font-size: 0.9em;
+                font-family: sans-serif;
+                min-width: 400px;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+                border-collapse: collapse;
+                border-radius: 1em;
+                thead{
+                    border-bottom: 2px solid #c7c7c7;
+                    font-weight: 700;
+                }
             }
         }
     }

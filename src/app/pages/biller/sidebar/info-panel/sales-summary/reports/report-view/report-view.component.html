@@ -28,8 +28,8 @@
 				<input matStartDate formControlName="startDate" placeholder="Start date">
 				<input matEndDate formControlName="endDate" placeholder="End date">
 			</mat-date-range-input>
-			<viraj-button>Download As Excel</viraj-button>
-			<viraj-button>Download As PDF</viraj-button>
+			<viraj-button (click)="reportService.downloadExcel.next()">Download As Excel</viraj-button>
+			<viraj-button (click)="reportService.downloadPdf.next()">Download As PDF</viraj-button>
 			<viraj-button type="outline" (vclick)="picker.open()">Select Date Range <i class="ri-calendar-2-fill"></i></viraj-button>
 		</div>
 	</div>

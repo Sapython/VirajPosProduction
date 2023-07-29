@@ -109,7 +109,6 @@ export class TableComponent implements OnInit {
     ) {
       if (this.dataProvider.currentApplicableCombo) {
         this.dataProvider.currentApplicableCombo.addProduct(
-          this.dataProvider.currentComboType,
           this.dataProvider.currentComboTypeCategory,
           this.dataProvider.currentPendingProduct
         );
@@ -119,7 +118,6 @@ export class TableComponent implements OnInit {
           this.dataProvider.currentBill
         );
         this.dataProvider.currentApplicableCombo.addProduct(
-          this.dataProvider.currentComboType,
           this.dataProvider.currentComboTypeCategory,
           this.dataProvider.currentPendingProduct
         );
@@ -386,7 +384,7 @@ export class TableComponent implements OnInit {
   settleTable(table: Table, event) {
     if (table.bill) {
       let dialog = this.dialog.open(SettleComponent, {
-        data: table.bill.billing.grandTotal,
+        data: table.bill.billing.grandTotal
       });
       dialog.closed.subscribe(async (result: any) => {
         //  console.log('Result', result);

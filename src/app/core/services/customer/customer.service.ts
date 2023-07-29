@@ -3,10 +3,10 @@ import { Firestore, Timestamp, addDoc, collection, doc, getDocs, serverTimestamp
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { DataProvider } from '../provider/data-provider.service';
 import { firstValueFrom } from 'rxjs';
-import { Customer } from '../../../types/customer.structure';
 import { Bill } from '../../constructors/bill';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 import { AlertsAndNotificationsService } from '../alerts-and-notification/alerts-and-notifications.service';
+import { CustomerInfo } from '../../../types/user.structure';
 
 @Injectable({
   providedIn: 'root',
@@ -53,21 +53,12 @@ export class CustomerService {
     });
   }
 
-  async addCustomer(customer:{address:string,gst:string,name:string,phone:string},bill:Bill) {
+  async addCustomer(customer:CustomerInfo,bill:Bill) {
     let customerData = {
       address:customer.address,
       gst:customer.gst,
       name:customer.name,
-      phone:customer.phone,
-      averageOrderPrice:bill.printableBillData.grandTotal,
-      lastMonth:'',
-      lastOrder:'',
-      lastOrderDate:'',
-      lastOrderDish:bill.printableBillData.products.map((product)=>product.name),
-      loyaltyPoints:0,
-      orderFrequency:0,
-      id:'',
-      createdDate:Timestamp.now(),
+      phone:customer.phone
     }
     console.log("ADDING CUSTOMER",customerData);
     let res = await addDoc(collection(this.firestore,'business',this.dataProvider.currentBusiness.businessId,'customers'),customerData)
@@ -77,7 +68,7 @@ export class CustomerService {
     return res
   }
 
-  updateCustomer(customer:{address:string,gst:string,name:string,phone:string},bill:Bill){
+  async updateCustomer(customer:CustomerInfo,bill:Bill){
     let id = this.dataProvider.customers.find((customer)=>customer.phone == customer.phone)
     if (id){
       console.log("Updating CUSTOMER",id);
@@ -95,15 +86,18 @@ export class CustomerService {
           return customer
         }
       })
-      return updateDoc(doc(this.firestore,'business',this.dataProvider.currentBusiness.businessId,'customers',id.id),{
+      let updatedCustomerDoc = await updateDoc(doc(this.firestore,'business',this.dataProvider.currentBusiness.businessId,'customers',id.id),{
         name:customer.name,
         phone:customer.phone,
         address:customer.address,
         gst:customer.gst,
         updated:serverTimestamp()
-      })
+      });
+      await this.addBillToCustomer(id.id,bill);
+      return updatedCustomerDoc;
     } else {
-      return this.addCustomer(customer,bill)
+      let newCustomerDoc = await this.addCustomer(customer,bill);
+      await this.addBillToCustomer(newCustomerDoc.id,bill);
     }
   }
 
@@ -119,6 +113,21 @@ export class CustomerService {
     }).catch((error)=>{
       console.log("error",error);
       this.alertify.presentToast(error.message,'error')
+    })
+  }
+
+  addBillToCustomer(customerID:string,bill:Bill){
+    return addDoc(collection(
+      this.firestore,
+      'business',
+      this.dataProvider.currentBusiness.businessId,
+      'customers',
+      customerID,
+      'bills'
+    ),{
+      billId:bill.id,
+      billRef:doc(this.firestore,'business',this.dataProvider.currentBusiness.businessId,'bills',bill.id),
+      created:serverTimestamp()
     })
   }
 

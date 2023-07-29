@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Combo, ComboCategoryCategorized, ComboTypeProductWiseCategorized } from '../../../../types/combo.structure';
+import { Combo, ComboCategoryCategorized } from '../../../../types/combo.structure';
 import { ApplicableCombo } from '../../../../core/constructors/comboKot/comboKot';
 import { zoomInOnEnterAnimation, zoomOutOnLeaveAnimation } from 'angular-animations';
 import { Product } from '../../../../types/product.structure';
@@ -22,20 +22,19 @@ export class ComboItemComponent {
   @Output() delete: EventEmitter<any> = new EventEmitter();
   
   constructor(private dataProvider:DataProvider){}
-  addProductQuantity(type:ComboTypeProductWiseCategorized,category:ComboCategoryCategorized,item:Product){
-    this.combo.increaseProductQuantity(type,category,item)
+  addProductQuantity(category:ComboCategoryCategorized,item:Product){
+    this.combo.increaseProductQuantity(category,item)
   }
-  removeProductQuantity(type:ComboTypeProductWiseCategorized,category:ComboCategoryCategorized,item:Product){
-    this.combo.decreaseProductQuantity(type,category,item)
+  removeProductQuantity(category:ComboCategoryCategorized,item:Product){
+    this.combo.decreaseProductQuantity(category,item)
   }
-  setProductQuantity(type:ComboTypeProductWiseCategorized,category:ComboCategoryCategorized,item:Product,quantity:number){
-    this.combo.setProductQuantity(type,category,item,quantity)
+  setProductQuantity(category:ComboCategoryCategorized,item:Product,quantity:number){
+    this.combo.setProductQuantity(category,item,quantity)
   }
 
   activateCombo(){
     this.dataProvider.currentApplicableCombo = this.combo;
     this.dataProvider.currentCombo = this.combo.combo;
-    this.dataProvider.currentComboType = undefined;
     this.dataProvider.currentComboTypeCategory = undefined;
     let state = this.dataProvider.productPanelStateValue;
     if (state=='products'){

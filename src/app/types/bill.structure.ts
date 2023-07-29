@@ -48,6 +48,15 @@ export interface BillConstructor {
     phone: string;
     name: string;
   };
+  currentLoyalty:{
+    loyaltySettingId:string,
+    totalLoyaltyCost:number,
+    totalLoyaltyPoints:number,
+    totalToBeRedeemedPoints:number,
+    totalToBeRedeemedCost:number,
+    receiveLoyalty: boolean,
+    redeemLoyalty: boolean,
+  }
 }
 export interface PrintableBill {
   businessDetails:{

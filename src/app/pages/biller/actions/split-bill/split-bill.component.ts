@@ -140,6 +140,15 @@ export class SplitBillComponent {
       billSplits: [],
       billReprints: [],
       billingMode: this.bill.billingMode,
+      currentLoyalty:{
+        loyaltySettingId:'',
+        totalLoyaltyCost:0,
+        totalLoyaltyPoints:0,
+        totalToBeRedeemedPoints:0,
+        totalToBeRedeemedCost:0,
+        receiveLoyalty: false,
+        redeemLoyalty: false,
+      }
     };
     calculateBill(billConstructor,this.dataProvider);
     this.splittedBills.push(billConstructor);

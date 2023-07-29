@@ -19,6 +19,22 @@
                 {{ totalPaid - billSum | currency:'INR'}}
             </span>
         </div>
+        <hr>
+        <p><strong>Loyalty</strong></p>
+        <div class="total">
+            <p>Total Earning from this bill</p>
+            <span [ngClass]="{'red':(billSum - totalPaid != 0)}">
+                {{ totalPaid - billSum | currency:'INR'}}
+            </span>
+        </div>
+        <div class="total">
+            <mat-checkbox>
+                Previous Points
+            </mat-checkbox>
+            <span [ngClass]="{'red':(billSum - totalPaid != 0)}">
+                {{ totalPaid - billSum | currency:'INR'}}
+            </span>
+        </div>
     </div>
     <hr>
     <div class="methods">

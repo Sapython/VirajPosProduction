@@ -8,15 +8,11 @@
     [@fadeOutUpOnLeave]
     *ngIf="this.dataProvider.offline"
     [ngClass]="{
-      online: this.dataProvider.backOnline | async,
-      updating: this.dataProvider.updating
+      online: this.dataProvider.backOnline | async
     }"
   >
     <ng-container *ngIf="!this.dataProvider.updating">
       System is currently offline !!!
-    </ng-container>
-    <ng-container *ngIf="this.dataProvider.updating">
-      Syncing Online !!!
     </ng-container>
   </div>
   <router-outlet #outlet="outlet"></router-outlet>

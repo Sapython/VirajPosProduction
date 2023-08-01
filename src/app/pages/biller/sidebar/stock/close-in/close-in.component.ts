@@ -6,10 +6,10 @@ import { ConfirmDialogComponent } from '../../../../../shared/helpers/confirm-di
 @Component({
   selector: 'app-close-in',
   templateUrl: './close-in.component.html',
-  styleUrls: ['./close-in.component.scss']
+  styleUrls: ['./close-in.component.scss'],
 })
 export class CloseInComponent {
-  items:any[] = [
+  items: any[] = [
     {
       name: 'Bread',
       quantity: 10,
@@ -29,22 +29,23 @@ export class CloseInComponent {
       price: 1000,
     },
   ];
-  constructor(private dialog:Dialog) { }
-  closeIn(){
+  constructor(private dialog: Dialog) {}
+  closeIn() {
     // use confirm dialog
-    const dialog = this.dialog.open(ConfirmDialogComponent,{data:{
-      title: "Close In",
-      message: "Are you sure you want to close in?",
-      buttons:['No','Yes']
-    }})
-    dialog.closed.subscribe((data)=>{
-      if(data){
+    const dialog = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Close In',
+        message: 'Are you sure you want to close in?',
+        buttons: ['No', 'Yes'],
+      },
+    });
+    dialog.closed.subscribe((data) => {
+      if (data) {
         // close in
-        alert("System closed")
-        const lockDialog = this.dialog.open(LockedComponent)
+        alert('System closed');
+        const lockDialog = this.dialog.open(LockedComponent);
         lockDialog.disableClose = true;
-
       }
-    })
+    });
   }
 }

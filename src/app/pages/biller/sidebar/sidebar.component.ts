@@ -8,31 +8,35 @@ import { DataProvider } from '../../../core/services/provider/data-provider.serv
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.scss']
+  styleUrls: ['./sidebar.component.scss'],
 })
 export class SidebarComponent {
-  closeStockListPanelSubscription:Subject<boolean> = new Subject<boolean>();
+  closeStockListPanelSubscription: Subject<boolean> = new Subject<boolean>();
   isStockListOpen = false;
-  stockConsumption:number = 0;
-  constructor(private popoverService: PopoverService,public dataProvider:DataProvider,private dialog:Dialog) {
-    this.closeStockListPanelSubscription.pipe(debounceTime(600)).subscribe((data)=>{
-      this.isStockListOpen = data;
-    })
+  stockConsumption: number = 0;
+  constructor(
+    private popoverService: PopoverService,
+    public dataProvider: DataProvider,
+    private dialog: Dialog,
+  ) {
+    this.closeStockListPanelSubscription
+      .pipe(debounceTime(600))
+      .subscribe((data) => {
+        this.isStockListOpen = data;
+      });
   }
 
   closePopover() {
     this.popoverService.setState(true);
   }
-  
-  editMenu(){
-    const dialog = this.dialog.open(EditMenuComponent)
-    dialog.closed.subscribe((data)=>{
-      // update all menus
-      this.dataProvider.menus.forEach((menu)=>{
-        menu.getAllData();
-      })
-    })
-  }
 
-  
+  editMenu() {
+    const dialog = this.dialog.open(EditMenuComponent);
+    dialog.closed.subscribe((data) => {
+      // update all menus
+      this.dataProvider.menus.forEach((menu) => {
+        menu.getAllData();
+      });
+    });
+  }
 }

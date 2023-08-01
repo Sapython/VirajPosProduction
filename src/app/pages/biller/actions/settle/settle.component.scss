@@ -1,73 +1,73 @@
-section{
-    background: white;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px 0 rgba(0,0,0,0.1);
-    margin-bottom: 20px;
-    max-width: 60vw;
+section {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  max-width: 60vw;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  hr {
+    border: 1px solid #ccc;
+    width: 100%;
+    margin: 0px;
+  }
+  .breakdown {
     display: flex;
     flex-direction: column;
-    gap:20px;
-    hr{
-        border: 1px solid #ccc;
-        width: 100%;
+    gap: 10px;
+    .total {
+      display: flex;
+      justify-content: space-between;
+      p {
         margin: 0px;
+      }
+      .red {
+        color: var(--Viraj-primary);
+      }
+      .paid {
+        color: var(--Viraj-success);
+      }
     }
-    .breakdown{
-        display: flex;
-        flex-direction: column;
-        gap:10px;
-        .total{
-            display: flex;
-            justify-content: space-between;
-            p{
-                margin: 0px;
-            }
-            .red{
-                color: var(--Viraj-primary);
-            }
-            .paid{
-                color: var(--Viraj-success);
-            }
+  }
+  .methods {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    .method {
+      display: flex;
+      gap: 20px;
+      select,
+      input {
+        border: 2px solid #555;
+        font-size: var(--Viraj-font-large);
+        border-radius: 3px;
+        background: white;
+        padding: 5px 15px;
+        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+        &:focus {
+          outline: none;
+          border: 2px solid var(--Viraj-primary);
         }
+      }
     }
-    .methods{
-        display: flex;
-        flex-direction: column;
-        gap:7px;
-        .method{
-            display: flex;
-            gap:20px;
-            select,input{
-                border:2px solid #555;
-                font-size: var(--Viraj-font-large);
-                border-radius: 3px;
-                background: white;
-                padding: 5px 15px;
-                box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
-                &:focus{
-                    outline:none;
-                    border:2px solid var(--Viraj-primary);
-                }
-            }
-        }
-        .addMethod{
-            border:2px solid #ccc;
-            color:#ccc;
-            font-size: var(--Viraj-font-large);
-            border-radius: 3px;
-            background: white;
-            padding: 5px 15px;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            box-sizing: border-box;
-        }
+    .addMethod {
+      border: 2px solid #ccc;
+      color: #ccc;
+      font-size: var(--Viraj-font-large);
+      border-radius: 3px;
+      background: white;
+      padding: 5px 15px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      box-sizing: border-box;
     }
-    .actions{
-        display: flex;
-        justify-content: flex-end;
-        gap:15px;
-
-    }
+  }
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+  }
 }

@@ -7,17 +7,29 @@ import { AlertsAndNotificationsService } from '../../../../../core/services/aler
 @Component({
   selector: 'app-add-time-group',
   templateUrl: './add-time-group.component.html',
-  styleUrls: ['./add-time-group.component.scss']
+  styleUrls: ['./add-time-group.component.scss'],
 })
 export class AddTimeGroupComponent {
-  conditions:TimeCondition[] = [];
-  days:string[] = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
-  timeGroupForm:FormGroup = new FormGroup({
-    name:new FormControl('',[Validators.required]),
-  })
-  constructor(private dialogRef:DialogRef,private alertify:AlertsAndNotificationsService,@Inject(DIALOG_DATA) data:{mode:'add'|'edit',data:TimeGroup}){
-    if(data){
-      if(data.mode == 'edit'){
+  conditions: TimeCondition[] = [];
+  days: string[] = [
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+    'sunday',
+  ];
+  timeGroupForm: FormGroup = new FormGroup({
+    name: new FormControl('', [Validators.required]),
+  });
+  constructor(
+    private dialogRef: DialogRef,
+    private alertify: AlertsAndNotificationsService,
+    @Inject(DIALOG_DATA) data: { mode: 'add' | 'edit'; data: TimeGroup },
+  ) {
+    if (data) {
+      if (data.mode == 'edit') {
         this.timeGroupForm.controls.name.setValue(data.data.name);
         this.conditions = data.data.conditions;
       }
@@ -27,31 +39,31 @@ export class AddTimeGroupComponent {
     if (this.conditions.length >= 5) return;
     this.conditions.push({
       condition: 'is',
-      type:'day',
-      value: 'monday'
-    })
+      type: 'day',
+      value: 'monday',
+    });
   }
 
-  submit(){
-    if(this.conditions.length ==0){
-      this.alertify.presentToast('Please add at least one condition','info');
+  submit() {
+    if (this.conditions.length == 0) {
+      this.alertify.presentToast('Please add at least one condition', 'info');
       return;
     }
-    if(this.timeGroupForm.valid){
+    if (this.timeGroupForm.valid) {
       this.dialogRef.close({
-        name:this.timeGroupForm.controls.name.value,
-        conditions:this.conditions
-      })
-    }else{
-      this.alertify.presentToast('Please fill all fields','info');
+        name: this.timeGroupForm.controls.name.value,
+        conditions: this.conditions,
+      });
+    } else {
+      this.alertify.presentToast('Please fill all fields', 'info');
     }
   }
 
-  removeCondition(index:number) {
+  removeCondition(index: number) {
     this.conditions.splice(index, 1);
   }
 
-  cancel(){
+  cancel() {
     this.dialogRef.close();
   }
 }

@@ -8,9 +8,8 @@ describe('WaiterWiseItemsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ WaiterWiseItemsComponent ]
-    })
-    .compileComponents();
+      declarations: [WaiterWiseItemsComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(WaiterWiseItemsComponent);
     component = fixture.componentInstance;

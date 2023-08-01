@@ -1,16 +1,34 @@
 import { Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, getAuth, UserCredential } from '@angular/fire/auth';
-import { updateDoc, doc, arrayUnion, Timestamp, setDoc, getDoc, Firestore } from '@angular/fire/firestore';
+import {
+  Auth,
+  createUserWithEmailAndPassword,
+  getAuth,
+  UserCredential,
+} from '@angular/fire/auth';
+import {
+  updateDoc,
+  doc,
+  arrayUnion,
+  Timestamp,
+  setDoc,
+  getDoc,
+  Firestore,
+} from '@angular/fire/firestore';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 import { User } from '@sentry/angular-ivy';
-import { BusinessRecord, UserBusiness, UserRecord, AdditonalClaims } from '../../../../types/user.structure';
+import {
+  BusinessRecord,
+  UserBusiness,
+  UserRecord,
+  AdditonalClaims,
+} from '../../../../types/user.structure';
 import { DataProvider } from '../../provider/data-provider.service';
 import { LoginService } from '../login/login.service';
 
 var debug = true;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SignupService {
   // updateUserFactors = httpsCallable(
@@ -19,29 +37,28 @@ export class SignupService {
   // );
   signUpWithUserAndPasswordFunction = httpsCallable(
     this.functions,
-    'signUpWithUserAndPassword'
+    'signUpWithUserAndPassword',
   );
 
   constructor(
     private functions: Functions,
-    private auth:Auth,
-    private firestore:Firestore,
-    private dataProvider:DataProvider,
-    private loginService:LoginService
-  ) {
-  }
+    private auth: Auth,
+    private firestore: Firestore,
+    private dataProvider: DataProvider,
+    private loginService: LoginService,
+  ) {}
 
   async createAccount(
     email: string,
     password: string,
-    business: BusinessRecord
+    business: BusinessRecord,
   ) {
     let res = await createUserWithEmailAndPassword(this.auth, email, password);
     await this.signUpUser(res.user, business);
     return res;
   }
 
-  addBusinessAccount(userCred:UserCredential, userBusiness: UserBusiness) {
+  addBusinessAccount(userCred: UserCredential, userBusiness: UserBusiness) {
     return updateDoc(doc(this.firestore, 'users/' + userCred.user.uid), {
       business: arrayUnion(userBusiness),
     });
@@ -71,20 +88,31 @@ export class SignupService {
   async signUpWithUserAndPassword(
     username: string,
     password: string,
-    params:{
+    params: {
       business: {
-        access: { accessType: 'role', role:string, lastUpdated:Timestamp; updatedBy: string } | 
-        { accessType: 'custom',propertiesAllowed:string[], lastUpdated:Timestamp; updatedBy: string };
+        access:
+          | {
+              accessType: 'role';
+              role: string;
+              lastUpdated: Timestamp;
+              updatedBy: string;
+            }
+          | {
+              accessType: 'custom';
+              propertiesAllowed: string[];
+              lastUpdated: Timestamp;
+              updatedBy: string;
+            };
         address: string;
         businessId: string;
         joiningDate: Timestamp;
         name: string;
-      },
-      email: string,
-      phone?: string,
-      image?: string,
-      noSignIn?: boolean,
-    }
+      };
+      email: string;
+      phone?: string;
+      image?: string;
+      noSignIn?: boolean;
+    },
   ) {
     this.dataProvider.loading = true;
     try {
@@ -129,7 +157,10 @@ export class SignupService {
         additonalClaims['email'] = params.email;
       }
       if (params.image) {
-        if (typeof params.image !== 'string' || !params.image.includes('http')) {
+        if (
+          typeof params.image !== 'string' ||
+          !params.image.includes('http')
+        ) {
           throw new Error('Image url is invalid');
         }
         additonalClaims['image'] = params.image;
@@ -159,30 +190,32 @@ export class SignupService {
       let data = {
         username,
         password,
-        email:params.email,
-        phone:params.phone,
-        image:params.image,
-        business:params.business,
-        providerId:'custom',
-      }
-      let signUpRequest = await this.signUpWithUserAndPasswordFunction(data)
-      if (signUpRequest.data['token']){
-        if (params.noSignIn){
+        email: params.email,
+        phone: params.phone,
+        image: params.image,
+        business: params.business,
+        providerId: 'custom',
+      };
+      let signUpRequest = await this.signUpWithUserAndPasswordFunction(data);
+      if (signUpRequest.data['token']) {
+        if (params.noSignIn) {
           return data;
         } else {
-          let newSignupData = await this.loginService.signInWithCustomToken(signUpRequest.data['token'])
-          if(debug) console.log("newSignupData",newSignupData);
-          return newSignupData
+          let newSignupData = await this.loginService.signInWithCustomToken(
+            signUpRequest.data['token'],
+          );
+          if (debug) console.log('newSignupData', newSignupData);
+          return newSignupData;
         }
       } else {
-        if (signUpRequest.data['error']){
-          throw new Error(signUpRequest.data['error'])
+        if (signUpRequest.data['error']) {
+          throw new Error(signUpRequest.data['error']);
         } else {
-          throw new Error('Something went wrong')
+          throw new Error('Something went wrong');
         }
       }
     } catch (error) {
-    //  console.log(error);
+      //  console.log(error);
       throw error;
     } finally {
       this.dataProvider.loading = false;

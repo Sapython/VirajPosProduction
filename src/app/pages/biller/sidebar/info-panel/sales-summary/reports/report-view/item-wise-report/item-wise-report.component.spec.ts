@@ -8,9 +8,8 @@ describe('ItemWiseReportComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ItemWiseReportComponent ]
-    })
-    .compileComponents();
+      declarations: [ItemWiseReportComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ItemWiseReportComponent);
     component = fixture.componentInstance;

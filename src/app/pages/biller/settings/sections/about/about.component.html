@@ -3,7 +3,9 @@
     <h3>Your Account</h3>
     <div class="actions">
       <strong>Access:</strong>
-      <span>{{this.dataProvider.currentBusinessUser?.access.accessLevel}}</span>
+      <span>{{
+        this.dataProvider.currentBusinessUser?.access.accessLevel
+      }}</span>
     </div>
   </div>
   <div class="item">
@@ -11,28 +13,39 @@
       <mat-icon>person</mat-icon>
       Username
     </p>
-    <p>{{this.dataProvider.currentBusinessUser?.name}}</p>
+    <p>{{ this.dataProvider.currentBusinessUser?.name }}</p>
   </div>
   <div class="item">
     <p>
       <mat-icon>storefront</mat-icon>
       Business Id
     </p>
-    <p>{{this.dataProvider.currentBusinessUser?.businessId}}</p>
+    <p>{{ this.dataProvider.currentBusinessUser?.businessId }}</p>
   </div>
   <div class="item">
     <p>
       <mat-icon>title</mat-icon>
       Name
     </p>
-    <p>{{this.dataProvider.currentBusinessUser?.name}}</p>
+    <p>{{ this.dataProvider.currentBusinessUser?.name }}</p>
   </div>
   <div class="item">
     <p>
       <mat-icon>date_range</mat-icon>
       Date Of Joining
     </p>
-    <p>{{this.dataProvider.currentBusinessUser?.joiningDate.toDate() | date}}</p>
+    <p>
+      {{ this.dataProvider.currentBusinessUser?.joiningDate.toDate() | date }}
+    </p>
+  </div>
+  <div class="item">
+    <p>
+      <mat-icon>date_range</mat-icon>
+      Expiry For Viraj
+    </p>
+    <p>
+      {{ this.dataProvider.validTill | date:'short' }}
+    </p>
   </div>
   <button mat-stroked-button color="primary" (click)="resetPassword()">
     Reset Password
@@ -47,7 +60,7 @@
       <mat-icon>person</mat-icon>
       Biller Version
     </p>
-    <p>{{version}}</p>
+    <p>{{ version }}</p>
   </div>
   <div class="item">
     <p>
@@ -56,7 +69,11 @@
     </p>
     <p>1.0.0</p>
   </div>
-  <button mat-stroked-button color="primary" (click)="electronService.checkForUpdate()">
+  <button
+    mat-stroked-button
+    color="primary"
+    (click)="electronService.checkForUpdate()"
+  >
     Check For Updates
   </button>
 </section>

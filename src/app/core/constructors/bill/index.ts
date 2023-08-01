@@ -10,7 +10,7 @@ import { Kot } from '../kot/Kot';
 import { Product } from '../../../types/product.structure';
 import { Billing, Payment } from '../../../types/payment.structure';
 import { DataProvider } from '../../services/provider/data-provider.service';
-import { BillConstructor, PrintableBill } from '../../../types/bill.structure';
+import { BillConstructor, billLoyalty, PrintableBill } from '../../../types/bill.structure';
 import { BillService } from '../../services/database/bill/bill.service';
 import { AnalyticsService } from '../../services/database/analytics/analytics.service';
 
@@ -92,8 +92,8 @@ export class Bill implements BillConstructor {
   billing: Billing;
   instruction: string;
   editKotMode: null | {
-    previousKot: (Product|ApplicableCombo)[];
-    newKot: (Product|ApplicableCombo)[];
+    previousKot: (Product | ApplicableCombo)[];
+    newKot: (Product | ApplicableCombo)[];
     kot: Kot;
     kotIndex: number;
   } = null;
@@ -118,15 +118,16 @@ export class Bill implements BillConstructor {
     phone: string;
     user: User;
   };
+  currentLoyalty:billLoyalty;
   currentModeConfig: ModeConfig | undefined;
-  availableDiscounts:CodeBaseDiscount[] = [];
+  availableDiscounts: CodeBaseDiscount[] = [];
   printableBillData: PrintableBill | null = null;
   billSubscriptionCallerStarted: boolean = false;
   updated: Subject<boolean | void> = new Subject<boolean | void>();
   currentKot: Kot | null =
     this.kots.find((kot) => kot.stage === 'active') || null;
   billUpdated: Subject<boolean | void> = new Subject<boolean | void>();
-  canPrintKot:boolean = false;
+  canPrintKot: boolean = false;
   constructor(
     id: string,
     table: Table,
@@ -139,22 +140,31 @@ export class Bill implements BillConstructor {
     public printingService: PrinterService,
     public customerService: CustomerService,
     public userManagementService: UserManagementService,
-    billNo?: string
+    billNo?: string,
   ) {
     this.optionalTax = this.dataProvider.optionalTax;
     // taxes[0].amount = Number(this.dataProvider.currentSettings.sgst)
     // taxes[1].amount = Number(this.dataProvider.currentSettings.cgst)
     this.updated.subscribe(() => {
       this.dataProvider.queueUpdate.next(1000);
-    //  console.log("this.printableBillData",this.printableBillData);
+      //  console.log("this.printableBillData",this.printableBillData);
     });
     this.updated.pipe(debounceTime(1000)).subscribe(async (data) => {
-      if(!data){
+      if (!data) {
         this.updateToFirebase();
       }
     });
     this.toObject = this.toObject.bind(this);
     this.id = id;
+    this.currentLoyalty= {
+      loyaltySettingId: '',
+      totalLoyaltyCost: 0,
+      totalLoyaltyPoints: 0,
+      totalToBeRedeemedPoints: 0,
+      totalToBeRedeemedCost: 0,
+      receiveLoyalty: false,
+      redeemLoyalty: false,
+    }
     this.instruction = '';
     this.createdDate = Timestamp.now();
     this.stage = 'active';
@@ -171,24 +181,18 @@ export class Bill implements BillConstructor {
     this.billNo = billNo;
     this.billing = {
       subTotal: 0,
+      postDiscountSubTotal:0,
       discount: [],
       taxes: [],
       totalTax: 0,
       grandTotal: 0,
     };
-    this.availableDiscounts = this.dataProvider.menus.find(menu=>menu.selectedMenu.id === this.menu.id)?.discounts || [];
+    this.availableDiscounts =
+      this.dataProvider.menus.find(
+        (menu) => menu.selectedMenu.id === this.menu.id,
+      )?.discounts || [];
     this.updated.next();
     this.firebaseUpdate();
-  }
-
-  currentLoyalty = {
-    loyaltySettingId:'',
-    totalLoyaltyCost:0,
-    totalLoyaltyPoints:0,
-    totalToBeRedeemedPoints:0,
-    totalToBeRedeemedCost:0,
-    receiveLoyalty: false,
-    redeemLoyalty: false,
   }
 
   // definitions
@@ -214,26 +218,28 @@ export class Bill implements BillConstructor {
   public setCustomerInfo = setCustomerInfo;
 
   // helpers
-  public get allProducts(){
+  public get allProducts() {
     return allProducts;
-  };
-  
-  public get allFinalProducts(): Product[]{
-    return allFinalProducts.call(this)
-  };
+  }
 
-  public get kotWithoutFunctions(){
+  public get allFinalProducts(): Product[] {
+    return allFinalProducts.call(this);
+  }
+
+  public get kotWithoutFunctions() {
     // set {return kotWithoutFunctions} as getter function
     return kotWithoutFunctions.call(this);
-  };
+  }
 
-  public get totalProducts():number{
-    return totalProducts.call(this)
-  };
+  public get totalProducts(): number {
+    return totalProducts.call(this);
+  }
 
-  public getPrintableBillData(products:(Product|ApplicableCombo)[]):PrintableBill{
-    return getPrintableBill.call(this,products,this.dataProvider)
-  };
+  public getPrintableBillData(
+    products: (Product | ApplicableCombo)[],
+  ): PrintableBill {
+    return getPrintableBill.call(this, products, this.dataProvider);
+  }
 
   // kot functions
   public addKot = addKot;
@@ -243,7 +249,6 @@ export class Bill implements BillConstructor {
   public deleteKot = deleteKot;
   public printKot = printKot;
   public checkCanPrintKot = checkCanPrintKot;
-
 
   // product functions
   public addProduct = addProduct;

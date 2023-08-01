@@ -3,16 +3,15 @@ import { Product } from '../../../types/product.structure';
 import { Kot } from '../../../core/constructors/kot/Kot';
 
 @Pipe({
-  name: 'mergedProducts'
+  name: 'mergedProducts',
 })
 export class MergedProductsPipe implements PipeTransform {
-
-  transform(value: Kot[]|undefined): Product[] {
+  transform(value: Kot[] | undefined): Product[] {
     // return merged products
-    if(!value){
+    if (!value) {
       return [];
     }
-    let products:Product[] = [];
+    let products: Product[] = [];
     // value.forEach((kot)=>{
     //   kot.products.forEach((product)=>{
     //     let index = products.findIndex((p)=>p.id == product.id);
@@ -25,5 +24,4 @@ export class MergedProductsPipe implements PipeTransform {
     // })
     return products;
   }
-
 }

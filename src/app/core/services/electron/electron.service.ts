@@ -2,16 +2,23 @@ import { Injectable } from '@angular/core';
 
 // If you import a module but never use any of the imported values other than as TypeScript types,
 // the resulting javascript file will look as if you never imported the module at all.
-import { ipcRenderer, webFrame,contextBridge } from 'electron';
+import { ipcRenderer, webFrame, contextBridge } from 'electron';
 import * as childProcess from 'child_process';
 import * as fs from 'fs';
 import { Dialog } from '@angular/cdk/dialog';
 import { DialogComponent } from '../../../shared/base-components/dialog/dialog.component';
 import { ReplaySubject, Subject } from 'rxjs';
 import { DataProvider } from '../provider/data-provider.service';
-const updateStages = ['checking-for-update','update-available','update-not-available','download-progress','update-downloaded','installing'];
+const updateStages = [
+  'checking-for-update',
+  'update-available',
+  'update-not-available',
+  'download-progress',
+  'update-downloaded',
+  'installing',
+];
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ElectronService {
   ipcRenderer: typeof ipcRenderer;
@@ -19,9 +26,12 @@ export class ElectronService {
   childProcess: typeof childProcess;
   contextBridge: typeof contextBridge;
   fs: typeof fs;
-  softwareUpdateSubject:ReplaySubject<any> = new ReplaySubject<any>(1);
-  
-  constructor(private dialog:Dialog,private dataProvider:DataProvider) {
+  softwareUpdateSubject: ReplaySubject<any> = new ReplaySubject<any>(1);
+
+  constructor(
+    private dialog: Dialog,
+    private dataProvider: DataProvider,
+  ) {
     // setTimeout(()=>{
     //   this.softwareUpdateSubject.next({
     //     stage:"update-available",
@@ -51,10 +61,10 @@ export class ElectronService {
           console.error(`stderr: ${stderr}`);
           return;
         }
-      //  console.log(`stdout:\n${stdout}`);
+        //  console.log(`stdout:\n${stdout}`);
       });
 
-      this.ipcRenderer.on('updateAvailable',(event, args)=>{
+      this.ipcRenderer.on('updateAvailable', (event, args) => {
         console.log('Update Service: ', args);
         this.softwareUpdateSubject.next(args);
         // send filtered args to this.dataProvider.softwareUpdateFilteredSubject
@@ -64,11 +74,14 @@ export class ElectronService {
         // if updateStages.indexOf(args.stage) == updateStages.indexOf(this.currentUpdateStage) then send to this.dataProvider.softwareUpdateFilteredSubject
         // if updateStages.indexOf(args.stage) == updateStages.indexOf(this.currentUpdateStage) == updateStages.length-1 then send to this.dataProvider.softwareUpdateFilteredSubject
 
-        if (updateStages.indexOf(args.stage) > updateStages.indexOf(this.dataProvider.currentUpdateStage)){
+        if (
+          updateStages.indexOf(args.stage) >
+          updateStages.indexOf(this.dataProvider.currentUpdateStage)
+        ) {
           this.dataProvider.currentUpdateStage = args.stage;
           this.dataProvider.softwareUpdateFilteredSubject.next(args);
         }
-      })
+      });
 
       // Notes :
       // * A NodeJS's dependency imported with 'window.require' MUST BE present in `dependencies` of both `app/package.json`
@@ -88,64 +101,69 @@ export class ElectronService {
     return !!(window && window.process && window.process.type);
   }
 
-  getPrinters(){
-    if (!this.isElectron) return;
-    return this.ipcRenderer.sendSync("getPrinters").map((printer:any)=>{return printer.name});
+  getPrinters() {
+    if (!this.isElectron) return ['Fake Test Printer 1','Fake Test Printer 2','Fake Test Printer 3'];
+    return this.ipcRenderer.sendSync('getPrinters').map((printer: any) => {
+      return printer.name;
+    });
   }
 
-  printData(data:any, printer:string) {
-    if (!data || !printer){
-      const dialog = this.dialog.open(DialogComponent,{data:{title:'Error',description:'No Data or Printer Selected'}});
-    //  console.log("STAGE 1 => Will Print: ", data, printer);
+  printData(data: any, printer: string) {
+    if (!data || !printer) {
+      const dialog = this.dialog.open(DialogComponent, {
+        data: { title: 'Error', description: 'No Data or Printer Selected' },
+      });
+      //  console.log("STAGE 1 => Will Print: ", data, printer);
       return;
     }
-    if (!this.ipcRenderer){
-      const dialog = this.dialog.open(DialogComponent,{data:{title:'Error',description:'No Printer Found'}});
-    //  console.log("STAGE 2 => Will Print: ", data, printer);
+    if (!this.ipcRenderer) {
+      const dialog = this.dialog.open(DialogComponent, {
+        data: { title: 'Error', description: 'No Printer Found' },
+      });
+      //  console.log("STAGE 2 => Will Print: ", data, printer);
       return;
     }
-  //  console.log("STAGE 3 => Will Print: ", data, printer);
-    this.ipcRenderer.send("printData", { data, printer });
+    //  console.log("STAGE 3 => Will Print: ", data, printer);
+    this.ipcRenderer.send('printData', { data, printer });
     var promiseResolve, promiseReject;
     var promise = new Promise(function (resolve, reject) {
       promiseResolve = resolve;
       promiseReject = reject;
     });
-    this.ipcRenderer.on("printDataComplete", (event, data) => {
-    //  console.log("Done Printing", data);
+    this.ipcRenderer.on('printDataComplete', (event, data) => {
+      //  console.log("Done Printing", data);
       promiseResolve(data);
     });
     return promise;
   }
 
-  setAuth(token:string){
+  setAuth(token: string) {
     if (!this.isElectron) return;
-    this.ipcRenderer.sendSync("saveAuth", token);
+    this.ipcRenderer.sendSync('saveAuth', token);
   }
 
-  clearAuth(){
+  clearAuth() {
     if (!this.isElectron) return;
-    this.ipcRenderer.sendSync("clearAuth");
+    this.ipcRenderer.sendSync('clearAuth');
   }
 
-  getAuth(){
+  getAuth() {
     if (!this.isElectron) return;
-    return this.ipcRenderer.sendSync("getAuth");
+    return this.ipcRenderer.sendSync('getAuth');
   }
 
-  checkForUpdate(){
+  checkForUpdate() {
     if (!this.isElectron) return;
-    return this.ipcRenderer.sendSync("checkForUpdate");
+    return this.ipcRenderer.sendSync('checkForUpdate');
   }
 
-  downloadUpdate(){
+  downloadUpdate() {
     if (!this.isElectron) return;
-    return this.ipcRenderer.sendSync("downloadUpdate");
+    return this.ipcRenderer.sendSync('downloadUpdate');
   }
 
-  installNow(){
+  installNow() {
     if (!this.isElectron) return;
-    return this.ipcRenderer.sendSync("quitAndInstall");
+    return this.ipcRenderer.sendSync('quitAndInstall');
   }
-
 }

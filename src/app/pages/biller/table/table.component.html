@@ -1,134 +1,340 @@
 <section>
-    <div class="heading">
-        <span>
-            <button (click)="this.dialogRef.close()">
-                <i class="ri-arrow-left-line"></i>
-                <p>Back</p>
-            </button>
-            <div class="title">
-                <div class="legends">
-                    <div class="legend">
-                        <span></span>
-                        <p>Empty Table</p>
-                    </div>
-                    <div class="legend">
-                        <span></span>
-                        <p>Late Running Table</p>
-                    </div>
-                    <div class="legend">
-                        <span></span>
-                        <p>Finalized</p>
-                    </div>
-                    <div class="legend">
-                        <span></span>
-                        <p>Active KOT Table</p>
-                    </div>
-                </div>
-                <!-- <div class="actions" *ngIf="this.dataProvider.currentMenu?.type=='dineIn'">
+  <div class="heading">
+    <span>
+      <button (click)="this.dialogRef.close()">
+        <i class="ri-arrow-left-line"></i>
+        <p>Back</p>
+      </button>
+      <div class="title">
+        <div class="legends">
+          <div class="legend">
+            <span></span>
+            <p>Empty Table</p>
+          </div>
+          <div class="legend">
+            <span></span>
+            <p>Late Running Table</p>
+          </div>
+          <div class="legend">
+            <span></span>
+            <p>Finalized</p>
+          </div>
+          <div class="legend">
+            <span></span>
+            <p>Active KOT Table</p>
+          </div>
+        </div>
+        <!-- <div class="actions" *ngIf="this.dataProvider.currentMenu?.type=='dineIn'">
                 </div> -->
-            </div>
-        </span>
-        <span>
-            <mat-button-toggle-group [disabled]="moveKotMode" [value]="this.dataProvider.currentMenu?.type" color="primary" (change)="switchMode($event)" name="fontStyle" aria-label="Font Style">
-                <mat-button-toggle color="primary" value="dineIn" *ngIf="this.dataProvider.activeModes[0]">
-                    <ng-container>Dine In</ng-container>
-                </mat-button-toggle>
-                <mat-button-toggle color="primary" value="takeaway" *ngIf="this.dataProvider.activeModes[1]">
-                    <ng-container>Takeaway</ng-container>
-                </mat-button-toggle>
-                <mat-button-toggle color="primary" value="online" *ngIf="this.dataProvider.activeModes[2]">
-                    <ng-container>Online</ng-container>
-                </mat-button-toggle>
-            </mat-button-toggle-group>
-            <div class="selector">
-                <i class="ri-layout-grid-fill"></i>
-                <mat-select color="primary" placeholder="Select Size" [(ngModel)]="this.dataProvider.currentTableSize" name="item"  (change)="switchTableSize($event)">
-                    <mat-option color="primary" value="small">Small</mat-option>
-                    <mat-option color="primary" value="medium">Medium</mat-option>
-                    <mat-option color="primary" value="large">Large</mat-option>
-                </mat-select>
-            </div>
-        </span>
-        <!-- <div class="close">
+      </div>
+    </span>
+    <span>
+      <mat-button-toggle-group
+        [disabled]="moveKotMode"
+        [value]="this.dataProvider.currentMenu?.type"
+        color="primary"
+        (change)="switchMode($event)"
+        name="fontStyle"
+        aria-label="Font Style"
+      >
+        <mat-button-toggle
+          color="primary"
+          value="dineIn"
+          *ngIf="this.dataProvider.activeModes[0]"
+        >
+          <ng-container>Dine In</ng-container>
+        </mat-button-toggle>
+        <mat-button-toggle
+          color="primary"
+          value="takeaway"
+          *ngIf="this.dataProvider.activeModes[1]"
+        >
+          <ng-container>Takeaway</ng-container>
+        </mat-button-toggle>
+        <mat-button-toggle
+          color="primary"
+          value="online"
+          *ngIf="this.dataProvider.activeModes[2]"
+        >
+          <ng-container>Online</ng-container>
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+      <div class="selector">
+        <i class="ri-layout-grid-fill"></i>
+        <mat-select
+          color="primary"
+          placeholder="Select Size"
+          [(ngModel)]="this.dataProvider.currentTableSize"
+          name="item"
+          (change)="switchTableSize($event)"
+        >
+          <mat-option color="primary" value="small">Small</mat-option>
+          <mat-option color="primary" value="medium">Medium</mat-option>
+          <mat-option color="primary" value="large">Large</mat-option>
+        </mat-select>
+      </div>
+    </span>
+    <!-- <div class="close">
             <viraj-button [extraLarge]="true" type="icon" (vclick)="this.dialogRef.close()"><i class="ri-close-fill"></i></viraj-button>
         </div> -->
+  </div>
+  <div class="actionsRow" *ngIf="this.dataProvider.billingMode == 'dineIn'">
+    <ng-container *ngIf="this.moveKotMode">
+      <button (click)="moveKotMode = false; moveKotSelectedTable = undefined">
+        <i class="ri-arrow-left-line"></i> Cancel
+      </button>
+      <p>Please select a table to continue</p>
+    </ng-container>
+    <ng-container *ngIf="!this.moveKotMode">
+      <button (click)="addSection()">Add Section</button>
+      <button (click)="rearrangeTables()">Re-Arrange Tables</button>
+      <button (click)="moveKotMode = true">Move KOT/Item</button>
+      <button (click)="mergeExchangeTable()">Merge/Exchange Table</button>
+    </ng-container>
+  </div>
+  <div class="tableWrapper" *ngIf="this.dataProvider.billingMode == 'dineIn'">
+    <div
+      class="tableSection"
+      *ngFor="let tableGroup of this.dataProvider.groupedTables"
+    >
+      <div class="heading">
+        <h3>{{ tableGroup.name }}</h3>
+        <viraj-button type="icon" (vclick)="editGroup(tableGroup.name)"
+          ><i class="ri-edit-line"></i
+        ></viraj-button>
+        <viraj-button type="icon" (vclick)="deleteSection(tableGroup.name)"
+          ><i class="ri-delete-bin-6-line"></i
+        ></viraj-button>
+      </div>
+      <div class="tables">
+        <button
+          class="table"
+          [ngClass]="{
+            active: table.status == 'occupied',
+            late: this.dataProvider.tableTimeOutTime <= table.minutes,
+            finalized: table.bill?.stage == 'finalized',
+            medium: this.dataProvider.currentTableSize == 'medium',
+            small: this.dataProvider.currentTableSize == 'small',
+            inactive: moveKotMode && !moveKotSelectedTable,
+            highlight: moveKotMode && moveKotSelectedTable?.id == table.id
+          }"
+          *ngFor="let table of tableGroup.tables"
+          matRipple
+          (click)="moveKotMode ? moveKotItem(table) : openTable(table, $event)"
+        >
+          <p class="name">{{ table.name }}</p>
+          <p
+            class="cost"
+            *ngIf="
+              table.bill?.billing?.grandTotal != undefined &&
+              table.bill?.billing?.grandTotal != null &&
+              isNumber(table.bill?.billing?.grandTotal)
+            "
+          >
+            <strong>{{
+              table.bill?.billing?.grandTotal | currency: "INR"
+            }}</strong>
+          </p>
+          <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">
+            {{ table.timeSpent }}
+          </p>
+          <!-- <p class="time">{{table.occupiedStart.toDate() | date}}</p> -->
+          <div
+            class="actions"
+            *ngIf="
+              table.status == 'occupied' &&
+              this.dataProvider.getAccess('settleFromTable')
+            "
+          >
+            <viraj-button
+              [noPropogation]="true"
+              [minimalPadding]="true"
+              type="icon"
+              (vclick)="settleTable(table, $event)"
+              ><i class="ri-save-fill"></i
+            ></viraj-button>
+            <viraj-button
+              [noPropogation]="true"
+              [minimalPadding]="true"
+              type="icon"
+              (vclick)="editTable(table)"
+              ><i class="ri-edit-line"></i
+            ></viraj-button>
+          </div>
+          <div
+            class="actions"
+            *ngIf="
+              table.status != 'occupied' &&
+              this.dataProvider.getAccess('reArrangeGroupOrder')
+            "
+          >
+            <viraj-button
+              [noPropogation]="true"
+              [minimalPadding]="true"
+              type="icon"
+              (vclick)="deleteTable(table)"
+              ><i class="ri-delete-bin-fill"></i
+            ></viraj-button>
+            <viraj-button
+              [noPropogation]="true"
+              [minimalPadding]="true"
+              type="icon"
+              (vclick)="editTable(table)"
+              ><i class="ri-edit-line"></i
+            ></viraj-button>
+          </div>
+        </button>
+        <button
+          class="table empty"
+          (click)="addTable(tableGroup.name)"
+          [ngClass]="{
+            medium: this.dataProvider.currentTableSize == 'medium',
+            small: this.dataProvider.currentTableSize == 'small'
+          }"
+          *ngIf="this.dataProvider.getAccess('addTable') && !moveKotMode"
+        >
+          <mat-icon>add</mat-icon>
+          <p>Add New {{ tableGroup.name }}</p>
+        </button>
+      </div>
     </div>
-    <div class="actionsRow" *ngIf="this.dataProvider.billingMode=='dineIn'">
-        <ng-container *ngIf="this.moveKotMode">
-            <button (click)="moveKotMode= false;moveKotSelectedTable = undefined;"><i class="ri-arrow-left-line"></i> Cancel</button>
-            <p>Please select a table to continue</p>
-        </ng-container>
-        <ng-container *ngIf="!this.moveKotMode">
-            <button (click)="addSection()">Add Section</button>
-            <button (click)="rearrangeTables()">Re-Arrange Tables</button>
-            <button (click)="moveKotMode=true;">Move KOT/Item</button>
-            <button (click)="mergeExchangeTable()">Merge/Exchange Table</button>
-        </ng-container>
+    <div
+      class="tableSection"
+      *ngIf="(this.dataProvider.groupedTables | keyvalue).length == 0"
+    >
+      <p>Please add a group by adding section.</p>
     </div>
-    <div class="tableWrapper" *ngIf="this.dataProvider.billingMode=='dineIn'">
-        <div class="tableSection" *ngFor="let tableGroup of this.dataProvider.groupedTables">
-            <div class="heading">
-                <h3>{{tableGroup.name}}</h3>
-                <viraj-button type="icon" (vclick)="editGroup(tableGroup.name)"><i class="ri-edit-line"></i></viraj-button>
-                <viraj-button type="icon" (vclick)="deleteSection(tableGroup.name)"><i class="ri-delete-bin-6-line"></i></viraj-button>
-            </div>
-            <div class="tables">
-                <button class="table" [ngClass]="{'active':table.status=='occupied','late':this.dataProvider.tableTimeOutTime <= table.minutes,'finalized':table.bill?.stage=='finalized','medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small','inactive': (moveKotMode && !moveKotSelectedTable),'highlight': (moveKotMode && moveKotSelectedTable?.id == table.id)}" *ngFor="let table of tableGroup.tables" matRipple (click)="moveKotMode ? moveKotItem(table) : openTable(table,$event)">
-                    <p class="name">{{table.name}}</p>
-                    <p class="cost" *ngIf="table.bill?.billing?.grandTotal != undefined && table.bill?.billing?.grandTotal != null && isNumber(table.bill?.billing?.grandTotal)"><strong>{{table.bill?.billing?.grandTotal | currency:'INR'}}</strong></p>
-                    <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">{{ table.timeSpent }}</p>
-                    <!-- <p class="time">{{table.occupiedStart.toDate() | date}}</p> -->
-                    <div class="actions" *ngIf="table.status == 'occupied' && this.dataProvider.getAccess('settleFromTable')">
-                        <viraj-button [noPropogation]="true" [minimalPadding]="true" type="icon" (vclick)="settleTable(table,$event)"><i class="ri-save-fill"></i></viraj-button>
-                        <viraj-button [noPropogation]="true" [minimalPadding]="true" type="icon" (vclick)="editTable(table)"><i class="ri-edit-line"></i></viraj-button>
-                    </div>
-                    <div class="actions" *ngIf="table.status != 'occupied' && this.dataProvider.getAccess('reArrangeGroupOrder')">
-                        <viraj-button [noPropogation]="true" [minimalPadding]="true" type="icon" (vclick)="deleteTable(table)"><i class="ri-delete-bin-fill"></i></viraj-button>
-                        <viraj-button [noPropogation]="true" [minimalPadding]="true" type="icon" (vclick)="editTable(table)"><i class="ri-edit-line"></i></viraj-button>
-                    </div>
-                </button>
-                <button class="table empty" (click)="addTable(tableGroup.name)" [ngClass]="{'medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}" *ngIf="this.dataProvider.getAccess('addTable') && !moveKotMode">
-                    <mat-icon>add</mat-icon>
-                    <p>Add New {{tableGroup.name}}</p>
-                </button>
-            </div>
+  </div>
+  <div class="tableWrapper" *ngIf="this.dataProvider.billingMode == 'takeaway'">
+    <div class="tables">
+      <button
+        class="table empty"
+        (click)="addToken()"
+        *ngIf="
+          this.dataProvider.getAccess('addNewTakeawayToken') && !moveKotMode
+        "
+        [ngClass]="{
+          medium: this.dataProvider.currentTableSize == 'medium',
+          small: this.dataProvider.currentTableSize == 'small'
+        }"
+      >
+        <mat-icon>add</mat-icon>
+        <p>Add New Token</p>
+      </button>
+      <ng-container *ngFor="let table of this.dataProvider.tokens">
+        <button
+          class="table"
+          [ngClass]="{
+            active: table.status == 'occupied',
+            late: this.dataProvider.tableTimeOutTime <= table.minutes,
+            finalized: table.bill?.stage == 'finalized',
+            medium: this.dataProvider.currentTableSize == 'medium',
+            small: this.dataProvider.currentTableSize == 'small',
+            inactive: moveKotMode && moveKotSelectedTable.id != table.id,
+            activated: moveKotMode && moveKotSelectedTable.id == table.id
+          }"
+          matRipple
+          (click)="moveKotMode ? moveKotItem(table) : openTable(table, $event)"
+          *ngIf="!table.completed"
+        >
+          <p class="name">Token {{ table.name }}</p>
+          <p
+            class="cost"
+            *ngIf="
+              table.bill?.billing?.grandTotal != undefined &&
+              table.bill?.billing?.grandTotal != null &&
+              isNumber(table.bill?.billing?.grandTotal)
+            "
+          >
+            <strong>{{
+              table.bill?.billing?.grandTotal | currency: "INR"
+            }}</strong>
+          </p>
+          <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">
+            {{ table.timeSpent }}
+          </p>
+          <div
+            class="actions"
+            *ngIf="
+              table.status == 'occupied' &&
+              this.dataProvider.getAccess('settleFromTable')
+            "
+          >
+            <viraj-button
+              [noPropogation]="true"
+              *ngIf="table.bill?.stage == 'finalized'"
+              [minimalPadding]="true"
+              type="icon"
+              (vclick)="settleTable(table, $event)"
+              ><i class="ri-save-fill"></i
+            ></viraj-button>
+          </div>
+        </button>
+      </ng-container>
+    </div>
+  </div>
+  <div class="tableWrapper" *ngIf="this.dataProvider.billingMode == 'online'">
+    <div class="tables">
+      <button
+        class="table empty"
+        *ngIf="this.dataProvider.getAccess('addNewOnlineToken') && !moveKotMode"
+        [ngClass]="{
+          medium: this.dataProvider.currentTableSize == 'medium',
+          small: this.dataProvider.currentTableSize == 'small'
+        }"
+        (click)="addOnlineToken()"
+      >
+        <mat-icon>add</mat-icon>
+        <p>Add New Token</p>
+      </button>
+      <button
+        class="table"
+        [ngClass]="{
+          active: table.status == 'occupied',
+          late: this.dataProvider.tableTimeOutTime <= table.minutes,
+          finalized: table.bill?.stage == 'finalized',
+          medium: this.dataProvider.currentTableSize == 'medium',
+          small: this.dataProvider.currentTableSize == 'small',
+          inactive: moveKotMode && moveKotSelectedTable.id != table.id,
+          activated: moveKotMode && moveKotSelectedTable.id == table.id
+        }"
+        matRipple
+        *ngFor="let table of this.dataProvider.onlineTokens"
+        (click)="moveKotMode ? moveKotItem(table) : openTable(table, $event)"
+      >
+        <p class="name">Token {{ table.name }}</p>
+        <p
+          class="cost"
+          *ngIf="
+            table.bill?.billing?.grandTotal != undefined &&
+            table.bill?.billing?.grandTotal != null &&
+            isNumber(table.bill?.billing?.grandTotal)
+          "
+        >
+          <strong>{{
+            table.bill?.billing?.grandTotal | currency: "INR"
+          }}</strong>
+        </p>
+        <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">
+          {{ table.timeSpent }}
+        </p>
+        <div
+          class="actions"
+          *ngIf="
+            table.status == 'occupied' &&
+            this.dataProvider.getAccess('settleFromTable')
+          "
+        >
+          <viraj-button
+            [noPropogation]="true"
+            *ngIf="table.bill?.stage == 'finalized'"
+            [minimalPadding]="true"
+            type="icon"
+            (vclick)="settleTable(table, $event)"
+            ><i class="ri-save-fill"></i
+          ></viraj-button>
         </div>
-        <div class="tableSection" *ngIf="(this.dataProvider.groupedTables|keyvalue).length == 0">
-            <p>Please add a group by adding section.</p>
-        </div>
+      </button>
     </div>
-    <div class="tableWrapper" *ngIf="this.dataProvider.billingMode=='takeaway'">
-        <div class="tables" >
-            <button class="table empty" (click)="addToken()" *ngIf="this.dataProvider.getAccess('addNewTakeawayToken') && !moveKotMode" [ngClass]="{'medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}">
-                <mat-icon>add</mat-icon>
-                <p>Add New Token</p>
-            </button>
-            <ng-container *ngFor="let table of this.dataProvider.tokens">
-                <button class="table" [ngClass]="{'active':table.status=='occupied','late':this.dataProvider.tableTimeOutTime <= table.minutes,'finalized':table.bill?.stage=='finalized','medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small','inactive': (moveKotMode && moveKotSelectedTable.id != table.id),'activated': (moveKotMode && moveKotSelectedTable.id == table.id)}"  matRipple (click)="moveKotMode ? moveKotItem(table) : openTable(table,$event)" *ngIf="!table.completed">
-                    <p class="name">Token {{table.name}}</p>
-                    <p class="cost" *ngIf="table.bill?.billing?.grandTotal != undefined && table.bill?.billing?.grandTotal != null && isNumber(table.bill?.billing?.grandTotal)"><strong>{{table.bill?.billing?.grandTotal | currency:'INR'}}</strong></p>
-                    <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">{{ table.timeSpent }}</p>
-                    <div class="actions" *ngIf="table.status == 'occupied' && this.dataProvider.getAccess('settleFromTable')">
-                        <viraj-button [noPropogation]="true" *ngIf="table.bill?.stage=='finalized'" [minimalPadding]="true" type="icon" (vclick)="settleTable(table,$event)"><i class="ri-save-fill"></i></viraj-button>
-                    </div>
-                </button>
-            </ng-container>
-        </div>
-    </div>
-    <div class="tableWrapper" *ngIf="this.dataProvider.billingMode=='online'">
-        <div class="tables">
-            <button class="table empty" *ngIf="this.dataProvider.getAccess('addNewOnlineToken') && !moveKotMode" [ngClass]="{'medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}" (click)="addOnlineToken()" >
-                <mat-icon>add</mat-icon>
-                <p>Add New Token</p>
-            </button>
-            <button class="table" [ngClass]="{'active':table.status=='occupied','late':this.dataProvider.tableTimeOutTime <= table.minutes,'finalized':table.bill?.stage=='finalized','medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small','inactive': (moveKotMode && moveKotSelectedTable.id != table.id),'activated': (moveKotMode && moveKotSelectedTable.id == table.id)}"  matRipple *ngFor="let table of this.dataProvider.onlineTokens" (click)="moveKotMode ? moveKotItem(table) : openTable(table,$event)">
-                <p class="name">Token {{table.name}}</p>
-                <p class="cost" *ngIf="table.bill?.billing?.grandTotal != undefined && table.bill?.billing?.grandTotal != null && isNumber(table.bill?.billing?.grandTotal)"><strong>{{table.bill?.billing?.grandTotal | currency:'INR'}}</strong></p>
-                <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">{{ table.timeSpent }}</p>
-                <div class="actions" *ngIf="table.status == 'occupied' && this.dataProvider.getAccess('settleFromTable')">
-                    <viraj-button [noPropogation]="true" *ngIf="table.bill?.stage=='finalized'" [minimalPadding]="true" type="icon" (vclick)="settleTable(table,$event)"><i class="ri-save-fill"></i></viraj-button>
-                </div>
-            </button>
-        </div>
-    </div>
+  </div>
 </section>

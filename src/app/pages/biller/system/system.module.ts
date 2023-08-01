@@ -12,8 +12,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatInputModule } from '@angular/material/input';
-import {MatExpansionModule} from '@angular/material/expansion';
-import { ReprintReasonComponent } from './history/reprint-reason/reprint-reason.component'; 
+import { MatExpansionModule } from '@angular/material/expansion';
+import { ReprintReasonComponent } from './history/reprint-reason/reprint-reason.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ActiveKotModule } from '../active-kot/active-kot.module';
@@ -21,7 +21,6 @@ import { TableGroupsPipe } from './history/table-groups.pipe';
 import { DateGroupPipe } from './history/date-group.pipe';
 import { ModePipe } from './history/mode.pipe';
 import { MatMenuModule } from '@angular/material/menu';
-
 
 @NgModule({
   declarations: [
@@ -49,10 +48,8 @@ import { MatMenuModule } from '@angular/material/menu';
     MatTabsModule,
     MatSlideToggleModule,
     ActiveKotModule,
-    MatMenuModule
+    MatMenuModule,
   ],
-  exports:[
-    SystemComponent
-  ]
+  exports: [SystemComponent],
 })
-export class SystemModule { }
+export class SystemModule {}

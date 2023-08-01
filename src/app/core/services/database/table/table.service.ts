@@ -20,25 +20,25 @@ import { Table } from '../../../constructors/table/Table';
 export class TableService {
   constructor(
     private firestore: Firestore,
-    private dataProvider: DataProvider
+    private dataProvider: DataProvider,
   ) {}
   addTables(tables: TableConstructor[], businessId: string) {
     return Promise.all(
       tables.map((table) => {
         return setDoc(
           doc(this.firestore, 'business/' + businessId + '/tables', table.id),
-          table
+          table,
         );
-      })
+      }),
     );
   }
   addTable(table: TableConstructor) {
     return addDoc(
       collection(
         this.firestore,
-        'business/' + this.dataProvider.businessId + '/tables'
+        'business/' + this.dataProvider.businessId + '/tables',
       ),
-      table
+      table,
     );
   }
   updateTable(table: any) {
@@ -46,10 +46,10 @@ export class TableService {
       doc(
         this.firestore,
         'business/' + this.dataProvider.businessId + '/tables',
-        table.id
+        table.id,
       ),
       table,
-      { merge: true }
+      { merge: true },
     );
   }
   deleteTable(id: string) {
@@ -57,16 +57,16 @@ export class TableService {
       doc(
         this.firestore,
         'business/' + this.dataProvider.businessId + '/tables',
-        id
-      )
+        id,
+      ),
     );
   }
   getTables() {
     return getDocs(
       collection(
         this.firestore,
-        'business/' + this.dataProvider.businessId + '/tables'
-      )
+        'business/' + this.dataProvider.businessId + '/tables',
+      ),
     );
   }
 
@@ -75,102 +75,108 @@ export class TableService {
       doc(
         this.firestore,
         'business/' + this.dataProvider.businessId + '/' + type,
-        tableId
-      )
+        tableId,
+      ),
     );
   }
 
-  setOrder(table:Table[],groupName:string){
+  setOrder(table: Table[], groupName: string) {
     return setDoc(
       doc(
         this.firestore,
         'business/' + this.dataProvider.businessId + '/settings/settings',
       ),
       {
-        tableOrders:{
-          [groupName]:table.map((table)=>table.id)
-        }
+        tableOrders: {
+          [groupName]: table.map((table) => table.id),
+        },
       },
       {
-        merge:true
-      }
-    )
+        merge: true,
+      },
+    );
   }
 
-  setGroupOrder(table:{tables:Table[],id:string}[]){
+  setGroupOrder(table: { tables: Table[]; id: string }[]) {
     return setDoc(
       doc(
         this.firestore,
         'business/' + this.dataProvider.businessId + '/settings/settings',
       ),
       {
-        groupOrders: table.map((group)=>group.id)
+        groupOrders: table.map((group) => group.id),
       },
       {
-        merge:true
-      }
-    )
+        merge: true,
+      },
+    );
   }
 
-  reOrderTable(){
-    let groupedTables = []
-      this.dataProvider.tables.forEach((r) => {
-        let tableGroup = groupedTables.find(
-          (group) => group.name == r.group
-        );
-        if (tableGroup) {
-          tableGroup.tables.push(r);
-        } else {
-          groupedTables.push({
-            name: r.group,
-            tables: [r],
-          });
-        }
-      });
-      groupedTables.forEach((group) => {
-        // sort tables by order or by name
-        group.tables.sort((a, b) => {
-          if (a.order!=undefined && b.order!=undefined){
-            return a.order - b.order;
-          } else {
-            return a.name.localeCompare(b.name);
-          }
+  reOrderTable() {
+    let groupedTables = [];
+    this.dataProvider.tables.forEach((r) => {
+      let tableGroup = groupedTables.find((group) => group.name == r.group);
+      if (tableGroup) {
+        tableGroup.tables.push(r);
+      } else {
+        groupedTables.push({
+          name: r.group,
+          tables: [r],
         });
-      })
-      this.dataProvider.groupedTables = groupedTables;
-  }
-
-  editSection(prevGroupname:string,newGroupName:string){
-    return Promise.all(this.dataProvider.tables.filter((table)=>table.group==prevGroupname).map(async (table)=>{
-      table.group = newGroupName;
-      // remove group name from table name
-      return await this.updateTable({
-        ...table.toObject(),
+      }
+    });
+    groupedTables.forEach((group) => {
+      // sort tables by order or by name
+      group.tables.sort((a, b) => {
+        if (a.order != undefined && b.order != undefined) {
+          return a.order - b.order;
+        } else {
+          return a.name.localeCompare(b.name);
+        }
       });
-    }))
+    });
+    this.dataProvider.groupedTables = groupedTables;
   }
 
-  deleteSection(groupName:string){
-    return Promise.all(this.dataProvider.tables.filter((table)=>table.group==groupName).map(async (table)=>{
-      return await this.deleteTable(table.id);
-    }))
+  editSection(prevGroupname: string, newGroupName: string) {
+    return Promise.all(
+      this.dataProvider.tables
+        .filter((table) => table.group == prevGroupname)
+        .map(async (table) => {
+          table.group = newGroupName;
+          // remove group name from table name
+          return await this.updateTable({
+            ...table.toObject(),
+          });
+        }),
+    );
   }
 
-  addTableActivity(activity:TableActivity){
+  deleteSection(groupName: string) {
+    return Promise.all(
+      this.dataProvider.tables
+        .filter((table) => table.group == groupName)
+        .map(async (table) => {
+          return await this.deleteTable(table.id);
+        }),
+    );
+  }
+
+  addTableActivity(activity: TableActivity) {
     return addDoc(
       collection(
         this.firestore,
-        'business/' + this.dataProvider.businessId + '/tableActivity'
+        'business/' + this.dataProvider.businessId + '/tableActivity',
       ),
-      activity
+      activity,
     );
   }
 }
 
 export interface TableActivity {
-  time:Timestamp|any;
-  from:any;
-  to:any;
-  items?:any[];
-  type:'move'|'merge'|'exchange';
+  time: Timestamp | any;
+  from: any;
+  to: any;
+  items?: any[];
+  type: 'move' | 'merge' | 'exchange';
 }

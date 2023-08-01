@@ -1,7 +1,6 @@
 import { Timestamp } from '@angular/fire/firestore';
 import { DeviceConstructor } from '../../../types/device.structure';
 
-
 export class Device implements DeviceConstructor {
   id: string;
   lastLogin: Timestamp;

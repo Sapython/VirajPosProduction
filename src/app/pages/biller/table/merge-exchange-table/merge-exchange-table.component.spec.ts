@@ -8,9 +8,8 @@ describe('MergeExchangeTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ MergeExchangeTableComponent ]
-    })
-    .compileComponents();
+      declarations: [MergeExchangeTableComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MergeExchangeTableComponent);
     component = fixture.componentInstance;

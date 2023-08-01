@@ -1,10 +1,18 @@
-<div matRipple *ngIf="category" class="category" [ngClass]="{active:active}">
-    <p class="name">{{category.name}}</p>
-    <div>
-        <p class="average" *ngIf="category.averagePrice">{{((dataProvider.clientWidth | async)> 1618 && category.averagePrice) ? 'Avg ' : ''}}{{category.averagePrice | currency:'INR'}}</p>
-        <span *ngIf="length">
-            <p>{{length}}</p>
-        </span>
-        <mat-icon>chevron_right</mat-icon>
-    </div>
+<div matRipple *ngIf="category" class="category" [ngClass]="{ active: active }">
+  <p class="name">{{ category.name }}</p>
+  <div>
+    <p class="average" *ngIf="category.averagePrice">
+      {{
+        (dataProvider.clientWidth | async) > 1618 && category.averagePrice
+          ? "Avg "
+          : ""
+      }}{{ category.averagePrice | currency: "INR" }}
+    </p>
+    <span *ngIf="length">
+      <p>{{ length }}</p>
+    </span>
+    <i *ngIf="hiddenIconVisible && !hidden" class="ri-eye-close-fill"></i>
+    <i *ngIf="hiddenIconVisible && hidden" class="ri-eye-fill"></i>
+    <mat-icon>chevron_right</mat-icon>
+  </div>
 </div>

@@ -1,63 +1,62 @@
-
 @keyframes slideInBelow {
-    0% {
-        transform: translateY(20%);
-        opacity: 0;
-    }
-    100% {
-        transform: translateY(0);
-        opacity: 1;
-    }
+  0% {
+    transform: translateY(20%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
-section{
-    padding: 20px;
-    border-radius: 10px;
-    background: white;
-    box-shadow: 0px 0px 10px 0px #ccc;
-    animation: slideInBelow 0.3s cubic-bezier(0.33, 1, 0.68, 1);
-    .actions{
-        display:flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    table{
-        width: 100%;
-        display: block;
-        border-collapse: collapse;
-        overflow-y: auto;
-        max-height: 200px;
-        thead{
-            position: sticky;
-            top:0px;
-            tr{
-                background: white;
-                th{
-                    background: white;
-                    padding: 10px;
-                    text-align: left;
-                    font-size: var(--Viraj-font-large);
-                    color: #5a5a5a;
-                    border: 1px solid #ccc;
-                }
-            }
+section {
+  padding: 20px;
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0px 0px 10px 0px #ccc;
+  animation: slideInBelow 0.3s cubic-bezier(0.33, 1, 0.68, 1);
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  table {
+    width: 100%;
+    display: block;
+    border-collapse: collapse;
+    overflow-y: auto;
+    max-height: 200px;
+    thead {
+      position: sticky;
+      top: 0px;
+      tr {
+        background: white;
+        th {
+          background: white;
+          padding: 10px;
+          text-align: left;
+          font-size: var(--Viraj-font-large);
+          color: #5a5a5a;
+          border: 1px solid #ccc;
         }
-        tbody{
-            tr{
-                td{
-                    padding: 10px;
-                    text-align: left;
-                    font-size: var(--Viraj-font-large);
-                    color: #777;
-                    border-bottom: 1px solid #ccc;
-                    &:first-child{
-                        color: var(--Viraj-primary-tint);
-                    }
-                }
-            }
-            // color odd rows
-            tr:nth-child(odd){
-                background: #f2f2f2;
-            }
-        }
+      }
     }
+    tbody {
+      tr {
+        td {
+          padding: 10px;
+          text-align: left;
+          font-size: var(--Viraj-font-large);
+          color: #777;
+          border-bottom: 1px solid #ccc;
+          &:first-child {
+            color: var(--Viraj-primary-tint);
+          }
+        }
+      }
+      // color odd rows
+      tr:nth-child(odd) {
+        background: #f2f2f2;
+      }
+    }
+  }
 }

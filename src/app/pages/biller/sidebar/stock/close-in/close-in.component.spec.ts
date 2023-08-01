@@ -8,9 +8,8 @@ describe('CloseInComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CloseInComponent ]
-    })
-    .compileComponents();
+      declarations: [CloseInComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(CloseInComponent);
     component = fixture.componentInstance;

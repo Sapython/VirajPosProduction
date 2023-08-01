@@ -11,7 +11,12 @@ import { SettingsService } from '../../../../../core/services/database/settings/
 })
 export class PrinterComponent {
   printers: string[] = [];
-  constructor(public dataProvider: DataProvider,private menuManagementService:MenuManagementService,private settingsService:SettingsService,private alertify:AlertsAndNotificationsService) {}
+  constructor(
+    public dataProvider: DataProvider,
+    private menuManagementService: MenuManagementService,
+    private settingsService: SettingsService,
+    private alertify: AlertsAndNotificationsService,
+  ) {}
   updateSettings(data: any) {
     this.menuManagementService
       .updateRootSettings(data, this.dataProvider.currentBusiness?.businessId!)

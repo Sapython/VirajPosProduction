@@ -1,26 +1,26 @@
 <section>
-    <div class="actions">
-        <h3>Stock Consumption</h3>
-        <button mat-icon-button (click)="close.emit()">
-            <mat-icon>close</mat-icon>
-        </button>
-    </div>
-    <table [cellSpacing]="0">
-        <thead>
-            <tr>
-                <th>Item</th>
-                <th>Amount</th>
-                <th>Per Unit Price</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let item of items">
-                <td>{{item.name}}</td>
-                <td>{{item.quantity}}</td>
-                <td>{{item.price | currency:'INR'}}</td>
-                <td>{{item.total | currency:'INR'}}</td>
-            </tr>
-        </tbody>
-    </table>
+  <div class="actions">
+    <h3>Stock Consumption</h3>
+    <button mat-icon-button (click)="close.emit()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <table [cellSpacing]="0">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Amount</th>
+        <th>Per Unit Price</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of items">
+        <td>{{ item.name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.price | currency: "INR" }}</td>
+        <td>{{ item.total | currency: "INR" }}</td>
+      </tr>
+    </tbody>
+  </table>
 </section>

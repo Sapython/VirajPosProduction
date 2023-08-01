@@ -1,23 +1,25 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
-    <h3>Upgrade Form</h3>
-    <mat-form-field appearance="outline">
-        <mat-label>Name</mat-label>
-        <input type="text" matInput formControlName="customerName">
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-        <mat-label>Reason</mat-label>
-        <input type="text" matInput formControlName="reason">
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-        <mat-label>Moblie No</mat-label>
-        <input type="tel" matInput formControlName="referralCode">
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-        <mat-label>Referral Code</mat-label>
-        <input type="text" matInput formControlName="mobileNumber">
-    </mat-form-field>
-    <div class="actions">
-        <button color="primary" type="submit" mat-flat-button>Save</button>
-        <button color="primary" type="button" mat-stroked-button (click)="cancel()">Cancel</button>
-    </div>
+  <h3>Upgrade Form</h3>
+  <mat-form-field appearance="outline">
+    <mat-label>Name</mat-label>
+    <input type="text" matInput formControlName="customerName" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Reason</mat-label>
+    <input type="text" matInput formControlName="reason" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Moblie No</mat-label>
+    <input type="tel" matInput formControlName="referralCode" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Referral Code</mat-label>
+    <input type="text" matInput formControlName="mobileNumber" />
+  </mat-form-field>
+  <div class="actions">
+    <button color="primary" type="submit" mat-flat-button>Save</button>
+    <button color="primary" type="button" mat-stroked-button (click)="cancel()">
+      Cancel
+    </button>
+  </div>
 </form>

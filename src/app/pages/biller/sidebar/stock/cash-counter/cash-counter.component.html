@@ -1,30 +1,30 @@
 <section>
-    <div class="actions">
-        <h3>Stock Valuation</h3>
-        <button mat-icon-button (click)="close.emit()">
-            <mat-icon>close</mat-icon>
-        </button>
-    </div>
-    <div class="counters">
-        <span>
-            <p>Total Sales</p>
-            <div class="badge">{{totalSale | currency:'INR'}}</div>
-        </span>
-        <span>
-            <p>Online Payment</p>
-            <div class="badge">{{totalOnlinePayment | currency:'INR'}}</div>
-        </span>
-        <span>
-            <p>Non Chargeable</p>
-            <div class="badge">{{totalNonChargeable | currency:'INR'}}</div>
-        </span>
-        <span>
-            <p>Dispense</p>
-            <div class="badge">{{totalDispensedMoney | currency:'INR'}}</div>
-        </span>
-        <span class="full-width">
-            <p>Cash Left</p>
-            <div class="badge">{{cashLeft | currency:'INR'}}</div>
-        </span>
-    </div>
+  <div class="actions">
+    <h3>Stock Valuation</h3>
+    <button mat-icon-button (click)="close.emit()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div class="counters">
+    <span>
+      <p>Total Sales</p>
+      <div class="badge">{{ totalSale | currency: "INR" }}</div>
+    </span>
+    <span>
+      <p>Online Payment</p>
+      <div class="badge">{{ totalOnlinePayment | currency: "INR" }}</div>
+    </span>
+    <span>
+      <p>Non Chargeable</p>
+      <div class="badge">{{ totalNonChargeable | currency: "INR" }}</div>
+    </span>
+    <span>
+      <p>Dispense</p>
+      <div class="badge">{{ totalDispensedMoney | currency: "INR" }}</div>
+    </span>
+    <span class="full-width">
+      <p>Cash Left</p>
+      <div class="badge">{{ cashLeft | currency: "INR" }}</div>
+    </span>
+  </div>
 </section>

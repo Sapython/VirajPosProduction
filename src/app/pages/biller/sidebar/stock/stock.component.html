@@ -11,7 +11,7 @@
     >
       <p>Stock Valuation</p>
       <strong>
-        {{ stockValuation | currency : "INR" : true }}
+        {{ stockValuation | currency: "INR" : true }}
       </strong>
     </div>
     <div
@@ -24,10 +24,11 @@
     >
       <p>Cash Counter</p>
       <strong>
-        {{ totalCash | currency : "INR" : true }}
+        {{ totalCash | currency: "INR" : true }}
       </strong>
     </div>
-    <ng-template *ngIf="!this.dataProvider.touchMode"
+    <ng-template
+      *ngIf="!this.dataProvider.touchMode"
       cdkConnectedOverlay
       [cdkConnectedOverlayPositions]="[
         { overlayX: 'start', overlayY: 'top', originX: 'end', originY: 'top' }
@@ -42,7 +43,8 @@
         (mouseenter)="this.closeStockValuePanelSubscription.next(true)"
       ></app-stock-valuation>
     </ng-template>
-    <ng-template *ngIf="!this.dataProvider.touchMode"
+    <ng-template
+      *ngIf="!this.dataProvider.touchMode"
       cdkConnectedOverlay
       [cdkConnectedOverlayPositions]="[
         {
@@ -77,7 +79,7 @@
       (mouseenter)="isStockValuationOpen = true"
     >
       <!-- <mat-icon>inventory</mat-icon> -->
-      {{ stockValuation | currency : "INR" : true }}
+      {{ stockValuation | currency: "INR" : true }}
     </viraj-button>
     <viraj-button
       type="outline"
@@ -89,7 +91,7 @@
       (mouseenter)="isCashSummaryOpen = true"
     >
       <!-- <mat-icon>payments</mat-icon> -->
-      {{ totalCash | currency : "INR" : true }}
+      {{ totalCash | currency: "INR" : true }}
     </viraj-button>
     <!-- <button mat-icon-button color="primary">
       <mat-icon>south</mat-icon>
@@ -99,7 +101,14 @@
     </button> -->
     <app-receiving (click)="openReceiving()"></app-receiving>
     <app-dispersion (click)="openDispersion()"></app-dispersion>
-    <viraj-button (vclick)="closeIn()" matRipple mat-flat-button color="primary" *ngIf="dataProvider.clientHeight < 717">Close In</viraj-button>
+    <viraj-button
+      (vclick)="closeIn()"
+      matRipple
+      mat-flat-button
+      color="primary"
+      *ngIf="dataProvider.clientHeight < 717"
+      >Close In</viraj-button
+    >
     <ng-template
       *ngIf="!this.dataProvider.touchMode"
       cdkConnectedOverlay
@@ -116,7 +125,8 @@
         (mouseenter)="this.closeStockValuePanelSubscription.next(true)"
       ></app-stock-valuation>
     </ng-template>
-    <ng-template *ngIf="!this.dataProvider.touchMode"
+    <ng-template
+      *ngIf="!this.dataProvider.touchMode"
       cdkConnectedOverlay
       [cdkConnectedOverlayPositions]="[
         {
@@ -141,10 +151,15 @@
     <app-receiving (click)="openReceiving()"></app-receiving>
     <app-dispersion (click)="openDispersion()"></app-dispersion>
   </ng-container>
-  <div class="row" *ngIf="dataProvider.clientHeight < 896 && dataProvider.clientHeight > 717">
+  <div
+    class="row"
+    *ngIf="dataProvider.clientHeight < 896 && dataProvider.clientHeight > 717"
+  >
     <app-receiving (click)="openReceiving()"></app-receiving>
     <app-dispersion (click)="openDispersion()"></app-dispersion>
   </div>
-  <viraj-button (vclick)="closeIn()" *ngIf="dataProvider.clientHeight >= 717">Close In</viraj-button>
+  <viraj-button (vclick)="closeIn()" *ngIf="dataProvider.clientHeight >= 717"
+    >Close In</viraj-button
+  >
   <!-- hovers -->
 </section>

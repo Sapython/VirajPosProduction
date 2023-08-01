@@ -4,10 +4,19 @@ import { User } from '@angular/fire/auth';
 import { ReplaySubject, Subject, debounceTime, firstValueFrom } from 'rxjs';
 import { DialogComponent } from '../../../shared/base-components/dialog/dialog.component';
 import { PromptComponent } from '../../../shared/base-components/prompt/prompt.component';
-import { Category, ViewCategory, RootCategory } from '../../../types/category.structure';
+import {
+  Category,
+  ViewCategory,
+  RootCategory,
+} from '../../../types/category.structure';
 import { CodeBaseDiscount } from '../../../types/discount.structure';
 import { Tax } from '../../../types/tax.structure';
-import { UserRecord, BusinessRecord, userState, CustomerInfo } from '../../../types/user.structure';
+import {
+  UserRecord,
+  BusinessRecord,
+  userState,
+  CustomerInfo,
+} from '../../../types/user.structure';
 import { Bill } from '../../constructors/bill';
 import { Device } from '../../constructors/device/Device';
 import { ModeConfig } from '../../constructors/menu/menu';
@@ -19,14 +28,20 @@ import { updateRequest } from '../../../types/loader.structure';
 import { Timestamp } from '@angular/fire/firestore';
 import { optionalPromptParam } from '../../../types/prompt.strcuture';
 import { CheckingPasswordComponent } from '../../../shared/checking-password/checking-password.component';
-import { Combo, ComboCategoryCategorized } from '../../../types/combo.structure';
+import {
+  Combo,
+  ComboCategoryCategorized,
+} from '../../../types/combo.structure';
 import { ApplicableCombo } from '../../constructors/comboKot/comboKot';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DataProvider {
-  constructor(private dialog: Dialog,private functions:Functions) {
+  constructor(
+    private dialog: Dialog,
+    private functions: Functions,
+  ) {
     // read viewSettings from localStorage every 2 seconds
     this.clientWidth.next(window.innerWidth);
     this.clientHeight.next(window.innerHeight);
@@ -38,7 +53,11 @@ export class DataProvider {
       ).smartView;
     }, 2000);
     window.alert = (message: string) => {
-      this.confirm('Alert',[0],{description:message,buttons:['ok'],primary:[0]});
+      this.confirm('Alert', [0], {
+        description: message,
+        buttons: ['ok'],
+        primary: [0],
+      });
     };
     window.addEventListener('resize', () => {
       this.clientWidth.next(window.innerWidth);
@@ -53,28 +72,29 @@ export class DataProvider {
     window.addEventListener('offline', () => {
       this.offline = true;
     });
-    this.queueUpdate.subscribe((updateTime)=>[
+    this.queueUpdate.subscribe((updateTime) => [
       this.updateRequests.push({
-        currentTime:Timestamp.now(),
-        totalUpdateTimeMs:updateTime+500
-      })
-    ])
+        currentTime: Timestamp.now(),
+        totalUpdateTimeMs: updateTime + 500,
+      }),
+    ]);
 
     // window.onbeforeunload = () => "STOP!! Data is being updated. Please wait. Or you may corrupt it.";
-    setInterval(()=>{
+    setInterval(() => {
       this.updating = !this.isTimeElapsed();
-      if(this.updating){
-        window.onbeforeunload = () => "STOP!! Data is being updated. Please wait. Or you may corrupt it.";
+      if (this.updating) {
+        window.onbeforeunload = () =>
+          'STOP!! Data is being updated. Please wait. Or you may corrupt it.';
       } else {
         window.onbeforeunload = () => null;
       }
-    },500)
-    this.productPanelState.subscribe((state)=>{
+    }, 500);
+    this.productPanelState.subscribe((state) => {
       this.productPanelStateValue = state;
-    })
+    });
   }
 
-  private passwordCheck = httpsCallable(this.functions,'checkPassword');
+  private passwordCheck = httpsCallable(this.functions, 'checkPassword');
 
   // smart vars
   public chatInnerHtml: Node | undefined;
@@ -109,14 +129,14 @@ export class DataProvider {
   public optionalTax: boolean = false;
   public printBillAfterSettle: boolean = false;
   public printBillAfterFinalize: boolean = false;
-  public currentSettings:any;
-  public customBillNote:string = '';
-  public todaySales:any = {};
-  public multipleDiscount:boolean = false;
-  public editKotTime:number = 1;
-  public kotEditable:boolean = false;
-  public kotRePrintable:boolean = false;
-  
+  public currentSettings: any;
+  public customBillNote: string = '';
+  public todaySales: any = {};
+  public multipleDiscount: boolean = false;
+  public editKotTime: number = 1;
+  public kotEditable: boolean = false;
+  public kotRePrintable: boolean = false;
+
   // public access
   public menus: ModeConfig[] = [];
   public products: Product[] = [];
@@ -135,7 +155,8 @@ export class DataProvider {
   public takeawayMenu: Menu | undefined;
   public onlineMenu: Menu | undefined;
   public tables: Table[] = [];
-  public groupedTables: { tables: Table[],name:string }[] = [];
+  public groupedTables: { tables: Table[]; name: string }[] = [];
+  public validTill: Date = new Date();
   public tokens: Table[] = [];
   public onlineTokens: Table[] = [];
   public customers: CustomerInfo[] = [];
@@ -149,18 +170,25 @@ export class DataProvider {
   public differentLoyaltyRate: boolean = false;
   public tableOrders: any = undefined;
   public groupOrders: string[] = [];
-  public loyaltyRates: { dineIn: number; dineInExpiry:number; takeaway: number; takeawayExpiry:number; online: number; onlineExpiry:number; } = {
+  public loyaltyRates: {
+    dineIn: number;
+    dineInExpiry: number;
+    takeaway: number;
+    takeawayExpiry: number;
+    online: number;
+    onlineExpiry: number;
+  } = {
     dineIn: 0,
     dineInExpiry: 0,
     takeaway: 0,
     takeawayExpiry: 0,
     online: 0,
     onlineExpiry: 0,
-  }
-  
+  };
+
   // combo statuses
   public currentCombo: Combo | undefined;
-  public currentComboTypeCategory:ComboCategoryCategorized | undefined;
+  public currentComboTypeCategory: ComboCategoryCategorized | undefined;
   public currentApplicableCombo: ApplicableCombo | undefined;
   public currentPendingProduct: Product | undefined;
   // statuses
@@ -179,20 +207,22 @@ export class DataProvider {
   public totalSales: number = 0;
   public clientWidth: ReplaySubject<number> = new ReplaySubject(1);
   public clientHeight: ReplaySubject<number> = new ReplaySubject(1);
-  
-  public get currentBusinessUser(){
-    if (this.currentBusiness && this.currentUser){
-      return this.currentUser.business.find((business) => business.businessId == this.currentBusiness.businessId)!
+
+  public get currentBusinessUser() {
+    if (this.currentBusiness && this.currentUser) {
+      return this.currentUser.business.find(
+        (business) => business.businessId == this.currentBusiness.businessId,
+      )!;
     } else {
       return undefined;
     }
-  };
+  }
   public smartMode: boolean = (localStorage.getItem('viewSettings')
-  ? JSON.parse(localStorage.getItem('viewSettings')!)
-  : { smartView: false }
+    ? JSON.parse(localStorage.getItem('viewSettings')!)
+    : { smartView: false }
   ).smartView;
   public touchMode: boolean = (localStorage.getItem('viewSettings')
-  ? JSON.parse(localStorage.getItem('viewSettings')!)
+    ? JSON.parse(localStorage.getItem('viewSettings')!)
     : { touchMode: false }
   ).touchMode;
   public loading: boolean = false;
@@ -210,34 +240,45 @@ export class DataProvider {
   public billUpdated: Subject<void> = new Subject<void>();
   public settingsChanged: Subject<any> = new Subject<any>();
   public comboSelected: Subject<Combo[]> = new Subject<Combo[]>();
-  public productPanelState: ReplaySubject<'products'|'combos'> = new ReplaySubject<'products'|'combos'>(1);
-  public productPanelStateValue: 'products'|'combos' = 'products';
+  public productPanelState: ReplaySubject<'products' | 'combos'> =
+    new ReplaySubject<'products' | 'combos'>(1);
+  public productPanelStateValue: 'products' | 'combos' = 'products';
   public offline: boolean = false;
-  public updating:boolean = false;
+  public updating: boolean = false;
   public backOnline: Subject<boolean> = new Subject<boolean>();
-  public queueUpdate:Subject<number> = new Subject<number>();
-  public updateRequests:updateRequest[] = [];
+  public queueUpdate: Subject<number> = new Subject<number>();
+  public updateRequests: updateRequest[] = [];
   // public globalUpdateState:'checking-for-update'|'not-available'|'update-available'|'download-progress'|'update-downloaded' = 'checking-for-update';
-  public softwareUpdateFilteredSubject:ReplaySubject<any> = new ReplaySubject<any>(1);
-  public currentUpdateStage:'checking-for-update'|'update-not-available'|'update-available'|'download-progress'|'update-downloaded'|'installing' = 'checking-for-update';
-  public currentUpdateProgress:number = 0;
+  public softwareUpdateFilteredSubject: ReplaySubject<any> =
+    new ReplaySubject<any>(1);
+  public currentUpdateStage:
+    | 'checking-for-update'
+    | 'update-not-available'
+    | 'update-available'
+    | 'download-progress'
+    | 'update-downloaded'
+    | 'installing' = 'checking-for-update';
+  public currentUpdateProgress: number = 0;
 
-  public isTimeElapsed():boolean{
-    return this.updateRequests.filter((request)=>{
-      // get current time in systemTime
-      // get totalElapsed time => systemTime - request.currentTime
-      // if totalElapsed time > request.totalUpdateTimeMs
-      // return true
+  public isTimeElapsed(): boolean {
+    return (
+      this.updateRequests.filter((request) => {
+        // get current time in systemTime
+        // get totalElapsed time => systemTime - request.currentTime
+        // if totalElapsed time > request.totalUpdateTimeMs
+        // return true
 
-      // else return false
-      let systemTime = Timestamp.now();
-      let totalElapsed = systemTime.toMillis() - request.currentTime.toMillis();
-      if (totalElapsed > request.totalUpdateTimeMs){
-        return false;
-      } else {
-        return true;
-      }
-    }).length == 0
+        // else return false
+        let systemTime = Timestamp.now();
+        let totalElapsed =
+          systemTime.toMillis() - request.currentTime.toMillis();
+        if (totalElapsed > request.totalUpdateTimeMs) {
+          return false;
+        } else {
+          return true;
+        }
+      }).length == 0
+    );
   }
 
   public get currentAccessLevel() {
@@ -263,16 +304,28 @@ export class DataProvider {
       if (user) {
         if (Array.isArray(property)) {
           if (property.every((prop) => this.propertyList.includes(prop))) {
-            if (user.accessType == 'role'){
+            if (user.accessType == 'role') {
               // check if every property is included in this.defaultAccess[user.role]
-              if (property.every((prop)=>user.accessType=='role' && this.defaultAccess[user.role].includes(prop))){
+              if (
+                property.every(
+                  (prop) =>
+                    user.accessType == 'role' &&
+                    this.defaultAccess[user.role].includes(prop),
+                )
+              ) {
                 return true;
               } else {
                 return false;
               }
             } else if (user.accessType == 'custom') {
               // check if every property is included in user.propertiesAllowed
-              if (property.every((prop)=>user.accessType=='custom' && user.propertiesAllowed.includes(prop))){
+              if (
+                property.every(
+                  (prop) =>
+                    user.accessType == 'custom' &&
+                    user.propertiesAllowed.includes(prop),
+                )
+              ) {
                 return true;
               } else {
                 return false;
@@ -286,16 +339,22 @@ export class DataProvider {
           }
         } else {
           if (this.propertyList.includes(property)) {
-            if (user.accessType == 'role'){
+            if (user.accessType == 'role') {
               // check if every property is included in this.defaultAccess[user.role]
-              if (user.accessType=='role' && this.defaultAccess[user.role].includes(property)){
+              if (
+                user.accessType == 'role' &&
+                this.defaultAccess[user.role].includes(property)
+              ) {
                 return true;
               } else {
                 return false;
               }
             } else if (user.accessType == 'custom') {
               // check if every property is included in user.propertiesAllowed
-              if (user.accessType=='custom' && user.propertiesAllowed.includes(property)){
+              if (
+                user.accessType == 'custom' &&
+                user.propertiesAllowed.includes(property)
+              ) {
                 return true;
               } else {
                 return false;
@@ -315,14 +374,13 @@ export class DataProvider {
       return false;
     }
   }
-  
 
   public async prompt(
     title: string,
-    params?: optionalPromptParam
+    params?: optionalPromptParam,
   ): Promise<string | null> {
     const dialog = this.dialog.open(PromptComponent, {
-      panelClass:'customDialog',
+      panelClass: 'customDialog',
       data: {
         title: title,
         ...params,
@@ -336,18 +394,22 @@ export class DataProvider {
     }
   }
 
-  public async confirm(title: string,correct:number[], params?: {description?:string,buttons?:string[],primary?:number[],}) {
+  public async confirm(
+    title: string,
+    correct: number[],
+    params?: { description?: string; buttons?: string[]; primary?: number[] },
+  ) {
     const dialog = this.dialog.open(DialogComponent, {
-      panelClass:'customDialog',
+      panelClass: 'customDialog',
       data: {
         title: title,
-        ...params
+        ...params,
       },
     });
-    let res = await firstValueFrom(dialog.closed)
-  //  console.log("responded",res);
-    if (typeof(res) == 'number'){
-      if (correct.includes(res)){
+    let res = await firstValueFrom(dialog.closed);
+    //  console.log("responded",res);
+    if (typeof res == 'number') {
+      if (correct.includes(res)) {
         return true;
       } else {
         return false;
@@ -359,14 +421,17 @@ export class DataProvider {
 
   public async checkPassword(password: string) {
     this.loading = true;
-    const dialog = this.dialog.open(CheckingPasswordComponent,{
-      hasBackdrop:false,
-      panelClass:'passwordAlert'
-    })
+    const dialog = this.dialog.open(CheckingPasswordComponent, {
+      hasBackdrop: false,
+      panelClass: 'passwordAlert',
+    });
     dialog.disableClose = true;
     try {
-      let res = await this.passwordCheck({password:password,uid:this.currentUser.username})
-      if (res.data['correct']){
+      let res = await this.passwordCheck({
+        password: password,
+        uid: this.currentUser.username,
+      });
+      if (res.data['correct']) {
         return true;
       } else {
         return false;
@@ -386,124 +451,122 @@ export class DataProvider {
   public currentBusiness: BusinessRecord | undefined;
   public businessId: string = '';
 
-
   // access management
   propertyList = [
-    "updateBiller",
-    "seeSaleSummary",
-    "seeReports", //TODO: new
-    "seeOrderSummary",
-    "seeVirajCategories",
-    "seeCombos",
-    "seeLoyalty", // TODO: new
-    "addNewMenu", // TODO: new
-    "addNewLoyaltySettings", // TODO: new
-    "editLoyaltySetting", // TODO: new
-    "deleteLoyaltySetting", // TODO: new
-    "multipleDiscounts", // TODO: new
-    "seeYourCategories",
-    "seeMainCategories",
-    "editMenu",
-    "editTakeawayMenu",
-    "editOnlineMenu",
-    "editDineInMenu",
-    "seeAllProducts",
-    "addNewProduct",
-    "enableDisableProducts",
-    "setTaxesOnProducts",
-    "editProduct",
-    "canEditDetails",
-    "canSetPrinter",
-    "deleteProduct",
-    "recommendedCategories",
-    "editRecommendedCategorySettings",
-    "enableDisableRecommendedProducts",
-    "setTaxesOnRecommendedProducts",
-    "editRecommendedProduct",
-    "deleteRecommendedProduct",
-    "viewCategories",
-    "addViewCategory",
-    "editViewCategory",
-    "deleteViewCategory",
-    "enableDisableViewProducts",
-    "setTaxesOnViewProducts",
-    "editViewProduct",
-    "deleteViewProduct",
-    "mainCategories",
-    "enableDisableMainProducts",
-    "setTaxesOnMainProducts",
-    "editMainProduct",
-    "deleteMainProduct",
-    "editTaxes",
-    "seeTaxes",
-    "addNewTaxes",
-    "deleteTaxes",
-    "editTax",
-    "discount",
-    "seeDiscount",
-    "addNewDiscounts",
-    "deleteDiscounts",
-    "editDiscount",
-    "combos",
-    "seeCombos",
-    "addNewCombos",
-    "deleteCombos",
-    "editCombo",
-    "types",
-    "seeTypes",
-    "addNewTypes",
-    "deleteTypes",
-    "editTypes",
-    "addNewMenu",
-    "switchMenu",
-    "viewTable",
-    "reArrangeGroupOrder",
-    "settleFromTable",
-    "addTable",
-    "deleteTable",
-    "addNewTakeawayToken",
-    "addNewOnlineToken",
-    "moveAndMergeOptions",
-    "seeHistory",
-    "settings",
-    "about",
-    "readAboutSettings",
-    "changeAboutSettings",
-    "businessSettings",
-    "readBusinessSettings",
-    "switchModes",
-    "changeConfig",
-    "changePrinter",
-    "accountSettings",
-    "readAccountSettings",
-    "addAccount",
-    "removeAccount",
-    "paymentMethods",
-    "newMethod",
-    "editMethod",
-    "deleteMethod",
-    "advancedSettings",
-    "generalSettings",
-    "loyaltySettings",
-    "punchKot",
-    "manageKot",
-    "editKot",
-    "deleteKot",
-    "lineDiscount",
-    "lineCancel",
-    "applyDiscount",
-    "seePreview",
-    "splitBill",
-    "setNonChargeable",
-    "billNote",
-    "cancelBill",
-    "settleBill",
-    "writeCustomerInfo"
-  ]
-  
+    'updateBiller',
+    'seeSaleSummary',
+    'seeReports', //TODO: new
+    'seeOrderSummary',
+    'seeVirajCategories',
+    'seeCombos',
+    'seeLoyalty', // TODO: new
+    'addNewMenu', // TODO: new
+    'addNewLoyaltySettings', // TODO: new
+    'editLoyaltySetting', // TODO: new
+    'deleteLoyaltySetting', // TODO: new
+    'multipleDiscounts', // TODO: new
+    'seeYourCategories',
+    "setPrinterSettings", //TODO: new
+    'seeMainCategories',
+    'editMenu',
+    'editTakeawayMenu',
+    'editOnlineMenu',
+    'editDineInMenu',
+    'seeAllProducts',
+    'addNewProduct',
+    'enableDisableProducts',
+    'setTaxesOnProducts',
+    'editProduct',
+    'canEditDetails',
+    'canSetPrinter',
+    'deleteProduct',
+    'recommendedCategories',
+    'editRecommendedCategorySettings',
+    'enableDisableRecommendedProducts',
+    'setTaxesOnRecommendedProducts',
+    'editRecommendedProduct',
+    'deleteRecommendedProduct',
+    'viewCategories',
+    'addViewCategory',
+    'editViewCategory',
+    'deleteViewCategory',
+    'enableDisableViewProducts',
+    'setTaxesOnViewProducts',
+    'editViewProduct',
+    'deleteViewProduct',
+    'mainCategories',
+    'enableDisableMainProducts',
+    'setTaxesOnMainProducts',
+    'editMainProduct',
+    'deleteMainProduct',
+    'editTaxes',
+    'seeTaxes',
+    'addNewTaxes',
+    'deleteTaxes',
+    'editTax',
+    'discount',
+    'seeDiscount',
+    'addNewDiscounts',
+    'deleteDiscounts',
+    'editDiscount',
+    'combos',
+    'seeCombos',
+    'addNewCombos',
+    'deleteCombos',
+    'editCombo',
+    'types',
+    'seeTypes',
+    'addNewTypes',
+    'deleteTypes',
+    'editTypes',
+    'addNewMenu',
+    'switchMenu',
+    'viewTable',
+    'reArrangeGroupOrder',
+    'settleFromTable',
+    'addTable',
+    'deleteTable',
+    'addNewTakeawayToken',
+    'addNewOnlineToken',
+    'moveAndMergeOptions',
+    'seeHistory',
+    'settings',
+    'about',
+    'readAboutSettings',
+    'changeAboutSettings',
+    'businessSettings',
+    'readBusinessSettings',
+    'switchModes',
+    'changeConfig',
+    'changePrinter',
+    'accountSettings',
+    'readAccountSettings',
+    'addAccount',
+    'removeAccount',
+    'paymentMethods',
+    'newMethod',
+    'editMethod',
+    'deleteMethod',
+    'advancedSettings',
+    'generalSettings',
+    'loyaltySettings',
+    'punchKot',
+    'manageKot',
+    'editKot',
+    'deleteKot',
+    'lineDiscount',
+    'lineCancel',
+    'applyDiscount',
+    'seePreview',
+    'splitBill',
+    'setNonChargeable',
+    'billNote',
+    'cancelBill',
+    'settleBill',
+    'writeCustomerInfo',
+  ];
+
   defaultAccess = {
-    admin: [
-      ...this.propertyList
-    ],
-  }
+    admin: [...this.propertyList],
+  };
 }

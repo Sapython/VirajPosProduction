@@ -11,7 +11,7 @@ export interface BillConstructor {
   billNo?: string;
   orderNo: string | null;
   createdDate: Timestamp;
-  billSplits:PrintableBill[];
+  billSplits: PrintableBill[];
   billReprints: {
     reprintReason: string;
     time: Timestamp;
@@ -48,18 +48,20 @@ export interface BillConstructor {
     phone: string;
     name: string;
   };
-  currentLoyalty:{
-    loyaltySettingId:string,
-    totalLoyaltyCost:number,
-    totalLoyaltyPoints:number,
-    totalToBeRedeemedPoints:number,
-    totalToBeRedeemedCost:number,
-    receiveLoyalty: boolean,
-    redeemLoyalty: boolean,
-  }
+  currentLoyalty: billLoyalty;
+}
+export interface billLoyalty {
+  loyaltySettingId: string;
+  totalLoyaltyCost: number;
+  totalLoyaltyPoints: number;
+  totalToBeRedeemedPoints: number;
+  totalToBeRedeemedCost: number;
+  receiveLoyalty: boolean;
+  redeemLoyalty: boolean;
+  expiryDate?: Timestamp;
 }
 export interface PrintableBill {
-  businessDetails:{
+  businessDetails: {
     name: string;
     address: string;
     phone: string;
@@ -67,11 +69,11 @@ export interface PrintableBill {
     gstin: string;
     email: string;
   };
-  customerDetail:{
-    name?:string;
-    phone?:string;
-    address?:string;
-    gstin?:string;
+  customerDetail: {
+    name?: string;
+    phone?: string;
+    address?: string;
+    gstin?: string;
   };
   date: string;
   time: string;
@@ -79,34 +81,36 @@ export interface PrintableBill {
   billNoSuffix?: string;
   billNo: string;
   cashierName: string;
-  mode:'Dine In' | 'Takeaway' | 'Online';
-  products:printableBillItem[];
+  mode: 'Dine In' | 'Takeaway' | 'Online';
+  products: printableBillItem[];
   totalQuantity: number;
   subTotal: number;
-  discounts:printableDiscount[];
-  taxes:printableTax[];
-  grandTotal:number;
-  note:string;
-  notes:string[];
+  postDiscountSubTotal: number;
+  discounts: printableDiscount[];
+  taxes: printableTax[];
+  grandTotal: number;
+  note: string;
+  notes: string[];
+  currentLoyalty: billLoyalty;
 }
 
 export interface printableBillItem {
-  id:string;
-  name:string;
-  quantity:number;
-  untaxedValue:number;
-  total:number;
+  id: string;
+  name: string;
+  quantity: number;
+  untaxedValue: number;
+  total: number;
 }
 
-export interface printableDiscount{
-  name:string;
-  rate:number;
-  type:'flat'|'percentage';
-  value:number;
+export interface printableDiscount {
+  name: string;
+  rate: number;
+  type: 'flat' | 'percentage';
+  value: number;
 }
 
-export interface printableTax{
-  name:string;
-  rate:number;
-  value:number;
+export interface printableTax {
+  name: string;
+  rate: number;
+  value: number;
 }

@@ -1,16 +1,21 @@
 import { Injectable } from '@angular/core';
-import { getDownloadURL, getStorage, ref, uploadBytesResumable } from '@angular/fire/storage';
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from '@angular/fire/storage';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FileStorageService {
   storage = getStorage();
-  constructor() { }
+  constructor() {}
 
   async upload(
     path: string,
-    file: File | ArrayBuffer | Blob | Uint8Array
+    file: File | ArrayBuffer | Blob | Uint8Array,
   ): Promise<any> {
     // const ext = file!.name.split('.').pop();
     if (file) {

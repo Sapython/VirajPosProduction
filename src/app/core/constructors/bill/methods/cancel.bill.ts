@@ -4,15 +4,12 @@ import { Product } from '../../../../types/product.structure';
 import { Kot } from '../../kot/Kot';
 
 export function lineCancelled(this: Bill, item: Product, event: any, kot: Kot) {
-//  console.log('line cancelled', item, event);
+  //  console.log('line cancelled', item, event);
   if (event.type == 'unmade') {
     kot.unmade = true;
   }
   item.cancelled = true;
-  this.printKot(
-    kot,
-    'editedKot'
-  );
+  this.printKot(kot, 'editedKot');
   this.cancelledProducts.push({ product: item, kot: kot.id });
   // remove product from kot
   item.cancelled = true;
@@ -20,7 +17,7 @@ export function lineCancelled(this: Bill, item: Product, event: any, kot: Kot) {
     type: 'lineCancelled',
     message: 'Line cancelled by ' + this.user.username,
     user: this.user.username,
-    data: { item, kot:kot.toObject() },
+    data: { item, kot: kot.toObject() },
   });
   this.updateToFirebase();
   // kot.products = kot.products.filter((product) => product.id !== item.id);

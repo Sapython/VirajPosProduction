@@ -1,19 +1,21 @@
 import { Timestamp } from '@angular/fire/firestore';
 
 export interface CustomerInfo {
-  id?:string;
+  id?: string;
   name?: string;
   phone?: string;
   address?: string;
   gst?: string;
   deliveryName?: string;
   deliveryPhone?: string;
-  loyaltyPoints?:number;
-  averageBill?:number;
-  totalBills?:number;
-  lastBillDate?:Timestamp;
-  lastBillAmount?:number;
-  lastBillId?:string;
+  loyaltyPoints?: number;
+  averageBillValue?: number;
+  totalSales?:number;
+  totalBills?: number;
+  lastBillDate?: Timestamp;
+  lastBillAmount?: number;
+  lastBillId?: string;
+  updated?:Timestamp;
 }
 
 export interface UserConstructor {
@@ -56,23 +58,23 @@ export interface Access {
   updatedBy: string;
   accessLevel: 'manager' | 'waiter' | 'accountant' | 'admin';
 }
-export type Member  = {
+export type Member = {
   updatedBy: string;
   lastUpdated: Timestamp;
   new?: boolean;
   username: string;
 } & (RoleProps | CustomProps);
 
-type RoleProps ={
+type RoleProps = {
   accessType: 'role';
   role: 'manager' | 'waiter' | 'accountant' | 'admin';
-}
+};
 type CustomProps = {
   accessType: 'custom';
   propertiesAllowed: string[];
-}
+};
 // } & {
-  
+
 // } or {
 //   accessType:'role' | 'custom';
 //   propertyAllowed: string;
@@ -84,8 +86,19 @@ export interface AdditonalClaims {
   image?: string;
   phone?: string;
   business: {
-    access: { accessType: 'role', role:string, lastUpdated:Timestamp; updatedBy: string } | 
-    { accessType: 'custom',propertiesAllowed:string[], lastUpdated:Timestamp; updatedBy: string };
+    access:
+      | {
+          accessType: 'role';
+          role: string;
+          lastUpdated: Timestamp;
+          updatedBy: string;
+        }
+      | {
+          accessType: 'custom';
+          propertiesAllowed: string[];
+          lastUpdated: Timestamp;
+          updatedBy: string;
+        };
     address: string;
     businessId: string;
     joiningDate: Timestamp;

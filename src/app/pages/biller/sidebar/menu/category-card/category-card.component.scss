@@ -1,67 +1,67 @@
-div.category{
-    cursor: pointer;
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
+div.category {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
 
-    -webkit-user-drag: none;
-    -webkit-tap-highlight-color: transparent;
+  -webkit-user-drag: none;
+  -webkit-tap-highlight-color: transparent;
+  display: flex;
+  justify-content: space-between;
+  padding: 0px 15px;
+  height: 40px;
+  align-items: center;
+  background: var(--Viraj-primary-shade);
+  color: var(--Viraj-primary-text);
+  border-bottom: 2px solid var(--Viraj-primary);
+  mat-icon {
+    color: var(--Viraj-primary);
+  }
+  p {
+    margin: 0px;
+  }
+  p.name {
+    font-size: var(--Viraj-font-medium);
+    font-weight: 400;
+  }
+  p.average {
+    font-size: var(--Viraj-font-medium);
+    font-weight: 400;
+  }
+  span {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--Viraj-primary);
+    font-size: var(--Viraj-font-small);
+    color: white;
     display: flex;
-    justify-content: space-between;
-    padding: 0px 15px;
-    height: 40px;
+    justify-content: center;
     align-items: center;
-    background: var(--Viraj-primary-shade);
-    color:var(--Viraj-primary-text);
-    border-bottom: 2px solid  var(--Viraj-primary);
-    mat-icon{
-        color: var(--Viraj-primary);
+  }
+  div {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  &.active {
+    background: var(--Viraj-primary);
+    color: white;
+    border-bottom: 2px solid var(--Viraj-primary-shade);
+    mat-icon {
+      color: white;
     }
-    p{
-        margin:0px;
+    span {
+      background: white;
+      color: var(--Viraj-primary);
     }
-    p.name{
-        font-size: var(--Viraj-font-medium);
-        font-weight: 400;
-    }
-    p.average{
-        font-size: var(--Viraj-font-medium);
-        font-weight: 400;
-    }
-    span{
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background: var(--Viraj-primary);
-        font-size: var(--Viraj-font-small); 
-        color:white;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    div{
-        display: flex;
-        gap:10px;
-        align-items: center;
-    }
-    &.active{
-        background: var(--Viraj-primary);
-        color: white;
-        border-bottom: 2px solid var(--Viraj-primary-shade);
-        mat-icon{
-            color: white;
-        }
-        span{
-            background: white;
-            color: var(--Viraj-primary);
-        }
-    }
+  }
 }
 @media (max-width: 1366px) {
-    div.category{
-        padding: 0px 5px;
-    }
-    div.category{
-        height: 34px;
-    }
+  div.category {
+    padding: 0px 5px;
+  }
+  div.category {
+    height: 34px;
+  }
 }

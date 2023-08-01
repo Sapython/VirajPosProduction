@@ -5,7 +5,7 @@ import { Kot } from '../../kot/Kot';
 import { PrintableKot } from '../../../../types/kot.structure';
 import { ApplicableCombo } from '../../comboKot/comboKot';
 
-var debug:boolean = true;
+var debug: boolean = true;
 
 export function addKot(this: Bill, kot: Kot) {
   this.kots.push(kot);
@@ -30,13 +30,13 @@ export function clearAllKots(this: Bill) {
   this.updated.next();
 }
 
-export function editKot(this: Bill, kot: Kot, reason:string) {
-  console.log("EDITED KOT REASON",reason);
-  
+export function editKot(this: Bill, kot: Kot, reason: string) {
+  console.log('EDITED KOT REASON', reason);
+
   if (this.currentKot?.stage === 'active') {
     if (
       confirm(
-        'You are already editing a kot. Do you want to discard the changes and edit this kot?'
+        'You are already editing a kot. Do you want to discard the changes and edit this kot?',
       )
     ) {
       this.editKotMode = {
@@ -45,21 +45,21 @@ export function editKot(this: Bill, kot: Kot, reason:string) {
         kot: kot,
         kotIndex: this.kots.findIndex((localKot) => localKot.id == kot.id) || 0,
       };
-    //  console.log('edit kot mode 1', this.editKotMode);
+      //  console.log('edit kot mode 1', this.editKotMode);
       this.dataProvider.manageKot = false;
       this.dataProvider.manageKotChanged.next(false);
       this.billService.addActivity(this, {
         type: 'kotEdited',
         message: 'Kot edited by ' + this.user.username,
         user: this.user.username,
-        data: {...kot.toObject(),editReason:reason},
+        data: { ...kot.toObject(), editReason: reason },
       });
       this.updated.next();
     } else {
       return;
     }
   } else {
-    let clonedArray: (Product|ApplicableCombo)[] = [];
+    let clonedArray: (Product | ApplicableCombo)[] = [];
     kot.products.forEach((product) => {
       clonedArray.push(product);
     });
@@ -70,14 +70,14 @@ export function editKot(this: Bill, kot: Kot, reason:string) {
       kotIndex: this.kots.findIndex((localKot) => localKot.id == kot.id) || 0,
     };
     // finalize the kot
-  //  console.log('edit kot mode', this.editKotMode);
+    //  console.log('edit kot mode', this.editKotMode);
     this.dataProvider.manageKot = false;
     this.dataProvider.manageKotChanged.next(false);
     this.billService.addActivity(this, {
       type: 'kotEdited',
       message: 'Kot edited by ' + this.user.username,
       user: this.user.username,
-      data: {...kot.toObject(),editReason:reason},
+      data: { ...kot.toObject(), editReason: reason },
     });
     this.updated.next();
   }
@@ -89,66 +89,71 @@ export function finalizeAndPrintKot(this: Bill) {
       'Old kot',
       this.editKotMode.previousKot,
       'New kot',
-      this.editKotMode.newKot
+      this.editKotMode.newKot,
     );
     let kotIndex = this.kots.findIndex(
-      (kot) => this.editKotMode && kot.id === this.editKotMode.kot.id
+      (kot) => this.editKotMode && kot.id === this.editKotMode.kot.id,
     );
-  //  console.log('Kot index', kotIndex);
+    //  console.log('Kot index', kotIndex);
     if (kotIndex != -1) {
-      let cancelledProducts:(Product|ApplicableCombo)[] = this.kots[kotIndex].products.map((product)=>{
+      let cancelledProducts: (Product | ApplicableCombo)[] = this.kots[
+        kotIndex
+      ].products.map((product) => {
         product.cancelled = true;
         return product;
-      })
-      this.editKotMode.newKot.forEach((product)=>{
+      });
+      this.editKotMode.newKot.forEach((product) => {
         product.cancelled = false;
-      })
-      this.kots[kotIndex].products = [...cancelledProducts,...this.editKotMode.newKot];
+      });
+      this.kots[kotIndex].products = [
+        ...cancelledProducts,
+        ...this.editKotMode.newKot,
+      ];
       this.kots[kotIndex].stage = 'finalized';
-    //  console.log('Active kot', this.kots[kotIndex]);
-      this.printKot(this.kots[kotIndex],'editedKot')
+      //  console.log('Active kot', this.kots[kotIndex]);
+      this.printKot(this.kots[kotIndex], 'editedKot');
       this.kots[kotIndex].products = this.editKotMode.newKot;
     }
     this.editKotMode = null;
     this.dataProvider.kotViewVisible = true;
   } else {
     let activeKot = this.kots.find(
-      (value) => value.stage === 'active' || value.stage == 'edit'
+      (value) => value.stage === 'active' || value.stage == 'edit',
     );
-  //  console.log('info =>', activeKot);
+    //  console.log('info =>', activeKot);
 
     if (activeKot) {
       activeKot.id = this.dataProvider.kotToken.toString();
       this.dataProvider.kotToken++;
       this.analyticsService.addKitchenToken();
       activeKot.stage = 'finalized';
-    //  console.log('Active kot', activeKot);
+      //  console.log('Active kot', activeKot);
       this.analyticsService.addKitchenToken();
       activeKot.createdDate = Timestamp.now();
       this.updated.next();
       if (this.kots.length > 1) {
         if (this.nonChargeableDetail) {
           // running nonchargeable kot
-          this.billService.provideAnalytics().logKot(activeKot,'new');
+          this.billService.provideAnalytics().logKot(activeKot, 'new');
           this.printKot(activeKot, 'runningNonChargeable');
         } else {
-          this.billService.provideAnalytics().logKot(activeKot,'new');
+          this.billService.provideAnalytics().logKot(activeKot, 'new');
           // running chargeable kot
-        //  console.log('running chargeable');
+          //  console.log('running chargeable');
           this.printKot(activeKot, 'runningChargeable');
         }
       } else {
         if (this.nonChargeableDetail) {
           // first nonchargeable kot
-          this.billService.provideAnalytics().logKot(activeKot,'new');
+          this.billService.provideAnalytics().logKot(activeKot, 'new');
           this.printKot(activeKot, 'firstNonChargeable');
         } else {
           // first chargeable kot
-          this.billService.provideAnalytics().logKot(activeKot,'new');
+          this.billService.provideAnalytics().logKot(activeKot, 'new');
           this.printKot(activeKot, 'firstChargeable');
         }
       }
-    //  console.log('Must have printed');
+      //  console.log('Must have printed');
       this.dataProvider.kotViewVisible = true;
     } else {
       alert('No active kot found');
@@ -165,15 +170,15 @@ export function deleteKot(this: Bill, kot: Kot) {
   this.updated.next();
   kot.products.forEach((product) => {
     product.cancelled = true;
-  })
+  });
   this.billService.addActivity(this, {
     type: 'kotCancelled',
     message: 'Kot cancelled by ' + this.user.username,
     user: this.user.username,
     data: kot.toObject(),
-  })
-  this.billService.provideAnalytics().logKot(kot,'cancelled');
-  this.printKot(kot,'cancelledKot');
+  });
+  this.billService.provideAnalytics().logKot(kot, 'cancelled');
+  this.printKot(kot, 'cancelledKot');
   this.calculateBill();
   this.updated.next();
   this.dataProvider.kotViewVisible = true;
@@ -186,7 +191,7 @@ export function printKot(
   this: Bill,
   kot: Kot,
   mode:
-    'firstChargeable'
+    | 'firstChargeable'
     | 'cancelledKot'
     | 'editedKot'
     | 'runningNonChargeable'
@@ -194,11 +199,11 @@ export function printKot(
     | 'firstNonChargeable'
     | 'reprintKot'
     | 'online',
-  reason?: string
+  reason?: string,
 ) {
   kot.mode = mode || 'firstChargeable';
   if (mode == 'reprintKot') {
-    if (!reason){
+    if (!reason) {
       throw new Error('Reason is required for reprint');
       return;
     }
@@ -213,8 +218,8 @@ export function printKot(
     this.dataProvider.orderTokenNo++;
     this.analyticsService.addOrderToken();
   }
-//  console.log("kot.products",kot.products);
-  let data:PrintableKot = {
+  //  console.log("kot.products",kot.products);
+  let data: PrintableKot = {
     // date in dd/mm/yyyy format
     date: kot.createdDate.toDate().toLocaleDateString('en-GB'),
     // time in 12 hour format
@@ -223,22 +228,22 @@ export function printKot(
       minute: 'numeric',
       hour12: true,
     }),
-    orderNo:this.orderNo,
-    mode:mode,
-    billingMode:this.mode,
-    token:kot.id,
-    products:kot.getAllProducts().map((product)=>{
+    orderNo: this.orderNo,
+    mode: mode,
+    billingMode: this.mode,
+    token: kot.id,
+    products: kot.getAllProducts().map((product) => {
       return {
-        id:product.id,
+        id: product.id,
         name: product.name,
-        instruction:product.instruction || null,
-        quantity:product.quantity,
-        edited:product.cancelled,
-        category:product.category,
-        specificPrinter:product.specificPrinter || null
-      }
+        instruction: product.instruction || null,
+        quantity: product.quantity,
+        edited: product.cancelled,
+        category: product.category,
+        specificPrinter: product.specificPrinter || null,
+      };
     }),
-    table:this.table.id,
+    table: this.table.id,
   };
   this.dataProvider.currentApplicableCombo = undefined;
   this.billService.addActivity(this, {
@@ -247,22 +252,24 @@ export function printKot(
     user: this.user.username,
     data: data,
   });
-  if(debug) console.log("Kot data",data);
+  if (debug) console.log('Kot data', data);
   this.printingService.printKot(data);
-//  console.log('Send to service');
+  //  console.log('Send to service');
 }
 
-export function checkCanPrintKot(this:Bill){
-  let hasAnyActiveKot = this.kots.some((kot)=>kot.stage == 'active' || kot.stage == 'edit');
+export function checkCanPrintKot(this: Bill) {
+  let hasAnyActiveKot = this.kots.some(
+    (kot) => kot.stage == 'active' || kot.stage == 'edit',
+  );
   // check if any product of item type combo is incomplete if yes return false
-  let isEveryProductValid = this.kots.every((kot)=>{
-    return kot.products.every((product)=>{
-      if(product instanceof ApplicableCombo){
+  let isEveryProductValid = this.kots.every((kot) => {
+    return kot.products.every((product) => {
+      if (product instanceof ApplicableCombo) {
         return product.incomplete;
-      }else{
+      } else {
         return true;
       }
-    })
+    });
   });
   return hasAnyActiveKot && isEveryProductValid;
 }

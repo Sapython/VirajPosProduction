@@ -8,9 +8,8 @@ describe('LineDiscountComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LineDiscountComponent ]
-    })
-    .compileComponents();
+      declarations: [LineDiscountComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(LineDiscountComponent);
     component = fixture.componentInstance;

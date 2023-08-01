@@ -7,32 +7,32 @@ import { CodeBaseDiscount } from '../../../../../types/discount.structure';
 @Component({
   selector: 'app-add-discount',
   templateUrl: './add-discount.component.html',
-  styleUrls: ['./add-discount.component.scss']
+  styleUrls: ['./add-discount.component.scss'],
 })
 export class AddDiscountComponent implements OnInit {
-  discountForm:FormGroup = new FormGroup({
-    name:new FormControl(null,Validators.required),
-    value:new FormControl(null,Validators.required),
-    type:new FormControl(null,Validators.required),
-    minimumAmount:new FormControl(),
-    minimumProducts:new FormControl(),
-    maximumDiscount:new FormControl(),
-    menus:new FormControl(null,Validators.required),
-    accessLevels:new FormControl(null,Validators.required),
-  })
+  discountForm: FormGroup = new FormGroup({
+    name: new FormControl(null, Validators.required),
+    value: new FormControl(null, Validators.required),
+    type: new FormControl(null, Validators.required),
+    minimumAmount: new FormControl(),
+    minimumProducts: new FormControl(),
+    maximumDiscount: new FormControl(),
+    menus: new FormControl(null, Validators.required),
+    accessLevels: new FormControl(null, Validators.required),
+  });
 
-  accessLevels:string[] = [
-    "manager",
-    "waiter",
-    "accountant",
-    "admin"
-  ]
+  accessLevels: string[] = ['manager', 'waiter', 'accountant', 'admin'];
 
-  constructor(public dataProvider:DataProvider,public dialogRef:DialogRef,@Inject(DIALOG_DATA) private data:{mode:'add'|'edit',discount?:CodeBaseDiscount}){}
+  constructor(
+    public dataProvider: DataProvider,
+    public dialogRef: DialogRef,
+    @Inject(DIALOG_DATA)
+    private data: { mode: 'add' | 'edit'; discount?: CodeBaseDiscount },
+  ) {}
 
   ngOnInit(): void {
-    if (this.data.mode=='edit'){
-      this.discountForm.patchValue(this.data.discount)
+    if (this.data.mode == 'edit') {
+      this.discountForm.patchValue(this.data.discount);
     }
   }
 }

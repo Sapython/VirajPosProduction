@@ -8,9 +8,8 @@ describe('LockedComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LockedComponent ]
-    })
-    .compileComponents();
+      declarations: [LockedComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(LockedComponent);
     component = fixture.componentInstance;

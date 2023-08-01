@@ -74,7 +74,7 @@
                   'Max: ' +
                   this.dataProvider.currentBill?.customerInfo?.loyaltyPoints
                 "
-                (input)="setLoyaltyCost(toBeRedeemedPoints.value)"
+                (change)="setLoyaltyCost(toBeRedeemedPoints.value)"
                 formControlName="totalToBeRedeemedPoints"
                 #toBeRedeemedPoints
               />
@@ -82,7 +82,7 @@
                 =
                 <strong>{{
                   this.dataProvider.currentBill?.currentLoyalty
-                    ?.totalToBeRedeemedCost | currency : "INR"
+                    ?.totalToBeRedeemedCost | currency: "INR"
                 }}</strong></span
               >
             </mat-checkbox>
@@ -119,7 +119,7 @@
   </p>
   <p>
     <b>Avg Order Price : </b>
-    <strong>{{ averageOrderPrice | currency : "INR" }}</strong>
+    <strong>{{ averageOrderPrice | currency: "INR" }}</strong>
   </p>
   <p><b>Last Order : </b> {{ wordsToSentence(lastOrderDish) }}</p>
 </section>

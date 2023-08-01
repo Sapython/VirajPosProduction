@@ -1,49 +1,80 @@
 <section>
-    <form [formGroup]="discountForm" (ngSubmit)="dialogRef.close(this.discountForm.value)">
-        <mat-form-field appearance="outline">
-            <mat-label>Name</mat-label>
-            <input type="text" matInput formControlName="name">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-            <mat-label>Value</mat-label>
-            <input type="number" matInput formControlName="value">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-            <mat-label>Type</mat-label>
-            <mat-select placeholder="Type" name="type" formControlName="type">
-                <mat-option value="percentage">Percentage</mat-option>
-                <mat-option value="flat">Flat</mat-option>
-            </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-            <mat-label>Menus</mat-label>
-            <mat-select placeholder="Type" [multiple]="true" name="type" formControlName="menus">
-                <mat-option *ngFor="let menu of this.dataProvider.allMenus" [value]="menu.id">{{menu.name}}</mat-option>
-            </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-            <mat-label>Minimum Amount</mat-label>
-            <input type="number" matInput formControlName="minimumAmount">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-            <mat-label>Minimum Products</mat-label>
-            <input type="number" matInput formControlName="minimumProducts">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-            <mat-label>Maximum Discount</mat-label>
-            <input type="number" matInput formControlName="maximumDiscount">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-            <mat-label>Access Levels</mat-label>
-            <mat-select placeholder="Access Level" multiple formControlName="accessLevels" name="access">
-                <mat-option *ngFor="let access of accessLevels" [value]="access">
-                    {{access}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-        <div class="actions">
-            <button color="primary" [disabled]="!discountForm.valid" type="submit" mat-flat-button>Submit</button>
-            <button color="primary" type="button" (click)="dialogRef.close()" mat-stroked-button>Cancel</button>
-        </div>
-    </form>
+  <form
+    [formGroup]="discountForm"
+    (ngSubmit)="dialogRef.close(this.discountForm.value)"
+  >
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input type="text" matInput formControlName="name" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Value</mat-label>
+      <input type="number" matInput formControlName="value" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Type</mat-label>
+      <mat-select placeholder="Type" name="type" formControlName="type">
+        <mat-option value="percentage">Percentage</mat-option>
+        <mat-option value="flat">Flat</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Menus</mat-label>
+      <mat-select
+        placeholder="Type"
+        [multiple]="true"
+        name="type"
+        formControlName="menus"
+      >
+        <mat-option
+          *ngFor="let menu of this.dataProvider.allMenus"
+          [value]="menu.id"
+          >{{ menu.name }}</mat-option
+        >
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Minimum Amount</mat-label>
+      <input type="number" matInput formControlName="minimumAmount" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Minimum Products</mat-label>
+      <input type="number" matInput formControlName="minimumProducts" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Maximum Discount</mat-label>
+      <input type="number" matInput formControlName="maximumDiscount" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Access Levels</mat-label>
+      <mat-select
+        placeholder="Access Level"
+        multiple
+        formControlName="accessLevels"
+        name="access"
+      >
+        <mat-option *ngFor="let access of accessLevels" [value]="access">
+          {{ access }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div class="actions">
+      <button
+        color="primary"
+        [disabled]="!discountForm.valid"
+        type="submit"
+        mat-flat-button
+      >
+        Submit
+      </button>
+      <button
+        color="primary"
+        type="button"
+        (click)="dialogRef.close()"
+        mat-stroked-button
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
 </section>

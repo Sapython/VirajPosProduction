@@ -8,9 +8,8 @@ describe('RearrangeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RearrangeComponent ]
-    })
-    .compileComponents();
+      declarations: [RearrangeComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(RearrangeComponent);
     component = fixture.componentInstance;

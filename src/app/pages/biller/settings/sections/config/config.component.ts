@@ -25,14 +25,15 @@ export class ConfigComponent implements OnInit {
     private alertify: AlertsAndNotificationsService,
     private dialog: Dialog,
     private settingsService: SettingsService,
-    private electronService: ElectronService
+    private electronService: ElectronService,
   ) {}
 
   async ngOnInit(): Promise<void> {
-    let localPrinters = (await this.electronService.getPrinters());
-    this.printers = localPrinters?.length > 0 ? localPrinters : ['Test 1','Test 2'];
+    let localPrinters = await this.electronService.getPrinters();
+    this.printers =
+      localPrinters?.length > 0 ? localPrinters : ['Test 1', 'Test 2'];
     this.settingsForm.disable();
-    if (this.dataProvider.getAccess('changeConfig')){
+    if (this.dataProvider.getAccess('changeConfig')) {
       this.settingsForm.enable();
     }
   }
@@ -68,10 +69,10 @@ export class ConfigComponent implements OnInit {
           data: { type: 'dineIn', menus: this.dataProvider.allMenus },
         });
         dialog.closed.subscribe(async (data: any) => {
-        //  console.log('data', data);
+          //  console.log('data', data);
           if (data) {
             let currentMenu = this.dataProvider.allMenus.find(
-              (menu) => menu.id == data
+              (menu) => menu.id == data,
             );
             let inst = new ModeConfig(
               'Dine In',
@@ -83,7 +84,7 @@ export class ConfigComponent implements OnInit {
               this.productService,
               this.alertify,
               this.dialog,
-              this.settingsService
+              this.settingsService,
             );
             this.dataProvider.menus.push(inst);
             this.modes[0] = true;
@@ -103,10 +104,10 @@ export class ConfigComponent implements OnInit {
           data: { type: 'takeaway', menus: this.dataProvider.allMenus },
         });
         dialog.closed.subscribe(async (data: any) => {
-        //  console.log('data', data);
+          //  console.log('data', data);
           if (data) {
             let currentMenu = this.dataProvider.allMenus.find(
-              (menu) => menu.id == data
+              (menu) => menu.id == data,
             );
             let inst = new ModeConfig(
               'Takeaway',
@@ -118,7 +119,7 @@ export class ConfigComponent implements OnInit {
               this.productService,
               this.alertify,
               this.dialog,
-              this.settingsService
+              this.settingsService,
             );
             this.dataProvider.menus.push(inst);
             this.modes[0] = true;
@@ -138,10 +139,10 @@ export class ConfigComponent implements OnInit {
           data: { type: 'online', menus: this.dataProvider.allMenus },
         });
         dialog.closed.subscribe(async (data: any) => {
-        //  console.log('data', data);
+          //  console.log('data', data);
           if (data) {
             let currentMenu = this.dataProvider.allMenus.find(
-              (menu) => menu.id == data
+              (menu) => menu.id == data,
             );
             let inst = new ModeConfig(
               'Online',
@@ -153,7 +154,7 @@ export class ConfigComponent implements OnInit {
               this.productService,
               this.alertify,
               this.dialog,
-              this.settingsService
+              this.settingsService,
             );
             this.dataProvider.menus.push(inst);
             this.modes[0] = true;
@@ -173,9 +174,9 @@ export class ConfigComponent implements OnInit {
         (this.dataProvider.menus.find((menu) => menu.type == 'takeaway') &&
           this.modes[1]) ||
         (this.dataProvider.menus.find((menu) => menu.type == 'online') &&
-          this.modes[2])
+          this.modes[2]),
     );
-  //  console.log('currentMenu', currentMenu);
+    //  console.log('currentMenu', currentMenu);
     if (currentMenu) {
       this.dataProvider.menuLoadSubject.next(currentMenu);
     }
@@ -185,7 +186,7 @@ export class ConfigComponent implements OnInit {
     if (
       await this.dataProvider.confirm(
         'Data is updated. Please restart the application to see the changes.',
-        [1]
+        [1],
       )
     ) {
       let url = window.location.href.split('/');
@@ -215,7 +216,7 @@ export class ConfigComponent implements OnInit {
       })
       .catch((err) => {
         this.alertify.presentToast('Error while saving settings');
-      //  console.log(err);
+        //  console.log(err);
       });
   }
 
@@ -225,7 +226,7 @@ export class ConfigComponent implements OnInit {
   }
 
   updateBillPrinter(value: string) {
-    localStorage.setItem('billerPrinter', value)
+    localStorage.setItem('billerPrinter', value);
     this.dataProvider.currentBusiness!.billerPrinter = value;
     // this.dataProvider.currentBusiness!.billerPrinter = value;
     // this.settingsService

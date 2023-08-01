@@ -10,7 +10,7 @@ export class EncoderService {
   constructor() {}
 
   getBillCode(billdata: PrintableBill) {
-  //  console.log('billdata.businessDetails.name', billdata.businessDetails.name);
+    //  console.log('billdata.businessDetails.name', billdata.businessDetails.name);
     let encoder = new customEncoder({ width: 48 });
     let result = encoder
       .initPrint()
@@ -47,7 +47,7 @@ export class EncoderService {
               (billdata.billNo || ''),
           ],
           ['Cashier: ' + billdata.cashierName, 'Mode: ' + billdata.mode],
-        ]
+        ],
       )
       .hr()
       .productTable(billdata.products)
@@ -63,10 +63,13 @@ export class EncoderService {
                 .text('Sub: Rs.' + billdata.subTotal)
                 .bold(),
           ],
-        ]
+        ],
       )
       .hr()
+      .loyalty(billdata.currentLoyalty)
+      .hr()
       .discounts(billdata.discounts)
+      .postDiscountSubtotal(billdata,billdata.discounts,billdata.currentLoyalty)
       .hr()
       .taxes(billdata.taxes)
       .hr(true)
@@ -86,7 +89,7 @@ export class EncoderService {
                 .width(1)
                 .height(1),
           ],
-        ]
+        ],
       )
       .hr()
       .lineIf(billdata.note, 'left', 'Note:')
@@ -94,7 +97,6 @@ export class EncoderService {
       .end();
     return result;
   }
-
 
   getKotCode(kotData: PrintableKot) {
     let encoder = new customEncoder({ width: 48 });
@@ -119,8 +121,11 @@ export class EncoderService {
             'Date: ' + kotData.date + ' ' + kotData.time,
             'Token: ' + kotData.orderNo,
           ],
-          ['Kot No: ' + kotData.token, (this.getModeTitle(kotData.billingMode))+' No: ' + kotData.table],
-        ]
+          [
+            'Kot No: ' + kotData.token,
+            this.getModeTitle(kotData.billingMode) + ' No: ' + kotData.table,
+          ],
+        ],
       )
       .hr()
       .itemTable(kotData.products)
@@ -129,16 +134,15 @@ export class EncoderService {
     return result;
   }
 
-  getModeTitle(mode: 'dineIn'|'takeaway'|'online'):string {
-    if (mode=='dineIn'){
+  getModeTitle(mode: 'dineIn' | 'takeaway' | 'online'): string {
+    if (mode == 'dineIn') {
       return 'Table';
-    } else if (mode =='takeaway'){
+    } else if (mode == 'takeaway') {
       return 'Token';
-    } else if (mode =='online'){
+    } else if (mode == 'online') {
       return 'Order';
     } else {
       return 'Table';
     }
   }
 }
-

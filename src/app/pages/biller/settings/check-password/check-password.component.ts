@@ -5,12 +5,18 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 @Component({
   selector: 'app-check-password',
   templateUrl: './check-password.component.html',
-  styleUrls: ['./check-password.component.scss']
+  styleUrls: ['./check-password.component.scss'],
 })
 export class CheckPasswordComponent {
-  passwordForm:FormGroup = new FormGroup({
-    password: new FormControl('', [Validators.required, Validators.minLength(6)]),
-    confirmPassword: new FormControl('', [Validators.required, Validators.minLength(6)])
-  })
-  constructor(public dialog:DialogRef){}
+  passwordForm: FormGroup = new FormGroup({
+    password: new FormControl('', [
+      Validators.required,
+      Validators.minLength(6),
+    ]),
+    confirmPassword: new FormControl('', [
+      Validators.required,
+      Validators.minLength(6),
+    ]),
+  });
+  constructor(public dialog: DialogRef) {}
 }

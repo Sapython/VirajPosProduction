@@ -3,33 +3,83 @@
   <h1>Sales Summary</h1>
   <div class="badges">
     <ng-container *ngIf="this.dataProvider.getAccess('seeSaleSummary')">
-      <span cdkOverlayOrigin #salesTrigger="cdkOverlayOrigin" id="salesTrigger" class="badge sales" (mouseleave)="this.closeSalesPanelSubscription.next(false);" (mouseenter)="isSalesOpen = true">
+      <span
+        cdkOverlayOrigin
+        #salesTrigger="cdkOverlayOrigin"
+        id="salesTrigger"
+        class="badge sales"
+        (mouseleave)="this.closeSalesPanelSubscription.next(false)"
+        (mouseenter)="isSalesOpen = true"
+      >
         <span>Sales</span>
-        <b>{{ ((this.dataProvider.todaySales?.dineInSales || 0) + (this.dataProvider.todaySales?.takeawaySales || 0) + (this.dataProvider.todaySales?.onlineSales || 0)) | currency:'INR' }}</b>
+        <b>{{
+          (this.dataProvider.todaySales?.dineInSales || 0) +
+            (this.dataProvider.todaySales?.takeawaySales || 0) +
+            (this.dataProvider.todaySales?.onlineSales || 0) | currency: "INR"
+        }}</b>
       </span>
-      <ng-template *ngIf="!this.dataProvider.touchMode"
+      <ng-template
+        *ngIf="!this.dataProvider.touchMode"
         cdkConnectedOverlay
-        [cdkConnectedOverlayPositions]="[{overlayX:'start',overlayY:'top',originX:'end',originY:'bottom'}]"
+        [cdkConnectedOverlayPositions]="[
+          {
+            overlayX: 'start',
+            overlayY: 'top',
+            originX: 'end',
+            originY: 'bottom'
+          }
+        ]"
         [cdkConnectedOverlayOffsetY]="-40"
         [cdkConnectedOverlayOrigin]="salesTrigger"
         [cdkConnectedOverlayOpen]="isSalesOpen"
       >
-        <app-sales-summary [dine]="(this.dataProvider.todaySales?.dineInSales || 0)" [takeAway]="(this.dataProvider.todaySales?.takeawaySales || 0)" [online]="(this.dataProvider.todaySales?.onlineSales || 0)" [nonChargable]="(this.dataProvider.todaySales?.nonChargeableSales || 0)" (close)="this.isSalesOpen = false" (mouseleave)="this.closeSalesPanelSubscription.next(false)" (mouseenter)="this.closeSalesPanelSubscription.next(true)"></app-sales-summary>
+        <app-sales-summary
+          [dine]="this.dataProvider.todaySales?.dineInSales || 0"
+          [takeAway]="this.dataProvider.todaySales?.takeawaySales || 0"
+          [online]="this.dataProvider.todaySales?.onlineSales || 0"
+          [nonChargable]="this.dataProvider.todaySales?.nonChargeableSales || 0"
+          (close)="this.isSalesOpen = false"
+          (mouseleave)="this.closeSalesPanelSubscription.next(false)"
+          (mouseenter)="this.closeSalesPanelSubscription.next(true)"
+        ></app-sales-summary>
       </ng-template>
     </ng-container>
     <ng-container *ngIf="this.dataProvider.getAccess('seeOrderSummary')">
-      <span class="badge orders" id="ordersTrigger" cdkOverlayOrigin #ordersTrigger="cdkOverlayOrigin" (mouseleave)="this.closeOrdersPanelSubscription.next(false);" (mouseenter)="isOpen = true">
+      <span
+        class="badge orders"
+        id="ordersTrigger"
+        cdkOverlayOrigin
+        #ordersTrigger="cdkOverlayOrigin"
+        (mouseleave)="this.closeOrdersPanelSubscription.next(false)"
+        (mouseenter)="isOpen = true"
+      >
         <span>Orders</span>
-        <b>{{ this.dataProvider.billToken}}</b>
+        <b>{{ this.dataProvider.billToken }}</b>
       </span>
-      <ng-template *ngIf="!this.dataProvider.touchMode"
+      <ng-template
+        *ngIf="!this.dataProvider.touchMode"
         cdkConnectedOverlay
-        [cdkConnectedOverlayPositions]="[{overlayX:'start',overlayY:'top',originX:'end',originY:'bottom'}]"
+        [cdkConnectedOverlayPositions]="[
+          {
+            overlayX: 'start',
+            overlayY: 'top',
+            originX: 'end',
+            originY: 'bottom'
+          }
+        ]"
         [cdkConnectedOverlayOffsetY]="-40"
         [cdkConnectedOverlayOrigin]="ordersTrigger"
         [cdkConnectedOverlayOpen]="isOpen"
       >
-        <app-order-summary [dine]="this.dataProvider.billToken" [online]="this.dataProvider.onlineTokenNo" [takeAway]="this.dataProvider.takeawayToken" [nonChargable]="this.dataProvider.ncBillToken" (close)="this.isOpen = false" (mouseleave)="this.closeOrdersPanelSubscription.next(false);" (mouseenter)="this.closeOrdersPanelSubscription.next(true)"></app-order-summary>
+        <app-order-summary
+          [dine]="this.dataProvider.billToken"
+          [online]="this.dataProvider.onlineTokenNo"
+          [takeAway]="this.dataProvider.takeawayToken"
+          [nonChargable]="this.dataProvider.ncBillToken"
+          (close)="this.isOpen = false"
+          (mouseleave)="this.closeOrdersPanelSubscription.next(false)"
+          (mouseenter)="this.closeOrdersPanelSubscription.next(true)"
+        ></app-order-summary>
       </ng-template>
     </ng-container>
   </div>

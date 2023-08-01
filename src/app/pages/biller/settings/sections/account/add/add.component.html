@@ -42,7 +42,7 @@
     <ng-container *ngIf="stage == 'available'">
       <mat-form-field appearance="outline">
         <mat-label>Email</mat-label>
-        <input type="email" matInput formControlName="email">
+        <input type="email" matInput formControlName="email" />
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>Password</mat-label>
@@ -126,7 +126,12 @@
     <div class="actions" *ngIf="onboardingStage == 'registration'">
       <button
         color="primary"
-        [disabled]="loginForm.invalid || this.stage == 'checking' || stage == 'invalid' || !stage"
+        [disabled]="
+          loginForm.invalid ||
+          this.stage == 'checking' ||
+          stage == 'invalid' ||
+          !stage
+        "
         type="submit"
         mat-flat-button
       >
@@ -142,8 +147,8 @@
       </button>
     </div>
   </form>
-  <ng-container *ngIf="onboardingStage=='otp'">
-    <hr>
+  <ng-container *ngIf="onboardingStage == 'otp'">
+    <hr />
     <form [formGroup]="otpForm" (ngSubmit)="verifyOtp()">
       <mat-form-field appearance="outline">
         <mat-label>OTP</mat-label>

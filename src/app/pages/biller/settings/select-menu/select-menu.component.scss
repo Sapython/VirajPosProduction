@@ -1,12 +1,12 @@
-section{
+section {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  gap: 15px;
+  padding: 20px;
+  .actions {
     display: flex;
-    flex-direction: column;
-    background: white;
-    gap:15px;
-    padding: 20px;
-    .actions{
-        display: flex;
-        justify-content: flex-end;
-        gap:20px;
-    }
+    justify-content: flex-end;
+    gap: 20px;
+  }
 }

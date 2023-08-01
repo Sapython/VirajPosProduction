@@ -1,51 +1,107 @@
 <section class="moveKot">
-	<div class="heading">
-		<h2>Move KOT/Item</h2>
-		<viraj-button (vclick)="dialogRef.close()" type="icon"><i class="ri-close-fill"></i></viraj-button>
-	</div>
-	<div class="kotWise">
-		<div class="kotSpan">
-			<div class="heading kotHead">
-				<p>KOTs from {{moveKotSelectedTable.type=='table' ? 'Table' : 'Token'}}: <strong>{{moveKotSelectedTable?.name}}</strong></p>
-			</div>
-			<div class="kots">
-				<div class="kot" *ngFor="let kot of moveKotSelectedTable?.bill?.kots">
-					<div class="heading" *ngIf="moveKotSelectedTable">
-						<span>
-							<mat-checkbox color="primary" [checked]="kot.allSelected" [indeterminate]="kot.someSelected" (change)="kot.selectAll($event)"></mat-checkbox>
-							<p>KOT No: <strong>{{kot.id}}</strong></p>
-							<p>Time: <strong>{{moveKotSelectedTable.timeSpent}}</strong></p>
-						</span>
-					</div>
-					<ol>
-						<li *ngFor="let item of kot.products">
-							<mat-checkbox [(ngModel)]="item.selected" (change)="kot.checkAll()" color="primary"></mat-checkbox>
-							<p>{{item.name | titlecase}} <span>{{item.quantity}} x {{item.price | currency:'INR'}}</span></p>
-						</li>
-					</ol>
-				</div>
-			</div>
-		</div>
-		<div class="tablesSpan">
-			<div class="heading sticky">
-				<p>To Tables</p>
-			</div>
-			<div class="sections">
-				<div class="tableSection" *ngFor="let group of this.dataProvider.groupedTables">
-					<div class="heading">
-						<h3>{{group.name}}</h3>
-					</div>
-					<div class="tables">
-						<button [disabled]="table.status!='occupied'" class="table" [ngClass]="{'active':table.status=='occupied','medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small',disabled:table.status!='occupied'}"  matRipple *ngFor="let table of group.tables" (click)="moveSelectedKots(table,$event)">
-							<p class="name">{{table.name}}</p>
-							<p class="cost" *ngIf="table.bill?.billing?.grandTotal != undefined && table.bill?.billing?.grandTotal != null && isNumber(table.bill?.billing?.grandTotal)"><strong>{{table.bill?.billing?.grandTotal | currency:'INR'}}</strong></p>
-							<p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">{{ table.timeSpent }}</p>
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+  <div class="heading">
+    <h2>Move KOT/Item</h2>
+    <viraj-button (vclick)="dialogRef.close()" type="icon"
+      ><i class="ri-close-fill"></i
+    ></viraj-button>
+  </div>
+  <div class="kotWise">
+    <div class="kotSpan">
+      <div class="heading kotHead">
+        <p>
+          KOTs from
+          {{ moveKotSelectedTable.type == "table" ? "Table" : "Token" }}:
+          <strong>{{ moveKotSelectedTable?.name }}</strong>
+        </p>
+      </div>
+      <div class="kots">
+        <div class="kot" *ngFor="let kot of moveKotSelectedTable?.bill?.kots">
+          <div class="heading" *ngIf="moveKotSelectedTable">
+            <span>
+              <mat-checkbox
+                color="primary"
+                [checked]="kot.allSelected"
+                [indeterminate]="kot.someSelected"
+                (change)="kot.selectAll($event)"
+              ></mat-checkbox>
+              <p>
+                KOT No: <strong>{{ kot.id }}</strong>
+              </p>
+              <p>
+                Time: <strong>{{ moveKotSelectedTable.timeSpent }}</strong>
+              </p>
+            </span>
+          </div>
+          <ol>
+            <li *ngFor="let item of kot.products">
+              <mat-checkbox
+                [(ngModel)]="item.selected"
+                (change)="kot.checkAll()"
+                color="primary"
+              ></mat-checkbox>
+              <p>
+                {{ item.name | titlecase }}
+                <span
+                  >{{ item.quantity }} x
+                  {{ item.price | currency: "INR" }}</span
+                >
+              </p>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+    <div class="tablesSpan">
+      <div class="heading sticky">
+        <p>To Tables</p>
+      </div>
+      <div class="sections">
+        <div
+          class="tableSection"
+          *ngFor="let group of this.dataProvider.groupedTables"
+        >
+          <div class="heading">
+            <h3>{{ group.name }}</h3>
+          </div>
+          <div class="tables">
+            <button
+              [disabled]="table.status != 'occupied'"
+              class="table"
+              [ngClass]="{
+                active: table.status == 'occupied',
+                medium: this.dataProvider.currentTableSize == 'medium',
+                small: this.dataProvider.currentTableSize == 'small',
+                disabled: table.status != 'occupied'
+              }"
+              matRipple
+              *ngFor="let table of group.tables"
+              (click)="moveSelectedKots(table, $event)"
+            >
+              <p class="name">{{ table.name }}</p>
+              <p
+                class="cost"
+                *ngIf="
+                  table.bill?.billing?.grandTotal != undefined &&
+                  table.bill?.billing?.grandTotal != null &&
+                  isNumber(table.bill?.billing?.grandTotal)
+                "
+              >
+                <strong>{{
+                  table.bill?.billing?.grandTotal | currency: "INR"
+                }}</strong>
+              </p>
+              <p
+                class="time"
+                *ngIf="table.status == 'occupied' && table.timeSpent"
+              >
+                {{ table.timeSpent }}
+              </p>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 <!-- <div class="actions">
 	<viraj-button color="primary" (vclick)="moveKotSelectedTable=undefined;moveKotMode=false">

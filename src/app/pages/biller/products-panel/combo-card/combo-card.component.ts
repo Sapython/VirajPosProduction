@@ -4,21 +4,21 @@ import { Combo, TimeGroup } from '../../../../types/combo.structure';
 @Component({
   selector: 'app-combo-card',
   templateUrl: './combo-card.component.html',
-  styleUrls: ['./combo-card.component.scss']
+  styleUrls: ['./combo-card.component.scss'],
 })
-export class ComboCardComponent implements OnInit{
-  @Input() combo:Combo;
-  @Output() open:EventEmitter<Combo> = new EventEmitter<Combo>();
-  disabled:boolean = false;
-  days:string[] = [
-    "sunday",
-    "monday",
-    "tuesday",
-    "wednesday",
-    "thursday",
-    "friday",
-    "saturday"
-  ]
+export class ComboCardComponent implements OnInit {
+  @Input() combo: Combo;
+  @Output() open: EventEmitter<Combo> = new EventEmitter<Combo>();
+  disabled: boolean = false;
+  days: string[] = [
+    'sunday',
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday',
+  ];
   ngOnInit(): void {
     // this.disabled = !this.checkDateIsAvailable(this.combo.timeGroups) TODO: checker
   }
@@ -45,22 +45,38 @@ export class ComboCardComponent implements OnInit{
             }
           }
         } else if (condition.type == 'day') {
-          console.log("IS day");
+          console.log('IS day');
           if (condition.condition == 'is') {
-            console.log("IS day",condition.value,new Date().getDay());
-            if (!condition.value.includes(this.getDayFromIndex(new Date().getDay()))) {
+            console.log('IS day', condition.value, new Date().getDay());
+            if (
+              !condition.value.includes(
+                this.getDayFromIndex(new Date().getDay()),
+              )
+            ) {
               available = false;
             }
           } else if (condition.condition == 'is not') {
-            if (!condition.value.includes(this.getDayFromIndex(new Date().getDay()))) {
+            if (
+              !condition.value.includes(
+                this.getDayFromIndex(new Date().getDay()),
+              )
+            ) {
               available = false;
             }
           } else if (condition.condition == 'is before') {
-            if (!condition.value.includes(this.getDayFromIndex(new Date().getDay()))) {
+            if (
+              !condition.value.includes(
+                this.getDayFromIndex(new Date().getDay()),
+              )
+            ) {
               available = false;
             }
           } else if (condition.condition == 'is after') {
-            if (!condition.value.includes(this.getDayFromIndex(new Date().getDay()))) {
+            if (
+              !condition.value.includes(
+                this.getDayFromIndex(new Date().getDay()),
+              )
+            ) {
               available = false;
             }
           }
@@ -85,11 +101,11 @@ export class ComboCardComponent implements OnInit{
         }
       });
     });
-    console.log("IS DAY VALID",available);
+    console.log('IS DAY VALID', available);
     return available;
   }
 
-  getDayFromIndex(dayIndex:number){
+  getDayFromIndex(dayIndex: number) {
     return this.days[dayIndex];
   }
 }

@@ -1,18 +1,55 @@
 <form [formGroup]="loginForm" (ngSubmit)="submit()">
-    <h2>You don't have access to this action.</h2>
-    <h3>Ask someone with the permission to login to continue.</h3>
-    <mat-form-field appearance="outline">
-        <mat-label>Username</mat-label>
-        <input formControlName="username" matInput type="text">
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-        <mat-label>Password</mat-label>
-        <input matInput formControlName="password" type="password" #passwordInput>
-        <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="passwordInput.type == 'password'" (click)="passwordInput.type == 'password' ? passwordInput.type = 'text' : passwordInput.type = 'password'" mat-icon-button><mat-icon>visibility</mat-icon></button>
-        <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="!(passwordInput.type == 'password')" (click)="passwordInput.type == 'password' ? passwordInput.type = 'text' : passwordInput.type = 'password'" mat-icon-button><mat-icon>visibility_off</mat-icon></button>
-    </mat-form-field>
-    <div class="actions">
-        <button color="primary" mat-stroked-button type="button" (click)="dialogRef.close()">Cancel</button>
-        <button color="primary" [disabled]="loginForm.invalid" mat-flat-button>Submit</button>
-    </div>
+  <h2>You don't have access to this action.</h2>
+  <h3>Ask someone with the permission to login to continue.</h3>
+  <mat-form-field appearance="outline">
+    <mat-label>Username</mat-label>
+    <input formControlName="username" matInput type="text" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Password</mat-label>
+    <input matInput formControlName="password" type="password" #passwordInput />
+    <button
+      color="primary"
+      matSuffix
+      tabindex="-1"
+      type="button"
+      *ngIf="passwordInput.type == 'password'"
+      (click)="
+        passwordInput.type == 'password'
+          ? (passwordInput.type = 'text')
+          : (passwordInput.type = 'password')
+      "
+      mat-icon-button
+    >
+      <mat-icon>visibility</mat-icon>
+    </button>
+    <button
+      color="primary"
+      matSuffix
+      tabindex="-1"
+      type="button"
+      *ngIf="!(passwordInput.type == 'password')"
+      (click)="
+        passwordInput.type == 'password'
+          ? (passwordInput.type = 'text')
+          : (passwordInput.type = 'password')
+      "
+      mat-icon-button
+    >
+      <mat-icon>visibility_off</mat-icon>
+    </button>
+  </mat-form-field>
+  <div class="actions">
+    <button
+      color="primary"
+      mat-stroked-button
+      type="button"
+      (click)="dialogRef.close()"
+    >
+      Cancel
+    </button>
+    <button color="primary" [disabled]="loginForm.invalid" mat-flat-button>
+      Submit
+    </button>
+  </div>
 </form>

@@ -20,9 +20,9 @@ export class PromptComponent {
       required: boolean;
       placeholder: string;
       type: string;
-      multiline?:boolean;
+      multiline?: boolean;
     },
-    private dialogRef: DialogRef
+    private dialogRef: DialogRef,
   ) {
     if (config.value) {
       this.promptForm.get('value')?.setValue(config.value);
@@ -32,13 +32,13 @@ export class PromptComponent {
     }
   }
 
-  cancel(){
+  cancel() {
     this.dialogRef.close();
   }
 
-  submit(){
-    if (this.promptForm.valid){
-    //  console.log(this.promptForm.value);
+  submit() {
+    if (this.promptForm.valid) {
+      //  console.log(this.promptForm.value);
       this.dialogRef.close(this.promptForm.get('value')?.value);
     }
   }

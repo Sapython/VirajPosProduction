@@ -1,54 +1,53 @@
-section{
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
+section {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  h1 {
+    font-size: medium;
+    margin: 0px;
+  }
+  div.badges {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 10px;
-    h1{
-        font-size: medium;
-        margin: 0px;
+    span.badge {
+      font-size: var(--Viraj-font-medium);
+      padding: 5px;
+      border: 1px solid #ccc;
+      display: flex;
+      // flex-direction: column;
+      gap: 5px;
+      border-radius: var(--Viraj-border-radius);
+      font-size: var(--Viraj-font-large);
+      span {
+        color: black;
+      }
+      b {
+        font-weight: 500;
+        font-size: var(--Viraj-font-xlarge);
+      }
     }
-    div.badges{
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        span.badge{
-            font-size: var(--Viraj-font-medium);
-            padding: 5px;
-            border:1px solid #ccc;
-            display: flex;
-            // flex-direction: column;
-            gap:5px;
-            border-radius: var(--Viraj-border-radius);
-            font-size: var(--Viraj-font-large);
-            span{
-                color:black;
-            }
-            b{
-                font-weight: 500;
-                font-size: var(--Viraj-font-xlarge);
-            }
-        }
-        span.sales{
-            color:#E78C31;
-            background: #FFF1E2;
-            border-color: #E78C31;
-            b{
-                color:#E78C31;
-            }
-        }
-        span.orders{
-            color:#FF5E35;
-            background: #FFF8F8;
-            border-color: #FF5E35;
-            b{
-                color:var(--Viraj-primary-tint);
-            }
-        }
-        
+    span.sales {
+      color: #e78c31;
+      background: #fff1e2;
+      border-color: #e78c31;
+      b {
+        color: #e78c31;
+      }
     }
+    span.orders {
+      color: #ff5e35;
+      background: #fff8f8;
+      border-color: #ff5e35;
+      b {
+        color: var(--Viraj-primary-tint);
+      }
+    }
+  }
 }
 @media (max-width: 1370px) {
-    section{
-        padding: 5px;
-    }
+  section {
+    padding: 5px;
+  }
 }

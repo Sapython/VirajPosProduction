@@ -8,9 +8,8 @@ describe('TableMergesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TableMergesComponent ]
-    })
-    .compileComponents();
+      declarations: [TableMergesComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(TableMergesComponent);
     component = fixture.componentInstance;

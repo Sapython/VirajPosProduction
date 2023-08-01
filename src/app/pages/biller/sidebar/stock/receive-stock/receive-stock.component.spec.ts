@@ -8,9 +8,8 @@ describe('ReceiveStockComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ReceiveStockComponent ]
-    })
-    .compileComponents();
+      declarations: [ReceiveStockComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ReceiveStockComponent);
     component = fixture.componentInstance;

@@ -1,597 +1,587 @@
 <section>
-  <h1>Combo</h1>
-  <div class="dragArea" (drop)="droppedImage($event)" dropzone="" (click)="fileUploader.click()">
-    <input type="file" #fileUploader (change)="setImage($event)" hidden>
+  <div class="heading">
+    <h1>{{this.dialogData.mode =='add' ? 'Add' : 'Edit'}} Combo</h1>
+    <viraj-button type="icon"><i class="ri-close-fill"></i></viraj-button>
+  </div>
+  <div class="body">
+    <div class="dragArea" *ngIf="imagePreviewData">
+      <img [src]="imagePreviewData">
+      <viraj-button (click)="offerImageFile=null;imagePreviewData=null">Remove</viraj-button>
+    </div>
+    <form [formGroup]="comboFormGroup">
+      <input matInput placeholder="Combo Name" formControlName="name" type="text" />
+      <input matInput placeholder="Maximum No. Of Purchase" type="number" formControlName="maximumNoOfPurchases" />
+      <div class="select">
+        <mat-select
+          placeholder="Type"
+          formControlName="type"
+          placeholder="Select Type"
+          name="type"
+          #offerType
+        >
+          <mat-option value="combo">Combo</mat-option>
+          <mat-option value="offer">Offer</mat-option>
+        </mat-select>
+      </div>
+      <input type="file" #fileUploader (change)="setImage($event)" hidden />
+      <viraj-button type="outline" (click)="fileUploader.click()">Upload Image</viraj-button>
+      <input matInput placeholder="Offer Cost" type="text" *ngIf="offerType.value == 'offer'" formControlName="offerPrice" />
+      <div class="toggle">
+        <mat-slide-toggle formControlName="discounted"
+          >Can Be Discounted</mat-slide-toggle
+        >
+      </div>
+      <div class="toggle">
+        <mat-slide-toggle
+          [ngModelOptions]="{ standalone: true }"
+          [(ngModel)]="visibilityEnabled"
+          >Enable Visibility</mat-slide-toggle
+        >
+      </div>
+    </form>
+    <div class="config">
+      <mat-form-field class="selectCategory" appearance="outline">
+        <mat-label>Select Category</mat-label>
+        <mat-chip-grid #categoryChipGrid aria-label="Category selection">
+          <mat-chip-row
+            *ngFor="let category of selectedCategories"
+            (removed)="removeCategory(category.category)"
+          >
+            {{ category.category.name }}
+            <button
+              matChipRemove
+              [attr.aria-label]="'remove ' + category.category.name"
+            >
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+        </mat-chip-grid>
+        <input
+          placeholder="New Fruit..."
+          #fruitInput
+          [formControl]="categorySearchControl"
+          [matChipInputFor]="categoryChipGrid"
+          [matAutocomplete]="auto"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        />
+        <mat-autocomplete
+          #auto="matAutocomplete"
+          (optionSelected)="selected($event)"
+        >
+          <mat-option
+            *ngFor="let category of filteredCategories | async"
+            [value]="category"
+          >
+            {{ category.name }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+      <mat-tab
+        [label]="selectedCategory.category.name"
+        *ngFor="let selectedCategory of selectedCategories"
+      >
+        <div class="configBody">
+          <div class="fields">
+            <mat-form-field appearance="outline">
+              <mat-label>Offer Type</mat-label>
+              <mat-select
+                placeholder="Offer Type"
+                [(ngModel)]="selectedCategory.offerType"
+                #offerType
+                name="type"
+              >
+                <mat-option value="fixed">Fixed Price</mat-option>
+                <mat-option value="free">Free</mat-option>
+                <mat-option value="discount">Discount</mat-option>
+                <mat-option value="loyalty">Loyalty Point</mat-option>
+                <mat-option value="mustBuy">Must Buy (No Offer)</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" *ngIf="offerType.value == 'fixed'">
+              <mat-label>Applied On</mat-label>
+              <mat-select
+                placeholder="Applied On"
+                [(ngModel)]="selectedCategory.appliedOn"
+                name="type"
+              >
+                <mat-option value="item">Item</mat-option>
+                <mat-option value="group">Group</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field
+              appearance="outline"
+              *ngIf="offerType.value == 'discount' && offerType.value == 'fixed' && offerType.value == 'loyalty'"
+            >
+              <mat-label>Amount</mat-label>
+              <input type="number" matInput [(ngModel)]="selectedCategory.amount" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Minimum Products</mat-label>
+              <input
+                type="number"
+                matInput
+                [(ngModel)]="selectedCategory.minimumProducts"
+              />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Maximum Products</mat-label>
+              <input
+                type="number"
+                matInput
+                [(ngModel)]="selectedCategory.maximumProducts"
+              />
+            </mat-form-field>
+          </div>
+          <div class="products">
+            <div class="selectProducts">
+              <div class="heading">
+                <mat-checkbox
+                  (change)="
+                    selectProducts(
+                      selectedCategory.category.products,
+                      allProductsSelect.checked
+                    )
+                  "
+                  #allProductsSelect
+                  >Product Name</mat-checkbox
+                >
+                <p>Price</p>
+              </div>
+              <div
+                class="product"
+                *ngFor="let product of selectedCategory.category.products"
+              >
+                <mat-checkbox [(ngModel)]="product.selected">{{
+                  product.name
+                }}</mat-checkbox>
+                <strong>{{ product.price }}</strong>
+              </div>
+            </div>
+            <div class="selectedProducts">
+              <div class="heading">
+                <p>Product Name</p>
+                <p>Price</p>
+              </div>
+              <ng-container
+                *ngFor="let product of selectedCategory.category.products"
+              >
+                <div class="product" *ngIf="product.selected">
+                  <p>{{ product.name }}</p>
+                  <strong>{{ product.price }}</strong>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+    <div class="visibilitySettings" *ngIf="visibilityEnabled">
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title> Visibility Settings </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="settings">
+            <div class="actions">
+              <mat-form-field appearance="outline">
+                <mat-label>Monthly / Weekly</mat-label>
+                <mat-select
+                  placeholder="Select Mode"
+                  [(ngModel)]="visibilitySettings.mode"
+                  name="type"
+                  #monthlyWeeklyMode
+                >
+                  <mat-option value="monthly">Monthly</mat-option>
+                  <mat-option value="weekly">Weekly</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-radio-group
+                aria-label="Select repeat mode"
+                [(ngModel)]="visibilitySettings.repeating"
+              >
+                <mat-radio-button [value]="false">Not Repeating</mat-radio-button>
+                <mat-radio-button [value]="true"
+                  >Repeating Yearly</mat-radio-button
+                >
+              </mat-radio-group>
+              <ng-container *ngIf="monthlyWeeklyMode.value == 'monthly'">
+                <mat-date-range-picker #picker></mat-date-range-picker>
+                <mat-date-range-input
+                  tabindex="-1"
+                  hidden
+                  [formGroup]="visibilitySettings.visibilityDateRangeForm"
+                  [rangePicker]="picker"
+                >
+                  <input
+                    matStartDate
+                    formControlName="startDate"
+                    placeholder="Start date"
+                  />
+                  <input
+                    matEndDate
+                    formControlName="endDate"
+                    placeholder="End date"
+                  />
+                </mat-date-range-input>
+                <viraj-button type="outline" (vclick)="picker.open()"
+                  >Select Date Range <i class="ri-calendar-2-fill"></i
+                ></viraj-button>
+              </ng-container>
+              <ng-container *ngIf="monthlyWeeklyMode.value == 'weekly'">
+                <mat-form-field appearance="outline">
+                  <mat-label>Select Month</mat-label>
+                  <mat-select
+                    placeholder="Select Month"
+                    [multiple]="true"
+                    [(ngModel)]="selectedMonths"
+                    (selectionChange)="generateMonthsData()"
+                    name="month"
+                  >
+                    <mat-option *ngFor="let month of allMonths" [value]="month">
+                      {{ month }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </ng-container>
+            </div>
+            <div class="weeks" *ngIf="monthlyWeeklyMode.value == 'weekly'">
+              <div class="selectWeeks">
+                <p>Select Weeks</p>
+                <mat-checkbox
+                  (change)="generateMonthsData()"
+                  [(ngModel)]="visibilitySettings.selectedWeeks.week1"
+                  #week1st
+                  >1st Week</mat-checkbox
+                >
+                <mat-checkbox
+                  (change)="generateMonthsData()"
+                  [(ngModel)]="visibilitySettings.selectedWeeks.week2"
+                  #week2nd
+                  >2nd Week</mat-checkbox
+                >
+                <mat-checkbox
+                  (change)="generateMonthsData()"
+                  [(ngModel)]="visibilitySettings.selectedWeeks.week3"
+                  #week3rd
+                  >3rd Week</mat-checkbox
+                >
+                <mat-checkbox
+                  (change)="generateMonthsData()"
+                  [(ngModel)]="visibilitySettings.selectedWeeks.week4"
+                  #week4th
+                  >4th Week</mat-checkbox
+                >
+                <mat-checkbox
+                  (change)="generateMonthsData()"
+                  [(ngModel)]="visibilitySettings.selectedWeeks.week5"
+                  #week5th
+                  >5th Week</mat-checkbox
+                >
+                <mat-checkbox
+                  (change)="generateMonthsData()"
+                  [(ngModel)]="visibilitySettings.selectedWeeks.week6"
+                  #week6th
+                  >6th Week</mat-checkbox
+                >
+                <mat-checkbox
+                  (change)="
+                    visibilitySettings.selectedWeeks.week1 = allWeeks.checked;
+                    visibilitySettings.selectedWeeks.week2 = allWeeks.checked;
+                    visibilitySettings.selectedWeeks.week3 = allWeeks.checked;
+                    visibilitySettings.selectedWeeks.week4 = allWeeks.checked;
+                    visibilitySettings.selectedWeeks.week5 = allWeeks.checked;
+                    generateMonthsData()
+                  "
+                  #allWeeks
+                  >All Weeks</mat-checkbox
+                >
+              </div>
+              <div class="tableContainer">
+                <table>
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>
+                        <mat-checkbox
+                          [checked]="allSelected.checked"
+                          (click)="checkAllWeekDays(0, allSunday.checked)"
+                          [(ngModel)]="visibilitySettings.daysSelected.allSunday"
+                          #allSunday
+                          >All Sun</mat-checkbox
+                        >
+                      </th>
+                      <th>
+                        <mat-checkbox
+                          [checked]="allSelected.checked"
+                          (click)="checkAllWeekDays(1, allMonday.checked)"
+                          [(ngModel)]="visibilitySettings.daysSelected.allMonday"
+                          #allMonday
+                          >All Mon</mat-checkbox
+                        >
+                      </th>
+                      <th>
+                        <mat-checkbox
+                          [checked]="allSelected.checked"
+                          (click)="checkAllWeekDays(2, allTuesday.checked)"
+                          [(ngModel)]="visibilitySettings.daysSelected.allTuesday"
+                          #allTuesday
+                          >All Tue</mat-checkbox
+                        >
+                      </th>
+                      <th>
+                        <mat-checkbox
+                          [checked]="allSelected.checked"
+                          (click)="checkAllWeekDays(3, allWednesday.checked)"
+                          [(ngModel)]="
+                            visibilitySettings.daysSelected.allWednesday
+                          "
+                          #allWednesday
+                          >All Wed</mat-checkbox
+                        >
+                      </th>
+                      <th>
+                        <mat-checkbox
+                          [checked]="allSelected.checked"
+                          (click)="checkAllWeekDays(4, allThursday.checked)"
+                          [(ngModel)]="
+                            visibilitySettings.daysSelected.allThursday
+                          "
+                          #allThursday
+                          >All Thr</mat-checkbox
+                        >
+                      </th>
+                      <th>
+                        <mat-checkbox
+                          [checked]="allSelected.checked"
+                          (click)="checkAllWeekDays(5, allFriday.checked)"
+                          [(ngModel)]="visibilitySettings.daysSelected.allFriday"
+                          #allFriday
+                          >All Fri</mat-checkbox
+                        >
+                      </th>
+                      <th>
+                        <mat-checkbox
+                          [checked]="allSelected.checked"
+                          (click)="checkAllWeekDays(6, allSaturday.checked)"
+                          [(ngModel)]="
+                            visibilitySettings.daysSelected.allSaturday
+                          "
+                          #allSaturday
+                          >All Sat</mat-checkbox
+                        >
+                      </th>
+                      <th>
+                        <mat-checkbox
+                          (change)="
+                            checkAllWeekDays(0, allSelected.checked);
+                            checkAllWeekDays(1, allSelected.checked);
+                            checkAllWeekDays(2, allSelected.checked);
+                            checkAllWeekDays(3, allSelected.checked);
+                            checkAllWeekDays(4, allSelected.checked);
+                            checkAllWeekDays(5, allSelected.checked);
+                            checkAllWeekDays(6, allSelected.checked);
+                            visibilitySettings.daysSelected.allSunday =
+                              allSelected.checked;
+                            visibilitySettings.daysSelected.allMonday =
+                              allSelected.checked;
+                            visibilitySettings.daysSelected.allTuesday =
+                              allSelected.checked;
+                            visibilitySettings.daysSelected.allWednesday =
+                              allSelected.checked;
+                            visibilitySettings.daysSelected.allThursday =
+                              allSelected.checked;
+                            visibilitySettings.daysSelected.allFriday =
+                              allSelected.checked;
+                            visibilitySettings.daysSelected.allSaturday =
+                              allSelected.checked
+                          "
+                          #allSelected
+                          >Select All</mat-checkbox
+                        >
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container
+                      *ngFor="
+                        let month of this.visibilitySettings.daysSetting;
+                        let first = first
+                      "
+                    >
+                      <tr *ngFor="let week of month.days; let first = first">
+                        <td [attr.rowspan]="month.days.length" *ngIf="first">
+                          <ng-container>
+                            {{ month.month | titlecase }}
+                          </ng-container>
+                        </td>
+                        <td *ngFor="let day of week.week; let i = index">
+                          <ng-container>
+                            <div
+                              class="day"
+                              (click)="
+                                day.possible || visibilitySettings.repeating
+                                  ? (day.selected = !day.selected)
+                                  : {}
+                              "
+                              [ngClass]="{
+                                impossible:
+                                  !day.possible && !visibilitySettings.repeating,
+                                active: day.selected
+                              }"
+                            >
+                              {{ day.day }}
+                            </div>
+                          </ng-container>
+                        </td>
+                        <td>
+                          <mat-checkbox
+                            [checked]="allSelected.checked"
+                            (change)="
+                              selectAllWeekDays(week.week, selectDays.checked)
+                            "
+                            #selectDays
+                            >{{ week.weekName }}</mat-checkbox
+                          >
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="9">
+                          <hr />
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <table class="timeSlots">
+              <thead>
+                <tr>
+                  <th>
+                    <mat-checkbox [checked]="allTimeSlotsSelected" (change)="checkAllTimeSlots(allSlotChecker.checked)" #allSlotChecker>Time Slot Name</mat-checkbox>
+                  </th>
+                  <th>Start Time</th>
+                  <th>End Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <mat-checkbox
+                      [(ngModel)]="
+                        visibilitySettings.timeSlotSelected.breakfast.selected
+                      "
+                      >Breakfast</mat-checkbox
+                    >
+                  </td>
+                  <td>6:00 AM</td>
+                  <td>1:00 PM</td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-checkbox
+                      [(ngModel)]="
+                        visibilitySettings.timeSlotSelected.lunch.selected
+                      "
+                      >Lunch</mat-checkbox
+                    >
+                  </td>
+                  <td>1:00 AM</td>
+                  <td>6:00 PM</td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-checkbox
+                      [(ngModel)]="
+                        visibilitySettings.timeSlotSelected.dinner.selected
+                      "
+                      >Dinner</mat-checkbox
+                    >
+                  </td>
+                  <td>6:00 PM</td>
+                  <td>1:00 AM</td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-checkbox
+                      [(ngModel)]="
+                        visibilitySettings.timeSlotSelected.night.selected
+                      "
+                      >Night</mat-checkbox
+                    >
+                  </td>
+                  <td>1:00 AM</td>
+                  <td>6:00 AM</td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-checkbox
+                      [(ngModel)]="
+                        visibilitySettings.timeSlotSelected.custom.selected
+                      "
+                      >Custom</mat-checkbox
+                    >
+                  </td>
+                  <td>
+                    <select
+                      [(ngModel)]="
+                        visibilitySettings.timeSlotSelected.custom.timeStart
+                      "
+                    >
+                      <option
+                        [value]="item.value"
+                        *ngFor="let item of availableTimes"
+                      >
+                        {{ item.time }}
+                      </option>
+                    </select>
+                  </td>
+                  <td>
+                    <select
+                      [(ngModel)]="
+                        visibilitySettings.timeSlotSelected.custom.timeEnd
+                      "
+                    >
+                      <option
+                        [value]="item.value"
+                        *ngFor="let item of availableTimes"
+                      >
+                        {{ item.time }}
+                      </option>
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+    <div class="bottomMargin"></div>
+  </div>
+  <div class="actions">
+    <div class="mainActions">
+      <viraj-button (vclick)="save()">Save</viraj-button>
+      <viraj-button type="outline" (vclick)="cancel()">Cancel</viraj-button>
+    </div>
+  </div>
+  <!-- <div
+    class="dragArea"
+    (drop)="droppedImage($event)"
+    dropzone=""
+    (click)="fileUploader.click()"
+  >
+    <input type="file" #fileUploader (change)="setImage($event)" hidden />
     <div class="noImage" *ngIf="!imagePreviewData">
       <i class="ri-add-line"></i>
       <p>Click to upload</p>
     </div>
     <img [src]="imagePreviewData" *ngIf="imagePreviewData" />
-  </div>
-  <form [formGroup]="comboFormGroup">
-    <mat-form-field appearance="outline">
-      <mat-label>Offer Name</mat-label>
-      <input matInput formControlName="name" type="text" />
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Maximum Number Of Purchases</mat-label>
-      <input matInput type="number" formControlName="maximumNoOfPurchases" />
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Select Type</mat-label>
-      <mat-select placeholder="Type" formControlName="type" name="type" #offerType>
-        <mat-option value="combo">Combo</mat-option>
-        <mat-option value="offer">Offer</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="outline" *ngIf="offerType.value == 'offer'">
-      <mat-label>Offer Price</mat-label>
-      <input matInput type="text" formControlName="offerPrice" />
-    </mat-form-field>
-    <mat-slide-toggle formControlName="discounted">Can Be Discounted</mat-slide-toggle>
-    <mat-slide-toggle [ngModelOptions]="{standalone: true}" [(ngModel)]="visibilityEnabled"
-      >Enable Visibility</mat-slide-toggle
-    >
-  </form>
-  <div class="config">
-    <mat-form-field class="selectCategory" appearance="outline">
-      <mat-label>Select Category</mat-label>
-      <mat-chip-grid #categoryChipGrid aria-label="Category selection">
-        <mat-chip-row
-          *ngFor="let category of selectedCategories"
-          (removed)="removeCategory(category.category)"
-        >
-          {{ category.category.name }}
-          <button
-            matChipRemove
-            [attr.aria-label]="'remove ' + category.category.name"
-          >
-            <mat-icon>cancel</mat-icon>
-          </button>
-        </mat-chip-row>
-      </mat-chip-grid>
-      <input
-        placeholder="New Fruit..."
-        #fruitInput
-        [formControl]="categorySearchControl"
-        [matChipInputFor]="categoryChipGrid"
-        [matAutocomplete]="auto"
-        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-      />
-      <mat-autocomplete
-        #auto="matAutocomplete"
-        (optionSelected)="selected($event)"
-      >
-        <mat-option
-          *ngFor="let category of filteredCategories | async"
-          [value]="category"
-        >
-          {{ category.name }}
-        </mat-option>
-      </mat-autocomplete>
-    </mat-form-field>
-  </div>
-  <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
-    <mat-tab
-      [label]="selectedCategory.category.name"
-      *ngFor="let selectedCategory of selectedCategories"
-    >
-      <div class="fields">
-        <mat-form-field appearance="outline">
-          <mat-label>Offer Type</mat-label>
-          <mat-select placeholder="Offer Type" [(ngModel)]="selectedCategory.offerType" #offerType name="type">
-            <mat-option value="fixed">Fixed Price</mat-option>
-            <mat-option value="free">Free</mat-option>
-            <mat-option value="discount">Discount</mat-option>
-            <mat-option value="mustBuy">Must Buy (No Offer)</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline" *ngIf="offerType.value == 'fixed'">
-          <mat-label>Applied On</mat-label>
-          <mat-select placeholder="Applied On" [(ngModel)]="selectedCategory.appliedOn" name="type">
-            <mat-option value="item">Item</mat-option>
-            <mat-option value="group">Group</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline" *ngIf="offerType.value == 'discount' && offerType.value == 'fixed'">
-          <mat-label>Amount</mat-label>
-          <input type="number" matInput [(ngModel)]="selectedCategory.amount" />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Minimum Products</mat-label>
-          <input type="number" matInput [(ngModel)]="selectedCategory.minimumProducts" />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>Maximum Products</mat-label>
-          <input type="number" matInput [(ngModel)]="selectedCategory.maximumProducts" />
-        </mat-form-field>
-      </div>
-      <div class="products">
-        <div class="selectProducts">
-          <div class="heading">
-            <mat-checkbox
-              (change)="
-                selectProducts(
-                  selectedCategory.category.products,
-                  allProductsSelect.checked
-                )
-              "
-              #allProductsSelect
-              >Product Name</mat-checkbox
-            >
-            <p>Price</p>
-          </div>
-          <div
-            class="product"
-            *ngFor="let product of selectedCategory.category.products"
-          >
-            <mat-checkbox [(ngModel)]="product.selected">{{
-              product.name
-            }}</mat-checkbox>
-            <strong>{{ product.price }}</strong>
-          </div>
-        </div>
-        <div class="selectedProducts">
-          <div class="heading">
-            <p>Product Name</p>
-            <p>Price</p>
-          </div>
-          <ng-container
-            *ngFor="let product of selectedCategory.category.products"
-          >
-            <div class="product" *ngIf="product.selected">
-              <p>{{ product.name }}</p>
-              <strong>{{ product.price }}</strong>
-            </div>
-          </ng-container>
-        </div>
-      </div>
-    </mat-tab>
-  </mat-tab-group>
-  <div class="visibilitySettings" *ngIf="visibilityEnabled">
-    <mat-accordion>
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title> Visibility Settings </mat-panel-title>
-        </mat-expansion-panel-header>
-        <div class="settings">
-          <div class="actions">
-            <mat-form-field appearance="outline">
-              <mat-label>Monthly / Weekly</mat-label>
-              <mat-select
-                placeholder="Select Mode"
-                [(ngModel)]="visibilitySettings.mode"
-                name="type"
-                #monthlyWeeklyMode
-              >
-                <mat-option value="monthly">Monthly</mat-option>
-                <mat-option value="weekly">Weekly</mat-option>
-              </mat-select>
-            </mat-form-field>
-            <mat-radio-group
-              aria-label="Select repeat mode"
-              [(ngModel)]="visibilitySettings.repeating"
-            >
-              <mat-radio-button [value]="false"
-                >Not Repeating</mat-radio-button
-              >
-              <mat-radio-button [value]="true"
-                >Repeating Yearly</mat-radio-button
-              >
-            </mat-radio-group>
-            <ng-container *ngIf="monthlyWeeklyMode.value == 'monthly'">
-              <mat-date-range-picker
-                #picker
-              ></mat-date-range-picker>
-              <mat-date-range-input
-                tabindex="-1"
-                hidden
-                [formGroup]="visibilitySettings.visibilityDateRangeForm"
-                [rangePicker]="picker"
-              >
-                <input
-                  matStartDate
-                  formControlName="startDate"
-                  placeholder="Start date"
-                />
-                <input
-                  matEndDate
-                  formControlName="endDate"
-                  placeholder="End date"
-                />
-              </mat-date-range-input>
-              <viraj-button type="outline" (vclick)="picker.open()"
-                >Select Date Range <i class="ri-calendar-2-fill"></i
-              ></viraj-button>
-            </ng-container>
-            <ng-container *ngIf="monthlyWeeklyMode.value == 'weekly'">
-              <!-- <mat-form-field class="example-chip-list">
-                <mat-label>Select Months</mat-label>
-                <mat-chip-grid #chipGrid aria-label="Month Selection">
-                  <mat-chip-row
-                    *ngFor="let month of selectedMonths"
-                    (removed)="removeMonth(month)"
-                  >
-                    {{ month }}
-                    <button
-                      matChipRemove
-                      [attr.aria-label]="'remove ' + month"
-                    >
-                      <mat-icon>cancel</mat-icon>
-                    </button>
-                  </mat-chip-row>
-                </mat-chip-grid>
-                <input
-                  placeholder="Select Month..."
-                  #fruitInput
-                  [formControl]="monthSearchControl"
-                  [matChipInputFor]="chipGrid"
-                  [matAutocomplete]="auto"
-                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                />
-                <mat-autocomplete
-                  #auto="matAutocomplete"
-                  (optionSelected)="selectMonth($event)"
-                >
-                  <mat-option
-                    *ngFor="let fruit of filteredMonths | async"
-                    [value]="fruit"
-                  >
-                    {{ fruit }}
-                  </mat-option>
-                </mat-autocomplete>
-              </mat-form-field> -->
-              <mat-form-field appearance="outline">
-                <mat-label>Select Month</mat-label>
-                <mat-select placeholder="Select Month" [multiple]="true" [(ngModel)]="selectedMonths" (selectionChange)="generateMonthsData()" name="month">
-                  <mat-option *ngFor="let month of allMonths" [value]="month">
-                    {{month}}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </ng-container>
-          </div>
-          <div class="weeks" *ngIf="monthlyWeeklyMode.value == 'weekly'">
-            <div class="selectWeeks">
-              <p>Select Weeks</p>
-              <mat-checkbox
-                (change)="generateMonthsData()"
-                [(ngModel)]="visibilitySettings.selectedWeeks.week1"
-                #week1st
-                >1st Week</mat-checkbox
-              >
-              <mat-checkbox
-                (change)="generateMonthsData()"
-                [(ngModel)]="visibilitySettings.selectedWeeks.week2"
-                #week2nd
-                >2nd Week</mat-checkbox
-              >
-              <mat-checkbox
-                (change)="generateMonthsData()"
-                [(ngModel)]="visibilitySettings.selectedWeeks.week3"
-                #week3rd
-                >3rd Week</mat-checkbox
-              >
-              <mat-checkbox
-                (change)="generateMonthsData()"
-                [(ngModel)]="visibilitySettings.selectedWeeks.week4"
-                #week4th
-                >4th Week</mat-checkbox
-              >
-              <mat-checkbox
-                (change)="generateMonthsData()"
-                [(ngModel)]="visibilitySettings.selectedWeeks.week5"
-                #week5th
-                >5th Week</mat-checkbox
-              >
-              <mat-checkbox
-                (change)="generateMonthsData()"
-                [(ngModel)]="visibilitySettings.selectedWeeks.week6"
-                #week6th
-                >6th Week</mat-checkbox
-              >
-              <mat-checkbox
-                (change)="
-                  visibilitySettings.selectedWeeks.week1 =
-                    allWeeks.checked;
-                  visibilitySettings.selectedWeeks.week2 =
-                    allWeeks.checked;
-                  visibilitySettings.selectedWeeks.week3 =
-                    allWeeks.checked;
-                  visibilitySettings.selectedWeeks.week4 =
-                    allWeeks.checked;
-                  visibilitySettings.selectedWeeks.week5 =
-                    allWeeks.checked;
-                  generateMonthsData()
-                "
-                #allWeeks
-                >All Weeks</mat-checkbox
-              >
-            </div>
-            <div class="tableContainer">
-              <table>
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>
-                      <mat-checkbox
-                        [checked]="allSelected.checked"
-                        (click)="checkAllWeekDays(0,allSunday.checked)"
-                        [(ngModel)]="
-                          visibilitySettings.daysSelected.allSunday
-                        "
-                        #allSunday
-                        >All Sun</mat-checkbox
-                      >
-                    </th>
-                    <th>
-                      <mat-checkbox
-                        [checked]="allSelected.checked"
-                        (click)="checkAllWeekDays(1,allMonday.checked)"
-                        [(ngModel)]="
-                          visibilitySettings.daysSelected.allMonday
-                        "
-                        #allMonday
-                        >All Mon</mat-checkbox
-                      >
-                    </th>
-                    <th>
-                      <mat-checkbox
-                        [checked]="allSelected.checked"
-                        (click)="checkAllWeekDays(2,allTuesday.checked)"
-                        [(ngModel)]="
-                          visibilitySettings.daysSelected.allTuesday
-                        "
-                        #allTuesday
-                        >All Tue</mat-checkbox
-                      >
-                    </th>
-                    <th>
-                      <mat-checkbox
-                        [checked]="allSelected.checked"
-                        (click)="checkAllWeekDays(3,allWednesday.checked)"
-                        [(ngModel)]="
-                          visibilitySettings.daysSelected.allWednesday
-                        "
-                        #allWednesday
-                        >All Wed</mat-checkbox
-                      >
-                    </th>
-                    <th>
-                      <mat-checkbox
-                        [checked]="allSelected.checked"
-                        (click)="checkAllWeekDays(4,allThursday.checked)"
-                        [(ngModel)]="
-                          visibilitySettings.daysSelected.allThursday
-                        "
-                        #allThursday
-                        >All Thr</mat-checkbox
-                      >
-                    </th>
-                    <th>
-                      <mat-checkbox
-                        [checked]="allSelected.checked"
-                        (click)="checkAllWeekDays(5,allFriday.checked)"
-                        [(ngModel)]="
-                          visibilitySettings.daysSelected.allFriday
-                        "
-                        #allFriday
-                        >All Fri</mat-checkbox
-                      >
-                    </th>
-                    <th>
-                      <mat-checkbox
-                        [checked]="allSelected.checked"
-                        (click)="checkAllWeekDays(6,allSaturday.checked)"
-                        [(ngModel)]="
-                          visibilitySettings.daysSelected.allSaturday
-                        "
-                        #allSaturday
-                        >All Sat</mat-checkbox
-                      >
-                    </th>
-                    <th>
-                      <mat-checkbox
-                        (change)="
-                        checkAllWeekDays(0,allSelected.checked);
-                        checkAllWeekDays(1,allSelected.checked);
-                        checkAllWeekDays(2,allSelected.checked);
-                        checkAllWeekDays(3,allSelected.checked);
-                        checkAllWeekDays(4,allSelected.checked);
-                        checkAllWeekDays(5,allSelected.checked);
-                        checkAllWeekDays(6,allSelected.checked);
-                          visibilitySettings.daysSelected.allSunday =
-                            allSelected.checked;
-                          visibilitySettings.daysSelected.allMonday =
-                            allSelected.checked;
-                          visibilitySettings.daysSelected.allTuesday =
-                            allSelected.checked;
-                          visibilitySettings.daysSelected.allWednesday =
-                            allSelected.checked;
-                          visibilitySettings.daysSelected.allThursday =
-                            allSelected.checked;
-                          visibilitySettings.daysSelected.allFriday =
-                            allSelected.checked;
-                          visibilitySettings.daysSelected.allSaturday =
-                            allSelected.checked
-                        "
-                        #allSelected
-                        >Select All</mat-checkbox
-                      >
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <ng-container  *ngFor="let month of this.visibilitySettings.daysSetting; let first = first;">
-                    <tr *ngFor="let week of month.days; let first = first">
-                      <td [attr.rowspan]="month.days.length" *ngIf="first">
-                         <ng-container>
-                          {{ month.month | titlecase }}
-                         </ng-container>
-                      </td>
-                      <td *ngFor="let day of week.week;let i = index;">
-                        <ng-container>
-                          <div class="day" (click)="(day.possible || visibilitySettings.repeating)? (day.selected = !day.selected) : {}" [ngClass]="{impossible:!day.possible && !visibilitySettings.repeating,active:day.selected}">
-                            {{day.day}}
-                          </div>
-                        </ng-container>
-                      </td>
-                      <td>
-                        <mat-checkbox (change)="selectAllWeekDays(week.week,selectDays.checked)" #selectDays>{{week.weekName}}</mat-checkbox>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td colspan="9">
-                        <hr>
-                      </td>
-                    </tr>
-                  </ng-container>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <table class="timeSlots">
-            <thead>
-              <tr>
-                <th>
-                  <mat-checkbox>Time Slot Name</mat-checkbox>
-                </th>
-                <th>Start Time</th>
-                <th>End Time</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><mat-checkbox [(ngModel)]="visibilitySettings.timeSlotSelected.breakfast.selected">Breakfast</mat-checkbox></td>
-                <td>6:00 AM</td>
-                <td>1:00 PM</td>
-              </tr>
-              <tr>
-                <td><mat-checkbox [(ngModel)]="visibilitySettings.timeSlotSelected.lunch.selected">Lunch</mat-checkbox></td>
-                <td>1:00 AM</td>
-                <td>6:00 PM</td>
-              </tr>
-              <tr>
-                <td><mat-checkbox [(ngModel)]="visibilitySettings.timeSlotSelected.dinner.selected">Dinner</mat-checkbox></td>
-                <td>6:00 PM</td>
-                <td>1:00 AM</td>
-              </tr>
-              <tr>
-                <td><mat-checkbox [(ngModel)]="visibilitySettings.timeSlotSelected.night.selected">Night</mat-checkbox></td>
-                <td>1:00 AM</td>
-                <td>6:00 AM</td>
-              </tr>
-              <tr>
-                <td><mat-checkbox [(ngModel)]="visibilitySettings.timeSlotSelected.custom.selected">Custom</mat-checkbox></td>
-                <td>
-                  <select [(ngModel)]="visibilitySettings.timeSlotSelected.custom.timeStart">
-                    <option
-                      [value]="item.value"
-                      *ngFor="let item of availableTimes"
-                    >
-                      {{ item.time }}
-                    </option>
-                  </select>
-                </td>
-                <td>
-                  <select [(ngModel)]="visibilitySettings.timeSlotSelected.custom.timeEnd">
-                    <option
-                      [value]="item.value"
-                      *ngFor="let item of availableTimes"
-                    >
-                      {{ item.time }}
-                    </option>
-                  </select>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </mat-expansion-panel>
-    </mat-accordion>
-  </div>
-  <!-- <h3>Time Group (Optional)</h3>
-    <div class="types">
-        <div class="card" *ngFor="let timeGroup of this.dialogData.menu.timeGroups">
-            <mat-checkbox [(ngModel)]="timeGroup.selected"></mat-checkbox>
-            <i class="ri-timer-flash-fill"></i>
-            <p>{{timeGroup.name}}</p>
-        </div>
-        <div class="card add" (click)="addTimeGroup()">
-            <i class="ri-add-fill"></i>
-            <p>Add More</p>
-        </div>
-    </div>
-    <h3>Available Types</h3>
-    <div class="types">
-        <div class="card" *ngFor="let type of dialogData.menu.types">
-            <mat-checkbox [(ngModel)]="type.selected" (change)="buildSelectedTypes()"></mat-checkbox>
-            <img [src]="type.image">
-            <p>{{type.name}}</p>
-        </div>
-        <div class="card add" (click)="addTypeCategory()">
-            <i class="ri-add-fill"></i>
-            <p>Add More</p>
-        </div>
-    </div> -->
-  <!-- <h3>Selected Types</h3>
-    <div class="tabs">
-        <button *ngFor="let type of configurations" (click)="selectType(type)" [ngClass]="{active:this.selectedType?.id == type.id}">
-            {{type.name}}
-        </button>
-    </div>
-    <div class="categories" *ngIf="selectedType">
-        <div class="tabs vertical">
-            <button [ngClass]="{active:category.name == currentTypeCategory?.name}" *ngFor="let category of selectedType.categories" (click)="selectTypeCategory(category)">{{category.name}}</button>
-            <button (click)="addCategory(selectedType)">Add Category</button>
-        </div>
-        <div class="config" *ngIf="currentTypeCategory">
-            <div class="detail">
-                <mat-form-field appearance="outline">
-                    <mat-label>Name</mat-label>
-                    <input matInput type="text" [(ngModel)]="currentTypeCategory.name">
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                    <mat-label>Maximum Products</mat-label>
-                    <input matInput type="number" [(ngModel)]="currentTypeCategory.maximumProducts">
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                    <mat-label>Minimum Products</mat-label>
-                    <input matInput type="number" [(ngModel)]="currentTypeCategory.minimumProducts">
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                    <mat-label>Offer Type</mat-label>
-                    <mat-select placeholder="Type" [(ngModel)]="currentTypeCategory.offerType" name="type">
-                        <mat-option value="discount">Discount</mat-option>
-                        <mat-option value="free">Free</mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                    <mat-label *ngIf="currentTypeCategory.offerType=='discount'">Offer Value</mat-label>
-                    <mat-label *ngIf="currentTypeCategory.offerType=='free'">Maximum Free Products</mat-label>
-                    <input type="number" matInput [(ngModel)]="currentTypeCategory.offerValue">
-                </mat-form-field>
-            </div>
-            <div class="products">
-                <div class="treeView">
-                    <ol *ngFor="let category of currentTypeCategory.productTree">
-                        <li><mat-checkbox (ngModelChange)="selectAll(category);generateSelectedProducts(currentTypeCategory)" [indeterminate]="someSelected(category)" [checked]="allSelected(category)" [(ngModel)]="category.selected">{{category.categoryName}}</mat-checkbox></li>
-                        <ol>
-                            <li *ngFor="let product of category.products"><mat-checkbox (change)="checkAll(category);generateSelectedProducts(currentTypeCategory);" [(ngModel)]="product.selected">{{product.name}}</mat-checkbox></li>
-                        </ol>
-                    </ol>
-                </div>
-                <div class="selectedProducts">
-                    <li *ngFor="let item of currentTypeCategory.products">
-                        {{item.name}} <strong>{{item.price | currency:'INR'}}</strong>
-                    </li>
-                </div>
-            </div>
-        </div>
-    </div> -->
-  <div class="mainActions">
-    <viraj-button (vclick)="save()">Save</viraj-button>
-    <viraj-button type="outline" (vclick)="cancel()">Cancel</viraj-button>
-  </div>
-  <div class="bottomMargin"></div>
+  </div> -->
+  <!--  -->
+  <!--  -->
+  <!--  -->
+  
 </section>

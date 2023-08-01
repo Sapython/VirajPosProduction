@@ -29,29 +29,29 @@ export class ResetPasswordComponent {
     private userManagementService: UserManagementService,
     private alertify: AlertsAndNotificationsService,
     private dialogRef: DialogRef,
-    private dataProvider: DataProvider
+    private dataProvider: DataProvider,
   ) {}
   async resetPassword() {
     if (
       await this.dataProvider.confirm(
         'Are you sure you want to reset password?',
         [1],
-        { buttons: ['No', 'Yes'] }
+        { buttons: ['No', 'Yes'] },
       )
     ) {
       this.userManagementService
         .resetPassword(
           this.resetPasswordForm.value.previousPassword,
           this.resetPasswordForm.value.newPassword,
-          this.resetPasswordForm.value.confirmPassword
+          this.resetPasswordForm.value.confirmPassword,
         )
         .then(() => {
           this.resetPasswordForm.reset();
         })
         .catch((err) => {
-        //  console.log(err);
+          //  console.log(err);
           this.alertify.presentToast(
-            err.message || err || 'Some error occured while resetting password'
+            err.message || err || 'Some error occured while resetting password',
           );
         });
     }

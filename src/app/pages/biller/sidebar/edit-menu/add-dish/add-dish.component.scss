@@ -1,81 +1,39 @@
-// <section>
-//     <h1>Add New Product</h1>
-//     <form [formGroup]="newDishForm">
-//         <mat-form-field appearance="outline">
-//             <mat-label>Dish Name</mat-label>
-//             <input matInput formControlName="name">
-//         </mat-form-field>
-//         <mat-form-field appearance="outline">
-//             <mat-label>Amount</mat-label>
-//             <input matInput formControlName="price">
-//         </mat-form-field>
-//         <mat-form-field appearance="outline">
-//             <mat-label>Type</mat-label>
-//             <mat-select placeholder="Tag" formControlName="type" name="tag">
-//                 <mat-option *ngFor="let tag of tags" [value]="tag">
-//                     {{tag}}
-//                 </mat-option>
-//             </mat-select>
-//         </mat-form-field>
-//         <hr>
-//         <h4>Variants 
-//             <button (click)="addVariant()">
-//                 <mat-icon>add</mat-icon>
-//             </button>
-//         </h4>
-//         <div class="variants">
-//             <div class="variant" *ngFor="let variant of variants; let i = index">
-//                 <mat-form-field appearance="outline">
-//                     <mat-label>Variant Name</mat-label>
-//                     <input matInput [(ngModel)]="variant.variantName">
-//                 </mat-form-field>
-//                 <mat-form-field appearance="outline">
-//                     <mat-label>Variant Price</mat-label>
-//                     <input matInput [(ngModel)]="variant.price">
-//                 </mat-form-field>
-//                 <button mat-icon-button color="warn" (click)="removeVariant(i)"><mat-icon>delete</mat-icon></button>
-//             </div>
-//         </div>
-//     </form>
-// </section>
 
-// Path: src/app/biller/sidebar/edit-menu/add-dish/add-dish.component.ts
-
-section{
+section {
+  background: white;
+  border-radius: 20px;
+  max-height: 80vh;
+  overflow-y: auto;
+  .heading{
+	  display: flex;
+	  justify-content: space-between;
+	  align-items: center;
+	  border-bottom: 2px solid #c7c7c7;
+	  padding: 0px 30px;
+	}
+  h1 {
+    font-size: var(--Viraj-font-xxxlarge);
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  form {
     padding: 20px;
-    background: white;
-    border-radius: 20px;
-    max-height: 80vh;
-    overflow-y: auto;
-    h1{
-        font-size: var(--Viraj-font-xxxlarge);
-        font-weight: 500;
-        margin-bottom: 1rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap:20px;
+    mat-form-field {
+      width: 100%;
+      margin-bottom: 1rem;
     }
-    form{
-        mat-form-field{
-            width: 100%;
-            margin-bottom: 1rem;
-        }
-        .portions{
-            .portion{
-                display: grid;
-                grid-template-columns: 4fr 4fr 1fr;
-                align-items: center;
-                .badge{
-                    padding: 5px 10px;
-                    border-radius: 5px;
-                }
-                .tagColors{
-                    grid-column: 3/1;
-                    display: flex;
-                }
-            }
-        }
-        .actions{
-            display: flex;
-            justify-content: flex-end;
-            gap:20px;
-        }
+
+    .fullWidth{
+      grid-column: 1/3;
     }
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 20px;
+      grid-column: 1/3;
+    }
+  }
 }

@@ -3,131 +3,157 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Timestamp } from '@angular/fire/firestore';
 import { DialogComponent } from '../../../../shared/base-components/dialog/dialog.component';
-import { CodeBaseDiscount, DirectFlatDiscount, DirectPercentDiscount } from '../../../../types/discount.structure';
+import {
+  CodeBaseDiscount,
+  DirectFlatDiscount,
+  DirectPercentDiscount,
+} from '../../../../types/discount.structure';
 import { DataProvider } from '../../../../core/services/provider/data-provider.service';
 import { firstValueFrom } from 'rxjs';
 import { BillConstructor } from '../../../../types/bill.structure';
 import { Bill } from '../../../../core/constructors/bill';
 
-
 @Component({
   selector: 'app-add-discount',
   templateUrl: './add-discount.component.html',
-  styleUrls: ['./add-discount.component.scss']
+  styleUrls: ['./add-discount.component.scss'],
 })
 export class AddDiscountComponent implements OnInit {
-  mode:'codeBased'|'directPercent'|'directFlat'='directPercent';
-  currentDiscount:CodeBaseDiscount|DirectFlatDiscount|DirectPercentDiscount|undefined;
-  currentIndex:number = 0;
-  password:string = '';
-  reason:string = '';
-  appliedDiscounts:(CodeBaseDiscount|DirectFlatDiscount|DirectPercentDiscount)[] = [];
-  constructor(private dialogRef:DialogRef,public dataProvider:DataProvider,private dialog:Dialog,@Inject(DIALOG_DATA) bill:Bill|BillConstructor) {
-    if(this.dataProvider.currentBill){
-      this.appliedDiscounts = bill.billing.discount.map(discount=>{
+  mode: 'codeBased' | 'directPercent' | 'directFlat' = 'directPercent';
+  currentDiscount:
+    | CodeBaseDiscount
+    | DirectFlatDiscount
+    | DirectPercentDiscount
+    | undefined;
+  currentIndex: number = 0;
+  password: string = '';
+  reason: string = '';
+  appliedDiscounts: (
+    | CodeBaseDiscount
+    | DirectFlatDiscount
+    | DirectPercentDiscount
+  )[] = [];
+  constructor(
+    private dialogRef: DialogRef,
+    public dataProvider: DataProvider,
+    private dialog: Dialog,
+    @Inject(DIALOG_DATA) bill: Bill | BillConstructor,
+  ) {
+    if (this.dataProvider.currentBill) {
+      this.appliedDiscounts = bill.billing.discount.map((discount) => {
         return discount;
       });
       this.currentDiscount = this.appliedDiscounts[0];
     }
   }
 
-  switchDiscount(discount,index:number){
-    this.appliedDiscounts[index] = {...this.dataProvider.currentBill.availableDiscounts.find(d=>d.id == discount),reason:''};
+  switchDiscount(discount, index: number) {
+    this.appliedDiscounts[index] = {
+      ...this.dataProvider.currentBill.availableDiscounts.find(
+        (d) => d.id == discount,
+      ),
+      reason: '',
+    };
     this.appliedDiscounts[index].mode = 'codeBased';
-  //  console.log("Set",this.currentDiscount);
+    //  console.log("Set",this.currentDiscount);
   }
 
   ngOnInit(): void {
     // if(this.dataProvider.currentBill){
     //   this.currentDiscount = this.dataProvider.currentBill.billing.discount[0];
     // }
-    this.password = ""
-    this.reason = ""
-    // this.currentDiscount = 
-    if(this.appliedDiscounts.length == 0){
+    this.password = '';
+    this.reason = '';
+    // this.currentDiscount =
+    if (this.appliedDiscounts.length == 0) {
       this.appliedDiscounts.push({
-        mode:'codeBased',
-        accessLevels:[],
-        creationDate:Timestamp.now(),
-        id:'',
-        name:'',
-        type:'percentage',
-        menus:[],
-        reason:'',
-        value:0,
-        totalAppliedDiscount:0,
+        mode: 'codeBased',
+        accessLevels: [],
+        creationDate: Timestamp.now(),
+        id: '',
+        name: '',
+        type: 'percentage',
+        menus: [],
+        reason: '',
+        value: 0,
+        totalAppliedDiscount: 0,
       });
     }
-    this.currentDiscount = this.appliedDiscounts[0]
-    this.appliedDiscounts.forEach(discount=>{
-      if (discount.reason){
+    this.currentDiscount = this.appliedDiscounts[0];
+    this.appliedDiscounts.forEach((discount) => {
+      if (discount.reason) {
         this.reason = discount.reason;
       }
-    })
+    });
   }
 
-  async addDiscount(){
-    const dialog = await this.dialog.open(DialogComponent,{data:{
-      title:'What type of discount?',
-      description:'Please select the type of discount you want to add.',
-      buttons:[
-        'Code Based',
-        'Direct Percent',
-        'Direct Flat',
-        'Cancel'
-      ],
-      primary:[0,1,2],
-    }})
-    let res = await firstValueFrom(dialog.closed)
-  //  console.log(res);
+  async addDiscount() {
+    const dialog = await this.dialog.open(DialogComponent, {
+      data: {
+        title: 'What type of discount?',
+        description: 'Please select the type of discount you want to add.',
+        buttons: ['Code Based', 'Direct Percent', 'Direct Flat', 'Cancel'],
+        primary: [0, 1, 2],
+      },
+    });
+    let res = await firstValueFrom(dialog.closed);
+    //  console.log(res);
     let response = res as number;
-    if(response === 0){
+    if (response === 0) {
       this.appliedDiscounts.push({
-        mode:'codeBased',
-        accessLevels:[],
-        creationDate:Timestamp.now(),
-        id:'',
-        name:'',
-        type:'percentage',
-        menus:[],
-        reason:'',
-        value:0,
-        totalAppliedDiscount:0,
+        mode: 'codeBased',
+        accessLevels: [],
+        creationDate: Timestamp.now(),
+        id: '',
+        name: '',
+        type: 'percentage',
+        menus: [],
+        reason: '',
+        value: 0,
+        totalAppliedDiscount: 0,
       });
-    } else if (response === 1){
+    } else if (response === 1) {
       this.appliedDiscounts.push({
-        mode:'directPercent',
-        creationDate:Timestamp.now(),
-        reason:'',
-        value:0,
-        totalAppliedDiscount:0,
-      })
-    } else if (response === 2){
+        mode: 'directPercent',
+        creationDate: Timestamp.now(),
+        reason: '',
+        value: 0,
+        totalAppliedDiscount: 0,
+      });
+    } else if (response === 2) {
       this.appliedDiscounts.push({
-        mode:'directFlat',
-        creationDate:Timestamp.now(),
-        reason:'',
-        value:0,
-        totalAppliedDiscount:0,
-      })
+        mode: 'directFlat',
+        creationDate: Timestamp.now(),
+        reason: '',
+        value: 0,
+        totalAppliedDiscount: 0,
+      });
     } else {
       return;
     }
-    if(this.appliedDiscounts.length-1 >= 0){
-      this.currentDiscount = this.appliedDiscounts[this.appliedDiscounts.length-1];
-      this.currentIndex = this.appliedDiscounts.length-1;
+    if (this.appliedDiscounts.length - 1 >= 0) {
+      this.currentDiscount =
+        this.appliedDiscounts[this.appliedDiscounts.length - 1];
+      this.currentIndex = this.appliedDiscounts.length - 1;
     }
   }
 
-  async submit(){
-    if(!(await this.dataProvider.checkPassword(this.password))){
-      const dialog = this.dialog.open(DialogComponent,{data:{title:'Invalid Password',description:'Please enter the correct password to continue.',buttons:['Ok'],primary:[0]}})
+  async submit() {
+    if (!(await this.dataProvider.checkPassword(this.password))) {
+      const dialog = this.dialog.open(DialogComponent, {
+        data: {
+          title: 'Invalid Password',
+          description: 'Please enter the correct password to continue.',
+          buttons: ['Ok'],
+          primary: [0],
+        },
+      });
       return;
     }
-    this.appliedDiscounts.forEach(discount=>{
+    this.appliedDiscounts.forEach((discount) => {
       discount.reason = this.reason;
-    })
-  //  console.log("applying",this.appliedDiscounts);
+    });
+    //  console.log("applying",this.appliedDiscounts);
     this.dialogRef.close(this.appliedDiscounts);
     // if (this.discountForm.value.mode == 'codeBased'){
     //   this.dialogRef.close({discount:this.discountForm.value.selectDiscount,discounted:true})
@@ -158,24 +184,25 @@ export class AddDiscountComponent implements OnInit {
     // }
   }
 
-  cancel(remove?:boolean,index?:number){
-    if (this.dataProvider.multipleDiscount && index){
-      this.appliedDiscounts.splice(index,1);
-      if(this.appliedDiscounts.length-1 >= 0){
-        this.currentDiscount = this.appliedDiscounts[this.appliedDiscounts.length-1];
+  cancel(remove?: boolean, index?: number) {
+    if (this.dataProvider.multipleDiscount && index) {
+      this.appliedDiscounts.splice(index, 1);
+      if (this.appliedDiscounts.length - 1 >= 0) {
+        this.currentDiscount =
+          this.appliedDiscounts[this.appliedDiscounts.length - 1];
       }
     } else {
       this.dialogRef.close(remove ? [] : false);
     }
   }
 
-  get discountsValid(){
+  get discountsValid() {
     // check if every discount in the billing.discounts has reason and password
     let valid = true;
     // this.appliedDiscounts.forEach(discount=>{
     // })
     for (const discount of this.appliedDiscounts) {
-      if(!this.reason || !this.password || !discount || !discount.value){
+      if (!this.reason || !this.password || !discount || !discount.value) {
         valid = false;
       }
     }

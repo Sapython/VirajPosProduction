@@ -47,7 +47,7 @@ export class TableComponent implements OnInit {
     private billService: BillService,
     private customerService: CustomerService,
     private userManagementService: UserManagementService,
-    private onboardingService:OnboardingService
+    private onboardingService: OnboardingService,
   ) {}
 
   ngOnInit(): void {
@@ -57,7 +57,7 @@ export class TableComponent implements OnInit {
         this.dataProvider.currentMenu.type || 'dineIn';
     }
     this.tables = this.dataProvider.tables;
-    console.log("TABLES::",this.tables);
+    console.log('TABLES::', this.tables);
     if (this.interval) {
       clearInterval(this.interval);
     }
@@ -110,20 +110,20 @@ export class TableComponent implements OnInit {
       if (this.dataProvider.currentApplicableCombo) {
         this.dataProvider.currentApplicableCombo.addProduct(
           this.dataProvider.currentComboTypeCategory,
-          this.dataProvider.currentPendingProduct
+          this.dataProvider.currentPendingProduct,
         );
       } else {
         this.dataProvider.currentApplicableCombo = new ApplicableCombo(
           this.dataProvider.currentCombo,
-          this.dataProvider.currentBill
+          this.dataProvider.currentBill,
         );
         this.dataProvider.currentApplicableCombo.addProduct(
           this.dataProvider.currentComboTypeCategory,
-          this.dataProvider.currentPendingProduct
+          this.dataProvider.currentPendingProduct,
         );
         if (this.dataProvider.currentBill) {
           this.dataProvider.currentBill.addProduct(
-            this.dataProvider.currentApplicableCombo
+            this.dataProvider.currentApplicableCombo,
           );
         }
       }
@@ -141,12 +141,25 @@ export class TableComponent implements OnInit {
       return;
     }
     if (tableName == groupName) {
+      // find the last table matching the table group name
       let entity = this.dataProvider.tables
-        .slice()
-        .reverse()
-        .find((table) => {
+        .filter((table) => {
           return table.group == groupName;
-        });
+        })
+        .sort((a, b) => {
+          return a.tableNo - b.tableNo;
+        })[0];
+      console.log('entity ', entity,this.dataProvider.tables
+      .filter((table) => {
+        return table.group == groupName;
+      }),this.dataProvider.tables
+      .filter((table) => {
+        return table.group == groupName;
+      })
+      .sort((a, b) => {
+        return a.tableNo - b.tableNo;
+      }));
+
       let mainEntityNo =
         entity.name.split(' ')[entity.name.split(' ').length - 1];
       let rgx = /(\d+)\D*$/g;
@@ -164,7 +177,7 @@ export class TableComponent implements OnInit {
         }
       } else {
         alert(
-          'Cannot add auto table no number found in end. Please add manually'
+          'Cannot add auto table no number found in end. Please add manually',
         );
         return;
       }
@@ -173,11 +186,11 @@ export class TableComponent implements OnInit {
     let foundTable = this.dataProvider.tables.find((table) => {
       return table.group == groupName && table.name == tableName;
     });
+    console.log('tableName ', tableName,groupName);
     if (foundTable) {
       alert('Table already exists');
       return;
     }
-    // console.log('tableName ', tableName,groupName);
     let table = new Table(
       index.toString(),
       index,
@@ -192,10 +205,11 @@ export class TableComponent implements OnInit {
       this.billService,
       this.printingService,
       this.customerService,
-      this.userManagementService
+      this.userManagementService,
     );
+    console.log("table",table);
     table.clearTable();
-    this.analyticsService.newTable(table,'dine');
+    this.analyticsService.newTable(table, 'dine');
     this.dataProvider.tables.push(table);
     this.tableService.reOrderTable();
   }
@@ -205,7 +219,7 @@ export class TableComponent implements OnInit {
     // this.dataProvider.takeawayToken = this.dataProvider.takeawayToken + 1;
     console.log(
       'this.dataProvider.takeawayToken ',
-      this.dataProvider.takeawayToken
+      this.dataProvider.takeawayToken,
     );
     this.dataProvider.takeawayToken++;
     this.analyticsService.addTakeawayToken();
@@ -223,10 +237,10 @@ export class TableComponent implements OnInit {
       this.billService,
       this.printingService,
       this.customerService,
-      this.userManagementService
+      this.userManagementService,
     );
     this.dataProvider.currentBill = table.occupyTable();
-    this.analyticsService.newTable(table,'takeaway');
+    this.analyticsService.newTable(table, 'takeaway');
     this.dataProvider.currentTable = table;
     this.dataProvider.billAssigned.next();
     if (this.dataProvider.tempProduct && this.dataProvider.currentBill) {
@@ -258,11 +272,11 @@ export class TableComponent implements OnInit {
       this.billService,
       this.printingService,
       this.customerService,
-      this.userManagementService
+      this.userManagementService,
     );
     this.dataProvider.currentBill = table.occupyTable();
     this.dataProvider.currentTable = table;
-    this.analyticsService.newTable(table,'online');
+    this.analyticsService.newTable(table, 'online');
     this.dataProvider.billAssigned.next();
     if (this.dataProvider.tempProduct && this.dataProvider.currentBill) {
       this.dataProvider.currentBill.addProduct(this.dataProvider.tempProduct);
@@ -288,7 +302,7 @@ export class TableComponent implements OnInit {
         await this.dataProvider.confirm(
           'Alert! Do you want to delete it?',
           [1],
-          { buttons: ['No', 'Yes'] }
+          { buttons: ['No', 'Yes'] },
         )
       ) {
         this.dataProvider.loading = true;
@@ -315,7 +329,7 @@ export class TableComponent implements OnInit {
       this.selectedKotsForKotTransfer = this.selectedKotsForKotTransfer.filter(
         (k) => {
           return k.id != kot.id;
-        }
+        },
       );
     }
   }
@@ -384,7 +398,7 @@ export class TableComponent implements OnInit {
   settleTable(table: Table, event) {
     if (table.bill) {
       let dialog = this.dialog.open(SettleComponent, {
-        data: table.bill.billing.grandTotal
+        data: table.bill.billing.grandTotal,
       });
       dialog.closed.subscribe(async (result: any) => {
         //  console.log('Result', result);
@@ -392,7 +406,7 @@ export class TableComponent implements OnInit {
           await table.bill.settle(
             result.paymentMethods,
             'external',
-            result.detail || null
+            result.detail || null,
           );
         }
       });
@@ -439,30 +453,34 @@ export class TableComponent implements OnInit {
       });
   }
 
-  editGroup(groupName:string){
+  editGroup(groupName: string) {
     const comp = this.dialog.open(GroupComponent, {
-      data:{groupName}
-    })
-    comp.closed.subscribe((result:any)=>{
-      if(result && result.groupName){
+      data: { groupName },
+    });
+    comp.closed.subscribe((result: any) => {
+      if (result && result.groupName) {
         this.dataProvider.loading = true;
-        this.tableService.editSection(groupName,result.groupName).then(()=>{
-          this.alertify.presentToast('Group name changed successfully');
-          this.onboardingService.getTables();
-        }).catch((error)=>{
-          this.alertify.presentToast('Error changing group name');
-          console.log('Error ', error);
-        }).finally(()=>{
-          this.dataProvider.loading = false;
-        });
+        this.tableService
+          .editSection(groupName, result.groupName)
+          .then(() => {
+            this.alertify.presentToast('Group name changed successfully');
+            this.onboardingService.getTables();
+          })
+          .catch((error) => {
+            this.alertify.presentToast('Error changing group name');
+            console.log('Error ', error);
+          })
+          .finally(() => {
+            this.dataProvider.loading = false;
+          });
       }
     });
   }
 
-  addSection(){
-    let comp = this.dialog.open(GroupComponent, {data:{groupName:''}})
-    comp.closed.subscribe((result:any)=>{
-      if(result && result.groupName){
+  addSection() {
+    let comp = this.dialog.open(GroupComponent, { data: { groupName: '' } });
+    comp.closed.subscribe((result: any) => {
+      if (result && result.groupName) {
         let index = this.dataProvider.tables.length + 1;
         let table = new Table(
           index.toString(),
@@ -478,17 +496,17 @@ export class TableComponent implements OnInit {
           this.billService,
           this.printingService,
           this.customerService,
-          this.userManagementService
+          this.userManagementService,
         );
         table.clearTable();
-        this.analyticsService.newTable(table,'dine');
+        this.analyticsService.newTable(table, 'dine');
         this.dataProvider.tables.push(table);
         this.tableService.reOrderTable();
       }
-    })
+    });
   }
 
-  async editTable(table:Table){
+  async editTable(table: Table) {
     let tableName = await this.dataProvider.prompt('Enter table name', {
       value: table.name,
     });
@@ -508,50 +526,58 @@ export class TableComponent implements OnInit {
     }
     table.name = tableName;
     this.dataProvider.loading = true;
-    this.tableService.updateTable(table.toObject()).then(()=>{
-      this.alertify.presentToast('Table name changed successfully');
-      // console.log("table.toObject()",table.toObject(),table.toObject().id);
-      // let tableIndex = this.dataProvider.tables.findIndex((t)=>{
-      //   return t.id == table.id;
-      // });
-      // if (tableIndex){
-      //   this.dataProvider.tables[tableIndex].name = tableName;
-      // }
-    }).catch((error)=>{
-      this.alertify.presentToast('Error changing table name');
-      console.log('Error ', error);
-    }).finally(()=>{
-      this.dataProvider.loading = false;
-    });
+    this.tableService
+      .updateTable(table.toObject())
+      .then(() => {
+        this.alertify.presentToast('Table name changed successfully');
+        // console.log("table.toObject()",table.toObject(),table.toObject().id);
+        // let tableIndex = this.dataProvider.tables.findIndex((t)=>{
+        //   return t.id == table.id;
+        // });
+        // if (tableIndex){
+        //   this.dataProvider.tables[tableIndex].name = tableName;
+        // }
+      })
+      .catch((error) => {
+        this.alertify.presentToast('Error changing table name');
+        console.log('Error ', error);
+      })
+      .finally(() => {
+        this.dataProvider.loading = false;
+      });
   }
 
-  async deleteSection(groupName:string){
+  async deleteSection(groupName: string) {
     this.dataProvider.loading = true;
-    this.tableService.deleteSection(groupName).then(()=>{
-      this.alertify.presentToast('Section deleted successfully');
-      this.onboardingService.getTables();
-    }).catch((error)=>{
-      this.alertify.presentToast('Error deleting section');
-      console.log('Error ', error);
-    }).finally(()=>{
-      this.dataProvider.loading = false;
-    })
+    this.tableService
+      .deleteSection(groupName)
+      .then(() => {
+        this.alertify.presentToast('Section deleted successfully');
+        this.onboardingService.getTables();
+      })
+      .catch((error) => {
+        this.alertify.presentToast('Error deleting section');
+        console.log('Error ', error);
+      })
+      .finally(() => {
+        this.dataProvider.loading = false;
+      });
   }
 
   // new functions
 
-  moveKotItem(table:Table){
+  moveKotItem(table: Table) {
     this.moveKotSelectedTable = table;
-    const dialog = this.dialog.open(MoveKotItemComponent,{data:{table}});
-    dialog.closed.subscribe((res)=>{
-      console.log("Result move-kot-item",res);
-    })
+    const dialog = this.dialog.open(MoveKotItemComponent, { data: { table } });
+    dialog.closed.subscribe((res) => {
+      console.log('Result move-kot-item', res);
+    });
   }
 
-  mergeExchangeTable(){
+  mergeExchangeTable() {
     const dialog = this.dialog.open(MergeExchangeTableComponent);
-    dialog.closed.subscribe((res)=>{
-      console.log("Result merge-exchange",res);
-    })
+    dialog.closed.subscribe((res) => {
+      console.log('Result merge-exchange', res);
+    });
   }
 }

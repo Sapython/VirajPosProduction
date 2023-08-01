@@ -1,11 +1,16 @@
 <section [@shakeOnEnter] [@zoomOutOnLeave]>
-    <h2>{{title}}</h2>
-    <p *ngIf="description">{{description}}</p>
-    <div class="actions">
-        <viraj-button *ngFor="let item of buttons;let i = index" (vclick)="dialogRef.close(i)" [type]="primary.includes(i) ? 'solid' : 'outline'">{{item}}</viraj-button>
-        <!-- <ng-container *ngFor="let item of buttons;let i = index">
+  <h2>{{ title }}</h2>
+  <p *ngIf="description">{{ description }}</p>
+  <div class="actions">
+    <viraj-button
+      *ngFor="let item of buttons; let i = index"
+      (vclick)="dialogRef.close(i)"
+      [type]="primary.includes(i) ? 'solid' : 'outline'"
+      >{{ item }}</viraj-button
+    >
+    <!-- <ng-container *ngFor="let item of buttons;let i = index">
             <button color="primary" *ngIf="primary.includes(i)" mat-flat-button (click)="dialogRef.close(i)">{{item}}</button>
             <button color="primary" *ngIf="!primary.includes(i)" mat-stroked-button (click)="dialogRef.close(i)">{{item}}</button>
         </ng-container> -->
-    </div>
+  </div>
 </section>

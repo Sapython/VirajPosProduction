@@ -8,9 +8,8 @@ describe('TableWiseComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TableWiseComponent ]
-    })
-    .compileComponents();
+      declarations: [TableWiseComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(TableWiseComponent);
     component = fixture.componentInstance;

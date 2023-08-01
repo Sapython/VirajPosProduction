@@ -1,27 +1,97 @@
 <section>
-    <h2>Non Chargeable</h2>
-    <form [formGroup]="nonChargeableForm" (ngSubmit)="submit()" (keydown.enter)="$event.preventDefault()">
-        <mat-form-field appearance="outline">
-            <mat-label>Name</mat-label>
-            <input matInput type="text" formControlName="name" (keydown.enter)="phone.focus()">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-            <mat-label>Phone</mat-label>
-            <input matInput type="tel" formControlName="phone" #phone (keydown.enter)="reason.focus()">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-            <mat-label>Reason</mat-label>
-            <input matInput type="text" formControlName="reason" #reason (keydown.enter)="passwordInput.focus()">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-            <mat-label>Password</mat-label>
-            <input matInput type="password" formControlName="password" #passwordInput (keydown.enter)="submitBtn.focus()">
-            <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="passwordInput.type == 'password'" (click)="passwordInput.type == 'password' ? passwordInput.type = 'text' : passwordInput.type = 'password'" mat-icon-button><mat-icon>visibility</mat-icon></button>
-            <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="!(passwordInput.type == 'password')" (click)="passwordInput.type == 'password' ? passwordInput.type = 'text' : passwordInput.type = 'password'" mat-icon-button><mat-icon>visibility_off</mat-icon></button>
-        </mat-form-field>
-        <div class="actions">
-            <button mat-stroked-button color="primary" (click)="cancel()" type="button">Back</button>
-            <button mat-flat-button #submitBtn [disabled]="!nonChargeableForm.valid" color="primary" type="submit">Non Chargeable Bill</button>
-        </div>
-    </form>
+  <h2>Non Chargeable</h2>
+  <form
+    [formGroup]="nonChargeableForm"
+    (ngSubmit)="submit()"
+    (keydown.enter)="$event.preventDefault()"
+  >
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input
+        matInput
+        type="text"
+        formControlName="name"
+        (keydown.enter)="phone.focus()"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Phone</mat-label>
+      <input
+        matInput
+        type="tel"
+        formControlName="phone"
+        #phone
+        (keydown.enter)="reason.focus()"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Reason</mat-label>
+      <input
+        matInput
+        type="text"
+        formControlName="reason"
+        #reason
+        (keydown.enter)="passwordInput.focus()"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Password</mat-label>
+      <input
+        matInput
+        type="password"
+        formControlName="password"
+        #passwordInput
+        (keydown.enter)="submitBtn.focus()"
+      />
+      <button
+        color="primary"
+        matSuffix
+        tabindex="-1"
+        type="button"
+        *ngIf="passwordInput.type == 'password'"
+        (click)="
+          passwordInput.type == 'password'
+            ? (passwordInput.type = 'text')
+            : (passwordInput.type = 'password')
+        "
+        mat-icon-button
+      >
+        <mat-icon>visibility</mat-icon>
+      </button>
+      <button
+        color="primary"
+        matSuffix
+        tabindex="-1"
+        type="button"
+        *ngIf="!(passwordInput.type == 'password')"
+        (click)="
+          passwordInput.type == 'password'
+            ? (passwordInput.type = 'text')
+            : (passwordInput.type = 'password')
+        "
+        mat-icon-button
+      >
+        <mat-icon>visibility_off</mat-icon>
+      </button>
+    </mat-form-field>
+    <div class="actions">
+      <button
+        mat-stroked-button
+        color="primary"
+        (click)="cancel()"
+        type="button"
+      >
+        Back
+      </button>
+      <button
+        mat-flat-button
+        #submitBtn
+        [disabled]="!nonChargeableForm.valid"
+        color="primary"
+        type="submit"
+      >
+        Non Chargeable Bill
+      </button>
+    </div>
+  </form>
 </section>

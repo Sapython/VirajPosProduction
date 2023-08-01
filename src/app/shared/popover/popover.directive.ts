@@ -1,11 +1,18 @@
 import { OverlayRef, Overlay, ConnectedPosition } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
-import { Directive, ElementRef, HostListener, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  HostListener,
+  Input,
+  TemplateRef,
+  ViewContainerRef,
+} from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { PopoverService } from './popover.service';
 
 @Directive({
-  selector: '[popoverTrigger]'
+  selector: '[popoverTrigger]',
 })
 export class PopoverDirective {
   @Input() popoverTrigger!: TemplateRef<object>;
@@ -19,12 +26,12 @@ export class PopoverDirective {
     private elementRef: ElementRef,
     private overlay: Overlay,
     private vcr: ViewContainerRef,
-    private popoverService: PopoverService
+    private popoverService: PopoverService,
   ) {}
 
   ngOnInit(): void {
     this.createOverlay();
-    this.popoverService.getState().subscribe(resp => {
+    this.popoverService.getState().subscribe((resp) => {
       if (resp) {
         this.detachOverlay();
       }
@@ -37,30 +44,33 @@ export class PopoverDirective {
     this.unsubscribe.complete();
   }
 
-  @HostListener("click") clickou() {
+  @HostListener('click') clickou() {
     this.attachOverlay();
   }
 
   private createOverlay(): void {
     const scrollStrategy = this.overlay.scrollStrategies.block();
-    const positionStrategy = this.overlay.position().flexibleConnectedTo(
-      this.elementRef,
-    ).withPositions([{
-      // here, top-left of the overlay is connected to bottom-left of the origin; 
-      // of course, you can change this object or generate it dynamically;
-      // moreover, you can specify multiple objects in this array for CDK to find the most suitable option
-      originX: 'end',
-      originY: 'top',
-      overlayX: 'start',
-      overlayY: 'top'
-    } as ConnectedPosition])
-    .withPush(false);
+    const positionStrategy = this.overlay
+      .position()
+      .flexibleConnectedTo(this.elementRef)
+      .withPositions([
+        {
+          // here, top-left of the overlay is connected to bottom-left of the origin;
+          // of course, you can change this object or generate it dynamically;
+          // moreover, you can specify multiple objects in this array for CDK to find the most suitable option
+          originX: 'end',
+          originY: 'top',
+          overlayX: 'start',
+          overlayY: 'top',
+        } as ConnectedPosition,
+      ])
+      .withPush(false);
 
     this.overlayRef = this.overlay.create({
       positionStrategy,
       scrollStrategy,
       hasBackdrop: true,
-      backdropClass: ""
+      backdropClass: '',
     });
 
     this.overlayRef
@@ -77,7 +87,7 @@ export class PopoverDirective {
     if (!this.overlayRef.hasAttached()) {
       const periodSelectorPortal = new TemplatePortal(
         this.popoverTrigger,
-        this.vcr
+        this.vcr,
       );
 
       this.overlayRef.attach(periodSelectorPortal);

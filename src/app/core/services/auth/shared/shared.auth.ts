@@ -1,6 +1,7 @@
 import { signInWithCustomToken } from '@angular/fire/auth';
 import { Timestamp } from '@angular/fire/firestore';
 import { firstValueFrom } from 'rxjs';
+import { AuthService } from '../auth.service';
 
 export function setupDevice() {
   // check if there is a device in indexedDB if yes then return it else create a new one and return it
@@ -18,7 +19,7 @@ export function setupDevice() {
         firstValueFrom(
           this.dbService.add('device', {
             deviceId: id,
-          })
+          }),
         ).catch((err) => {
           // console.log('Error', err);
           let id = this.generateDeviceId().toString();
@@ -36,10 +37,4 @@ export function setupDevice() {
 }
 export function generateDeviceId() {
   return Math.floor(Math.random() * 100000000000000000);
-}
-
-export function loginWithCustomToken(token: string) {
-  window.localStorage.setItem('signInToken', token);
-  this.electronService.setAuth(token);
-  return signInWithCustomToken(this.auth, token);
 }

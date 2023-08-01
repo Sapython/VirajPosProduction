@@ -1,4 +1,9 @@
-import { printableBillItem, printableDiscount, printableTax } from '../../../../types/bill.structure';
+import {
+  billLoyalty,
+  printableBillItem,
+  printableDiscount,
+  printableTax,
+} from '../../../../types/bill.structure';
 import { printableKotItem } from '../../../../types/kot.structure';
 import * as EscPosEncoder from '../esc-pos-encoder.umd';
 export class customEncoder extends EscPosEncoder {
@@ -51,9 +56,9 @@ export class customEncoder extends EscPosEncoder {
       (encoder: any) => encoder.bold().align('center').text('Price').bold(),
       'Amount',
     ]);
-    products.forEach((product,index) => {
+    products.forEach((product, index) => {
       data.push([
-        (index+1).toString()+'. '+product.name,
+        (index + 1).toString() + '. ' + product.name,
         product.quantity.toString(),
         'Rs.' + product.untaxedValue.toString(),
         'Rs.' + (product.untaxedValue * product.quantity).toString(),
@@ -95,7 +100,7 @@ export class customEncoder extends EscPosEncoder {
   lineIf(
     text: string,
     align: 'left' | 'right' | 'center' = 'left',
-    prefix: string | null = null
+    prefix: string | null = null,
   ) {
     if (text) {
       return this.align(align).line((prefix ? prefix : '') + text);
@@ -145,7 +150,23 @@ export class customEncoder extends EscPosEncoder {
         { width: 10, marginRight: 2, align: 'center' },
         { width: 10, align: 'right' },
       ],
-      discountsColumns
+      discountsColumns,
+    ).newline();
+  }
+  loyalty(loyalty: billLoyalty) {
+    // taxes is of type {name: string, value: number, rate: number}[]
+    this.align('center').h2('Taxes', 'left');
+    let taxesColumns = [
+      ['Loyalty', 'Point', 'Value'],
+      ['Availed', loyalty.totalToBeRedeemedPoints,'Rs.'+loyalty.totalToBeRedeemedCost]
+    ];
+    return this.table(
+      [
+        { width: 20, marginRight: 2, align: 'left' },
+        { width: 10, marginRight: 2, align: 'center' },
+        { width: 10, align: 'right' },
+      ],
+      taxesColumns,
     ).newline();
   }
   taxes(taxes: printableTax[]) {
@@ -165,7 +186,7 @@ export class customEncoder extends EscPosEncoder {
         { width: 10, marginRight: 2, align: 'center' },
         { width: 10, align: 'right' },
       ],
-      taxesColumns
+      taxesColumns,
     ).newline();
   }
   kotHead(kotData: any) {
@@ -188,6 +209,26 @@ export class customEncoder extends EscPosEncoder {
       return this.h1('KOT').h2('Online');
     } else {
       return this.h1('KOT');
+    }
+  }
+  postDiscountSubtotal(billdata,discounts,loyaltySetting){
+    if (discounts.length || loyaltySetting.totalToBeRedeemedPoints) {
+      return this.hr()
+      .table(
+        [{ marginRight: 2, align: 'left' }, { align: 'right' }],
+        [
+          [
+            '',
+            (encoder: any) =>
+              encoder
+                .bold()
+                .text('Subtotal: Rs.' + billdata.postDiscountSubTotal)
+                .bold(),
+          ],
+        ],
+      )
+    } else {
+      return this
     }
   }
 }

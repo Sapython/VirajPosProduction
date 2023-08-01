@@ -1,21 +1,19 @@
 <form [formGroup]="paymentMethodForm" (ngSubmit)="submit()">
-    <mat-form-field appearance="outline">
-        <mat-label>Name</mat-label>
-        <input type="text" formControlName="name" matInput>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-        <mat-label>Detail</mat-label>
-        <mat-select placeholder="Placeholder" formControlName="detail" name="item">
-            <mat-option [value]="true">
-                Required
-            </mat-option>
-            <mat-option [value]="false">
-                Not Required
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
-    <div class="actions">
-        <button mat-stroked-button type="button" (click)="cancel()" color="primary">Cancel</button>
-        <button mat-flat-button type="submit" color="primary">Submit</button>
-    </div>
+  <mat-form-field appearance="outline">
+    <mat-label>Name</mat-label>
+    <input type="text" formControlName="name" matInput />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Detail</mat-label>
+    <mat-select placeholder="Placeholder" formControlName="detail" name="item">
+      <mat-option [value]="true"> Required </mat-option>
+      <mat-option [value]="false"> Not Required </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <div class="actions">
+    <button mat-stroked-button type="button" (click)="cancel()" color="primary">
+      Cancel
+    </button>
+    <button mat-flat-button type="submit" color="primary">Submit</button>
+  </div>
 </form>

@@ -5,6 +5,7 @@ import { Subject, debounceTime } from 'rxjs';
 import { DataProvider } from '../../../core/services/provider/data-provider.service';
 import Fuse from 'fuse.js';
 import { CustomerInfo } from '../../../types/user.structure';
+import { AlertsAndNotificationsService } from '../../../core/services/alerts-and-notification/alerts-and-notifications.service';
 
 @Component({
   selector: 'app-customer-panel',
@@ -22,7 +23,7 @@ export class CustomerPanelComponent implements OnInit {
         this.dataProvider.currentBill?.mode == 'takeaway'
           ? Validators.required
           : Validators.nullValidator,
-      ]
+      ],
     ),
     phone: new FormControl(
       {
@@ -34,7 +35,7 @@ export class CustomerPanelComponent implements OnInit {
           ? Validators.required
           : Validators.nullValidator,
         Validators.pattern('^[0-9]*$'),
-      ]
+      ],
     ),
     address: new FormControl(
       {
@@ -45,7 +46,7 @@ export class CustomerPanelComponent implements OnInit {
         this.dataProvider.currentBill?.mode == 'takeaway'
           ? Validators.required
           : Validators.nullValidator,
-      ]
+      ],
     ),
     gst: new FormControl({
       value: this.dataProvider.currentBill?.customerInfo.gst,
@@ -59,9 +60,7 @@ export class CustomerPanelComponent implements OnInit {
     redeemLoyalty: new FormControl(),
     totalToBeRedeemedPoints: new FormControl(0, [
       Validators.min(0),
-      Validators.max(
-        this.dataProvider.currentBill.customerInfo.loyaltyPoints
-      ),
+      Validators.max(this.dataProvider.currentBill.customerInfo.loyaltyPoints),
     ]),
   });
   @Input() padding: boolean = true;
@@ -70,16 +69,26 @@ export class CustomerPanelComponent implements OnInit {
   @Input() averageOrderPrice: number = 300;
   @Input() isDialog: boolean = true;
   @Input() lastOrderDish: string[] = ['Chicken', 'Rice', 'Salad'];
-  numberFuseInstance: Fuse<CustomerInfo> = new Fuse(this.dataProvider.customers, {
-    keys: ['phone'],
-  });
+  numberFuseInstance: Fuse<CustomerInfo> = new Fuse(
+    this.dataProvider.customers,
+    {
+      keys: ['phone'],
+    },
+  );
   foundCustomers: CustomerInfo[] = [];
   searchString: Subject<string> = new Subject<string>();
-  constructor(public dataProvider: DataProvider, private injector: Injector) {
+  constructor(
+    public dataProvider: DataProvider,
+    private injector: Injector,
+    private alertify:AlertsAndNotificationsService
+  ) {
     if (this.dataProvider.currentBill) {
+      this.loyaltySettingForm.patchValue(this.dataProvider.currentBill.currentLoyalty);
       this.customerInfoForm.enable();
+      this.loyaltySettingForm.enable();
     } else {
       this.customerInfoForm.disable();
+      this.loyaltySettingForm.disable();
     }
     this.customerInfoForm.valueChanges
       .pipe(debounceTime(1000))
@@ -142,6 +151,7 @@ export class CustomerPanelComponent implements OnInit {
         ...this.dataProvider.currentBill.currentLoyalty,
         ...value,
       };
+      this.dataProvider.currentBill.updated.next();
     });
   }
 
@@ -160,13 +170,13 @@ export class CustomerPanelComponent implements OnInit {
       if (this.dataProvider.currentBill.mode == 'online') {
         // update controls instead of adding them
         this.customerInfoForm.controls['deliveryName'].setValue(
-          this.dataProvider.currentBill?.customerInfo.deliveryName
+          this.dataProvider.currentBill?.customerInfo.deliveryName,
         );
         this.customerInfoForm.controls['deliveryName'].setValidators([
           Validators.required,
         ]);
         this.customerInfoForm.controls['deliveryPhone'].setValue(
-          this.dataProvider.currentBill?.customerInfo.deliveryPhone
+          this.dataProvider.currentBill?.customerInfo.deliveryPhone,
         );
         this.customerInfoForm.controls['deliveryPhone'].setValidators([
           Validators.required,
@@ -212,6 +222,16 @@ export class CustomerPanelComponent implements OnInit {
       value = Number(value);
     }
     if (value) {
+      if (value > this.dataProvider.currentBill?.customerInfo?.loyaltyPoints){
+        value = this.dataProvider.currentBill?.customerInfo?.loyaltyPoints;
+        // update form
+        this.loyaltySettingForm.patchValue({
+          totalToBeRedeemedPoints: value,
+        });
+        this.alertify.presentToast('Loyalty points exceeded');
+      }
+      console.log("REDEEM",this.dataProvider.currentBill.currentLoyalty.totalToBeRedeemedCost,this.dataProvider.currentBill.currentLoyalty.totalLoyaltyCost,this.dataProvider.currentBill.currentLoyalty.totalLoyaltyPoints,Number(value));
+      
       this.dataProvider.currentBill.currentLoyalty.totalToBeRedeemedCost =
         (this.dataProvider.currentBill.currentLoyalty.totalLoyaltyCost /
           this.dataProvider.currentBill.currentLoyalty.totalLoyaltyPoints) *

@@ -12,19 +12,25 @@ import { Product } from '../../../../../types/product.structure';
 export class SelectRecipeComponent {
   @Input() editMode: boolean = false;
   filteredProducts: Product[] = [];
-  fuseSearchInstance:Fuse<Product> = new Fuse<Product>(this.products,{keys:["name",'price']})
-  searchSubject:Subject<string> = new Subject<string>();
+  fuseSearchInstance: Fuse<Product> = new Fuse<Product>(this.products, {
+    keys: ['name', 'price'],
+  });
+  searchSubject: Subject<string> = new Subject<string>();
   constructor(
     @Inject(DIALOG_DATA) public products: Product[],
-    private dialogRef: DialogRef
+    private dialogRef: DialogRef,
   ) {
-    this.searchSubject.pipe(debounceTime(600)).subscribe((searchString:string)=>{
-    //  console.log("searchString",searchString);
-      this.filteredProducts = this.fuseSearchInstance.search(searchString).map((result)=>{
-        return result.item;
-      })
-    //  console.log("this.filteredProducts",this.filteredProducts);
-    })
+    this.searchSubject
+      .pipe(debounceTime(600))
+      .subscribe((searchString: string) => {
+        //  console.log("searchString",searchString);
+        this.filteredProducts = this.fuseSearchInstance
+          .search(searchString)
+          .map((result) => {
+            return result.item;
+          });
+        //  console.log("this.filteredProducts",this.filteredProducts);
+      });
   }
 
   save() {
@@ -35,9 +41,9 @@ export class SelectRecipeComponent {
     this.dialogRef.close();
   }
 
-  switchAll(event:any){
-    this.products.forEach((product:Product)=>{
+  switchAll(event: any) {
+    this.products.forEach((product: Product) => {
       product.selected = event.checked;
-    })
+    });
   }
 }

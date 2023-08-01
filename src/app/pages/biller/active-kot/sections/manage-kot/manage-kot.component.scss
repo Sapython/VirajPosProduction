@@ -1,19 +1,19 @@
-.kotEditOptions{
+.kotEditOptions {
+  display: flex;
+  justify-content: space-between;
+  width: calc(100% - 50px);
+  align-items: center;
+  border-left: 10px solid;
+  padding-inline: 20px;
+  padding-top: 15px;
+  span {
     display: flex;
-    justify-content: space-between;
-    width: calc(100% - 50px);
     align-items: center;
-    border-left: 10px solid ;
-    padding-inline: 20px;
-    padding-top: 15px;
-    span{
-        display: flex;
-        align-items: center;
-        font-size: var(--Viraj-font-xlarge);
-        strong{
-            display: flex;
-            align-items: center;
-            color: var(--Viraj-primary);
-        }
+    font-size: var(--Viraj-font-xlarge);
+    strong {
+      display: flex;
+      align-items: center;
+      color: var(--Viraj-primary);
     }
+  }
 }

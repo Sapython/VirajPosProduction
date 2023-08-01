@@ -1,5 +1,9 @@
-<main (click)="!disabled ? open.emit(combo) : {}" [ngClass]="{disabled:disabled}" matRipple>
-    <img [src]="combo.offerImage">
-    <p>{{combo.name}}</p>
-    <span class="danger" *ngIf="disabled">*Unavailable</span>
+<main
+  (click)="!disabled ? open.emit(combo) : {}"
+  [ngClass]="{ disabled: disabled }"
+  matRipple
+>
+  <img [src]="combo.offerImage || 'assets/images/defaultCombo.jpg'" />
+  <p>{{ combo.name }}</p>
+  <span class="danger" *ngIf="disabled">*Unavailable</span>
 </main>

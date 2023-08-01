@@ -11,15 +11,22 @@ import { serverTimestamp } from '@angular/fire/firestore';
 @Component({
   selector: 'app-move-kot-item',
   templateUrl: './move-kot-item.component.html',
-  styleUrls: ['./move-kot-item.component.scss']
+  styleUrls: ['./move-kot-item.component.scss'],
 })
 export class MoveKotItemComponent {
   moveKotSelectedTable: Table | undefined;
   tables: Table[] = [];
   moveKotMode: boolean = false;
-  constructor(public dataProvider:DataProvider,@Inject(DIALOG_DATA) data:any,public dialogRef:DialogRef,private tableService:TableService){
+  constructor(
+    public dataProvider: DataProvider,
+    @Inject(DIALOG_DATA) data: any,
+    public dialogRef: DialogRef,
+    private tableService: TableService,
+  ) {
     this.moveKotSelectedTable = data.table;
-    this.tables = this.dataProvider.tables.filter((table)=>table.id!=this.moveKotSelectedTable?.id);
+    this.tables = this.dataProvider.tables.filter(
+      (table) => table.id != this.moveKotSelectedTable?.id,
+    );
   }
 
   moveSelectedKots(table: Table, event: any) {
@@ -37,7 +44,7 @@ export class MoveKotItemComponent {
         products.push(...kot.products.filter((p) => p.selected));
         console.log(
           'Adding products ',
-          ...kot.products.filter((p) => p.selected)
+          ...kot.products.filter((p) => p.selected),
         );
       }
     });
@@ -68,11 +75,11 @@ export class MoveKotItemComponent {
       });
     }
     this.tableService.addTableActivity({
-      type:'move',
-      from:this.moveKotSelectedTable.toObject(),
-      to:table.toObject(),
-      items:products,
-      time:serverTimestamp(),
+      type: 'move',
+      from: this.moveKotSelectedTable.toObject(),
+      to: table.toObject(),
+      items: products,
+      time: serverTimestamp(),
     });
     this.moveKotSelectedTable!.bill?.calculateBill();
     table.bill?.calculateBill();

@@ -8,9 +8,8 @@ describe('AddMethodComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AddMethodComponent ]
-    })
-    .compileComponents();
+      declarations: [AddMethodComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(AddMethodComponent);
     component = fixture.componentInstance;

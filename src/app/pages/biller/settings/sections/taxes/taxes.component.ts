@@ -18,14 +18,14 @@ export class TaxesComponent implements OnInit {
   constructor(
     private alertify: AlertsAndNotificationsService,
     private dialog: Dialog,
-    private settingsService:SettingsService,
-    private dataProvider:DataProvider
+    private settingsService: SettingsService,
+    private dataProvider: DataProvider,
   ) {}
 
   ngOnInit(): void {
     this.getTaxes();
   }
-  
+
   getTaxes() {
     this.settingsService.getTaxes().then((res) => {
       this.taxes = res.docs.map((d) => {
@@ -33,12 +33,12 @@ export class TaxesComponent implements OnInit {
       });
     });
   }
-  
+
   addTax() {
     const dialog = this.dialog.open(AddTaxComponent, { data: { mode: 'add' } });
     firstValueFrom(dialog.closed)
       .then((data: any) => {
-      //  console.log('data', data);
+        //  console.log('data', data);
         if (data) {
           this.dataProvider.loading = true;
           this.settingsService
@@ -72,7 +72,7 @@ export class TaxesComponent implements OnInit {
     });
     firstValueFrom(dialog.closed)
       .then((data: any) => {
-      //  console.log('data', data);
+        //  console.log('data', data);
         if (data) {
           this.settingsService
             .updateTax(tax.id, { ...data, updateDate: Timestamp.now() })

@@ -8,9 +8,8 @@ describe('AddTimeGroupComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AddTimeGroupComponent ]
-    })
-    .compileComponents();
+      declarations: [AddTimeGroupComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(AddTimeGroupComponent);
     component = fixture.componentInstance;

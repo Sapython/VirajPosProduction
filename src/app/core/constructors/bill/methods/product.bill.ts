@@ -3,14 +3,16 @@ import { Product } from '../../../../types/product.structure';
 import { ApplicableCombo } from '../../comboKot/comboKot';
 import { Kot } from '../../kot/Kot';
 
-export async function addProduct(this: Bill, product: Product|ApplicableCombo) {
+export async function addProduct(
+  this: Bill,
+  product: Product | ApplicableCombo,
+) {
   if (this.stage == 'finalized') {
-    if (await this.userManagementService.authenticateAction([
-      'admin',
-      'manager'
-    ])){
+    if (
+      await this.userManagementService.authenticateAction(['admin', 'manager'])
+    ) {
       let reactiveReason = await this.dataProvider.prompt(
-        'Please enter reason for adding product'
+        'Please enter reason for adding product',
       );
       if (reactiveReason) {
         this.reactivateKotReasons.push(reactiveReason);
@@ -19,7 +21,7 @@ export async function addProduct(this: Bill, product: Product|ApplicableCombo) {
           message: 'Bill reactivated by ' + this.user.username,
           user: this.user.username,
           data: { reason: reactiveReason },
-        })
+        });
         this.stage = 'active';
       } else {
         return;
@@ -43,7 +45,7 @@ export async function addProduct(this: Bill, product: Product|ApplicableCombo) {
   } else {
     const kotIndex = this.kots.findIndex((kot) => kot.stage === 'active');
     if (kotIndex === -1) {
-      let kot = new Kot(product,this);
+      let kot = new Kot(product, this);
       this.kots.push(kot);
     } else {
       // if the item exists in the kot, increase the quantity by 1 else add the item to the kot
@@ -56,9 +58,13 @@ export async function addProduct(this: Bill, product: Product|ApplicableCombo) {
   this.calculateBill(true);
 }
 
-export function removeProduct(this: Bill, product: Product|ApplicableCombo, kotIndex: number) {
+export function removeProduct(
+  this: Bill,
+  product: Product | ApplicableCombo,
+  kotIndex: number,
+) {
   const index = this.kots[kotIndex].products.findIndex(
-    (item) => item.id === product.id
+    (item) => item.id === product.id,
   );
   this.kots[kotIndex].products.splice(index, 1);
   this.calculateBill();

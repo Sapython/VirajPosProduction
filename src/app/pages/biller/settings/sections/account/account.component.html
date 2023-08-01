@@ -1,14 +1,18 @@
 <h3>Account Settings</h3>
 <div>
-  <table class="styled-table">
+  <table class="styled-table" id="reportTable">
     <thead>
       <tr>
         <th>Username</th>
         <th>Role</th>
         <th>Update By</th>
-        <th>Created On </th>
+        <th>Created On</th>
         <th>
-          <button mat-raised-button *ngIf="this.dataProvider.getAccess('addAccount')" (click)="addAccount()">
+          <button
+            mat-raised-button
+            *ngIf="this.dataProvider.getAccess('addAccount')"
+            (click)="addAccount()"
+          >
             New
           </button>
         </th>
@@ -51,7 +55,7 @@
         </td>
         <td>{{ account.updatedBy }}</td>
         <td>
-          {{ account.lastUpdated.toDate() | date : "short" }}
+          {{ account.lastUpdated.toDate() | date: "short" }}
         </td>
         <td>
           <button
@@ -62,7 +66,11 @@
           >
             Update
           </button>
-          <button *ngIf="this.dataProvider.getAccess('removeAccount')" mat-icon-button (click)="deleteAccount(i)">
+          <button
+            *ngIf="this.dataProvider.getAccess('removeAccount')"
+            mat-icon-button
+            (click)="deleteAccount(i)"
+          >
             <mat-icon>delete</mat-icon>
           </button>
         </td>

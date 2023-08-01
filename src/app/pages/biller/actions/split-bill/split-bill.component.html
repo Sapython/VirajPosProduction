@@ -1,72 +1,132 @@
 <section>
-    <div class="mainHeading">
-        <button (click)="this.dialogRef.close()">
-            <i class="ri-arrow-left-line"></i>
-            <p>Back</p>
+  <div class="mainHeading">
+    <button (click)="this.dialogRef.close()">
+      <i class="ri-arrow-left-line"></i>
+      <p>Back</p>
+    </button>
+    <p class="head">Split Bill</p>
+  </div>
+  <div class="main">
+    <div class="kotSpan">
+      <div class="heading top">
+        <p>Table: {{ this.dataProvider.currentBill.table.name }}</p>
+        <p>Order No: {{ this.dataProvider.currentBill.orderNo }}</p>
+      </div>
+      <div class="kots" [ngClass]="{ center: this.allKots.length == 0 }">
+        <ng-container *ngFor="let kot of this.allKots; let i = index">
+          <div class="kot" *ngIf="kot.stage == 'finalized'">
+            <div
+              class="heading"
+              [ngStyle]="{
+                background: this.kotNoColors[i % this.kotNoColors.length].color,
+                color: this.kotNoColors[i % this.kotNoColors.length].contrast
+              }"
+            >
+              <mat-checkbox
+                color="primary"
+                [checked]="kot.allSelected"
+                [indeterminate]="kot.someSelected"
+                (change)="selectAll($event, kot)"
+              ></mat-checkbox>
+              <p>
+                KOT No: <strong>{{ kot.id }}</strong>
+              </p>
+            </div>
+            <div class="items">
+              <ng-container *ngFor="let item of kot.products">
+                <div class="item">
+                  <mat-checkbox
+                    [(ngModel)]="item.selected"
+                    (change)="checkAll($event, kot, item)"
+                    color="primary"
+                  >
+                    {{ item.name | titlecase }}
+                  </mat-checkbox>
+                  <p>{{ item.quantity }}</p>
+                  <p>{{ item.price | currency: "INR" }}</p>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="this.allKots.length == 0">
+          <img
+            src="assets/images/notFound.jpg"
+            alt="Not found"
+            class="notFound"
+          />
+          <h4>No kots found</h4>
+          <p>All kots have been splitted into bills</p>
+        </ng-container>
+      </div>
+    </div>
+    <div class="bills">
+      <div class="heading">
+        <p>Bills</p>
+      </div>
+      <div
+        class="newBills"
+        [ngClass]="{ center: this.splittedBills.length == 0 }"
+      >
+        <div class="bill" *ngFor="let bill of splittedBills">
+          <h3 *ngIf="bill.stage != 'settled'">Unsettled</h3>
+          <h3 class="settled" *ngIf="bill.stage == 'settled'">Settled</h3>
+          <app-bill-preview
+            [printableBillData]="bill.printableBillData"
+          ></app-bill-preview>
+          <div class="actions">
+            <button
+              [disabled]="bill.stage == 'settled'"
+              mat-flat-button
+              (click)="addDiscount(bill)"
+              color="primary"
+            >
+              Add Discount
+            </button>
+            <button
+              [disabled]="bill.stage == 'settled'"
+              mat-flat-button
+              (click)="settleBill(bill)"
+              color="primary"
+            >
+              Settle Bill
+            </button>
+          </div>
+        </div>
+        <div class="notFound" *ngIf="this.splittedBills.length == 0">
+          <img
+            src="assets/images/notFound.jpg"
+            alt="Not found"
+            class="notFound"
+          />
+          <h3>No bills found</h3>
+          <p>
+            Select some kot and press split. And that will appear here as a
+            bill.
+          </p>
+        </div>
+      </div>
+      <div class="actions">
+        <button
+          mat-flat-button
+          color="primary"
+          *ngIf="this.allKots.length > 0"
+          (click)="splitBill()"
+        >
+          Split
         </button>
-        <p class="head">Split Bill</p>
+        <button
+          mat-flat-button
+          color="primary"
+          [disabled]="!allSettled"
+          (click)="saveSplittedBill()"
+        >
+          Save
+        </button>
+        <button mat-flat-button color="primary" (click)="cancel()">
+          Cancel
+        </button>
+      </div>
     </div>
-    <div class="main">
-        <div class="kotSpan">
-            <div class="heading top">
-                <p>Table: {{this.dataProvider.currentBill.table.name}}</p>
-                <p>Order No: {{this.dataProvider.currentBill.orderNo}}</p>
-            </div>
-            <div class="kots" [ngClass]="{'center':this.allKots.length == 0}">
-                <ng-container *ngFor="let kot of this.allKots;let i = index;">
-                    <div class="kot" *ngIf="kot.stage == 'finalized'">
-                        <div class="heading" [ngStyle]="{
-                            background: this.kotNoColors[i % this.kotNoColors.length].color,
-                            color: this.kotNoColors[i % this.kotNoColors.length].contrast
-                          }">
-                          <mat-checkbox color="primary" [checked]="kot.allSelected" [indeterminate]="kot.someSelected" (change)="selectAll($event,kot)"></mat-checkbox>
-                          <p>KOT No: <strong>{{kot.id}}</strong></p>
-                        </div>
-                        <div class="items">
-                            <ng-container  *ngFor="let item of kot.products">
-                                <div class="item">
-                                    <mat-checkbox [(ngModel)]="item.selected" (change)="checkAll($event,kot,item)" color="primary">
-                                        {{item.name | titlecase}}
-                                    </mat-checkbox>
-                                    <p>{{item.quantity}}</p>
-                                    <p>{{item.price | currency:'INR'}}</p>
-                                </div>
-                            </ng-container>
-                        </div>
-                    </div>
-                </ng-container>
-                <ng-container *ngIf="this.allKots.length == 0">
-                    <img src="assets/images/notFound.jpg" alt="Not found" class="notFound">
-                    <h4>No kots found</h4>
-                    <p>All kots have been splitted into bills</p>
-                </ng-container>
-            </div>
-        </div>
-        <div class="bills">
-            <div class="heading">
-                <p>Bills</p>
-            </div>
-            <div class="newBills" [ngClass]="{'center':this.splittedBills.length == 0}">
-                <div class="bill" *ngFor="let bill of splittedBills">
-                    <h3 *ngIf="bill.stage != 'settled'">Unsettled</h3>
-                    <h3 class="settled" *ngIf="bill.stage == 'settled'">Settled</h3>
-                    <app-bill-preview [printableBillData]="bill.printableBillData"></app-bill-preview>
-                    <div class="actions">
-                        <button [disabled]="bill.stage == 'settled'" mat-flat-button (click)="addDiscount(bill)" color="primary">Add Discount</button>
-                        <button [disabled]="bill.stage == 'settled'" mat-flat-button (click)="settleBill(bill)" color="primary">Settle Bill</button>
-                    </div>
-                </div>
-                <div class="notFound" *ngIf="this.splittedBills.length == 0">
-                    <img src="assets/images/notFound.jpg" alt="Not found" class="notFound">
-                    <h3>No bills found</h3>
-                    <p>Select some kot and press split. And that will appear here as a bill.</p>
-                </div>
-            </div>
-            <div class="actions">
-                <button mat-flat-button color="primary" *ngIf="this.allKots.length > 0" (click)="splitBill()">Split</button>
-                <button mat-flat-button color="primary" [disabled]="!allSettled" (click)="saveSplittedBill()">Save</button>
-                <button mat-flat-button color="primary" (click)="cancel()">Cancel</button>
-            </div>
-        </div>
-    </div>
+  </div>
 </section>

@@ -14,12 +14,18 @@ import { RearrangeComponent } from './rearrange/rearrange.component';
 import { MatSelectModule } from '@angular/material/select';
 import { GroupComponent } from './group/group.component';
 import { MatInputModule } from '@angular/material/input';
-import {MatExpansionModule} from '@angular/material/expansion';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MoveKotItemComponent } from './move-kot-item/move-kot-item.component';
-import { MergeExchangeTableComponent } from './merge-exchange-table/merge-exchange-table.component'; 
+import { MergeExchangeTableComponent } from './merge-exchange-table/merge-exchange-table.component';
 
 @NgModule({
-  declarations: [TableComponent, RearrangeComponent, GroupComponent, MoveKotItemComponent, MergeExchangeTableComponent],
+  declarations: [
+    TableComponent,
+    RearrangeComponent,
+    GroupComponent,
+    MoveKotItemComponent,
+    MergeExchangeTableComponent,
+  ],
   imports: [
     CommonModule,
     MatButtonToggleModule,

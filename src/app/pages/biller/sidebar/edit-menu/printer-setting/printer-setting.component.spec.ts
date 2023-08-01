@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ItemWiseSalesComponent } from './item-wise-sales.component';
+import { PrinterSettingComponent } from './printer-setting.component';
 
-describe('ItemWiseSalesComponent', () => {
-  let component: ItemWiseSalesComponent;
-  let fixture: ComponentFixture<ItemWiseSalesComponent>;
+describe('PrinterSettingComponent', () => {
+  let component: PrinterSettingComponent;
+  let fixture: ComponentFixture<PrinterSettingComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ItemWiseSalesComponent ]
+      declarations: [ PrinterSettingComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ItemWiseSalesComponent);
+    fixture = TestBed.createComponent(PrinterSettingComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

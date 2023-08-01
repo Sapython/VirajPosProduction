@@ -9,7 +9,7 @@ import { serverTimestamp } from '@angular/fire/firestore';
 @Component({
   selector: 'app-merge-exchange-table',
   templateUrl: './merge-exchange-table.component.html',
-  styleUrls: ['./merge-exchange-table.component.scss']
+  styleUrls: ['./merge-exchange-table.component.scss'],
 })
 export class MergeExchangeTableComponent {
   moveKotMode: boolean = false;
@@ -18,7 +18,12 @@ export class MergeExchangeTableComponent {
     toTable: Table | undefined;
   } = { fromTable: undefined, toTable: undefined };
   moveKotSelectedTable: Table | undefined;
-  constructor(public dataProvider:DataProvider,private alertify: AlertsAndNotificationsService, public dialogRef:DialogRef, private tableService:TableService){}
+  constructor(
+    public dataProvider: DataProvider,
+    private alertify: AlertsAndNotificationsService,
+    public dialogRef: DialogRef,
+    private tableService: TableService,
+  ) {}
 
   isNumber(value: any) {
     return !isNaN(Number(value));
@@ -28,15 +33,15 @@ export class MergeExchangeTableComponent {
     if (this.transferTableWise.fromTable && this.transferTableWise.toTable) {
       try {
         this.transferTableWise.fromTable.exchange(
-          this.transferTableWise.toTable
+          this.transferTableWise.toTable,
         );
         this.alertify.presentToast('Table exchanged successfully');
         // reset vars and switch mode
         this.tableService.addTableActivity({
-          time:serverTimestamp(),
-          from:this.transferTableWise.fromTable.toObject(),
-          to:this.transferTableWise.toTable.toObject(),
-          type:'exchange',
+          time: serverTimestamp(),
+          from: this.transferTableWise.fromTable.toObject(),
+          to: this.transferTableWise.toTable.toObject(),
+          type: 'exchange',
         });
         this.transferTableWise = { fromTable: undefined, toTable: undefined };
         this.moveKotMode = false;
@@ -52,10 +57,10 @@ export class MergeExchangeTableComponent {
       try {
         this.transferTableWise.fromTable.merge(this.transferTableWise.toTable);
         this.tableService.addTableActivity({
-          time:serverTimestamp(),
-          from:this.transferTableWise.fromTable.toObject(),
-          to:this.transferTableWise.toTable.toObject(),
-          type:'merge',
+          time: serverTimestamp(),
+          from: this.transferTableWise.fromTable.toObject(),
+          to: this.transferTableWise.toTable.toObject(),
+          type: 'merge',
         });
         this.alertify.presentToast('Table merged successfully');
         // reset vars and switch mode
@@ -73,5 +78,4 @@ export class MergeExchangeTableComponent {
     this.moveKotMode = false;
     this.moveKotSelectedTable = undefined;
   }
-
 }

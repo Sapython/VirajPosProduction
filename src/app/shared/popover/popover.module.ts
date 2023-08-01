@@ -5,12 +5,10 @@ import { PopoverContainerComponent } from './popover-container/popover-container
 import { PopoverService } from './popover.service';
 import { Overlay, OverlayModule } from '@angular/cdk/overlay';
 
-
-
 @NgModule({
   imports: [CommonModule, OverlayModule],
   declarations: [PopoverDirective, PopoverContainerComponent],
   exports: [PopoverDirective, PopoverContainerComponent],
-  providers: [Overlay, PopoverService]
+  providers: [Overlay, PopoverService],
 })
-export class PopoverModule { }
+export class PopoverModule {}

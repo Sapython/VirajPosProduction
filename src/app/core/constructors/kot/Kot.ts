@@ -3,7 +3,10 @@ import { Product } from '../../../types/product.structure';
 import { KotConstructor } from '../../../types/kot.structure';
 import { UserConstructor } from '../../../types/user.structure';
 import { ApplicableCombo } from '../comboKot/comboKot';
-import { ApplicableComboConstructor, ComboProductSelection } from '../../../types/combo.structure';
+import {
+  ApplicableComboConstructor,
+  ComboProductSelection,
+} from '../../../types/combo.structure';
 import { Bill } from '../bill';
 
 export class Kot implements KotConstructor {
@@ -11,29 +14,38 @@ export class Kot implements KotConstructor {
   createdDate: Timestamp;
   unmade?: boolean;
   stage: 'active' | 'finalized' | 'cancelled' | 'edit';
-  products: (Product|ApplicableCombo)[];
+  products: (Product | ApplicableCombo)[];
   mode;
   user: UserConstructor;
   editMode: boolean;
   selected: boolean;
   allSelected: boolean;
-  cancelReason?: { reason: string;mode:'un-made'|'made', time: Timestamp; user: UserConstructor; };
+  cancelReason?: {
+    reason: string;
+    mode: 'un-made' | 'made';
+    time: Timestamp;
+    user: UserConstructor;
+  };
   totalTimeTaken: string;
   totalTimeTakenNumber: number;
   someSelected: boolean;
-  constructor(product: Product|ApplicableCombo,bill:Bill,kotObject?:KotConstructor) {
+  constructor(
+    product: Product | ApplicableCombo,
+    bill: Bill,
+    kotObject?: KotConstructor,
+  ) {
     this.createdDate = Timestamp.now();
     this.stage = 'active';
-    this.id = "new"
-    if(kotObject){
+    this.id = 'new';
+    if (kotObject) {
       this.id = kotObject.id;
       // this.products = kotObject.products;
       // loop through products and convert them to product objects or ApplicableCombo objects
       this.products = kotObject.products.map((product) => {
-        if (product.itemType == 'product'){
+        if (product.itemType == 'product') {
           return product;
         } else {
-          return ApplicableCombo.fromObject(product,bill);
+          return ApplicableCombo.fromObject(product, bill);
         }
       });
       this.user = kotObject.user;
@@ -57,9 +69,9 @@ export class Kot implements KotConstructor {
       this.allSelected = false;
       this.someSelected = false;
       this.user = {
-        access:bill.dataProvider.currentAccessLevel,
-        username:bill.dataProvider.currentUser.username,
-      }
+        access: bill.dataProvider.currentAccessLevel,
+        username: bill.dataProvider.currentUser.username,
+      };
     }
     this.toObject = this.toObject.bind(this);
     this.calculateTotalTimeTaken();
@@ -75,51 +87,53 @@ export class Kot implements KotConstructor {
       this.products.some((item) => item.selected) && !this.allSelected;
   }
 
-  convertProductsToObject():(Product|ApplicableComboConstructor)[] {
-    return this.products.map((product) => {
-      if (product.itemType == 'product'){
-        return {
-          id: product.id,
-          name: product.name,
-          price: product.price,
-          type: product.type,
-          category: product.category,
-          itemType: product.itemType,
-          tags: product.tags || [],
-          quantity: product.quantity,
-          variants: product.variants || [],
-          selected: product.selected,
-          images: product.images || [],
-          createdDate: product.createdDate,
-          visible: product.visible,
-          lineDiscount: product.lineDiscount || null,
-          sales: product.sales || 0,
-          instruction: product.instruction || null,
-          order: product.order || null,
-          taxedPrice: product.taxedPrice || null,
-          untaxedValue: product.untaxedValue || null,
-          taxes: product.taxes || []
-        };
-      } else if (product.itemType == 'combo'){
-        let comboData = product.toObject();
-        return comboData;
-      }
-    }).flat();
+  convertProductsToObject(): (Product | ApplicableComboConstructor)[] {
+    return this.products
+      .map((product) => {
+        if (product.itemType == 'product') {
+          return {
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            type: product.type,
+            category: product.category,
+            itemType: product.itemType,
+            tags: product.tags || [],
+            quantity: product.quantity,
+            variants: product.variants || [],
+            selected: product.selected,
+            images: product.images || [],
+            createdDate: product.createdDate,
+            visible: product.visible,
+            lineDiscount: product.lineDiscount || null,
+            sales: product.sales || 0,
+            instruction: product.instruction || null,
+            order: product.order || null,
+            taxedPrice: product.taxedPrice || null,
+            untaxedValue: product.untaxedValue || null,
+            taxes: product.taxes || [],
+          };
+        } else if (product.itemType == 'combo') {
+          let comboData = product.toObject();
+          return comboData;
+        }
+      })
+      .flat();
   }
 
-  getAllProducts():Product[] {
+  getAllProducts(): Product[] {
     let products = [];
     this.products.forEach((product) => {
-      if (product.itemType == 'product'){
+      if (product.itemType == 'product') {
         products.push(product);
-      } else if (product.itemType == 'combo'){
+      } else if (product.itemType == 'combo') {
         product.productSelection.forEach((item) => {
           item.products.forEach((product) => {
             products.push(product);
-          })
-        })
+          });
+        });
       }
-    })
+    });
     // remove duplicates by adding quantity
     products = products.reduce((acc, current) => {
       const x = acc.find((item) => item.id === current.id);
@@ -133,20 +147,21 @@ export class Kot implements KotConstructor {
     return products;
   }
 
-  getTime(date:Timestamp){
-    let milliseconds =(new Date()).getTime() - (date.toDate().getTime());
+  getTime(date: Timestamp) {
+    let milliseconds = new Date().getTime() - date.toDate().getTime();
     // convert milliseconds to minutes and seconds
     let minutes = Math.floor(milliseconds / 60000);
     let seconds = ((milliseconds % 60000) / 1000).toFixed(0);
-    return minutes + ":" + (Number(seconds) < 10 ? '0' : '') + seconds;
+    return minutes + ':' + (Number(seconds) < 10 ? '0' : '') + seconds;
   }
 
   calculateTotalTimeTaken() {
     setInterval(() => {
       let time = this.getTime(this.createdDate);
       this.totalTimeTaken = time;
-      this.totalTimeTakenNumber = Number(time.split(':')[0]) * 60 + Number(time.split(':')[1]);
-    },1000)
+      this.totalTimeTakenNumber =
+        Number(time.split(':')[0]) * 60 + Number(time.split(':')[1]);
+    }, 1000);
   }
 
   toObject() {
@@ -159,11 +174,9 @@ export class Kot implements KotConstructor {
       allSelected: this.allSelected,
       editMode: this.editMode,
       someSelected: this.someSelected,
-      unmade:this.unmade || null,
-      cancelReason:this.cancelReason || null,
+      unmade: this.unmade || null,
+      cancelReason: this.cancelReason || null,
       user: this.user,
     };
   }
 }
-
-

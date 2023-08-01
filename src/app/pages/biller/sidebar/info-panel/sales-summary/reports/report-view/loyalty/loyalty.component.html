@@ -1,0 +1,47 @@
+<table class="styled-table" id="reportTable" id="reportTable" *ngIf="!loading">
+	<thead>
+	  <tr>
+		<th>Bill No</th>
+		<th>Order No</th>
+		<th>Bill Amount</th>
+		<th>Loyalty Point</th>
+		<th>Loyalty Cost</th>
+		<th>Redeemed Point</th>
+		<th>Redeemed Cost</th>
+		<th>Bill Kots</th>
+		<th>Date-Time</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr *ngFor="let bill of bills | async">
+		<td>
+		  {{ bill.billNo || "Unsettled" }}
+		</td>
+		<td>
+		  {{ bill.orderNo }}
+		</td>
+		<td>
+		  {{ bill.billing.grandTotal }}
+		</td>
+		<td>
+		  {{ bill.currentLoyalty.totalLoyaltyPoints }}
+		</td>
+		<td>
+		  {{ bill.currentLoyalty.totalLoyaltyCost }}
+		</td>
+		<td>
+		  {{ bill.currentLoyalty.totalToBeRedeemedPoints }}
+		</td>
+		<td>
+		  {{ bill.currentLoyalty.totalToBeRedeemedCost }}
+		</td>
+		<td>
+		  {{ joinArray(bill.kots) }}
+		</td>
+		<td>
+		  {{ bill.createdDate.toDate() | date: "short" }}
+		</td>
+	  </tr>
+	</tbody>
+  </table>
+  

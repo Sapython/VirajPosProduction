@@ -1,5 +1,10 @@
 import { DIALOG_DATA } from '@angular/cdk/dialog';
-import { AfterViewInit, Component, Inject, ViewEncapsulation } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Inject,
+  ViewEncapsulation,
+} from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { BillService } from '../../../../../../../core/services/database/bill/bill.service';
 import { BillConstructor } from '../../../../../../../types/bill.structure';
@@ -9,44 +14,44 @@ import { ReportService } from '../report.service';
   selector: 'app-report-view',
   templateUrl: './report-view.component.html',
   styleUrls: ['./report-view.component.scss'],
-  encapsulation:ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class ReportViewComponent implements AfterViewInit {
-  loading:boolean = false;
+  loading: boolean = false;
   constructor(
-  @Inject(DIALOG_DATA) public dialogData:{
-    stage:'billWise'
-    | 'kotWise'
-    | 'itemWise'
-    | 'discounted'
-    | 'ncBills'
-    | 'takeawayBills'
-    | 'onlineBills'
-    | 'daySummary'
-    | 'consolidated'
-    | 'takeawayTokenWise'
-    | 'onlineTokenWise'
-    | 'tableWise'
-    | 'billEdits'
-    | 'customerWiseReport'
-    | 'dineInBills'
-    | 'hourlyItemSales'
-    | 'kotEdits'
-    | 'paymentWise'
-    | 'waiterWiseItems'
-    | 'tableWiseSales'
-    | 'tableWiseActivity',
-    data:any
-  },
-  public reportService:ReportService
-  ) {
-
-  }
+    @Inject(DIALOG_DATA)
+    public dialogData: {
+      stage:
+        | 'billWise'
+        | 'kotWise'
+        | 'itemWise'
+        | 'discounted'
+        | 'ncBills'
+        | 'takeawayBills'
+        | 'onlineBills'
+        | 'daySummary'
+        | 'consolidated'
+        | 'takeawayTokenWise'
+        | 'onlineTokenWise'
+        | 'tableWise'
+        | 'billEdits'
+        | 'customerWiseReport'
+        | 'dineInBills'
+        | 'hourlyItemSales'
+        | 'kotEdits'
+        | 'paymentWise'
+        | 'waiterWiseItems'
+        | 'tableWiseSales'
+        | 'tableWiseActivity';
+      data: any;
+    },
+    public reportService: ReportService,
+  ) {}
 
   ngAfterViewInit(): void {
-    console.log("document.getElementById('reportTable')",document.getElementById('reportTable'));
+    console.log(
+      "document.getElementById('reportTable')",
+      document.getElementById('reportTable'),
+    );
   }
-
-
 }
-

@@ -1,4 +1,4 @@
-<table class="styled-table" id="reportTable" *ngIf="!loading">
+<table class="styled-table" id="reportTable" id="reportTable" *ngIf="!loading">
   <thead>
     <tr>
       <th>Bill No</th>
@@ -23,7 +23,7 @@
         {{ joinArray(bill.kots) }}
       </td>
       <td>
-        {{ bill.createdDate.toDate() | date : "short" }}
+        {{ bill.createdDate.toDate() | date: "short" }}
       </td>
     </tr>
   </tbody>

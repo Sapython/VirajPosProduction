@@ -15,5 +15,5 @@ export interface productTax extends Tax {
   nature: 'inclusive' | 'exclusive';
 }
 export interface ExtendedTax extends Tax {
-  checked:boolean
+  checked: boolean;
 }

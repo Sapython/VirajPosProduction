@@ -16,13 +16,13 @@
               {{ item.name | titlecase }}
             </td>
             <td>
-              {{ item.untaxedValue | currency : "INR" }}
+              {{ item.untaxedValue | currency: "INR" }}
             </td>
             <td>
               {{ item.quantity }}
             </td>
             <td>
-              {{ item.total | currency : "INR" }}
+              {{ item.total | currency: "INR" }}
             </td>
           </tr>
         </tbody>
@@ -32,9 +32,34 @@
   <tr>
     <td>Subtotal</td>
     <td class="big">
-      {{ printableBillData.subTotal | currency : "INR" }}
+      {{ printableBillData.subTotal | currency: "INR" }}
     </td>
   </tr>
+  <ng-container *ngIf="printableBillData.currentLoyalty">
+    <tr>
+      <td colspan="2"><hr /></td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <table>
+          <thead>
+            <tr>
+              <th>Loyalty</th>
+              <th>Point</th>
+              <th>Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Availed</td>
+              <td>{{ printableBillData.currentLoyalty.totalToBeRedeemedPoints }}</td>
+              <td>{{ printableBillData.currentLoyalty.totalToBeRedeemedCost | currency: "INR" }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </ng-container>
   <ng-container *ngIf="printableBillData.discounts.length > 0">
     <tr>
       <td colspan="2"><hr /></td>
@@ -57,11 +82,22 @@
                   {{ discount.type == "flat" ? "&#8377;" : "" }}
                   {{ discount.rate }} {{ discount.type == "flat" ? "" : "%" }}
                 </td>
-                <td>{{ discount.value | currency : "INR" }}</td>
+                <td>{{ discount.value | currency: "INR" }}</td>
               </ng-container>
             </tr>
           </tbody>
         </table>
+      </td>
+    </tr>
+  </ng-container>
+  <ng-container *ngIf="printableBillData.discounts.length > 0 || printableBillData.currentLoyalty">
+    <tr>
+      <td colspan="2"><hr /></td>
+    </tr>
+    <tr>
+      <td>Subtotal</td>
+      <td class="big">
+        {{ printableBillData.postDiscountSubTotal | currency: "INR" }}
       </td>
     </tr>
   </ng-container>
@@ -83,7 +119,7 @@
             <tr *ngFor="let tax of printableBillData.taxes">
               <td>{{ tax.name | titlecase }}</td>
               <td>{{ tax.rate }}</td>
-              <td>{{ tax.value | currency : "INR" }}</td>
+              <td>{{ tax.value | currency: "INR" }}</td>
             </tr>
           </tbody>
         </table>
@@ -96,7 +132,7 @@
   <tr class="big">
     <td>Grand Total</td>
     <td>
-      {{ printableBillData.grandTotal | currency : "INR" }}
+      {{ printableBillData.grandTotal | currency: "INR" }}
     </td>
   </tr>
   <ng-container *ngIf="printableBillData.notes.length > 0">
@@ -106,9 +142,7 @@
       </td>
     </tr>
     <tr>
-      <td class="noteHead">
-        Notes
-      </td>
+      <td class="noteHead">Notes</td>
     </tr>
     <ng-container *ngFor="let note of printableBillData.notes">
       <tr>

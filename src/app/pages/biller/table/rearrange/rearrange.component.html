@@ -15,7 +15,7 @@
             cdkDropList
             [cdkDropListData]="group.tables"
             class="example-list"
-            (cdkDropListDropped)="drop($event,group)"
+            (cdkDropListDropped)="drop($event, group)"
           >
             <div class="example-box" *ngFor="let item of group.tables" cdkDrag>
               {{ item.name }}
@@ -26,8 +26,6 @@
     </mat-expansion-panel>
   </mat-accordion>
   <div class="actions">
-    <viraj-button (click)="dialogRef.close()"
-      >Done</viraj-button
-    >
+    <viraj-button (click)="dialogRef.close()">Done</viraj-button>
   </div>
 </section>

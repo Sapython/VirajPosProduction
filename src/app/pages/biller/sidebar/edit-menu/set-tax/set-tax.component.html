@@ -1,18 +1,33 @@
 <section>
+  <div class="heading">
     <h3>Select Taxes</h3>
-    <mat-radio-group [(ngModel)]="type">
-        <mat-radio-button color="primary" value="inclusive">Inclusive</mat-radio-button>
-        <mat-radio-button color="primary" value="exclusive">Exclusive</mat-radio-button>
-    </mat-radio-group>
-    <div class="taxesContiner">
-        <ng-container *ngFor="let tax of taxes">
-            <mat-checkbox *ngIf="tax.mode == 'product'" [(ngModel)]="tax.checked">
-                {{tax.name}}
-            </mat-checkbox>
-        </ng-container>
-    </div>
-    <div class="actions">
-        <button color="primary" mat-stroked-button (click)="dialogRef.close()">Cancel</button>
-        <button color="primary" mat-flat-button (click)="dialogRef.close({type,taxes})">Submit</button>
-    </div>
+  </div>
+  <mat-radio-group [(ngModel)]="type">
+    <mat-radio-button color="primary" value="inclusive"
+      >Inclusive</mat-radio-button
+    >
+    <mat-radio-button color="primary" value="exclusive"
+      >Exclusive</mat-radio-button
+    >
+  </mat-radio-group>
+  <p *ngIf="taxes.length == 0">You cannot set taxes now please create some tax to set it to product.</p>
+  <div class="taxesContiner">
+    <ng-container *ngFor="let tax of taxes">
+      <mat-checkbox *ngIf="tax.mode == 'product'" [(ngModel)]="tax.checked">
+        {{ tax.name }}
+      </mat-checkbox>
+    </ng-container>
+  </div>
+  <div class="actions">
+    <button color="primary" mat-stroked-button (click)="dialogRef.close()">
+      Cancel
+    </button>
+    <button [disabled]="taxes.length"
+      color="primary"
+      mat-flat-button
+      (click)="dialogRef.close({ type, taxes })"
+    >
+      Submit
+    </button>
+  </div>
 </section>

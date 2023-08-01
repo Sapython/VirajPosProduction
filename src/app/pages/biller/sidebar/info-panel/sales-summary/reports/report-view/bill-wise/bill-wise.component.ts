@@ -10,36 +10,52 @@ import { DataProvider } from '../../../../../../../../core/services/provider/dat
 @Component({
   selector: 'app-bill-wise',
   templateUrl: './bill-wise.component.html',
-  styleUrls: ['./bill-wise.component.scss']
+  styleUrls: ['./bill-wise.component.scss'],
 })
 export class BillWiseComponent implements OnInit, OnDestroy {
-  downloadPDfSubscription:Subscription = Subscription.EMPTY;
-  downloadExcelSubscription:Subscription = Subscription.EMPTY;
-  reportChangedSubscription:Subscription = Subscription.EMPTY;
-  bills:ReplaySubject<BillConstructor[]> = new ReplaySubject<BillConstructor[]>();
-  loading:boolean = true;
+  downloadPDfSubscription: Subscription = Subscription.EMPTY;
+  downloadExcelSubscription: Subscription = Subscription.EMPTY;
+  reportChangedSubscription: Subscription = Subscription.EMPTY;
+  bills: ReplaySubject<BillConstructor[]> = new ReplaySubject<
+    BillConstructor[]
+  >();
+  loading: boolean = true;
   joinArray(bill: KotConstructor[]) {
     // join to form a string of ids with comma
     return bill.map((res) => res.id).join(', ');
   }
 
-  constructor(private reportService:ReportService,private dataProvider:DataProvider){}
+  constructor(
+    private reportService: ReportService,
+    private dataProvider: DataProvider,
+  ) {}
 
   ngOnInit(): void {
-    this.reportChangedSubscription = this.reportService.dataChanged.subscribe(()=>{
-      this.loading = true;
-      this.reportService.getBills(this.reportService.dateRangeFormGroup.value.startDate,this.reportService.dateRangeFormGroup.value.endDate).then((bills)=>{
-        console.log("Bills ",bills);
-        this.bills.next(bills);
-        this.loading = false;
-      });
-    });
-    this.downloadPDfSubscription = this.reportService.downloadPdf.subscribe(()=>{
-      this.downloadPdf();
-    })
-    this.downloadExcelSubscription = this.reportService.downloadPdf.subscribe(()=>{
-      this.downloadExcel();
-    })
+    this.reportChangedSubscription = this.reportService.dataChanged.subscribe(
+      () => {
+        this.loading = true;
+        this.reportService
+          .getBills(
+            this.reportService.dateRangeFormGroup.value.startDate,
+            this.reportService.dateRangeFormGroup.value.endDate,
+          )
+          .then((bills) => {
+            console.log('Bills ', bills);
+            this.bills.next(bills);
+            this.loading = false;
+          });
+      },
+    );
+    this.downloadPDfSubscription = this.reportService.downloadPdf.subscribe(
+      () => {
+        this.downloadPdf();
+      },
+    );
+    this.downloadExcelSubscription = this.reportService.downloadPdf.subscribe(
+      () => {
+        this.downloadExcel();
+      },
+    );
   }
 
   async downloadPdf() {
@@ -61,7 +77,8 @@ export class BillWiseComponent implements OnInit, OnDestroy {
             styles: { halign: 'left', fontSize: 17 },
           },
           {
-            content: this.reportService.dateRangeFormGroup.value.startDate.toLocaleString(),
+            content:
+              this.reportService.dateRangeFormGroup.value.startDate.toLocaleString(),
             styles: { halign: 'right', fontSize: 17 },
           },
         ],
@@ -72,7 +89,7 @@ export class BillWiseComponent implements OnInit, OnDestroy {
         y = data.cursor.y;
       },
     });
-    autoTable(doc,{html:'#reportTable'})
+    autoTable(doc, { html: '#reportTable' });
     doc.save('Bill Wise Report' + new Date().toLocaleString() + '.pdf');
   }
 
@@ -114,15 +131,13 @@ export class BillWiseComponent implements OnInit, OnDestroy {
     link.setAttribute('target', '_blank');
     link.setAttribute(
       'href',
-      'data:text/csv;charset=utf-8,' + encodeURIComponent(csv_string)
+      'data:text/csv;charset=utf-8,' + encodeURIComponent(csv_string),
     );
     link.setAttribute('download', filename);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   }
-
-
 
   ngOnDestroy(): void {
     this.reportChangedSubscription.unsubscribe();

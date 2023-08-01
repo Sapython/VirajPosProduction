@@ -16,17 +16,17 @@ import { UserManagementService } from '../../../../../../core/services/auth/user
 })
 export class AddComponent {
   stage: 'available' | 'checking' | 'unavailable' | 'invalid' | undefined;
-  onboardingStage: 'registration' | 'otp'  = 'registration';
+  onboardingStage: 'registration' | 'otp' = 'registration';
   previousUsername: string | undefined;
-  authOtpVerificationId:string|undefined;
+  authOtpVerificationId: string | undefined;
   checkUsernameFunction = httpsCallable(this.functions, 'userNameAvailable');
   loginForm: FormGroup = new FormGroup({
     username: new FormControl('', [Validators.required]),
-    accessLevel:new FormControl('', [Validators.required])
+    accessLevel: new FormControl('', [Validators.required]),
   });
   otpForm: FormGroup = new FormGroup({
     otp: new FormControl('', [Validators.required]),
-  })
+  });
 
   constructor(
     private functions: Functions,
@@ -34,7 +34,7 @@ export class AddComponent {
     private alertify: AlertsAndNotificationsService,
     public dataProvider: DataProvider,
     private authService: SignupService,
-    private userManagement:UserManagementService
+    private userManagement: UserManagementService,
   ) {
     this.loginForm.valueChanges.pipe(debounceTime(600)).subscribe((res) => {
       if (this.previousUsername == res.username) {
@@ -44,12 +44,12 @@ export class AddComponent {
       this.stage = 'checking';
       this.checkUsernameFunction({ username: res.username })
         .then((res) => {
-        //  console.log(res);
+          //  console.log(res);
           if (res.data) {
             this.stage = res.data['stage'];
             if (this.stage == 'available') {
               this.addPasswordControl();
-            } else if(this.stage == 'unavailable'){
+            } else if (this.stage == 'unavailable') {
               // this.addPasswordControl();
               // remove all the controls
               this.loginForm.removeControl('email');
@@ -76,15 +76,15 @@ export class AddComponent {
     }
     this.loginForm.addControl(
       'email',
-      new FormControl('', [Validators.required,Validators.email])
+      new FormControl('', [Validators.required, Validators.email]),
     );
     this.loginForm.addControl(
       'password',
-      new FormControl('', [Validators.required])
+      new FormControl('', [Validators.required]),
     );
     this.loginForm.addControl(
       'confirmPassword',
-      new FormControl('', [Validators.required])
+      new FormControl('', [Validators.required]),
     );
   }
 
@@ -102,28 +102,39 @@ export class AddComponent {
       return;
     }
     if (this.stage == 'unavailable') {
-      if (await this.dataProvider.confirm("This username is already present",[1],{
-        description:'This username is already present. Are you sure you want to invite him. He will be able to access the account once he accepts the invitation',
-        buttons:[
-          'Cancel',
-          'Invite'
-        ]
-      })){
+      if (
+        await this.dataProvider.confirm(
+          'This username is already present',
+          [1],
+          {
+            description:
+              'This username is already present. Are you sure you want to invite him. He will be able to access the account once he accepts the invitation',
+            buttons: ['Cancel', 'Invite'],
+          },
+        )
+      ) {
         this.dataProvider.loading = true;
-        this.userManagement.addExistingUser(this.loginForm.value.username,this.loginForm.value.accessLevel).then(res=>{
-          console.log(res);
-          if (res.data['status']=='success' && res.data['authId']){
-            this.authOtpVerificationId = res.data['authId'];
-            this.onboardingStage = 'otp';
-          } else {
-            this.alertify.presentToast('Something went wrong');
-          }
-        }).catch(err=>{
-          console.log(err);
-          this.alertify.presentToast(err.message);
-        }).finally(()=>{
-          this.dataProvider.loading = false;
-        })
+        this.userManagement
+          .addExistingUser(
+            this.loginForm.value.username,
+            this.loginForm.value.accessLevel,
+          )
+          .then((res) => {
+            console.log(res);
+            if (res.data['status'] == 'success' && res.data['authId']) {
+              this.authOtpVerificationId = res.data['authId'];
+              this.onboardingStage = 'otp';
+            } else {
+              this.alertify.presentToast('Something went wrong');
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            this.alertify.presentToast(err.message);
+          })
+          .finally(() => {
+            this.dataProvider.loading = false;
+          });
       } else {
         this.alertify.presentToast('Invitation Cancelled');
         // this.dialogRef.close()
@@ -132,7 +143,7 @@ export class AddComponent {
       if (
         await this.dataProvider.confirm(
           'Are you sure you want to add this account ?',
-          [1]
+          [1],
         )
       ) {
         let accounteRes = await this.authService.signUpWithUserAndPassword(
@@ -142,7 +153,7 @@ export class AddComponent {
             business: {
               access: {
                 accessType: 'role',
-                role:this.loginForm.value.accessLevel,
+                role: this.loginForm.value.accessLevel,
                 lastUpdated: Timestamp.now(),
                 updatedBy: this.dataProvider.currentUser.username,
               },
@@ -153,7 +164,7 @@ export class AddComponent {
             },
             email: this.loginForm.value.email,
             noSignIn: true,
-          }
+          },
         );
         if (accounteRes['username']) {
           let resolvedUser = accounteRes as { username: string };
@@ -176,26 +187,30 @@ export class AddComponent {
     if (
       await this.dataProvider.confirm('Are you sure you want to cancel ?', [1])
     ) {
-      this.dialogRef.close({cancelled:true});
+      this.dialogRef.close({ cancelled: true });
     }
   }
 
-  verifyOtp(){
+  verifyOtp() {
     this.dataProvider.loading = true;
-    this.userManagement.verifyOtpExistingUser(
-      this.loginForm.value.username,
-      this.otpForm.value.otp,
-      this.authOtpVerificationId
-    ).then(res=>{
-      console.log(res);
-      if(res.data['status']=='success'){
-        this.alertify.presentToast('User added successfully');
-        this.dialogRef.close()
-      }
-    }).catch(err=>{
-      this.alertify.presentToast(err.message);
-    }).finally(()=>{
-      this.dataProvider.loading = false;
-    })
+    this.userManagement
+      .verifyOtpExistingUser(
+        this.loginForm.value.username,
+        this.otpForm.value.otp,
+        this.authOtpVerificationId,
+      )
+      .then((res) => {
+        console.log(res);
+        if (res.data['status'] == 'success') {
+          this.alertify.presentToast('User added successfully');
+          this.dialogRef.close();
+        }
+      })
+      .catch((err) => {
+        this.alertify.presentToast(err.message);
+      })
+      .finally(() => {
+        this.dataProvider.loading = false;
+      });
   }
 }

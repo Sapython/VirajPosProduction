@@ -9,11 +9,11 @@ const routes: Routes = [
   {
     path: '',
     redirectTo: 'login',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: 'login',
-    component:LoadingComponent
+    component: LoadingComponent,
   },
   {
     path: 'biller',
@@ -23,14 +23,12 @@ const routes: Routes = [
   {
     path: '**',
     redirectTo: 'login',
-    pathMatch: 'full'
-  }
+    pathMatch: 'full',
+  },
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forRoot(routes, {}),
-  ],
-  exports: [RouterModule]
+  imports: [RouterModule.forRoot(routes, {})],
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

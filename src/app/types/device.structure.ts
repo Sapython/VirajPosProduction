@@ -1,6 +1,6 @@
-import { Timestamp } from "@angular/fire/firestore";
+import { Timestamp } from '@angular/fire/firestore';
 
 export interface DeviceConstructor {
-    id: string;
-    lastLogin: Timestamp;
+  id: string;
+  lastLogin: Timestamp;
 }

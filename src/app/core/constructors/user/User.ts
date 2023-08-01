@@ -1,5 +1,4 @@
-import { UserConstructor } from "../../../types/user.structure";
-
+import { UserConstructor } from '../../../types/user.structure';
 
 export class User implements UserConstructor {
   username: string;

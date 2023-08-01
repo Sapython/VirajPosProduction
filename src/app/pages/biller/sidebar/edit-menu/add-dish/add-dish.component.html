@@ -1,81 +1,55 @@
 <section>
+  <div class="heading">
     <h1>Add New Product</h1>
-    <form [formGroup]="newDishForm" (ngSubmit)="addDish()">
-        <mat-form-field appearance="outline">
-            <mat-label>Dish Name</mat-label>
-            <input matInput formControlName="name">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-            <mat-label>Amount</mat-label>
-            <input matInput type="number" formControlName="price">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-            <mat-label>Type</mat-label>
-            <mat-select placeholder="Tag" formControlName="type" name="tag">
-                <mat-option *ngFor="let tag of type" [value]="tag">
-                    {{tag}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-            <mat-label>Select Label</mat-label>
-            <mat-select formControlName="tag" name="label">
-                <mat-option *ngFor="let label of tags" [value]="label">
-                    {{label.name | titlecase}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-            <mat-label>Printer (Optional)</mat-label>
-            <mat-select formControlName="specificPrinter" name="label">
-                <mat-option *ngFor="let label of printers" [value]="label">
-                    {{label}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-        <!-- <div class="tags">
-            <ol>
-                <li *ngFor="let tag of tags">
-                    <i *ngIf="tag.important" (click)="tag.important = !tag.important" class="ri-shield-check-fill"></i>
-                    <i *ngIf="!tag.important" class="ri-shield-line"></i>
-                    {{tag.name}}
-                    <mat-select placeholder="Placeholder" (valueChange)="" name="item">
-                        <mat-option *ngFor="let item of items" [value]="item.value">
-                            {{item.viewValue}}
-                        </mat-option>
-                    </mat-select>
-                </li>
-            </ol>
-        </div> -->
-        <!-- <hr>
-        <h4>Portions 
-            <button mat-fab color="primary" type="button" (click)="addVariant()">
-                <mat-icon>add</mat-icon>
-            </button>
-        </h4>
-        <div class="portions">
-            <div class="portion" *ngFor="let portion of portions; let i = index">
-                <mat-form-field appearance="outline">
-                    <mat-label>Portion Name</mat-label>
-                    <input matInput [ngModelOptions]="{standalone:true}" [(ngModel)]="portion.portionName" #portionName>
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                    <mat-label>Size</mat-label>
-                    <input matInput [ngModelOptions]="{standalone:true}" [(ngModel)]="portion.portionSize">
-                </mat-form-field>
-                <button mat-icon-button color="warn" type="button" (click)="removeVariant(i)"><mat-icon>delete</mat-icon></button>
-                <mat-radio-group class="tagColors" aria-label="Select an option" (change)="switchColor($event,i)">
-                    <mat-radio-button *ngFor="let color of predefinedColors" [value]="color">
-                        <span class="badge" [ngStyle]="{background:color.color,color:color.contrast}">
-                            {{portionName.value}}
-                        </span>
-                    </mat-radio-button>
-                </mat-radio-group>
-            </div>
-        </div> -->
-        <div class="actions">
-            <button mat-stroked-button (click)="cancel()" type="button" color="primary">Cancel</button>
-            <button mat-flat-button type="submit" color="primary">{{this.data.mode == 'add' ?  'Add New' : 'Update'}} Product</button>
-        </div>
-    </form>
+    <viraj-button type="icon" (click)="cancel()"><i class="ri-close-fill"></i></viraj-button>
+  </div>
+  <form [formGroup]="newDishForm" (ngSubmit)="addDish()">
+
+    <mat-form-field appearance="outline">
+      <mat-label>Dish Name</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Amount</mat-label>
+      <input matInput type="number" formControlName="price" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Type</mat-label>
+      <mat-select placeholder="Tag" formControlName="type" name="tag">
+        <mat-option *ngFor="let tag of type" [value]="tag">
+          {{ tag }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Select Label</mat-label>
+      <mat-select formControlName="tag" name="label">
+        <mat-option *ngFor="let label of tags" [value]="label">
+          {{ label.name | titlecase }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="fullWidth">
+      <mat-label>Printer</mat-label>
+      <mat-select formControlName="specificPrinter" name="label">
+        <mat-option *ngFor="let label of localPrinterConfig" [value]="label.printerName">
+          {{ label.printerName }}
+        </mat-option>
+        <mat-option value="">{{defaultPrinters.kotPrinter}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div class="actions">
+      <button
+        mat-stroked-button
+        (click)="cancel()"
+        type="button"
+        color="primary"
+      >
+        Cancel
+      </button>
+      <button mat-flat-button type="submit" color="primary">
+        {{ this.data.mode == "add" ? "Add New" : "Update" }} Product
+      </button>
+    </div>
+  </form>
 </section>

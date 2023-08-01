@@ -58,7 +58,10 @@
       *ngIf="showImage"
     />
   </div>
-  <app-quick-kot-view *ngIf="dataProvider.kotViewVisible" [kotNoColors]="kotNoColors"></app-quick-kot-view>
+  <app-quick-kot-view
+    *ngIf="dataProvider.kotViewVisible"
+    [kotNoColors]="kotNoColors"
+  ></app-quick-kot-view>
   <app-bill-preview
     [@zoomInOnEnter]
     [@zoomOutOnLeave]

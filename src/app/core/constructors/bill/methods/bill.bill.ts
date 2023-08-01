@@ -11,10 +11,11 @@ import {
 } from '../../../../types/discount.structure';
 import { ApplicableCombo } from '../../comboKot/comboKot';
 
-export function setAsNonChargeable(this:Bill,
+export function setAsNonChargeable(
+  this: Bill,
   name: string,
   contact: string,
-  reason: string
+  reason: string,
 ) {
   this.billingMode = 'nonChargeable';
   this.nonChargeableDetail = {
@@ -28,8 +29,8 @@ export function setAsNonChargeable(this:Bill,
     message: `Bill set as non chargeable by ${this.user.username}`,
     type: 'billNC',
     user: this.user.username,
-    data:this.nonChargeableDetail,
-  })
+    data: this.nonChargeableDetail,
+  });
   this.calculateBill();
   this.updated.next();
 }
@@ -41,7 +42,7 @@ export function setAsNormal(this: Bill) {
     message: `Bill set as normal by ${this.user.username}`,
     type: 'billNormal',
     user: this.user.username,
-  })
+  });
   this.calculateBill();
   this.updated.next();
 }
@@ -60,21 +61,21 @@ export async function finalize(this: Bill) {
     alert('No products to finalize');
     return;
   }
-  if (this.mode == 'online') {
-  //  console.log('customer info', this.customerInfo);
-    if (
-      !(
-        this.customerInfo.name &&
-        this.customerInfo.phone &&
-        this.customerInfo.address &&
-        this.customerInfo.deliveryName &&
-        this.customerInfo.deliveryPhone
-      )
-    ) {
-      alert('Please fill customer details');
-      return;
-    }
-  }
+  // if (this.mode == 'online') {
+  //   //  console.log('customer info', this.customerInfo);
+  //   if (
+  //     !(
+  //       this.customerInfo.name &&
+  //       this.customerInfo.phone &&
+  //       this.customerInfo.address &&
+  //       this.customerInfo.deliveryName &&
+  //       this.customerInfo.deliveryPhone
+  //     )
+  //   ) {
+  //     alert('Please fill customer details');
+  //     return;
+  //   }
+  // }
   this.stage = 'finalized';
   let data = this.toObject();
   // this.databaseService.updateBill(data);
@@ -84,7 +85,7 @@ export async function finalize(this: Bill) {
     let res = await this.dataProvider.confirm(
       'Do you want to print bill?',
       [1],
-      { buttons: ['Save', 'Save And Print'] }
+      { buttons: ['Save', 'Save And Print'] },
     );
     if (res) {
       this.printBill();
@@ -130,13 +131,13 @@ export async function settle(
   payments: Payment[],
   type: 'internal' | 'external',
   additionalInfo: any,
-  splitSave?: boolean
+  splitSave?: boolean,
 ) {
   this.calculateBill();
   // update every product and increase their sales counter by their quantity
   // return
   // TODO to be refixed
-  let products: (Product|ApplicableCombo)[] = [];
+  let products: (Product | ApplicableCombo)[] = [];
   let allProducts = this.kots.reduce((acc, cur) => {
     return acc.concat(cur.products);
   }, products);
@@ -156,7 +157,7 @@ export async function settle(
     } else {
       if (this.mode == 'dineIn') {
         (this.billNo = this.dataProvider.billToken.toString()),
-        this.dataProvider.billToken++;
+          this.dataProvider.billToken++;
         this.analyticsService.addBillToken();
       } else if (this.mode == 'takeaway') {
         this.billNo = this.dataProvider.takeawayToken.toString();
@@ -164,24 +165,28 @@ export async function settle(
         // this.analyticsService.addTakeawayToken();
       } else if (this.mode == 'online') {
         (this.billNo = this.dataProvider.onlineTokenNo.toString()),
-        this.dataProvider.onlineTokenNo++;
+          this.dataProvider.onlineTokenNo++;
         this.analyticsService.addOnlineToken();
       } else {
         (this.billNo = this.dataProvider.billToken.toString()),
-        this.dataProvider.billToken++;
+          this.dataProvider.billToken++;
         this.analyticsService.addBillToken();
       }
     }
   }
   // update in database
   // TODO to be refixed
-  this.billService.addSales(allProducts.map((product) => {
-    if (product.itemType == 'product') {
-      return product.id;
-    } else if (product.itemType == 'combo') {
-      return product.selectedProductsIds;
-    }
-  }).flat());
+  this.billService.addSales(
+    allProducts
+      .map((product) => {
+        if (product.itemType == 'product') {
+          return product.id;
+        } else if (product.itemType == 'combo') {
+          return product.selectedProductsIds;
+        }
+      })
+      .flat(),
+  );
   this.stage = 'settled';
   this.settlement = {
     payments: payments,
@@ -191,7 +196,7 @@ export async function settle(
   };
   console.log(
     'this.dataProvider.printBillAfterFinalize',
-    this.dataProvider.printBillAfterFinalize
+    this.dataProvider.printBillAfterFinalize,
   );
   if (splitSave) {
     if (this.dataProvider.printBillAfterFinalize) {
@@ -200,7 +205,7 @@ export async function settle(
       let res = await this.dataProvider.confirm(
         'Do you want to print bill?',
         [1],
-        { buttons: ['Save', 'Save And Print'] }
+        { buttons: ['Save', 'Save And Print'] },
       );
       if (res) {
         this.printingService.printBill(this.printableBillData);
@@ -211,7 +216,7 @@ export async function settle(
   if (this.nonChargeableDetail) {
     this.analyticsService.addSales(
       this.billing.grandTotal,
-      'nonChargeableSales'
+      'nonChargeableSales',
     );
   } else if (this.mode == 'dineIn') {
     this.analyticsService.addSales(this.billing.grandTotal, 'dineInSales');
@@ -231,28 +236,20 @@ export async function settle(
   if (this.dataProvider.showTableOnBillAction) {
     this.dataProvider.openTableView.next(true);
   }
-  if (this.customerInfo.phone){
-    let customer = this.dataProvider.customers.find((customer) => customer.phone == this.customerInfo.phone);
-    if (customer){
-      console.log('Customer found updating', customer);
-      // check if any of the details are different
-      if (customer.name != this.customerInfo.name || customer.address != this.customerInfo.address || customer.gst != this.customerInfo.gst){
-        // update the customer
-        this.customerService.updateCustomer({
-          address:this.customerInfo.address,
-          gst:this.customerInfo.gst,
-          name:this.customerInfo.name,
-          phone:this.customerInfo.phone,
-        },this);
-      }
-    } else {
-      console.log('Added as new customer info', this.customerInfo);
-      this.customerService.addCustomer({
-        address:this.customerInfo.address,
-        gst:this.customerInfo.gst,
-        name:this.customerInfo.name,
-        phone:this.customerInfo.phone,
-      },this);
+  if (this.customerInfo.phone) {
+    let customer = this.dataProvider.customers.find(
+      (customer) => customer.phone == this.customerInfo.phone,
+    );
+    if (customer) {
+      this.customerService.updateCustomer(
+        {
+          address: this.customerInfo.address,
+          gst: this.customerInfo.gst,
+          name: this.customerInfo.name,
+          phone: this.customerInfo.phone,
+        },
+        this,
+      );
     }
     console.log('Customer info', this.customerInfo);
   }
@@ -262,7 +259,7 @@ export async function settle(
     user: this.user.username,
   });
 
-  this.customerService.addLoyaltyPoint(this)
+  // this.customerService.addLoyaltyPoint(this);
   console.log('Bill settled');
   return this.billNo;
 }
@@ -281,7 +278,7 @@ export function merge(this: Bill, bill: Bill) {
 export function breakBill(
   this: Bill,
   kots: Kot[],
-  discounts: (CodeBaseDiscount | DirectFlatDiscount | DirectPercentDiscount)[]
+  discounts: (CodeBaseDiscount | DirectFlatDiscount | DirectPercentDiscount)[],
 ) {
   // now create a new billConstructor and add all the kots to it then calculate the bill and return the billConstructor
   // let newBill:BillConstructor = {

@@ -8,9 +8,8 @@ describe('PopoverContainerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PopoverContainerComponent ]
-    })
-    .compileComponents();
+      declarations: [PopoverContainerComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(PopoverContainerComponent);
     component = fixture.componentInstance;

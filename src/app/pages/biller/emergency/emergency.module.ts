@@ -11,8 +11,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { BaseComponentsModule } from '../../../shared/base-components/base-components.module';
 
-
-
 @NgModule({
   declarations: [
     EmergencyComponent,
@@ -21,16 +19,9 @@ import { BaseComponentsModule } from '../../../shared/base-components/base-compo
     OrderComponent,
     TableComponent,
     ReceiveComponent,
-    DisperseComponent
+    DisperseComponent,
   ],
-  imports: [
-    CommonModule,
-    MatButtonModule,
-    MatIconModule,
-    BaseComponentsModule
-  ],
-  exports:[
-    EmergencyComponent
-  ]
+  imports: [CommonModule, MatButtonModule, MatIconModule, BaseComponentsModule],
+  exports: [EmergencyComponent],
 })
-export class EmergencyModule { }
+export class EmergencyModule {}

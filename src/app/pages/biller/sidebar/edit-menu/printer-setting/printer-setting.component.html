@@ -1,0 +1,50 @@
+<section>
+  <div class="heading">
+    <h3>Printer Setting</h3>
+    <viraj-button type="icon"><i class="ri-close-fill"></i> </viraj-button>
+  </div>
+  <div class="defaults">
+	<mat-form-field appearance="outline">
+		<mat-label>Select Default KOT Printer</mat-label>
+		<mat-select [(ngModel)]="kotPrinter" (selectionChange)="setDefaultPrinter(selector.value,'kot')" #selector>
+			<mat-option *ngFor="let printer of printers" [value]="printer">
+				{{printer}}
+			</mat-option>
+		</mat-select>
+	</mat-form-field>
+  </div>
+  <mat-accordion>
+    <mat-expansion-panel *ngFor="let setting of printerSettings">
+      <mat-expansion-panel-header>
+        <mat-panel-title> {{setting.printerName}} </mat-panel-title>
+      </mat-expansion-panel-header>
+      <div class="items">
+		<mat-form-field class="example-full-width" appearance="outline">
+			<mat-label>Product</mat-label>
+			<input type="text"
+				   placeholder="Pick one"
+				   aria-label="Number"
+				   matInput
+				   (input)="setting.searchSubject.next(productSearch.value)"
+				   #productSearch
+				   [matAutocomplete]="auto">
+			<mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="setting.addProduct($event,setting,productSearch)">
+			  <mat-option *ngFor="let product of setting.filteredProducts | async" [value]="product">
+				{{product.name}}
+			  </mat-option>
+			</mat-autocomplete>
+		</mat-form-field>
+		<div class="item" *ngFor="let item of setting.products;let i = index">
+			<p>{{item.name}}</p>
+			<p>{{item.category.name}}</p>
+			<p>{{item.price}}</p>
+			<viraj-button type="icon" (click)="spliceProduct(i,setting)"><i class="ri-delete-bin-2-line"></i></viraj-button>
+		</div>
+	  </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+  <div class="actions">
+	<viraj-button type="outline" (click)="cancel()">Cancel</viraj-button>
+	<viraj-button (click)="save()">Save</viraj-button>
+  </div>
+</section>

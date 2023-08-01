@@ -9,155 +9,170 @@ import { Product } from '../../../types/product.structure';
 @Component({
   selector: 'app-search-panel',
   templateUrl: './search-panel.component.html',
-  styleUrls: ['./search-panel.component.scss']
+  styleUrls: ['./search-panel.component.scss'],
 })
 export class SearchPanelComponent implements OnInit {
-  placeholders:string[] = [
-    "Search any dish...",
-    "Search any bill...",
-    "Search any customer...",
-    "Search any order...",
-    "Search any payment...",
-    "Search any kot...",
-    "Search any table..."
-  ]
-  searchResults:any[] = [];
-  billResults:any[] = [];
-  allBills:any[] = [];
-  index:number = 0;
-  active:boolean = false;
-  dynamicPlaceholder:string = this.placeholders[0];
-  selectedMode:'dineIn'|'takeAway'|'online' = "dineIn";
-  searchSubscription:Subject<string> = new Subject<string>();
-  currentSearchTerm:string = "";
-  billListenerActive:boolean = false;
-  billListener:Subscription = Subscription.EMPTY;
-  searchInstance:Fuse<Product|Combo> = new Fuse(this.dataProvider.products, {
+  placeholders: string[] = [
+    'Search any dish...',
+    'Search any bill...',
+    'Search any customer...',
+    'Search any order...',
+    'Search any payment...',
+    'Search any kot...',
+    'Search any table...',
+  ];
+  searchResults: any[] = [];
+  billResults: any[] = [];
+  allBills: any[] = [];
+  index: number = 0;
+  active: boolean = false;
+  dynamicPlaceholder: string = this.placeholders[0];
+  selectedMode: 'dineIn' | 'takeAway' | 'online' = 'dineIn';
+  searchSubscription: Subject<string> = new Subject<string>();
+  currentSearchTerm: string = '';
+  billListenerActive: boolean = false;
+  billListener: Subscription = Subscription.EMPTY;
+  searchInstance: Fuse<Product | Combo> = new Fuse(this.dataProvider.products, {
     keys: ['name'],
-  })
-  searchVisible:boolean = false;
-  constructor(public dataProvider:DataProvider,private billsService:BillService) {
-    this.searchSubscription.pipe(debounceTime(400)).subscribe((value)=>{
-      this.fetchAdvancedResults(value)
-    })
-    this.dataProvider.menuLoadSubject.subscribe((value)=>{
-      if (value){
+  });
+  searchVisible: boolean = false;
+  constructor(
+    public dataProvider: DataProvider,
+    private billsService: BillService,
+  ) {
+    this.searchSubscription.pipe(debounceTime(400)).subscribe((value) => {
+      this.fetchAdvancedResults(value);
+    });
+    this.dataProvider.menuLoadSubject.subscribe((value) => {
+      if (value) {
         // console.log("SETTING COLLECTION",this.dataProvider.currentMenu?.products);
-        this.searchInstance.setCollection(this.dataProvider.currentMenu?.products)
+        this.searchInstance.setCollection(
+          this.dataProvider.currentMenu?.products,
+        );
       }
-    })
+    });
 
-    this.dataProvider.modeChanged.subscribe(()=>{
+    this.dataProvider.modeChanged.subscribe(() => {
       // console.log("this.dataProvider.modeChanged",mode,this.dataProvider.currentMenu?.products);
       this.searchResults = [];
       this.billResults = [];
-      if(this.dataProvider.currentMenu){
-        this.searchInstance.setCollection(this.dataProvider.currentMenu?.products)
+      if (this.dataProvider.currentMenu) {
+        this.searchInstance.setCollection(
+          this.dataProvider.currentMenu?.products,
+        );
       }
-    })
-    this.searchSubscription.pipe(debounceTime(200)).subscribe((value)=>{
+    });
+    this.searchSubscription.pipe(debounceTime(200)).subscribe((value) => {
       // console.log(value);
       this.currentSearchTerm = value;
-      this.basicSearch(value)
-    })
-    
-    this.dataProvider.productPanelState.subscribe((value)=>{
-      if (value=='combos'){
-        this.searchInstance.setCollection(this.dataProvider.currentMenu?.combos)
+      this.basicSearch(value);
+    });
+
+    this.dataProvider.productPanelState.subscribe((value) => {
+      if (value == 'combos') {
+        this.searchInstance.setCollection(
+          this.dataProvider.currentMenu?.combos,
+        );
       } else {
-        this.searchInstance.setCollection(this.dataProvider.currentMenu?.products)
+        this.searchInstance.setCollection(
+          this.dataProvider.currentMenu?.products,
+        );
       }
-    })
+    });
   }
 
-  getBills(){
+  getBills() {
     this.billListenerActive = true;
-    this.billListener = this.billsService.getBillsSubscription().subscribe((bills)=>{
-      this.allBills = bills;
-    })
+    this.billListener = this.billsService
+      .getBillsSubscription()
+      .subscribe((bills) => {
+        this.allBills = bills;
+      });
   }
 
   ngOnInit(): void {
-    setInterval(()=>{
+    setInterval(() => {
       this.dynamicPlaceholder = this.placeholders[this.index];
-      this.index = (this.index+1)%this.placeholders.length;
+      this.index = (this.index + 1) % this.placeholders.length;
     }, 2000);
   }
 
-  basicSearch(value:string){
-    let results = this.searchInstance.search(value)
+  basicSearch(value: string) {
+    let results = this.searchInstance.search(value);
     // console.log("results",results,this.searchInstance);
-    this.searchResults = results.map((result)=>{return result.item})
-    if (value){
+    this.searchResults = results.map((result) => {
+      return result.item;
+    });
+    if (value) {
       this.dataProvider.searchResults.next(this.searchResults);
     } else {
       this.dataProvider.searchResults.next(false);
     }
   }
 
-  fetchAdvancedResults(value:string){
-    if (value.startsWith('#')){
-      if (!this.billListenerActive){
+  fetchAdvancedResults(value: string) {
+    if (value.startsWith('#')) {
+      if (!this.billListenerActive) {
         this.getBills();
       }
-      if (this.allBills.length > 0){
+      if (this.allBills.length > 0) {
         this.billResults.push({
-          type:'bill',
+          type: 'bill',
           billId: this.allBills[0].id,
-        })
+        });
       }
     }
   }
 
-  selectTable(){
-    this.dataProvider.openTableView.next(true)
+  selectTable() {
+    this.dataProvider.openTableView.next(true);
   }
 
-  switchMode(mode:any){
+  switchMode(mode: any) {
     // console.log("mode",mode);
     this.dataProvider.billingMode = mode.value;
-    if (mode.value == 'dineIn'){
+    if (mode.value == 'dineIn') {
       // console.log("this.dataProvider.dineInMenu",this.dataProvider.dineInMenu);
-      if(!this.dataProvider.dineInMenu){
-        alert("No dine-in menu found");
+      if (!this.dataProvider.dineInMenu) {
+        alert('No dine-in menu found');
         return;
       }
-      this.dataProvider.currentMenu = this.dataProvider.menus.find((menu)=>{
-        return menu.selectedMenu?.id == this.dataProvider.dineInMenu?.id
+      this.dataProvider.currentMenu = this.dataProvider.menus.find((menu) => {
+        return menu.selectedMenu?.id == this.dataProvider.dineInMenu?.id;
       });
-      if (this.dataProvider.currentMenu){
+      if (this.dataProvider.currentMenu) {
         this.dataProvider.currentMenu.type = 'dineIn';
         this.dataProvider.products = this.dataProvider.currentMenu.products;
       } else {
         // console.log("this.dataProvider.menus",this.dataProvider.menus);
       }
       // console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
-    } else if (mode.value == 'takeaway'){
+    } else if (mode.value == 'takeaway') {
       // console.log("this.dataProvider.takeawayMenu",this.dataProvider.takeawayMenu);
-      if(!this.dataProvider.takeawayMenu){
-        alert("No takeaway menu found");
+      if (!this.dataProvider.takeawayMenu) {
+        alert('No takeaway menu found');
         return;
       }
-      this.dataProvider.currentMenu = this.dataProvider.menus.find((menu)=>{
-        return menu.selectedMenu?.id == this.dataProvider.takeawayMenu?.id
+      this.dataProvider.currentMenu = this.dataProvider.menus.find((menu) => {
+        return menu.selectedMenu?.id == this.dataProvider.takeawayMenu?.id;
       });
-      if (this.dataProvider.currentMenu){
+      if (this.dataProvider.currentMenu) {
         this.dataProvider.currentMenu.type = 'takeaway';
         this.dataProvider.products = this.dataProvider.currentMenu.products;
       } else {
         // console.log("this.dataProvider.menus",this.dataProvider.menus);
       }
       // console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
-    } else if (mode.value == 'online'){
+    } else if (mode.value == 'online') {
       // console.log("this.dataProvider.onlineMenu",this.dataProvider.onlineMenu);
-      if(!this.dataProvider.onlineMenu){
-        alert("No online menu found");
+      if (!this.dataProvider.onlineMenu) {
+        alert('No online menu found');
         return;
       }
-      this.dataProvider.currentMenu = this.dataProvider.menus.find((menu)=>{
-        return menu.selectedMenu?.id == this.dataProvider.onlineMenu?.id
+      this.dataProvider.currentMenu = this.dataProvider.menus.find((menu) => {
+        return menu.selectedMenu?.id == this.dataProvider.onlineMenu?.id;
       });
-      if (this.dataProvider.currentMenu){
+      if (this.dataProvider.currentMenu) {
         this.dataProvider.currentMenu.type = 'online';
         this.dataProvider.products = this.dataProvider.currentMenu.products;
       } else {

@@ -7,7 +7,7 @@ export interface KotConstructor {
   id?: string;
   createdDate: Timestamp;
   stage: 'active' | 'finalized' | 'cancelled' | 'edit';
-  products: (Product|ApplicableCombo)[];
+  products: (Product | ApplicableCombo)[];
   editMode: boolean;
   selected: boolean;
   allSelected: boolean;
@@ -15,19 +15,20 @@ export interface KotConstructor {
   unmade?: boolean;
   cancelReason?: {
     reason: string;
-    mode:'un-made'|'made';
+    mode: 'un-made' | 'made';
     time: Timestamp;
     user: UserConstructor;
   };
   user: UserConstructor;
-  mode?:'firstChargeable'
-  | 'cancelledKot'
-  | 'editedKot'
-  | 'runningNonChargeable'
-  | 'runningChargeable'
-  | 'firstNonChargeable'
-  | 'reprintKot'
-  | 'online';
+  mode?:
+    | 'firstChargeable'
+    | 'cancelledKot'
+    | 'editedKot'
+    | 'runningNonChargeable'
+    | 'runningChargeable'
+    | 'firstNonChargeable'
+    | 'reprintKot'
+    | 'online';
 }
 
 export interface kotReport extends KotConstructor {
@@ -37,22 +38,30 @@ export interface kotReport extends KotConstructor {
 }
 
 export interface PrintableKot {
-  mode:'firstChargeable'|'cancelledKot'|'editedKot'|'runningNonChargeable'|'runningChargeable'|'firstNonChargeable'|'reprintKot'|'online';
-  billingMode:'dineIn'|'takeaway'|'online';
-  date:string;
-  time:string;
-  token:string;
-  orderNo:string;
-  table:string;
-  products:printableKotItem[];
+  mode:
+    | 'firstChargeable'
+    | 'cancelledKot'
+    | 'editedKot'
+    | 'runningNonChargeable'
+    | 'runningChargeable'
+    | 'firstNonChargeable'
+    | 'reprintKot'
+    | 'online';
+  billingMode: 'dineIn' | 'takeaway' | 'online';
+  date: string;
+  time: string;
+  token: string;
+  orderNo: string;
+  table: string;
+  products: printableKotItem[];
 }
 
 export interface printableKotItem {
-  id:string;
-  name:string;
-  instruction:string;
-  quantity:number;
-  category:any;
-  edited?:boolean;
-  specificPrinter:string;
+  id: string;
+  name: string;
+  instruction: string;
+  quantity: number;
+  category: any;
+  edited?: boolean;
+  specificPrinter: string;
 }

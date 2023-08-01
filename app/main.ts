@@ -1,13 +1,21 @@
-import { app, BrowserWindow, Notification,contextBridge,  screen, ipcMain } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  Notification,
+  contextBridge,
+  screen,
+  ipcMain,
+} from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as child_process from 'child_process';
 import * as Store from 'electron-store';
-import { autoUpdater, NsisUpdater } from "electron-updater"
+import { autoUpdater, NsisUpdater } from 'electron-updater';
 const store = new Store();
 let win: BrowserWindow = null;
-const args = process.argv.slice(1),serve = args.some((val) => val === '--serve');
-autoUpdater.logger = require("electron-log")
+const args = process.argv.slice(1),
+  serve = args.some((val) => val === '--serve');
+autoUpdater.logger = require('electron-log');
 autoUpdater.autoDownload = false;
 autoUpdater.autoInstallOnAppQuit = false;
 // const updater = new NsisUpdater({
@@ -15,7 +23,7 @@ autoUpdater.autoInstallOnAppQuit = false;
 //   owner:'swayambhu-innovations',
 //   repo:'Packages',
 // })
-var globalReloadInterval:any;
+var globalReloadInterval: any;
 
 function run_script(command, args, event, callback) {
   var child = child_process.spawn(command, args, {
@@ -23,15 +31,25 @@ function run_script(command, args, event, callback) {
   });
   // You can also use a variable to save the output for when the script closes later
   child.on('error', (error) => {
-    event.sender.send('printDataComplete', { stage: 'error', error, command, args });
+    event.sender.send('printDataComplete', {
+      stage: 'error',
+      error,
+      command,
+      args,
+    });
   });
 
   child.stdout.setEncoding('utf8');
   child.stdout.on('data', (data) => {
     //Here is the output
     data = data.toString();
-  //  console.log(data);
-    event.sender.send('printDataComplete', { stage: 'stderr', data, command, args });
+    //  console.log(data);
+    event.sender.send('printDataComplete', {
+      stage: 'stderr',
+      data,
+      command,
+      args,
+    });
   });
 
   child.stderr.setEncoding('utf8');
@@ -40,38 +58,48 @@ function run_script(command, args, event, callback) {
     // win.webContents.send('mainprocess-response', data);
     //Here is the output from the command
     data = data.toString();
-  //  console.log(data);
-    event.sender.send('printDataComplete', { stage: 'stdout', data, command, args });
+    //  console.log(data);
+    event.sender.send('printDataComplete', {
+      stage: 'stdout',
+      data,
+      command,
+      args,
+    });
   });
 
   child.on('close', (code) => {
     //Here you can get the exit code of the script
-  //  console.log(`child process exited with code ${code}`);
-    event.sender.send('printDataComplete', { stage: 'closed', code, command, args });
+    //  console.log(`child process exited with code ${code}`);
+    event.sender.send('printDataComplete', {
+      stage: 'closed',
+      code,
+      command,
+      args,
+    });
   });
   if (typeof callback === 'function') callback();
 }
 
 function printData(event, data, printer) {
-//  console.log('Will Print: ', data, printer);
-  var home = require("os").homedir();
+  //  console.log('Will Print: ', data, printer);
+  var home = require('os').homedir();
   var dataPath = home + '/Documents/somefolderwhichexists/';
-  if (!fs.existsSync(dataPath)){
+  if (!fs.existsSync(dataPath)) {
     fs.mkdirSync(dataPath, { recursive: true });
   }
-  fs.writeFile(dataPath+'printableData.txt', data, (err) => {
+  fs.writeFile(dataPath + 'printableData.txt', data, (err) => {
     if (err) {
       console.error(err);
     }
     // file written successfully
-  //  console.log('File Written Successfully');
+    //  console.log('File Written Successfully');
     run_script(
       'RawPrint.exe',
-      ['"'+printer+'"','"'+dataPath+'printableData.txt'+'"'],
+      ['"' + printer + '"', '"' + dataPath + 'printableData.txt' + '"'],
       event,
       function () {
-      //  console.log('Done Printing (main)');
-      }
+        //  console.log('Done Printing (main)');
+      },
     );
   });
 }
@@ -93,7 +121,7 @@ function createWindow(): BrowserWindow {
     autoHideMenuBar: true,
   });
   // set title to current version
-  win.title = 'Viraj POS '+app.getVersion();
+  win.title = 'Viraj POS ' + app.getVersion();
   win.on('closed', () => {
     // Dereference the window object, usually you would store window
     // in an array if your app supports multi windows, this is the time
@@ -101,108 +129,131 @@ function createWindow(): BrowserWindow {
     win = null;
   });
 
-  ipcMain.on("getPrinters", async (event, arg) => {
+  ipcMain.on('getPrinters', async (event, arg) => {
     let res = win.webContents.getPrintersAsync();
-  //  console.log("Main printers", res);
+    //  console.log("Main printers", res);
     event.returnValue = await res;
   });
-  ipcMain.on("printData", async (event, arg) => {
-  //  console.log("GOT", arg, arg.data, arg.printer);
+  ipcMain.on('printData', async (event, arg) => {
+    //  console.log("GOT", arg, arg.data, arg.printer);
     let res = printData(event, arg.data, arg.printer);
   });
-  ipcMain.on("saveAuth", async (event, arg) => {
+  ipcMain.on('saveAuth', async (event, arg) => {
     try {
-    //  console.log("GOT", arg, );
+      //  console.log("GOT", arg, );
       store.set('token', arg);
       event.returnValue = true;
-    //  console.log("Succes saveAuth");
+      //  console.log("Succes saveAuth");
     } catch (error) {
       event.returnValue = false;
-    //  console.log("Save auth",error);
+      //  console.log("Save auth",error);
     }
   });
-  ipcMain.on("getAuth", async (event, arg) => {
+  ipcMain.on('getAuth', async (event, arg) => {
     try {
       event.returnValue = store.get('token');
-    //  console.log("Success getAuth", event.returnValue);
+      //  console.log("Success getAuth", event.returnValue);
     } catch (error) {
       event.returnValue = false;
-    //  console.log("Get auth",error);
+      //  console.log("Get auth",error);
     }
-  })
+  });
 
-  ipcMain.on("clearAuth", async (event, arg) => {
+  ipcMain.on('clearAuth', async (event, arg) => {
     try {
       event.returnValue = store.clear();
     } catch (error) {
       event.returnValue = false;
     }
-  })
+  });
   // contextBridge.exposeInIsolatedWorld(1004,"electron", {autoUpdater:autoUpdater});
 
   autoUpdater.on('checking-for-update', () => {
-    const NOTIFICATION_TITLE = 'Checking for updates.'
-    const NOTIFICATION_BODY = 'Viraj is running and checking for updates in background.'
-    
+    const NOTIFICATION_TITLE = 'Checking for updates.';
+    const NOTIFICATION_BODY =
+      'Viraj is running and checking for updates in background.';
+
     new Notification({
       title: NOTIFICATION_TITLE,
-      body: NOTIFICATION_BODY
-    }).show()
+      body: NOTIFICATION_BODY,
+    }).show();
     setTimeout(() => {
-      win.webContents.send('updateAvailable', { stage: 'checking-for-update',currentVersion:app.getVersion(),channel:autoUpdater.channel, allowDowngrade:autoUpdater.allowDowngrade});
-    },2000)
-  })
+      win.webContents.send('updateAvailable', {
+        stage: 'checking-for-update',
+        currentVersion: app.getVersion(),
+        channel: autoUpdater.channel,
+        allowDowngrade: autoUpdater.allowDowngrade,
+      });
+    }, 2000);
+  });
   autoUpdater.on('update-available', (info) => {
-    const NOTIFICATION_TITLE = 'Update available.'
-    const NOTIFICATION_BODY = 'A new version of Viraj is available.'
-    
+    const NOTIFICATION_TITLE = 'Update available.';
+    const NOTIFICATION_BODY = 'A new version of Viraj is available.';
+
     new Notification({
       title: NOTIFICATION_TITLE,
-      body: NOTIFICATION_BODY
-    }).show()
-    if (win){
-      win.webContents.send('updateAvailable', { stage: 'update-available',currentVersion:app.getVersion(), info });
+      body: NOTIFICATION_BODY,
+    }).show();
+    if (win) {
+      win.webContents.send('updateAvailable', {
+        stage: 'update-available',
+        currentVersion: app.getVersion(),
+        info,
+      });
     }
-  })
+  });
   autoUpdater.on('update-not-available', (info) => {
-    if (win){
-      win.webContents.send('updateAvailable', { stage: 'update-not-available',currentVersion:app.getVersion(), info });
+    if (win) {
+      win.webContents.send('updateAvailable', {
+        stage: 'update-not-available',
+        currentVersion: app.getVersion(),
+        info,
+      });
     }
-  })
+  });
   autoUpdater.on('download-progress', (progressObj) => {
-    if (win){
-      win.webContents.send('updateAvailable', { stage: 'download-progress',currentVersion:app.getVersion(), progressObj });
+    if (win) {
+      win.webContents.send('updateAvailable', {
+        stage: 'download-progress',
+        currentVersion: app.getVersion(),
+        progressObj,
+      });
     }
-  })
+  });
   autoUpdater.on('update-downloaded', (info) => {
-    const NOTIFICATION_TITLE = 'Update downloaded.'
-    const NOTIFICATION_BODY = 'It will be installed the next time you restart the application.'
-    
+    const NOTIFICATION_TITLE = 'Update downloaded.';
+    const NOTIFICATION_BODY =
+      'It will be installed the next time you restart the application.';
+
     new Notification({
       title: NOTIFICATION_TITLE,
-      body: NOTIFICATION_BODY
-    }).show()
-    if (win){
-      win.webContents.send('updateAvailable', { stage: 'update-downloaded',currentVersion:app.getVersion(), info });
+      body: NOTIFICATION_BODY,
+    }).show();
+    if (win) {
+      win.webContents.send('updateAvailable', {
+        stage: 'update-downloaded',
+        currentVersion: app.getVersion(),
+        info,
+      });
     }
-  })
+  });
   ipcMain.on('downloadUpdate', async (event, arg) => {
     event.returnValue = await autoUpdater.downloadUpdate();
-  })
-  ipcMain.on("checkForUpdate", async (event, arg) => {
+  });
+  ipcMain.on('checkForUpdate', async (event, arg) => {
     try {
       event.returnValue = autoUpdater.checkForUpdatesAndNotify();
     } catch (error) {
       event.returnValue = false;
     }
-  })
-  ipcMain.on("quitAndInstall", async (event, arg) => {
+  });
+  ipcMain.on('quitAndInstall', async (event, arg) => {
     try {
-      event.returnValue = autoUpdater.quitAndInstall(false,true);
+      event.returnValue = autoUpdater.quitAndInstall(false, true);
     } catch (error) {
       event.returnValue = false;
     }
-  })
+  });
   if (serve) {
     const debug = require('electron-debug');
     debug();
@@ -218,29 +269,31 @@ function createWindow(): BrowserWindow {
     }
     const url = new URL(path.join('file:', __dirname, pathIndex));
     win.loadURL(url.href);
-    win.webContents.on("did-fail-load", () => {
-    //  console.log("did-fail-load");
+    win.webContents.on('did-fail-load', () => {
+      //  console.log("did-fail-load");
       const url = new URL(path.join('file:', __dirname, pathIndex));
       win.loadURL(url.href);
       // REDIRECT TO FIRST WEBPAGE AGAIN
     });
     setTimeout(() => {
       win.reload();
-    },500)
+    }, 500);
     globalReloadInterval = setInterval(() => {
-      // dialog.showErrorBox('Title', 'Running') 
+      // dialog.showErrorBox('Title', 'Running')
       // check if the body element has anything in it
-      if (win){
-        win.webContents.executeJavaScript(`document.body.innerHTML`).then((result) => {
-          console.log(result);
-          if (!result){
-            // alert("Result is null")
-            win.webContents.executeJavaScript(`window.location.reload()`);
-          }
-        })
+      if (win) {
+        win.webContents
+          .executeJavaScript(`document.body.innerHTML`)
+          .then((result) => {
+            console.log(result);
+            if (!result) {
+              // alert("Result is null")
+              win.webContents.executeJavaScript(`window.location.reload()`);
+            }
+          });
       }
-    },500)
-    win.webContents.on("did-fail-load", () => {
+    }, 500);
+    win.webContents.on('did-fail-load', () => {
       // alert("Failed to load webpage.");
       const url = new URL(path.join('file:', __dirname, pathIndex));
       win.loadURL(url.href);
@@ -266,14 +319,14 @@ function createWindow(): BrowserWindow {
 
   //   const url = new URL(path.join('file:', __dirname, pathIndex));
   //   win.loadURL(url.href);
-    // win.webContents.on("did-fail-load", () => {
-    // //  console.log("did-fail-load");
-    //   const url = new URL(path.join('file:', __dirname, pathIndex));
-    //   win.loadURL(url.href);
-    //   // REDIRECT TO FIRST WEBPAGE AGAIN
-    // });
+  // win.webContents.on("did-fail-load", () => {
+  // //  console.log("did-fail-load");
+  //   const url = new URL(path.join('file:', __dirname, pathIndex));
+  //   win.loadURL(url.href);
+  //   // REDIRECT TO FIRST WEBPAGE AGAIN
+  // });
   // }
-  
+
   // Emitted when the window is closed.
   return win;
 }
@@ -294,10 +347,10 @@ try {
     }
   });
   app.on('will-quit', () => {
-    if (globalReloadInterval){
+    if (globalReloadInterval) {
       clearInterval(globalReloadInterval);
     }
-  })
+  });
 
   app.on('activate', () => {
     // On OS X it's common to re-create a window in the app when the

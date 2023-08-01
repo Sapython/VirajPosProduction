@@ -32,8 +32,36 @@
           required
           #password
         />
-        <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="password.type == 'password'" (click)="password.type == 'password' ? password.type = 'text' : password.type = 'password'" mat-icon-button><mat-icon>visibility</mat-icon></button>
-        <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="!(password.type == 'password')" (click)="password.type == 'password' ? password.type = 'text' : password.type = 'password'" mat-icon-button><mat-icon>visibility_off</mat-icon></button>
+        <button
+          color="primary"
+          matSuffix
+          tabindex="-1"
+          type="button"
+          *ngIf="password.type == 'password'"
+          (click)="
+            password.type == 'password'
+              ? (password.type = 'text')
+              : (password.type = 'password')
+          "
+          mat-icon-button
+        >
+          <mat-icon>visibility</mat-icon>
+        </button>
+        <button
+          color="primary"
+          matSuffix
+          tabindex="-1"
+          type="button"
+          *ngIf="!(password.type == 'password')"
+          (click)="
+            password.type == 'password'
+              ? (password.type = 'text')
+              : (password.type = 'password')
+          "
+          mat-icon-button
+        >
+          <mat-icon>visibility_off</mat-icon>
+        </button>
       </mat-form-field>
       <button
         mat-flat-button
@@ -43,7 +71,12 @@
       >
         Login
       </button>
-      <button type="button" mat-stroked-button color="primary" (click)="onboardingService.startResetPassword()">
+      <button
+        type="button"
+        mat-stroked-button
+        color="primary"
+        (click)="onboardingService.startResetPassword()"
+      >
         Forgot Password
       </button>
       <!-- <button
@@ -67,7 +100,11 @@
   <section
     [@zoomInOnEnter]
     [@zoomOutOnLeave]
-    *ngIf="onboardingService.stage == 'resetPasswordStage1' || onboardingService.stage == 'resetPasswordStage2' ||onboardingService.stage == 'resetPasswordStage3'"
+    *ngIf="
+      onboardingService.stage == 'resetPasswordStage1' ||
+      onboardingService.stage == 'resetPasswordStage2' ||
+      onboardingService.stage == 'resetPasswordStage3'
+    "
   >
     <img src="assets/images/viraj.png" alt="Viraj" />
     <h1>Reset Password</h1>
@@ -107,10 +144,7 @@
       </form>
     </ng-container>
     <ng-container *ngIf="onboardingService.stage == 'resetPasswordStage2'">
-      <form
-        [formGroup]="resetPasswordForm"
-        (ngSubmit)="resetPassword()"
-      >
+      <form [formGroup]="resetPasswordForm" (ngSubmit)="resetPassword()">
         <mat-form-field appearance="outline">
           <mat-label>OTP</mat-label>
           <input
@@ -131,8 +165,36 @@
             required
             #password
           />
-          <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="password.type == 'password'" (click)="password.type == 'password' ? password.type = 'text' : password.type = 'password'" mat-icon-button><mat-icon>visibility</mat-icon></button>
-          <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="!(password.type == 'password')" (click)="password.type == 'password' ? password.type = 'text' : password.type = 'password'" mat-icon-button><mat-icon>visibility_off</mat-icon></button>
+          <button
+            color="primary"
+            matSuffix
+            tabindex="-1"
+            type="button"
+            *ngIf="password.type == 'password'"
+            (click)="
+              password.type == 'password'
+                ? (password.type = 'text')
+                : (password.type = 'password')
+            "
+            mat-icon-button
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button
+            color="primary"
+            matSuffix
+            tabindex="-1"
+            type="button"
+            *ngIf="!(password.type == 'password')"
+            (click)="
+              password.type == 'password'
+                ? (password.type = 'text')
+                : (password.type = 'password')
+            "
+            mat-icon-button
+          >
+            <mat-icon>visibility_off</mat-icon>
+          </button>
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Confirm Password</mat-label>
@@ -144,8 +206,36 @@
             required
             #confirmPassword
           />
-          <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="confirmPassword.type == 'password'" (click)="confirmPassword.type == 'password' ? confirmPassword.type = 'text' : confirmPassword.type = 'password'" mat-icon-button><mat-icon>visibility</mat-icon></button>
-          <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="!(confirmPassword.type == 'password')" (click)="confirmPassword.type == 'password' ? confirmPassword.type = 'text' : confirmPassword.type = 'password'" mat-icon-button><mat-icon>visibility_off</mat-icon></button>
+          <button
+            color="primary"
+            matSuffix
+            tabindex="-1"
+            type="button"
+            *ngIf="confirmPassword.type == 'password'"
+            (click)="
+              confirmPassword.type == 'password'
+                ? (confirmPassword.type = 'text')
+                : (confirmPassword.type = 'password')
+            "
+            mat-icon-button
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button
+            color="primary"
+            matSuffix
+            tabindex="-1"
+            type="button"
+            *ngIf="!(confirmPassword.type == 'password')"
+            (click)="
+              confirmPassword.type == 'password'
+                ? (confirmPassword.type = 'text')
+                : (confirmPassword.type = 'password')
+            "
+            mat-icon-button
+          >
+            <mat-icon>visibility_off</mat-icon>
+          </button>
         </mat-form-field>
         <button
           mat-flat-button
@@ -161,15 +251,31 @@
   <section
     [@zoomInOnEnter]
     [@zoomOutOnLeave]
-    *ngIf="onboardingService.stage == 'businessError'"
-  >
-    <h3>Logged in with {{ this.dataProvider.currentUser?.username }}</h3>
-    <p>There is some serious issue with your business account. Please call our support to get your account fixed.</p>
+    *ngIf="onboardingService.stage == 'validityExpired'">
+    <h3>Your validity is expired</h3>
+    <p>
+      Please contact +919621062111 to renew your validity.
+    </p>
     <viraj-button color="primary" type="outline" (click)="logout()"
       >Logout</viraj-button
     >
   </section>
-  <section style="z-index: 9;"
+  <section
+    [@zoomInOnEnter]
+    [@zoomOutOnLeave]
+    *ngIf="onboardingService.stage == 'businessError'"
+  >
+    <h3>Logged in with {{ this.dataProvider.currentUser?.username }}</h3>
+    <p>
+      There is some serious issue with your business account. Please call our
+      support to get your account fixed.
+    </p>
+    <viraj-button color="primary" type="outline" (click)="logout()"
+      >Logout</viraj-button
+    >
+  </section>
+  <section
+    style="z-index: 9"
     class="flexList"
     [@zoomInOnEnter]
     [@zoomOutOnLeave]
@@ -191,7 +297,10 @@
     </ng-container>
     <ng-container *ngIf="onboardingService.stage == 'virajReady'">
       <p>Viraj is ready to use</p>
-      <viraj-button style="margin-bottom: 10px;" color="primary" routerLink="../biller"
+      <viraj-button
+        style="margin-bottom: 10px"
+        color="primary"
+        routerLink="../biller"
         >Continue To Viraj</viraj-button
       >
       <viraj-button color="primary" type="outline" (click)="logout()"
@@ -229,9 +338,18 @@
           <span> #{{ business.businessId }}</span>
         </div>
       </div>
+      <div class="newAccount" (click)="onboardingService.stage = 'onboardingStep1'">
+        <i class="ri-add-line"></i>
+        <h3>Add Account</h3>
+      </div>
+    </div>
+    <div class="actions">
+      <viraj-button color="primary" type="outline" (click)="logout()"
+      >Logout</viraj-button
+    >
     </div>
   </section>
-  <section
+  <section class="onboardingForm"
     [@zoomInOnEnter]
     [@zoomOutOnLeave]
     *ngIf="
@@ -242,7 +360,7 @@
     class="onboarding"
   >
     <!-- <p>onboarding</p> -->
-    <mat-stepper [linear]="false">
+    <mat-stepper #onboardingStepper [linear]="false">
       <mat-step label="Welcome" state="flag">
         <div>
           <h1>Welcome to <strong>Viraj</strong></h1>
@@ -250,7 +368,11 @@
           <h3>Let's get started</h3>
           <h3></h3>
           <div class="actions">
-            <button color="primary" mat-stroked-button (click)="onboardingService.stage = 'noUser'">
+            <button
+              color="primary"
+              mat-stroked-button
+              (click)="this.dataProvider.currentUser?.business.length > 1 ? onboardingService.stage ='multipleBusiness' : (this.dataProvider.currentUser?.business.length == 1 ? onboardingService.stage = 'virajReady' : onboardingService.stage = 'noUser')"
+            >
               Cancel
             </button>
             <button color="primary" mat-flat-button matStepperNext>
@@ -259,7 +381,12 @@
           </div>
         </div>
       </mat-step>
-      <mat-step label="Register" [stepControl]="onboardingBusinessForm" errorMessage="Missing basic details" state="edit_note">
+      <mat-step
+        label="Register"
+        [stepControl]="onboardingBusinessForm"
+        errorMessage="Missing basic details"
+        state="edit_note"
+      >
         <div>
           <h1>Let's get started</h1>
           <form
@@ -273,27 +400,13 @@
                 type="text"
                 matInput
                 formControlName="name"
-                #buisnessName
+                #business
               />
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>Address</mat-label>
               <input type="text" matInput formControlName="address" />
             </mat-form-field>
-            <!-- <div class="upload" (click)="picker.click()">
-              <input type="file" hidden #picker (change)="chooseFile($event)" />
-              <ng-container *ngIf="!logoFile">
-                <p>Upload Logo</p>
-              </ng-container>
-              <div
-                *ngIf="logoFile"
-                class="avatar"
-                [ngClass]="{ uploaded: logoFile }"
-              >
-                <img [src]="logoString" />
-                <p>{{ buisnessName.value | titlecase }}</p>
-              </div>
-            </div> -->
             <mat-form-field appearance="outline">
               <mat-label>Phone</mat-label>
               <input type="tel" matInput formControlName="phone" />
@@ -352,190 +465,131 @@
               <mat-label>GST</mat-label>
               <input type="text" matInput formControlName="gst" />
             </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Account Password</mat-label>
+              <input
+                type="password"
+                formControlName="password"
+                matInput
+                #accPassword
+              />
+              <mat-error
+                *ngIf="
+                  onboardingBusinessForm.controls['password'].errors &&
+                  onboardingBusinessForm.controls['password'].errors['required']
+                "
+              >
+                Please enter a password
+              </mat-error>
+              <mat-error
+                *ngIf="
+                  onboardingBusinessForm.controls['password'].errors &&
+                  onboardingBusinessForm.controls['password'].errors['minlength']
+                "
+              >
+                Password must be at least 8 characters long.
+              </mat-error>
+              <mat-error *ngIf="!(accConfirmPassword.value == accPassword.value)">
+                Password don't match.
+              </mat-error>
+              <button
+                color="primary"
+                matSuffix
+                tabindex="-1"
+                type="button"
+                *ngIf="accPassword.type == 'password'"
+                (click)="
+                  accPassword.type == 'password'
+                    ? (accPassword.type = 'text')
+                    : (accPassword.type = 'password')
+                "
+                mat-icon-button
+              >
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button
+                color="primary"
+                matSuffix
+                tabindex="-1"
+                type="button"
+                *ngIf="!(accPassword.type == 'password')"
+                (click)="
+                  accPassword.type == 'password'
+                    ? (accPassword.type = 'text')
+                    : (accPassword.type = 'password')
+                "
+                mat-icon-button
+              >
+                <mat-icon>visibility_off</mat-icon>
+              </button>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Confirm Account Password</mat-label>
+              <input
+                type="password"
+                formControlName="confirmPassword"
+                matInput
+                #accConfirmPassword
+              />
+              <mat-error
+                *ngIf="
+                  onboardingBusinessForm.controls['confirmPassword'].errors &&
+                  onboardingBusinessForm.controls['confirmPassword'].errors['required']
+                "
+              >
+                Please enter a password
+              </mat-error>
+              <mat-error
+                *ngIf="
+                  onboardingBusinessForm.controls['confirmPassword'].errors &&
+                  onboardingBusinessForm.controls['confirmPassword'].errors['minlength']
+                "
+              >
+                Password must be at least 8 characters long.
+              </mat-error>
+              <mat-error *ngIf="!(accConfirmPassword.value == accPassword.value)">
+                Password don't match.
+              </mat-error>
+              <button
+                color="primary"
+                matSuffix
+                tabindex="-1"
+                type="button"
+                *ngIf="accConfirmPassword.type == 'password'"
+                (click)="
+                  accConfirmPassword.type == 'password'
+                    ? (accConfirmPassword.type = 'text')
+                    : (accConfirmPassword.type = 'password')
+                "
+                mat-icon-button
+              >
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button
+                color="primary"
+                matSuffix
+                tabindex="-1"
+                type="button"
+                *ngIf="!(accConfirmPassword.type == 'password')"
+                (click)="
+                  accConfirmPassword.type == 'password'
+                    ? (accConfirmPassword.type = 'text')
+                    : (accConfirmPassword.type = 'password')
+                "
+                mat-icon-button
+              >
+                <mat-icon>visibility_off</mat-icon>
+              </button>
+            </mat-form-field>
             <button
               color="primary"
+              (click)="checkPassword(onboardingStepper)"
               [disabled]="!onboardingBusinessForm.valid"
               mat-flat-button
-              matStepperNext
             >
               Continue
             </button>
           </form>
-        </div>
-      </mat-step>
-      <mat-step label="Security" [stepControl]="securityForm" errorMessage="Security Details Incorrect" state="key">
-        <form [formGroup]="securityForm" class="securityForm">
-          <h1>Security</h1>
-          <mat-form-field appearance="outline">
-            <mat-label>Account Password</mat-label>
-            <input
-              type="password"
-              formControlName="password"
-              matInput
-              #accPassword
-            />
-            <mat-error
-              *ngIf="
-                securityForm.controls['password'].errors &&
-                securityForm.controls['password'].errors['required']
-              "
-            >
-              Please enter a password
-            </mat-error>
-            <mat-error
-              *ngIf="
-                securityForm.controls['password'].errors &&
-                securityForm.controls['password'].errors['minlength']
-              "
-            >
-              Password must be at least 8 characters long.
-            </mat-error>
-            <mat-error *ngIf="!(accConfirmPassword.value == accPassword.value)">
-              Password don't match.
-            </mat-error>
-            <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="accPassword.type == 'password'" (click)="accPassword.type == 'password' ? accPassword.type = 'text' : accPassword.type = 'password'" mat-icon-button><mat-icon>visibility</mat-icon></button>
-            <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="!(accPassword.type == 'password')" (click)="accPassword.type == 'password' ? accPassword.type = 'text' : accPassword.type = 'password'" mat-icon-button><mat-icon>visibility_off</mat-icon></button>
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Confirm Account Password</mat-label>
-            <input
-              type="password"
-              formControlName="confirmPassword"
-              matInput
-              #accConfirmPassword
-            />
-            <mat-error
-              *ngIf="
-                securityForm.controls['confirmPassword'].errors &&
-                securityForm.controls['confirmPassword'].errors['required']
-              "
-            >
-              Please enter a password
-            </mat-error>
-            <mat-error
-              *ngIf="
-                securityForm.controls['confirmPassword'].errors &&
-                securityForm.controls['confirmPassword'].errors['minlength']
-              "
-            >
-              Password must be at least 8 characters long.
-            </mat-error>
-            <mat-error *ngIf="!(accConfirmPassword.value == accPassword.value)">
-              Password don't match.
-            </mat-error>
-            <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="accConfirmPassword.type == 'password'" (click)="accConfirmPassword.type == 'password' ? accConfirmPassword.type = 'text' : accConfirmPassword.type = 'password'" mat-icon-button><mat-icon>visibility</mat-icon></button>
-            <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="!(accConfirmPassword.type == 'password')" (click)="accConfirmPassword.type == 'password' ? accConfirmPassword.type = 'text' : accConfirmPassword.type = 'password'" mat-icon-button><mat-icon>visibility_off</mat-icon></button>
-          </mat-form-field>
-          <!-- <mat-form-field appearance="outline">
-            <mat-label>Biller Pin</mat-label>
-            <input
-              type="password"
-              formControlName="billerPin"
-              matInput
-              #billerPin
-            />
-            <mat-error
-              *ngIf="
-                securityForm.controls['billerPin'].errors &&
-                securityForm.controls['billerPin'].errors['required']
-              "
-            >
-              Please enter a password
-            </mat-error>
-            <mat-error
-              *ngIf="
-                securityForm.controls['billerPin'].errors &&
-                securityForm.controls['billerPin'].errors['minlength']
-              "
-            >
-              Password must be at least 6 characters long.
-            </mat-error>
-            <mat-error *ngIf="!(confirmBillerPin.value == billerPin.value)">
-              Pin don't match.
-            </mat-error>
-            <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="billerPin.type == 'password'" (click)="billerPin.type == 'password' ? billerPin.type = 'text' : billerPin.type = 'password'" mat-icon-button><mat-icon>visibility</mat-icon></button>
-            <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="!(billerPin.type == 'password')" (click)="billerPin.type == 'password' ? billerPin.type = 'text' : billerPin.type = 'password'" mat-icon-button><mat-icon>visibility_off</mat-icon></button>
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Confirm Biller Pin</mat-label>
-            <input
-              type="password"
-              formControlName="confirmBillerPin"
-              matInput
-              #confirmBillerPin
-            />
-            <mat-error
-              *ngIf="
-                securityForm.controls['confirmBillerPin'].errors &&
-                securityForm.controls['confirmBillerPin'].errors['required']
-              "
-            >
-              Please enter a password
-            </mat-error>
-            <mat-error
-              *ngIf="
-                securityForm.controls['confirmBillerPin'].errors &&
-                securityForm.controls['confirmBillerPin'].errors['minlength']
-              "
-            >
-              Password must be at least 6 characters long.
-            </mat-error>
-            <mat-error *ngIf="!(confirmBillerPin.value == billerPin.value)">
-              Pin don't match.
-            </mat-error>
-            <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="confirmBillerPin.type == 'password'" (click)="confirmBillerPin.type == 'password' ? confirmBillerPin.type = 'text' : confirmBillerPin.type = 'password'" mat-icon-button><mat-icon>visibility</mat-icon></button>
-            <button color="primary" matSuffix tabindex="-1" type="button" *ngIf="!(confirmBillerPin.type == 'password')" (click)="confirmBillerPin.type == 'password' ? confirmBillerPin.type = 'text' : confirmBillerPin.type = 'password'" mat-icon-button><mat-icon>visibility_off</mat-icon></button>
-          </mat-form-field> -->
-          <button
-            color="primary"
-            mat-flat-button
-            [disabled]="!securityForm.valid"
-            matStepperNext
-          >
-            Continue
-          </button>
-        </form>
-      </mat-step>
-      <mat-step label="Accounts" state="group">
-        <div>
-          <h1>Account</h1>
-          <p>
-            Viraj is a <strong>multi-user</strong> platform. You can add your
-            team members and assign them roles.
-          </p>
-          <button
-            mat-fab
-            color="primary"
-            (click)="accounts.push({ username: '', access: 'manager' })"
-          >
-            <mat-icon>add</mat-icon>
-          </button>
-          <div class="accounts">
-            <div class="account" *ngFor="let account of accounts">
-              <mat-form-field appearance="outline">
-                <mat-label>Username</mat-label>
-                <input type="text" matInput [(ngModel)]="account.username" />
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>Access</mat-label>
-                <mat-select
-                  placeholder="Access Level"
-                  [(ngModel)]="account.access"
-                  name="access"
-                >
-                  <mat-option
-                    *ngFor="let access of this.dataProvider.accessLevels"
-                    [value]="access"
-                  >
-                    {{ access }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-            </div>
-          </div>
-          <button mat-flat-button color="primary" matStepperNext>
-            Continue
-          </button>
         </div>
       </mat-step>
       <mat-step label="Menu" state="menu_book">
@@ -575,6 +629,79 @@
               formControlName="description"
             ></textarea>
           </mat-form-field>
+          <div class="actions">
+            <input type="file" (change)="readFormat($event)" #menuUploader hidden>
+            <!-- show uploaded file name -->
+            <div class="upload">
+              <span *ngIf="menuUploader.files.length > 0">
+                <strong>{{ menuUploader.files[0].name }}</strong>
+                <viraj-button type="icon"></viraj-button>
+              </span>
+            </div>
+            <viraj-button type="outline" (click)="menuUploader.click()">Upload Excel</viraj-button>
+            <viraj-button type="outline"(click)="downloadFormat()">Download Excel Format</viraj-button>
+            <viraj-button type="outline" (click)="addCategory()">Add Category</viraj-button>
+          </div>
+          <div class="loadedCategories">
+            <mat-accordion class="example-headers-align">
+              <mat-expansion-panel *ngFor="let category of rootCategories">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    {{category.name}}
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="actions categoryAction">
+                  <viraj-button type="outline" (click)="addProduct(category)">Add Product</viraj-button>
+                  <viraj-button type="outline" (click)="deleteCategory(category)">Delete Category</viraj-button>
+                </div>
+                <div class="products">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th><mat-checkbox [checked]="checkedAll(category)" (change)="switchAll($event,category)">Product Name</mat-checkbox></th>
+                        <th>Price</th>
+                        <th>Tag</th>
+                        <th>Type</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let product of category.products">
+                        <td>
+                          <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="product.selected">{{product.name}}</mat-checkbox>
+                        </td>
+                        <td>
+                          <mat-form-field appearance="outline">
+                            <mat-label>Price</mat-label>
+                            <input matInput type="number" [ngModelOptions]="{standalone: true}" [(ngModel)]="product.price" />
+                          </mat-form-field>
+                        </td>
+                        <td>
+                          <mat-form-field appearance="outline">
+                            <mat-label>Select Tag</mat-label>
+                            <mat-select [ngModelOptions]="{standalone: true}" [(ngModel)]="product.tag" name="label">
+                              <mat-option *ngFor="let label of tags" [value]="label">
+                                {{ label.name | titlecase }}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </td>
+                        <td>
+                          <mat-form-field appearance="outline">
+                            <mat-label>Select Type</mat-label>
+                            <mat-select placeholder="Tag" [ngModelOptions]="{standalone: true}" [(ngModel)]="product.type" name="tag">
+                              <mat-option *ngFor="let tag of type" [value]="tag">
+                                {{ tag }}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
           <button
             color="primary"
             [disabled]="!addNewMenuForm.valid"
@@ -584,74 +711,6 @@
             Continue
           </button>
         </form>
-      </mat-step>
-      <mat-step label="Dishes" state="lunch_dining">
-        <h1>Dishes</h1>
-        <p>
-          Add dishes to your menu. You can add dishes from our existing products
-          databank.
-        </p>
-        <viraj-button (vclick)="openDishes()">Select Dishes</viraj-button>
-        <hr />
-        <div class="tableContainer">
-          <table
-            class="uk-table uk-table-divider uk-table-striped uk-table-hover uk-table-middle uk-table-small"
-          >
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Price</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let item of selectedProducts">
-                <td>
-                  <mat-checkbox
-                    [(ngModel)]="item.selected"
-                    [ngModelOptions]="{ standalone: true }"
-                    >{{ item.name }}</mat-checkbox
-                  >
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    [ngModelOptions]="{ standalone: true }"
-                    [(ngModel)]="item.price"
-                  />
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <button mat-flat-button color="primary" [disabled]="selectedProducts.length == 0" matStepperNext>Continue</button>
-      </mat-step>
-      <mat-step label="Categories" state="category">
-        <div class="heading">
-          <h3>Menu Categories</h3>
-          <button
-            type="button"
-            mat-stroked-button
-            color="primary"
-            (click)="openCategoryDialog()"
-          >
-            Add Category
-          </button>
-        </div>
-        <ol class="categories">
-          <li *ngFor="let category of rootCategories" class="categoryCard">
-            <h4>{{ category.name }}</h4>
-            <ol class="categoryProducts">
-              <li *ngFor="let item of category.products">
-                <mat-checkbox
-                  [(ngModel)]="item.selected"
-                  [ngModelOptions]="{ standalone: true }"
-                  >{{ item.name }}</mat-checkbox
-                >
-              </li>
-            </ol>
-          </li>
-        </ol>
-        <button mat-flat-button color="primary" matStepperNext>Continue</button>
       </mat-step>
       <mat-step label="Complete" state="done_all">
         <h1>Completed</h1>

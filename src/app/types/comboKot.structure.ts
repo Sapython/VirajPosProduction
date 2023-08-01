@@ -14,17 +14,17 @@ export interface ComboKotConstructor {
   unmade?: boolean;
   cancelReason?: {
     reason: string;
-    mode:'un-made'|'made';
+    mode: 'un-made' | 'made';
     time: Timestamp;
     user: UserConstructor;
   };
-  mode?:'firstChargeable'
-  | 'cancelledKot'
-  | 'editedKot'
-  | 'runningNonChargeable'
-  | 'runningChargeable'
-  | 'firstNonChargeable'
-  | 'reprintKot'
-  | 'online';
+  mode?:
+    | 'firstChargeable'
+    | 'cancelledKot'
+    | 'editedKot'
+    | 'runningNonChargeable'
+    | 'runningChargeable'
+    | 'firstNonChargeable'
+    | 'reprintKot'
+    | 'online';
 }
-

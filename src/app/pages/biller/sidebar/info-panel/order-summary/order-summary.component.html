@@ -1,43 +1,44 @@
 <section>
   <div class="actions">
     <p>Orders Summary</p>
-    <button mat-icon-button (click)="close.emit(true)"><mat-icon>close</mat-icon></button>
+    <button mat-icon-button (click)="close.emit(true)">
+      <mat-icon>close</mat-icon>
+    </button>
   </div>
-    <canvas #myChart></canvas>
-    <div class="labels">
-      <li class="one">
-        <div>
-          <span></span>
-          <p>Dine</p>
-        </div>
-        <p>{{ dine }}</p>
-      </li>
-      <li class="two">
-        <div>
-          <span></span>
-          <p>Take away</p>
-        </div>
-        <p>{{ takeAway }}</p>
-      </li>
-      <li class="three">
-        <div>
-          <span></span>
-          <p>Online</p>
-        </div>
-        <p>{{ online }}</p>
-      </li>
-      <li class="four">
-        <div>
-          <span></span>
-          <p>Non Chargeable</p>
-        </div>
-        <p>{{ nonChargable }}</p>
-      </li>
-      <hr>
-      <li>
-          <p>Total Orders</p>
-          <p>{{ dine + takeAway + online + nonChargable }}</p>
-      </li>
-    </div>
-  </section>
-  
+  <canvas #myChart></canvas>
+  <div class="labels">
+    <li class="one">
+      <div>
+        <span></span>
+        <p>Dine</p>
+      </div>
+      <p>{{ dine }}</p>
+    </li>
+    <li class="two">
+      <div>
+        <span></span>
+        <p>Take away</p>
+      </div>
+      <p>{{ takeAway }}</p>
+    </li>
+    <li class="three">
+      <div>
+        <span></span>
+        <p>Online</p>
+      </div>
+      <p>{{ online }}</p>
+    </li>
+    <li class="four">
+      <div>
+        <span></span>
+        <p>Non Chargeable</p>
+      </div>
+      <p>{{ nonChargable }}</p>
+    </li>
+    <hr />
+    <li>
+      <p>Total Orders</p>
+      <p>{{ dine + takeAway + online + nonChargable }}</p>
+    </li>
+  </div>
+</section>

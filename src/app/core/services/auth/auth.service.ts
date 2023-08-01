@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Auth, onAuthStateChanged } from '@angular/fire/auth';
+import { Auth, onAuthStateChanged, signInWithCustomToken } from '@angular/fire/auth';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { firstValueFrom } from 'rxjs';
 import { Functions } from '@angular/fire/functions';
@@ -7,7 +7,10 @@ import { DataProvider } from '../provider/data-provider.service';
 import { UserRecord } from '../../../types/user.structure';
 import { AlertsAndNotificationsService } from '../alerts-and-notification/alerts-and-notifications.service';
 import { ElectronService } from '../electron/electron.service';
-import { generateDeviceId, loginWithCustomToken, setupDevice } from './shared/shared.auth';
+import {
+  generateDeviceId,
+  setupDevice,
+} from './shared/shared.auth';
 import { UserManagementService } from './user/user-management.service';
 import { LoginService } from './login/login.service';
 
@@ -19,14 +22,14 @@ export class AuthService {
   localUserData: UserRecord | undefined;
 
   constructor(
-    private auth: Auth,
+    public auth: Auth,
     private dataProvider: DataProvider,
     private dbService: NgxIndexedDBService,
     private alertify: AlertsAndNotificationsService,
-    private electronService: ElectronService,
+    public electronService: ElectronService,
     private functions: Functions,
     private userManagement: UserManagementService,
-    private loginService: LoginService
+    private loginService: LoginService,
   ) {
     this.setupDevice();
     firstValueFrom(this.dbService.getByKey('business', 1))
@@ -48,7 +51,7 @@ export class AuthService {
         }
       })
       .catch((err) => {
-      //  console.log('Local login error', err);
+        //  console.log('Local login error', err);
       });
     onAuthStateChanged(this.auth, async (user) => {
       this.dataProvider.isAuthStateAvaliable = false;
@@ -95,13 +98,13 @@ export class AuthService {
               }
             })
             .catch((err) => {
-            //  console.log('Getting current user Error', err);
+              //  console.log('Getting current user Error', err);
             });
         }
       } else {
         console.log(
           'No auth state found, 9452',
-          this.electronService.getAuth()
+          this.electronService.getAuth(),
         );
         let token = this.electronService.getAuth();
         if (token) {
@@ -123,12 +126,17 @@ export class AuthService {
           code: 'noUser',
           message: 'User not found',
         });
-      //  console.log('No auth state found');
+        //  console.log('No auth state found');
       }
     });
   }
 
+  loginWithCustomToken(token: string) {
+    window.localStorage.setItem('signInToken', token);
+    this.electronService.setAuth(token);
+    return signInWithCustomToken(this.auth, token);
+  }
+
   private setupDevice = setupDevice;
   private generateDeviceId = generateDeviceId;
-  private loginWithCustomToken = loginWithCustomToken;
 }

@@ -1,25 +1,40 @@
-<section [ngClass]="{'collapsed':!dataProvider.smartMode}">
+<section [ngClass]="{ collapsed: !dataProvider.smartMode }">
   <app-info-panel #infoPanel></app-info-panel>
-  <app-menu ></app-menu>
+  <app-menu></app-menu>
   <div class="actions">
-    <viraj-button type="outline" (vclick)="editMenu();" *ngIf="this.dataProvider.getAccess('editMenu')">
-        <ng-container >Edit Menu</ng-container>
-        <!-- <mat-icon *ngIf="dataProvider.clientHeight < 717" color="primary">edit</mat-icon> -->
+    <viraj-button
+      type="outline"
+      (vclick)="editMenu()"
+      *ngIf="this.dataProvider.getAccess('editMenu')"
+    >
+      <ng-container>Edit Menu</ng-container>
+      <!-- <mat-icon *ngIf="dataProvider.clientHeight < 717" color="primary">edit</mat-icon> -->
     </viraj-button>
     <ng-container *ngIf="this.dataProvider.smartMode">
-        <span class="badge sales" id="stockConsumptionTrigger" cdkOverlayOrigin #stockConsumptionTrigger="cdkOverlayOrigin" (mouseleave)="this.closeStockListPanelSubscription.next(false);" (mouseenter)="isStockListOpen = true">
-            <p>Stock Cons.</p>
-            <b class="cost">{{stockConsumption | currency:'INR'}}</b>
-        </span>
-        <ng-template
-            *ngIf="!this.dataProvider.touchMode"
-            cdkConnectedOverlay
-            [cdkConnectedOverlayOffsetY]="-40"
-            [cdkConnectedOverlayOrigin]="stockConsumptionTrigger"
-            [cdkConnectedOverlayOpen]="isStockListOpen"
-        >
-            <app-stock-list (close)="this.isStockListOpen = false" (mouseleave)="this.closeStockListPanelSubscription.next(false)" (mouseenter)="this.closeStockListPanelSubscription.next(true)"></app-stock-list>
-        </ng-template>
+      <span
+        class="badge sales"
+        id="stockConsumptionTrigger"
+        cdkOverlayOrigin
+        #stockConsumptionTrigger="cdkOverlayOrigin"
+        (mouseleave)="this.closeStockListPanelSubscription.next(false)"
+        (mouseenter)="isStockListOpen = true"
+      >
+        <p>Stock Cons.</p>
+        <b class="cost">{{ stockConsumption | currency: "INR" }}</b>
+      </span>
+      <ng-template
+        *ngIf="!this.dataProvider.touchMode"
+        cdkConnectedOverlay
+        [cdkConnectedOverlayOffsetY]="-40"
+        [cdkConnectedOverlayOrigin]="stockConsumptionTrigger"
+        [cdkConnectedOverlayOpen]="isStockListOpen"
+      >
+        <app-stock-list
+          (close)="this.isStockListOpen = false"
+          (mouseleave)="this.closeStockListPanelSubscription.next(false)"
+          (mouseenter)="this.closeStockListPanelSubscription.next(true)"
+        ></app-stock-list>
+      </ng-template>
     </ng-container>
   </div>
   <app-stock *ngIf="dataProvider.smartMode"></app-stock>

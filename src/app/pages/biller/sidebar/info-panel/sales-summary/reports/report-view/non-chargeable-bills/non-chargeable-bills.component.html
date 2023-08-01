@@ -1,47 +1,46 @@
-<table class="styled-table" *ngIf="!loading">
-	<thead>
-	  <tr>
-		<th>Bill No</th>
-		<th>Order No</th>
-		<th>Bill Amount</th>
-		<th>User</th>
-		<th>Customer Name</th>
-		<th>Customer Phone</th>
-		<th>Reason</th>
-		<th>Bill Kots</th>
-		<th>Date-Time</th>
-	  </tr>
-	</thead>
-	<tbody>
-	  <tr *ngFor="let bill of bills | async">
-		<td>
-		  {{ bill.billNo || "Unsettled" }}
-		</td>
-		<td>
-		  {{ bill.orderNo }}
-		</td>
-		<td>
-		  {{ bill.billing.grandTotal }}
-		</td>
-		<td>
-		  {{ bill.nonChargeableDetail.user.username }}
-		</td>
-		<td>
-		  {{ bill.nonChargeableDetail.name }}
-		</td>
-		<td>
-		  {{ bill.nonChargeableDetail.phone }}
-		</td>
-		<td>
-		  {{ bill.nonChargeableDetail.reason }}
-		</td>
-		<td>
-		  {{ joinArray(bill.kots) }}
-		</td>
-		<td>
-		  {{ bill.createdDate.toDate() | date : "short" }}
-		</td>
-	  </tr>
-	</tbody>
-  </table>
-  
+<table class="styled-table" id="reportTable" *ngIf="!loading">
+  <thead>
+    <tr>
+      <th>Bill No</th>
+      <th>Order No</th>
+      <th>Bill Amount</th>
+      <th>User</th>
+      <th>Customer Name</th>
+      <th>Customer Phone</th>
+      <th>Reason</th>
+      <th>Bill Kots</th>
+      <th>Date-Time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let bill of bills | async">
+      <td>
+        {{ bill.billNo || "Unsettled" }}
+      </td>
+      <td>
+        {{ bill.orderNo }}
+      </td>
+      <td>
+        {{ bill.billing.grandTotal }}
+      </td>
+      <td>
+        {{ bill.nonChargeableDetail.user.username }}
+      </td>
+      <td>
+        {{ bill.nonChargeableDetail.name }}
+      </td>
+      <td>
+        {{ bill.nonChargeableDetail.phone }}
+      </td>
+      <td>
+        {{ bill.nonChargeableDetail.reason }}
+      </td>
+      <td>
+        {{ joinArray(bill.kots) }}
+      </td>
+      <td>
+        {{ bill.createdDate.toDate() | date: "short" }}
+      </td>
+    </tr>
+  </tbody>
+</table>

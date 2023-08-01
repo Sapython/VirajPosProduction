@@ -8,7 +8,9 @@ import { AddNewCategoryComponent } from '../add-new-category/add-new-category.co
 import { Product } from '../../../../../types/product.structure';
 import { DataProvider } from '../../../../../core/services/provider/data-provider.service';
 import { MenuManagementService } from '../../../../../core/services/database/menuManagement/menu-management.service';
-
+import Fuse from 'fuse.js';
+import { Subject, firstValueFrom } from 'rxjs';
+import { read, utils, writeFile } from 'xlsx';
 @Component({
   selector: 'app-add-menu',
   templateUrl: './add-menu.component.html',
@@ -16,24 +18,38 @@ import { MenuManagementService } from '../../../../../core/services/database/men
 })
 export class AddMenuComponent {
   menuImage: File | undefined;
-  products: Product[] = [];
+  products: ExcelProduct[] = [];
   customDishes: any[] = [];
-  selectedProducts: Product[] = [];
+  selectedProducts: ExcelProduct[] = [];
   addNewMenuForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.nullValidator]),
-    description: new FormControl('', [
-      Validators.required,
-      Validators.nullValidator,
-    ]),
   });
-  rootCategories:{name:string,products:Product[]}[] = []
+  rootCategories: { name: string; products: any[] }[] = [];
   imageUrl: string = '';
+  filteredProducts: ExcelProduct[] = [];
+  fuseSearchInstance: Fuse<ExcelProduct> = new Fuse<ExcelProduct>(this.products, {
+    keys: ['name', 'price'],
+  });
+  searchSubject: Subject<string> = new Subject<string>();
+  type: string[] = ['veg', 'non-veg'];
+  tags: { color: string; name: string; contrast: string }[] = [
+    {
+      color: 'tomato',
+      contrast: 'white',
+      name: 'Half',
+    },
+    {
+      color: 'green',
+      contrast: 'white',
+      name: 'Full',
+    },
+  ];
   constructor(
     private dialog: Dialog,
     private menuManagementService: MenuManagementService,
     private dataProvider: DataProvider,
     private dialogRef: DialogRef,
-    private alertify: AlertsAndNotificationsService
+    private alertify: AlertsAndNotificationsService,
   ) {}
 
   setImage(event: any) {
@@ -69,12 +85,12 @@ export class AddMenuComponent {
         });
         dialog.componentInstance!.editMode = true;
         let a = dialog.closed.subscribe((value: any) => {
-        //  console.log('value', value);
+          //  console.log('value', value);
           if (value) {
             this.selectedProducts = value.filter((p: Product) => {
               return p.selected;
             });
-          //  console.log('selectedProducts', this.selectedProducts);
+            //  console.log('selectedProducts', this.selectedProducts);
           }
           a.unsubscribe();
         });
@@ -86,28 +102,27 @@ export class AddMenuComponent {
 
   addDish() {
     const dialog = this.dialog.open(AddDishComponent);
-    let a = dialog.closed.subscribe((value) => {
-    //  console.log('value', value);
-      a.unsubscribe();
+    firstValueFrom(dialog.closed).then((value) => {
     });
-    // open dishes dialog
   }
 
   addNewMenu() {
-    // validate 
-    if (this.addNewMenuForm.invalid){
-      alert("Invalid form")
-      return
+    // validate
+    if (this.addNewMenuForm.invalid) {
+      alert('Invalid form');
+      return;
     }
-    if (this.rootCategories.length == 0){
-      alert("Add some root categories ")
-      return
+    if (this.rootCategories.length == 0) {
+      alert('Add some root categories ');
+      return;
     }
     this.dataProvider.loading = true;
     // filter rootCategories prdoucts to only include selected products
-    this.rootCategories.forEach((category)=>{
-      category.products = category.products.filter((product)=> product.selected)
-    })
+    this.rootCategories.forEach((category) => {
+      category.products = category.products.filter(
+        (product) => product.selected,
+      );
+    });
     this.menuManagementService
       .addNewMenu(this.addNewMenuForm.value, this.rootCategories)
       .then(() => {
@@ -115,10 +130,10 @@ export class AddMenuComponent {
         this.dialogRef.close();
       })
       .catch((err) => {
-      //  console.log('err', err);
+        //  console.log('err', err);
         this.alertify.presentToast(
           'Error adding menu, please try again later',
-          'error'
+          'error',
         );
       })
       .finally(() => {
@@ -130,25 +145,111 @@ export class AddMenuComponent {
     this.dialogRef.close();
   }
 
-  openCategoryDialog() {
-    let filteredProducts:Product[] = []
-    this.rootCategories.forEach((category)=>{
-      filteredProducts.push(...category.products)
-    })
-    // fincal products that are not in the filtered products
-    let finalProducts:Product[] = []
-    this.selectedProducts.forEach((product)=>{
-      if(!filteredProducts.find((p)=>p.id == product.id)){
-        finalProducts.push(product)
-      }
-    })
-  //  console.log('filteredProducts', filteredProducts);
-    const dialog = this.dialog.open(AddNewCategoryComponent,{data:{noSave:true,products:finalProducts}})
-    dialog.closed.subscribe((value:any)=>{
-    //  console.log('value', value);
-      if(value){
-        this.rootCategories.push(value)
-      }
-    })
+  downloadFormat(){
+    // create a csv file with this format
+    // name, category, price,veg/nonveg , half/full (half/full is optional),
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "name,category,price,veg/nonveg,half/full\n";
+    // download the file
+    var encodedUri = encodeURI(csvContent);
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "menu_format.csv");
+    document.body.appendChild(link); // Required for Firefox
+    link.click(); // This will download the data file named "my_data.csv".
   }
+
+  readFormat(event:any){
+    // handle file event
+    let file: File = event.target.files[0];
+
+    if (file.size > 10000000) {
+      alert('File size is too large, please choose a smaller file');
+      return;
+    }
+    // read the file
+    let reader = new FileReader();
+    reader.readAsBinaryString(file)
+    reader.onload = (e) => {
+      let spreadSheetWorkBook = read(e.target.result, {type:'binary'});
+      console.log('spreadSheetFile', spreadSheetWorkBook);
+      const data = utils.sheet_to_json<ExcelProduct>(spreadSheetWorkBook.Sheets[spreadSheetWorkBook.SheetNames[0]]);
+      console.log('data', data);
+      
+      //  console.log('reader.result', reader.result);
+      // let lines = (reader.result as string).split('\n');
+      // //  console.log('lines', lines);
+      let products = [];
+      this.rootCategories = [];
+      data.forEach((line)=>{
+        line.tag = line['half/full'] == 'full' ? {color:'green',contrast:'white',name:'Full'} : { color: 'tomato', contrast: 'white', name: 'Half'};
+        line.type = line['veg/nonveg'] == 'veg' ? 'veg' : 'non-veg';
+        let product = {
+          name:line.name,
+          category:line.category,
+          price:line.price,
+          type:line.type,
+          tag:line.tag,
+          selected:true
+        };
+        products.push(product);
+        // add to root category if not already present
+        if(!this.rootCategories.find((category)=>category.name == line.category)){
+          this.rootCategories.push({name:line.category,products:[product]});
+        } else {
+          // add to the products of the category
+          this.rootCategories.find((category)=>category.name == line.category)?.products.push(product);
+        }
+      });
+
+      console.log('products', products);
+      // this.selectedProducts = products;
+    }
+  }
+
+  switchAll(event: any,category:{name:string,products:any[]}) {
+    category.products.forEach((product: any) => {
+      product.selected = event.checked;
+    });
+  }
+
+  checkedAll(category:{name:string,products:any[]}){
+    return category.products.every((product:any)=>product.selected);
+  }
+
+  deleteCategory(category:{name:string,products:any[]}){
+    this.rootCategories = this.rootCategories.filter((c)=>c.name != category.name);
+    this.alertify.presentToast("Category Deleted");
+  }
+
+  async addCategory(){
+    let categoryName = await this.dataProvider.prompt('Add new category',{
+      required:true
+    });
+    if(categoryName){
+      this.rootCategories.push({name:categoryName,products:[]});
+      this.alertify.presentToast("Category Added");
+    }
+  }
+
+  addProduct(category:{name:string,products:any[]}){
+    const dishComp = this.dialog.open(AddDishComponent,{data:{mode:'add'}});
+    firstValueFrom(dishComp.closed).then((value)=>{
+      console.log("TO be added product",value);
+      if(value){
+        category.products.push(value);
+        this.alertify.presentToast("Product Added");
+      }
+    });
+  }
+}
+
+
+interface ExcelProduct {
+  name:string;
+  category:string;
+  price:number;
+  type:'veg'|'non-veg';
+  tag:{color:'green',contrast:'white',name:'Full'} | { color: 'tomato', contrast: 'white', name: 'Half'};
+  selected?:boolean;
 }

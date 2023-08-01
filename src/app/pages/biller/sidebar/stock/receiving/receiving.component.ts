@@ -4,10 +4,10 @@ import { DataProvider } from '../../../../../core/services/provider/data-provide
 @Component({
   selector: 'app-receiving',
   templateUrl: './receiving.component.html',
-  styleUrls: ['./receiving.component.scss']
+  styleUrls: ['./receiving.component.scss'],
 })
 export class ReceivingComponent {
-  @Input() approved:number = 40;
-  @Input() pending:number = 40;
-  constructor(public dataProvider:DataProvider) { }
+  @Input() approved: number = 40;
+  @Input() pending: number = 40;
+  constructor(public dataProvider: DataProvider) {}
 }

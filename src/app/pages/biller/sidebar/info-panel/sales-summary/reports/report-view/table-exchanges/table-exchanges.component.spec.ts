@@ -8,9 +8,8 @@ describe('TableExchangesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TableExchangesComponent ]
-    })
-    .compileComponents();
+      declarations: [TableExchangesComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(TableExchangesComponent);
     component = fixture.componentInstance;

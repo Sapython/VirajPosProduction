@@ -1,28 +1,59 @@
 <div class="main">
-    <div class="title">
-        <p>{{combo.name}}</p>
-        <div class="quantity">
-            <viraj-button [disabled]="!(editMode || newCombo) " type="icon" (vclick)="combo.decreaseQuantity()"><i class="ri-subtract-line"></i></viraj-button>
-            <input [disabled]="!(editMode || newCombo)" type="number" [(ngModel)]="combo.quantity">
-            <viraj-button [disabled]="!(editMode || newCombo)" type="icon" (vclick)="combo.increaseQuantity()"><i class="ri-add-fill"></i></viraj-button>
-        </div>
-        <ng-container *ngIf="editMode && !newCombo">
-            <viraj-button (vclick)="activateCombo()">Activate</viraj-button>
-        </ng-container>
-        <viraj-button [disabled]="editMode || newCombo" (vclick)="delete.emit()">Delete</viraj-button>
+  <div class="title">
+    <p>{{ combo.name }}</p>
+    <div class="quantity">
+      <viraj-button
+        [disabled]="!(editMode || newCombo)"
+        type="icon"
+        (vclick)="combo.decreaseQuantity()"
+        ><i class="ri-subtract-line"></i
+      ></viraj-button>
+      <input
+        [disabled]="!(editMode || newCombo)"
+        type="number"
+        [(ngModel)]="combo.quantity"
+      />
+      <viraj-button
+        [disabled]="!(editMode || newCombo)"
+        type="icon"
+        (vclick)="combo.increaseQuantity()"
+        ><i class="ri-add-fill"></i
+      ></viraj-button>
     </div>
-    <div class="types">
-        <div class="type" *ngFor="let category of combo.combo.selectedCategories">
-            <div class="header">
-                <p>Type:</p>
-                <p>{{category.category.name}}</p>
-            </div>
-            <div class="categories">
-                <app-kot-item [disabled]="disabled" [propagateFunctions]="true" (addQuantityFunction)="addProductQuantity(category,item)" (removeQuantityFunction)="removeProductQuantity(category,item)" (setQuantityFunction)="setProductQuantity(category,item,$event)" [kotId]="kotId" [@zoomInOnEnter] [@zoomOutOnLeave] (delete)="combo.deleteProduct(category, item)"
-                            [product]="item" [kotNo]="activeKotIndex" [info]="item.instruction || null"
-                            [quantity]="item.quantity" [productName]="item.name" [nonVeg]="item.type == 'non-veg'"
-                            [price]="item.price" *ngFor="let item of category.selectedProducts"></app-kot-item>
-            </div>
-        </div>
+    <ng-container *ngIf="editMode && !newCombo">
+      <viraj-button (vclick)="activateCombo()">Activate</viraj-button>
+    </ng-container>
+    <viraj-button [disabled]="editMode || newCombo" (vclick)="delete.emit()"
+      >Delete</viraj-button
+    >
+  </div>
+  <div class="types">
+    <div class="type" *ngFor="let category of combo.combo.selectedCategories">
+      <div class="header">
+        <p>Type:</p>
+        <p>{{ category.category.name }}</p>
+      </div>
+      <div class="categories">
+        <app-kot-item
+          [disabled]="disabled"
+          [propagateFunctions]="true"
+          (addQuantityFunction)="addProductQuantity(category, item)"
+          (removeQuantityFunction)="removeProductQuantity(category, item)"
+          (setQuantityFunction)="setProductQuantity(category, item, $event)"
+          [kotId]="kotId"
+          [@zoomInOnEnter]
+          [@zoomOutOnLeave]
+          (delete)="combo.deleteProduct(category, item)"
+          [product]="item"
+          [kotNo]="activeKotIndex"
+          [info]="item.instruction || null"
+          [quantity]="item.quantity"
+          [productName]="item.name"
+          [nonVeg]="item.type == 'non-veg'"
+          [price]="item.price"
+          *ngFor="let item of category.selectedProducts"
+        ></app-kot-item>
+      </div>
     </div>
+  </div>
 </div>

@@ -19,7 +19,7 @@ export class AlertsAndNotificationsService {
     type: 'info' | 'error' = 'info',
     duration: number = 5000,
     action: string = '',
-    sound: boolean = true
+    sound: boolean = true,
   ) {
     this.snackbar.open(message, action, { duration: duration });
     // if (sound && type === 'info') {

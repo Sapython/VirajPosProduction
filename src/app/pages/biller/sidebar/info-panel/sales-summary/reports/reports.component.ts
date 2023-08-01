@@ -18,24 +18,135 @@ import {
 import { Chart } from 'chart.js';
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { ReportViewComponent } from './report-view/report-view.component';
-
+import { Subject, debounceTime } from 'rxjs';
+import Fuse from 'fuse.js';
 @Component({
   selector: 'app-reports',
   templateUrl: './reports.component.html',
   styleUrls: ['./reports.component.scss'],
 })
 export class ReportsComponent implements OnInit {
-  
-  @ViewChild('salesChart') salesChart: {nativeElement:HTMLCanvasElement}|undefined;
-  @ViewChild('orderChart') orderChart: {nativeElement:HTMLCanvasElement}|undefined;
+  reportFormats:ReportFormat[] = [
+    {
+      title: 'Item Wise Sales',
+      code: 'itemWise',
+      description: 'List of items and their sales, with bills and kots.',
+    },
+    {
+      title: 'All Bills',
+      code: 'billWise',
+      description:
+        'List of bills from all channels, with their sales and settlements.',
+    },
+    {
+      title: 'Dine In Bills',
+      code: 'dineInBills',
+      description:
+        'List of bills from dine in channel, with their sales and settlements.',
+    },
+    {
+      title: 'Takeaway Bills',
+      code: 'takeawayBills',
+      description:
+        'List of bills from takeaway channel, with their sales and settlements.',
+    },
+    {
+      title: 'Online Bills',
+      code: 'onlineBills',
+      description:
+        'List of bills from online channel, with their sales and settlements.',
+    },
+    {
+      title: 'Table Wise Sales',
+      code: 'tableWiseSales',
+      description:
+        'List of bills from online channel, with their sales and settlements.',
+    },
+    {
+      title: 'Day Summary',
+      code: 'daySummary',
+      description:
+        'Full day summary with all bills, kots, sales, settlements, etc.',
+    },
+    {
+      title: 'KOT wise report',
+      code: 'kotWise',
+      description: 'List of KOTs with their timings, waiter, items.',
+    },
+    {
+      title: 'Discounted Bills',
+      code: 'discounted',
+      description:
+        'List of bills on which discount has been applied, and discounted amount.',
+    },
+    {
+      title: 'Non Chargeable Bills',
+      code: 'ncBills',
+      description: 'List of bills which have been marked as NC.',
+    },
+    {
+      title: 'Bill Edits',
+      code: 'billEdits',
+      description:
+        'List of bills which have been edited, with name and timings.',
+    },
+    {
+      title: 'Customer Wise Report',
+      code: 'customerWiseReport',
+      description: 'List of customers and their spending with loyalty points.',
+    },
+    {
+      title: 'Hourly Item Sales',
+      code: 'hourlyItemSales',
+      description: 'List of items sold by per hour basis in 24 hours.',
+    },
+    {
+      title: 'Kot Edits',
+      code: 'kotEdits',
+      description: 'List of KOTs that has been edited, with name and timings.',
+    },
+    {
+      title: 'Payment Wise',
+      code: 'paymentWise',
+      description: 'List of payment channels and their total received money.',
+    },
+    {
+      title: 'Waiter wise items',
+      code: 'waiterWiseItems',
+      description: 'List of items and what waiter has ordered.',
+    },
+    {
+      title: 'Table Wise Activity',
+      code: 'tableWiseActivity',
+      description: 'List of tables with merge, exchange, split actions.',
+    },
+  ];
+  fuseSearchInstance:Fuse<ReportFormat> = new Fuse(this.reportFormats,{keys:['title','description']});
+  filteredReportFormats:ReportFormat[] = [];
+  reportSearchSubject:Subject<string> = new Subject<string>();
+  @ViewChild('salesChart') salesChart:
+    | { nativeElement: HTMLCanvasElement }
+    | undefined;
+  @ViewChild('orderChart') orderChart:
+    | { nativeElement: HTMLCanvasElement }
+    | undefined;
   constructor(
     private billService: BillService,
     private dataProvider: DataProvider,
-    private dialog:Dialog,
-    public dialogRef:DialogRef
-  ) {};
-  salesChartJS:Chart|undefined;
-  paymentChartJS:any;
+    private dialog: Dialog,
+    public dialogRef: DialogRef,
+  ) {
+    this.filteredReportFormats = this.reportFormats.slice();
+    this.reportSearchSubject.pipe(debounceTime(600)).subscribe((res) => {
+      if (res.trim().length > 0) {
+        this.filteredReportFormats = this.fuseSearchInstance.search(res.trim()).map(res=>res.item);
+      } else {
+        this.filteredReportFormats = this.reportFormats.slice();
+      }
+    })
+  }
+  salesChartJS: Chart | undefined;
+  paymentChartJS: any;
   selectedDate: Date = new Date();
   barThickness = 40;
   // Reports
@@ -73,7 +184,7 @@ export class ReportsComponent implements OnInit {
   tables: TableConstructor[] = [];
   loading: boolean = false;
   reportMode:
-    'billWise'
+    | 'billWise'
     | 'kotWise'
     | 'itemWise'
     | 'discounted'
@@ -91,53 +202,53 @@ export class ReportsComponent implements OnInit {
     end: new FormControl<Date | null>(new Date(), [Validators.required]),
   });
   ngOnInit(): void {
-    this.fetchChartSalesData({value:new Date()});
-    this.fetchChartPaymentData({value:new Date()});
+    this.fetchChartSalesData({ value: new Date() });
+    this.fetchChartPaymentData({ value: new Date() });
   }
 
-  fetchChartSalesData(event:{value:Date}){
-    console.log("Event",event);
-    this.billService.getAnalyticsReport(event.value).then((res)=>{
-      console.log("Analytics data Res",res.data());
+  fetchChartSalesData(event: { value: Date }) {
+    console.log('Event', event);
+    this.billService.getAnalyticsReport(event.value).then((res) => {
+      console.log('Analytics data Res', res.data());
       let resData = res.data();
-      if (resData){
+      if (resData) {
         let labels = [];
-      // generate labels for 24 hour format like 1:00 AM, 2:00 AM, 3:00 AM
-      for (let i = 0; i < 24; i++) {
-        let hour = i % 12;
-        if (hour == 0) hour = 12;
-        labels.push(hour + ':00 ' + (i < 12 ? 'AM' : 'PM'));
-      }
-      this.salesChartJS.data = {
-        labels: labels,
-        datasets: [
-          {
-            label: 'Sale Per Hour',
-            data: [...resData.salesChannels.all.hourlySales],
-            borderWidth: 1,
-            tension: 0.4,
-          },
-          {
-            label: 'Average Sales',
-            data: [...resData.salesChannels.all.averageHourlySales],
-            borderWidth: 1,
-            tension: 0.4,
-          },
-        ],
-      };
-      this.salesChartJS.update();
+        // generate labels for 24 hour format like 1:00 AM, 2:00 AM, 3:00 AM
+        for (let i = 0; i < 24; i++) {
+          let hour = i % 12;
+          if (hour == 0) hour = 12;
+          labels.push(hour + ':00 ' + (i < 12 ? 'AM' : 'PM'));
+        }
+        this.salesChartJS.data = {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Sale Per Hour',
+              data: [...resData.salesChannels.all.hourlySales],
+              borderWidth: 1,
+              tension: 0.4,
+            },
+            {
+              label: 'Average Sales',
+              data: [...resData.salesChannels.all.averageHourlySales],
+              borderWidth: 1,
+              tension: 0.4,
+            },
+          ],
+        };
+        this.salesChartJS.update();
       } else {
-        alert("No data found for this date");
+        alert('No data found for this date');
       }
     });
   }
 
-  fetchChartPaymentData(event:any){
-    console.log("Event",event);
-    this.billService.getAnalyticsReport(event.value).then((res)=>{
-      console.log("Analytics data Res",res);
+  fetchChartPaymentData(event: any) {
+    console.log('Event', event);
+    this.billService.getAnalyticsReport(event.value).then((res) => {
+      console.log('Analytics data Res', res);
       let resData = res.data();
-      if (resData){
+      if (resData) {
         let labels = Object.keys(resData.salesChannels.all.paymentReceived);
         let payments = Object.values(resData.salesChannels.all.paymentReceived);
         this.paymentChartJS.data = {
@@ -147,13 +258,13 @@ export class ReportsComponent implements OnInit {
               label: 'Payment Received',
               data: payments,
               borderWidth: 1,
-              hoverOffset: 4
-            }
+              hoverOffset: 4,
+            },
           ],
         };
         this.paymentChartJS.update();
       } else {
-        alert("No data found for this date");
+        alert('No data found for this date');
       }
     });
   }
@@ -188,7 +299,7 @@ export class ReportsComponent implements OnInit {
                   tokenNo: bill.orderNo,
                   grandTotal: kot.products.reduce(
                     (a, b) => a + (b['price'] || 0),
-                    0
+                    0,
                   ),
                 };
               });
@@ -210,16 +321,16 @@ export class ReportsComponent implements OnInit {
               return bill.kots.map((kot) => {
                 let products = [];
                 kot.products.forEach((product) => {
-                  if (product.itemType == 'product'){
+                  if (product.itemType == 'product') {
                     products.push(product);
-                  } else if (product.itemType == 'combo'){
+                  } else if (product.itemType == 'combo') {
                     product.productSelection.forEach((item) => {
                       item.products.forEach((product) => {
                         products.push(product);
-                      })
-                    })
+                      });
+                    });
                   }
-                })
+                });
                 // remove duplicates by adding quantity
                 products = products.reduce((acc, current) => {
                   const x = acc.find((item) => item.id === current.id);
@@ -237,7 +348,7 @@ export class ReportsComponent implements OnInit {
                     kotNo: kot.id,
                     grandTotal: kot.products.reduce(
                       (a, b) => a + (b['price'] || 0),
-                      0
+                      0,
                     ),
                   };
                 });
@@ -252,8 +363,8 @@ export class ReportsComponent implements OnInit {
                   ...a,
                   {
                     ...b,
-                    bills: (b.billNo ? b.billNo : ''),
-                    kots: (b.kotNo ? b.kotNo : ''),
+                    bills: b.billNo ? b.billNo : '',
+                    kots: b.kotNo ? b.kotNo : '',
                     quantity: 1,
                     amount: b.price,
                   },
@@ -335,20 +446,20 @@ export class ReportsComponent implements OnInit {
               totalBills: localBills.length,
               totalAmount: localBills.reduce(
                 (acc, res) => acc + res.billing.grandTotal,
-                0
+                0,
               ),
               totalDiscount: localBills.reduce(
                 (acc, res) =>
                   acc +
                   res.billing.discount.reduce(
                     (a, b) => a + (b.totalAppliedDiscount || 0),
-                    0
+                    0,
                   ),
-                0
+                0,
               ),
               totalTax: localBills.reduce(
                 (acc, res) => acc + res.billing.totalTax,
-                0
+                0,
               ),
               totalKots: localBills
                 .map((res) => res.kots.length)
@@ -357,11 +468,11 @@ export class ReportsComponent implements OnInit {
                 .map((res) =>
                   res.kots
                     .map((res) => res.products.length)
-                    .reduce((a, b) => a + b, 0)
+                    .reduce((a, b) => a + b, 0),
                 )
                 .reduce((a, b) => a + b, 0),
               totalDiscountedBills: localBills.filter(
-                (res) => res.billing.discount.length > 0
+                (res) => res.billing.discount.length > 0,
               ).length,
               totalDiscountedAmount: localBills
                 .filter((res) => res.billing.discount.length > 0)
@@ -372,7 +483,7 @@ export class ReportsComponent implements OnInit {
                 .filter((res) => res.nonChargeableDetail)
                 .reduce((acc, res) => acc + res.billing.grandTotal, 0),
               totalTakeawayBills: localBills.filter(
-                (res) => res.mode == 'takeaway'
+                (res) => res.mode == 'takeaway',
               ).length,
               totalTakeawayAmount: localBills
                 .filter((res) => res.mode == 'takeaway')
@@ -398,7 +509,7 @@ export class ReportsComponent implements OnInit {
               (res) =>
                 res.settlement &&
                 res.billing.grandTotal < this.maxAmount &&
-                res.billing.grandTotal > 0
+                res.billing.grandTotal > 0,
             );
             //  console.log("bills",filteredLocalBills);
             let taxes: Tax[] = [];
@@ -417,11 +528,11 @@ export class ReportsComponent implements OnInit {
               bills: filteredLocalBills,
               totalSubtotal: filteredLocalBills.reduce(
                 (acc, res) => acc + res.billing.subTotal,
-                0
+                0,
               ),
               totalGrandTotal: filteredLocalBills.reduce(
                 (acc, res) => acc + res.billing.grandTotal,
-                0
+                0,
               ),
               totalTaxes: taxes,
             };
@@ -437,7 +548,7 @@ export class ReportsComponent implements OnInit {
             });
             //  console.log("bills local",localBills);
             let filteredLocalBills = localBills.filter(
-              (res) => res.settlement && res.mode == 'takeaway'
+              (res) => res.settlement && res.mode == 'takeaway',
             );
             //  console.log("bills",filteredLocalBills);
             let taxes: Tax[] = [];
@@ -501,7 +612,7 @@ export class ReportsComponent implements OnInit {
     link.setAttribute('target', '_blank');
     link.setAttribute(
       'href',
-      'data:text/csv;charset=utf-8,' + encodeURIComponent(csv_string)
+      'data:text/csv;charset=utf-8,' + encodeURIComponent(csv_string),
     );
     link.setAttribute('download', filename);
     document.body.appendChild(link);
@@ -594,33 +705,40 @@ export class ReportsComponent implements OnInit {
         });
         doc.setFontSize(10);
         autoTable(doc, {
-          head: [[
-            {
-              content: 'Product Name',
-              styles: {
-                cellWidth: 'wrap',
+          head: [
+            [
+              {
+                content: 'Product Name',
+                styles: {
+                  cellWidth: 'wrap',
+                },
               },
-            },{
-              content: 'Quantity',
-              styles: {
-                cellWidth: 'wrap',
+              {
+                content: 'Quantity',
+                styles: {
+                  cellWidth: 'wrap',
+                },
               },
-            },{
-              content: 'Amount',
-              styles: {
-                cellWidth: 'wrap',
+              {
+                content: 'Amount',
+                styles: {
+                  cellWidth: 'wrap',
+                },
               },
-            },{
-              content: 'Bills',
-              styles: {
-                cellWidth: 'wrap',
+              {
+                content: 'Bills',
+                styles: {
+                  cellWidth: 'wrap',
+                },
               },
-            },{
-              content: 'Kots',
-              styles: {
-                cellWidth: 'wrap',
+              {
+                content: 'Kots',
+                styles: {
+                  cellWidth: 'wrap',
+                },
               },
-            }]],
+            ],
+          ],
           body: this.products
             .filter((res) => res.quantity > 0)
             .map((res) => [
@@ -670,7 +788,7 @@ export class ReportsComponent implements OnInit {
       });
       autoTable(doc, {
         html: '#consolidatedTable',
-        startY: y+10,
+        startY: y + 10,
         didDrawPage: function (data) {
           y = data.cursor.y;
         },
@@ -699,7 +817,7 @@ export class ReportsComponent implements OnInit {
             {
               content: this.bills.reduce(
                 (acc, res) => acc + res.billing.grandTotal,
-                0
+                0,
               ),
               styles: { halign: 'right' },
             },
@@ -712,9 +830,9 @@ export class ReportsComponent implements OnInit {
                   acc +
                   res.billing.discount.reduce(
                     (a, b) => a + (b.totalAppliedDiscount || 0),
-                    0
+                    0,
                   ),
-                0
+                0,
               ),
               styles: { halign: 'right' },
             },
@@ -724,7 +842,7 @@ export class ReportsComponent implements OnInit {
             {
               content: this.bills.reduce(
                 (acc, res) => acc + res.billing.totalTax,
-                0
+                0,
               ),
               styles: { halign: 'right' },
             },
@@ -799,7 +917,7 @@ export class ReportsComponent implements OnInit {
             {
               content: this.discountedBills.reduce(
                 (acc, res) => acc + res.billing.grandTotal,
-                0
+                0,
               ),
               styles: { halign: 'right' },
             },
@@ -822,7 +940,7 @@ export class ReportsComponent implements OnInit {
             {
               content: this.ncBills.reduce(
                 (acc, res) => acc + res.billing.grandTotal,
-                0
+                0,
               ),
               styles: { halign: 'right' },
             },
@@ -845,7 +963,7 @@ export class ReportsComponent implements OnInit {
             {
               content: this.takeawayBills.reduce(
                 (acc, res) => acc + res.billing.grandTotal,
-                0
+                0,
               ),
               styles: { halign: 'right' },
             },
@@ -868,7 +986,7 @@ export class ReportsComponent implements OnInit {
             {
               content: this.onlineBills.reduce(
                 (acc, res) => acc + res.billing.grandTotal,
-                0
+                0,
               ),
               styles: { halign: 'right' },
             },
@@ -894,7 +1012,7 @@ export class ReportsComponent implements OnInit {
             {
               content: this.tokenWiseBills.reduce(
                 (acc, res) => acc + res.billing.grandTotal,
-                0
+                0,
               ),
               styles: { halign: 'right' },
             },
@@ -929,50 +1047,87 @@ export class ReportsComponent implements OnInit {
       type: 'line',
       data: {
         labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-        datasets: [{
-          label: '# of Votes',
-          data: [12, 19, 3, 5, 2, 3],
-          borderWidth: 1,
-          tension: 0.4,
-        }],
+        datasets: [
+          {
+            label: '# of Votes',
+            data: [12, 19, 3, 5, 2, 3],
+            borderWidth: 1,
+            tension: 0.4,
+          },
+        ],
       },
       options: {
-        responsive:true,
+        responsive: true,
         maintainAspectRatio: false,
         scales: {
           y: {
-            beginAtZero: true
-          }
-        }
-      }
+            beginAtZero: true,
+          },
+        },
+      },
     });
     this.paymentChartJS = new Chart(this.orderChart.nativeElement, {
       type: 'pie',
       data: {
         labels: ['Method'],
-        datasets: [{
-          label: 'Payment Received',
-          data: [],
-          borderWidth: 1,
-          hoverOffset: 4
-        }],
+        datasets: [
+          {
+            label: 'Payment Received',
+            data: [],
+            borderWidth: 1,
+            hoverOffset: 4,
+          },
+        ],
       },
       options: {
-        responsive:true,
+        responsive: true,
         maintainAspectRatio: false,
         scales: {
           y: {
-            beginAtZero: true
-          }
-        }
-      }
+            beginAtZero: true,
+          },
+        },
+      },
     });
-
   }
 
   // report functions
 
-  openReport(stage:'billWise'
+  openReport(
+    stage:
+      | 'billWise'
+      | 'kotWise'
+      | 'itemWise'
+      | 'discounted'
+      | 'ncBills'
+      | 'takeawayBills'
+      | 'onlineBills'
+      | 'daySummary'
+      | 'consolidated'
+      | 'takeawayTokenWise'
+      | 'onlineTokenWise'
+      | 'tableWise'
+      | 'billEdits'
+      | 'customerWiseReport'
+      | 'dineInBills'
+      | 'hourlyItemSales'
+      | 'kotEdits'
+      | 'paymentWise'
+      | 'waiterWiseItems'
+      | 'tableWiseSales'
+      | 'tableWiseActivity',
+  ) {
+    const dialog = this.dialog.open(ReportViewComponent, {
+      data: { stage: stage, data: {} },
+    });
+    dialog.closed.subscribe((res) => {
+      console.log('Closed', res);
+    });
+  }
+}
+interface ReportFormat {
+  title: string;
+  code:'billWise'
   | 'kotWise'
   | 'itemWise'
   | 'discounted'
@@ -992,10 +1147,6 @@ export class ReportsComponent implements OnInit {
   | 'paymentWise'
   | 'waiterWiseItems'
   | 'tableWiseSales'
-  | 'tableWiseActivity'){
-    const dialog = this.dialog.open(ReportViewComponent,{data:{stage:stage,data:{}}});
-    dialog.closed.subscribe((res) => {
-      console.log("Closed",res);
-    })
-  }
+  | 'tableWiseActivity';
+  description: string;
 }

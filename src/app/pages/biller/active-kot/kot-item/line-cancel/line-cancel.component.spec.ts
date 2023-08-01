@@ -8,9 +8,8 @@ describe('LineCancelComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LineCancelComponent ]
-    })
-    .compileComponents();
+      declarations: [LineCancelComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(LineCancelComponent);
     component = fixture.componentInstance;

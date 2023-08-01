@@ -10,18 +10,18 @@ export interface Product {
   id?: string;
   name: string;
   price: number;
-  taxedPrice?: number;
   itemType: 'product';
   type: 'veg' | 'non-veg';
   tags: { name: string; color: string; contrast: string; important: boolean }[];
+  createdDate: Timestamp;
   images: string[];
   category: { id: string; name: string };
   quantity: number;
-  createdDate: Timestamp;
   variants: Variant[];
   visible: boolean;
   selected: boolean;
   taxes: productTax[];
+  taxedPrice?: number;
   sales?: number;
   specificPrinter?: string;
   transferred?: string;
@@ -29,16 +29,16 @@ export interface Product {
   updated?: boolean;
   lineDiscount?: DirectPercentDiscount | DirectFlatDiscount;
   order?: number;
-  untaxedValue?:number;
-  lineDiscounted?:boolean;
-  taxedValue?:number;
-  discountedValue?:number;
-  taxedDiscountedValue?:number;
-  applicableTax?:number;
-  applicableDiscount?:number;
-  cancelled?:boolean;
-  loyaltyCost?:number;
-  loyaltyPoints?:number;
+  untaxedValue?: number;
+  lineDiscounted?: boolean;
+  taxedValue?: number;
+  discountedValue?: number;
+  taxedDiscountedValue?: number;
+  applicableTax?: number;
+  applicableDiscount?: number;
+  cancelled?: boolean;
+  loyaltyCost?: number;
+  loyaltyPoints?: number;
 }
 
 interface Variant {

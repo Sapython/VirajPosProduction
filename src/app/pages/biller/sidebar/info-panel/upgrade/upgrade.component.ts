@@ -8,30 +8,39 @@ import { DataProvider } from '../../../../../core/services/provider/data-provide
 @Component({
   selector: 'app-upgrade',
   templateUrl: './upgrade.component.html',
-  styleUrls: ['./upgrade.component.scss']
+  styleUrls: ['./upgrade.component.scss'],
 })
 export class UpgradeComponent {
-  form:FormGroup = new FormGroup({
-    customerName: new FormControl('',Validators.required),
-    reason: new FormControl('',Validators.required),
-    referralCode: new FormControl('',Validators.required),
-    mobileNumber: new FormControl('',Validators.required),
+  form: FormGroup = new FormGroup({
+    customerName: new FormControl('', Validators.required),
+    reason: new FormControl('', Validators.required),
+    referralCode: new FormControl('', Validators.required),
+    mobileNumber: new FormControl('', Validators.required),
   });
-  constructor(private systemService:SystemService,private dialogRef:DialogRef,private alertify:AlertsAndNotificationsService,private dataProvider:DataProvider) {}
-  cancel(){
+  constructor(
+    private systemService: SystemService,
+    private dialogRef: DialogRef,
+    private alertify: AlertsAndNotificationsService,
+    private dataProvider: DataProvider,
+  ) {}
+  cancel() {
     this.form.reset();
     this.dialogRef.close();
   }
-  submit(){
-  //  console.log(this.form.value);
+  submit() {
+    //  console.log(this.form.value);
     this.dataProvider.loading = true;
-    this.systemService.upgrade(this.form.value).then((data)=>{
-      this.alertify.presentToast("Upgrade request sent successfully");
-      this.cancel();
-    }).catch((err)=>{
-      this.alertify.presentToast("Upgrade request failed");
-    }).finally(()=>{
-      this.dataProvider.loading = false;
-    })
+    this.systemService
+      .upgrade(this.form.value)
+      .then((data) => {
+        this.alertify.presentToast('Upgrade request sent successfully');
+        this.cancel();
+      })
+      .catch((err) => {
+        this.alertify.presentToast('Upgrade request failed');
+      })
+      .finally(() => {
+        this.dataProvider.loading = false;
+      });
   }
 }

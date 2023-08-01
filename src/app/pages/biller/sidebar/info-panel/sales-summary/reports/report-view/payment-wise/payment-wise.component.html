@@ -1,19 +1,18 @@
-<table class="styled-table" *ngIf="!loading">
-	<thead>
-	  <tr>
-		<th>Method</th>
-		<th>Settlement</th>
-	  </tr>
-	</thead>
-	<tbody>
-	  <tr *ngFor="let bill of paymentMethods | async | keyvalue">
-		<td>
-		  {{ bill.key}}
-		</td>
-		<td>
-		  {{ bill.value }}
-		</td>
-	  </tr>
-	</tbody>
-  </table>
-  
+<table class="styled-table" id="reportTable" *ngIf="!loading">
+  <thead>
+    <tr>
+      <th>Method</th>
+      <th>Settlement</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let bill of paymentMethods | async | keyvalue">
+      <td>
+        {{ bill.key }}
+      </td>
+      <td>
+        {{ bill.value }}
+      </td>
+    </tr>
+  </tbody>
+</table>

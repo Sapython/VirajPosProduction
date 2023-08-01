@@ -8,9 +8,8 @@ describe('RequiresPrivilegeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RequiresPrivilegeComponent ]
-    })
-    .compileComponents();
+      declarations: [RequiresPrivilegeComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(RequiresPrivilegeComponent);
     component = fixture.componentInstance;

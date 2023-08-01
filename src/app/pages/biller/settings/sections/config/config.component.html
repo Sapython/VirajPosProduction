@@ -22,27 +22,28 @@
   </div>
 </div>
 <hr />
-<mat-form-field style="width:100%;"
-      appearance="outline"
-      *ngIf="
-        this.dataProvider.currentBusiness &&
-        this.dataProvider.getAccess('changePrinter')
-      "
-    >
-      <mat-label>Bill Printer</mat-label>
-      <mat-select
-        #billerPrinter
-        [ngModelOptions]="{ standalone: true }"
-        [(ngModel)]="this.dataProvider.currentBusiness.billerPrinter"
-        (selectionChange)="updateBillPrinter(billerPrinter.value)"
-        name="printer"
-      >
-        <mat-option> Select </mat-option>
-        <mat-option [value]="printer" *ngFor="let printer of printers">
-          {{ printer }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+<mat-form-field
+  style="width: 100%"
+  appearance="outline"
+  *ngIf="
+    this.dataProvider.currentBusiness &&
+    this.dataProvider.getAccess('changePrinter')
+  "
+>
+  <mat-label>Bill Printer</mat-label>
+  <mat-select
+    #billerPrinter
+    [ngModelOptions]="{ standalone: true }"
+    [(ngModel)]="this.dataProvider.currentBusiness.billerPrinter"
+    (selectionChange)="updateBillPrinter(billerPrinter.value)"
+    name="printer"
+  >
+    <mat-option> Select </mat-option>
+    <mat-option [value]="printer" *ngFor="let printer of printers">
+      {{ printer }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
 <section>
   <h3>More Config</h3>
   <form

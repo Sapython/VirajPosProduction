@@ -8,9 +8,8 @@ describe('CancelKOtComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CancelKOtComponent ]
-    })
-    .compileComponents();
+      declarations: [CancelKOtComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(CancelKOtComponent);
     component = fixture.componentInstance;

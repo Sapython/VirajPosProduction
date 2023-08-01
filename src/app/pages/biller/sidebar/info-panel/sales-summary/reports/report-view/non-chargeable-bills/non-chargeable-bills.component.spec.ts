@@ -8,9 +8,8 @@ describe('NonChargeableBillsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ NonChargeableBillsComponent ]
-    })
-    .compileComponents();
+      declarations: [NonChargeableBillsComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(NonChargeableBillsComponent);
     component = fixture.componentInstance;

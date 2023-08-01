@@ -8,9 +8,8 @@ describe('NormalKotComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ NormalKotComponent ]
-    })
-    .compileComponents();
+      declarations: [NormalKotComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(NormalKotComponent);
     component = fixture.componentInstance;

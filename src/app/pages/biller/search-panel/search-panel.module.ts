@@ -8,8 +8,6 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FormsModule } from '@angular/forms';
 import { BaseComponentsModule } from '../../../shared/base-components/base-components.module';
 
-
-
 @NgModule({
   declarations: [SearchPanelComponent],
   imports: [
@@ -19,10 +17,8 @@ import { BaseComponentsModule } from '../../../shared/base-components/base-compo
     TableModule,
     MatButtonToggleModule,
     FormsModule,
-    BaseComponentsModule
+    BaseComponentsModule,
   ],
-  exports:[
-    SearchPanelComponent
-  ]
+  exports: [SearchPanelComponent],
 })
-export class SearchPanelModule { }
+export class SearchPanelModule {}

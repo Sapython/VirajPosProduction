@@ -1,3 +1,4 @@
+process.env.TZ = 'Asia/Kolkata';
 import * as functions from 'firebase-functions';
 import { HttpsError } from 'firebase-functions/v1/https';
 import {
@@ -22,6 +23,10 @@ let getFirestore: any;
 var generateHashedPassword: any;
 var verifyPassword: any;
 import { generateAnalytics } from './analytics';
+
+let processDate = new Date();
+console.log('processDate', processDate);
+
 function initAdmin() {
   if (admin) return;
   admin = require('firebase-admin');
@@ -30,7 +35,7 @@ function initApp() {
   const initApp = require('firebase-admin/app');
   app = initApp.initializeApp({
     credential: admin.credential.cert(
-      'fbms-shreeva-demo-firebase-adminsdk-8nk63-28663566a0.json'
+      'fbms-shreeva-demo-firebase-adminsdk-8nk63-28663566a0.json',
     ),
   });
 }
@@ -64,7 +69,7 @@ function privateGenerateHashedPassword(password: string, uid: string) {
 function privateVerifyPassword(
   password: string,
   hashedPassword: string,
-  uid: string
+  uid: string,
 ) {
   if (!verifyPassword) verifyPassword = require('./authHelpers').verifyPassword;
   return verifyPassword(password, hashedPassword, uid);
@@ -88,7 +93,7 @@ export const userNameAvailable = functions.https.onCall(
     } catch (error) {
       return { stage: 'invalid' };
     }
-  }
+  },
 );
 
 export const signUpWithUserAndPassword = functions.https.onCall(
@@ -101,7 +106,7 @@ export const signUpWithUserAndPassword = functions.https.onCall(
     if (!request.username || !request.password) {
       throw new HttpsError(
         'invalid-argument',
-        'Missing fields. Username and password are required'
+        'Missing fields. Username and password are required',
       );
       // return { error: 'Missing fields' }
     }
@@ -136,11 +141,11 @@ export const signUpWithUserAndPassword = functions.https.onCall(
       // request.business.joiningDate.nanoseconds, request.business.joiningDate.seconds
       request.business.joiningDate = new Timestamp(
         request.business.joiningDate.seconds,
-        request.business.joiningDate.nanoseconds
+        request.business.joiningDate.nanoseconds,
       );
       request.business.access.lastUpdated = new Timestamp(
         request.business.access.lastUpdated.seconds,
-        request.business.access.lastUpdated.nanoseconds
+        request.business.access.lastUpdated.nanoseconds,
       );
       additionalClaims['business'] = [request.business];
     } else {
@@ -151,7 +156,7 @@ export const signUpWithUserAndPassword = functions.https.onCall(
     // get password
     let hashedPassword = await privateGenerateHashedPassword(
       request.password,
-      uidDoc.id
+      uidDoc.id,
     );
     console.log('hashedPassword', hashedPassword);
     let authReq = await auth.createCustomToken(uidDoc.id, {
@@ -201,7 +206,7 @@ export const signUpWithUserAndPassword = functions.https.onCall(
         username: uidDoc.id,
         ...additionalClaims,
       },
-      { merge: true }
+      { merge: true },
     );
     if (debug) console.log('created firestore document');
     // sign in with custom token
@@ -211,7 +216,7 @@ export const signUpWithUserAndPassword = functions.https.onCall(
       ...additionalClaims,
       loginTime: Timestamp.now(),
     };
-  }
+  },
 );
 
 export const signInWithUserAndPassword = functions.https.onCall(
@@ -230,7 +235,7 @@ export const signInWithUserAndPassword = functions.https.onCall(
       await privateVerifyPassword(
         request.password,
         uidDoc.data()?.password,
-        uidDoc.id
+        uidDoc.id,
       )
     ) {
       // create custom token
@@ -240,7 +245,7 @@ export const signInWithUserAndPassword = functions.https.onCall(
     } else {
       throw new HttpsError('unauthenticated', 'Password incorrect');
     }
-  }
+  },
 );
 
 export const resetPassword = functions.https.onCall(
@@ -268,13 +273,13 @@ export const resetPassword = functions.https.onCall(
       await privateVerifyPassword(
         previousPassword,
         uidDoc.data()?.password,
-        uidDoc.id
+        uidDoc.id,
       )
     ) {
       // set new password
       const hashedPassword = await privateGenerateHashedPassword(
         newPassword,
-        uidDoc.id
+        uidDoc.id,
       );
       // update user
       await auth.updateUser(uid, {
@@ -302,7 +307,7 @@ export const resetPassword = functions.https.onCall(
     } else {
       throw new HttpsError('unauthenticated', 'Password incorrect');
     }
-  }
+  },
 );
 
 export const checkPassword = functions.https.onCall(
@@ -325,7 +330,7 @@ export const checkPassword = functions.https.onCall(
     } else {
       throw new HttpsError('unauthenticated', 'Password incorrect');
     }
-  }
+  },
 );
 
 export const resetPasswordMail = functions.https.onCall(
@@ -384,7 +389,7 @@ export const resetPasswordMail = functions.https.onCall(
       }
       return { message: 'Some error occurred', error: error };
     }
-  }
+  },
 );
 
 export const verifyResetPasswordOtp = functions.https.onCall(
@@ -404,7 +409,7 @@ export const verifyResetPasswordOtp = functions.https.onCall(
     if (!request.authId) {
       throw new HttpsError(
         'invalid-argument',
-        'Missing fields. AuthId is required'
+        'Missing fields. AuthId is required',
       );
     }
     // validate passwords
@@ -436,7 +441,7 @@ export const verifyResetPasswordOtp = functions.https.onCall(
     // reset password
     let hashedPassword = await privateGenerateHashedPassword(
       request.newPassword,
-      uidDoc.id
+      uidDoc.id,
     );
     // update user
     await auth.updateUser(uidDoc.id, {
@@ -448,7 +453,7 @@ export const verifyResetPasswordOtp = functions.https.onCall(
     });
     // sign in with custom token
     return { status: 'success', message: 'Password reset successfully' };
-  }
+  },
 );
 
 // export const editUser = functions.https.onCall(async (request, response) => {
@@ -491,7 +496,7 @@ export const addExistingUser = functions.https.onCall(
     if (userFound) {
       throw new HttpsError(
         'already-exists',
-        'User is already present in the business'
+        'User is already present in the business',
       );
     }
     // check if the user has email
@@ -501,7 +506,7 @@ export const addExistingUser = functions.https.onCall(
     if (request.accessType == 'role') {
       if (
         !['manager', 'waiter', 'accountant', 'admin'].includes(
-          request.accessLevel
+          request.accessLevel,
         )
       ) {
         throw new HttpsError('invalid-argument', 'Invalid access level');
@@ -549,18 +554,16 @@ export const addExistingUser = functions.https.onCall(
               request.username
             } to ${
               businessDoc.data()!['hotelName']
-            }. Please do not share this otp with anyone. This email is sent to you because of ${
-              uidDoc.data()?.email
-            } is registered as email with this account.`,
+            }. Please do not share this otp with anyone. This email is sent to you because of ${uidDoc.data()
+              ?.email} is registered as email with this account.`,
             HtmlPart: `Dear ${
               request.username
             }, <strong>${generatedOtp}</strong> is the otp for adding your account <strong>${
               request.username
             }</strong> to ${
               businessDoc.data()!['hotelName']
-            }. Please do not share this otp with anyone. This email is sent to you because of ${
-              uidDoc.data()?.email
-            } is registered as email with this account.`,
+            }. Please do not share this otp with anyone. This email is sent to you because of ${uidDoc.data()
+              ?.email} is registered as email with this account.`,
           },
         ],
       });
@@ -577,7 +580,7 @@ export const addExistingUser = functions.https.onCall(
       console.log(error);
       return { message: 'Some error occurred' };
     }
-  }
+  },
 );
 
 export const verifyOtpExistingUser = functions.https.onCall(
@@ -596,7 +599,7 @@ export const verifyOtpExistingUser = functions.https.onCall(
     if (!request.authId) {
       throw new HttpsError(
         'invalid-argument',
-        'Missing fields. AuthId is required'
+        'Missing fields. AuthId is required',
       );
     }
     // validate otp
@@ -636,7 +639,7 @@ export const verifyOtpExistingUser = functions.https.onCall(
     });
     // sign in with custom token
     return { status: 'success', message: 'User approved successfully' };
-  }
+  },
 );
 
 export const authenticateAction = functions.https.onCall(
@@ -669,7 +672,7 @@ export const authenticateAction = functions.https.onCall(
     let authorized = await privateVerifyPassword(
       request.password,
       uidDoc.data()?.password,
-      uidDoc.id
+      uidDoc.id,
     );
     if (authorized) {
       return {
@@ -680,133 +683,20 @@ export const authenticateAction = functions.https.onCall(
     } else {
       throw new HttpsError('unauthenticated', 'Password incorrect');
     }
-  }
+  },
 );
 
-export const calculateLoyaltyPoints = functions.https.onCall(
-  async (request, response) => {
-    initFirestore();
-    // here we will get billId, businessId, userId, and then we have to set the loyalty point upon that bill.
-    if (debug) console.log(request);
-    const billId: string = request.billId;
-    const businessId: string = request.businessId;
-    const userId: string = request.userId;
-    // check if the user is available in the business
-    let businessData = await firestore.doc(`business/${businessId}`).get();
-    if (businessData.exists && businessData.data()) {
-      if (
-        businessData.data()!['users'] &&
-        typeof businessData.data()!['users'] == 'object'
-      ) {
-        let userFound = false;
-        businessData.data()!['users'].forEach((user: { username: string }) => {
-          if (user.username == userId) {
-            userFound = true;
-          }
-        });
-        if (!userFound) {
-          throw new HttpsError(
-            'aborted',
-            'User not found in the current business.'
-          );
-        }
-      } else {
-        throw new HttpsError(
-          'aborted',
-          'No users available in th current business'
-        );
-      }
-    } else {
-      throw new HttpsError('aborted', 'Business not found.');
-    }
-    // fetch the bill from firestore
-    const billReference = firestore.doc(
-      `business/${businessId}/bills/${billId}`
-    );
-    const bill = await billReference.get();
-    const billData = bill.data();
-    if (
-      bill.exists &&
-      billData &&
-      billData['stage'] == 'settled' &&
-      billData['customerInfo']['phone']
-    ) {
-      const settingsRes = await firestore
-        .doc(`business/${businessId}/settings/settings`)
-        .get();
-      let settingsData = settingsRes.data();
-      if (settingsRes.exists && settingsData && settingsData['loyaltyRates']) {
-        // loyaltyRates has 3 keys dineIn, takeaway, online. Check if they exists if not then use dine rate as default if dine in doesn't exists then return an error
-        let totalGainedLoyaltyPoint = 0;
-        let loyaltyRate = 0;
-        if (!settingsData.loyaltyRates.dineIn) {
-          throw new HttpsError('aborted', 'Aborted due to missing rate');
-        } else if (billData.mode == 'dineIn') {
-          loyaltyRate = settingsData.loyaltyRates.dineIn;
-        }
-        if (billData.mode == 'takeaway') {
-          if (!settingsData.loyaltyRates.takeaway) {
-            settingsData.loyaltyRates.takeaway =
-              settingsData.loyaltyRates.dineIn;
-          }
-          loyaltyRate = settingsData.loyaltyRates.takeaway;
-        }
-        if (billData.mode == 'online') {
-          if (!settingsData.loyaltyRates.online) {
-            settingsData.loyaltyRates.online = settingsData.loyaltyRates.dineIn;
-          }
-          loyaltyRate = settingsData.loyaltyRates.online;
-        }
-        if (debug)
-          console.log(
-            'loyaltyRate',
-            billData.billing.grandTotal,
-            loyaltyRate,
-            billData.billing.grandTotal * loyaltyRate
-          );
-        totalGainedLoyaltyPoint = Math.floor(
-          billData.billing.grandTotal * loyaltyRate
-        );
-        // update bill
-        try {
-          await billReference.update({ totalGainedLoyaltyPoint });
-          return { status: true };
-        } catch (error) {
-          throw new HttpsError('aborted', 'Failed to update the bill.');
-        }
-      } else {
-        throw new HttpsError('aborted', "Business hasn't enabled loyalty");
-      }
-    } else {
-      if (bill.exists && billData) {
-        if (!billData['customerInfo']['phone']) {
-          throw new HttpsError(
-            'aborted',
-            'The bill does not have any customer.'
-          );
-        } else if (billData['stage'] != 'settled') {
-          throw new HttpsError('aborted', 'The bill is not settled');
-        } else {
-          throw new HttpsError('aborted', 'Some error occurred');
-        }
-      } else {
-        throw new HttpsError('aborted', 'The bill is not found');
-      }
-    }
-  }
-);
-
-// export const analyzeAnalytics = functions.pubsub.schedule('every 3 hours').onRun(async (context) => {
-//   console.log('Running a task every 3 hours');
-//   initFirestore();
-//   let businessRef = firestore.collection('business');
-//   let businessDocs = await businessRef.get();
-//   let workers = businessDocs.docs.map(async (businessDoc)=>{
-//     await generateAnalytics(firestore,businessDoc)
-//   })
-//   let res = await Promise.all(workers);
-//   return res.length;
-// });
+export const analyzeAnalytics = functions.pubsub.schedule('every 3 hours').onRun(async (context) => {
+  console.log('Running a task every 3 hours');
+  initFirestore();
+  let businessRef = firestore.collection('business');
+  let businessDocs = await businessRef.get();
+  let workers = businessDocs.docs.map(async (businessDoc)=>{
+    await generateAnalytics(firestore,businessDoc)
+  })
+  let res = await Promise.all(workers);
+  return res.length;
+});
 
 export const analyzeAnalyticsForBusiness = functions.https.onCall(
   async (request, response) => {
@@ -821,21 +711,200 @@ export const analyzeAnalyticsForBusiness = functions.https.onCall(
     } else {
       throw new HttpsError(
         'aborted',
-        `Business not found for ${request.businessId}`
+        `Business not found for ${request.businessId}`,
+      );
+    }
+  },
+);
+
+export const calculateLoyaltyPoint = functions.https.onCall(
+  async (request, response) => {
+    initFirestore();
+    validateAny(request.businessId, 'string');
+    // get all customers
+    let customers = await firestore.collection(`business/${request.businessId}/customers`).get();
+    await Promise.all(customers.docs.map(async (customer)=>{
+      // get bills under this customer 
+      let billsRef = await firestore.collection(`business/${request.businessId}/customers/${customer.id}/bills`).get();
+      let bills = await Promise.all(billsRef.docs.map(async (bill)=>{
+        let data = bill.data();
+        let billDocument = await data.billRef.get();
+        // console.log("customer ref bill data",billDocument.data());
+        return {...billDocument.data(),id:billDocument.id};
+      }));
+      // console.log("Bills",bills,bills.length);
+      // clean up bills array and remove undefined values
+      // bills = bills.filter((bill)=>bill);
+      // console.log("Bills",bills);
+      // bills.sort((a,b)=>a.createdDate.toDate() - b.createdDate.toDate())
+      // console.log("Filtered Bills",bills);
+
+      let totalBills = bills.length;
+      let totalSales = 0;
+      let totalEarnedLoyaltyPoints = 0;
+      let averageBillValue = 0;
+      if (bills[bills.length-1]){
+        var lastBillDate = bills[bills.length-1].createdDate;
+        var lastBillAmount = bills[bills.length-1].billing.grandTotal;
+        var lastBillId = bills[bills.length-1].id;
+      } else {
+        var lastBillDate = null;
+        var lastBillAmount = null;
+        var lastBillId = null;
+      }
+      let todayDate = new Date();
+      bills.forEach(async (bill)=>{
+        // console.log("counter bill",bill);
+        totalSales += bill.billing.grandTotal;
+        // if bill.currentLoyalty.expiryDate is less than todayDate then add the loyalty points to the customer
+        if(bill.currentLoyalty.expiryDate.toDate() > todayDate){
+          // add loyalty points to the customer
+          if (bill.currentLoyalty.receiveLoyalty){
+            console.log("Adding loyalty",bill.currentLoyalty.totalLoyaltyPoints);
+            totalEarnedLoyaltyPoints += bill.currentLoyalty.totalLoyaltyPoints;
+            console.log("Total loyalty",totalEarnedLoyaltyPoints);
+          }
+        }
+
+        // deduct used loyalty point
+        totalEarnedLoyaltyPoints -= bill.currentLoyalty.totalToBeRedeemedPoints;
+        console.log("Deducting",bill.currentLoyalty.totalToBeRedeemedPoints);
+        
+      });
+      averageBillValue = totalSales/totalBills;
+      // update customer
+      await firestore.doc(`business/${request.businessId}/customers/${customer.id}`).update({
+        totalBills,
+        totalSales,
+        loyaltyPoints:totalEarnedLoyaltyPoints,
+        averageBillValue,
+        lastBillDate,
+        lastBillAmount,
+        lastBillId
+      });
+    }))
+    return {analyzedAllCustomers:true};
+  },
+);
+
+export const createNewAccessToken = functions.https.onCall(
+  async (request, response) => {
+    console.log("Request",request);
+    validateAny(request.businessId, 'string');
+    validateAny(request.username, 'string');
+    validateAny(request.expiryPeriod,'string');
+    initFirestore();
+    let businessRef = firestore.doc(`business/${request.businessId}`);
+    let businessDoc = await businessRef.get();
+    if (businessDoc.exists) {
+      // check if the user id exists in managers collection and if yes then check if the user has admin access
+      let userDoc = await firestore.doc('managers/'+request.username).get();
+      if (userDoc.exists && userDoc.data() && userDoc.data()!['access'] == 'admin') {
+        let accessCode = generateAccessCode();
+        if (request.expiryPeriod == 'year5'){
+          var expiry = new Date();
+          expiry.setFullYear(expiry.getFullYear() + 5);
+        } else if (request.expiryPeriod == 'year3'){
+          var expiry = new Date();
+          expiry.setFullYear(expiry.getFullYear() + 3);
+        } else if (request.expiryPeriod == 'year2'){
+          var expiry = new Date();
+          expiry.setFullYear(expiry.getFullYear() + 2);
+        } else if (request.expiryPeriod == 'year1'){
+          var expiry = new Date();
+          expiry.setFullYear(expiry.getFullYear() + 1);
+        } else if (request.expiryPeriod == 'month6'){
+          var expiry = new Date();
+          expiry.setMonth(expiry.getMonth() + 6);
+        } else if (request.expiryPeriod == 'month3'){
+          var expiry = new Date();
+          expiry.setMonth(expiry.getMonth() + 3);
+        } else if (request.expiryPeriod == 'month1'){
+          var expiry = new Date();
+          expiry.setMonth(expiry.getMonth() + 1);
+        } else if (request.expiryPeriod == 'week1'){
+          var expiry = new Date();
+          expiry.setDate(expiry.getDate() + 7);
+        } else if (request.expiryPeriod == 'day1'){
+          var expiry = new Date();
+          expiry.setDate(expiry.getDate() + 1);
+        } else {
+          var expiry = new Date();
+        }
+        // accessToken: generateAccessCode(), businessId: request.businessId, expiry: 
+        await firestore.collection('accessCode').add({accessCode:accessCode,businessId:request.businessId,expiry:expiry,generatedAt:new Date(),generatedBy:request.username});
+        await firestore.doc('business/'+request.businessId).update({accessCode:accessCode});
+        return { status: true, };
+      } else {
+        throw new HttpsError(
+          'aborted',
+          `User not found for ${request.username}`,
+        );
+      }
+    } else {
+      throw new HttpsError(
+        'aborted',
+        `Business not found for ${request.businessId}`,
       );
     }
   }
-);
+)
 
-
-export const calculateLoyaltyPoint = functions.https.onCall(
-  async (request,response) => {
-    initFirestore();
+export const checkIfAccessTokenIsValid = functions.https.onCall(
+  async (request, response) => {
+    console.log("request",request);
     validateAny(request.businessId, 'string');
-    validateAny(request.userId, 'string');
-    // get all customers 
+    validateAny(request.accessCode, 'string');
+    validateAny(request.username, 'string');
+    initFirestore();
+    let businessRef = firestore.doc(`business/${request.businessId}`);
+    let businessDoc = await businessRef.get();
+    if (businessDoc.exists) {
+      let businessData = businessDoc.data();
+      let userData: any = undefined;
+      for (let user of businessData?.users) {
+        if (user.username === request.username) {
+          userData = user;
+          break;
+        }
+      }
+      if (userData) {
+        let accessCodeRef = await firestore.collection('accessCode').where('accessCode','==',request.accessCode).where('businessId','==',request.businessId).get();
+        if (accessCodeRef.docs.length > 0){
+          let accessCodeData = accessCodeRef.docs[0].data();
+          if (accessCodeData.expiry.toDate() > new Date()){
+            return { status: true, validTill: accessCodeData.expiry.toDate().toISOString() };
+          } else {
+            throw new HttpsError(
+              'aborted',
+              `Access code expired`,
+            );
+          }
+        } else {
+          throw new HttpsError(
+            'aborted',
+            `Access code not found`,
+          );
+        }
+      } else {
+        throw new HttpsError(
+          'aborted',
+          `User not found for ${request.username}`,
+        );
+      }
+    } else {
+      throw new HttpsError(
+        'aborted',
+        `Business not found for ${request.businessId}`,
+      );
+    }
   }
 )
+
+function generateAccessCode(){
+  // access code it will be 12 random characters
+  return Math.random().toString(36).substring(2, 14);
+}
 export interface AdditionalClaims {
   email?: string;
   providerId: string;
@@ -899,6 +968,8 @@ export interface AnalyticsData {
       loyaltyPoint: number;
     }[];
   };
+  createdAt: Timestamp;
+  createdAtUTC: string;
 }
 
 export interface ChannelWiseAnalyticsData {
@@ -909,37 +980,65 @@ export interface ChannelWiseAnalyticsData {
   totalTaxes: number;
   hourlySales: number[];
   averageHourlySales: number[];
+  totalSettledBills: number;
+  totalUnsettledBills: number;
+  totalDiscountedBills: number;
+  totalNcBills: number;
   paymentReceived: {
     [key: string]: number;
   };
   billWiseSales: {
-    lowRange: {
-      bills: {
-        billId: string;
-        billRef: any;
+    rangeWise:{
+      lowRange: {
+        bills: {
+          billId: string;
+          billRef: any;
+          totalSales: number;
+          time: Timestamp;
+        }[];
         totalSales: number;
-        time: Timestamp;
-      }[];
-      totalSales: number;
-    };
-    mediumRange: {
-      bills: {
-        billId: string;
-        billRef: any;
+      };
+      mediumRange: {
+        bills: {
+          billId: string;
+          billRef: any;
+          totalSales: number;
+          time: Timestamp;
+        }[];
         totalSales: number;
-        time: Timestamp;
-      }[];
-      totalSales: number;
-    };
-    highRange: {
-      bills: {
-        billId: string;
-        billRef: any;
+      };
+      highRange: {
+        bills: {
+          billId: string;
+          billRef: any;
+          totalSales: number;
+          time: Timestamp;
+        }[];
         totalSales: number;
-        time: Timestamp;
-      }[];
-      totalSales: number;
-    };
+      }
+    },
+    tableWise:{
+      table:string;
+      totalSales:number;
+      totalBills:number;
+      bills:{
+        billId: string,
+        billRef: any,
+        time: any,
+        totalSales: number,
+      }[]
+    }[],
+    time:{
+      time:string;
+      totalSales:number;
+      totalBills:number;
+      bills:{
+        billId: string,
+        billRef: any,
+        time: any,
+        totalSales: number,
+      }[]
+    }[]
   };
   itemWiseSales: {
     byPrice: {
@@ -962,110 +1061,21 @@ export interface ChannelWiseAnalyticsData {
         id: string;
       };
     }[];
+    byPriceMax:number;
+    byQuantityMax:number;
   };
-  suspiciousActivities: {
-    bills: {
-      type: string;
-      billId: string;
-      billRef: any;
-      time: Timestamp;
-      price: number;
-      reason: string;
-      userId: string;
-    }[];
-    kots: {
-      type: string;
-      billId: string;
-      billRef: any;
-      kotId: string;
-      time: Timestamp;
-      billPrice: number;
-      kot: any;
-      reason: string;
-      userId: string;
-    }[];
-    discounts: {
-      type: string;
-      billId: string;
-      billRef: any;
-      time: Timestamp;
-      price: number;
-      reason: string;
-      userId: string;
-    }[];
-    users: {
-      type: string;
-      userId: string;
-      time: Timestamp;
-    }[];
-  };
+  suspiciousActivities: any[];
   userWiseActions: [
     {
       userId: string;
       userRef: any;
       actions: {
-        bills: {
-          billId: string;
-          cost: number;
-          time: Timestamp;
-          table: string;
-          user: {
-            name: string;
-            id: string;
-          };
-        }[];
-        kots: {
-          kotId: string;
-          user: {
-            name: string;
-            id: string;
-          };
-          items: {
-            name: string;
-            id: string;
-            price: number;
-          }[];
-          time: Timestamp;
-          table: string;
-          cost: number;
-        }[];
-        discounts: {
-          billId: string;
-          cost: number;
-          time: Timestamp;
-          table: string;
-          user: {
-            name: string;
-            id: string;
-          };
-          discount: any;
-        }[];
-        settlements: {
-          billId: string;
-          cost: number;
-          time: Timestamp;
-          table: string;
-          user: {
-            name: string;
-            id: string;
-          };
-          paymentMethods: {
-            name: string;
-            cost: number;
-          }[];
-        }[];
-        ncs: {
-          billId: string;
-          cost: number;
-          time: Timestamp;
-          table: string;
-          user: {
-            name: string;
-            id: string;
-          };
-          reason: string;
-        }[];
+        bills:any[];
+        kots:any[];
+        discounts: any[];
+        settlements: any[];
+        ncs: any[];
       };
-    }
+    },
   ];
 }

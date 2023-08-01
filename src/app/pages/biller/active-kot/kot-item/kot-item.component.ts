@@ -14,7 +14,10 @@ import { PromptComponent } from '../../../../shared/base-components/prompt/promp
 import { firstValueFrom } from 'rxjs';
 import { Product } from '../../../../types/product.structure';
 import { DataProvider } from '../../../../core/services/provider/data-provider.service';
-import { DirectFlatDiscount, DirectPercentDiscount } from '../../../../types/discount.structure';
+import {
+  DirectFlatDiscount,
+  DirectPercentDiscount,
+} from '../../../../types/discount.structure';
 import { BillService } from '../../../../core/services/database/bill/bill.service';
 @Component({
   selector: 'app-kot-item',
@@ -39,11 +42,17 @@ export class KotItemComponent implements OnChanges {
   @Output() lineCancelled: EventEmitter<any> = new EventEmitter();
   @Output() lineDiscounted: EventEmitter<any> = new EventEmitter();
   @Input() propagateFunctions: boolean = false;
-  @Output() addQuantityFunction:EventEmitter<void> = new EventEmitter<void>()
-  @Output() removeQuantityFunction:EventEmitter<void> = new EventEmitter<void>()
-  @Output() setQuantityFunction:EventEmitter<number> = new EventEmitter<number>()
+  @Output() addQuantityFunction: EventEmitter<void> = new EventEmitter<void>();
+  @Output() removeQuantityFunction: EventEmitter<void> =
+    new EventEmitter<void>();
+  @Output() setQuantityFunction: EventEmitter<number> =
+    new EventEmitter<number>();
   showKotNo: boolean = false;
-  constructor(public dataProvider: DataProvider, private dialog: Dialog,private billService:BillService) {}
+  constructor(
+    public dataProvider: DataProvider,
+    private dialog: Dialog,
+    private billService: BillService,
+  ) {}
   kotNoColors: { color: string; contrast: string }[] = [
     { color: '#4dc9f6', contrast: '#000000' },
     { color: '#f67019', contrast: '#000000' },
@@ -57,33 +66,42 @@ export class KotItemComponent implements OnChanges {
   ];
 
   ngOnChanges(changes: SimpleChanges): void {
-  //  console.log('quantity', this.quantity);
+    //  console.log('quantity', this.quantity);
     //Called before any other lifecycle hook. Use it to inject dependencies, but avoid any serious work here.
     //Add '${implements OnChanges}' to the class.
-  //  console.log(changes);
+    //  console.log(changes);
   }
 
   async setInfo() {
-  //  console.log("this.info",this.info);
-    const dialog = this.dialog.open(PromptComponent,{data:{title:'Enter a instruction',placeholder:'Instruction',value:this.info,type:'text',required:false,description:'Enter a instruction for the kitchen'}})
-    let res = await firstValueFrom(dialog.closed)
-  //  console.log("res",res);
-    if (typeof(res) == 'string'){
-      this.info = res
+    //  console.log("this.info",this.info);
+    const dialog = this.dialog.open(PromptComponent, {
+      data: {
+        title: 'Enter a instruction',
+        placeholder: 'Instruction',
+        value: this.info,
+        type: 'text',
+        required: false,
+        description: 'Enter a instruction for the kitchen',
+      },
+    });
+    let res = await firstValueFrom(dialog.closed);
+    //  console.log("res",res);
+    if (typeof res == 'string') {
+      this.info = res;
       this.product!.instruction = this.info;
     } else {
       delete this.product!.instruction;
-      return
-    };
+      return;
+    }
   }
   invertHex(hex: string) {
     hex.replace('#', '');
-  //  console.log('hex', hex);
+    //  console.log('hex', hex);
     let a = (Number(`0x1${hex}`) ^ 0xffffff)
       .toString(16)
       .substr(1)
       .toUpperCase();
-  //  console.log('a', a);
+    //  console.log('a', a);
     return a;
   }
   lineCancel() {
@@ -101,9 +119,13 @@ export class KotItemComponent implements OnChanges {
       data: this.product,
     });
     dialog.closed.subscribe((data: any) => {
-    //  console.log('Discount', data);
+      //  console.log('Discount', data);
       if (data && this.product) {
-        let formData: { type: 'percentage' | 'flat'; value: number,reason:string } = data;
+        let formData: {
+          type: 'percentage' | 'flat';
+          value: number;
+          reason: string;
+        } = data;
         if (formData.type == 'percentage') {
           let discount: DirectPercentDiscount = {
             mode: data.type,
@@ -113,12 +135,12 @@ export class KotItemComponent implements OnChanges {
             totalAppliedDiscount: 0,
           };
           this.product.lineDiscount = discount;
-          this.billService.addActivity(this.dataProvider.currentBill,{
-            type:'lineDiscounted',
-            message:`Line Discounted by ${data.value}% for ${this.product.name} by ${this.dataProvider.currentUser?.username}`,
-            user:this.dataProvider.currentBusinessUser.name,
-            data:this.product
-          })
+          this.billService.addActivity(this.dataProvider.currentBill, {
+            type: 'lineDiscounted',
+            message: `Line Discounted by ${data.value}% for ${this.product.name} by ${this.dataProvider.currentUser?.username}`,
+            user: this.dataProvider.currentBusinessUser.name,
+            data: this.product,
+          });
           this.lineDiscounted.emit(discount);
         } else {
           let discount: DirectFlatDiscount = {
@@ -134,27 +156,30 @@ export class KotItemComponent implements OnChanges {
       }
     });
   }
-  increase(){
-    if (!this.propagateFunctions){
-      this.product.quantity = this.product.quantity + 1;this.dataProvider.currentBill?.calculateBill()
+  increase() {
+    if (!this.propagateFunctions) {
+      this.product.quantity = this.product.quantity + 1;
+      this.dataProvider.currentBill?.calculateBill();
     } else {
-      console.log("Adding through",this.addQuantityFunction);
-      this.addQuantityFunction.emit()
+      console.log('Adding through', this.addQuantityFunction);
+      this.addQuantityFunction.emit();
     }
   }
-  decrease(){
-    if (!this.propagateFunctions){
-      this.product.quantity = this.product.quantity - 1;this.dataProvider.currentBill?.calculateBill()
+  decrease() {
+    if (!this.propagateFunctions) {
+      this.product.quantity = this.product.quantity - 1;
+      this.dataProvider.currentBill?.calculateBill();
     } else {
-      this.removeQuantityFunction.emit()
+      this.removeQuantityFunction.emit();
     }
   }
 
-  setQuantity(quantityValue){
-    if (!this.propagateFunctions){
-      this.product.quantity = quantityValue;this.dataProvider.currentBill?.calculateBill()
+  setQuantity(quantityValue) {
+    if (!this.propagateFunctions) {
+      this.product.quantity = quantityValue;
+      this.dataProvider.currentBill?.calculateBill();
     } else {
-      this.setQuantityFunction.emit(quantityValue)
+      this.setQuantityFunction.emit(quantityValue);
     }
   }
 

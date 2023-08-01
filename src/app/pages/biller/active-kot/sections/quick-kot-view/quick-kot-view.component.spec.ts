@@ -8,9 +8,8 @@ describe('QuickKotViewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ QuickKotViewComponent ]
-    })
-    .compileComponents();
+      declarations: [QuickKotViewComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(QuickKotViewComponent);
     component = fixture.componentInstance;

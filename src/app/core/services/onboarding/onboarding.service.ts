@@ -17,7 +17,11 @@ import { DialogComponent } from '../../../shared/base-components/dialog/dialog.c
 import { CodeBaseDiscount } from '../../../types/discount.structure';
 import { TableConstructor } from '../../../types/table.structure';
 import { Tax } from '../../../types/tax.structure';
-import { BusinessRecord, CustomerInfo, Member } from '../../../types/user.structure';
+import {
+  BusinessRecord,
+  CustomerInfo,
+  Member,
+} from '../../../types/user.structure';
 import { AlertsAndNotificationsService } from '../alerts-and-notification/alerts-and-notifications.service';
 import { AuthService } from '../auth/auth.service';
 import { MenuManagementService } from '../database/menuManagement/menu-management.service';
@@ -34,13 +38,14 @@ import { TableService } from '../database/table/table.service';
 import { BillService } from '../database/bill/bill.service';
 import { CustomerService } from '../customer/customer.service';
 import { Router } from '@angular/router';
+import { Functions, httpsCallable } from '@angular/fire/functions';
 
-
-var debug:boolean = true;
+var debug: boolean = true;
 @Injectable({
   providedIn: 'root',
 })
 export class OnboardingService {
+  previousValidity:boolean = false;
   noUserExists: boolean = false;
   message: string = '';
   stage:
@@ -57,16 +62,17 @@ export class OnboardingService {
     | 'resetPasswordStage2'
     | 'resetPasswordStage3'
     | 'resetPasswordStage4'
+    | 'validityExpired'
     | 'errorOccured' = 'noUser';
   loadingSteps: Subject<string> = new Subject<string>();
-
+  private checkIfAccessTokenIsValidFunction = httpsCallable(this.functions,'checkIfAccessTokenIsValid');
   constructor(
     private dataProvider: DataProvider,
     private firestore: Firestore,
     private alertify: AlertsAndNotificationsService,
     private menuManagementService: MenuManagementService,
     private dialog: Dialog,
-    private customerService:CustomerService,
+    private customerService: CustomerService,
     private printingService: PrinterService,
     private productService: ProductsService,
     private userService: UserManagementService,
@@ -74,8 +80,9 @@ export class OnboardingService {
     private analyticsService: AnalyticsService,
     private tableService: TableService,
     private billService: BillService,
-    private userManagementService:UserManagementService,
-    private router:Router
+    private userManagementService: UserManagementService,
+    private router: Router,
+    private functions:Functions
   ) {
     console.log('Onboarding Service Initialized');
     this.loadingSteps.next('Checking User');
@@ -85,8 +92,8 @@ export class OnboardingService {
     //   console.log("IP error",err);
     //   this.dataProvider.
     // })
-    if (this.dataProvider.offline){
-      console.log("Offline Mode");
+    if (this.dataProvider.offline) {
+      console.log('Offline Mode');
     }
     this.dataProvider.userSubject.subscribe((data) => {
       if (debug) console.log('Checked user', data);
@@ -97,7 +104,7 @@ export class OnboardingService {
         data.user.business = data.user.business.filter(
           (business, index, self) =>
             index ===
-            self.findIndex((t) => t.businessId === business.businessId)
+            self.findIndex((t) => t.businessId === business.businessId),
         );
         if (data.user.business.length > 1) {
           this.loadingSteps.next('User Found with multiple businesses');
@@ -132,11 +139,47 @@ export class OnboardingService {
 
   loadBusiness(businessId: string) {
     if (debug) console.log('Loading business', businessId);
-    getDoc(doc(this.firestore, 'business', businessId)).then((business) => {
-      if (business.exists()) {
+    docData(doc(this.firestore, 'business', businessId),{idField:'id'}).subscribe(async (business) => {
+      if (business) {
+        this.loadingSteps.next('Checking validity of business');
+        if (!business['accessCode']){
+          this.previousValidity = false;
+          this.stage = 'validityExpired';
+          this.message = 'Validity Has Expired';
+          this.alertify.presentToast(this.message, 'error');
+          alert("Validity of your biller is expired please contact support to renew your validity.");
+          return;
+        } else {
+          try{
+            let res = await this.checkValidity(business.id,business['accessCode']);
+            if (!res || !res.data || !res.data['status']){
+              this.dataProvider.validTill = new Date(res.data['validTill']);
+              console.log("this.dataProvider.validTill",this.dataProvider.validTill);
+              this.stage = 'validityExpired';
+              this.message = 'Validity Has Expired';
+              this.alertify.presentToast(this.message, 'error');
+              this.previousValidity = false;
+              alert("Validity of your biller is expired please contact support to renew your validity.");
+              return
+            }
+          } catch (err){
+            this.stage = 'validityExpired';
+            this.message = 'Validity Has Expired';
+            this.alertify.presentToast(this.message, 'error');
+            this.previousValidity = false;
+            return
+          }
+        }
+        var businessRecord = business as BusinessRecord;
+        if (businessRecord) {
+          this.dataProvider.currentBusiness = businessRecord as BusinessRecord;
+          this.dataProvider.currentBusiness.billerPrinter =
+            localStorage.getItem('billerPrinter');
+        }
+        // this.stage = 'expiredAccess'
         // console.log('business.data()', business.data());
         this.dataProvider.currentBusiness = {
-          ...business.data(),
+          ...business,
           businessId: business.id,
         } as BusinessRecord;
         this.dataProvider.businessId = business.id;
@@ -152,7 +195,7 @@ export class OnboardingService {
   }
 
   startViraj(business: BusinessRecord) {
-    if(debug) console.log('Starting Viraj', business);
+    if (debug) console.log('Starting Viraj', business);
     firstValueFrom(this.dataProvider.settingsChanged).then(async (setting) => {
       // console.log(setting);
       this.dataProvider.businessId = business.businessId;
@@ -165,16 +208,17 @@ export class OnboardingService {
           menus.docs.forEach((menu) => {
             this.dataProvider.allMenus.push({
               ...menu.data(),
-              id: menu.id
+              id: menu.id,
             } as Menu);
           });
           // get whatever menu is available in currentMenu and set it to currentMenu
           let menuInits = [];
           this.dataProvider.menus = [];
           if (setting.takeawayMenu) {
-            setting.takeawayMenu = this.dataProvider.allMenus.find(
-              (menu) => menu.id == setting.takeawayMenu.id
-            ) || setting.takeawayMenu;
+            setting.takeawayMenu =
+              this.dataProvider.allMenus.find(
+                (menu) => menu.id == setting.takeawayMenu.id,
+              ) || setting.takeawayMenu;
             let inst = new ModeConfig(
               'Takeaway',
               'takeaway',
@@ -185,16 +229,17 @@ export class OnboardingService {
               this.productService,
               this.alertify,
               this.dialog,
-              this.settingsService
+              this.settingsService,
             );
             menuInits.push('takeaway');
             this.dataProvider.menus.push(inst);
             this.loadingSteps.next('Found Takeaway Menu');
           }
           if (setting.onlineMenu) {
-            setting.onlineMenu = this.dataProvider.allMenus.find(
-              (menu) => menu.id == setting.onlineMenu.id
-            ) || setting.onlineMenu;
+            setting.onlineMenu =
+              this.dataProvider.allMenus.find(
+                (menu) => menu.id == setting.onlineMenu.id,
+              ) || setting.onlineMenu;
             let inst = new ModeConfig(
               'Online',
               'online',
@@ -205,16 +250,17 @@ export class OnboardingService {
               this.productService,
               this.alertify,
               this.dialog,
-              this.settingsService
+              this.settingsService,
             );
             menuInits.push('online');
             this.dataProvider.menus.push(inst);
             this.loadingSteps.next('Found Online Menu');
           }
           if (setting.dineInMenu) {
-            setting.dineInMenu = this.dataProvider.allMenus.find(
-              (menu) => menu.id == setting.dineInMenu.id
-            ) || setting.dineInMenu;
+            setting.dineInMenu =
+              this.dataProvider.allMenus.find(
+                (menu) => menu.id == setting.dineInMenu.id,
+              ) || setting.dineInMenu;
             let inst = new ModeConfig(
               'Dine In',
               'dineIn',
@@ -225,13 +271,24 @@ export class OnboardingService {
               this.productService,
               this.alertify,
               this.dialog,
-              this.settingsService
+              this.settingsService,
             );
             menuInits.push('dineIn');
             this.dataProvider.menus.push(inst);
             this.loadingSteps.next('Found Dine In Menu');
           }
-          console.log("menus.docs.map",menus.docs.map((doc)=>{ return {...doc.data(),id:doc.id,selectedLoyaltyId:doc.data()['selectedLoyaltyId'] ? doc.data()['selectedLoyaltyId'] : null} as Menu}))
+          console.log(
+            'menus.docs.map',
+            menus.docs.map((doc) => {
+              return {
+                ...doc.data(),
+                id: doc.id,
+                selectedLoyaltyId: doc.data()['selectedLoyaltyId']
+                  ? doc.data()['selectedLoyaltyId']
+                  : null,
+              } as Menu;
+            }),
+          );
           // console.log("loaded discounts",this.dataProvider.discounts);
           let verifiedMenus = [];
           this.loadingSteps.next('Waiting for menus to load');
@@ -247,13 +304,13 @@ export class OnboardingService {
                   (menu) =>
                     (menu.type == 'dineIn' && setting.modes[0]) ||
                     (this.dataProvider.menus.find(
-                      (menu) => menu.type == 'takeaway'
+                      (menu) => menu.type == 'takeaway',
                     ) &&
                       setting.modes[1]) ||
                     (this.dataProvider.menus.find(
-                      (menu) => menu.type == 'online'
+                      (menu) => menu.type == 'online',
                     ) &&
-                      setting.modes[2])
+                      setting.modes[2]),
                 );
                 // console.log("currentMenu",currentMenu);
                 if (currentMenu) {
@@ -280,7 +337,7 @@ export class OnboardingService {
                   this.loadingSteps.next('All online tokens loaded');
                 }
                 this.dataProvider.showTableOnBillAction = JSON.parse(
-                  localStorage.getItem('showTable') || 'false'
+                  localStorage.getItem('showTable') || 'false',
                 );
                 // console.log("Loading table size");
                 let tempSize = localStorage.getItem('tableSize');
@@ -299,9 +356,9 @@ export class OnboardingService {
                 this.message = 'Viraj is ready to use.';
                 this.dataProvider.loading = false;
                 this.stage = 'virajReady';
-                this.router.navigate(['biller'])
+                this.router.navigate(['biller']);
               }
-            }
+            },
           );
         } else {
           this.stage = 'onboardingStep3';
@@ -311,25 +368,43 @@ export class OnboardingService {
         this.alertify.presentToast('Please enable atleast one mode', 'error');
       }
     });
-    // console.log('business/' + business.businessId, '/settings/settings');
-    docData(doc(this.firestore, 'business', business.businessId), {
-      idField: 'businessId',
-    }).subscribe((res) => {
-      if(res){
-        this.dataProvider.currentBusiness = res as BusinessRecord;
-        this.dataProvider.currentBusiness.billerPrinter = localStorage.getItem('billerPrinter');
-      }
-      // console.log("Business Changed",res);
-    });
+    // // console.log('business/' + business.businessId, '/settings/settings');
+    // docData(doc(this.firestore, 'business', business.businessId), {
+    //   idField: 'businessId',
+    // }).subscribe(async (businessRecord) => {
+    //   if (!businessRecord['accessCode']){
+    //     this.router.navigate(['login']);
+    //     this.stage = 'validityExpired';
+    //     this.message = 'Validity Has Expired';
+    //     this.alertify.presentToast(this.message, 'error');
+    //     alert("Validity of your biller is expired please contact support to renew your validity.");
+    //     return;
+    //   } else {
+    //     let res = await this.checkValidity(businessRecord.businessId,businessRecord['accessCode']);
+    //     console.log("Validity",res);
+    //     this.dataProvider.validTill = new Date(res.data['validTill']);
+    //     console.log("this.dataProvider.validTill",this.dataProvider.validTill);
+    //     if (!res || !res.data || !res.data['status']){
+    //       this.router.navigate(['login']);
+    //       this.stage = 'validityExpired';
+    //       this.message = 'Validity Has Expired';
+    //       this.alertify.presentToast(this.message, 'error');
+    //       alert("Validity of your biller is expired please contact support to renew your validity.");
+    //       return
+    //     }
+    //   }
+      
+    //   // console.log("Business Changed",res);
+    // });
     let date = new Date().toISOString().split('T')[0];
     docData(
       doc(
         this.firestore,
-        'business/' + this.dataProvider.businessId + '/sales/' + date
-      )
+        'business/' + this.dataProvider.businessId + '/sales/' + date,
+      ),
     ).subscribe((res) => {
       // console.log("Sales Changed",res);
-      if(res){
+      if (res) {
         this.dataProvider.todaySales = res;
       }
     });
@@ -339,11 +414,11 @@ export class OnboardingService {
         'business',
         business.businessId,
         'settings',
-        'settings'
-      )
+        'settings',
+      ),
     ).subscribe((res) => {
       // console.log("Settings Changed",res);
-      if (res){
+      if (res) {
         this.dataProvider.currentSettings = res;
         this.dataProvider.billToken = res['billTokenNo'];
         this.dataProvider.kotToken = res['kitchenTokenNo'];
@@ -385,34 +460,51 @@ export class OnboardingService {
           online: 0,
           onlineExpiry: 0,
         };
-        if (res['loyaltyRates']){
-          this.dataProvider.loyaltyRates.dineIn = res['loyaltyRates']['dineIn'] || 0;
-          this.dataProvider.loyaltyRates.takeaway = res['loyaltyRates']['takeaway'] || 0;
-          this.dataProvider.loyaltyRates.online = res['loyaltyRates']['online'] || 0;
+        if (res['loyaltyRates']) {
+          this.dataProvider.loyaltyRates.dineIn =
+            res['loyaltyRates']['dineIn'] || 0;
+          this.dataProvider.loyaltyRates.takeaway =
+            res['loyaltyRates']['takeaway'] || 0;
+          this.dataProvider.loyaltyRates.online =
+            res['loyaltyRates']['online'] || 0;
         }
         this.dataProvider.settingsChanged.next(res);
         this.dataProvider.tableOrders = res['tableOrders'] || undefined;
         this.tableService.reOrderTable();
       }
     });
-    docData(doc(this.firestore,'business',business.businessId,'customer','customerConfig')).subscribe((res)=>{
-      if(res){
+    docData(
+      doc(
+        this.firestore,
+        'business',
+        business.businessId,
+        'customer',
+        'customerConfig',
+      ),
+    ).subscribe((res) => {
+      if (res) {
         this.dataProvider.customerDatabaseVersion = res['customerDbVersion'];
       }
-    })
-    collectionData(collection(this.firestore, 'business/' + business.businessId + '/customers'),{idField:'id'}).subscribe((res)=>{
-      if (res){
+    });
+    collectionData(
+      collection(
+        this.firestore,
+        'business/' + business.businessId + '/customers',
+      ),
+      { idField: 'id' },
+    ).subscribe((res) => {
+      if (res) {
         this.dataProvider.customers = res as CustomerInfo[];
       }
-    })
+    });
   }
 
   async getTables() {
     let res = await getDocs(
       collection(
         this.firestore,
-        'business/' + this.dataProvider.businessId + '/tables'
-      )
+        'business/' + this.dataProvider.businessId + '/tables',
+      ),
     );
     if (res.docs.length > 0) {
       let tables = res.docs.map(async (doc) => {
@@ -425,7 +517,7 @@ export class OnboardingService {
           this.billService,
           this.printingService,
           this.customerService,
-          this.userManagementService
+          this.userManagementService,
         );
       });
       let formedTable = await Promise.all(tables);
@@ -442,15 +534,20 @@ export class OnboardingService {
 
   async getTokens() {
     let res = await getDocs(
-      query(collection(
-        this.firestore,
-        'business/' + this.dataProvider.businessId + '/tokens'
+      query(
+        collection(
+          this.firestore,
+          'business/' + this.dataProvider.businessId + '/tokens',
+        ),
+        where('completed', '==', false),
+        where('id', 'not-in', [
+          this.dataProvider.tokens.map((token) => token.id),
+        ]),
       ),
-      where('completed','==',false),where('id','not-in',[this.dataProvider.tokens.map((token)=>token.id)])),
     );
     let tables = res.docs.map(async (doc) => {
-      let table = {...doc.data(),id:doc.id} as TableConstructor;
-      let tableClass =  await Table.fromObject(
+      let table = { ...doc.data(), id: doc.id } as TableConstructor;
+      let tableClass = await Table.fromObject(
         table,
         this.dataProvider,
         this.analyticsService,
@@ -458,7 +555,7 @@ export class OnboardingService {
         this.billService,
         this.printingService,
         this.customerService,
-        this.userManagementService
+        this.userManagementService,
       );
       // if(table.bill){
       //   if(!tableClass.bill){
@@ -471,25 +568,32 @@ export class OnboardingService {
     formedTable.sort((a, b) => {
       return a.tableNo - b.tableNo;
     });
-    if (this.dataProvider.tokens.length == 0){
+    if (this.dataProvider.tokens.length == 0) {
       this.dataProvider.tokens = formedTable;
     } else {
-      formedTable.forEach((token)=>{
+      formedTable.forEach((token) => {
         this.dataProvider.tokens.push(token);
-      })
+      });
       this.dataProvider.tokens.sort((a, b) => {
         return a.tableNo - b.tableNo;
-      })
+      });
     }
-    let changes = collectionChanges(query(collection(
-      this.firestore,
-      'business/' + this.dataProvider.businessId + '/tokens'
-    )))
-    changes.subscribe(async (res)=>{
+    let changes = collectionChanges(
+      query(
+        collection(
+          this.firestore,
+          'business/' + this.dataProvider.businessId + '/tokens',
+        ),
+      ),
+    );
+    changes.subscribe(async (res) => {
       // console.log("TOKENCHANGE",res);
-      res.forEach(async (change)=>{
-        if(change.type=='added'){
-          let newTable = {...change.doc.data(),id:change.doc.id} as TableConstructor;
+      res.forEach(async (change) => {
+        if (change.type == 'added') {
+          let newTable = {
+            ...change.doc.data(),
+            id: change.doc.id,
+          } as TableConstructor;
           let table = await Table.fromObject(
             newTable,
             this.dataProvider,
@@ -498,10 +602,12 @@ export class OnboardingService {
             this.billService,
             this.printingService,
             this.customerService,
-            this.userManagementService
+            this.userManagementService,
           );
-          let isTokenAlreadyPresent = this.dataProvider.tokens.find((token)=>token.id==table.id);
-          if(!isTokenAlreadyPresent){
+          let isTokenAlreadyPresent = this.dataProvider.tokens.find(
+            (token) => token.id == table.id,
+          );
+          if (!isTokenAlreadyPresent) {
             this.dataProvider.tokens.push(table);
           }
         }
@@ -519,10 +625,10 @@ export class OnboardingService {
         //     }
         //   }
         // }
-      })
-    })
+      });
+    });
     // res.then(async (res)=>{
-      
+
     // })
   }
 
@@ -530,8 +636,8 @@ export class OnboardingService {
     let res = await getDocs(
       collection(
         this.firestore,
-        'business/' + this.dataProvider.businessId + '/onlineTokens'
-      )
+        'business/' + this.dataProvider.businessId + '/onlineTokens',
+      ),
     );
     let tables = res.docs.map(async (doc) => {
       let table = { ...doc.data(), id: doc.id } as TableConstructor;
@@ -543,7 +649,7 @@ export class OnboardingService {
         this.billService,
         this.printingService,
         this.customerService,
-        this.userManagementService
+        this.userManagementService,
       );
       return tableClass;
     });
@@ -552,16 +658,23 @@ export class OnboardingService {
       return a.tableNo - b.tableNo;
     });
     this.dataProvider.onlineTokens = formedTable;
-    let changes = collectionChanges(query(collection(
-      this.firestore,
-      'business/' + this.dataProvider.businessId + '/onlineTokens'
-    ),
-    where('completed','==',false)))
-    changes.subscribe(async (res)=>{
+    let changes = collectionChanges(
+      query(
+        collection(
+          this.firestore,
+          'business/' + this.dataProvider.businessId + '/onlineTokens',
+        ),
+        where('completed', '==', false),
+      ),
+    );
+    changes.subscribe(async (res) => {
       // console.log("TOKENCHANGE",res);
-      res.forEach(async (change)=>{
-        if(change.type=='added'){
-          let newTable = {...change.doc.data(),id:change.doc.id} as TableConstructor;
+      res.forEach(async (change) => {
+        if (change.type == 'added') {
+          let newTable = {
+            ...change.doc.data(),
+            id: change.doc.id,
+          } as TableConstructor;
           let table = await Table.fromObject(
             newTable,
             this.dataProvider,
@@ -570,27 +683,37 @@ export class OnboardingService {
             this.billService,
             this.printingService,
             this.customerService,
-            this.userManagementService
+            this.userManagementService,
           );
-          let isTokenAlreadyPresent = this.dataProvider.onlineTokens.find((token)=>token.id==table.id);
-          if(!isTokenAlreadyPresent){
+          let isTokenAlreadyPresent = this.dataProvider.onlineTokens.find(
+            (token) => token.id == table.id,
+          );
+          if (!isTokenAlreadyPresent) {
             this.dataProvider.onlineTokens.push(table);
           }
         }
-      })
-    })
+      });
+    });
   }
 
-  startResetPassword(){
+  startResetPassword() {
     this.stage = 'resetPasswordStage1';
+  }
+
+  checkValidity(businessId:string,accessCode:string){
+    return this.checkIfAccessTokenIsValidFunction({
+      businessId:businessId,
+      accessCode:accessCode,
+      username:this.dataProvider.currentUser.username
+    })
   }
 }
 
 export default function fetchTimeout(url, options, timeout = 7000) {
   return Promise.race([
-      fetch(url, options),
-      new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('timeout')), timeout)
-      )
+    fetch(url, options),
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('timeout')), timeout),
+    ),
   ]);
 }

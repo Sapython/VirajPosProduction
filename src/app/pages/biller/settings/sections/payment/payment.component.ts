@@ -19,7 +19,7 @@ export class PaymentComponent implements OnInit {
     public dataProvider: DataProvider,
     private dialog: Dialog,
     private alertify: AlertsAndNotificationsService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
   ) {}
   ngOnInit(): void {
     this.getPaymentMethods();
@@ -29,7 +29,7 @@ export class PaymentComponent implements OnInit {
       data: { mode: 'edit', setting: method },
     });
     firstValueFrom(dialog.closed).then((data: any) => {
-    //  console.log('data', data);
+      //  console.log('data', data);
       this.dataProvider.loading = true;
       if (data && data.name && typeof data.detail == 'boolean') {
         this.settingsService
@@ -58,7 +58,7 @@ export class PaymentComponent implements OnInit {
     if (
       this.dataProvider.confirm(
         'Are you sure you want to delete payment method ?',
-        [1]
+        [1],
       )
     ) {
       this.settingsService
@@ -89,7 +89,7 @@ export class PaymentComponent implements OnInit {
       data: { mode: 'add' },
     });
     firstValueFrom(dialog.closed).then((data: any) => {
-    //  console.log('data', data);
+      //  console.log('data', data);
       this.dataProvider.loading = true;
       if (data && data.name && typeof data.detail == 'boolean') {
         this.settingsService

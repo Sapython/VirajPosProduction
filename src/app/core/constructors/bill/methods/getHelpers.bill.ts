@@ -1,6 +1,9 @@
 import { Timestamp } from '@angular/fire/firestore';
 import { Bill } from '..';
-import { BillConstructor, PrintableBill } from '../../../../types/bill.structure';
+import {
+  BillConstructor,
+  PrintableBill,
+} from '../../../../types/bill.structure';
 import { Product } from '../../../../types/product.structure';
 import { Kot } from '../../kot/Kot';
 import { DataProvider } from '../../../services/provider/data-provider.service';
@@ -8,7 +11,7 @@ import { ApplicableCombo } from '../../comboKot/comboKot';
 
 export function allProducts(this: Bill) {
   // return all products from all kots and merge with their quantity
-  let products: (Product|ApplicableCombo)[] = [];
+  let products: (Product | ApplicableCombo)[] = [];
   this.kots.forEach((kot) => {
     kot.products.forEach((product) => {
       let index = products.findIndex((item) => item.id === product.id);
@@ -22,8 +25,8 @@ export function allProducts(this: Bill) {
   return products;
 }
 
-export function allFinalProducts(this: Bill): (Product|ApplicableCombo)[] {
-  let products: (Product|ApplicableCombo)[] = [];
+export function allFinalProducts(this: Bill): (Product | ApplicableCombo)[] {
+  let products: (Product | ApplicableCombo)[] = [];
   this.kots.forEach((kot) => {
     if (kot.stage == 'finalized') {
       kot.products.forEach((product) => {
@@ -40,7 +43,9 @@ export function allFinalProducts(this: Bill): (Product|ApplicableCombo)[] {
 }
 
 export function kotWithoutFunctions(this: Bill): any[] {
-  return this.kots.filter(kot => kot.stage=='cancelled' || kot.stage=='finalized').map((kot) => kot.toObject());
+  return this.kots
+    .filter((kot) => kot.stage == 'cancelled' || kot.stage == 'finalized')
+    .map((kot) => kot.toObject());
 }
 
 export function totalProducts(): number {
@@ -53,17 +58,29 @@ export function totalProducts(): number {
   return total;
 }
 
-export function getPrintableBill(this: Bill,products:Product[],dataProvider:DataProvider): PrintableBill {
-//  console.log("madhoosh",this);
+export function getPrintableBill(
+  this: Bill,
+  products: Product[],
+  dataProvider: DataProvider,
+): PrintableBill {
+  //  console.log("madhoosh",this);
   let bill = this;
-  return printableBillGenerator(bill,products,dataProvider);
+  return printableBillGenerator(bill, products, dataProvider);
 }
 
-export function getPrintableBillConstructor(bill:BillConstructor,products:(Product|ApplicableCombo)[],dataProvider:DataProvider): PrintableBill {
-  return printableBillGenerator(bill,products,dataProvider);
+export function getPrintableBillConstructor(
+  bill: BillConstructor,
+  products: (Product | ApplicableCombo)[],
+  dataProvider: DataProvider,
+): PrintableBill {
+  return printableBillGenerator(bill, products, dataProvider);
 }
 
-function printableBillGenerator(bill:BillConstructor|Bill,products:(Product|ApplicableCombo)[],dataProvider:DataProvider): PrintableBill {
+function printableBillGenerator(
+  bill: BillConstructor | Bill,
+  products: (Product | ApplicableCombo)[],
+  dataProvider: DataProvider,
+): PrintableBill {
   return {
     businessDetails: {
       address: dataProvider.currentBusiness.address,
@@ -79,10 +96,12 @@ function printableBillGenerator(bill:BillConstructor|Bill,products:(Product|Appl
       name: bill.customerInfo.name,
       phone: bill.customerInfo.phone,
     },
+    currentLoyalty: bill.currentLoyalty,
+    postDiscountSubTotal:bill.billing.postDiscountSubTotal,
     billNoSuffix: dataProvider.billNoSuffix,
     billNo: bill.billNo || '',
     orderNo: bill.orderNo,
-    cashierName: dataProvider.currentUser?.username||'',
+    cashierName: dataProvider.currentUser?.username || '',
     // date in dd/mm/yyyy format
     date: bill.createdDate.toDate().toLocaleDateString('en-GB'),
     // time in 12 hour format
@@ -101,7 +120,7 @@ function printableBillGenerator(bill:BillConstructor|Bill,products:(Product|Appl
         : 'Dine In',
     products: products.map((product) => {
       return {
-        id:product.id,
+        id: product.id,
         name: product.name,
         quantity: product.quantity,
         untaxedValue: product.price,
@@ -110,7 +129,7 @@ function printableBillGenerator(bill:BillConstructor|Bill,products:(Product|Appl
     }),
     totalQuantity: products.reduce((acc, product) => {
       return acc + product.quantity;
-    },0),
+    }, 0),
     subTotal: roundOffPipe(bill.billing.subTotal),
     discounts: bill.billing.discount.map((discount) => {
       if (discount.mode == 'codeBased') {
@@ -149,6 +168,6 @@ function printableBillGenerator(bill:BillConstructor|Bill,products:(Product|Appl
   };
 }
 
-function roundOffPipe(num:number){
-  return Math.round((num + Number.EPSILON) * 100) / 100
+function roundOffPipe(num: number) {
+  return Math.round((num + Number.EPSILON) * 100) / 100;
 }

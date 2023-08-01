@@ -9,7 +9,7 @@ import { BaseComponentsModule } from '../../../shared/base-components/base-compo
 import { MergedProductsPipe } from './merged-products.pipe';
 import { MatMenuModule } from '@angular/material/menu';
 import { LineDiscountComponent } from './kot-item/line-discount/line-discount.component';
-import { LineCancelComponent } from './kot-item/line-cancel/line-cancel.component'; 
+import { LineCancelComponent } from './kot-item/line-cancel/line-cancel.component';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -22,7 +22,6 @@ import { BillPreviewComponent } from './sections/bill-preview/bill-preview.compo
 import { CancelKOtComponent } from './cancel-kot/cancel-kot.component';
 import { ComboItemComponent } from './combo-item/combo-item.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
 
 @NgModule({
   declarations: [
@@ -37,7 +36,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     QuickKotViewComponent,
     BillPreviewComponent,
     CancelKOtComponent,
-    ComboItemComponent
+    ComboItemComponent,
   ],
   imports: [
     CommonModule,
@@ -49,12 +48,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatMenuModule,
     MatButtonToggleModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
   ],
-  exports:[
-    ActiveKotComponent,
-    KotItemComponent,
-    BillPreviewComponent
-  ]
+  exports: [ActiveKotComponent, KotItemComponent, BillPreviewComponent],
 })
-export class ActiveKotModule { }
+export class ActiveKotModule {}

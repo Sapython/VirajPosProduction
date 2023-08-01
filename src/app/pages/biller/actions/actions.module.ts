@@ -21,7 +21,6 @@ import { DialogModule } from '@angular/cdk/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-
 @NgModule({
   declarations: [
     ActionsComponent,
@@ -29,7 +28,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     SettleComponent,
     AddDiscountComponent,
     NonChargeableComponent,
-    SplitBillComponent
+    SplitBillComponent,
   ],
   imports: [
     CommonModule,
@@ -47,10 +46,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     DialogModule,
     MatSlideToggleModule,
     MatSelectModule,
-    MatTooltipModule
+    MatTooltipModule,
   ],
-  exports:[
-    ActionsComponent
-  ]
+  exports: [ActionsComponent],
 })
-export class ActionsModule { }
+export class ActionsModule {}

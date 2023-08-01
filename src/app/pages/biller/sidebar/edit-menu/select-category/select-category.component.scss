@@ -1,16 +1,16 @@
-section{
-    padding: 30px;
-    border-radius: 15px;
-    background: white;
-    .list{
-        display: flex;
-        flex-direction: column;
-        max-height: 80vh;
-        overflow-y: auto;
-    }
-    .actions{
-        display: flex;
-        justify-content: flex-end;
-        margin-top: 20px;
-    }
+section {
+  padding: 30px;
+  border-radius: 15px;
+  background: white;
+  .list {
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
 }

@@ -18,32 +18,32 @@ import { ReceivingComponent } from './stock/receiving/receiving.component';
 import { SidebarComponent } from './sidebar.component';
 import { BrandingComponent } from './info-panel/branding/branding.component';
 import { PopoverModule } from '../../../shared/popover/popover.module';
-import { MatIconModule } from '@angular/material/icon'; 
+import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTooltipModule } from '@angular/material/tooltip'; 
-import { MatRippleModule } from '@angular/material/core'; 
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatRippleModule } from '@angular/material/core';
 
 import { OverlayModule } from '@angular/cdk/overlay';
 import { SalesSummaryComponent } from './info-panel/sales-summary/sales-summary.component';
 import { OrderSummaryComponent } from './info-panel/order-summary/order-summary.component';
 import { StockListComponent } from './menu/stock-list/stock-list.component';
 import { StockValuationComponent } from './stock/stock-valuation/stock-valuation.component';
-import { CashCounterComponent } from './stock/cash-counter/cash-counter.component'; 
+import { CashCounterComponent } from './stock/cash-counter/cash-counter.component';
 import { DialogModule } from '@angular/cdk/dialog';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle'; 
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatCheckboxModule } from '@angular/material/checkbox'; 
-import { MatSliderModule } from '@angular/material/slider'; 
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSliderModule } from '@angular/material/slider';
 import { AddNewCategoryComponent } from './edit-menu/add-new-category/add-new-category.component';
-import { MatTabsModule } from '@angular/material/tabs'; 
+import { MatTabsModule } from '@angular/material/tabs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HelpersModule } from '../../../shared/helpers/helpers.module';
 import { MatStepperModule } from '@angular/material/stepper';
 import { AddDishComponent } from './edit-menu/add-dish/add-dish.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatMenuModule } from '@angular/material/menu';
-import { ReportsComponent } from './info-panel/sales-summary/reports/reports.component'; 
+import { ReportsComponent } from './info-panel/sales-summary/reports/reports.component';
 import { BaseComponentsModule } from '../../../shared/base-components/base-components.module';
 import { ProductCostingComponent } from './edit-menu/product-costing/product-costing.component';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -52,22 +52,21 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { UpgradeComponent } from './info-panel/upgrade/upgrade.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { AddMenuComponent } from './edit-menu/add-menu/add-menu.component';
-import { SelectCategoryComponent } from './edit-menu/select-category/select-category.component'; 
-import { MatRadioModule } from '@angular/material/radio'; 
+import { SelectCategoryComponent } from './edit-menu/select-category/select-category.component';
+import { MatRadioModule } from '@angular/material/radio';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SetTaxComponent } from './edit-menu/set-tax/set-tax.component';
-import { EnabledPipe } from './menu/enabled.pipe'; 
+import { EnabledPipe } from './menu/enabled.pipe';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { AddComboComponent } from './edit-menu/add-combo/add-combo.component';
-import { AddTypeComponent } from './edit-menu/add-type/add-type.component'; 
+import { AddTypeComponent } from './edit-menu/add-type/add-type.component';
 import { AddTaxComponent } from './edit-menu/add-tax/add-tax.component';
 import { AddDiscountComponent } from './edit-menu/add-discount/add-discount.component';
 import { AddTimeGroupComponent } from './edit-menu/add-time-group/add-time-group.component';
-import {MatProgressBarModule} from '@angular/material/progress-bar'; 
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { UpdaterComponent } from './info-panel/updater/updater.component';
 import { ReportViewComponent } from './info-panel/sales-summary/reports/report-view/report-view.component';
 import { DaySummaryComponent } from './info-panel/sales-summary/reports/report-view/day-summary/day-summary.component';
-import { ItemWiseSalesComponent } from './info-panel/sales-summary/reports/report-view/item-wise-sales/item-wise-sales.component';
 import { DineInBillsComponent } from './info-panel/sales-summary/reports/report-view/dine-in-bills/dine-in-bills.component';
 import { TakeawayBillsComponent } from './info-panel/sales-summary/reports/report-view/takeaway-bills/takeaway-bills.component';
 import { OnlineBillsComponent } from './info-panel/sales-summary/reports/report-view/online-bills/online-bills.component';
@@ -90,10 +89,12 @@ import { TableMergesComponent } from './info-panel/sales-summary/reports/report-
 import { TableExchangesComponent } from './info-panel/sales-summary/reports/report-view/table-exchanges/table-exchanges.component';
 import { TableSplitsComponent } from './info-panel/sales-summary/reports/report-view/table-splits/table-splits.component';
 import { SplitBillsComponent } from './info-panel/sales-summary/reports/report-view/split-bills/split-bills.component';
-import {MatChipsModule} from '@angular/material/chips'; 
+import { MatChipsModule } from '@angular/material/chips';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import {MatExpansionModule} from '@angular/material/expansion';
-import { AddLoyaltySettingComponent } from './edit-menu/add-loyalty-setting/add-loyalty-setting.component'; 
+import { MatExpansionModule } from '@angular/material/expansion';
+import { AddLoyaltySettingComponent } from './edit-menu/add-loyalty-setting/add-loyalty-setting.component';
+import { PrinterSettingComponent } from './edit-menu/printer-setting/printer-setting.component';
+import { LoyaltyComponent } from './info-panel/sales-summary/reports/report-view/loyalty/loyalty.component';
 
 @NgModule({
   declarations: [
@@ -137,7 +138,6 @@ import { AddLoyaltySettingComponent } from './edit-menu/add-loyalty-setting/add-
     UpdaterComponent,
     ReportViewComponent,
     DaySummaryComponent,
-    ItemWiseSalesComponent,
     DineInBillsComponent,
     TakeawayBillsComponent,
     OnlineBillsComponent,
@@ -160,7 +160,9 @@ import { AddLoyaltySettingComponent } from './edit-menu/add-loyalty-setting/add-
     TableExchangesComponent,
     TableSplitsComponent,
     SplitBillsComponent,
-    AddLoyaltySettingComponent
+    AddLoyaltySettingComponent,
+    PrinterSettingComponent,
+    LoyaltyComponent,
   ],
   imports: [
     CommonModule,
@@ -194,8 +196,13 @@ import { AddLoyaltySettingComponent } from './edit-menu/add-loyalty-setting/add-
     MatProgressBarModule,
     MatChipsModule,
     MatAutocompleteModule,
-    MatExpansionModule
+    MatExpansionModule,
   ],
-  exports:[SidebarComponent,AddDishComponent,AddNewCategoryComponent,SelectRecipeComponent]
+  exports: [
+    SidebarComponent,
+    AddDishComponent,
+    AddNewCategoryComponent,
+    SelectRecipeComponent,
+  ],
 })
-export class SidebarModule { }
+export class SidebarModule {}

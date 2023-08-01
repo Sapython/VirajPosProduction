@@ -1,37 +1,72 @@
 import { Injectable } from '@angular/core';
 import { Product } from '../../../../types/product.structure';
-import { addDoc, collection, Timestamp, updateDoc, doc, getDocs, setDoc, deleteDoc, Firestore } from '@angular/fire/firestore';
+import {
+  addDoc,
+  collection,
+  Timestamp,
+  updateDoc,
+  doc,
+  getDocs,
+  setDoc,
+  deleteDoc,
+  Firestore,
+} from '@angular/fire/firestore';
 import { DataProvider } from '../../provider/data-provider.service';
 import { Menu } from '../../../../types/menu.structure';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProductsService {
+  constructor(
+    private dataProvider: DataProvider,
+    private firestore: Firestore,
+  ) {}
 
-  constructor(private dataProvider:DataProvider,private firestore:Firestore) { }
-  
-  addRecipe(recipe: any,menuId:string) {
-  //  console.log("Adding at",'business/'+this.dataProvider.businessId+'/menus/'+menuId+'/products');
+  addRecipe(recipe: any, menuId: string) {
+    //  console.log("Adding at",'business/'+this.dataProvider.businessId+'/menus/'+menuId+'/products');
     return addDoc(
-      collection(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/'+menuId+'/products'),
-      recipe
+      collection(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menuId +
+          '/products',
+      ),
+      recipe,
     );
   }
 
-  updateRecipe(recipe:any,menuId:string){
+  updateRecipe(recipe: any, menuId: string) {
     recipe.quantity = 1;
     recipe.selected = false;
-    delete recipe.instruction
-    delete recipe.lineDiscount
-    recipe.createdDate = Timestamp.now()
+    delete recipe.instruction;
+    delete recipe.lineDiscount;
+    recipe.createdDate = Timestamp.now();
     return updateDoc(
-      doc(this.firestore,'business/'+this.dataProvider.businessId+'/menus/'+menuId+'/products/'+recipe.id),{...recipe}
-    )
+      doc(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menuId +
+          '/products/' +
+          recipe.id,
+      ),
+      { ...recipe },
+    );
   }
   getProducts() {
     return getDocs(
-      collection(this.firestore, '/business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/products')
+      collection(
+        this.firestore,
+        '/business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          this.dataProvider.currentMenu?.selectedMenu?.id +
+          '/products',
+      ),
     );
   }
 
@@ -41,28 +76,43 @@ export class ProductsService {
         return setDoc(
           doc(
             this.firestore,
-            'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/products/' + product.id
+            'business/' +
+              this.dataProvider.businessId +
+              '/menus/' +
+              this.dataProvider.currentMenu?.selectedMenu?.id +
+              '/products/' +
+              product.id,
           ),
           { ...product, quantity: 1 },
-          { merge: true }
+          { merge: true },
         );
-      })
+      }),
     );
   }
 
-  deleteProduct(id:string,menuId:string){
+  deleteProduct(id: string, menuId: string) {
     return deleteDoc(
-      doc(this.firestore, 'business/'+this.dataProvider.businessId+'/menus/'+menuId+'/products/' + id)
+      doc(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menuId +
+          '/products/' +
+          id,
+      ),
     );
   }
-  getProductsByMenu(menu:Menu){
+  getProductsByMenu(menu: Menu) {
     return getDocs(
       collection(
         this.firestore,
-        'business/'+this.dataProvider.businessId+'/menus/' +
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
           menu.id +
-          '/products/'
+          '/products/',
       ),
-    )
+    );
   }
 }

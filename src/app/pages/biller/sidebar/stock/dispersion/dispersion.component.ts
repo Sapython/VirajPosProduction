@@ -4,10 +4,10 @@ import { DataProvider } from '../../../../../core/services/provider/data-provide
 @Component({
   selector: 'app-dispersion',
   templateUrl: './dispersion.component.html',
-  styleUrls: ['./dispersion.component.scss']
+  styleUrls: ['./dispersion.component.scss'],
 })
 export class DispersionComponent {
-  @Input() approved:number = 40;
-  @Input() pending:number = 40;
-  constructor(public dataProvider:DataProvider) { }
+  @Input() approved: number = 40;
+  @Input() pending: number = 40;
+  constructor(public dataProvider: DataProvider) {}
 }

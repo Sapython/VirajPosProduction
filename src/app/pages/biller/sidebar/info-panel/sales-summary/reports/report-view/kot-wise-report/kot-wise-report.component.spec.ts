@@ -8,9 +8,8 @@ describe('KotWiseReportComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ KotWiseReportComponent ]
-    })
-    .compileComponents();
+      declarations: [KotWiseReportComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(KotWiseReportComponent);
     component = fixture.componentInstance;

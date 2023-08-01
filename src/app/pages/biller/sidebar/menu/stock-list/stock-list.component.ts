@@ -3,196 +3,196 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 @Component({
   selector: 'app-stock-list',
   templateUrl: './stock-list.component.html',
-  styleUrls: ['./stock-list.component.scss']
+  styleUrls: ['./stock-list.component.scss'],
 })
 export class StockListComponent {
-  @Output() close:EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Input() items:Item[] = [
+  @Output() close: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Input() items: Item[] = [
     {
-      name: "Bread",
+      name: 'Bread',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Cheese",
+      name: 'Cheese',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Bread",
+      name: 'Bread',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Cheese",
+      name: 'Cheese',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Bread",
+      name: 'Bread',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Cheese",
+      name: 'Cheese',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Bread",
+      name: 'Bread',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Cheese",
+      name: 'Cheese',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Bread",
+      name: 'Bread',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Cheese",
+      name: 'Cheese',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Bread",
+      name: 'Bread',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Cheese",
+      name: 'Cheese',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Bread",
+      name: 'Bread',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Cheese",
+      name: 'Cheese',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Bread",
+      name: 'Bread',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Cheese",
+      name: 'Cheese',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Bread",
+      name: 'Bread',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Cheese",
+      name: 'Cheese',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Bread",
+      name: 'Bread',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Cheese",
+      name: 'Cheese',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Bread",
+      name: 'Bread',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Cheese",
+      name: 'Cheese',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Bread",
+      name: 'Bread',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Cheese",
+      name: 'Cheese',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Bread",
+      name: 'Bread',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Cheese",
+      name: 'Cheese',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Bread",
+      name: 'Bread',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Cheese",
+      name: 'Cheese',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Bread",
+      name: 'Bread',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
     {
-      name: "Cheese",
+      name: 'Cheese',
       quantity: 10,
       price: 10,
-      total: 100
+      total: 100,
     },
   ];
 }
-interface Item{
-  name:string;
-  quantity:number;
-  price:number;
-  total:number;
+interface Item {
+  name: string;
+  quantity: number;
+  price: number;
+  total: number;
 }

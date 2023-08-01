@@ -1,117 +1,115 @@
-section{
-    overflow-y: auto;
-    background: white;
-    border-radius: var(--Viraj-border-radius) 0px 0px var(--Viraj-border-radius);
-    // background-image: url('^assets/images/background.svg');
-    // background-repeat: repeat;
-    // background-size: 400px;
-    // background-attachment: fixed;
-    // height: calc(100% - 40px);
-    .cancelled{
-        text-decoration: line-through;
-        filter: saturate(0);
-        *{
-            text-decoration: line-through;
-        }
+section {
+  overflow-y: auto;
+  background: white;
+  border-radius: var(--Viraj-border-radius) 0px 0px var(--Viraj-border-radius);
+  // background-image: url('^assets/images/background.svg');
+  // background-repeat: repeat;
+  // background-size: 400px;
+  // background-attachment: fixed;
+  // height: calc(100% - 40px);
+  .cancelled {
+    text-decoration: line-through;
+    filter: saturate(0);
+    * {
+      text-decoration: line-through;
     }
-    
-    
-    .normalKotView{
-        padding-top: 3px;
-    }
-}
-.title{
-    display: grid;
-    grid-template-columns: 1fr 3fr;
-    position: sticky;
-    top: 0px;
-    box-sizing: border-box;
-    background: white;
-    box-shadow: 0px 4px 20px rgba(0,0,0,0.1);
-    z-index: 99;
-    overflow-x: hidden;
-    align-items: center;
-    h3{
-        padding: 0px 20px;
-        width: 100%;
-        margin: 10px 0px;
-    }
-    .labels{
-        display: flex;
-        gap: 20px;
-        padding: 20px;
-        overflow-x: scroll;
-        &::-webkit-scrollbar{
-            display: none;
-        }
-        .label{
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            p{
-                margin: 0px;
-            }
-            span{
-                width: 20px;
-                height: 20px;
-                border-radius: 20px;
-                background: #ccc;
-                box-shadow: 0px 0px 20px 0px #00000009;
-            }
-            &:last-child{
-                margin-right: 40px;
-            }
-        }
-    }
-}
+  }
 
-.noItem{
-    width: 200px;
-    height:auto;
-    display: block;
-    margin:0 auto;
+  .normalKotView {
+    padding-top: 3px;
+  }
 }
-
-
-.expandable{
-    position: relative;
-    top: 100%;
-    transform: translateY(-100%);
-    &.closed{
+.title {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  position: sticky;
+  top: 0px;
+  box-sizing: border-box;
+  background: white;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+  z-index: 99;
+  overflow-x: hidden;
+  align-items: center;
+  h3 {
+    padding: 0px 20px;
+    width: 100%;
+    margin: 10px 0px;
+  }
+  .labels {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    overflow-x: scroll;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    .label {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      p {
+        margin: 0px;
+      }
+      span {
+        width: 20px;
         height: 20px;
+        border-radius: 20px;
+        background: #ccc;
+        box-shadow: 0px 0px 20px 0px #00000009;
+      }
+      &:last-child {
+        margin-right: 40px;
+      }
     }
-    &.opened{
-        height: auto;
-        max-height: 90%;
-    }
+  }
 }
-@media screen and (max-width: 1366px){
-    h2{
-        margin: 10px;
-    }
-    section{
-        border-radius: var(--Viraj-border-radius);
-    }
-    .title{
-        .labels{
-            padding: 5px;
-            width: 100%;
-            overflow-x: scroll;
-            .label{
-                display: flex;
-                gap: 10px;
-                align-items: center;
-                p{
-                    margin: 0px;
-                }
-                span{
-                    width: 15px;
-                    height: 15px;
-                    border-radius: 15px;
-                    background: #ccc;
-                    box-shadow: 0px 0px 20px 0px #00000009;
-                }
-            }
+
+.noItem {
+  width: 200px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.expandable {
+  position: relative;
+  top: 100%;
+  transform: translateY(-100%);
+  &.closed {
+    height: 20px;
+  }
+  &.opened {
+    height: auto;
+    max-height: 90%;
+  }
+}
+@media screen and (max-width: 1366px) {
+  h2 {
+    margin: 10px;
+  }
+  section {
+    border-radius: var(--Viraj-border-radius);
+  }
+  .title {
+    .labels {
+      padding: 5px;
+      width: 100%;
+      overflow-x: scroll;
+      .label {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        p {
+          margin: 0px;
         }
+        span {
+          width: 15px;
+          height: 15px;
+          border-radius: 15px;
+          background: #ccc;
+          box-shadow: 0px 0px 20px 0px #00000009;
+        }
+      }
     }
+  }
 }

@@ -13,32 +13,39 @@ import { MenuManagementService } from '../../../../../core/services/database/men
 @Component({
   selector: 'app-account',
   templateUrl: './account.component.html',
-  styleUrls: ['./account.component.scss']
+  styleUrls: ['./account.component.scss'],
 })
 export class AccountComponent {
   checkUsernameFunction = httpsCallable(this.functions, 'userNameAvailable');
-  constructor(public dataProvider:DataProvider,private functions:Functions,private dialog:Dialog,private settingsService:SettingsService,private alertify:AlertsAndNotificationsService,private menuManagementService:MenuManagementService){}
+  constructor(
+    public dataProvider: DataProvider,
+    private functions: Functions,
+    private dialog: Dialog,
+    private settingsService: SettingsService,
+    private alertify: AlertsAndNotificationsService,
+    private menuManagementService: MenuManagementService,
+  ) {}
 
   addAccount() {
-    const dialog = this.dialog.open(AddComponent)
+    const dialog = this.dialog.open(AddComponent);
     dialog.disableClose = true;
-    firstValueFrom(dialog.closed).then(async (res:any)=>{
-      if (res && res.username){
+    firstValueFrom(dialog.closed).then(async (res: any) => {
+      if (res && res.username) {
         this.dataProvider.currentBusiness?.users.push({
           role: res.access || 'waiter',
-          accessType:'role',
+          accessType: 'role',
           username: res.username,
           lastUpdated: Timestamp.now(),
           updatedBy: this.dataProvider.currentUser?.username || 'user',
         });
         try {
           await this.updateBusiness();
-          this.alertify.presentToast("Account added successfully")
+          this.alertify.presentToast('Account added successfully');
         } catch (error) {
-          this.alertify.presentToast('Failed to add account','error')
+          this.alertify.presentToast('Failed to add account', 'error');
         }
       } else if (res && res.cancelled) {
-        this.alertify.presentToast("Account not added",'error')
+        this.alertify.presentToast('Account not added', 'error');
       }
     });
   }
@@ -68,7 +75,7 @@ export class AccountComponent {
     if (
       await this.dataProvider.confirm(
         'Are you sure you want to delete account ?',
-        [1]
+        [1],
       )
     ) {
       // alert("delete account")
@@ -76,7 +83,7 @@ export class AccountComponent {
       setTimeout(() => {
         if (this.dataProvider.currentBusiness) {
           this.settingsService.updateBusiness(
-            this.dataProvider.currentBusiness
+            this.dataProvider.currentBusiness,
           );
         }
       }, 700);

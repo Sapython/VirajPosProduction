@@ -8,9 +8,8 @@ describe('KotItemComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ KotItemComponent ]
-    })
-    .compileComponents();
+      declarations: [KotItemComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(KotItemComponent);
     component = fixture.componentInstance;

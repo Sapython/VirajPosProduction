@@ -8,9 +8,8 @@ describe('ReprintReasonComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ReprintReasonComponent ]
-    })
-    .compileComponents();
+      declarations: [ReprintReasonComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ReprintReasonComponent);
     component = fixture.componentInstance;

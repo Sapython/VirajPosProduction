@@ -1,51 +1,137 @@
 <section>
-	<div class="heading">
-		<h2>Move KOT/Item</h2>
-		<viraj-button (vclick)="dialogRef.close()" type="icon"><i class="ri-close-fill"></i></viraj-button>
-	</div>
-	<div class="tableWise">
-		<div class="from tableWrapper">
-			<div class="heading sticky">
-				<h3>From</h3>
-			</div>
-			<div class="groupContainer">
-				<div class="groupedTables" *ngFor="let tableGroup of this.dataProvider.groupedTables">
-					<div class="heading">
-						<h4>{{tableGroup.name}}</h4>
-					</div>
-					<div class="tables">
-						<button class="table medium" [disabled]="table.status!='occupied' || this.transferTableWise.toTable?.id == table.id" [ngClass]="{'active':table.status=='occupied','highlight':this.transferTableWise.fromTable?.id == table.id,'disabled':table.status!='occupied','late':this.dataProvider.tableTimeOutTime <= table.minutes,'finalized':table.bill?.stage=='finalized','medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}" matRipple [matRippleDisabled]="table.status!='occupied'" *ngFor="let table of tableGroup.tables" matRipple (click)="this.transferTableWise.fromTable = table;">
-							<p class="name">{{table.name}}</p>
-							<p class="cost" *ngIf="table.bill?.billing?.grandTotal != undefined && table.bill?.billing?.grandTotal != null && isNumber(table.bill?.billing?.grandTotal)"><strong>{{table.bill?.billing?.grandTotal | currency:'INR'}}</strong></p>
-							<p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">{{ table.timeSpent }}</p>
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="to tableWrapper">
-			<div class="heading sticky">
-				<h3>To</h3>
-			</div>
-			<div class="groupContainer">
-				<div class="groupedTables" *ngFor="let tableGroup of this.dataProvider.groupedTables">
-					<div class="heading">
-						<h4>{{tableGroup.name}}</h4>
-					</div>
-					<div class="tables">
-						<button [disabled]="table.status!='occupied' || this.transferTableWise.fromTable?.id == table.id" class="table medium" [ngClass]="{'active':table.status=='occupied','highlight':this.transferTableWise.toTable?.id == table.id,'disabled':table.status!='occupied','late':this.dataProvider.tableTimeOutTime <= table.minutes,'finalized':table.bill?.stage=='finalized','medium':this.dataProvider.currentTableSize == 'medium','small':this.dataProvider.currentTableSize == 'small'}" matRipple [matRippleDisabled]="table.status!='occupied'" *ngFor="let table of tableGroup.tables" matRipple (click)="this.transferTableWise.toTable = table;">
-							<p class="name">{{table.name}}</p>
-							<p class="cost" *ngIf="table.bill?.billing?.grandTotal != undefined && table.bill?.billing?.grandTotal != null && isNumber(table.bill?.billing?.grandTotal)"><strong>{{table.bill?.billing?.grandTotal | currency:'INR'}}</strong></p>
-							<p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">{{ table.timeSpent }}</p>
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="actions">
-		<viraj-button color="primary" [noPropogation]="true" (vclick)="cancel()">Cancel</viraj-button>
-		<viraj-button color="primary" [noPropogation]="true" (vclick)="merge()">Merge</viraj-button>
-		<viraj-button color="primary" [noPropogation]="true" (vclick)="exchange()">Exchange</viraj-button>
-	</div>
+  <div class="heading">
+    <h2>Move KOT/Item</h2>
+    <viraj-button (vclick)="dialogRef.close()" type="icon"
+      ><i class="ri-close-fill"></i
+    ></viraj-button>
+  </div>
+  <div class="tableWise">
+    <div class="from tableWrapper">
+      <div class="heading sticky">
+        <h3>From</h3>
+      </div>
+      <div class="groupContainer">
+        <div
+          class="groupedTables"
+          *ngFor="let tableGroup of this.dataProvider.groupedTables"
+        >
+          <div class="heading">
+            <h4>{{ tableGroup.name }}</h4>
+          </div>
+          <div class="tables">
+            <button
+              class="table medium"
+              [disabled]="
+                table.status != 'occupied' ||
+                this.transferTableWise.toTable?.id == table.id
+              "
+              [ngClass]="{
+                active: table.status == 'occupied',
+                highlight: this.transferTableWise.fromTable?.id == table.id,
+                disabled: table.status != 'occupied',
+                late: this.dataProvider.tableTimeOutTime <= table.minutes,
+                finalized: table.bill?.stage == 'finalized',
+                medium: this.dataProvider.currentTableSize == 'medium',
+                small: this.dataProvider.currentTableSize == 'small'
+              }"
+              matRipple
+              [matRippleDisabled]="table.status != 'occupied'"
+              *ngFor="let table of tableGroup.tables"
+              matRipple
+              (click)="this.transferTableWise.fromTable = table"
+            >
+              <p class="name">{{ table.name }}</p>
+              <p
+                class="cost"
+                *ngIf="
+                  table.bill?.billing?.grandTotal != undefined &&
+                  table.bill?.billing?.grandTotal != null &&
+                  isNumber(table.bill?.billing?.grandTotal)
+                "
+              >
+                <strong>{{
+                  table.bill?.billing?.grandTotal | currency: "INR"
+                }}</strong>
+              </p>
+              <p
+                class="time"
+                *ngIf="table.status == 'occupied' && table.timeSpent"
+              >
+                {{ table.timeSpent }}
+              </p>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="to tableWrapper">
+      <div class="heading sticky">
+        <h3>To</h3>
+      </div>
+      <div class="groupContainer">
+        <div
+          class="groupedTables"
+          *ngFor="let tableGroup of this.dataProvider.groupedTables"
+        >
+          <div class="heading">
+            <h4>{{ tableGroup.name }}</h4>
+          </div>
+          <div class="tables">
+            <button
+              [disabled]="
+                table.status != 'occupied' ||
+                this.transferTableWise.fromTable?.id == table.id
+              "
+              class="table medium"
+              [ngClass]="{
+                active: table.status == 'occupied',
+                highlight: this.transferTableWise.toTable?.id == table.id,
+                disabled: table.status != 'occupied',
+                late: this.dataProvider.tableTimeOutTime <= table.minutes,
+                finalized: table.bill?.stage == 'finalized',
+                medium: this.dataProvider.currentTableSize == 'medium',
+                small: this.dataProvider.currentTableSize == 'small'
+              }"
+              matRipple
+              [matRippleDisabled]="table.status != 'occupied'"
+              *ngFor="let table of tableGroup.tables"
+              matRipple
+              (click)="this.transferTableWise.toTable = table"
+            >
+              <p class="name">{{ table.name }}</p>
+              <p
+                class="cost"
+                *ngIf="
+                  table.bill?.billing?.grandTotal != undefined &&
+                  table.bill?.billing?.grandTotal != null &&
+                  isNumber(table.bill?.billing?.grandTotal)
+                "
+              >
+                <strong>{{
+                  table.bill?.billing?.grandTotal | currency: "INR"
+                }}</strong>
+              </p>
+              <p
+                class="time"
+                *ngIf="table.status == 'occupied' && table.timeSpent"
+              >
+                {{ table.timeSpent }}
+              </p>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="actions">
+    <viraj-button color="primary" [noPropogation]="true" (vclick)="cancel()"
+      >Cancel</viraj-button
+    >
+    <viraj-button color="primary" [noPropogation]="true" (vclick)="merge()"
+      >Merge</viraj-button
+    >
+    <viraj-button color="primary" [noPropogation]="true" (vclick)="exchange()"
+      >Exchange</viraj-button
+    >
+  </div>
 </section>

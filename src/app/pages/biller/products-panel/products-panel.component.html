@@ -1,48 +1,103 @@
 <ng-container *ngIf="!this.selectedCombo">
-    <section class="noPadding" *ngIf="currentCategory">
-        <h3>{{currentCategory.name | titlecase}}</h3>
-        <input type="search" placeholder="Search In Category" (input)="categoryWiseSearchSubject.next(customSearch.value)" #customSearch>
-    </section>
-    <section class="productArea" [ngClass]="{'align':(products.length > 5 || (searchVisible && searchResults.length > 5) || (customSearchVisible && (categoryProductSearchResults.length || categoryComboSearchResults.length || categoryComboSearchResults.length) > 5))}">
-        <ng-container *ngIf="mode == 'products'">
-            <ng-container *ngFor="let item of (this.categoryProductSearchResults.length > 0 ? categoryProductSearchResults : products)">
-                <app-product-card [taxes]="item.taxes" (click)="item.taxes ? selectProduct(item) : {}" [tags]="item.tags" [category]="item.category.name" [productName]="item.name" [veg]="item.type == 'veg'" [price]="item.price" *ngIf="item.visible"></app-product-card>
-            </ng-container>
-        </ng-container>
-        <ng-container *ngIf="mode == 'combos'">
-            <ng-container *ngFor="let item of (this.categoryComboSearchResults.length > 0 ? categoryComboSearchResults : combos)">
-                <app-combo-card [combo]="item" (open)="selectCombo($event)"></app-combo-card>
-            </ng-container>
-        </ng-container>
-    </section>
+  <section class="noPadding" *ngIf="currentCategory">
+    <h3>{{ currentCategory.name | titlecase }}</h3>
+    <input
+      type="search"
+      placeholder="Search In Category"
+      (input)="categoryWiseSearchSubject.next(customSearch.value)"
+      #customSearch
+    />
+  </section>
+  <section
+    class="productArea"
+    [ngClass]="{
+      align:
+        products.length > 5 ||
+        (searchVisible && searchResults.length > 5) ||
+        (customSearchVisible &&
+          (categoryProductSearchResults.length ||
+            categoryComboSearchResults.length ||
+            categoryComboSearchResults.length) > 5)
+    }"
+  >
+    <ng-container *ngIf="mode == 'products'">
+      <ng-container
+        *ngFor="
+          let item of this.categoryProductSearchResults.length > 0
+            ? categoryProductSearchResults
+            : products
+        "
+      >
+        <app-product-card
+          [taxes]="item.taxes"
+          (click)="item.taxes ? selectProduct(item) : {}"
+          [tags]="item.tags"
+          [category]="item.category.name"
+          [productName]="item.name"
+          [veg]="item.type == 'veg'"
+          [price]="item.price"
+          *ngIf="item.visible"
+        ></app-product-card>
+      </ng-container>
+    </ng-container>
+    <ng-container *ngIf="mode == 'combos'">
+      <ng-container
+        *ngFor="
+          let item of this.categoryComboSearchResults.length > 0
+            ? categoryComboSearchResults
+            : combos
+        "
+      >
+        <app-combo-card *ngIf="item.enabled"
+          [combo]="item"
+          (open)="selectCombo($event)"
+        ></app-combo-card>
+      </ng-container>
+    </ng-container>
+  </section>
 </ng-container>
 <ng-container *ngIf="this.selectedCombo">
-    <section class="noPadding" *ngIf="this.selectedCombo">
-        <viraj-button type="icon" (vclick)="selectedCombo = undefined"><i class="ri-close-fill"></i></viraj-button>
-        <h3>{{this.selectedCombo.name | titlecase}}</h3>
-    </section>
-    <section class="productArea combos">
-        <!-- selected type -->
-        <div class="selectedType" *ngIf="selectedCombo">
-            <div class="type">
-                <viraj-button type="icon" (vclick)="selectedCombo = undefined"><i class="ri-arrow-left-fill"></i></viraj-button>
-                <img [src]="selectedCombo.offerImage" alt="">
-                <p>{{selectedCombo.name}}</p>
+  <section class="noPadding" *ngIf="this.selectedCombo">
+    <viraj-button type="icon" (vclick)="selectedCombo = undefined"
+      ><i class="ri-close-fill"></i
+    ></viraj-button>
+    <h3>{{ this.selectedCombo.name | titlecase }}</h3>
+  </section>
+  <section class="productArea combos">
+    <!-- selected type -->
+    <div class="selectedType" *ngIf="selectedCombo">
+      <div class="type">
+        <viraj-button type="icon" (vclick)="selectedCombo = undefined"
+          ><i class="ri-arrow-left-fill"></i
+        ></viraj-button>
+        <img [src]="selectedCombo.offerImage" alt="" />
+        <p>{{ selectedCombo.name }}</p>
+      </div>
+      <div class="categories">
+        <ng-container *ngFor="let category of selectedCombo.selectedCategories">
+          <div class="products">
+            <div class="heading">
+              <h4>{{ category.category.name }}</h4>
             </div>
-            <div class="categories">
-                <ng-container *ngFor="let category of selectedCombo.selectedCategories">
-                    <div class="products">
-                        <div class="heading">
-                            <h4>{{category.category.name}}</h4>
-                        </div>
-                        <div class="productsContainer">
-                            <ng-container *ngFor="let product of category.category.products">
-                                <app-product-card [taxes]="product.taxes"  (click)="product.taxes ? selectComboProduct(product,category) : {}" [tags]="product.tags" [category]="product.category.name" [productName]="product.name" [veg]="product.type == 'veg'" [price]="product.price" *ngIf="product.visible && product.selected"></app-product-card>
-                            </ng-container>
-                        </div>
-                    </div>
-                </ng-container>
+            <div class="productsContainer">
+              <ng-container *ngFor="let product of category.category.products">
+                <app-product-card
+                  [taxes]="product.taxes"
+                  (click)="
+                    product.taxes ? selectComboProduct(product, category) : {}
+                  "
+                  [tags]="product.tags"
+                  [category]="product.category.name"
+                  [productName]="product.name"
+                  [veg]="product.type == 'veg'"
+                  [price]="product.price"
+                  *ngIf="product.visible && product.selected"
+                ></app-product-card>
+              </ng-container>
             </div>
-        </div>
-    </section>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </section>
 </ng-container>

@@ -1,13 +1,21 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { APP_INITIALIZER, ErrorHandler, NgModule, isDevMode } from '@angular/core';
+import {
+  APP_INITIALIZER,
+  ErrorHandler,
+  NgModule,
+  isDevMode,
+} from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
-import { BrowserAnimationsModule, provideNoopAnimations } from '@angular/platform-browser/animations';
-import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import {
+  BrowserAnimationsModule,
+  provideNoopAnimations,
+} from '@angular/platform-browser/animations';
+import { FirebaseApp, initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { APP_CONFIG } from '../environments/environment';
 import { DBConfig, NgxIndexedDBModule } from 'ngx-indexed-db';
 import {
@@ -16,10 +24,27 @@ import {
   ScreenTrackingService,
   UserTrackingService,
 } from '@angular/fire/analytics';
-import { provideAuth, getAuth, indexedDBLocalPersistence, browserLocalPersistence, connectAuthEmulator } from '@angular/fire/auth';
-import { provideFirestore, getFirestore, enableMultiTabIndexedDbPersistence, enableIndexedDbPersistence, connectFirestoreEmulator } from '@angular/fire/firestore';
+import {
+  provideAuth,
+  getAuth,
+  indexedDBLocalPersistence,
+  browserLocalPersistence,
+  connectAuthEmulator,
+} from '@angular/fire/auth';
+import {
+  provideFirestore,
+  getFirestore,
+  enableMultiTabIndexedDbPersistence,
+  enableIndexedDbPersistence,
+  connectFirestoreEmulator,
+  initializeFirestore,
+} from '@angular/fire/firestore';
 import { providePerformance, getPerformance } from '@angular/fire/performance';
-import { provideStorage, getStorage, connectStorageEmulator } from '@angular/fire/storage';
+import {
+  provideStorage,
+  getStorage,
+  connectStorageEmulator,
+} from '@angular/fire/storage';
 import { DialogModule } from '@angular/cdk/dialog';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -33,9 +58,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { AlertsAndNotificationsService } from './core/services/alerts-and-notification/alerts-and-notifications.service';
 
-import * as Sentry from "@sentry/angular-ivy";
+import * as Sentry from '@sentry/angular-ivy';
 import { Router } from '@angular/router';
-import { connectFunctionsEmulator, getFunctions, provideFunctions } from '@angular/fire/functions';
+import {
+  connectFunctionsEmulator,
+  getFunctions,
+  provideFunctions,
+} from '@angular/fire/functions';
 import { ResetPasswordComponent } from './pages/auth/reset-password/reset-password.component';
 import { MatIconModule } from '@angular/material/icon';
 import { CheckingPasswordComponent } from './shared/checking-password/checking-password.component';
@@ -57,11 +86,14 @@ import { SettingsService } from './core/services/database/settings/settings.serv
 import { SystemService } from './core/services/database/system/system.service';
 import { TableService } from './core/services/database/table/table.service';
 import { ElectronService } from './core/services/electron/electron.service';
+import { PrinterService } from './core/services/printing/printer/printer.service';
+
+var FirebaseAppInstance:FirebaseApp|undefined;
 
 // AoT requires an exported function for factories
 export const dbConfig: DBConfig = {
   name: 'Viraj',
-  version: 21,
+  version: 23,
   objectStoresMeta: [
     {
       store: 'business',
@@ -85,25 +117,31 @@ export const dbConfig: DBConfig = {
       ],
     },
     {
-      store:'menu',
-      storeConfig:{keyPath:'menuId',autoIncrement:false},
-      storeSchema:[
-        {name:'menuId',keypath:'menuId',options:{unique:false}},
-        {name:'menu',keypath:'menu',options:{unique:false}},
-        {name:'products',keypath:'products',options:{unique:false}},
-        {name:'rootCategories',keypath:'rootCategories',options:{unique:false}},
-        {name:'viewCategories',keypath:'viewCategories',options:{unique:false}},
-        {name:'recommendedCategories',keypath:'recommendedCategories',options:{unique:false}},
-      ]
+      store: 'menu',
+      storeConfig: { keyPath: 'menuId', autoIncrement: false },
+      storeSchema: [
+        { name: 'menuId', keypath: 'menuId', options: { unique: false } },
+        { name: 'menu', keypath: 'menu', options: { unique: false } },
+        { name: 'products', keypath: 'products', options: { unique: false } },
+        {name: 'rootCategories',keypath: 'rootCategories',options: { unique: false }},
+        {name: 'viewCategories',keypath: 'viewCategories',options: { unique: false }},
+        {name: 'recommendedCategories',keypath: 'recommendedCategories',options: { unique: false }},
+        {name:'printerSettings',keypath:'printerSettings',options:{unique:false}},
+        {name:'defaultPrinters',keypath:'defaultPrinters',options:{unique:false}}
+      ],
     },
     {
-      store:'config',
-      storeConfig:{keyPath:'id',autoIncrement:true},
-      storeSchema:[
-        {name:'id',keypath:'id',options:{unique:true}},
-        {name:'config',keypath:'config',options:{unique:false}},
-        {name:'customerDbVersion',keypath:'customerDbVersion',options:{unique:true}},
-      ]
+      store: 'config',
+      storeConfig: { keyPath: 'id', autoIncrement: true },
+      storeSchema: [
+        { name: 'id', keypath: 'id', options: { unique: true } },
+        { name: 'config', keypath: 'config', options: { unique: false } },
+        {
+          name: 'customerDbVersion',
+          keypath: 'customerDbVersion',
+          options: { unique: true },
+        },
+      ],
     },
     {
       store: 'customers',
@@ -114,20 +152,45 @@ export const dbConfig: DBConfig = {
         { name: 'phone', keypath: 'phone', options: { unique: false } },
         { name: 'address', keypath: 'address', options: { unique: false } },
         { name: 'gst', keypath: 'gst', options: { unique: false } },
-        { name: 'loyaltyPoints', keypath: 'loyaltyPoints', options: { unique: false } },
+        {
+          name: 'loyaltyPoints',
+          keypath: 'loyaltyPoints',
+          options: { unique: false },
+        },
         { name: 'lastOrder', keypath: 'lastOrder', options: { unique: false } },
-        { name: 'lastOrderDate', keypath: 'lastOrderDate', options: { unique: false } },
-        { name: 'lastOrderDish', keypath: 'lastOrderDish', options: { unique: false } },
-        { name: 'orderFrequency', keypath: 'orderFrequency', options: { unique: false } },
-        { name: 'averageOrderPrice', keypath: 'averageOrderPrice', options: { unique: false } },
+        {
+          name: 'lastOrderDate',
+          keypath: 'lastOrderDate',
+          options: { unique: false },
+        },
+        {
+          name: 'lastOrderDish',
+          keypath: 'lastOrderDish',
+          options: { unique: false },
+        },
+        {
+          name: 'orderFrequency',
+          keypath: 'orderFrequency',
+          options: { unique: false },
+        },
+        {
+          name: 'averageOrderPrice',
+          keypath: 'averageOrderPrice',
+          options: { unique: false },
+        },
         { name: 'lastMonth', keypath: 'lastMonth', options: { unique: false } },
       ],
-    },
+    }
   ],
 };
 
 @NgModule({
-  declarations: [AppComponent, ResetPasswordComponent, CheckingPasswordComponent, RequiresPrivilegeComponent],
+  declarations: [
+    AppComponent,
+    ResetPasswordComponent,
+    CheckingPasswordComponent,
+    RequiresPrivilegeComponent,
+  ],
   imports: [
     BrowserModule,
     FormsModule,
@@ -150,7 +213,10 @@ export const dbConfig: DBConfig = {
     LoadingModule,
     BillerModule,
     BrowserAnimationsModule,
-    provideFirebaseApp(() => initializeApp(APP_CONFIG.firebase)),
+    provideFirebaseApp(() => {
+      FirebaseAppInstance = initializeApp(APP_CONFIG.firebase);
+      return FirebaseAppInstance;
+    }),
     provideAnalytics(() => getAnalytics()),
     provideAuth(() => {
       let auth = getAuth();
@@ -159,9 +225,10 @@ export const dbConfig: DBConfig = {
       return auth;
     }),
     provideFirestore(() => {
-      let fs = getFirestore();
+      // let fsApp = getFirestore();
+      let fs = initializeFirestore(FirebaseAppInstance,{ignoreUndefinedProperties:true});
       // connectFirestoreEmulator(fs, '127.0.0.1', 8080);
-      return fs
+      return fs;
     }),
     providePerformance(() => getPerformance()),
     provideStorage(() => {
@@ -179,6 +246,7 @@ export const dbConfig: DBConfig = {
     }),
   ],
   providers: [
+    PrinterService,
     ScreenTrackingService,
     UserTrackingService,
     AlertsAndNotificationsService,
@@ -197,7 +265,7 @@ export const dbConfig: DBConfig = {
     SearchService,
     SettingsService,
     SystemService,
-    TableService
+    TableService,
   ],
   bootstrap: [AppComponent],
 })

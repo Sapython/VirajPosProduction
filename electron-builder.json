@@ -16,10 +16,7 @@
   ],
   "win": {
     "icon": "dist/assets/icons",
-    "target": [
-      "msi",
-      "nsis"
-    ],
+    "target": ["msi", "nsis"],
     "publish": ["github"]
   },
   "portable": {
@@ -27,14 +24,10 @@
   },
   "mac": {
     "icon": "dist/assets/icons",
-    "target": [
-      "default"
-    ]
+    "target": ["default"]
   },
   "linux": {
     "icon": "dist/assets/icons",
-    "target": [
-      "AppImage"
-    ]
+    "target": ["AppImage"]
   }
 }

@@ -1,1 +1,51 @@
-<p>combo works!</p>
+<table class="styled-table" id="reportTable" id="reportTable" *ngIf="!loading">
+	<thead>
+	  <tr>
+		<th>Bill No</th>
+		<th>Order No</th>
+		<th>Date</th>
+		<th>Time</th>
+		<th>Combo Id</th>
+		<th>Combo Name</th>
+		<th>Quantity</th>
+		<th>Price</th>
+		<th>Total</th>
+		<th>Bill Total</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr *ngFor="let combo of combos | async">
+		<td>
+		  {{ combo.billNo || "Unsettled" }}
+		</td>
+		<td>
+		  {{ combo.orderNo }}
+		</td>
+		<td>
+		  {{ combo.date }}
+		</td>
+		<td>
+		  {{ combo.time }}
+		</td>
+		<td>
+		  {{ combo.comboId }}
+		</td>
+		<td>
+		  {{ combo.comboName }}
+		</td>
+		<td>
+		  {{ combo.quantity }}
+		</td>
+		<td>
+		  {{ combo.price }}
+		</td>
+		<td>
+		  {{ combo.total }}
+		</td>
+		<td>
+		  {{ combo.billTotal }}
+		</td>
+	  </tr>
+	</tbody>
+  </table>
+  

@@ -4,16 +4,8 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
 import { DialogModule } from '@angular/cdk/dialog';
 import { MatButtonModule } from '@angular/material/button';
 
-
-
 @NgModule({
-  declarations: [
-    ConfirmDialogComponent,
-  ],
-  imports: [
-    CommonModule,
-    DialogModule,
-    MatButtonModule
-  ]
+  declarations: [ConfirmDialogComponent],
+  imports: [CommonModule, DialogModule, MatButtonModule],
 })
-export class HelpersModule { }
+export class HelpersModule {}

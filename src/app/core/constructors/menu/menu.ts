@@ -1,5 +1,10 @@
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import { Timestamp, doc, serverTimestamp, setDoc } from '@angular/fire/firestore';
+import {
+  Timestamp,
+  doc,
+  serverTimestamp,
+  setDoc,
+} from '@angular/fire/firestore';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import Fuse from 'fuse.js';
 import { Subject, debounceTime, firstValueFrom } from 'rxjs';
@@ -23,21 +28,27 @@ import { AddTaxComponent } from '../../../pages/biller/sidebar/edit-menu/add-tax
 import { CodeBaseDiscount } from '../../../types/discount.structure';
 import { AddDiscountComponent } from '../../../pages/biller/sidebar/edit-menu/add-discount/add-discount.component';
 import { AddTypeComponent } from '../../../pages/biller/sidebar/edit-menu/add-type/add-type.component';
-import { Combo, ComboType, ComboTypeCategorized, TimeGroup } from '../../../types/combo.structure';
+import {
+  Combo,
+  ComboType,
+  ComboTypeCategorized,
+  TimeGroup,
+} from '../../../types/combo.structure';
 import { AddComboComponent } from '../../../pages/biller/sidebar/edit-menu/add-combo/add-combo.component';
 import { AddTimeGroupComponent } from '../../../pages/biller/sidebar/edit-menu/add-time-group/add-time-group.component';
 import { LoyaltySetting } from '../../../types/loyalty.structure';
 import { AddLoyaltySettingComponent } from '../../../pages/biller/sidebar/edit-menu/add-loyalty-setting/add-loyalty-setting.component';
+import { PrinterSettingComponent } from '../../../pages/biller/sidebar/edit-menu/printer-setting/printer-setting.component';
+import { PrinterSetting } from '../../../types/printing.structure';
 
-
-var debug:boolean = false;
+var debug: boolean = false;
 
 export class ModeConfig {
   name: string;
   active: boolean;
   selectedMenuId: string = '';
   selectedMenu: Menu | undefined = this.dataProvider.allMenus.find(
-    (menu) => menu.id == this.selectedMenuId
+    (menu) => menu.id == this.selectedMenuId,
   );
   filteredProducts: Product[];
   productVisibilityChanged: boolean = false;
@@ -61,10 +72,12 @@ export class ModeConfig {
   typesSearchInstance: Fuse<ComboType> = new Fuse([], { keys: ['name'] });
   taxesSearchInstance: Fuse<Tax> = new Fuse([], { keys: ['name'] });
   loyaltySearchInstance: Fuse<Tax> = new Fuse([], { keys: ['name'] });
-  discountsSearchInstance: Fuse<CodeBaseDiscount> = new Fuse([], { keys: ['name'] });
-  loyaltySettings:LoyaltySetting[] = [];
-  filteredLoyaltySettings:LoyaltySetting[] = [];
-  loadingLoyaltySettings:boolean = false;
+  discountsSearchInstance: Fuse<CodeBaseDiscount> = new Fuse([], {
+    keys: ['name'],
+  });
+  loyaltySettings: LoyaltySetting[] = [];
+  filteredLoyaltySettings: LoyaltySetting[] = [];
+  loadingLoyaltySettings: boolean = false;
   highCostForm: FormGroup = new FormGroup({
     min: new FormControl(this.dataProvider.highCostConfig.min, [
       Validators.required,
@@ -101,26 +114,26 @@ export class ModeConfig {
     ]),
     max: new FormControl(this.dataProvider.newDishesConfig.max),
   });
-  taxSearchControl:string = '';
+  taxSearchControl: string = '';
   taxes: Tax[] = [];
   filteredTaxes: Tax[] = [];
   discounts: CodeBaseDiscount[] = [];
   filteredDiscounts: CodeBaseDiscount[] = [];
-  loadingDiscount:boolean = false;
-  loadingTax:boolean = false;
-  combos:Combo[] = [];
-  loadingCombos:boolean = false;
-  comboTypes:any[] = [];
-  loadingTypes:boolean = false;
-  types:ComboType[] = [];
-  filteredTypes:ComboType[] = [];
-  loadingComboTypes:boolean = false;
-  loadingTimeGroups:boolean = false;
-  timeGroups:TimeGroup[] = [];
+  loadingDiscount: boolean = false;
+  loadingTax: boolean = false;
+  combos: Combo[] = [];
+  loadingCombos: boolean = false;
+  comboTypes: any[] = [];
+  loadingTypes: boolean = false;
+  types: ComboType[] = [];
+  filteredTypes: ComboType[] = [];
+  loadingComboTypes: boolean = false;
+  loadingTimeGroups: boolean = false;
+  timeGroups: TimeGroup[] = [];
   // temps
   activateCategory: Category | undefined;
-  discountSearchControl:string = '';
-  selectedLoyaltyId:string = '';
+  discountSearchControl: string = '';
+  selectedLoyaltyId: string = '';
   constructor(
     name: string,
     type: 'dineIn' | 'takeaway' | 'online',
@@ -131,7 +144,7 @@ export class ModeConfig {
     private productService: ProductsService,
     private alertify: AlertsAndNotificationsService,
     private dialog: Dialog,
-    private settingsService:SettingsService,
+    private settingsService: SettingsService,
   ) {
     this.name = name;
     this.type = type;
@@ -140,17 +153,26 @@ export class ModeConfig {
     this.selectedMenuId = selectedMenuId;
     this.selectedMenu = selectedMenu;
     this.selectedLoyaltyId = selectedMenu.selectedLoyaltyId;
-    console.log("HERHERHEHRE",this.selectedLoyaltyId,selectedMenu);
-    
+    // console.log('HERHERHEHRE', this.selectedLoyaltyId, selectedMenu);
+
     this.categoryUpdated = false;
     this.currentType = 'all';
+    this.products.sort((a, b) => {
+      if (a.name && b.name) {
+        return a.name.localeCompare(b.name);
+      } else {
+        return 0;
+      }
+    })
     this.allProductsCategory = {
       enabled: true,
       id: 'allProducts',
       name: 'All Products',
       products: this.products,
+      productOrders:this.products.map((p)=>p.id),
       averagePrice: 0,
     };
+    
     this.selectedCategory = this.allProductsCategory;
     if (this.selectedMenu) {
       this.getAllData();
@@ -180,17 +202,17 @@ export class ModeConfig {
         } else {
           this.filteredDiscounts = [];
         }
-      }
-    );
-    this.taxesSearchSubject.pipe(debounceTime(500)).subscribe((searchString) => {
-      if (searchString) {
-        let res = this.taxesSearchInstance.search(searchString);
-        this.filteredTaxes = res.map((result) => result.item);
-      } else {
-        this.filteredTaxes = [];
-      }
-    }
-    );
+      });
+    this.taxesSearchSubject
+      .pipe(debounceTime(500))
+      .subscribe((searchString) => {
+        if (searchString) {
+          let res = this.taxesSearchInstance.search(searchString);
+          this.filteredTaxes = res.map((result) => result.item);
+        } else {
+          this.filteredTaxes = [];
+        }
+      });
   }
 
   get isActive() {
@@ -205,7 +227,7 @@ export class ModeConfig {
     }
   }
 
-  public resetActivateCategory(){
+  public resetActivateCategory() {
     this.activateCategory = undefined;
   }
 
@@ -215,9 +237,22 @@ export class ModeConfig {
       // data.forEach((doc)=>{
       //   this.menuManagementService.updateRecipe({id:doc.id,type:doc.data().type.replace('\r','')},this.selectedMenuId)
       // })
-      this.products = data.docs.map((doc) => {
-        return { ...doc.data(), id: doc.id } as Product;
-      });
+      this.products = await Promise.all(data.docs.map(async (doc) => {
+        let printers = await this.getPrinterSettings();
+        let defaultPrinters = (await this.menuManagementService.getDefaultPrinter(this.selectedMenu));
+        console.log("defaultPrinters",defaultPrinters);
+        if (printers){
+          var printer = printers.find((printer) => printer.dishesId.includes(doc.id))?.printerName || defaultPrinters?.kotPrinter || '';
+        } else if(defaultPrinters) {
+          var printer = defaultPrinters?.kotPrinter || '';
+        }
+        let product = {
+          ...doc.data(),
+          id: doc.id,
+          specificPrinter: printer || '',
+        }
+        return product as Product;
+      }));
       // console.log('this.products', this.products);
       let event = {
         previousPageIndex: 0,
@@ -227,7 +262,7 @@ export class ModeConfig {
       };
       this.allProductsCategory.products = this.products.slice(
         event.pageIndex * event.pageSize,
-        (event.pageIndex + 1) * event.pageSize
+        (event.pageIndex + 1) * event.pageSize,
       );
       this.allProductsCategory.averagePrice =
         this.products.reduce((acc, curr) => acc + curr.price, 0) /
@@ -236,7 +271,15 @@ export class ModeConfig {
       this.selectedCategory = this.allProductsCategory;
       this.products = this.products.map((p) => {
         return { ...p, itemType: 'product' };
-      })
+      });
+      // sort products by name
+      this.products.sort((a, b) => {
+        if (a.name && b.name) {
+          return a.name.localeCompare(b.name);
+        } else {
+          return 0;
+        }
+      });
     }
   }
 
@@ -244,7 +287,7 @@ export class ModeConfig {
     if (this.selectedMenu) {
       let data =
         await this.menuManagementService.getRecommendedCategoriesByMenu(
-          this.selectedMenu
+          this.selectedMenu,
         );
       this.recommendedCategories = data.map((doc) => {
         let products = this.products.filter((p) => {
@@ -273,7 +316,7 @@ export class ModeConfig {
   async getViewCategories() {
     if (this.selectedMenu) {
       let data = await this.menuManagementService.getViewCategoriesByMenu(
-        this.selectedMenu
+        this.selectedMenu,
       );
       this.viewCategories = data.map((doc) => {
         let products = this.products.filter((p) => {
@@ -284,7 +327,7 @@ export class ModeConfig {
           } else {
             var notDisabled = true;
           }
-          p.visible = notDisabled && p.visible;
+          p.visible = notDisabled && (p.visible == undefined ? true : p.visible);
           return doc['products'].includes(p.id);
         });
         return {
@@ -328,40 +371,41 @@ export class ModeConfig {
           }
         });
       });
-      if(debug) console.log('this.viewCategories', this.viewCategories, this.activateCategory);
+      if (debug)
+        console.log(
+          'this.viewCategories',
+          this.viewCategories,
+          this.activateCategory,
+        );
     }
   }
 
   async getMainCategories() {
     let configs = JSON.parse(localStorage.getItem('selectedMenu'));
     if (!configs) {
-      configs = {}
+      configs = {};
     }
     if (this.selectedMenu) {
       let data = await this.menuManagementService.getMainCategoriesByMenu(
-        this.selectedMenu
+        this.selectedMenu,
       );
       this.mainCategories = data.map((doc) => {
         let products = this.products.filter((p) => {
           if (doc['disabled']) {
-            var notDisabled = doc
-              ['disabled'].find((id: string) => id == p.id)
+            var notDisabled = doc['disabled'].find((id: string) => id == p.id)
               ? false
               : true;
           } else {
             var notDisabled = true;
           }
-          p.visible = notDisabled && p.visible;
-          return (
-            doc['products'] && doc['products'].includes(p.id)
-          );
+          p.visible = notDisabled &&  (p.visible == undefined ? true : p.visible);
+          return doc['products'] && doc['products'].includes(p.id);
         });
         return {
           ...doc,
           name: doc['name'],
           id: doc.id,
           products: products,
-          printer: configs[this.selectedMenuId+'-'+doc.id] || '',
           averagePrice:
             products.reduce((acc, curr) => acc + curr.price, 0) /
             products.length,
@@ -378,7 +422,7 @@ export class ModeConfig {
   }
 
   async getComboCategories() {
-    this.combos = []
+    this.combos = [];
     this.menuManagementService.getCombos(this.selectedMenu.id).then((data) => {
       data.forEach((doc) => {
         this.combos.push({
@@ -403,9 +447,9 @@ export class ModeConfig {
           // }),
           id: doc.id,
         } as Combo);
-        if (doc.data()["offerImage"]){
-          var img=new Image();
-          img.src=doc.data()["offerImage"];
+        if (doc.data()['offerImage']) {
+          var img = new Image();
+          img.src = doc.data()['offerImage'];
         }
       });
       // console.log("COMBOS",this.combos);
@@ -415,8 +459,8 @@ export class ModeConfig {
         id: 'combos',
         enabled: true,
         averagePrice: 0,
-      }
-    })
+      };
+    });
   }
 
   async getAllData() {
@@ -434,19 +478,23 @@ export class ModeConfig {
     this.dataProvider.menuLoadSubject.next({
       type: this.type,
     });
-    if (this.activateCategory){
-      if(debug) console.log('this.activateCategory', this.activateCategory);
-      let newViewCategory = this.viewCategories.find((cat)=>cat.id == this.activateCategory.id);
-      if(debug) console.log('newCategory', newViewCategory);
-      if (newViewCategory){
+    if (this.activateCategory) {
+      if (debug) console.log('this.activateCategory', this.activateCategory);
+      let newViewCategory = this.viewCategories.find(
+        (cat) => cat.id == this.activateCategory.id,
+      );
+      if (debug) console.log('newCategory', newViewCategory);
+      if (newViewCategory) {
         this.selectCategory(newViewCategory);
         // this.activateCategory = undefined;
       }
     }
-    if(this.activateCategory){
-      let newMainCategory = this.mainCategories.find((cat)=>cat.id == this.activateCategory.id);
-      if(debug) console.log('newCategory', newMainCategory);
-      if (newMainCategory){
+    if (this.activateCategory) {
+      let newMainCategory = this.mainCategories.find(
+        (cat) => cat.id == this.activateCategory.id,
+      );
+      if (debug) console.log('newCategory', newMainCategory);
+      if (newMainCategory) {
         this.selectCategory(newMainCategory);
         // this.activateCategory = undefined;
       }
@@ -459,13 +507,13 @@ export class ModeConfig {
     // console.log('event', event);
     this.allProductsCategory.products = this.products.slice(
       event.pageIndex * event.pageSize,
-      (event.pageIndex + 1) * event.pageSize
+      (event.pageIndex + 1) * event.pageSize,
     );
   }
 
   updateMenu() {
     this.selectedMenu = this.dataProvider.allMenus.find(
-      (menu) => menu.id == this.selectedMenuId
+      (menu) => menu.id == this.selectedMenuId,
     );
     console.log('this.selectedMenu', this.selectedMenu);
     // console.log('updating menu', this.selectedMenu, this.type);
@@ -486,13 +534,24 @@ export class ModeConfig {
 
   selectCategory(cat: Category) {
     this.selectedCategory = cat;
+    console.log('this.selectedCategory', this.selectedCategory);
+    if (this.selectedCategory.id == 'allProducts'){
+      // sort products by name
+      this.selectedCategory.products.sort((a, b) => {
+        if (a.name && b.name) {
+          return a.name.localeCompare(b.name);
+        } else {
+          return 0;
+        }
+      })
+    }
     this.categoryUpdated = false;
     this.fuseInstance.setCollection(this.selectedCategory.products);
   }
 
   addMainCategory() {
     const dialog = this.dialog.open(AddNewCategoryComponent, {
-      data: { products: this.products,noSave:true },
+      data: { products: this.products, noSave: true },
     });
     // dialog.closed.subscribe((data: any) => {
     //   if (data) {
@@ -521,7 +580,7 @@ export class ModeConfig {
       .then((data) => {
         this.alertify.presentToast('Category Deleted Successfully');
         this.viewCategories = this.viewCategories.filter(
-          (cat) => cat.id != this.selectedCategory.id
+          (cat) => cat.id != this.selectedCategory.id,
         );
         this.getViewCategories();
         this.selectedCategory = this.allProductsCategory;
@@ -541,7 +600,7 @@ export class ModeConfig {
     });
     dialog.closed.subscribe((data: any) => {
       if (data) {
-        if(debug) console.log('data', data);
+        if (debug) console.log('data', data);
         this.activateCategory = data;
         this.viewCategories.push(data);
       }
@@ -553,7 +612,7 @@ export class ModeConfig {
     moveItemInArray(
       this.viewCategories,
       event.previousIndex,
-      event.currentIndex
+      event.currentIndex,
     );
     this.viewCategories.forEach((cat, index) => {
       cat.order = index + 1;
@@ -565,7 +624,7 @@ export class ModeConfig {
     moveItemInArray(
       this.recommendedCategories,
       event.previousIndex,
-      event.currentIndex
+      event.currentIndex,
     );
     this.recommendedCategories.forEach((cat, index) => {
       cat.order = index + 1;
@@ -577,7 +636,7 @@ export class ModeConfig {
     moveItemInArray(
       this.mainCategories,
       event.previousIndex,
-      event.currentIndex
+      event.currentIndex,
     );
     this.mainCategories.forEach((cat, index) => {
       cat.order = index + 1;
@@ -620,15 +679,15 @@ export class ModeConfig {
           var filteredList = this.products.filter(
             (product) =>
               product.price >= this.highRangeForm.value.min &&
-              product.price <= this.highRangeForm.value.max
+              product.price <= this.highRangeForm.value.max,
           );
         } else if (this.highRangeForm.value.min) {
           var filteredList = this.products.filter(
-            (product) => product.price >= this.highRangeForm.value.min
+            (product) => product.price >= this.highRangeForm.value.min,
           );
         } else if (this.highRangeForm.value.max) {
           var filteredList = this.products.filter(
-            (product) => product.price <= this.highRangeForm.value.max
+            (product) => product.price <= this.highRangeForm.value.max,
           );
         } else {
           var filteredList = this.products;
@@ -644,7 +703,7 @@ export class ModeConfig {
             this.highRangeForm.value,
             'highRange',
             filteredList.map((p) => p.id),
-            this.selectedMenu
+            this.selectedMenu,
           )
           .then(async (data: any) => {
             await this.getRecommendedCategories();
@@ -664,15 +723,15 @@ export class ModeConfig {
           var filteredList = this.products.filter(
             (product) =>
               product.price >= this.lowRangeForm.value.min &&
-              product.price <= this.lowRangeForm.value.max
+              product.price <= this.lowRangeForm.value.max,
           );
         } else if (this.lowRangeForm.value.min) {
           var filteredList = this.products.filter(
-            (product) => product.price >= this.lowRangeForm.value.min
+            (product) => product.price >= this.lowRangeForm.value.min,
           );
         } else if (this.lowRangeForm.value.max) {
           var filteredList = this.products.filter(
-            (product) => product.price <= this.lowRangeForm.value.max
+            (product) => product.price <= this.lowRangeForm.value.max,
           );
         } else {
           var filteredList = this.products;
@@ -689,7 +748,7 @@ export class ModeConfig {
             this.lowRangeForm.value,
             'lowRange',
             filteredList.map((p) => p.id),
-            this.selectedMenu
+            this.selectedMenu,
           )
           .then(async (data: any) => {
             await this.getRecommendedCategories();
@@ -710,15 +769,15 @@ export class ModeConfig {
           var filteredList = this.products.filter(
             (product) =>
               (product.sales || 0) >= this.mostSellingForm.value.min &&
-              (product.sales || 0) <= this.mostSellingForm.value.max
+              (product.sales || 0) <= this.mostSellingForm.value.max,
           );
         } else if (this.mostSellingForm.value.min) {
           var filteredList = this.products.filter(
-            (product) => (product.sales || 0) >= this.mostSellingForm.value.min
+            (product) => (product.sales || 0) >= this.mostSellingForm.value.min,
           );
         } else if (this.mostSellingForm.value.max) {
           var filteredList = this.products.filter(
-            (product) => (product.sales || 0) <= this.mostSellingForm.value.max
+            (product) => (product.sales || 0) <= this.mostSellingForm.value.max,
           );
         } else {
           var filteredList = this.products;
@@ -735,7 +794,7 @@ export class ModeConfig {
             this.mostSellingForm.value,
             'mostSelling',
             filteredList.map((p) => p.id),
-            this.selectedMenu
+            this.selectedMenu,
           )
           .then(async (data: any) => {
             await this.getRecommendedCategories();
@@ -758,19 +817,19 @@ export class ModeConfig {
               product.createdDate.toDate().getTime() >=
                 this.newDishesForm.value.min.getTime() &&
               product.createdDate.toDate().getTime() <=
-                this.newDishesForm.value.max.getTime()
+                this.newDishesForm.value.max.getTime(),
           );
         } else if (this.newDishesForm.value.min) {
           var filteredList = this.products.filter(
             (product) =>
               product.createdDate.toDate().getTime() >=
-              this.newDishesForm.value.min.getTime()
+              this.newDishesForm.value.min.getTime(),
           );
         } else if (this.newDishesForm.value.max) {
           var filteredList = this.products.filter(
             (product) =>
               product.createdDate.toDate().getTime() <=
-              this.newDishesForm.value.max.getTime()
+              this.newDishesForm.value.max.getTime(),
           );
         } else {
           var filteredList = this.products;
@@ -786,7 +845,7 @@ export class ModeConfig {
             this.newDishesForm.value,
             'newDishes',
             filteredList.map((p) => p.id),
-            this.selectedMenu
+            this.selectedMenu,
           )
           .then(async (data: any) => {
             await this.getRecommendedCategories();
@@ -807,10 +866,12 @@ export class ModeConfig {
   }
 
   addRecipe(menuId: string) {
-    let dialog = this.dialog.open(AddDishComponent, { data: { mode: 'add' } });
+    let dialog = this.dialog.open(AddDishComponent, { data: { mode: 'add',menu:this.selectedMenu } });
     firstValueFrom(dialog.closed)
       .then(async (data: any) => {
         if (data) {
+          let printerConfigs = await this.menuManagementService.getPrinterList(this.selectedMenu);
+          // find data.specificPrinter in printerConfigs by matching printerName
           const categoryDialog = this.dialog.open(SelectCategoryComponent, {
             data: {
               mainCategories: this.mainCategories,
@@ -823,13 +884,13 @@ export class ModeConfig {
           }
           // console.log('category data', category);
           let selectedViewCategories = category.viewCategories.filter(
-            (c) => c.selected
+            (c) => c.selected,
           );
           // this.mainCategories
           this.dataProvider.loading = true;
           let product: Product = {
             category: category.mainCategory,
-            itemType:'product',
+            itemType: 'product',
             createdDate: Timestamp.now(),
             images: [],
             name: data.name,
@@ -843,17 +904,27 @@ export class ModeConfig {
             taxes: data.taxes || [],
           };
           let productRes = await this.productService.addRecipe(product, menuId);
+          let printer = printerConfigs.find((printer) => printer.printerName == data.specificPrinter);
+          if (printer){
+            printer.dishesId.push(productRes.id);
+          } else {
+            printerConfigs.push({
+              printerName:data.specificPrinter,
+              dishesId:[productRes.id]
+            })
+          }
+          await this.menuManagementService.updatePrinterList(this.selectedMenu,printerConfigs);
           let rootCategoryRes =
             await this.menuManagementService.updateRootCategory(
               category.mainCategory.id,
-              [productRes.id]
+              [productRes.id],
             );
           let viewCategoryRes = await Promise.all(
             selectedViewCategories.map((c) => {
               return this.menuManagementService.updateViewCategory(c.id, [
                 productRes.id,
               ]);
-            })
+            }),
           );
           // console.log(
           //   'productRes',
@@ -874,7 +945,9 @@ export class ModeConfig {
   }
 
   setTaxes(product: Product) {
-    const dialog = this.dialog.open(SetTaxComponent, { data: {product,menu:this},});
+    const dialog = this.dialog.open(SetTaxComponent, {
+      data: { product, menu: this },
+    });
     firstValueFrom(dialog.closed).then((data: any) => {
       // console.log('data', data);
       if (data) {
@@ -888,6 +961,7 @@ export class ModeConfig {
         // product = { ...product, ...data };
         // console.log("New Product Data",data);
         product.taxes = filteredTax;
+        console.log("Updating product with tax",product);
         this.productService
           .updateRecipe(product, this.selectedMenuId)
           .then((data: any) => {
@@ -922,7 +996,7 @@ export class ModeConfig {
               this.alertify.presentToast('Category Update Failed');
             });
           this.selectedCategory.products.push(
-            ...data.filter((product: Product) => product.selected)
+            ...data.filter((product: Product) => product.selected),
           );
         }
       }
@@ -932,24 +1006,39 @@ export class ModeConfig {
   async editRecipe(product: Product, menuId: string) {
     try {
       let dialog = this.dialog.open(AddDishComponent, {
-        data: { mode: 'edit', product },
+        data: { mode: 'edit', product,menu:this.selectedMenu },
       });
       let data = await firstValueFrom(dialog.closed);
       if (typeof data == 'object') {
+        let printerConfigs = await this.menuManagementService.getPrinterList(this.selectedMenu);
         await this.productService.updateRecipe(
           { ...product, ...data, updated: true },
-          menuId
+          menuId,
         );
+        let printer = printerConfigs.find((printer) => printer.printerName == data['specificPrinter']);
+          if (printer){
+            printer.dishesId.push(product.id);
+          } else {
+            printerConfigs.push({
+              printerName:data['specificPrinter'],
+              dishesId:[product.id]
+            })
+          }
+          await this.menuManagementService.updatePrinterList(this.selectedMenu,printerConfigs);
         // console.log("New Product Data",data);
         product = { ...product, ...data, updated: true };
-        let foundProduct = this.dataProvider.menus.find((menu: ModeConfig) => menu.selectedMenuId == menuId).products.find((p:Product)=>p.id == product.id)
+        let foundProduct = this.dataProvider.menus
+          .find((menu: ModeConfig) => menu.selectedMenuId == menuId)
+          .products.find((p: Product) => p.id == product.id);
         // console.log("UPDATING global category products",foundProduct);
-        if(foundProduct){
+        if (foundProduct) {
           foundProduct = product;
         }
-        let localProduct = this.selectedCategory.products.find((p:Product)=>p.id == product.id);
+        let localProduct = this.selectedCategory.products.find(
+          (p: Product) => p.id == product.id,
+        );
         // console.log("UPDATING local category",localProduct);
-        if(localProduct){
+        if (localProduct) {
           localProduct.name = product.name;
           localProduct.price = product.price;
           localProduct.type = product.type;
@@ -979,11 +1068,11 @@ export class ModeConfig {
                 this.alertify.presentToast('Recipe Deleted Successfully');
                 // remove from products
                 this.products = this.products.filter(
-                  (p: Product) => p.id != product.id
+                  (p: Product) => p.id != product.id,
                 );
                 this.selectedCategory.products =
                   this.selectedCategory.products.filter(
-                    (p: Product) => p.id != product.id
+                    (p: Product) => p.id != product.id,
                   );
               })
               .catch((err) => {
@@ -998,7 +1087,7 @@ export class ModeConfig {
         });
     } else if (['root', 'view'].includes(this.currentType)) {
       this.selectedCategory.products = this.selectedCategory.products.filter(
-        (p: Product) => p.id != product.id
+        (p: Product) => p.id != product.id,
       );
       if (this.selectedCategory.productOrders) {
         this.selectedCategory.productOrders =
@@ -1044,49 +1133,16 @@ export class ModeConfig {
     moveItemInArray(
       this.selectedCategory.products,
       event.previousIndex,
-      event.currentIndex
+      event.currentIndex,
     );
     this.selectedCategory.productOrders = this.selectedCategory.products.map(
       (product: Product) => {
         return product.id;
-      }
+      },
     );
     this.selectedCategory.updated = true;
   }
 
-  updatePrinter(selectedCategory: Category) {
-    // console.log('selectedCategory', selectedCategory);
-    if (this.selectedMenu) {
-      let printerConfig = localStorage.getItem('selectedMenu');
-      if (printerConfig) {
-        var configs:any = JSON.parse(printerConfig);
-        if (!configs){
-          configs = {};
-        }
-        configs[this.selectedMenuId+'-'+selectedCategory.id] = selectedCategory.printer;
-      } else {
-        var configs:any = {};
-        configs[this.selectedMenuId+'-'+selectedCategory.id] = selectedCategory.printer;
-      }
-      console.log('printerConfig', configs);
-      localStorage.setItem('selectedMenu', JSON.stringify(configs));
-      // this.dataProvider.loading = true;
-      // this.menuManagementService
-      //   .setPrinter(this.selectedMenu, selectedCategory)
-      //   .then((data: any) => {
-      //     this.alertify.presentToast('Printer Updated Successfully');
-      //     // console.log("selectedCategory",selectedCategory);
-      //   })
-      //   .catch((err) => {
-      //     this.alertify.presentToast('Some error occurred', 'error');
-      //   })
-      //   .finally(() => {
-      //     this.dataProvider.loading = false;
-      //   });
-    } else {
-      this.alertify.presentToast('Please Select Menu');
-    }
-  }
 
   async updateChanged() {
     this.dataProvider.menus.forEach((menu: ModeConfig) => {
@@ -1099,23 +1155,23 @@ export class ModeConfig {
     // console.log('selectedMenu', this.selectedMenu);
     if (this.selectedMenu) {
       let updatableProducts = this.products.filter(
-        (product: Product) => product.updated
+        (product: Product) => product.updated,
       );
       // console.log('updatableProducts', updatableProducts);
       let updatablerecommendedCategories = this.recommendedCategories.filter(
-        (category: Category) => category.updated
+        (category: Category) => category.updated,
       );
       let updatableviewCategories = this.viewCategories.filter(
-        (category: Category) => category.updated
+        (category: Category) => category.updated,
       );
       let updatablemainCategories = this.mainCategories.filter(
-        (category: Category) => category.updated
+        (category: Category) => category.updated,
       );
       let updateRequestProducts = updatableProducts.map((product: Product) =>
         this.menuManagementService.updateProductMenu(
           { ...product, updated: false },
-          this.selectedMenu!
-        )
+          this.selectedMenu!,
+        ),
       );
       let updateRequestrecommendedCategories =
         updatablerecommendedCategories.map((category: Category) =>
@@ -1125,8 +1181,8 @@ export class ModeConfig {
               products: category.products.map((p) => p.id),
               updated: false,
             },
-            this.selectedMenu!
-          )
+            this.selectedMenu!,
+          ),
         );
       let updateRequestviewCategories = updatableviewCategories.map(
         (category: Category) =>
@@ -1139,8 +1195,8 @@ export class ModeConfig {
                 .map((d) => d.id),
               updated: false,
             },
-            this.selectedMenu!
-          )
+            this.selectedMenu!,
+          ),
       );
       let updateRequestmainCategories = updatablemainCategories.map(
         (category: Category) =>
@@ -1153,8 +1209,8 @@ export class ModeConfig {
                 .map((d) => d.id),
               updated: false,
             },
-            this.selectedMenu!
-          )
+            this.selectedMenu!,
+          ),
       );
       // stats
       // console.log('total products update', updatableProducts.length);
@@ -1170,7 +1226,7 @@ export class ModeConfig {
           updateRequestmainCategories,
           updateRequestrecommendedCategories,
           updateRequestviewCategories,
-        ].flat()
+        ].flat(),
       );
     } else {
       return Promise.reject('Please Select Menu');
@@ -1208,20 +1264,23 @@ export class ModeConfig {
       this.taxesSearchInstance.setCollection(this.taxes);
     });
   }
-  
+
   addTax() {
     const dialog = this.dialog.open(AddTaxComponent, { data: { mode: 'add' } });
     firstValueFrom(dialog.closed)
       .then((data: any) => {
-      //  console.log('data', data);
+        //  console.log('data', data);
         if (data) {
           this.dataProvider.loading = true;
           this.menuManagementService
-            .addTax({
-              ...data,
-              creationDate: new Date(),
-              updateDate: new Date(),
-            },this.selectedMenu.id)
+            .addTax(
+              {
+                ...data,
+                creationDate: new Date(),
+                updateDate: new Date(),
+              },
+              this.selectedMenu.id,
+            )
             .then((res) => {
               this.alertify.presentToast('Tax added successfully');
               this.getTaxes();
@@ -1247,10 +1306,14 @@ export class ModeConfig {
     });
     firstValueFrom(dialog.closed)
       .then((data: any) => {
-      //  console.log('data', data);
+        //  console.log('data', data);
         if (data) {
           this.menuManagementService
-            .updateTax(tax.id, { ...data, updateDate: Timestamp.now() },this.selectedMenu.id)
+            .updateTax(
+              tax.id,
+              { ...data, updateDate: Timestamp.now() },
+              this.selectedMenu.id,
+            )
             .then((res) => {
               this.alertify.presentToast('Tax updated successfully');
               this.getTaxes();
@@ -1274,7 +1337,7 @@ export class ModeConfig {
       ])
     ) {
       this.menuManagementService
-        .deleteTax(id,this.selectedMenu.id)
+        .deleteTax(id, this.selectedMenu.id)
         .then((res) => {
           this.alertify.presentToast('Tax deleted successfully');
         })
@@ -1286,15 +1349,22 @@ export class ModeConfig {
 
   // discounts
 
-  updateSettings(){
+  updateSettings() {
     this.dataProvider.loading = true;
-    this.menuManagementService.updateRootSettings({multipleDiscount:this.dataProvider.multipleDiscount},this.dataProvider.businessId).then(()=>{
-      this.alertify.presentToast('Settings updated successfully');
-    }).catch((err)=>{
-      this.alertify.presentToast('Error while updating settings');
-    }).finally(()=>{
-      this.dataProvider.loading = false;
-    });
+    this.menuManagementService
+      .updateRootSettings(
+        { multipleDiscount: this.dataProvider.multipleDiscount },
+        this.dataProvider.businessId,
+      )
+      .then(() => {
+        this.alertify.presentToast('Settings updated successfully');
+      })
+      .catch((err) => {
+        this.alertify.presentToast('Error while updating settings');
+      })
+      .finally(() => {
+        this.dataProvider.loading = false;
+      });
   }
 
   addDiscount() {
@@ -1302,31 +1372,34 @@ export class ModeConfig {
       data: { mode: 'add' },
     });
     dialog.closed.subscribe((data: any) => {
-    //  console.log('data', data);
+      //  console.log('data', data);
       if (data) {
         if (data.menus.length === 0) {
           data.menus = null;
         }
-      //  console.log('adding', data);
+        //  console.log('adding', data);
         this.menuManagementService
-          .addDiscount({
-            ...data,
-            mode: 'codeBased',
-            totalAppliedDiscount: 0,
-            creationDate: Timestamp.now(),
-            reason: '',
-          } as CodeBaseDiscount,this.selectedMenu.id)
+          .addDiscount(
+            {
+              ...data,
+              mode: 'codeBased',
+              totalAppliedDiscount: 0,
+              creationDate: Timestamp.now(),
+              reason: '',
+            } as CodeBaseDiscount,
+            this.selectedMenu.id,
+          )
           .then((res) => {
-          //  console.log('res', res);
+            //  console.log('res', res);
             this.getDiscounts();
             this.alertify.presentToast('Discount added successfully');
           })
           .catch((err) => {
-          //  console.log('err', err);
+            //  console.log('err', err);
             this.alertify.presentToast('Error adding discount');
           });
       } else {
-      //  console.log('no data', data);
+        //  console.log('no data', data);
       }
     });
   }
@@ -1346,7 +1419,7 @@ export class ModeConfig {
         this.discountsSearchInstance.setCollection(this.discounts);
       })
       .catch((err: any) => {
-      //  console.log(err);
+        //  console.log(err);
         this.alertify.presentToast('Error while fetching discounts');
       })
       .finally(() => {
@@ -1357,35 +1430,39 @@ export class ModeConfig {
   getMappedMenu(menus?: string[]) {
     if (!menus) return [];
     return this.dataProvider.allMenus.filter((menu) =>
-      menus.includes(menu.id!)
+      menus.includes(menu.id!),
     );
   }
 
   editDiscount(discount: CodeBaseDiscount) {
-  //  console.log('discount', discount);
+    //  console.log('discount', discount);
     const dialog = this.dialog.open(AddDiscountComponent, {
       data: { mode: 'edit', discount: discount },
     });
     dialog.closed.subscribe((data: any) => {
-    //  console.log('data', data);
+      //  console.log('data', data);
       if (data) {
         if (data.menus.length === 0) {
           data.menus = null;
         }
-      //  console.log('adding', data);
+        //  console.log('adding', data);
         this.menuManagementService
-          .updateDiscount(discount.id,{ ...discount, ...data } as CodeBaseDiscount,this.selectedMenu.id)
+          .updateDiscount(
+            discount.id,
+            { ...discount, ...data } as CodeBaseDiscount,
+            this.selectedMenu.id,
+          )
           .then((res) => {
-          //  console.log('res', res);
+            //  console.log('res', res);
             this.getDiscounts();
             this.alertify.presentToast('Discount update successfully');
           })
           .catch((err) => {
-          //  console.log('err', err);
+            //  console.log('err', err);
             this.alertify.presentToast('Error updating discount');
           });
       } else {
-      //  console.log('no data', data);
+        //  console.log('no data', data);
       }
     });
   }
@@ -1393,7 +1470,7 @@ export class ModeConfig {
   deleteDiscount(discountId: string) {
     this.dataProvider.loading = true;
     this.menuManagementService
-      .deleteDiscount(discountId,this.selectedMenu.id)
+      .deleteDiscount(discountId, this.selectedMenu.id)
       .then(() => {
         this.alertify.presentToast('Discount deleted successfully');
         this.getDiscounts();
@@ -1409,240 +1486,343 @@ export class ModeConfig {
   // combos
 
   addType() {
-    const dialog = this.dialog.open(AddTypeComponent,{data:{mode:'add'}});
+    const dialog = this.dialog.open(AddTypeComponent, {
+      data: { mode: 'add' },
+    });
     dialog.closed.subscribe((data: any) => {
       console.log('data', data);
       if (data) {
         this.dataProvider.loading = true;
         this.menuManagementService
-          .addType({
-            ...data,
-            creationDate: Timestamp.now(),
-            updateDate: Timestamp.now(),
-          },this.selectedMenu,data.image)
+          .addType(
+            {
+              ...data,
+              creationDate: Timestamp.now(),
+              updateDate: Timestamp.now(),
+            },
+            this.selectedMenu,
+            data.image,
+          )
           .then((res) => {
             this.alertify.presentToast('Type added successfully');
             this.getTypes();
           })
           .catch((err) => {
             this.alertify.presentToast('Error while adding type');
-          }).finally(()=>{
+          })
+          .finally(() => {
             this.dataProvider.loading = false;
           });
       } else {
         this.alertify.presentToast('Cancelled adding type');
       }
-    })
+    });
   }
 
-  getTypes(){
+  getTypes() {
     this.loadingTypes = true;
-    this.menuManagementService.getTypes(this.selectedMenu.id).then((res)=>{
-      this.types = [];
-      res.forEach((data)=>{
-        this.types.push({...data.data(),id:data.id} as ComboType);
+    this.menuManagementService
+      .getTypes(this.selectedMenu.id)
+      .then((res) => {
+        this.types = [];
+        res.forEach((data) => {
+          this.types.push({ ...data.data(), id: data.id } as ComboType);
+        });
+        this.typesSearchInstance.setCollection(this.types);
+      })
+      .catch((err) => {
+        this.alertify.presentToast('Error while fetching types');
+      })
+      .finally(() => {
+        this.loadingTypes = false;
       });
-      this.typesSearchInstance.setCollection(this.types);
-    }).catch((err)=>{
-      this.alertify.presentToast('Error while fetching types');
-    }).finally(()=>{
-      this.loadingTypes = false;
-    });
   }
 
-  editType(type:ComboType){
-    const dialog = this.dialog.open(AddTypeComponent,{
-      data:{type:type,mode:'edit'}
+  editType(type: ComboType) {
+    const dialog = this.dialog.open(AddTypeComponent, {
+      data: { type: type, mode: 'edit' },
     });
-    dialog.closed.subscribe((data:any)=>{
-      if(data){
-        this.menuManagementService.updateType({...type,...data},this.selectedMenu).then((res)=>{
-          this.alertify.presentToast('Type updated successfully');
-          this.getTypes();
-        }).catch((err)=>{
-          this.alertify.presentToast('Error while updating type');
-        });
-      }else{
+    dialog.closed.subscribe((data: any) => {
+      if (data) {
+        this.menuManagementService
+          .updateType({ ...type, ...data }, this.selectedMenu)
+          .then((res) => {
+            this.alertify.presentToast('Type updated successfully');
+            this.getTypes();
+          })
+          .catch((err) => {
+            this.alertify.presentToast('Error while updating type');
+          });
+      } else {
         this.alertify.presentToast('Cancelled updating type');
       }
     });
   }
 
-  deleteType(type:ComboType){
-    this.menuManagementService.deleteType(type,this.selectedMenu).then(()=>{
-      this.alertify.presentToast('Type deleted successfully');
-      this.getTypes();
-    }).catch((err)=>{
-      this.alertify.presentToast('Error while deleting type');
-    });
+  deleteType(type: ComboType) {
+    this.menuManagementService
+      .deleteType(type, this.selectedMenu)
+      .then(() => {
+        this.alertify.presentToast('Type deleted successfully');
+        this.getTypes();
+      })
+      .catch((err) => {
+        this.alertify.presentToast('Error while deleting type');
+      });
   }
 
   // combo
 
-  getCombos(){
+  getCombos() {
     this.loadingCombos = true;
-    this.menuManagementService.getCombos(this.selectedMenu.id).then((res)=>{
-      console.log('COMBOS res',res.docs);
-      this.combos = [];
-      res.forEach((data)=>{
-        this.combos.push({...data.data(),id:data.id} as Combo);
+    this.menuManagementService
+      .getCombos(this.selectedMenu.id)
+      .then((res) => {
+        console.log('COMBOS res', res.docs);
+        this.combos = [];
+        res.forEach((data) => {
+          this.combos.push({ ...data.data(), id: data.id } as Combo);
+        });
+      })
+      .catch((err) => {
+        this.alertify.presentToast('Error while fetching combos');
+      })
+      .finally(() => {
+        this.loadingCombos = false;
       });
-    }).catch((err)=>{
-      this.alertify.presentToast('Error while fetching combos');
-    }).finally(()=>{
-      this.loadingCombos = false;
+  }
+
+  addCombo() {
+    const dialog = this.dialog.open(AddComboComponent, {
+      data: { mode: 'add', menu: this },
+    });
+    dialog.closed.subscribe((data: any) => {
+      console.log('data', data);
+      if (data) {
+        this.menuManagementService
+          .addCombo(
+            {
+              ...data,
+              creationDate: serverTimestamp(),
+              updateDate: serverTimestamp(),
+            },
+            this.selectedMenu,
+          )
+          .then((res) => {
+            this.alertify.presentToast('Combo added successfully');
+            this.menuManagementService.getCombos(this.selectedMenu.id);
+          })
+          .catch((err) => {
+            this.alertify.presentToast('Error while adding combo');
+          });
+      } else {
+        this.alertify.presentToast('Cancelled adding combo');
+      }
     });
   }
 
-  addCombo(){
-    const dialog = this.dialog.open(AddComboComponent,{data:{mode:'add',menu:this}});
-    dialog.closed.subscribe((data:any)=>{
-      console.log('data',data);
-      if(data){
-        this.menuManagementService.addCombo({...data,creationDate:serverTimestamp(),updateDate:serverTimestamp()},this.selectedMenu).then((res)=>{
-          this.alertify.presentToast('Combo added successfully');
-          this.menuManagementService.getCombos(this.selectedMenu.id);
-        }).catch((err)=>{
-          this.alertify.presentToast('Error while adding combo');
-        });
-      }else{
-        this.alertify.presentToast('Cancelled adding combo');
-      }
-    })
-  }
-
-  editCombo(combo:Combo){
-    const dialog = this.dialog.open(AddComboComponent,{data:{mode:'edit',combo:combo,menu:this}});
-    dialog.closed.subscribe((data:any)=>{
-      if(data){
-        this.menuManagementService.updateCombo({...combo,...data},this.selectedMenu).then((res)=>{
-          this.alertify.presentToast('Combo updated successfully');
-          this.menuManagementService.getCombos(this.selectedMenu.id);
-        }).catch((err)=>{
-          this.alertify.presentToast('Error while updating combo');
-        });
-      }else{
+  editCombo(combo: Combo) {
+    const dialog = this.dialog.open(AddComboComponent, {
+      data: { mode: 'edit', combo: combo, menu: this },
+    });
+    dialog.closed.subscribe((data: any) => {
+      if (data) {
+        this.menuManagementService
+          .updateCombo({ ...combo, ...data }, this.selectedMenu)
+          .then((res) => {
+            this.alertify.presentToast('Combo updated successfully');
+            this.menuManagementService.getCombos(this.selectedMenu.id);
+          })
+          .catch((err) => {
+            this.alertify.presentToast('Error while updating combo');
+          });
+      } else {
         this.alertify.presentToast('Cancelled updating combo');
       }
     });
   }
 
-  deleteCombo(combo:Combo){
-    this.menuManagementService.deleteCombo(combo,this.selectedMenu).then(()=>{
-      this.alertify.presentToast('Combo deleted successfully');
-      this.menuManagementService.getCombos(this.selectedMenu.id);
-    }).catch((err)=>{
-      this.alertify.presentToast('Error while deleting combo');
-    });
+  deleteCombo(combo: Combo) {
+    this.menuManagementService
+      .deleteCombo(combo, this.selectedMenu)
+      .then(() => {
+        this.alertify.presentToast('Combo deleted successfully');
+        this.menuManagementService.getCombos(this.selectedMenu.id);
+      })
+      .catch((err) => {
+        this.alertify.presentToast('Error while deleting combo');
+      });
   }
 
   // time group
 
-  getTimeGroups(){
+  getTimeGroups() {
     this.loadingTimeGroups = true;
-    this.menuManagementService.getTimeGroups(this.selectedMenu.id).then((res)=>{
-      this.timeGroups = [];
-      res.forEach((data)=>{
-        this.timeGroups.push({...data.data(),id:data.id} as TimeGroup);
+    this.menuManagementService
+      .getTimeGroups(this.selectedMenu.id)
+      .then((res) => {
+        this.timeGroups = [];
+        res.forEach((data) => {
+          this.timeGroups.push({ ...data.data(), id: data.id } as TimeGroup);
+        });
+      })
+      .catch((err) => {
+        this.alertify.presentToast('Error while fetching time groups');
+      })
+      .finally(() => {
+        this.loadingTimeGroups = false;
       });
-    }).catch((err)=>{
-      this.alertify.presentToast('Error while fetching time groups');
-    }).finally(()=>{
-      this.loadingTimeGroups = false;
-    });
   }
 
-  addTimeGroup(){
-    const dialog = this.dialog.open(AddTimeGroupComponent,{data:{mode:'add'}});
-    dialog.closed.subscribe((data:any)=>{
-      if(data){
-        this.menuManagementService.addTimeGroup({...data,creationDate:Timestamp.now()},this.selectedMenu).then((res)=>{
-          this.alertify.presentToast('Time group added successfully');
-          this.menuManagementService.getTimeGroups(this.selectedMenu.id);
-        }).catch((err)=>{
-          this.alertify.presentToast('Error while adding time group');
-        });
-      }else{
+  addTimeGroup() {
+    const dialog = this.dialog.open(AddTimeGroupComponent, {
+      data: { mode: 'add' },
+    });
+    dialog.closed.subscribe((data: any) => {
+      if (data) {
+        this.menuManagementService
+          .addTimeGroup(
+            { ...data, creationDate: Timestamp.now() },
+            this.selectedMenu,
+          )
+          .then((res) => {
+            this.alertify.presentToast('Time group added successfully');
+            this.menuManagementService.getTimeGroups(this.selectedMenu.id);
+          })
+          .catch((err) => {
+            this.alertify.presentToast('Error while adding time group');
+          });
+      } else {
         this.alertify.presentToast('Cancelled adding time group');
       }
     });
   }
 
-  editTimeGroup(timeGroup:TimeGroup){
-    const dialog = this.dialog.open(AddTimeGroupComponent,{data:{mode:'edit',timeGroup:timeGroup}});
-    dialog.closed.subscribe((data:any)=>{
-      if(data){
-        this.menuManagementService.updateTimeGroup({...timeGroup,...data},this.selectedMenu).then((res)=>{
-          this.alertify.presentToast('Time group updated successfully');
-          this.menuManagementService.getTimeGroups(this.selectedMenu.id);
-        }).catch((err)=>{
-          this.alertify.presentToast('Error while updating time group');
-        });
-      }else{
+  editTimeGroup(timeGroup: TimeGroup) {
+    const dialog = this.dialog.open(AddTimeGroupComponent, {
+      data: { mode: 'edit', timeGroup: timeGroup },
+    });
+    dialog.closed.subscribe((data: any) => {
+      if (data) {
+        this.menuManagementService
+          .updateTimeGroup({ ...timeGroup, ...data }, this.selectedMenu)
+          .then((res) => {
+            this.alertify.presentToast('Time group updated successfully');
+            this.menuManagementService.getTimeGroups(this.selectedMenu.id);
+          })
+          .catch((err) => {
+            this.alertify.presentToast('Error while updating time group');
+          });
+      } else {
         this.alertify.presentToast('Cancelled updating time group');
       }
     });
   }
 
-  deleteTimeGroup(timeGroup:TimeGroup){
-    this.menuManagementService.deleteTimeGroup(timeGroup,this.selectedMenu).then(()=>{
-      this.alertify.presentToast('Time group deleted successfully');
-      this.menuManagementService.getTimeGroups(this.selectedMenu.id);
-    }).catch((err)=>{
-      this.alertify.presentToast('Error while deleting time group');
-    });
+  deleteTimeGroup(timeGroup: TimeGroup) {
+    this.menuManagementService
+      .deleteTimeGroup(timeGroup, this.selectedMenu)
+      .then(() => {
+        this.alertify.presentToast('Time group deleted successfully');
+        this.menuManagementService.getTimeGroups(this.selectedMenu.id);
+      })
+      .catch((err) => {
+        this.alertify.presentToast('Error while deleting time group');
+      });
   }
 
   // Loyalty CRUD
 
-  getLoyaltySettings(){
+  getLoyaltySettings() {
     this.loadingLoyaltySettings = true;
-    this.menuManagementService.getLoyaltySettings(this.selectedMenuId).then((res)=>{
-      this.loyaltySettings = [];
-      res.forEach((data)=>{
-        this.loyaltySettings.push({...data.data(),id:data.id} as LoyaltySetting);
+    this.menuManagementService
+      .getLoyaltySettings(this.selectedMenuId)
+      .then((res) => {
+        this.loyaltySettings = [];
+        res.forEach((data) => {
+          this.loyaltySettings.push({
+            ...data.data(),
+            id: data.id,
+          } as LoyaltySetting);
+        });
+        console.log('this.loyaltySettings', this.loyaltySettings);
+      })
+      .catch((err) => {
+        this.alertify.presentToast('Error while fetching loyalty settings');
+      })
+      .finally(() => {
+        this.loadingLoyaltySettings = false;
       });
-      console.log("this.loyaltySettings",this.loyaltySettings);
-    }).catch((err)=>{
-      this.alertify.presentToast('Error while fetching loyalty settings');
-    }).finally(()=>{
-      this.loadingLoyaltySettings = false;
+  }
+
+  addLoyaltySettings() {
+    const comp = this.dialog.open(AddLoyaltySettingComponent, {
+      data: { menu: this },
+    });
+    firstValueFrom(comp.closed).then((data: any) => {
+      console.log('Data', data);
+      if (data && typeof data == 'object') {
+        this.menuManagementService
+          .addLoyaltySetting(data, this.selectedMenuId)
+          .then((res) => {
+            this.alertify.presentToast('Loyalty Setting added');
+          })
+          .catch((error) => {
+            console.log(error);
+            this.alertify.presentToast(
+              'Unable to add loyalty setting',
+              'error',
+            );
+          });
+      } else {
+        this.alertify.presentToast('Operation cancelled !!!');
+      }
     });
   }
 
-  addLoyaltySettings(){
-    const comp = this.dialog.open(AddLoyaltySettingComponent,{data:{menu:this}});
-    firstValueFrom(comp.closed).then((data:any)=>{
-      console.log("Data",data);
-      if(data && typeof data == 'object'){
-        this.menuManagementService.addLoyaltySetting(data,this.selectedMenuId).then((res)=>{
-          this.alertify.presentToast('Loyalty Setting added');
-        }).catch((error)=>{
-          console.log(error);
-          this.alertify.presentToast('Unable to add loyalty setting','error')
-        });
-      } else {
-        this.alertify.presentToast("Operation cancelled !!!")
-      }
+  cancelLoyaltySetting(setting, index: number) {
+    this.loyaltySettings.splice(index, 1);
+  }
+
+  editLoyaltySetting(loyaltySetting: LoyaltySetting) {}
+
+  deleteLoyaltySetting(loyaltySetting: LoyaltySetting) {}
+
+  selectLoyaltySetting(value: any) {
+    console.log('Log', value);
+    this.menuManagementService
+      .selectLoyalty(value.value, this.selectedMenuId)
+      .then(() => {
+        this.alertify.presentToast('Loyalty Setting selected');
+      });
+  }
+
+  setPrinterSettings(){
+    const printerSetting = this.dialog.open(PrinterSettingComponent,{
+      data:{menu:this},
     })
   }
 
-  cancelLoyaltySetting(setting,index:number){
-    this.loyaltySettings.splice(index,1);
+  savePrinterSettings(printerSettings:PrinterSetting[]){
+    return this.menuManagementService.updatePrinterList(this.selectedMenu,printerSettings)
   }
 
-  editLoyaltySetting(loyaltySetting:LoyaltySetting){
+  getPrinterSettings(){
+    return this.menuManagementService.getPrinterList(this.selectedMenu)
+  }
+
+  getDefaultPrinters(){
+    return this.menuManagementService.getDefaultPrinter(this.selectedMenu);
+  }
+
+  updateDefaultPrinters(printer:{billPrinter:string,kotPrinter:string}){
+    return this.menuManagementService.updateDefaultPrinter(this.selectedMenu,printer);
+  }
+
+  updateComboVisibility(combo:Combo,value:boolean){
+    console.log("Updating combo",combo.enabled,value);
+    combo.enabled = value;
     
-  }
-
-  deleteLoyaltySetting(loyaltySetting:LoyaltySetting){
-
-  }
-
-  selectLoyaltySetting(value:any){
-    console.log("Log",value);
-    this.menuManagementService.selectLoyalty(value.value,this.selectedMenuId).then(()=>{
-      this.alertify.presentToast('Loyalty Setting selected');
-    })
+    return this.menuManagementService.updateCombo(combo,this.selectedMenu);
   }
 }

@@ -1,55 +1,56 @@
-section{
-    margin-top: 20px;
-    border-radius: 8px;
-    border: 1px solid #B3B3B3;
-    background: #FFF;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.25);
-    h3,p{
-        color:#444;
+section {
+  margin-top: 20px;
+  border-radius: 8px;
+  border: 1px solid #b3b3b3;
+  background: #fff;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.25);
+  h3,
+  p {
+    color: #444;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 10px;
+    border-bottom: 2px solid #ccc;
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      span {
+        background: var(--Viraj-success);
+        padding: 7px 15px;
+        border-radius: 4px;
+        height: 17px;
+        color: white;
+        font-size: 13px;
+      }
     }
-    .header{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0px 10px;
-        border-bottom: 2px solid #ccc;
-        .actions{
-            display: flex;
-            align-items: center;
-            gap:20px;
-            span{
-                background: var(--Viraj-success);
-                padding: 7px 15px;
-                border-radius: 4px;
-                height: 17px;
-                color: white;
-                font-size: 13px;
-            }
-        }
+  }
+  .item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px solid #ccc;
+    padding: 0px 10px;
+    p {
+      margin-block: 7px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      mat-icon {
+        color: var(--Viraj-primary);
+      }
     }
-    .item{
-        display: flex;
-        justify-content: space-between;
-        border-bottom: 2px solid #ccc;
-        padding: 0px 10px;
-        p{
-            margin-block: 7px;
-            display: flex;
-            gap:10px;
-            align-items: center;
-            mat-icon{
-                color:var(--Viraj-primary)
-            }
-        }
-        p:nth-child(1){
-            text-align: start;
-        }
-        p:nth-child(2){
-            text-align: end;
-        }
+    p:nth-child(1) {
+      text-align: start;
     }
-    button[mat-stroked-button]{
-        width:calc(100% - 20px);
-        margin:10px;
+    p:nth-child(2) {
+      text-align: end;
     }
+  }
+  button[mat-stroked-button] {
+    width: calc(100% - 20px);
+    margin: 10px;
+  }
 }

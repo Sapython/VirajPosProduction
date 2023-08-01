@@ -15,7 +15,7 @@ export function firebaseUpdate(this: Bill) {
   if (this.id) {
     this.billService.getBillSubscription(this.id).subscribe((bill) => {
       this.billSubscriptionCallerStarted = true;
-    //  console.log('bill changed', bill);
+      //  console.log('bill changed', bill);
       //  && (!this.dataProvider.currentBill || this.dataProvider.currentBill.id != bill['id'])
       if (bill) {
         this.stage = bill['stage'];
@@ -38,13 +38,13 @@ export function firebaseUpdate(this: Bill) {
         // first find a kot that matches the id then check for products that match the id and update the quantity and stage
         this.kots.forEach((kot) => {
           let index = bill['kots'].findIndex(
-            (item: KotConstructor) => item.id === kot.id
+            (item: KotConstructor) => item.id === kot.id,
           );
           if (index !== -1) {
             kot.stage = bill['kots'][index]['stage'];
             kot.products.forEach((product) => {
               let productIndex = bill['kots'][index]['products'].findIndex(
-                (item: Product) => item.id === product.id
+                (item: Product) => item.id === product.id,
               );
               if (productIndex !== -1) {
                 product.quantity =
@@ -55,22 +55,27 @@ export function firebaseUpdate(this: Bill) {
             kot.editMode = bill['kots'][index]['editMode'];
           } else {
             // remove kot
-            this.kots = this.kots.filter((item) => item.id !== kot.id || (kot.stage =='active' || kot.stage =='edit'));
+            this.kots = this.kots.filter(
+              (item) =>
+                item.id !== kot.id ||
+                kot.stage == 'active' ||
+                kot.stage == 'edit',
+            );
           }
           this.kots.sort((a, b) => {
             return a.createdDate.seconds - b.createdDate.seconds;
-          })
+          });
         });
         // add new kots
         bill['kots'].forEach((kot: KotConstructor) => {
           let index = this.kots.findIndex((item) => item.id === kot.id);
           if (index === -1) {
-            this.kots.push(new Kot(kot.products[0],this, kot));
+            this.kots.push(new Kot(kot.products[0], this, kot));
           }
         });
         // this.billUpdated.next();
         this.calculateBill(true);
-        if(this.stage == 'settled' || this.stage == 'cancelled'){
+        if (this.stage == 'settled' || this.stage == 'cancelled') {
           this.table.clearTable();
         }
       }
@@ -113,8 +118,15 @@ export function toObject(this: Bill) {
       gst: this.customerInfo.gst || null,
       deliveryName: this.customerInfo.deliveryName || null,
       deliveryPhone: this.customerInfo.deliveryPhone || null,
+      loyaltyPoints: this.customerInfo.loyaltyPoints || null,
+      averageBillValue: this.customerInfo.averageBillValue || null,
+      totalSales: this.customerInfo.totalSales || null,
+      totalBills: this.customerInfo.totalBills || null,
+      lastBillDate: this.customerInfo.lastBillDate || null,
+      lastBillAmount: this.customerInfo.lastBillAmount || null,
+      lastBillId: this.customerInfo.lastBillId || null,
     },
-    currentLoyalty:this.currentLoyalty
+    currentLoyalty: this.currentLoyalty,
   };
 }
 
@@ -126,7 +138,7 @@ export function fromObject(
   billService: BillService,
   printService: PrinterService,
   customerService: CustomerService,
-  userManagementService:UserManagementService
+  userManagementService: UserManagementService,
 ): Bill {
   if (dataprovider.currentMenu?.selectedMenu) {
     let instance = new Bill(
@@ -140,7 +152,7 @@ export function fromObject(
       billService,
       printService,
       customerService,
-      userManagementService
+      userManagementService,
     );
     instance.tokens = object.tokens;
     instance.createdDate = object.createdDate;
@@ -156,17 +168,17 @@ export function fromObject(
     instance.billReprints = object.billReprints || [];
     instance.instruction = object.instruction || '';
     instance.currentLoyalty = object.currentLoyalty || {
-      loyaltySettingId:'',
-      totalLoyaltyCost:0,
-      totalLoyaltyPoints:0,
-      totalToBeRedeemedPoints:0,
-      totalToBeRedeemedCost:0,
+      loyaltySettingId: '',
+      totalLoyaltyCost: 0,
+      totalLoyaltyPoints: 0,
+      totalToBeRedeemedPoints: 0,
+      totalToBeRedeemedCost: 0,
       receiveLoyalty: false,
       redeemLoyalty: false,
-    }
+    };
     // create kots classes from objects and add them to the bill
     object.kots.forEach((kot) => {
-    //  console.log('Creating kot', kot);
+      //  console.log('Creating kot', kot);
       instance.addKot(new Kot(kot.products[0], this, kot));
     });
     // instance.currentKot = instance.kots.find((kot) => {

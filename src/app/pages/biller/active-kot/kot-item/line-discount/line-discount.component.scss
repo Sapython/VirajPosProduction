@@ -1,19 +1,19 @@
-section{
-    padding: 20px;
-    border-radius: 20px;
-    background-color: #ffffff;
+section {
+  padding: 20px;
+  border-radius: 20px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  h2 {
+    margin-bottom: 0px;
+  }
+  p {
+    margin-top: 0px;
+  }
+  .actions {
     display: flex;
-    flex-direction: column;
-    gap:15px;
-    h2{
-        margin-bottom: 0px;
-    }
-    p{
-        margin-top: 0px;
-    }
-    .actions{
-        display: flex;
-        gap:10px;
-        justify-content: flex-end;
-    }
+    gap: 10px;
+    justify-content: flex-end;
+  }
 }

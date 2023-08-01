@@ -4,7 +4,7 @@ import { Tax } from '../../../../types/tax.structure';
 @Component({
   selector: 'app-product-card',
   templateUrl: './product-card.component.html',
-  styleUrls: ['./product-card.component.scss']
+  styleUrls: ['./product-card.component.scss'],
 })
 export class ProductCardComponent implements OnInit {
   @Input() productName: string = '';
@@ -12,13 +12,15 @@ export class ProductCardComponent implements OnInit {
   @Input() smaller: boolean = false;
   @Input() category: string = '';
   @Input() veg: boolean = true;
-  @Input() tags: { name: string, color: string,contrast:string}[] = [];
+  @Input() tags: { name: string; color: string; contrast: string }[] = [];
   @Input() taxes: Tax[] | undefined = undefined;
   ngOnInit(): void {
-      // FIND ANY SPECIAL CHARACTERS like (/,-!@#$%^&*():"{]}\<>.?~`[=+-_) AND ADD SPACE BEFORE AND AFTER THEM TO BREAK THE WORDS ON WRAP 
+    // FIND ANY SPECIAL CHARACTERS like (/,-!@#$%^&*():"{]}\<>.?~`[=+-_) AND ADD SPACE BEFORE AND AFTER THEM TO BREAK THE WORDS ON WRAP
     // THIS IS DONE TO AVOID THE WORDS FROM OVERFLOWING THE CARD
     // make a valid regex
-    const regex = new RegExp(/(\(|\)|\/|\-|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\:|\"|\{|\}|\]|\[|\\|\<|\>|\?|\~|\`|\=|\+|\-|\_|\)|\(|\,)/g);
+    const regex = new RegExp(
+      /(\(|\)|\/|\-|\!|\@|\#|\$|\%|\^|\&|\*|\(|\)|\:|\"|\{|\}|\]|\[|\\|\<|\>|\?|\~|\`|\=|\+|\-|\_|\)|\(|\,)/g,
+    );
     // find all the matches
     const matches = this.productName.match(regex);
     // if there are matches

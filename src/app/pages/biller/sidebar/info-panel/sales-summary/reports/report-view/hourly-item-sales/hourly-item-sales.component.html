@@ -1,28 +1,28 @@
 <table id="report-table" *ngIf="!loading">
-	<thead>
-	  <tr>
-		<th>Product</th>
-		<th>Quantity</th>
-		<th>Price</th>
-		<th>Amount</th>
-		<th *ngFor="let hour of hours">Hour: {{hour}}</th>
-	  </tr>
-	</thead>
-	<tbody>
-	  <tr *ngFor="let product of items | async">
-		<td>
-		  {{ product.name }}
-		</td>
-		<td>
-		  {{ product.quantity }}
-		</td>
-		<td>
-		  {{ product.price }}
-		</td>
-		<td>
-		  {{ product.quantity * product.price }}
-		</td>
-		<td *ngFor="let item of product.hourlySales">{{item}}</td>
-	  </tr>
-	</tbody>
-  </table>
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th>Quantity</th>
+      <th>Price</th>
+      <th>Amount</th>
+      <th *ngFor="let hour of hours">Hour: {{ hour }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let product of items | async">
+      <td>
+        {{ product.name }}
+      </td>
+      <td>
+        {{ product.quantity }}
+      </td>
+      <td>
+        {{ product.price }}
+      </td>
+      <td>
+        {{ product.quantity * product.price }}
+      </td>
+      <td *ngFor="let item of product.hourlySales">{{ item }}</td>
+    </tr>
+  </tbody>
+</table>

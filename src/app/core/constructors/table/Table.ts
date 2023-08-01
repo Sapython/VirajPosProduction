@@ -29,23 +29,23 @@ export class Table implements TableConstructor {
   tableNo: number;
   type: 'table' | 'room' | 'token' | 'online';
   updated: Subject<void> = new Subject<void>();
-  
-  updateHistory:any[] = []
+
+  updateHistory: any[] = [];
   constructor(
     id: string,
     tableNo: number,
     name: string,
-    groupName:string,
-    order:number,
+    groupName: string,
+    order: number,
     maxOccupancy: string,
     type: 'table' | 'room' | 'token' | 'online',
     private dataProvider: DataProvider,
-    public analyticsService:AnalyticsService,
-    public tableService:TableService,
-    public billService:BillService,
+    public analyticsService: AnalyticsService,
+    public tableService: TableService,
+    public billService: BillService,
     private printingService: PrinterService,
-    private customerService:CustomerService,
-    private userManagementService:UserManagementService
+    private customerService: CustomerService,
+    private userManagementService: UserManagementService,
   ) {
     this.id = id;
     this.order = order;
@@ -58,9 +58,9 @@ export class Table implements TableConstructor {
     this.tableNo = tableNo;
     this.type = type;
     this.firebaseUpdate();
-    this.updated.subscribe(()=>{
-      this.dataProvider.queueUpdate.next(1000)
-    })
+    this.updated.subscribe(() => {
+      this.dataProvider.queueUpdate.next(1000);
+    });
     this.updated.pipe(debounceTime(1000)).subscribe(() => {
       // this.databaseService.updateTable(this.toObject());
       this.triggerUpdate();
@@ -68,7 +68,7 @@ export class Table implements TableConstructor {
     // this.updated.next();
   }
 
-  triggerUpdate(){
+  triggerUpdate() {
     if (this.type == 'table') {
       this.updateTable(this.toObject());
     } else if (this.type == 'room') {
@@ -95,7 +95,7 @@ export class Table implements TableConstructor {
     } else if (this.type == 'online') {
       mode = 'onlineTokens';
     }
-    
+
     this.tableService.getTable(this.id, mode).subscribe(async (res) => {
       if (res) {
         let table: TableConstructor = res as TableConstructor;
@@ -121,7 +121,7 @@ export class Table implements TableConstructor {
                 this.billService,
                 this.printingService,
                 this.customerService,
-                this.userManagementService
+                this.userManagementService,
               );
               this.maxOccupancy = table.maxOccupancy;
               this.billPrice = table.billPrice;
@@ -185,11 +185,11 @@ export class Table implements TableConstructor {
     object: TableConstructor,
     dataProvider: DataProvider,
     analyticsService: AnalyticsService,
-    tableService:TableService,
-    billService:BillService,
+    tableService: TableService,
+    billService: BillService,
     printingService: PrinterService,
-    customerService:CustomerService,
-    userManagementService:UserManagementService
+    customerService: CustomerService,
+    userManagementService: UserManagementService,
   ) {
     // if(typeof object.bill == 'string'){
     //   let bill = await this.databaseService.getBill(object.bill)
@@ -217,7 +217,11 @@ export class Table implements TableConstructor {
       object.type,
       dataProvider,
       analyticsService,
-      tableService,billService,printingService,customerService,userManagementService
+      tableService,
+      billService,
+      printingService,
+      customerService,
+      userManagementService,
     );
     // console.log('object.bill', object.bill);
     if (typeof object.bill == 'string') {
@@ -230,7 +234,12 @@ export class Table implements TableConstructor {
         instance.bill = Bill.fromObject(
           billData,
           instance,
-          dataProvider,analyticsService,billService,printingService,customerService,userManagementService
+          dataProvider,
+          analyticsService,
+          billService,
+          printingService,
+          customerService,
+          userManagementService,
         );
         instance.maxOccupancy = object.maxOccupancy;
         instance.billPrice = object.billPrice;
@@ -243,8 +252,8 @@ export class Table implements TableConstructor {
         instance.completed = object.completed || false;
         instance.minutes = object.minutes || 0;
         instance.timeSpent = object.timeSpent || '';
-        if (instance.bill.stage == 'settled'){
-          if (instance.type == 'token'){
+        if (instance.bill.stage == 'settled') {
+          if (instance.type == 'token') {
             instance.completed = true;
           }
           instance.clearTable();
@@ -274,8 +283,8 @@ export class Table implements TableConstructor {
       instance.completed = object.completed || false;
       instance.minutes = object.minutes || 0;
       instance.timeSpent = object.timeSpent || '';
-      if (instance.bill.stage == 'settled'){
-        if (instance.type == 'token'){
+      if (instance.bill.stage == 'settled') {
+        if (instance.type == 'token') {
           instance.completed = true;
         }
         instance.clearTable();
@@ -296,7 +305,9 @@ export class Table implements TableConstructor {
   }
 
   toObject() {
-    let foundTokens = this.updateHistory.filter((token)=>token.id==token.id)
+    let foundTokens = this.updateHistory.filter(
+      (token) => token.id == token.id,
+    );
     // if(foundTokens.length>0){
     //   if (!this.bill){
     //     // check if token had any bill before
@@ -321,9 +332,9 @@ export class Table implements TableConstructor {
       type: this.type,
       order: this.order || 0,
       completed: this.completed || false,
-      minutes:this.minutes || 0,
-      timeSpent:this.timeSpent || '',
-      group:this.group
+      minutes: this.minutes || 0,
+      timeSpent: this.timeSpent || '',
+      group: this.group,
     };
   }
 
@@ -371,7 +382,11 @@ export class Table implements TableConstructor {
           user,
           this.dataProvider.currentMenu?.selectedMenu,
           this.dataProvider,
-          this.analyticsService,this.billService,this.printingService,this.customerService,this.userManagementService
+          this.analyticsService,
+          this.billService,
+          this.printingService,
+          this.customerService,
+          this.userManagementService,
         );
         this.occupiedStart = Timestamp.now();
         this.status = 'occupied';
@@ -381,7 +396,7 @@ export class Table implements TableConstructor {
         if (!this.dataProvider.currentUser) {
           console.log(
             'this.dataProvider.currentUser ',
-            this.dataProvider.currentUser
+            this.dataProvider.currentUser,
           );
           throw new Error('No user is found');
         } else {
@@ -390,14 +405,14 @@ export class Table implements TableConstructor {
       }
     } else {
       if (this.status === 'occupied' && this.bill != undefined) {
-      //  console.log('Activating bill', this.bill);
+        //  console.log('Activating bill', this.bill);
         this.updated.next();
         // console.log(
         //   'this.dataProvider.tempProduct',
         //   this.dataProvider.tempProduct
         // );
         if (this.dataProvider.tempProduct) {
-          alert("Adding product to bill")
+          alert('Adding product to bill');
           this.bill.addProduct(this.dataProvider.tempProduct);
           this.dataProvider.tempProduct = undefined;
         }
@@ -428,7 +443,11 @@ export class Table implements TableConstructor {
             user,
             this.dataProvider.currentMenu?.selectedMenu,
             this.dataProvider,
-            this.analyticsService,this.billService,this.printingService,this.customerService,this.userManagementService
+            this.analyticsService,
+            this.billService,
+            this.printingService,
+            this.customerService,
+            this.userManagementService,
           );
           this.occupiedStart = Timestamp.now();
           this.status = 'occupied';
@@ -438,7 +457,7 @@ export class Table implements TableConstructor {
           if (!this.dataProvider.currentUser) {
             console.log(
               'this.dataProvider.currentUser ',
-              this.dataProvider.currentUser
+              this.dataProvider.currentUser,
             );
             throw new Error('No user is found');
           } else {
@@ -458,7 +477,10 @@ export class Table implements TableConstructor {
       this.triggerUpdate();
     } else {
       throw new Error(
-        'No bill is available on table ' + this.tableNo + ' or ' + table.tableNo
+        'No bill is available on table ' +
+          this.tableNo +
+          ' or ' +
+          table.tableNo,
       );
     }
   }
@@ -470,7 +492,10 @@ export class Table implements TableConstructor {
       this.triggerUpdate();
     } else {
       throw new Error(
-        'No bill is available on table ' + this.tableNo + ' or ' + table.tableNo
+        'No bill is available on table ' +
+          this.tableNo +
+          ' or ' +
+          table.tableNo,
       );
     }
   }

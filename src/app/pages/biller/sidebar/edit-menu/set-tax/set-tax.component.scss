@@ -1,18 +1,28 @@
-section{
-    background: white;
+section {
+  background: white;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  border-radius: 15px;
+  .heading{
+	  display: flex;
+	  justify-content: space-between;
+	  align-items: center;
+	  border-bottom: 2px solid #c7c7c7;
+	  padding: 0px 30px;
+	}
+  .taxesContiner {
+    max-height: 300px;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
-    padding: 20px;
-    gap:15px;
-    .taxesContiner{
-        max-height: 300px;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap:10px;
-    }
-    .actions{
-        display: flex;
-        justify-content: flex-end;
-    }
+    gap: 10px;
+    padding: 0px 20px;
+  }
+  .actions {
+    padding: 0px 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap:20px;
+  }
 }

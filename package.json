@@ -34,7 +34,8 @@
     "e2e": "npm run build:prod && playwright test -c e2e/playwright.config.ts e2e/",
     "e2e:show-trace": "playwright show-trace e2e/tracing/trace.zip",
     "version": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "pretty": "prettier --write \"./**/*.{ts,json,html,scss}\""
   },
   "dependencies": {
     "@angular/animations": "15.1.5",
@@ -62,6 +63,7 @@
     "remixicon": "3.2.0",
     "rxjs": "7.8.0",
     "tslib": "^2.5.0",
+    "xlsx": "0.18.5",
     "zone.js": "~0.12.0"
   },
   "devDependencies": {

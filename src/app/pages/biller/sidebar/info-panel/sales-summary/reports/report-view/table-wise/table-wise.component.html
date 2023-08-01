@@ -1,26 +1,26 @@
 <table id="report-table" *ngIf="!loading">
-	<thead>
-	  <tr>
-		<th>Table Name</th>
-		<th>Sales</th>
-		<th>Number Of Orders</th>
-		<th>Average Sales</th>
-	  </tr>
-	</thead>
-	<tbody>
-	  <tr *ngFor="let table of tableWiseSales | async">
-		<td>
-		  {{ table.table }}
-		</td>
-		<td>
-		  {{ table.sales }}
-		</td>
-		<td>
-		  {{ table.numberOfOrders }}
-		</td>
-		<td>
-		  {{ table.averageSales }}
-		</td>
-	  </tr>
-	</tbody>
-  </table>
+  <thead>
+    <tr>
+      <th>Table Name</th>
+      <th>Sales</th>
+      <th>Number Of Orders</th>
+      <th>Average Sales</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let table of tableWiseSales | async">
+      <td>
+        {{ table.table }}
+      </td>
+      <td>
+        {{ table.sales }}
+      </td>
+      <td>
+        {{ table.numberOfOrders }}
+      </td>
+      <td>
+        {{ table.averageSales }}
+      </td>
+    </tr>
+  </tbody>
+</table>

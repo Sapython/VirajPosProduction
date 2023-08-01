@@ -1,45 +1,44 @@
 :host {
-  
 }
-.offlineBar{
-    height: 30px;
-    background-color: tomato;
-    color:white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 99999999;
-    position: sticky;
-    transition: all 0.5s ease-in-out;
-    &.online{
-        background: rgb(43, 160, 43);
-    }
-    &.updating{
-        background: rgb(255, 230, 43);
-        color:black;
-    }
+.offlineBar {
+  height: 30px;
+  background-color: tomato;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999999;
+  position: sticky;
+  transition: all 0.5s ease-in-out;
+  &.online {
+    background: rgb(43, 160, 43);
+  }
+  &.updating {
+    background: rgb(255, 230, 43);
+    color: black;
+  }
 }
-.small{
-    display: flex;
-    font-size: var(--Viraj-font-small);
+.small {
+  display: flex;
+  font-size: var(--Viraj-font-small);
 }
-.overlay{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0,0,0,0.4);
-    backdrop-filter: blur(2px); 
-    z-index: 9999999;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 9999999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
-@media screen and (max-width:1366px){
-    .offlineBar{
-        height: 20px;
-        font-size: var(--Viraj-font-medium);
-    }
+@media screen and (max-width: 1366px) {
+  .offlineBar {
+    height: 20px;
+    font-size: var(--Viraj-font-medium);
+  }
 }

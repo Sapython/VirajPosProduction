@@ -44,7 +44,7 @@ export class ActionsComponent {
   constructor(
     public dataProvider: DataProvider,
     private dialog: Dialog,
-    private userManagementService: UserManagementService
+    private userManagementService: UserManagementService,
   ) {
     this.dataProvider.billAssigned.subscribe(() => {
       if (this.dataProvider.currentBill) {
@@ -54,10 +54,10 @@ export class ActionsComponent {
           this.dataProvider.currentBill &&
           this.dataProvider.currentBill?.kots &&
           this.dataProvider.currentBill?.kots.filter(
-            (kot) => kot.stage == 'finalized'
+            (kot) => kot.stage == 'finalized',
           )[0] &&
           this.dataProvider.currentBill?.kots.filter(
-            (kot) => kot.stage == 'finalized'
+            (kot) => kot.stage == 'finalized',
           )[0].products.length > 0
         ) {
           this.dataProvider.kotViewVisible = true;
@@ -70,11 +70,11 @@ export class ActionsComponent {
             if (this.dataProvider.currentBill.kots) {
               this.allKot = this.dataProvider.currentBill.kots;
               let activeKot = this.dataProvider.currentBill.kots.find(
-                (kot: Kot) => kot.stage === 'active' || kot.stage === 'edit'
+                (kot: Kot) => kot.stage === 'active' || kot.stage === 'edit',
               );
               this.activeKotIndex =
                 this.dataProvider.currentBill.kots.findIndex(
-                  (kot: Kot) => kot.stage === 'active' || kot.stage === 'edit'
+                  (kot: Kot) => kot.stage === 'active' || kot.stage === 'edit',
                 );
               //  console.log('this.activeKotIndex', this.activeKotIndex);
               if (activeKot) {
@@ -96,9 +96,9 @@ export class ActionsComponent {
       await this.userManagementService.authenticateAction([
         'admin',
         'manager',
-        'accountant'
+        'accountant',
       ])
-    ){
+    ) {
       if (this.dataProvider.currentBill) {
         let dialog = this.dialog.open(CancelComponent);
         dialog.closed.subscribe((result: any) => {
@@ -119,7 +119,7 @@ export class ActionsComponent {
         'admin',
         'manager',
         'accountant',
-        'waiter'
+        'waiter',
       ])
     ) {
       if (this.dataProvider.currentBill) {
@@ -133,15 +133,12 @@ export class ActionsComponent {
       await this.userManagementService.authenticateAction([
         'admin',
         'manager',
-        'accountant'
+        'accountant',
       ])
-    ){
+    ) {
       if (this.dataProvider.currentBill) {
         let dialog = this.dialog.open(SettleComponent, {
-          data: {
-            total:this.dataProvider.currentBill.billing.grandTotal,
-            menu:this.dataProvider.currentBill.menu,
-          },
+          data: this.dataProvider.currentBill.billing.grandTotal
         });
         dialog.closed.subscribe((result: any) => {
           console.log('Settle Result', result);
@@ -154,7 +151,7 @@ export class ActionsComponent {
             this.dataProvider.currentBill.settle(
               result.paymentMethods,
               'internal',
-              result.detail || null
+              result.detail || null,
             );
           }
         });
@@ -176,9 +173,9 @@ export class ActionsComponent {
       await this.userManagementService.authenticateAction([
         'admin',
         'manager',
-        'accountant'
+        'accountant',
       ])
-    ){
+    ) {
       this.dialog.open(SplitBillComponent, {
         data: this.dataProvider.currentBill,
       });
@@ -190,9 +187,9 @@ export class ActionsComponent {
       await this.userManagementService.authenticateAction([
         'admin',
         'manager',
-        'accountant'
+        'accountant',
       ])
-    ){
+    ) {
       const dialog = this.dialog.open(AddDiscountComponent, {
         data: this.dataProvider.currentBill,
       });
@@ -233,7 +230,7 @@ export class ActionsComponent {
             this.dataProvider.currentBill.setAsNonChargeable(
               result.name || '',
               result.phone || '',
-              result.reason || ''
+              result.reason || '',
             );
           }
         });
@@ -255,7 +252,7 @@ export class ActionsComponent {
     if (this.dataProvider.manageKot == false) {
       // find any active kot if not found then set dataProvider.kotViewVisible to true
       let activeKot = this.dataProvider.currentBill?.kots.find(
-        (kot: Kot) => kot.stage === 'active' || kot.stage === 'edit'
+        (kot: Kot) => kot.stage === 'active' || kot.stage === 'edit',
       );
       if (!activeKot) {
         if (this.dataProvider.currentBill?.stage == 'finalized') {
@@ -278,9 +275,9 @@ export class ActionsComponent {
       await this.userManagementService.authenticateAction([
         'admin',
         'manager',
-        'accountant'
+        'accountant',
       ])
-    ){
+    ) {
       if (this.dataProvider.currentBill) {
         const dialog = this.dialog.open(SplitBillComponent, {
           data: this.dataProvider.currentBill,
@@ -291,24 +288,24 @@ export class ActionsComponent {
   }
 
   async showPreview() {
-    if (this.dataProvider.allProducts){
+    if (this.dataProvider.allProducts) {
       this.dataProvider.allProducts = false;
       return;
     }
     // check for any active kot if there is any active kot then show alert that you have to print the kot first
     if (
       this.dataProvider.currentBill?.kots.find(
-        (kot: Kot) => kot.stage === 'active' || kot.stage === 'edit'
+        (kot: Kot) => kot.stage === 'active' || kot.stage === 'edit',
       )
     ) {
       if (
         await this.dataProvider.confirm(
           'You have to print the kot first to see the preview',
           [1],
-          { buttons: ['Cancel', 'Print'] }
+          { buttons: ['Cancel', 'Print'] },
         )
       ) {
-        this.dataProvider.currentBill.finalizeAndPrintKot()
+        this.dataProvider.currentBill.finalizeAndPrintKot();
         this.dataProvider.allProducts = !this.dataProvider.allProducts;
       }
     } else {

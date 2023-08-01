@@ -8,9 +8,8 @@ describe('InfoPanelComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ InfoPanelComponent ]
-    })
-    .compileComponents();
+      declarations: [InfoPanelComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(InfoPanelComponent);
     component = fixture.componentInstance;

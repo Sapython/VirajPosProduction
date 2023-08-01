@@ -13,6 +13,7 @@ export interface Payment {
 }
 export interface Billing {
   subTotal: number;
+  postDiscountSubTotal: number;
   discount: (CodeBaseDiscount | DirectPercentDiscount | DirectFlatDiscount)[];
   taxes: Tax[];
   totalTax: number;

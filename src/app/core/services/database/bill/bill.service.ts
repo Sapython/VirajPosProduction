@@ -1,5 +1,21 @@
 import { Injectable } from '@angular/core';
-import { Firestore, addDoc, collection, collectionChanges, collectionData, doc, docData, getDoc, getDocs, increment, query, serverTimestamp, setDoc, updateDoc, where } from '@angular/fire/firestore';
+import {
+  Firestore,
+  addDoc,
+  collection,
+  collectionChanges,
+  collectionData,
+  doc,
+  docData,
+  getDoc,
+  getDocs,
+  increment,
+  query,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+  where,
+} from '@angular/fire/firestore';
 import { DataProvider } from '../../provider/data-provider.service';
 import { Product } from '../../../../types/product.structure';
 import { BillConstructor } from '../../../../types/bill.structure';
@@ -8,11 +24,15 @@ import { Bill } from '../../../constructors/bill';
 import { BillActivity } from '../../../../types/activity.structure';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class BillService {
-  updateHistory:any[] = []
-  constructor(private firestore:Firestore,private dataProvider:DataProvider,public analyticsService:AnalyticsService) {
+  updateHistory: any[] = [];
+  constructor(
+    private firestore: Firestore,
+    private dataProvider: DataProvider,
+    public analyticsService: AnalyticsService,
+  ) {
     // this.dataProvider.menuLoadSubject.subscribe((menu)=>{
     //   let res = this.watchToken().subscribe((tokens)=>{
     //     let filtered = tokens.filter((token)=>token.doc.id=='18')
@@ -25,41 +45,60 @@ export class BillService {
 
   updateBill(bill: any) {
     return setDoc(
-      doc(this.firestore, 'business/'+this.dataProvider.businessId+'/bills', bill.id),
+      doc(
+        this.firestore,
+        'business/' + this.dataProvider.businessId + '/bills',
+        bill.id,
+      ),
       bill,
-      { merge: true }
+      { merge: true },
     );
   }
 
   getBill(id: string) {
-    if(!this.dataProvider.businessId){
-      console.log("NO BUSINESS ID:  ",'business/'+this.dataProvider.businessId+'/bills', id);
-      alert("NO BUSINESS ID")
-      return
+    if (!this.dataProvider.businessId) {
+      console.log(
+        'NO BUSINESS ID:  ',
+        'business/' + this.dataProvider.businessId + '/bills',
+        id,
+      );
+      alert('NO BUSINESS ID');
+      return;
     }
-  //  console.log('business/'+this.dataProvider.businessId+'/bills', id);
+    //  console.log('business/'+this.dataProvider.businessId+'/bills', id);
     return getDoc(
-      doc(this.firestore, 'business/'+this.dataProvider.businessId+'/bills', id)
+      doc(
+        this.firestore,
+        'business/' + this.dataProvider.businessId + '/bills',
+        id,
+      ),
     );
   }
 
   getBillSubscription(id: string) {
-  //  console.log('business/'+this.dataProvider.businessId+'/bills', id);
+    //  console.log('business/'+this.dataProvider.businessId+'/bills', id);
     return docData(
-      doc(this.firestore, 'business/'+this.dataProvider.businessId+'/bills', id)
+      doc(
+        this.firestore,
+        'business/' + this.dataProvider.businessId + '/bills',
+        id,
+      ),
     );
   }
 
   getBills() {
     return getDocs(
-      collection(this.firestore, 'business/'+this.dataProvider.businessId+'/bills')
+      collection(
+        this.firestore,
+        'business/' + this.dataProvider.businessId + '/bills',
+      ),
     );
   }
 
-  getBillsByDay(date: Date,endDate?:Date) {
+  getBillsByDay(date: Date, endDate?: Date) {
     let minTime = new Date(date);
     minTime.setHours(0, 0, 0, 0);
-    if (endDate){
+    if (endDate) {
       var maxTime = new Date(endDate);
       maxTime.setHours(23, 59, 59, 999);
     } else {
@@ -68,16 +107,26 @@ export class BillService {
     }
     return getDocs(
       query(
-        collection(this.firestore, 'business/'+this.dataProvider.businessId+'/bills'),
+        collection(
+          this.firestore,
+          'business/' + this.dataProvider.businessId + '/bills',
+        ),
         where('createdDate', '>=', minTime),
-        where('createdDate', '<=', maxTime)
-      )
+        where('createdDate', '<=', maxTime),
+      ),
     );
   }
 
-  getActivity(billId:string){
+  getActivity(billId: string) {
     return getDocs(
-      collection(this.firestore, 'business/'+this.dataProvider.businessId+'/bills/'+billId+'/billActivities')
+      collection(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/bills/' +
+          billId +
+          '/billActivities',
+      ),
     );
   }
 
@@ -87,48 +136,68 @@ export class BillService {
         return setDoc(
           doc(
             this.firestore,
-            'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/products/' + product.id
+            'business/' +
+              this.dataProvider.businessId +
+              '/menus/' +
+              this.dataProvider.currentMenu?.selectedMenu?.id +
+              '/products/' +
+              product.id,
           ),
           { ...product, quantity: 1 },
-          { merge: true }
+          { merge: true },
         );
-      })
+      }),
     );
   }
 
-  addSales(productIds:string[]){
+  addSales(productIds: string[]) {
     return Promise.all(
-      productIds.map((id)=>{
+      productIds.map((id) => {
         return updateDoc(
-          doc(this.firestore,'business/'+this.dataProvider.businessId+'/menus/'+this.dataProvider.currentMenu?.selectedMenu?.id+'/products/'+id),
-          {sales:increment(1)}
-        )
-      })
-    )
+          doc(
+            this.firestore,
+            'business/' +
+              this.dataProvider.businessId +
+              '/menus/' +
+              this.dataProvider.currentMenu?.selectedMenu?.id +
+              '/products/' +
+              id,
+          ),
+          { sales: increment(1) },
+        );
+      }),
+    );
   }
-
 
   updateOnlineToken(token: any) {
     return setDoc(
       doc(
         this.firestore,
-        'business/'+this.dataProvider.businessId+'/onlineTokens',
-        token.id
+        'business/' + this.dataProvider.businessId + '/onlineTokens',
+        token.id,
       ),
       token,
-      { merge: true }
+      { merge: true },
     );
   }
 
   getBillsSubscription() {
     return collectionData(
-      collection(this.firestore, 'business/'+this.dataProvider.businessId+'/bills'),
-      { idField: 'id' }
+      collection(
+        this.firestore,
+        'business/' + this.dataProvider.businessId + '/bills',
+      ),
+      { idField: 'id' },
     );
   }
 
-  watchToken(){
-    return collectionChanges(collection(this.firestore, 'business/'+this.dataProvider.businessId+'/tokens'))
+  watchToken() {
+    return collectionChanges(
+      collection(
+        this.firestore,
+        'business/' + this.dataProvider.businessId + '/tokens',
+      ),
+    );
   }
 
   updateToken(token: any) {
@@ -146,39 +215,76 @@ export class BillService {
     // }
     // this.updateHistory.push(token)
     return setDoc(
-      doc(this.firestore, 'business/'+this.dataProvider.businessId+'/tokens', token.id),
+      doc(
+        this.firestore,
+        'business/' + this.dataProvider.businessId + '/tokens',
+        token.id,
+      ),
       token,
-      { merge: true }
+      { merge: true },
     );
   }
 
-
-
-  saveSplittedBill(billNo,bill:BillConstructor){
+  saveSplittedBill(billNo, bill: BillConstructor) {
     return addDoc(
-      collection(this.firestore, 'business/'+this.dataProvider.businessId+'/bills', billNo,'splittedBills'),
-      bill
+      collection(
+        this.firestore,
+        'business/' + this.dataProvider.businessId + '/bills',
+        billNo,
+        'splittedBills',
+      ),
+      bill,
     );
   }
 
-  provideAnalytics(){
+  provideAnalytics() {
     return this.analyticsService;
   }
 
-  addActivity(bill:Bill,activity:BillActivity){
-    console.log("ACTIVITY",activity);
+  addActivity(bill: Bill, activity: BillActivity) {
+    console.log('ACTIVITY', activity);
     return addDoc(
-      collection(this.firestore, 'business/'+this.dataProvider.businessId+'/bills/'+bill.id+'/billActivities'),
-      {activity:activity,createdDate:serverTimestamp(),deviceTime:new Date()}
+      collection(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/bills/' +
+          bill.id +
+          '/billActivities',
+      ),
+      {
+        activity: activity,
+        createdDate: serverTimestamp(),
+        deviceTime: new Date(),
+      },
     );
   }
 
-  getAnalyticsReport(date:Date){
+  getAnalyticsReport(date: Date) {
     // fetch this path /business/uqd9dm0its2v9xx6fey2q/analyticsData/2023/7/21
-    console.log("Fetching analytics data for ",'business/'+this.dataProvider.businessId+'/analyticsData/'+date.getFullYear()+'/'+(date.getMonth()+1)+'/'+date.getDate());
+    console.log(
+      'Fetching analytics data for ',
+      'business/' +
+        this.dataProvider.businessId +
+        '/analyticsData/' +
+        date.getFullYear() +
+        '/' +
+        (date.getMonth() + 1) +
+        '/' +
+        date.getDate(),
+    );
     return getDoc(
-      doc(this.firestore, 'business/'+this.dataProvider.businessId+'/analyticsData/'+date.getFullYear()+'/'+(date.getMonth()+1)+'/'+date.getDate())
+      doc(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/analyticsData/' +
+          date.getFullYear() +
+          '/' +
+          (date.getMonth() + 1) +
+          '/' +
+          date.getDate(),
+      ),
     );
   }
 }
-

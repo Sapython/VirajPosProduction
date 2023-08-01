@@ -21,34 +21,41 @@ export class DiscountComponent implements OnInit {
     private settingsService: SettingsService,
     private menuManagementService: MenuManagementService,
     private alertify: AlertsAndNotificationsService,
-    public dataProvider:DataProvider,
+    public dataProvider: DataProvider,
   ) {}
 
   ngOnInit(): void {
     this.getDiscounts();
   }
 
-  updateSettings(){
+  updateSettings() {
     this.dataProvider.loading = true;
-    this.menuManagementService.updateRootSettings({multipleDiscount:this.dataProvider.multipleDiscount},this.dataProvider.businessId).then(()=>{
-      this.alertify.presentToast('Settings updated successfully');
-    }).catch((err)=>{
-      this.alertify.presentToast('Error while updating settings');
-    }).finally(()=>{
-      this.dataProvider.loading = false;
-    });
+    this.menuManagementService
+      .updateRootSettings(
+        { multipleDiscount: this.dataProvider.multipleDiscount },
+        this.dataProvider.businessId,
+      )
+      .then(() => {
+        this.alertify.presentToast('Settings updated successfully');
+      })
+      .catch((err) => {
+        this.alertify.presentToast('Error while updating settings');
+      })
+      .finally(() => {
+        this.dataProvider.loading = false;
+      });
   }
   addDiscount() {
     const dialog = this.dialog.open(AddDiscountComponent, {
       data: { mode: 'add' },
     });
     dialog.closed.subscribe((data: any) => {
-    //  console.log('data', data);
+      //  console.log('data', data);
       if (data) {
         if (data.menus.length === 0) {
           data.menus = null;
         }
-      //  console.log('adding', data);
+        //  console.log('adding', data);
         this.settingsService
           .addDiscount({
             ...data,
@@ -58,16 +65,16 @@ export class DiscountComponent implements OnInit {
             reason: '',
           } as CodeBaseDiscount)
           .then((res) => {
-          //  console.log('res', res);
+            //  console.log('res', res);
             this.getDiscounts();
             this.alertify.presentToast('Discount added successfully');
           })
           .catch((err) => {
-          //  console.log('err', err);
+            //  console.log('err', err);
             this.alertify.presentToast('Error adding discount');
           });
       } else {
-      //  console.log('no data', data);
+        //  console.log('no data', data);
       }
     });
   }
@@ -85,7 +92,7 @@ export class DiscountComponent implements OnInit {
         });
       })
       .catch((err: any) => {
-      //  console.log(err);
+        //  console.log(err);
         this.alertify.presentToast('Error while fetching discounts');
       })
       .finally(() => {
@@ -95,34 +102,34 @@ export class DiscountComponent implements OnInit {
   getMappedMenu(menus?: string[]) {
     if (!menus) return [];
     return this.dataProvider.allMenus.filter((menu) =>
-      menus.includes(menu.id!)
+      menus.includes(menu.id!),
     );
   }
   editDiscount(discount: CodeBaseDiscount) {
-  //  console.log('discount', discount);
+    //  console.log('discount', discount);
     const dialog = this.dialog.open(AddDiscountComponent, {
       data: { mode: 'edit', discount: discount },
     });
     dialog.closed.subscribe((data: any) => {
-    //  console.log('data', data);
+      //  console.log('data', data);
       if (data) {
         if (data.menus.length === 0) {
           data.menus = null;
         }
-      //  console.log('adding', data);
+        //  console.log('adding', data);
         this.settingsService
           .updateDiscount({ ...discount, ...data } as CodeBaseDiscount)
           .then((res) => {
-          //  console.log('res', res);
+            //  console.log('res', res);
             this.getDiscounts();
             this.alertify.presentToast('Discount update successfully');
           })
           .catch((err) => {
-          //  console.log('err', err);
+            //  console.log('err', err);
             this.alertify.presentToast('Error updating discount');
           });
       } else {
-      //  console.log('no data', data);
+        //  console.log('no data', data);
       }
     });
   }

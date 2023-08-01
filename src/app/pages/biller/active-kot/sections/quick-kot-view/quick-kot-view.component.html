@@ -1,39 +1,49 @@
 <div
-    class="quickKotView"
-    [@zoomInOnEnter]
-    [@zoomOutOnLeave]
-    *ngIf="dataProvider.kotViewVisible && !dataProvider.allProducts && this.dataProvider.currentBill?.kots"
+  class="quickKotView"
+  [@zoomInOnEnter]
+  [@zoomOutOnLeave]
+  *ngIf="
+    dataProvider.kotViewVisible &&
+    !dataProvider.allProducts &&
+    this.dataProvider.currentBill?.kots
+  "
+>
+  <div
+    class="kotCard"
+    [ngClass]="{ cancelled: kot.stage == 'cancelled' }"
+    *ngFor="let kot of this.dataProvider.currentBill?.kots; let i = index"
   >
     <div
-      class="kotCard"
-      [ngClass]="{'cancelled':kot.stage == 'cancelled'}"
-      *ngFor="let kot of this.dataProvider.currentBill?.kots; let i = index"
+      class="heading"
+      [ngStyle]="{
+        background: this.kotNoColors[i % this.kotNoColors.length].color,
+        color: this.kotNoColors[i % this.kotNoColors.length].contrast
+      }"
     >
-      <div
-        class="heading"
-        [ngStyle]="{
-          background: this.kotNoColors[i % this.kotNoColors.length].color,
-          color: this.kotNoColors[i % this.kotNoColors.length].contrast
-        }"
-      >
-        <p>Kot No: {{ kot.id }}</p>
-        <span>
-          <i class="ri-time-line"></i>&nbsp;&nbsp;{{ kot.totalTimeTaken }}
-        </span>
-      </div>
-      <div class="items">
-        <div class="item" *ngFor="let product of kot.products">
-          <ng-container *ngIf="!product.cancelled">
-            <p>{{ product.name }}</p>
-            <p>{{ product.quantity }}</p>
-            <p>{{ product.quantity * product.price | currency : "INR" }}</p>
-          </ng-container>
-          <ng-container *ngIf="product.cancelled">
-            <p><s>{{ product.name }}</s></p>
-            <p><s>{{ product.quantity }}</s></p>
-            <p><s>{{ product.quantity * product.price | currency : "INR" }}</s></p>
-          </ng-container>
-        </div>
+      <p>Kot No: {{ kot.id }}</p>
+      <span>
+        <i class="ri-time-line"></i>&nbsp;&nbsp;{{ kot.totalTimeTaken }}
+      </span>
+    </div>
+    <div class="items">
+      <div class="item" *ngFor="let product of kot.products">
+        <ng-container *ngIf="!product.cancelled">
+          <p>{{ product.name }}</p>
+          <p>{{ product.quantity }}</p>
+          <p>{{ product.quantity * product.price | currency: "INR" }}</p>
+        </ng-container>
+        <ng-container *ngIf="product.cancelled">
+          <p>
+            <s>{{ product.name }}</s>
+          </p>
+          <p>
+            <s>{{ product.quantity }}</s>
+          </p>
+          <p>
+            <s>{{ product.quantity * product.price | currency: "INR" }}</s>
+          </p>
+        </ng-container>
       </div>
     </div>
   </div>
+</div>

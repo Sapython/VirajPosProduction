@@ -8,9 +8,8 @@ describe('ComboItemComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ComboItemComponent ]
-    })
-    .compileComponents();
+      declarations: [ComboItemComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ComboItemComponent);
     component = fixture.componentInstance;

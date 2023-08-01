@@ -8,9 +8,8 @@ describe('SearchPanelComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SearchPanelComponent ]
-    })
-    .compileComponents();
+      declarations: [SearchPanelComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(SearchPanelComponent);
     component = fixture.componentInstance;

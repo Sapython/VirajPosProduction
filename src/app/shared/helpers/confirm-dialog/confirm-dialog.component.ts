@@ -4,10 +4,17 @@ import { Component, Inject } from '@angular/core';
 @Component({
   selector: 'app-confirm-dialog',
   templateUrl: './confirm-dialog.component.html',
-  styleUrls: ['./confirm-dialog.component.scss']
+  styleUrls: ['./confirm-dialog.component.scss'],
 })
 export class ConfirmDialogComponent {
-  constructor( @Inject(DIALOG_DATA) public modelData:ModelData = {buttons:['Cancel','Confirm'],title:'Are you sure ?'}, public dialogRef:DialogRef){}
+  constructor(
+    @Inject(DIALOG_DATA)
+    public modelData: ModelData = {
+      buttons: ['Cancel', 'Confirm'],
+      title: 'Are you sure ?',
+    },
+    public dialogRef: DialogRef,
+  ) {}
 }
 export interface ModelData {
   title: string;

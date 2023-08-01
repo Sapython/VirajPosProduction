@@ -9,10 +9,14 @@ import { DataProvider } from '../../../../../core/services/provider/data-provide
 @Component({
   selector: 'app-add-loyalty-setting',
   templateUrl: './add-loyalty-setting.component.html',
-  styleUrls: ['./add-loyalty-setting.component.scss']
+  styleUrls: ['./add-loyalty-setting.component.scss'],
 })
 export class AddLoyaltySettingComponent {
-  constructor(@Inject(DIALOG_DATA) private data:{menu:ModeConfig},public dialogRef:DialogRef,private dataProvider:DataProvider){
+  constructor(
+    @Inject(DIALOG_DATA) private data: { menu: ModeConfig },
+    public dialogRef: DialogRef,
+    private dataProvider: DataProvider,
+  ) {
     // this.data.menu.loyaltySettings.forEach((setting)=>{
     //   setting.categoryWiseRates.forEach((category)=>{
     //     let usableCategory:CategoryLoyaltyRate = {
@@ -56,71 +60,75 @@ export class AddLoyaltySettingComponent {
     //   });
     // });
     // now add every missing category from main categories and view categories
-    this.data.menu.mainCategories.forEach((mainCategory)=>{
-      if (!mainCategory.name){
-        return
+    this.data.menu.mainCategories.forEach((mainCategory) => {
+      if (!mainCategory.name) {
+        return;
       }
       this.usableMainCategories.push({
-        categoryName:mainCategory.name,
-        categoryId:mainCategory.id,
-        categoryType:'main',
-        products:mainCategory.products.map((product)=>{
+        categoryName: mainCategory.name,
+        categoryId: mainCategory.id,
+        categoryType: 'main',
+        products: mainCategory.products.map((product) => {
           return {
-            productName:product.name,
-            id:product.id,
-            price:product.price,
-            loyaltyRate:0,
-            loyaltyCost:0
-          }
-        })
+            productName: product.name,
+            id: product.id,
+            price: product.price,
+            loyaltyRate: 0,
+            loyaltyCost: 0,
+          };
+        }),
       });
     });
   }
 
-  addNewLoyaltyForm:FormGroup = new FormGroup({
-    name:new FormControl('',Validators.required),
-    baseRate:new FormControl('',Validators.required),
-    expiryDays:new FormControl('',Validators.required),
-    conversionRate:new FormControl('',Validators.required),
+  addNewLoyaltyForm: FormGroup = new FormGroup({
+    name: new FormControl('', Validators.required),
+    baseRate: new FormControl('', Validators.required),
+    expiryDays: new FormControl('', Validators.required),
+    conversionRate: new FormControl('', Validators.required),
   });
 
-  prevBaseRateValue:number = 0;
-  usableMainCategories:CategoryLoyaltyRate[] = []
+  prevBaseRateValue: number = 0;
+  usableMainCategories: CategoryLoyaltyRate[] = [];
 
-  submit(){
+  submit() {
     this.dialogRef.close({
       ...this.addNewLoyaltyForm.value,
-      categoryWiseRates:this.usableMainCategories,
-      creationDate:Timestamp.now(),
-      addedBy:this.dataProvider.currentUser.username
-    })
+      categoryWiseRates: this.usableMainCategories,
+      creationDate: Timestamp.now(),
+      addedBy: this.dataProvider.currentUser.username,
+    });
   }
 
-  setLoyaltyCost(product){
-    product.loyaltyCost = (product.loyaltyRate / this.addNewLoyaltyForm.value.conversionRate)
+  setLoyaltyCost(product) {
+    product.loyaltyCost =
+      product.loyaltyRate / this.addNewLoyaltyForm.value.conversionRate;
   }
 
-  setBaseLoyaltyPoint(value:number|null|string){
-    if(value && typeof Number(value) == 'number'){
-      this.usableMainCategories.forEach((category)=>{
-        category.products.forEach((prod)=>{
-          if(!prod.loyaltyRate || prod.loyaltyRate == 0 || prod.loyaltyRate == this.prevBaseRateValue){
+  setBaseLoyaltyPoint(value: number | null | string) {
+    if (value && typeof Number(value) == 'number') {
+      this.usableMainCategories.forEach((category) => {
+        category.products.forEach((prod) => {
+          if (
+            !prod.loyaltyRate ||
+            prod.loyaltyRate == 0 ||
+            prod.loyaltyRate == this.prevBaseRateValue
+          ) {
             prod.loyaltyRate = Number(value);
           }
-        })
-      })
+        });
+      });
       this.prevBaseRateValue = Number(value);
     }
   }
 
-  calculateLoyaltyCost(value:number|null|string){
-    if(value && typeof Number(value) == 'number'){
-      this.usableMainCategories.forEach((category)=>{
-        category.products.forEach((prod)=>{
+  calculateLoyaltyCost(value: number | null | string) {
+    if (value && typeof Number(value) == 'number') {
+      this.usableMainCategories.forEach((category) => {
+        category.products.forEach((prod) => {
           prod.loyaltyCost = prod.loyaltyRate / Number(value);
-        })
-      })
+        });
+      });
     }
   }
-
 }

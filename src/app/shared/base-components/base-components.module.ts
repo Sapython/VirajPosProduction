@@ -11,7 +11,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 
-
 @NgModule({
   declarations: [
     ButtonComponent,
@@ -27,13 +26,13 @@ import { MatButtonModule } from '@angular/material/button';
     MatFormFieldModule,
     FormsModule,
     ReactiveFormsModule,
-    MatButtonModule
+    MatButtonModule,
   ],
-  exports:[
+  exports: [
     ButtonComponent,
     IconButtonComponent,
     RoundOffPipe,
-    PromptComponent
-  ]
+    PromptComponent,
+  ],
 })
-export class BaseComponentsModule { }
+export class BaseComponentsModule {}

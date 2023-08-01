@@ -1,28 +1,53 @@
-<section *ngIf="['update-available','download-progress','update-downloaded'].includes(this.dataProvider.currentUpdateStage)">
-	<h2>New Update Available</h2>
-	<p>New version: {{this.data.version}}</p>
-	<hr>
-	<p>Release Notes:</p>
-	<span>
-		{{
-			this.data.releaseNotes
-		}}
-	</span>
-	<hr>
-	<ng-container *ngIf="this.dataProvider.currentUpdateStage == 'update-available'">
-		<p>Download now to get new features and bug fixes.</p>
-		<viraj-button [animated]="true" (vclick)="downloadNow()">Download Now</viraj-button>
-	</ng-container>
-	<ng-container *ngIf="this.dataProvider.currentUpdateStage == 'download-progress'">
-		<p>It's downloading</p>
-		<mat-progress-bar mode="determinate" [value]="this.dataProvider.currentUpdateProgress"></mat-progress-bar>
-		<p>Please wait while it's downloading and then we will remind you to install it.</p>
-	</ng-container>
-	<ng-container *ngIf="this.dataProvider.currentUpdateStage == 'update-downloaded'">
-		<p>It's downloaded</p>
-		<mat-progress-bar mode="determinate" [value]="this.dataProvider.currentUpdateProgress"></mat-progress-bar>
-		<p>Press install now to install. (Please make sure that you have saved all of the work)</p>
-		<viraj-button [animated]="true" (vclick)="installNow()">Install Now</viraj-button>
-	</ng-container>
-	
+<section
+  *ngIf="
+    ['update-available', 'download-progress', 'update-downloaded'].includes(
+      this.dataProvider.currentUpdateStage
+    )
+  "
+>
+  <h2>New Update Available</h2>
+  <p>New version: {{ this.data.version }}</p>
+  <hr />
+  <p>Release Notes:</p>
+  <span>
+    {{ this.data.releaseNotes }}
+  </span>
+  <hr />
+  <ng-container
+    *ngIf="this.dataProvider.currentUpdateStage == 'update-available'"
+  >
+    <p>Download now to get new features and bug fixes.</p>
+    <viraj-button [animated]="true" (vclick)="downloadNow()"
+      >Download Now</viraj-button
+    >
+  </ng-container>
+  <ng-container
+    *ngIf="this.dataProvider.currentUpdateStage == 'download-progress'"
+  >
+    <p>It's downloading</p>
+    <mat-progress-bar
+      mode="determinate"
+      [value]="this.dataProvider.currentUpdateProgress"
+    ></mat-progress-bar>
+    <p>
+      Please wait while it's downloading and then we will remind you to install
+      it.
+    </p>
+  </ng-container>
+  <ng-container
+    *ngIf="this.dataProvider.currentUpdateStage == 'update-downloaded'"
+  >
+    <p>It's downloaded</p>
+    <mat-progress-bar
+      mode="determinate"
+      [value]="this.dataProvider.currentUpdateProgress"
+    ></mat-progress-bar>
+    <p>
+      Press install now to install. (Please make sure that you have saved all of
+      the work)
+    </p>
+    <viraj-button [animated]="true" (vclick)="installNow()"
+      >Install Now</viraj-button
+    >
+  </ng-container>
 </section>

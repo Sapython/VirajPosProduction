@@ -1,6 +1,6 @@
 <section>
   <h3>Stock Count</h3>
-  <div class="badges" *ngIf="dataProvider.clientHeight >= 717">
+  <div class="badges" *ngIf="(dataProvider.clientHeight | async )>= 717">
     <div
       class="badge"
       cdkOverlayOrigin
@@ -65,7 +65,7 @@
       ></app-cash-counter>
     </ng-template>
   </div>
-  <div class="iconBadges" *ngIf="dataProvider.clientHeight < 717">
+  <div class="iconBadges" *ngIf="(dataProvider.clientHeight | async) < 717">
     <!-- <div class="badge">
       <mat-icon>inventory</mat-icon>
     </div> -->
@@ -106,7 +106,7 @@
       matRipple
       mat-flat-button
       color="primary"
-      *ngIf="dataProvider.clientHeight < 717"
+      *ngIf="(dataProvider.clientHeight | async) < 717"
       >Close In</viraj-button
     >
     <ng-template
@@ -147,18 +147,18 @@
       ></app-cash-counter>
     </ng-template>
   </div>
-  <ng-container *ngIf="dataProvider.clientHeight >= 896">
+  <ng-container *ngIf="(dataProvider.clientHeight | async) >= 896">
     <app-receiving (click)="openReceiving()"></app-receiving>
     <app-dispersion (click)="openDispersion()"></app-dispersion>
   </ng-container>
   <div
     class="row"
-    *ngIf="dataProvider.clientHeight < 896 && dataProvider.clientHeight > 717"
+    *ngIf="(dataProvider.clientHeight | async) < 896 && (dataProvider.clientHeight | async) > 717"
   >
     <app-receiving (click)="openReceiving()"></app-receiving>
     <app-dispersion (click)="openDispersion()"></app-dispersion>
   </div>
-  <viraj-button (vclick)="closeIn()" *ngIf="dataProvider.clientHeight >= 717"
+  <viraj-button (vclick)="closeIn()" *ngIf="(dataProvider.clientHeight | async) >= 717"
     >Close In</viraj-button
   >
   <!-- hovers -->

@@ -222,7 +222,7 @@ export class HistoryComponent {
       // },[] as any[])
       // let printableBillData = getPrintableBillConstructor(bill,products,this.dataProvider)
       calculateBill(bill, this.dataProvider);
-      this.printingService.reprintBill(bill.printableBillData);
+      this.printingService.reprintBill(bill.printableBillData,true);
     } else {
       alert('Reprint Cancelled');
       return;
@@ -281,7 +281,7 @@ export class HistoryComponent {
         table: bill.table as unknown as string,
         token: kot.id,
       };
-      this.printingService.printKot(printableKot);
+      this.printingService.printKot(printableKot,true);
       // this.printingService.reprintKot(kot,bill.table.name,bill);
     } else {
       alert('Reprint Cancelled');
@@ -315,6 +315,12 @@ export class HistoryComponent {
     let body = [];
     let currentPageCursor = 0;
     let heading = [
+      [
+        {
+          content: 'Reprint',
+          styles: { halign: 'center', fontSize: 12, fontStyle: 'bold' },
+        },
+      ],
       [
         {
           content: bill.businessDetails.name,
@@ -785,7 +791,13 @@ export class HistoryComponent {
         styles: { halign: 'center', fontSize: 14, fontStyle: 'bold' },
       };
     }
-    let heading = [[head]].filter((row) => {
+    let heading:any = [
+      [{
+        content:'Reprint',
+        styles: { halign: 'center', fontSize: 14, fontStyle: 'bold' },
+      }],
+      [head]
+    ].filter((row) => {
       return row[0].content;
     });
     body.push(...heading);

@@ -9,11 +9,12 @@ import { PrintableKot } from '../../../../types/kot.structure';
 export class EncoderService {
   constructor() {}
 
-  getBillCode(billdata: PrintableBill) {
+  getBillCode(billdata: PrintableBill,reprint:boolean = false) {
     //  console.log('billdata.businessDetails.name', billdata.businessDetails.name);
     let encoder = new customEncoder({ width: 48 });
     let result = encoder
       .initPrint()
+      .h1(reprint ? 'Reprint' : '')
       .h1(billdata.businessDetails.name)
       .lineIf(billdata.businessDetails.address, 'center', 'Add: ')
       .lineIf(billdata.businessDetails.phone, 'center', 'Phone: ')
@@ -98,10 +99,11 @@ export class EncoderService {
     return result;
   }
 
-  getKotCode(kotData: PrintableKot) {
+  getKotCode(kotData: PrintableKot,reprint:boolean = false) {
     let encoder = new customEncoder({ width: 48 });
     let result = encoder
       .initPrint()
+      .h1(reprint ? 'Reprint' : '')
       .kotHead(kotData)
       .hr()
       .table(

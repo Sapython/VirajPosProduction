@@ -148,6 +148,8 @@ export class OnboardingService {
           this.message = 'Validity Has Expired';
           this.alertify.presentToast(this.message, 'error');
           alert("Validity of your biller is expired please contact support to renew your validity.");
+          this.checkAndRefresh();
+          this.dataProvider.loading = false;
           return;
         } else {
           try{
@@ -160,12 +162,15 @@ export class OnboardingService {
               this.alertify.presentToast(this.message, 'error');
               this.previousValidity = false;
               alert("Validity of your biller is expired please contact support to renew your validity.");
+              this.checkAndRefresh();
+              this.dataProvider.loading = false;
               return
             }
           } catch (err){
             this.stage = 'validityExpired';
             this.message = 'Validity Has Expired';
             this.alertify.presentToast(this.message, 'error');
+            this.checkAndRefresh();
             this.previousValidity = false;
             return
           }
@@ -183,15 +188,27 @@ export class OnboardingService {
           businessId: business.id,
         } as BusinessRecord;
         this.dataProvider.businessId = business.id;
-        this.stage = 'userExists';
-        this.loadingSteps.next('Loaded user details.');
-        this.startViraj(this.dataProvider.currentBusiness);
+        if(!this.router.url.includes('biller')){
+          this.stage = 'userExists';
+          this.loadingSteps.next('Loaded user details.');
+          this.startViraj(this.dataProvider.currentBusiness);
+        }
       } else {
         this.stage = 'businessError';
         this.message = 'Business Not Found';
         this.alertify.presentToast(this.message, 'error');
       }
     });
+  }
+
+  checkAndRefresh(){
+    // check the current url if the path is biller then refresh the page
+    if (this.router.url.includes('biller')){
+      let url = window.location.href.split('/');
+      url.pop();
+      url.push('index.html');
+      window.location.href = url.join('/');
+    }
   }
 
   startViraj(business: BusinessRecord) {

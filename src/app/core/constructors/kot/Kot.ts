@@ -127,13 +127,12 @@ export class Kot implements KotConstructor {
       if (product.itemType == 'product') {
         products.push(product);
       } else if (product.itemType == 'combo') {
-        product.productSelection.forEach((item) => {
-          item.products.forEach((product) => {
-            products.push(product);
-          });
+        product.allProducts.forEach((item) => {
+          products.push(item);
         });
       }
     });
+    console.log("Before merge",products);
     // remove duplicates by adding quantity
     products = products.reduce((acc, current) => {
       const x = acc.find((item) => item.id === current.id);
@@ -144,6 +143,7 @@ export class Kot implements KotConstructor {
         return acc;
       }
     }, []);
+    console.log("After merge");
     return products;
   }
 

@@ -95,6 +95,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { AddLoyaltySettingComponent } from './edit-menu/add-loyalty-setting/add-loyalty-setting.component';
 import { PrinterSettingComponent } from './edit-menu/printer-setting/printer-setting.component';
 import { LoyaltyComponent } from './info-panel/sales-summary/reports/report-view/loyalty/loyalty.component';
+import { AddMainCategoryComponent } from './edit-menu/add-main-category/add-main-category.component';
 
 @NgModule({
   declarations: [
@@ -163,6 +164,7 @@ import { LoyaltyComponent } from './info-panel/sales-summary/reports/report-view
     AddLoyaltySettingComponent,
     PrinterSettingComponent,
     LoyaltyComponent,
+    AddMainCategoryComponent,
   ],
   imports: [
     CommonModule,

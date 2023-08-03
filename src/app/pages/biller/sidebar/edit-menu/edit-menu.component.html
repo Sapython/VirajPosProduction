@@ -9,23 +9,23 @@
     </span>
     <div class="tabsToggle large">
       <button
-        *ngIf="this.dataProvider.getAccess('editDineInMenu')"
-        [ngClass]="{ active: currentMode == 'Dine In' }"
-        (click)="currentMode = 'Dine In'; switchMode({ value: 'Dine In' })"
+        *ngIf="this.dataProvider.getAccess('editDineInMenu') && this.dataProvider.activeModes[0]"
+        [ngClass]="{ active: this.dataProvider.currentMenu && this.dataProvider.currentMenu.type == 'dineIn' }"
+        (click)="switchMode({ value: 'dineIn' })"
       >
         Dine In
       </button>
       <button
-        *ngIf="this.dataProvider.getAccess('editTakeawayMenu')"
-        [ngClass]="{ active: currentMode == 'Takeaway' }"
-        (click)="currentMode = 'Takeaway'; switchMode({ value: 'Takeaway' })"
+        *ngIf="this.dataProvider.getAccess('editTakeawayMenu') && this.dataProvider.activeModes[1]"
+        [ngClass]="{ active: this.dataProvider.currentMenu && this.dataProvider.currentMenu.type == 'takeaway' }"
+        (click)="switchMode({ value: 'takeaway' })"
       >
         Takeaway
       </button>
       <button
-        *ngIf="this.dataProvider.getAccess('editOnlineMenu')"
-        [ngClass]="{ active: currentMode == 'Online' }"
-        (click)="currentMode = 'Online'; switchMode({ value: 'Online' })"
+        *ngIf="this.dataProvider.getAccess('editOnlineMenu') && this.dataProvider.activeModes[2]"
+        [ngClass]="{ active: this.dataProvider.currentMenu && this.dataProvider.currentMenu.type == 'online' }"
+        (click)="switchMode({ value: 'online' })"
       >
         Online
       </button>
@@ -118,7 +118,7 @@
   </div> -->
 
   <ng-container *ngFor="let mode of this.dataProvider.menus">
-    <div class="mode" *ngIf="mode.active && mode.name == currentMode">
+    <div class="mode" *ngIf="mode.active && mode.type == this.dataProvider.currentMenu.type">
       <div class="tabs">
         <div class="tabList">
           <button
@@ -228,7 +228,11 @@
                 ></app-category-card>
               </div>
               <span *ngIf="this.dataProvider.getAccess('mainCategories')"
-                >Main Categories</span
+                >Main Categories<viraj-button
+                *ngIf="this.dataProvider.getAccess('addMainCategory')"
+                type="icon"
+                (vclick)="mode.addMainCategory()"
+                ><i class="ri-add-box-fill"></i></viraj-button></span
               >
               <div
                 cdkDropList

@@ -4,6 +4,9 @@ section {
   flex-direction: column;
   gap: 15px;
   border-radius: 15px;
+  .body{
+    padding: 20px;
+  }
   .heading{
 	  display: flex;
 	  justify-content: space-between;

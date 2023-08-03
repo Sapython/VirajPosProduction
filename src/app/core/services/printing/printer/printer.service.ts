@@ -25,7 +25,7 @@ export class PrinterService {
     private encoderService: EncoderService,
   ) {}
 
-  printKot(printableKotData: PrintableKot) {
+  printKot(printableKotData: PrintableKot,reprint:boolean = false) {
     if (debugMode) console.log('Printing kot', printableKotData);
     let filteredProducts = printableKotData.products.filter(
       (product: any) => product.specificPrinter,
@@ -72,7 +72,7 @@ export class PrinterService {
     Object.keys(groupedProducts).forEach((printer: any, i) => {
       //  console.log('printing', printer, groupedProducts[printer]);
       printableKotData.products = groupedProducts[printer];
-      let result = this.encoderService.getKotCode(printableKotData);
+      let result = this.encoderService.getKotCode(printableKotData,reprint);
       console.log('got kot code', result, printer);
       setTimeout(() => {
         if (!printer) {
@@ -98,7 +98,7 @@ export class PrinterService {
   printBill(billData: PrintableBill) {
     console.log('Printing bill', billData);
     let data = this.encoderService.getBillCode(billData);
-    if (!this.dataProvider.currentBusiness?.billerPrinter) {
+    if (!this.dataProvider.billerPrinter) {
       const dialog = this.dialog.open(DialogComponent, {
         data: {
           title: 'No printer found for printing bill.',
@@ -112,14 +112,14 @@ export class PrinterService {
     console.log('printing bill', data);
     return this.printing.printData(
       data,
-      this.dataProvider.currentBusiness?.billerPrinter,
+      this.dataProvider.billerPrinter,
     );
   }
 
-  reprintBill(billData: PrintableBill) {
+  reprintBill(billData: PrintableBill,reprint:boolean = false) {
     //  console.log("Printing bill",billData);
-    let data = this.encoderService.getBillCode(billData);
-    if (!this.dataProvider.currentBusiness?.billerPrinter) {
+    let data = this.encoderService.getBillCode(billData,reprint);
+    if (!this.dataProvider.billerPrinter) {
       const dialog = this.dialog.open(DialogComponent, {
         data: {
           title: 'No printer found for printing bill.',
@@ -133,7 +133,7 @@ export class PrinterService {
     console.log('printing bill', data);
     return this.printing.printData(
       data,
-      this.dataProvider.currentBusiness?.billerPrinter,
+      this.dataProvider.billerPrinter,
     );
   }
 

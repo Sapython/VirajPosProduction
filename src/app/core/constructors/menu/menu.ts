@@ -40,6 +40,7 @@ import { LoyaltySetting } from '../../../types/loyalty.structure';
 import { AddLoyaltySettingComponent } from '../../../pages/biller/sidebar/edit-menu/add-loyalty-setting/add-loyalty-setting.component';
 import { PrinterSettingComponent } from '../../../pages/biller/sidebar/edit-menu/printer-setting/printer-setting.component';
 import { PrinterSetting } from '../../../types/printing.structure';
+import { AddMainCategoryComponent } from '../../../pages/biller/sidebar/edit-menu/add-main-category/add-main-category.component';
 
 var debug: boolean = false;
 
@@ -550,27 +551,28 @@ export class ModeConfig {
   }
 
   addMainCategory() {
-    const dialog = this.dialog.open(AddNewCategoryComponent, {
-      data: { products: this.products, noSave: true },
+    let unusedProducts = this.products.filter((product) => !product.category.id)
+    console.log("unusedProducts",unusedProducts);
+    const dialog = this.dialog.open(AddMainCategoryComponent);
+    dialog.closed.subscribe((data: any) => {
+      if (data) {
+        console.log("Data",data);
+        // this.menuManagementService.addRootCategory({
+        //   {
+        //     name: catGroup.name,
+        //     enabled: true,
+        //     products: catGroup.products.map((product) => product.id),
+        //     productOrders:catGroup.products.map((product) => product.id),
+        //     averagePrice:catGroup.products.reduce((a,b)=>a+b.price,0)/catGroup.products.length,
+        //     order:index+1,
+        //     printer:'',
+        //     disabled:[],
+        //   }
+        // })
+        // this.mainCategories.push(data);
+        // this.getMainCategories();
+      }
     });
-    // dialog.closed.subscribe((data: any) => {
-    //   if (data) {
-    //     this.menuManagementService.addRootCategory({
-    //       {
-    //         name: catGroup.name,
-    //         enabled: true,
-    //         products: catGroup.products.map((product) => product.id),
-    //         productOrders:catGroup.products.map((product) => product.id),
-    //         averagePrice:catGroup.products.reduce((a,b)=>a+b.price,0)/catGroup.products.length,
-    //         order:index+1,
-    //         printer:'',
-    //         disabled:[],
-    //       }
-    //     })
-    //     this.mainCategories.push(data);
-    //     this.getMainCategories();
-    //   }
-    // });
   }
 
   deleteViewCategory() {

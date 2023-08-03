@@ -17,7 +17,6 @@ export class EditMenuComponent implements OnInit {
   public recommended: Category[] = [];
   printers: string[] = [];
   activeTab: string = 'Products';
-  currentMode: string = this.dataProvider.menus[0].name;
   currentType: 'recommended' | 'root' | 'view' | 'all' = 'all';
   menus: {
     name: string;
@@ -104,7 +103,7 @@ export class EditMenuComponent implements OnInit {
   switchMode(mode: any) {
     console.log("mode",mode);
     this.dataProvider.billingMode = mode.value;
-    if (mode.value == 'Dine In') {
+    if (mode.value == 'dineIn') {
       // console.log("this.dataProvider.dineInMenu",this.dataProvider.dineInMenu);
       if (!this.dataProvider.dineInMenu) {
         alert('No dine-in menu found');
@@ -121,7 +120,7 @@ export class EditMenuComponent implements OnInit {
         // console.log("this.dataProvider.menus",this.dataProvider.menus);
       }
       // console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
-    } else if (mode.value == 'Takeaway') {
+    } else if (mode.value == 'takeaway') {
       // console.log("this.dataProvider.takeawayMenu",this.dataProvider.takeawayMenu);
       if (!this.dataProvider.takeawayMenu) {
         alert('No takeaway menu found');
@@ -137,7 +136,7 @@ export class EditMenuComponent implements OnInit {
         // console.log("this.dataProvider.menus",this.dataProvider.menus);
       }
       // console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
-    } else if (mode.value == 'Online') {
+    } else if (mode.value == 'online') {
       // console.log("this.dataProvider.onlineMenu",this.dataProvider.onlineMenu);
       if (!this.dataProvider.onlineMenu) {
         alert('No online menu found');

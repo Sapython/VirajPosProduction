@@ -227,7 +227,6 @@ export class ConfigComponent implements OnInit {
 
   updateBillPrinter(value: string) {
     localStorage.setItem('billerPrinter', value);
-    this.dataProvider.currentBusiness!.billerPrinter = value;
     // this.dataProvider.currentBusiness!.billerPrinter = value;
     // this.settingsService
     //   .updateBusiness({

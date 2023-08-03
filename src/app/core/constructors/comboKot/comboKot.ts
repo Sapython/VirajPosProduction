@@ -51,11 +51,14 @@ export class ApplicableCombo implements ApplicableComboConstructor {
     private bill: Bill,
   ) {
     this.generateId();
-    console.log('combo.from jadoo', combo.updateDate.toDate());
+    console.log('combo.from jadoo', combo);
+    // convert combo.updateDate.seconds and combo.updateDate.nanoseconds to Date
+    let date = new Date(combo.updateDate.seconds * 1000 + combo.updateDate.nanoseconds);
+
     if (
       this.checkDateIsAvailable(
-        combo.visibilitySettings,
-        combo.updateDate.toDate(),
+        combo,
+        date
       )
     ) {
       this.canBeApplied = true;
@@ -465,9 +468,11 @@ export class ApplicableCombo implements ApplicableComboConstructor {
     console.log('untaxedValue', this.untaxedValue, 'finalTaxes', finalTaxes);
   }
 
-  checkDateIsAvailable(visibilitySettings: VisibilitySettings, date: Date) {
+  checkDateIsAvailable(combo: Combo, date: Date) {
     let available = true;
-    if (this.combo.visibilityEnabled){
+    let visibilitySettings = combo.visibilitySettings;
+    console.log("this.combo");
+    if (combo.visibilityEnabled){
       if (visibilitySettings.mode == 'monthly') {
         if (visibilitySettings.repeating) {
           let todayYear = new Date().getFullYear();
@@ -514,7 +519,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
       console.log('IS DAY VALID', available);
       return available;
     } else {
-      return this.combo.enabled
+      return combo.enabled
     }
   }
 
@@ -575,5 +580,15 @@ export class ApplicableCombo implements ApplicableComboConstructor {
       newCombo.finalTaxes = applicableCombo.finalTaxes;
       return newCombo;
     }
+  }
+
+  get allProducts() {
+    let allProducts: Product[] = [];
+    this.combo.selectedCategories.forEach((category) => {
+      if (category.selectedProducts) {
+        allProducts = allProducts.concat(category.selectedProducts);
+      }
+    });
+    return allProducts; 
   }
 }

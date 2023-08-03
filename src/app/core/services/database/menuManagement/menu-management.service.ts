@@ -814,6 +814,50 @@ export class MenuManagementService {
     }
   }
 
+  async addNewRootCategory(products:any[],name:string){
+    // first add all products
+    let addedProducts = await Promise.all(products.map(async (prod)=>{
+      prod.tags = [prod['tag']];
+      prod.price = Number(prod.price)
+      let docRef = await addDoc(
+        collection(
+          this.firestore,
+          'business/' +
+            this.dataProvider.businessId +
+            '/menus/' +
+            this.dataProvider.currentMenu?.selectedMenu?.id +
+            '/products',
+        ),prod
+      );
+      prod.id = docRef.id;
+      return prod;
+    }))
+    let newCategoryData = {
+      name: name,
+      enabled: true,
+      products: addedProducts.map((product) => product.id),
+      productOrders: addedProducts.map((product) => product.id),
+      averagePrice:
+        products.reduce((a, b) => a + b.price, 0) /
+        products.length,
+      order: 1,
+      printer: '',
+      disabled: [],
+    }
+    this.updatableMenus.push(this.dataProvider.currentMenu?.selectedMenu?.id);
+    this.menuUpdated.next();
+    return addDoc(
+      collection(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          this.dataProvider.currentMenu?.selectedMenu?.id +
+          '/rootCategories',
+      ),newCategoryData
+    );
+  }
+
   updateRootCategory(id: string, products: string[]) {
     this.updatableMenus.push(this.dataProvider.currentMenu?.selectedMenu?.id);
     this.menuUpdated.next();

@@ -154,12 +154,7 @@
         matTooltip="Add a bill note on the printed bill."
         *ngIf="this.dataProvider.getAccess('billNote')"
         [disabled]="
-          !this.dataProvider.getAccess([
-            'admin',
-            'manager',
-            'accountant',
-            'waiter'
-          ])
+        !this.dataProvider.getAccess('billNote')
         "
         (vclick)="
           dataProvider.currentBill

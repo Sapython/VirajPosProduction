@@ -103,6 +103,7 @@ export class SearchPanelComponent implements OnInit {
     this.searchResults = results.map((result) => {
       return result.item;
     });
+    console.log("this.searchResults",this.searchResults);
     if (value) {
       this.dataProvider.searchResults.next(this.searchResults);
     } else {

@@ -24,21 +24,23 @@ export function calculateLoyalty(
         totalLoyaltyPoints += rate.points;
       } else {
         product.combo.selectedCategories.forEach((category) => {
-          category.selectedProducts.forEach((product) => {
-            if (category.offerType == 'loyalty'){
-              let rate = category.amount;
-              product.loyaltyCost = loyaltySetting.baseRate * product.quantity;
-              product.loyaltyPoints = category.amount;
-              totalLoyaltyCost += loyaltySetting.baseRate * product.quantity;
-              totalLoyaltyPoints += category.amount;
-            } else {
-              let rate = getRate(product, loyaltySetting.categoryWiseRates);
-              product.loyaltyCost = rate.cost;
-              product.loyaltyPoints = rate.points;
-              totalLoyaltyCost += rate.cost;
-              totalLoyaltyPoints += rate.points;
-            }
-          });
+          if (category.selectedProducts){
+            category.selectedProducts.forEach((product) => {
+              if (category.offerType == 'loyalty'){
+                let rate = category.amount;
+                product.loyaltyCost = loyaltySetting.baseRate * product.quantity;
+                product.loyaltyPoints = category.amount;
+                totalLoyaltyCost += loyaltySetting.baseRate * product.quantity;
+                totalLoyaltyPoints += category.amount;
+              } else {
+                let rate = getRate(product, loyaltySetting.categoryWiseRates);
+                product.loyaltyCost = rate.cost;
+                product.loyaltyPoints = rate.points;
+                totalLoyaltyCost += rate.cost;
+                totalLoyaltyPoints += rate.points;
+              }
+            });
+          }
         });
       }
     });

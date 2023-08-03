@@ -34,7 +34,7 @@
   <mat-select
     #billerPrinter
     [ngModelOptions]="{ standalone: true }"
-    [(ngModel)]="this.dataProvider.currentBusiness.billerPrinter"
+    [(ngModel)]="this.dataProvider.billerPrinter"
     (selectionChange)="updateBillPrinter(billerPrinter.value)"
     name="printer"
   >

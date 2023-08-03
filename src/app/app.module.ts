@@ -180,7 +180,7 @@ export const dbConfig: DBConfig = {
         },
         { name: 'lastMonth', keypath: 'lastMonth', options: { unique: false } },
       ],
-    }
+    },
   ],
 };
 

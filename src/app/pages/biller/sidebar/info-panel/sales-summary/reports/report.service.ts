@@ -39,6 +39,10 @@ export class ReportService {
         this.dataChanged.next();
       }
     });
+    this.dateRangeFormGroup.setValue({
+      startDate: new Date(),
+      endDate: new Date(),
+    });
   }
 
   async getBills(startDate: Date, endDate?: Date) {

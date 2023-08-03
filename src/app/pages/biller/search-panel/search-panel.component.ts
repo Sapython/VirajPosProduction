@@ -41,7 +41,7 @@ export class SearchPanelComponent implements OnInit {
     private billsService: BillService,
   ) {
     this.searchSubscription.pipe(debounceTime(400)).subscribe((value) => {
-      this.fetchAdvancedResults(value);
+      this.basicSearch(value);
     });
     this.dataProvider.menuLoadSubject.subscribe((value) => {
       if (value) {

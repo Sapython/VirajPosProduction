@@ -24,11 +24,6 @@ export class PrinterService {
     private printing: ElectronService,
     private encoderService: EncoderService,
   ) {}
-  getPrinters() {
-    if (!debugMode && !this.printing) return;
-    return Promise.resolve(['POS-80C']);
-    // return window.pywebview.api.getPrinters();
-  }
 
   printKot(printableKotData: PrintableKot) {
     if (debugMode) console.log('Printing kot', printableKotData);

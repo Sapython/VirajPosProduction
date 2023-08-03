@@ -158,17 +158,22 @@ export class AddComboComponent {
     },
   };
   constructor(
-    private dialogRef: DialogRef,
+    public dialogRef: DialogRef,
     @Inject(DIALOG_DATA)
     public dialogData: { mode: 'add' | 'edit'; menu: ModeConfig, combo:any },
     private fileService: FileStorageService,
     private dataProvider: DataProvider,
   ) {
-    if (dialogData.menu) {
-      // menu is selected
+    if (dialogData.menu){
+      this.allCategories = this.dialogData.menu.mainCategories;
+      this.categorySearchFuseInstance = new Fuse(this.allCategories)
+    }
+    console.log("this.allCategories",this.allCategories);
+    if (dialogData.combo) {
       this.comboFormGroup.patchValue({
         ...this.dialogData.combo,
       });
+      // menu is selected
       this.selectedCategories = this.dialogData.combo.selectedCategories;
       this.selectedMonths = this.dialogData.combo.visibilitySettings.selectedMonths;
       this.visibilityEnabled = this.dialogData.combo.visibilityEnabled;

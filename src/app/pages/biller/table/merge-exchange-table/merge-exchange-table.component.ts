@@ -49,6 +49,8 @@ export class MergeExchangeTableComponent {
       } catch (error: any) {
         this.alertify.presentToast(error);
       }
+    } else {
+      this.alertify.presentToast('Please select tables to exchange');
     }
   }
 
@@ -70,10 +72,12 @@ export class MergeExchangeTableComponent {
       } catch (error: any) {
         this.alertify.presentToast(error);
       }
+    } else {
+      this.alertify.presentToast('Please select tables to merge');
     }
   }
 
-  cancel() {
+  reset() {
     this.transferTableWise = { fromTable: undefined, toTable: undefined };
     this.moveKotMode = false;
     this.moveKotSelectedTable = undefined;

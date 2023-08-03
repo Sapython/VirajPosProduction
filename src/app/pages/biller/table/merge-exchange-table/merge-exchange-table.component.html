@@ -78,15 +78,12 @@
           </div>
           <div class="tables">
             <button
-              [disabled]="
-                table.status != 'occupied' ||
-                this.transferTableWise.fromTable?.id == table.id
-              "
+              [disabled]="(table.status == 'occupied' && table.bill && table.bill.stage == 'finalized') && !this.transferTableWise.fromTable"
               class="table medium"
               [ngClass]="{
                 active: table.status == 'occupied',
                 highlight: this.transferTableWise.toTable?.id == table.id,
-                disabled: table.status != 'occupied',
+                disabled: (table.status == 'occupied' && table.bill && table.bill.stage == 'finalized') || !this.transferTableWise.fromTable || this.transferTableWise.fromTable.id == table.id,
                 late: this.dataProvider.tableTimeOutTime <= table.minutes,
                 finalized: table.bill?.stage == 'finalized',
                 medium: this.dataProvider.currentTableSize == 'medium',
@@ -124,8 +121,8 @@
     </div>
   </div>
   <div class="actions">
-    <viraj-button color="primary" [noPropogation]="true" (vclick)="cancel()"
-      >Cancel</viraj-button
+    <viraj-button color="primary" [noPropogation]="true" (vclick)="reset()"
+      >Reset</viraj-button
     >
     <viraj-button color="primary" [noPropogation]="true" (vclick)="merge()"
       >Merge</viraj-button

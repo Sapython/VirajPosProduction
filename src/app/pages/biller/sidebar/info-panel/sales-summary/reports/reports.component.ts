@@ -120,6 +120,11 @@ export class ReportsComponent implements OnInit {
       code: 'tableWiseActivity',
       description: 'List of tables with merge, exchange, split actions.',
     },
+    {
+      title: 'Combo Report',
+      code: 'comboSales',
+      description: 'List of tables with merge, exchange, split actions.',
+    },
   ];
   fuseSearchInstance:Fuse<ReportFormat> = new Fuse(this.reportFormats,{keys:['title','description']});
   filteredReportFormats:ReportFormat[] = [];
@@ -1115,6 +1120,7 @@ export class ReportsComponent implements OnInit {
       | 'paymentWise'
       | 'waiterWiseItems'
       | 'tableWiseSales'
+      | 'comboSales'
       | 'tableWiseActivity',
   ) {
     const dialog = this.dialog.open(ReportViewComponent, {
@@ -1147,6 +1153,7 @@ interface ReportFormat {
   | 'paymentWise'
   | 'waiterWiseItems'
   | 'tableWiseSales'
+  | 'comboSales'
   | 'tableWiseActivity';
   description: string;
 }

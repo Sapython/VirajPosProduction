@@ -1,6 +1,6 @@
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { Component, OnInit } from '@angular/core';
-import { Timestamp } from '@angular/fire/firestore';
+import { Timestamp, endBefore } from '@angular/fire/firestore';
 import { AlertsAndNotificationsService } from '../../../core/services/alerts-and-notification/alerts-and-notifications.service';
 import { SettleComponent } from '../actions/settle/settle.component';
 import { Table } from '../../../core/constructors/table/Table';
@@ -12,7 +12,7 @@ import { AnalyticsService } from '../../../core/services/database/analytics/anal
 import { BillService } from '../../../core/services/database/bill/bill.service';
 import { CustomerService } from '../../../core/services/customer/customer.service';
 import { RearrangeComponent } from './rearrange/rearrange.component';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, last } from 'rxjs';
 import { UserManagementService } from '../../../core/services/auth/user/user-management.service';
 import { ApplicableCombo } from '../../../core/constructors/comboKot/comboKot';
 import { GroupComponent } from './group/group.component';
@@ -132,71 +132,44 @@ export class TableComponent implements OnInit {
   }
 
   async addTable(groupName: string) {
-    let index = this.dataProvider.tables.length + 1;
-    // let tableName = await this.dataProvider.prompt('Enter table name', {
-    //   value: groupName,
-    // });
-    let tableName = groupName;
-    if (!tableName) {
-      return;
-    }
-    if (tableName == groupName) {
-      // find the last table matching the table group name
-      let entity = this.dataProvider.tables
-        .filter((table) => {
-          return table.group == groupName;
-        })
-        .sort((a, b) => {
-          return a.tableNo - b.tableNo;
-        })[0];
-      console.log('entity ', entity,this.dataProvider.tables
-      .filter((table) => {
-        return table.group == groupName;
-      }),this.dataProvider.tables
-      .filter((table) => {
-        return table.group == groupName;
-      })
-      .sort((a, b) => {
-        return a.tableNo - b.tableNo;
-      }));
-
-      let mainEntityNo =
-        entity.name.split(' ')[entity.name.split(' ').length - 1];
-      let rgx = /(\d+)\D*$/g;
-      let entityNo = rgx.exec(mainEntityNo)?.[1];
-      // additionalText is the text attached to main entity no and entityNo like tableName = groupName + mainEntity + entityNo
-      let additionalText = mainEntityNo.replace(entityNo, '');
-      if (Number(entityNo)) {
-        console.log('Entity', entityNo);
-        if (entityNo) {
-          tableName =
-            groupName +
-            ' ' +
-            additionalText +
-            (Number(entityNo) + 1).toString();
-        }
-      } else {
-        alert(
-          'Cannot add auto table no number found in end. Please add manually',
-        );
-        return;
-      }
-    }
-    // check if the any table called tableName exists in the group groupName if yes then return an alert
-    let foundTable = this.dataProvider.tables.find((table) => {
-      return table.group == groupName && table.name == tableName;
+    console.log('group Name');
+    const numberOfTablesFromAllGroups = this.dataProvider.tables.length;
+    const newTableId = numberOfTablesFromAllGroups + 1;
+    // find all table matching the table group name
+    let tables = this.dataProvider.tables.filter((table) => {
+      return table.group == groupName;
     });
-    console.log('tableName ', tableName,groupName);
-    if (foundTable) {
-      alert('Table already exists');
-      return;
-    }
-    let table = new Table(
-      index.toString(),
-      index,
-      tableName,
+    tables.sort((a, b) => a.order - b.order);
+    const lastTable = tables[tables.length - 1];
+    console.log('group tables ', tables);
+    let rgx = /(\d+)\D*$/g;
+    let mainEntityNo = rgx.exec(lastTable.name.split(' ')[lastTable.name.split(' ').length - 1])?.[1];
+    let entityNo = Number(mainEntityNo);
+    if (entityNo){
+      console.log("Replacing ",mainEntityNo);
+      var newTableName = lastTable.name.replace(mainEntityNo, '');
+      entityNo = entityNo + 1;
+    console.log('new table name ', tables,entityNo);
+      // right strip the entity no from the last table name
+      // add the new entity no to the new table name
+      newTableName = newTableName + entityNo.toString();
+      console.log("New Table",newTableId.toString(),
+      newTableId,
+      newTableName,
       groupName,
-      index,
+      newTableId);
+    } else {
+      // attach a number to the table name and add it to the table
+      var newTableName = lastTable.name + ' 1';
+      console.log('No ');
+    }
+    console.log("Added new table",mainEntityNo, newTableName);
+    let table = new Table(
+      newTableId.toString(),
+      newTableId,
+      newTableName,
+      groupName,
+      newTableId,
       '4',
       'table',
       this.dataProvider,
@@ -212,6 +185,86 @@ export class TableComponent implements OnInit {
     this.analyticsService.newTable(table, 'dine');
     this.dataProvider.tables.push(table);
     this.tableService.reOrderTable();
+    
+    // let tableName = await this.dataProvider.prompt('Enter table name', {
+    //   value: groupName,
+    // });
+    // let tableName = groupName;
+    // if (!tableName) {
+    //   return;
+    // }
+    // if (tableName == groupName) {
+    //   // find the last table matching the table group name
+    //   let entity = this.dataProvider.tables
+    //     .filter((table) => {
+    //       return table.group == groupName;
+    //     })
+    //     .sort((a, b) => {
+    //       return b.tableNo - a.tableNo;
+    //     })[0];
+    //   console.log('entity ', entity,this.dataProvider.tables
+    //   .filter((table) => {
+    //     return table.group == groupName;
+    //   }),this.dataProvider.tables
+    //   .filter((table) => {
+    //     return table.group == groupName;
+    //   })
+    //   .sort((a, b) => {
+    //     return a.tableNo - b.tableNo;
+    //   }));
+
+    //   let mainEntityNo =
+    //     entity.name.split(' ')[entity.name.split(' ').length - 1];
+    //   let rgx = /(\d+)\D*$/g;
+    //   let entityNo = rgx.exec(mainEntityNo)?.[1];
+    //   // additionalText is the text attached to main entity no and entityNo like tableName = groupName + mainEntity + entityNo
+    //   let additionalText = mainEntityNo.replace(entityNo, '');
+    //   if (Number(entityNo)) {
+    //     console.log('Entity', entityNo);
+    //     if (entityNo) {
+    //       tableName =
+    //         groupName +
+    //         ' ' +
+    //         additionalText +
+    //         (Number(entityNo) + 1).toString();
+    //     }
+    //   } else {
+    //     alert(
+    //       'Cannot add auto table no number found in end. Please add manually',
+    //     );
+    //     return;
+    //   }
+    // }
+    // // check if the any table called tableName exists in the group groupName if yes then return an alert
+    // let foundTable = this.dataProvider.tables.find((table) => {
+    //   return table.group == groupName && table.name == tableName;
+    // });
+    // console.log('tableName ', tableName,groupName);
+    // if (foundTable) {
+    //   alert('Table already exists');
+    //   return;
+    // }
+    // let table = new Table(
+    //   index.toString(),
+    //   index,
+    //   tableName,
+    //   groupName,
+    //   index,
+    //   '4',
+    //   'table',
+    //   this.dataProvider,
+    //   this.analyticsService,
+    //   this.tableService,
+    //   this.billService,
+    //   this.printingService,
+    //   this.customerService,
+    //   this.userManagementService,
+    // );
+    // console.log("table",table);
+    // table.clearTable();
+    // this.analyticsService.newTable(table, 'dine');
+    // this.dataProvider.tables.push(table);
+    // this.tableService.reOrderTable();
   }
 
   addToken() {

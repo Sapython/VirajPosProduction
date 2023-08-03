@@ -476,13 +476,18 @@ export class Table implements TableConstructor {
       this.updated.next();
       this.triggerUpdate();
     } else {
-      throw new Error(
-        'No bill is available on table ' +
-          this.tableNo +
-          ' or ' +
-          table.tableNo,
-      );
+      if (this.bill && !table.bill) {
+        // start the table
+        table.occupyTable();
+        table.bill = this.bill;
+        this.bill = null;
+        this.updated.next();
+        this.triggerUpdate();
+      } else {
+        alert('Table ' + table.name + ' is not occupied');
+      }
     }
+    alert('Table exchanged successfully');
   }
 
   merge(table: Table) {

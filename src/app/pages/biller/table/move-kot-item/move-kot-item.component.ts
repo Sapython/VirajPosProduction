@@ -31,7 +31,7 @@ export class MoveKotItemComponent {
 
   moveSelectedKots(table: Table, event: any) {
     if (!table.bill) {
-      throw new Error('Bill not found');
+      table.occupyTable();
     }
     // get all selected productcs from selected kots from moveKotSelectedTable?.bill?.kots
     let kots: Kot[] = [];

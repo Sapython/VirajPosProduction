@@ -1,7 +1,7 @@
 <section>
   <div class="heading">
     <h1>{{this.dialogData.mode =='add' ? 'Add' : 'Edit'}} Combo</h1>
-    <viraj-button type="icon"><i class="ri-close-fill"></i></viraj-button>
+    <viraj-button type="icon" (click)="dialogRef.close()"><i class="ri-close-fill"></i></viraj-button>
   </div>
   <div class="body">
     <div class="dragArea" *ngIf="imagePreviewData">
@@ -57,7 +57,7 @@
           </mat-chip-row>
         </mat-chip-grid>
         <input
-          placeholder="New Fruit..."
+          placeholder="Select Category..."
           #fruitInput
           [formControl]="categorySearchControl"
           [matChipInputFor]="categoryChipGrid"

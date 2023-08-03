@@ -710,7 +710,7 @@
                       ><i class="ri-pencil-line"></i
                     ></viraj-button>
                     <viraj-button
-                      ngIf="this.dataProvider.getAccess('deleteTaxes')"
+                      *ngIf="this.dataProvider.getAccess('deleteTaxes')"
                       (vclick)="mode.deleteTax(tax.id)"
                       type="icon"
                       ><i class="ri-delete-bin-line"></i

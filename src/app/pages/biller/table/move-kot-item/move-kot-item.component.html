@@ -65,13 +65,13 @@
           </div>
           <div class="tables">
             <button
-              [disabled]="table.status != 'occupied'"
+              [disabled]="table.status == 'occupied' && table.bill && table.bill.stage=='finalized'"
               class="table"
               [ngClass]="{
                 active: table.status == 'occupied',
                 medium: this.dataProvider.currentTableSize == 'medium',
                 small: this.dataProvider.currentTableSize == 'small',
-                disabled: table.status != 'occupied'
+                disabled: table.status == 'occupied' && table.bill && table.bill.stage=='finalized'
               }"
               matRipple
               *ngFor="let table of group.tables"

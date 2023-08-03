@@ -14,6 +14,7 @@ section {
     display: grid;
     grid-template-columns: 1fr 1fr;
     height: calc(100% - 130px);
+    gap:20px;
     .tableWrapper {
       border-radius: 8px;
       border: 1px solid #b3b3b3;

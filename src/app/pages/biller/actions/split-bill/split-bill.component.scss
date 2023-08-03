@@ -39,7 +39,7 @@ section {
     display: flex;
     gap: 30px;
     padding: 0px 30px;
-    height: 100%;
+    height: calc(100% - 80px);
     .heading {
       display: flex;
       justify-content: space-between;
@@ -124,6 +124,7 @@ section {
           overflow-y: scroll;
           border: 2px solid #ccc;
           padding: 10px;
+          padding-bottom: 0px;
           border-radius: 15px;
           h3 {
             color: tomato;
@@ -154,9 +155,13 @@ section {
           justify-content: center;
           align-items: center;
           img {
-            width: 30%;
+            width: auto;
           }
         }
+      }
+      .center{
+        display: grid;
+        place-items: center;
       }
     }
   }

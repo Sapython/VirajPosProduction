@@ -42,6 +42,7 @@ export class ReportViewComponent implements AfterViewInit {
         | 'paymentWise'
         | 'waiterWiseItems'
         | 'tableWiseSales'
+        | 'comboSales'
         | 'tableWiseActivity';
       data: any;
     },

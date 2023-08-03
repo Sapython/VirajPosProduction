@@ -102,9 +102,9 @@ export class EditMenuComponent implements OnInit {
   }
 
   switchMode(mode: any) {
-    // console.log("mode",mode);
+    console.log("mode",mode);
     this.dataProvider.billingMode = mode.value;
-    if (mode.value == 'dineIn') {
+    if (mode.value == 'Dine In') {
       // console.log("this.dataProvider.dineInMenu",this.dataProvider.dineInMenu);
       if (!this.dataProvider.dineInMenu) {
         alert('No dine-in menu found');
@@ -113,6 +113,7 @@ export class EditMenuComponent implements OnInit {
       this.dataProvider.currentMenu = this.dataProvider.menus.find((menu) => {
         return menu.selectedMenu?.id == this.dataProvider.dineInMenu?.id;
       });
+      console.log("this.dataProvider.dineInMenu?.id",this.dataProvider.dineInMenu?.id,this.dataProvider.currentMenu);
       if (this.dataProvider.currentMenu) {
         this.dataProvider.currentMenu.type = 'dineIn';
         this.dataProvider.products = this.dataProvider.currentMenu.products;
@@ -120,7 +121,7 @@ export class EditMenuComponent implements OnInit {
         // console.log("this.dataProvider.menus",this.dataProvider.menus);
       }
       // console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
-    } else if (mode.value == 'takeaway') {
+    } else if (mode.value == 'Takeaway') {
       // console.log("this.dataProvider.takeawayMenu",this.dataProvider.takeawayMenu);
       if (!this.dataProvider.takeawayMenu) {
         alert('No takeaway menu found');
@@ -136,7 +137,7 @@ export class EditMenuComponent implements OnInit {
         // console.log("this.dataProvider.menus",this.dataProvider.menus);
       }
       // console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
-    } else if (mode.value == 'online') {
+    } else if (mode.value == 'Online') {
       // console.log("this.dataProvider.onlineMenu",this.dataProvider.onlineMenu);
       if (!this.dataProvider.onlineMenu) {
         alert('No online menu found');
@@ -153,6 +154,7 @@ export class EditMenuComponent implements OnInit {
       }
       // console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
     }
+    console.log("Current menu updated",this.dataProvider.currentMenu);
     this.dataProvider.modeChanged.next(mode.value);
   }
 }

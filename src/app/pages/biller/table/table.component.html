@@ -115,6 +115,7 @@
             finalized: table.bill?.stage == 'finalized',
             medium: this.dataProvider.currentTableSize == 'medium',
             small: this.dataProvider.currentTableSize == 'small',
+            disabled:moveKotMode && table.status != 'occupied',
             inactive: moveKotMode && !moveKotSelectedTable,
             highlight: moveKotMode && moveKotSelectedTable?.id == table.id
           }"
@@ -202,7 +203,7 @@
       class="tableSection"
       *ngIf="(this.dataProvider.groupedTables | keyvalue).length == 0"
     >
-      <p>Please add a group by adding section.</p>
+      <p style="padding: 0px 20px;">Please add a group by adding section.</p>
     </div>
   </div>
   <div class="tableWrapper" *ngIf="this.dataProvider.billingMode == 'takeaway'">

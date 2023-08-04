@@ -56,69 +56,8 @@
     </viraj-button>
     <viraj-button (click)="addNewMenu()" [large]="true" [animated]="true">New Menu</viraj-button>
   </div>
-  <!-- <div class="sidebar">
-    <div class="menus">
-      <div class="menu" *ngFor="let menu of menus">
-        <div class="head" (click)="menu.toggled = !menu.toggled">
-          <p>{{menu.name}}</p>
-          <i *ngIf="menu.toggled" class="ri-arrow-down-s-line"></i>
-          <i *ngIf="!menu.toggled" class="ri-arrow-up-s-line"></i>
-        </div>
-        <div class="subItems" *ngIf="menu.toggled">
-          <div class="section" (click)="activeTab = 'products'" [ngClass]="{active:activeTab=='products'}">
-            <span>Products </span>
-            <i class="ri-arrow-right-s-line"></i>
-          </div>
-          <div class="section" (click)="activeTab = 'taxes'" [ngClass]="{active:activeTab=='taxes'}">
-            <span>Taxes </span>
-            <i class="ri-arrow-right-s-line"></i>
-          </div>
-          <div class="section" (click)="activeTab = 'discount'" [ngClass]="{active:activeTab=='discount'}">
-            <span>Discounts </span>
-            <i class="ri-arrow-right-s-line"></i>
-          </div>
-          <div class="section" (click)="activeTab = 'combos'" [ngClass]="{active:activeTab=='combos'}">
-            <span>Combos </span>
-            <i class="ri-arrow-right-s-line"></i>
-          </div>
-          <div class="section" (click)="activeTab = 'types'" [ngClass]="{active:activeTab=='types'}">
-            <span>Combos Types </span>
-            <i class="ri-arrow-right-s-line"></i>
-          </div>
-          <div class="section" (click)="activeTab = 'loyalty'" [ngClass]="{active:activeTab=='loyalty'}">
-            <span>Loyalty</span>
-            <i class="ri-arrow-right-s-line"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div> -->
-  <!-- <div class="tabs">
-    <div class="tabList">
-      <ng-container *ngFor="let mode of this.dataProvider.menus">
-        <button
-          [ngClass]="{ active: currentMode == mode.name }"
-          *ngIf="
-            (mode.name == 'Takeaway' &&
-              this.dataProvider.getAccess('editTakeawayMenu')) ||
-            (mode.name == 'Online' &&
-              this.dataProvider.getAccess('editOnlineMenu')) ||
-            (mode.name == 'Dine In' &&
-              this.dataProvider.getAccess('editDineInMenu'))
-          "
-          (click)="currentMode = mode.name;switchMode({value:mode.name == 'Takeaway' ? 'takeaway' : mode.name == 'Online' ? 'online' : 'dineIn'})"
-        >
-          {{ mode.name }}
-        </button>
-      </ng-container>
-    </div>
-    <button (click)="this.dialogRef.close()">
-      <i class="ri-close-fill"></i>
-    </button>
-  </div> -->
-
   <ng-container *ngFor="let mode of this.dataProvider.menus">
-    <div class="mode" *ngIf="mode.active && mode.type == this.dataProvider.currentMenu.type">
+    <div class="mode" *ngIf="mode.active && mode.type == this.dataProvider.currentMenu.type && mode.selectedMenuId == this.dataProvider.currentMenu.selectedMenuId">
       <div class="tabs">
         <div class="tabList">
           <button

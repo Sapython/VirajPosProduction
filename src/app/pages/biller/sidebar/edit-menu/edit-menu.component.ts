@@ -110,7 +110,7 @@ export class EditMenuComponent implements OnInit {
         return;
       }
       this.dataProvider.currentMenu = this.dataProvider.menus.find((menu) => {
-        return menu.selectedMenu?.id == this.dataProvider.dineInMenu?.id;
+        return menu.selectedMenu?.id == this.dataProvider.dineInMenu?.id && menu.type =='dineIn';
       });
       console.log("this.dataProvider.dineInMenu?.id",this.dataProvider.dineInMenu?.id,this.dataProvider.currentMenu);
       if (this.dataProvider.currentMenu) {
@@ -127,7 +127,7 @@ export class EditMenuComponent implements OnInit {
         return;
       }
       this.dataProvider.currentMenu = this.dataProvider.menus.find((menu) => {
-        return menu.selectedMenu?.id == this.dataProvider.takeawayMenu?.id;
+        return menu.selectedMenu?.id == this.dataProvider.takeawayMenu?.id && menu.type =='takeaway';
       });
       if (this.dataProvider.currentMenu) {
         this.dataProvider.currentMenu.type = 'takeaway';
@@ -143,7 +143,7 @@ export class EditMenuComponent implements OnInit {
         return;
       }
       this.dataProvider.currentMenu = this.dataProvider.menus.find((menu) => {
-        return menu.selectedMenu?.id == this.dataProvider.onlineMenu?.id;
+        return menu.selectedMenu?.id == this.dataProvider.onlineMenu?.id && menu.type =='online';
       });
       if (this.dataProvider.currentMenu) {
         this.dataProvider.currentMenu.type = 'online';

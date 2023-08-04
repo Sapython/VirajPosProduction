@@ -51,6 +51,7 @@ export class AddMainCategoryComponent {
     this.dataProvider.loading = true;
     this.menuManagementService.addNewRootCategory(this.category.products,this.category.name).then(()=>{
       this.alertify.presentToast("Category Added");
+      this.dialogRef.close();
     }).catch((err)=>{
       console.log("Failed to add category error:",err);
       this.alertify.presentToast("Failed to add category");

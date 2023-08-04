@@ -554,25 +554,6 @@ export class ModeConfig {
     let unusedProducts = this.products.filter((product) => !product.category.id)
     console.log("unusedProducts",unusedProducts);
     const dialog = this.dialog.open(AddMainCategoryComponent);
-    dialog.closed.subscribe((data: any) => {
-      if (data) {
-        console.log("Data",data);
-        // this.menuManagementService.addRootCategory({
-        //   {
-        //     name: catGroup.name,
-        //     enabled: true,
-        //     products: catGroup.products.map((product) => product.id),
-        //     productOrders:catGroup.products.map((product) => product.id),
-        //     averagePrice:catGroup.products.reduce((a,b)=>a+b.price,0)/catGroup.products.length,
-        //     order:index+1,
-        //     printer:'',
-        //     disabled:[],
-        //   }
-        // })
-        // this.mainCategories.push(data);
-        // this.getMainCategories();
-      }
-    });
   }
 
   deleteViewCategory() {

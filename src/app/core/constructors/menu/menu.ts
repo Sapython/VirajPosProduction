@@ -1231,11 +1231,13 @@ export class ModeConfig {
   // new implementations
 
   async getTaxes() {
+    this.loadingTax = true;
     let taxes = await this.menuManagementService.getTaxes(this.selectedMenu.id);
     this.taxes = taxes.docs.map((d) => {
       return { ...d.data(), id: d.id } as Tax;
     });
     this.taxesSearchInstance.setCollection(this.taxes);
+    this.loadingTax = false;
   }
 
   addTax() {
@@ -1388,6 +1390,7 @@ export class ModeConfig {
       } as CodeBaseDiscount);
     });
     this.discountsSearchInstance.setCollection(this.discounts);
+    this.loadingDiscount = false;
   }
 
   getMappedMenu(menus?: string[]) {
@@ -1619,6 +1622,7 @@ export class ModeConfig {
       } as LoyaltySetting);
     });
     console.log('this.loyaltySettings', this.loyaltySettings);
+    this.loadingLoyaltySettings = false;
   }
 
   addLoyaltySettings() {

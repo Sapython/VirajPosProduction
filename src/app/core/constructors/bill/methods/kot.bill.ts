@@ -228,6 +228,7 @@ export function printKot(
       minute: 'numeric',
       hour12: true,
     }),
+    user: kot.user.username,
     orderNo: this.orderNo,
     mode: mode,
     billingMode: this.mode,

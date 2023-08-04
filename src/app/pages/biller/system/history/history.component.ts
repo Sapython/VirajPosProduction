@@ -266,6 +266,7 @@ export class HistoryComponent {
           hour12: true,
         }),
         mode: 'reprintKot',
+        user: kot.user.username,
         orderNo: bill.orderNo,
         products: products.map((product) => {
           return {

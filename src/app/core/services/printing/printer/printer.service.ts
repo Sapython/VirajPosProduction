@@ -37,7 +37,7 @@ export class PrinterService {
             filteredProducts.length || 'Some'
           } products will not be printed..`,
           description:
-            'Please select a printer in main category option of menu manegement.',
+            'Please select a printer in main category option of menu management.',
           buttons: ['Ok'],
           primary: [0],
         },

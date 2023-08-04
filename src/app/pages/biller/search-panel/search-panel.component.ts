@@ -99,7 +99,7 @@ export class SearchPanelComponent implements OnInit {
 
   basicSearch(value: string) {
     let results = this.searchInstance.search(value);
-    // console.log("results",results,this.searchInstance);
+    console.log("results",results,this.searchInstance);
     this.searchResults = results.map((result) => {
       return result.item;
     });

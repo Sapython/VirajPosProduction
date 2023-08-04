@@ -151,11 +151,11 @@ export class customEncoder extends EscPosEncoder {
         { width: 10, align: 'right' },
       ],
       discountsColumns,
-    ).newline();
+    ).hr();
   }
   loyalty(loyalty: billLoyalty) {
     // taxes is of type {name: string, value: number, rate: number}[]
-    this.align('center').h2('Taxes', 'left');
+    this.align('center').h2('Loyalty', 'left');
     let taxesColumns = [
       ['Loyalty', 'Point', 'Value'],
       ['Availed', loyalty.totalToBeRedeemedPoints,'Rs.'+loyalty.totalToBeRedeemedCost]
@@ -167,7 +167,7 @@ export class customEncoder extends EscPosEncoder {
         { width: 10, align: 'right' },
       ],
       taxesColumns,
-    ).newline();
+    ).hr();
   }
   taxes(taxes: printableTax[]) {
     // taxes is of type {name: string, value: number, rate: number}[]
@@ -187,7 +187,7 @@ export class customEncoder extends EscPosEncoder {
         { width: 10, align: 'right' },
       ],
       taxesColumns,
-    ).newline();
+    ).hr();
   }
   kotHead(kotData: any) {
     // modes are 'firstChargeable'|'cancelledKot'|'editedKot'|'runningNonChargeable'|'runningChargeable'|'firstNonChargeable'|'reprintKot'|'online'

@@ -42,12 +42,12 @@ export class EncoderService {
         [
           ['Date: ' + billdata.date, 'Time: ' + billdata.time],
           [
-            'Token: ' + billdata.orderNo,
+            'Order Id: ' + billdata.orderNo,
             'Bill: ' +
               (billdata.billNoSuffix ? billdata.billNoSuffix : '') +
               (billdata.billNo || ''),
           ],
-          ['Cashier: ' + billdata.cashierName, 'Mode: ' + billdata.mode],
+          [(enc:any)=>enc.bold().text('Cashier: ' + billdata.cashierName).bold(), 'Mode: ' + billdata.mode],
         ],
       )
       .hr()
@@ -68,7 +68,6 @@ export class EncoderService {
       )
       .hr()
       .loyalty(billdata.currentLoyalty)
-      .hr()
       .discounts(billdata.discounts)
       .postDiscountSubtotal(billdata,billdata.discounts,billdata.currentLoyalty)
       .hr()
@@ -120,11 +119,15 @@ export class EncoderService {
         ],
         [
           [
-            'Date: ' + kotData.date + ' ' + kotData.time,
-            'Token: ' + kotData.orderNo,
+            'Date: ' + kotData.date,
+            'Order Id: ' + kotData.orderNo,
           ],
           [
-            'Kot No: ' + kotData.token,
+            'Time: ' + kotData.time,
+            (enc:any)=>enc.bold().text('User: ' + kotData.user).bold(),
+          ],
+          [
+            (enc:any)=>enc.bold().text('Kot No: ' + kotData.token).bold(),
             this.getModeTitle(kotData.billingMode) + ' No: ' + kotData.table,
           ],
         ],

@@ -2,7 +2,7 @@
   <app-info-panel #infoPanel></app-info-panel>
   <app-menu></app-menu>
   <div class="actions">
-    <viraj-button
+    <viraj-button style="width: 100%;"
       type="outline"
       (vclick)="editMenu()"
       *ngIf="this.dataProvider.getAccess('editMenu')"

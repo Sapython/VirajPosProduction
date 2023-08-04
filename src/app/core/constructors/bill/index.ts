@@ -15,7 +15,7 @@ import { BillService } from '../../services/database/bill/bill.service';
 import { AnalyticsService } from '../../services/database/analytics/analytics.service';
 
 // bill imports
-import { calculateBill } from './methods/calculation.bill';
+import { anyComboCanBeDiscounted, calculateBill } from './methods/calculation.bill';
 import {
   firebaseUpdate,
   fromObject,
@@ -249,6 +249,7 @@ export class Bill implements BillConstructor {
   public deleteKot = deleteKot;
   public printKot = printKot;
   public checkCanPrintKot = checkCanPrintKot;
+  public anyComboCanBeDiscounted = anyComboCanBeDiscounted;
 
   // product functions
   public addProduct = addProduct;

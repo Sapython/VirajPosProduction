@@ -53,6 +53,7 @@ export interface PrintableKot {
   token: string;
   orderNo: string;
   table: string;
+  user:string;
   products: printableKotItem[];
 }
 

@@ -21,27 +21,31 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   // console.log("this.billing.subTotal",this.billing.subTotal);
   let applicableDiscount = 0;
   // console.log("bill allProducts",allProducts);
-  // apply discount to subTotal
-  this.billing.discount.forEach((discount) => {
-    discount.totalAppliedDiscount = 0;
-    if (discount.mode == 'codeBased') {
-      if (discount.type === 'percentage') {
+  if(this.anyComboCanBeDiscounted()){
+      // apply discount to subTotal
+    this.billing.discount.forEach((discount) => {
+      discount.totalAppliedDiscount = 0;
+      if (discount.mode == 'codeBased') {
+        if (discount.type === 'percentage') {
+          let discountValue = (this.billing.subTotal / 100) * discount.value;
+          applicableDiscount += discountValue;
+          discount.totalAppliedDiscount += Number(discountValue);
+        } else {
+          applicableDiscount += discount.value;
+          discount.totalAppliedDiscount += Number(discount.value);
+        }
+      } else if (discount.mode == 'directFlat') {
+        applicableDiscount += discount.value;
+        discount.totalAppliedDiscount += Number(discount.value);
+      } else if (discount.mode == 'directPercent') {
         let discountValue = (this.billing.subTotal / 100) * discount.value;
         applicableDiscount += discountValue;
         discount.totalAppliedDiscount += Number(discountValue);
-      } else {
-        applicableDiscount += discount.value;
-        discount.totalAppliedDiscount += Number(discount.value);
       }
-    } else if (discount.mode == 'directFlat') {
-      applicableDiscount += discount.value;
-      discount.totalAppliedDiscount += Number(discount.value);
-    } else if (discount.mode == 'directPercent') {
-      let discountValue = (this.billing.subTotal / 100) * discount.value;
-      applicableDiscount += discountValue;
-      discount.totalAppliedDiscount += Number(discountValue);
-    }
-  });
+    });
+  } else {
+    this.billing.discount = [];
+  }
   
   console.log("Prev final taxes",finalTaxes);
   this.billing.taxes = finalTaxes;
@@ -219,4 +223,19 @@ export function calculateProducts(kots: (Kot | KotConstructor)[]) {
   })
   // this.checkCanPrintKot(this);
   return { allProducts, finalTaxes:groupedFinalTaxes, finalAdditionalTax };
+}
+
+
+export function anyComboCanBeDiscounted(this:Bill){
+  let canBeDiscounted = true;
+  this.kots.forEach((kot)=>{
+    kot.products.forEach((product)=>{
+      if(product.itemType == 'combo'){
+        if(!product.canBeDiscounted){
+          canBeDiscounted = false;
+        }
+      }
+    });
+  });
+  return canBeDiscounted;
 }

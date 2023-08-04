@@ -132,7 +132,7 @@ export class Kot implements KotConstructor {
         });
       }
     });
-    console.log("Before merge",products);
+    // console.log("Before merge",products);
     // remove duplicates by adding quantity
     products = products.reduce((acc, current) => {
       const x = acc.find((item) => item.id === current.id);
@@ -143,7 +143,7 @@ export class Kot implements KotConstructor {
         return acc;
       }
     }, []);
-    console.log("After merge");
+    // console.log("After merge");
     return products;
   }
 

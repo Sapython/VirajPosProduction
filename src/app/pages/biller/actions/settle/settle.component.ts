@@ -106,6 +106,8 @@ export class SettleComponent implements OnInit {
         });
       //  console.log("this.methodsWithDetail",this.methodsWithDetail,"this.additionalMethods",this.additionalMethods);
     });
+    // set first value of the first method to the difference of billSum and totalPaid
+    this.methods[0].amount = this.billSum;
   }
 
   close() {

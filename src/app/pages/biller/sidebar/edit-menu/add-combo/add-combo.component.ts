@@ -382,14 +382,6 @@ export class AddComboComponent {
     );
   }
 
-  addTypeCategory() {
-    this.dialogData.menu.addType();
-  }
-
-  addTimeGroup() {
-    this.dialogData.menu.addTimeGroup();
-  }
-
   async save() {
     // verify if everything is ok
     console.log('this.comboFormGroup', this.comboFormGroup);

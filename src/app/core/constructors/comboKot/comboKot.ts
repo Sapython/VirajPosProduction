@@ -361,6 +361,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
         }
         let applicableTax = 0;
         product.taxes.forEach((tax) => {
+          // console.log("Combo tax id",tax.id);
           if (tax.type === 'percentage') {
             // console.log("Total amount",totalAmount);
             let taxAmount = (totalAmount * tax.cost) / 100;

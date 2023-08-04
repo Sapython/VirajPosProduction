@@ -35,7 +35,7 @@
       {{ printableBillData.subTotal | currency: "INR" }}
     </td>
   </tr>
-  <ng-container *ngIf="printableBillData.currentLoyalty">
+  <ng-container *ngIf="printableBillData.currentLoyalty && printableBillData.currentLoyalty.totalToBeRedeemedPoints">
     <tr>
       <td colspan="2"><hr /></td>
     </tr>
@@ -90,7 +90,7 @@
       </td>
     </tr>
   </ng-container>
-  <ng-container *ngIf="printableBillData.discounts.length > 0 || printableBillData.currentLoyalty">
+  <ng-container *ngIf="printableBillData.discounts.length > 0 || printableBillData.currentLoyalty?.totalToBeRedeemedPoints > 0">
     <tr>
       <td colspan="2"><hr /></td>
     </tr>

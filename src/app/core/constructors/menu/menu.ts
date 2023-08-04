@@ -27,7 +27,6 @@ import { SettingsService } from '../../services/database/settings/settings.servi
 import { AddTaxComponent } from '../../../pages/biller/sidebar/edit-menu/add-tax/add-tax.component';
 import { CodeBaseDiscount } from '../../../types/discount.structure';
 import { AddDiscountComponent } from '../../../pages/biller/sidebar/edit-menu/add-discount/add-discount.component';
-import { AddTypeComponent } from '../../../pages/biller/sidebar/edit-menu/add-type/add-type.component';
 import {
   Combo,
   ComboType,
@@ -428,24 +427,6 @@ export class ModeConfig {
       data.forEach((doc) => {
         this.combos.push({
           ...doc.data(),
-          // types:doc.data()["types"].map((type:ComboTypeCategorized)=>{
-          //   if (type.image){
-          //     var img=new Image();
-          //     img.src=type.image;
-          //   }
-          //   // load products for each type
-          //   return {
-          //     ...type,
-          //     categories:type.categories.map((category)=>{
-          //       return {
-          //         ...category,
-          //         products:category.products.map((product)=>{
-          //           return this.products.find((p)=>p.id==product.id)
-          //         })
-          //       }
-          //     })
-          //   }
-          // }),
           id: doc.id,
         } as Combo);
         if (doc.data()['offerImage']) {
@@ -453,6 +434,16 @@ export class ModeConfig {
           img.src = doc.data()['offerImage'];
         }
       });
+      console.log("cat.category.products",this.products);
+      this.combos.forEach((combo)=>{
+        // remap all products in every category to the new printer from local config
+        combo.selectedCategories.forEach((cat)=>{
+          let productIds = cat.category.products.map((prod)=> prod.id);
+          console.log("Adding",productIds);
+          cat.category.products = this.products.filter((prod)=> productIds.includes(prod.id));
+          console.log("ADDED",cat.category.products);
+        });
+      })
       // console.log("COMBOS",this.combos);
       this.comboCategory = {
         combos: this.combos,
@@ -461,6 +452,8 @@ export class ModeConfig {
         enabled: true,
         averagePrice: 0,
       };
+      console.log("Final combo category",this.comboCategory);
+      
     });
   }
 
@@ -472,8 +465,6 @@ export class ModeConfig {
     await this.getViewCategories();
     await this.getTaxes();
     await this.getDiscounts();
-    await this.getTypes();
-    await this.getTimeGroups();
     await this.getComboCategories();
     await this.getLoyaltySettings();
     this.dataProvider.menuLoadSubject.next({
@@ -1239,13 +1230,12 @@ export class ModeConfig {
 
   // new implementations
 
-  getTaxes() {
-    this.menuManagementService.getTaxes(this.selectedMenu.id).then((res) => {
-      this.taxes = res.docs.map((d) => {
-        return { ...d.data(), id: d.id } as Tax;
-      });
-      this.taxesSearchInstance.setCollection(this.taxes);
+  async getTaxes() {
+    let taxes = await this.menuManagementService.getTaxes(this.selectedMenu.id);
+    this.taxes = taxes.docs.map((d) => {
+      return { ...d.data(), id: d.id } as Tax;
     });
+    this.taxesSearchInstance.setCollection(this.taxes);
   }
 
   addTax() {
@@ -1387,27 +1377,17 @@ export class ModeConfig {
     });
   }
 
-  getDiscounts() {
+  async getDiscounts() {
     this.loadingDiscount = true;
-    this.menuManagementService
-      .getDiscounts(this.selectedMenu.id)
-      .then((res) => {
-        this.discounts = [];
-        res.forEach((data) => {
-          this.discounts.push({
-            ...data.data(),
-            id: data.id,
-          } as CodeBaseDiscount);
-        });
-        this.discountsSearchInstance.setCollection(this.discounts);
-      })
-      .catch((err: any) => {
-        //  console.log(err);
-        this.alertify.presentToast('Error while fetching discounts');
-      })
-      .finally(() => {
-        this.loadingDiscount = false;
-      });
+    let res = await this.menuManagementService.getDiscounts(this.selectedMenu.id);
+    this.discounts = [];
+    res.forEach((data) => {
+      this.discounts.push({
+        ...data.data(),
+        id: data.id,
+      } as CodeBaseDiscount);
+    });
+    this.discountsSearchInstance.setCollection(this.discounts);
   }
 
   getMappedMenu(menus?: string[]) {
@@ -1463,94 +1443,6 @@ export class ModeConfig {
       })
       .finally(() => {
         this.dataProvider.loading = false;
-      });
-  }
-
-  // combos
-
-  addType() {
-    const dialog = this.dialog.open(AddTypeComponent, {
-      data: { mode: 'add' },
-    });
-    dialog.closed.subscribe((data: any) => {
-      console.log('data', data);
-      if (data) {
-        this.dataProvider.loading = true;
-        this.menuManagementService
-          .addType(
-            {
-              ...data,
-              creationDate: Timestamp.now(),
-              updateDate: Timestamp.now(),
-            },
-            this.selectedMenu,
-            data.image,
-          )
-          .then((res) => {
-            this.alertify.presentToast('Type added successfully');
-            this.getTypes();
-          })
-          .catch((err) => {
-            this.alertify.presentToast('Error while adding type');
-          })
-          .finally(() => {
-            this.dataProvider.loading = false;
-          });
-      } else {
-        this.alertify.presentToast('Cancelled adding type');
-      }
-    });
-  }
-
-  getTypes() {
-    this.loadingTypes = true;
-    this.menuManagementService
-      .getTypes(this.selectedMenu.id)
-      .then((res) => {
-        this.types = [];
-        res.forEach((data) => {
-          this.types.push({ ...data.data(), id: data.id } as ComboType);
-        });
-        this.typesSearchInstance.setCollection(this.types);
-      })
-      .catch((err) => {
-        this.alertify.presentToast('Error while fetching types');
-      })
-      .finally(() => {
-        this.loadingTypes = false;
-      });
-  }
-
-  editType(type: ComboType) {
-    const dialog = this.dialog.open(AddTypeComponent, {
-      data: { type: type, mode: 'edit' },
-    });
-    dialog.closed.subscribe((data: any) => {
-      if (data) {
-        this.menuManagementService
-          .updateType({ ...type, ...data }, this.selectedMenu)
-          .then((res) => {
-            this.alertify.presentToast('Type updated successfully');
-            this.getTypes();
-          })
-          .catch((err) => {
-            this.alertify.presentToast('Error while updating type');
-          });
-      } else {
-        this.alertify.presentToast('Cancelled updating type');
-      }
-    });
-  }
-
-  deleteType(type: ComboType) {
-    this.menuManagementService
-      .deleteType(type, this.selectedMenu)
-      .then(() => {
-        this.alertify.presentToast('Type deleted successfully');
-        this.getTypes();
-      })
-      .catch((err) => {
-        this.alertify.presentToast('Error while deleting type');
       });
   }
 
@@ -1716,26 +1608,17 @@ export class ModeConfig {
 
   // Loyalty CRUD
 
-  getLoyaltySettings() {
+  async getLoyaltySettings() {
     this.loadingLoyaltySettings = true;
-    this.menuManagementService
-      .getLoyaltySettings(this.selectedMenuId)
-      .then((res) => {
-        this.loyaltySettings = [];
-        res.forEach((data) => {
-          this.loyaltySettings.push({
-            ...data.data(),
-            id: data.id,
-          } as LoyaltySetting);
-        });
-        console.log('this.loyaltySettings', this.loyaltySettings);
-      })
-      .catch((err) => {
-        this.alertify.presentToast('Error while fetching loyalty settings');
-      })
-      .finally(() => {
-        this.loadingLoyaltySettings = false;
-      });
+    let res = await this.menuManagementService.getLoyaltySettings(this.selectedMenuId);
+    this.loyaltySettings = [];
+    res.forEach((data) => {
+      this.loyaltySettings.push({
+        ...data.data(),
+        id: data.id,
+      } as LoyaltySetting);
+    });
+    console.log('this.loyaltySettings', this.loyaltySettings);
   }
 
   addLoyaltySettings() {
@@ -1807,5 +1690,64 @@ export class ModeConfig {
     combo.enabled = value;
     
     return this.menuManagementService.updateCombo(combo,this.selectedMenu);
+  }
+
+  hasValidTaxes(taxes:Tax[]){
+    // make sure that every tax is available in this.taxes
+    return taxes.every((tax)=>{
+      return this.taxes.find((t)=>t.id == tax.id);
+    });
+  }
+
+  setBulkTaxes(products:Product[]){
+    const dialog = this.dialog.open(SetTaxComponent, {
+      data: { product: products, menu: this },
+    });
+    firstValueFrom(dialog.closed).then((data: any) => {
+      // console.log('data', data);
+      if (data) {
+        let filteredTax = data.taxes
+          .filter((tax) => tax.checked)
+          .map((tax) => {
+            delete tax.checked;
+            return { ...tax, nature: data.type };
+          });
+        this.dataProvider.loading = true;
+        // product = { ...product, ...data };
+        // console.log("New Product Data",data);
+        products.forEach((p) => {
+          p.taxes = filteredTax;
+        })
+        console.log("Updating product with tax",products);
+        this.productService
+          .updateBulkProducts(products, this.selectedMenuId)
+          .then((data: any) => {
+            this.alertify.presentToast('Taxes Updated Successfully');
+          })
+          .catch((err) => {
+            this.alertify.presentToast('Taxes Update Failed');
+          })
+          .finally(() => {
+            this.dataProvider.loading = false;
+          });
+      }
+    });
+  }
+
+  downloadProducts(products:Product[]){
+    // create a csv file with this format
+    // name, category, price,veg/nonveg , half/full (half/full is optional),
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "name,category,price,veg/nonveg,half/full\n";
+    products.forEach((product)=>{
+      csvContent += `${product.name},${product.category.name},${product.price},${product.type}\n`;
+    });
+    // download the file
+    var encodedUri = encodeURI(csvContent);
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "menu_format.csv");
+    document.body.appendChild(link); // Required for Firefox
+    link.click(); // This will download the data file named "my_data.csv".
   }
 }

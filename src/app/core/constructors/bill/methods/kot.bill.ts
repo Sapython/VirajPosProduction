@@ -31,7 +31,7 @@ export function clearAllKots(this: Bill) {
 }
 
 export function editKot(this: Bill, kot: Kot, reason: string) {
-  console.log('EDITED KOT REASON', reason);
+  // console.log('EDITED KOT REASON', reason);
 
   if (this.currentKot?.stage === 'active') {
     if (
@@ -85,12 +85,12 @@ export function editKot(this: Bill, kot: Kot, reason: string) {
 
 export function finalizeAndPrintKot(this: Bill) {
   if (this.editKotMode != null) {
-    console.log(
-      'Old kot',
-      this.editKotMode.previousKot,
-      'New kot',
-      this.editKotMode.newKot,
-    );
+    // console.log(
+    //   'Old kot',
+    //   this.editKotMode.previousKot,
+    //   'New kot',
+    //   this.editKotMode.newKot,
+    // );
     let kotIndex = this.kots.findIndex(
       (kot) => this.editKotMode && kot.id === this.editKotMode.kot.id,
     );

@@ -242,7 +242,7 @@ export class BillService {
   }
 
   addActivity(bill: Bill, activity: BillActivity) {
-    console.log('ACTIVITY', activity);
+    // console.log('ACTIVITY', activity);
     return addDoc(
       collection(
         this.firestore,

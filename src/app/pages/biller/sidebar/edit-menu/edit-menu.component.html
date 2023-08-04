@@ -251,6 +251,20 @@
                   Add Recipe
                 </viraj-button>
                 <viraj-button
+                  *ngIf="this.dataProvider.getAccess('addNewProduct')"
+                  (click)="mode.downloadProducts(mode.selectedCategory.products)"
+                  color="primary"
+                >
+                  Download Recipe
+                </viraj-button>
+                <viraj-button
+                  *ngIf="['all'].includes(mode.currentType) && this.dataProvider.getAccess('addNewProduct')"
+                  (click)="mode.setBulkTaxes(mode.selectedCategory.products)"
+                  color="primary"
+                >
+                  Set Bulk Taxes
+                </viraj-button>
+                <viraj-button
                   *ngIf="['view'].includes('editViewCategory')"
                   (click)="mode.addUploadedRecipe()"
                   color="primary"
@@ -502,7 +516,7 @@
                   <div class="pricing">
                     <strong>{{ product.price | currency: "INR" }}</strong>
                     <span
-                      *ngIf="!(product.taxes && product.taxes.length > 0)"
+                      *ngIf="!(product.taxes && product.taxes.length > 0 && mode.hasValidTaxes(product.taxes))"
                       class="danger"
                       >No Taxes</span
                     >

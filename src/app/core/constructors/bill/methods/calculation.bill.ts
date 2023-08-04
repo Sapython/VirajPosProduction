@@ -10,7 +10,7 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   // check individual product for tax and if the tax.mode is inclusive then add the applicable tax to totalTaxValue or if the tax.mode is exclusive then decrease the price of product by tax rate and add the applicableValue to totalTaxValue
   let calculationResults = calculateProducts(this.kots);
   this.calculateLoyalty(calculationResults.allProducts);
-  // console.log("calculationResults",calculationResults);
+  console.log("calculationResults",calculationResults);
   let allProducts = calculationResults.allProducts;
   let finalTaxes: Tax[] = calculationResults.finalTaxes;
   let finalAdditionalTax = calculationResults.finalAdditionalTax;
@@ -43,9 +43,9 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
     }
   });
   
-  // console.log("Prev final taxes",finalTaxes);
-  this.billing.taxes = finalTaxes.filter((tax) => tax.amount);
-  // console.log("Billing taxes",this.billing.taxes);
+  console.log("Prev final taxes",finalTaxes);
+  this.billing.taxes = finalTaxes;
+  console.log("Billing taxes",this.billing.taxes);
   let totalApplicableTax = this.billing.taxes.reduce((acc, cur) => {
     return acc + cur.amount;
   }, 0);
@@ -89,7 +89,6 @@ export function calculateProducts(kots: (Kot | KotConstructor)[]) {
   let modifiedAllProducts = [];
   allProducts.forEach((product) => {
     if (product.itemType == 'product' && product.taxes) {
-      //  console.log('product taxes', product.taxes);
       let inclusive = product.taxes.find((tax) => tax.nature === 'inclusive')
         ? true
         : false;
@@ -182,22 +181,13 @@ export function calculateProducts(kots: (Kot | KotConstructor)[]) {
       } else {
         modifiedAllProducts.push(JSON.parse(JSON.stringify(product)));
       }
+      console.log('product taxes',product.name,product.id, finalTaxes.map((d)=>d.id),finalTaxes.map((t)=>t.amount));
     } else {
       // calculation for combo
       // combo is an ApplicableCombo class
       let combo = product as ApplicableCombo;
+      // console.log('combo taxes',product.name,product.id, combo.finalTaxes.map((d)=>d.id));
       // console.log("UNAPPLIED COMBO",combo);
-      combo.finalTaxes.forEach((comboTax: Tax) => {
-        finalTaxes.forEach((tax: Tax) => {
-          if (tax.id === comboTax.id) {
-            tax.amount += comboTax.amount;
-          } else {
-            finalTaxes.push(JSON.parse(JSON.stringify(comboTax)));
-          }
-        });
-        // console.log("combo.finalTaxes",combo.finalTaxes,"finalTaxes",finalTaxes);
-        // add missing taxes to finalTaxes
-      });
       combo.finalTaxes.forEach((comboTax: Tax) => {
         let index = finalTaxes.findIndex(
           (item: Tax) => item.id === comboTax.id,
@@ -206,9 +196,27 @@ export function calculateProducts(kots: (Kot | KotConstructor)[]) {
           finalTaxes.push(JSON.parse(JSON.stringify(comboTax)));
         }
       });
+      console.log('combo taxes',combo.name,combo.id, combo.finalTaxes.map((d)=>d.id),combo.finalTaxes.map((t)=>t.amount));
     }
   });
-  // console.log("Final taxes",finalTaxes);
+  console.log("Final taxes",finalTaxes);
+  // merge all finalTaxes by mathcing their id and then adding their amount
+  let groupedFinalTaxes = [];
+  finalTaxes.forEach((tax: Tax) => {
+    let index = finalTaxes.findIndex((item: Tax) => item.id === tax.id);
+    if (index !== -1) {
+      let taxIndex = groupedFinalTaxes.findIndex(
+        (item: Tax) => item.id === tax.id,
+      );
+      if (taxIndex !== -1) {
+        groupedFinalTaxes[taxIndex].amount += tax.amount;
+      } else {
+        groupedFinalTaxes.push(JSON.parse(JSON.stringify(tax)));
+      }
+    } else {
+      groupedFinalTaxes.push(JSON.parse(JSON.stringify(tax)));
+    }
+  })
   // this.checkCanPrintKot(this);
-  return { allProducts, finalTaxes, finalAdditionalTax };
+  return { allProducts, finalTaxes:groupedFinalTaxes, finalAdditionalTax };
 }

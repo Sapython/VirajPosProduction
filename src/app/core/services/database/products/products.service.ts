@@ -10,6 +10,8 @@ import {
   setDoc,
   deleteDoc,
   Firestore,
+  runTransaction,
+  writeBatch,
 } from '@angular/fire/firestore';
 import { DataProvider } from '../../provider/data-provider.service';
 import { Menu } from '../../../../types/menu.structure';
@@ -114,5 +116,32 @@ export class ProductsService {
           '/products/',
       ),
     );
+  }
+
+  async updateBulkProducts(products: Product[],selectedMenuId:string) {
+    this.dataProvider.loading = true;
+    const batch = writeBatch(this.firestore);
+    products.forEach(async (product)=>{
+      batch.set(
+        doc(
+          this.firestore,
+          'business/' +
+            this.dataProvider.businessId +
+            '/menus/' +
+            selectedMenuId +
+            '/products/' +
+            product.id,
+        ),
+        { ...product, quantity: 1 },
+        { merge: true },
+      );
+    });
+    await batch.commit().then(()=>{
+      console.log("Bulk tax update success");
+    }).catch((err)=>{
+      console.log("Bulk tax update failed",err);
+    }).finally(()=>{
+      this.dataProvider.loading = false;
+    })
   }
 }

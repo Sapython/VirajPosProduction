@@ -30,6 +30,8 @@
       </select>
       <input
         type="number"
+        #numberInput
+        (focus)="numberInput.select()"
         (keydown)="addOnReturn($event)"
         [tabindex]="i + 2"
         [(ngModel)]="method.amount"

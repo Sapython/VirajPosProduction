@@ -1746,7 +1746,7 @@ export class ModeConfig {
     let csvContent = "data:text/csv;charset=utf-8,";
     csvContent += "name,category,price,veg/nonveg,half/full\n";
     products.forEach((product)=>{
-      csvContent += `${product.name},${product.category.name},${product.price},${product.type}\n`;
+      csvContent += `${product.name},${product.category?.name},${product.price},${product.type}\n`;
     });
     // download the file
     var encodedUri = encodeURI(csvContent);

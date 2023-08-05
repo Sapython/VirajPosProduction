@@ -163,16 +163,16 @@ export class ModeConfig {
       } else {
         return 0;
       }
-    })
+    });
     this.allProductsCategory = {
       enabled: true,
       id: 'allProducts',
       name: 'All Products',
       products: this.products,
-      productOrders:this.products.map((p)=>p.id),
+      productOrders: this.products.map((p) => p.id),
       averagePrice: 0,
     };
-    
+
     this.selectedCategory = this.allProductsCategory;
     if (this.selectedMenu) {
       this.getAllData();
@@ -233,26 +233,11 @@ export class ModeConfig {
 
   async getProducts() {
     if (this.selectedMenu) {
-      let data = await this.productService.getProductsByMenu(this.selectedMenu);
+      let data = await this.menuManagementService.getProductsByMenu(this.selectedMenu);
       // data.forEach((doc)=>{
       //   this.menuManagementService.updateRecipe({id:doc.id,type:doc.data().type.replace('\r','')},this.selectedMenuId)
       // })
-      this.products = await Promise.all(data.docs.map(async (doc) => {
-        let printers = await this.getPrinterSettings();
-        let defaultPrinters = (await this.menuManagementService.getDefaultPrinter(this.selectedMenu));
-        console.log("defaultPrinters",defaultPrinters);
-        if (printers){
-          var printer = printers.find((printer) => printer.dishesId.includes(doc.id))?.printerName || defaultPrinters?.kotPrinter || '';
-        } else if(defaultPrinters) {
-          var printer = defaultPrinters?.kotPrinter || '';
-        }
-        let product = {
-          ...doc.data(),
-          id: doc.id,
-          specificPrinter: printer || '',
-        }
-        return product as Product;
-      }));
+      this.products = data;
       // console.log('this.products', this.products);
       let event = {
         previousPageIndex: 0,
@@ -280,6 +265,11 @@ export class ModeConfig {
           return 0;
         }
       });
+      // alert("Renaming tags");
+      // this.products.forEach((prod)=>{
+      //   prod.tags = [];
+      //   this.menuManagementService.updateProductMenu(prod,this.selectedMenu);
+      // });
     }
   }
 
@@ -327,7 +317,8 @@ export class ModeConfig {
           } else {
             var notDisabled = true;
           }
-          p.visible = notDisabled && (p.visible == undefined ? true : p.visible);
+          p.visible =
+            notDisabled && (p.visible == undefined ? true : p.visible);
           return doc['products'].includes(p.id);
         });
         return {
@@ -398,7 +389,8 @@ export class ModeConfig {
           } else {
             var notDisabled = true;
           }
-          p.visible = notDisabled &&  (p.visible == undefined ? true : p.visible);
+          p.visible =
+            notDisabled && (p.visible == undefined ? true : p.visible);
           return doc['products'] && doc['products'].includes(p.id);
         });
         return {
@@ -434,16 +426,18 @@ export class ModeConfig {
           img.src = doc.data()['offerImage'];
         }
       });
-      console.log("cat.category.products",this.products);
-      this.combos.forEach((combo)=>{
+      // console.log("cat.category.products",this.products);
+      this.combos.forEach((combo) => {
         // remap all products in every category to the new printer from local config
-        combo.selectedCategories.forEach((cat)=>{
-          let productIds = cat.category.products.map((prod)=> prod.id);
-          console.log("Adding",productIds);
-          cat.category.products = this.products.filter((prod)=> productIds.includes(prod.id));
-          console.log("ADDED",cat.category.products);
+        combo.selectedCategories.forEach((cat) => {
+          let productIds = cat.category.products.map((prod) => prod.id);
+          // console.log("Adding",productIds);
+          cat.category.products = this.products.filter((prod) =>
+            productIds.includes(prod.id),
+          );
+          // console.log("ADDED",cat.category.products);
         });
-      })
+      });
       // console.log("COMBOS",this.combos);
       this.comboCategory = {
         combos: this.combos,
@@ -452,8 +446,7 @@ export class ModeConfig {
         enabled: true,
         averagePrice: 0,
       };
-      console.log("Final combo category",this.comboCategory);
-      
+      // console.log("Final combo category",this.comboCategory);
     });
   }
 
@@ -497,6 +490,13 @@ export class ModeConfig {
   pageChanged(event) {
     // paginate all products
     // console.log('event', event);
+    this.allProductsCategory.products.sort((a, b) => {
+      if (a.name && b.name) {
+        return a.name.localeCompare(b.name);
+      } else {
+        return 0;
+      }
+    });
     this.allProductsCategory.products = this.products.slice(
       event.pageIndex * event.pageSize,
       (event.pageIndex + 1) * event.pageSize,
@@ -527,7 +527,7 @@ export class ModeConfig {
   selectCategory(cat: Category) {
     this.selectedCategory = cat;
     console.log('this.selectedCategory', this.selectedCategory);
-    if (this.selectedCategory.id == 'allProducts'){
+    if (this.selectedCategory.id == 'allProducts') {
       // sort products by name
       this.selectedCategory.products.sort((a, b) => {
         if (a.name && b.name) {
@@ -535,20 +535,24 @@ export class ModeConfig {
         } else {
           return 0;
         }
-      })
+      });
     }
     this.categoryUpdated = false;
     this.fuseInstance.setCollection(this.selectedCategory.products);
   }
 
   addMainCategory() {
-    let unusedProducts = this.products.filter((product) => !product.category.id)
-    console.log("unusedProducts",unusedProducts);
+    let unusedProducts = this.products.filter(
+      (product) => !product.category.id,
+    );
+    console.log('unusedProducts', unusedProducts);
     const dialog = this.dialog.open(AddMainCategoryComponent);
   }
 
   async deleteViewCategory() {
-    if (await this.dataProvider.confirm('Are you sure you want to delete',[1])){
+    if (
+      await this.dataProvider.confirm('Are you sure you want to delete', [1])
+    ) {
       this.dataProvider.loading = true;
       this.menuManagementService
         .deleteViewCategory(this.selectedMenuId, this.selectedCategory.id)
@@ -650,7 +654,7 @@ export class ModeConfig {
     if (this.selectedMenu) {
       // console.log('this.products', this.products);
       if (id == 'highRange') {
-        // console.log('this.highRangeForm.value', this.highRangeForm.value);
+        console.log('this.highRangeForm.value', this.highRangeForm.value);
         if (this.highRangeForm.value.min && this.highRangeForm.value.max) {
           var filteredList = this.products.filter(
             (product) =>
@@ -842,11 +846,15 @@ export class ModeConfig {
   }
 
   addRecipe(menuId: string) {
-    let dialog = this.dialog.open(AddDishComponent, { data: { mode: 'add',menu:this.selectedMenu } });
+    let dialog = this.dialog.open(AddDishComponent, {
+      data: { mode: 'add', menu: this.selectedMenu },
+    });
     firstValueFrom(dialog.closed)
       .then(async (data: any) => {
         if (data) {
-          let printerConfigs = await this.menuManagementService.getPrinterList(this.selectedMenu);
+          let printerConfigs = await this.menuManagementService.getPrinterList(
+            this.selectedMenu,
+          );
           // find data.specificPrinter in printerConfigs by matching printerName
           const categoryDialog = this.dialog.open(SelectCategoryComponent, {
             data: {
@@ -880,16 +888,21 @@ export class ModeConfig {
             taxes: data.taxes || [],
           };
           let productRes = await this.productService.addRecipe(product, menuId);
-          let printer = printerConfigs.find((printer) => printer.printerName == data.specificPrinter);
-          if (printer){
+          let printer = printerConfigs.find(
+            (printer) => printer.printerName == data.specificPrinter,
+          );
+          if (printer) {
             printer.dishesId.push(productRes.id);
           } else {
             printerConfigs.push({
-              printerName:data.specificPrinter,
-              dishesId:[productRes.id]
-            })
+              printerName: data.specificPrinter,
+              dishesId: [productRes.id],
+            });
           }
-          await this.menuManagementService.updatePrinterList(this.selectedMenu,printerConfigs);
+          await this.menuManagementService.updatePrinterList(
+            this.selectedMenu,
+            printerConfigs,
+          );
           let rootCategoryRes =
             await this.menuManagementService.updateRootCategory(
               category.mainCategory.id,
@@ -937,7 +950,7 @@ export class ModeConfig {
         // product = { ...product, ...data };
         // console.log("New Product Data",data);
         product.taxes = filteredTax;
-        console.log("Updating product with tax",product);
+        console.log('Updating product with tax', product);
         this.productService
           .updateRecipe(product, this.selectedMenuId)
           .then((data: any) => {
@@ -982,25 +995,32 @@ export class ModeConfig {
   async editRecipe(product: Product, menuId: string) {
     try {
       let dialog = this.dialog.open(AddDishComponent, {
-        data: { mode: 'edit', product,menu:this.selectedMenu },
+        data: { mode: 'edit', product, menu: this.selectedMenu },
       });
       let data = await firstValueFrom(dialog.closed);
       if (typeof data == 'object') {
-        let printerConfigs = await this.menuManagementService.getPrinterList(this.selectedMenu);
+        let printerConfigs = await this.menuManagementService.getPrinterList(
+          this.selectedMenu,
+        );
         await this.productService.updateRecipe(
           { ...product, ...data, updated: true },
           menuId,
         );
-        let printer = printerConfigs.find((printer) => printer.printerName == data['specificPrinter']);
-          if (printer){
-            printer.dishesId.push(product.id);
-          } else {
-            printerConfigs.push({
-              printerName:data['specificPrinter'],
-              dishesId:[product.id]
-            })
-          }
-          await this.menuManagementService.updatePrinterList(this.selectedMenu,printerConfigs);
+        let printer = printerConfigs.find(
+          (printer) => printer.printerName == data['specificPrinter'],
+        );
+        if (printer) {
+          printer.dishesId.push(product.id);
+        } else {
+          printerConfigs.push({
+            printerName: data['specificPrinter'],
+            dishesId: [product.id],
+          });
+        }
+        await this.menuManagementService.updatePrinterList(
+          this.selectedMenu,
+          printerConfigs,
+        );
         // console.log("New Product Data",data);
         product = { ...product, ...data, updated: true };
         let foundProduct = this.dataProvider.menus
@@ -1118,7 +1138,6 @@ export class ModeConfig {
     );
     this.selectedCategory.updated = true;
   }
-
 
   async updateChanged() {
     this.dataProvider.menus.forEach((menu: ModeConfig) => {
@@ -1351,9 +1370,7 @@ export class ModeConfig {
     dialog.closed.subscribe((data: any) => {
       //  console.log('data', data);
       if (data) {
-        if (data.menus.length === 0) {
-          data.menus = null;
-        }
+        this.dataProvider.loading = true;
         //  console.log('adding', data);
         this.menuManagementService
           .addDiscount(
@@ -1374,6 +1391,9 @@ export class ModeConfig {
           .catch((err) => {
             //  console.log('err', err);
             this.alertify.presentToast('Error adding discount');
+          })
+          .finally(() => {
+            this.dataProvider.loading = false;
           });
       } else {
         //  console.log('no data', data);
@@ -1383,7 +1403,9 @@ export class ModeConfig {
 
   async getDiscounts() {
     this.loadingDiscount = true;
-    let res = await this.menuManagementService.getDiscounts(this.selectedMenu.id);
+    let res = await this.menuManagementService.getDiscounts(
+      this.selectedMenu.id,
+    );
     this.discounts = [];
     res.forEach((data) => {
       this.discounts.push({
@@ -1490,7 +1512,7 @@ export class ModeConfig {
           )
           .then((res) => {
             this.alertify.presentToast('Combo added successfully');
-            this.menuManagementService.getCombos(this.selectedMenu.id);
+            this.getCombos();
           })
           .catch((err) => {
             this.alertify.presentToast('Error while adding combo');
@@ -1511,7 +1533,7 @@ export class ModeConfig {
           .updateCombo({ ...combo, ...data }, this.selectedMenu)
           .then((res) => {
             this.alertify.presentToast('Combo updated successfully');
-            this.menuManagementService.getCombos(this.selectedMenu.id);
+            this.getCombos();
           })
           .catch((err) => {
             this.alertify.presentToast('Error while updating combo');
@@ -1527,7 +1549,7 @@ export class ModeConfig {
       .deleteCombo(combo, this.selectedMenu)
       .then(() => {
         this.alertify.presentToast('Combo deleted successfully');
-        this.menuManagementService.getCombos(this.selectedMenu.id);
+        this.getCombos();
       })
       .catch((err) => {
         this.alertify.presentToast('Error while deleting combo');
@@ -1615,7 +1637,9 @@ export class ModeConfig {
 
   async getLoyaltySettings() {
     this.loadingLoyaltySettings = true;
-    let res = await this.menuManagementService.getLoyaltySettings(this.selectedMenuId);
+    let res = await this.menuManagementService.getLoyaltySettings(
+      this.selectedMenuId,
+    );
     this.loyaltySettings = [];
     res.forEach((data) => {
       this.loyaltySettings.push({
@@ -1623,13 +1647,13 @@ export class ModeConfig {
         id: data.id,
       } as LoyaltySetting);
     });
-    console.log('this.loyaltySettings', this.loyaltySettings);
+    // console.log('this.loyaltySettings', this.loyaltySettings);
     this.loadingLoyaltySettings = false;
   }
 
   addLoyaltySettings() {
     const comp = this.dialog.open(AddLoyaltySettingComponent, {
-      data: { menu: this },
+      data: { menu: this,mode:'add' },
     });
     firstValueFrom(comp.closed).then((data: any) => {
       console.log('Data', data);
@@ -1638,6 +1662,7 @@ export class ModeConfig {
           .addLoyaltySetting(data, this.selectedMenuId)
           .then((res) => {
             this.alertify.presentToast('Loyalty Setting added');
+            this.getLoyaltySettings();
           })
           .catch((error) => {
             console.log(error);
@@ -1656,9 +1681,37 @@ export class ModeConfig {
     this.loyaltySettings.splice(index, 1);
   }
 
-  editLoyaltySetting(loyaltySetting: LoyaltySetting) {}
+  editLoyaltySetting(loyaltySetting: LoyaltySetting) {
+    const comp = this.dialog.open(AddLoyaltySettingComponent, {
+      data: { menu: this,loyaltySetting,mode:'edit' },
+    });
+    firstValueFrom(comp.closed).then((data: any) => {
+      console.log('Data', data);
+      if (data && typeof data == 'object') {
+        this.menuManagementService
+          .editLoyalSetting({...loyaltySetting,...data}, this.selectedMenuId)
+          .then((res) => {
+            this.alertify.presentToast('Loyalty Setting added');
+            this.getLoyaltySettings();
+          })
+          .catch((error) => {
+            console.log(error);
+            this.alertify.presentToast(
+              'Unable to add loyalty setting',
+              'error',
+            );
+          });
+      } else {
+        this.alertify.presentToast('Operation cancelled !!!');
+      }
+    });
+  }
 
-  deleteLoyaltySetting(loyaltySetting: LoyaltySetting) {}
+  async deleteLoyaltySetting(loyaltySetting: LoyaltySetting) {
+    if(await this.dataProvider.confirm('Are you sure you want to delete?',[1])){
+      this.menuManagementService.deleteLoyaltySetting(loyaltySetting.id,this.selectedMenuId)
+    }
+  }
 
   selectLoyaltySetting(value: any) {
     console.log('Log', value);
@@ -1669,43 +1722,49 @@ export class ModeConfig {
       });
   }
 
-  setPrinterSettings(){
-    const printerSetting = this.dialog.open(PrinterSettingComponent,{
-      data:{menu:this},
-    })
-  }
-
-  savePrinterSettings(printerSettings:PrinterSetting[]){
-    return this.menuManagementService.updatePrinterList(this.selectedMenu,printerSettings)
-  }
-
-  getPrinterSettings(){
-    return this.menuManagementService.getPrinterList(this.selectedMenu)
-  }
-
-  getDefaultPrinters(){
-    return this.menuManagementService.getDefaultPrinter(this.selectedMenu);
-  }
-
-  updateDefaultPrinters(printer:{billPrinter:string,kotPrinter:string}){
-    return this.menuManagementService.updateDefaultPrinter(this.selectedMenu,printer);
-  }
-
-  updateComboVisibility(combo:Combo,value:boolean){
-    console.log("Updating combo",combo.enabled,value);
-    combo.enabled = value;
-    
-    return this.menuManagementService.updateCombo(combo,this.selectedMenu);
-  }
-
-  hasValidTaxes(taxes:Tax[]){
-    // make sure that every tax is available in this.taxes
-    return taxes.every((tax)=>{
-      return this.taxes.find((t)=>t.id == tax.id);
+  setPrinterSettings() {
+    const printerSetting = this.dialog.open(PrinterSettingComponent, {
+      data: { menu: this },
     });
   }
 
-  setBulkTaxes(products:Product[]){
+  savePrinterSettings(printerSettings: PrinterSetting[]) {
+    return this.menuManagementService.updatePrinterList(
+      this.selectedMenu,
+      printerSettings,
+    );
+  }
+
+  getPrinterSettings() {
+    return this.menuManagementService.getPrinterList(this.selectedMenu);
+  }
+
+  getDefaultPrinters() {
+    return this.menuManagementService.getDefaultPrinter(this.selectedMenu);
+  }
+
+  updateDefaultPrinters(printer: { billPrinter: string; kotPrinter: string }) {
+    return this.menuManagementService.updateDefaultPrinter(
+      this.selectedMenu,
+      printer,
+    );
+  }
+
+  updateComboVisibility(combo: Combo, value: boolean) {
+    console.log('Updating combo', combo.enabled, value);
+    combo.enabled = value;
+
+    return this.menuManagementService.updateCombo(combo, this.selectedMenu);
+  }
+
+  hasValidTaxes(taxes: Tax[]) {
+    // make sure that every tax is available in this.taxes
+    return taxes.every((tax) => {
+      return this.taxes.find((t) => t.id == tax.id);
+    });
+  }
+
+  setBulkTaxes(products: Product[]) {
     const dialog = this.dialog.open(SetTaxComponent, {
       data: { product: products, menu: this },
     });
@@ -1723,8 +1782,8 @@ export class ModeConfig {
         // console.log("New Product Data",data);
         products.forEach((p) => {
           p.taxes = filteredTax;
-        })
-        console.log("Updating product with tax",products);
+        });
+        console.log('Updating product with tax', products);
         this.productService
           .updateBulkProducts(products, this.selectedMenuId)
           .then((data: any) => {
@@ -1740,19 +1799,19 @@ export class ModeConfig {
     });
   }
 
-  downloadProducts(products:Product[]){
+  downloadProducts(products: Product[]) {
     // create a csv file with this format
     // name, category, price,veg/nonveg , half/full (half/full is optional),
-    let csvContent = "data:text/csv;charset=utf-8,";
-    csvContent += "name,category,price,veg/nonveg,half/full\n";
-    products.forEach((product)=>{
+    let csvContent = 'data:text/csv;charset=utf-8,';
+    csvContent += 'name,category,price,veg/nonveg,half/full\n';
+    products.forEach((product) => {
       csvContent += `${product.name},${product.category?.name},${product.price},${product.type}\n`;
     });
     // download the file
     var encodedUri = encodeURI(csvContent);
-    var link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "menu_format.csv");
+    var link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', 'menu_format.csv');
     document.body.appendChild(link); // Required for Firefox
     link.click(); // This will download the data file named "my_data.csv".
   }

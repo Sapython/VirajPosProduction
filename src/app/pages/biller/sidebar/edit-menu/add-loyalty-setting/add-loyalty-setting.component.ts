@@ -1,7 +1,7 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { CategoryLoyaltyRate } from '../../../../../types/loyalty.structure';
+import { CategoryLoyaltyRate, LoyaltySetting } from '../../../../../types/loyalty.structure';
 import { ModeConfig } from '../../../../../core/constructors/menu/menu';
 import { Timestamp } from '@angular/fire/firestore';
 import { DataProvider } from '../../../../../core/services/provider/data-provider.service';
@@ -13,52 +13,10 @@ import { DataProvider } from '../../../../../core/services/provider/data-provide
 })
 export class AddLoyaltySettingComponent {
   constructor(
-    @Inject(DIALOG_DATA) private data: { menu: ModeConfig },
+    @Inject(DIALOG_DATA) private data: { menu: ModeConfig,loyaltySetting:LoyaltySetting,mode:'add'|'edit' },
     public dialogRef: DialogRef,
     private dataProvider: DataProvider,
   ) {
-    // this.data.menu.loyaltySettings.forEach((setting)=>{
-    //   setting.categoryWiseRates.forEach((category)=>{
-    //     let usableCategory:CategoryLoyaltyRate = {
-    //       categoryName:category.categoryName,
-    //       categoryId:category.categoryId,
-    //       categoryType:category.categoryType,
-    //       products:[]
-    //     };
-    //     if (category.categoryType === 'main'){
-    //       // find main category matching this id then add every product that is not available in this category
-    //       let mainCategory = this.data.menu.mainCategories.find((mainCategory)=>mainCategory.id === category.categoryId);
-    //       mainCategory.products.forEach((product)=>{
-    //         if (!category.products.find((categoryProduct)=>categoryProduct.id === product.id)){
-    //           usableCategory.products.push({
-    //             productName:product.name,
-    //             id:product.id,
-    //             price:product.price,
-    //             loyaltyRate:0
-    //           });
-    //         }
-    //       })
-    //     } else {
-    //       // find view category matching this id then add every product that is not available in this category
-    //       let viewCategory = this.data.menu.viewCategories.find((viewCategory)=>viewCategory.id === category.categoryId);
-    //       viewCategory.products.forEach((product)=>{
-    //         if (!category.products.find((categoryProduct)=>categoryProduct.id === product.id)){
-    //           usableCategory.products.push({
-    //             productName:product.name,
-    //             id:product.id,
-    //             price:product.price,
-    //             loyaltyRate:0
-    //           });
-    //         }
-    //       })
-    //     }
-    //     console.log("Usable Category",usableCategory);
-    //     // added the usable category with unused products
-    //     if(usableCategory.products.length > 0){
-    //       this.usableMainCategories.push(usableCategory);
-    //     }
-    //   });
-    // });
     // now add every missing category from main categories and view categories
     this.data.menu.mainCategories.forEach((mainCategory) => {
       if (!mainCategory.name) {
@@ -78,6 +36,24 @@ export class AddLoyaltySettingComponent {
           };
         }),
       });
+      if(this.data?.loyaltySetting){
+        this.addNewLoyaltyForm.patchValue(this.data?.loyaltySetting);
+
+        // update usableMainCategories with this.data?.loyaltySetting.categoryWiseRates
+        this.data.loyaltySetting.categoryWiseRates.forEach((category)=>{
+          let index = this.usableMainCategories.findIndex((cat)=>cat.categoryId == category.categoryId);
+          if(index != -1){
+            // search through every product and update only if found
+            category.products.forEach((product)=>{
+              let productIndex = this.usableMainCategories[index].products.findIndex((prod)=>prod.id == product.id);
+              if(productIndex != -1){
+                this.usableMainCategories[index].products[productIndex].loyaltyRate = product.loyaltyRate;
+                this.usableMainCategories[index].products[productIndex].loyaltyCost = product.loyaltyCost;
+              }
+            })
+          }
+        })
+      }
     });
   }
 

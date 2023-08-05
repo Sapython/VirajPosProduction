@@ -44,6 +44,7 @@ section {
       display: flex;
       border: 2px solid var(--Viraj-primary);
       border-radius: 8px;
+      overflow: hidden;
       @media screen and (max-width: 1200px) {
         &.large {
           display: none;
@@ -65,7 +66,6 @@ section {
         border-left: 2px solid var(--Viraj-primary);
         border: none;
         padding: 8px 20px;
-        border-radius: 7px;
         font-size: var(--Viraj-font-medium);
       }
       button.active {

@@ -5,6 +5,7 @@
   display: flex;
   border: 2px solid var(--Viraj-primary);
   border-radius: 5px;
+  overflow: hidden;
   @media screen and (max-width: 1200px) {
     &.large {
       display: none;
@@ -26,7 +27,6 @@
     border-left: 2px solid var(--Viraj-primary);
     border: none;
     padding: 8px 20px;
-    border-radius: 7px;
     font-size: var(--Viraj-font-medium);
   }
   button.active {
@@ -103,7 +103,11 @@ section {
   .mode {
     padding: 20px;
     box-sizing: border-box;
-    background: #eee;
+    background: white;
+    background-image: url("^assets/images/background.svg");
+    background-repeat: repeat;
+    background-size: 400px;
+    background-attachment: fixed;
     height: calc(100% - 60px);
     display: flex;
     flex-direction: column;
@@ -164,6 +168,8 @@ section {
     overflow-y: auto;
     height: 100%;
     box-sizing: border-box;
+    border-radius: 20px;
+    box-shadow: 2px 4px 20px rgba(0,0,0,0.2);
     .sidebar {
       display: flex;
       flex-direction: column;
@@ -311,7 +317,7 @@ section {
       .card {
         width: 200px;
         background: white;
-        height: 150px;
+        height: 200px;
         box-shadow: 2px 2px 20px 0px rgba(0, 0, 0, 0.1);
         border: 2px solid var(--Viraj-primary);
         border-radius: 10px;
@@ -335,18 +341,31 @@ section {
         display: flex;
         flex-direction: column;
         background: white;
+        justify-content: space-between;
         box-shadow: 2px 2px 20px 0px rgba(0, 0, 0, 0.1);
-        padding: 10px;
-        img {
-          height: 100px;
-          width: 100%;
-          object-fit: cover;
-          border-radius: 10px;
-          box-shadow: 2px 2px 20px 0px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        .image{
+          padding: 10px;
+          img {
+            height: 100px;
+            width: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 2px 2px 20px 0px rgba(0, 0, 0, 0.1);
+          }
         }
-        p {
-          font-size: var(--Viraj-font-large);
-          font-weight: 600;
+        .content{
+          border-top: 2px solid var(--Viraj-primary);
+          display: flex;
+          align-items: center;
+          background-color: var(--Viraj-primary-shade);
+          color: var(--Viraj-primary-text);
+          padding: 0px 10px;
+          justify-content: space-between;
+          p {
+            font-size: var(--Viraj-font-large);
+            font-weight: 600;
+          }
         }
       }
     }
@@ -514,6 +533,11 @@ section {
           grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr 1.2fr !important;
         }
       }
+      .itemLoading{
+        display: grid;
+        place-items: center;
+        width: 100%;
+      }
     }
   }
   .loyaltySettings {
@@ -593,15 +617,6 @@ section {
   }
 }
 
-@media screen and (max-width: 1366px) {
-  .sidebar {
-    .categories {
-      span {
-        padding: 0px 10px !important;
-      }
-    }
-  }
-}
 .danger {
   color: var(--Viraj-danger);
 }

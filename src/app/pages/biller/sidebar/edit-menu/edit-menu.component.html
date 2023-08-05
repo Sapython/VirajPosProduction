@@ -364,6 +364,7 @@
                 <h4>Recommendation Setting</h4>
                 <form
                   [formGroup]="mode.highRangeForm"
+                  #currentForm
                   (ngSubmit)="mode.recommendationSave('highRange')"
                 >
                   <input
@@ -381,6 +382,7 @@
                     matInput
                   />
                   <viraj-button
+                  (click)="mode.recommendationSave('highRange')"
                     color="primary"
                     *ngIf="mode.highRangeForm.touched"
                   >
@@ -397,6 +399,7 @@
                 <h4>Recommendation Setting</h4>
                 <form
                   [formGroup]="mode.lowRangeForm"
+                  #currentForm
                   (ngSubmit)="mode.recommendationSave('lowRange')"
                 >
                   <input
@@ -415,6 +418,7 @@
                   />
                   <viraj-button
                     color="primary"
+                    (click)="mode.recommendationSave('lowRange')"
                     mat-flat-button
                     *ngIf="mode.lowRangeForm.touched"
                   >
@@ -431,6 +435,7 @@
                 <h4>Recommendation Setting</h4>
                 <form
                   [formGroup]="mode.mostSellingForm"
+                  #currentForm
                   (ngSubmit)="mode.recommendationSave('mostSelling')"
                 >
                   <input
@@ -449,6 +454,7 @@
                   />
                   <viraj-button
                     color="primary"
+                    (click)="mode.recommendationSave('mostSelling')"
                     *ngIf="mode.mostSellingForm.touched"
                   >
                     Save
@@ -464,6 +470,7 @@
                 <h4>Recommendation Setting</h4>
                 <form
                   [formGroup]="mode.newDishesForm"
+                  #currentForm
                   (ngSubmit)="mode.recommendationSave('newDishes')"
                 >
                   <div class="customDatePicker">
@@ -503,6 +510,7 @@
                     <viraj-button
                       type="outline"
                       class="dateSelector"
+                      (click)="currentForm.submit()"
                       (vclick)="picker.open()"
                     >
                       {{
@@ -515,6 +523,7 @@
                   </div>
                   <viraj-button
                     color="primary"
+                    (click)="mode.recommendationSave('newDishes')"
                     *ngIf="mode.newDishesForm.touched"
                   >
                     Save
@@ -668,6 +677,7 @@
             <span>
               <input
                 matInput
+                placeholder="Search"
                 (input)="mode.taxesSearchSubject.next(search.value)"
                 #search
               />
@@ -690,40 +700,45 @@
               <span>Actions</span>
             </div>
             <div class="items">
-              <div
-                class="item"
-                *ngFor="
-                  let tax of mode.filteredTaxes.length
-                    ? mode.filteredTaxes
-                    : mode.taxes
-                "
-              >
-                <span>{{ tax.name }}</span>
-                <span>{{ tax.cost }}</span>
-                <span>
-                  <div class="badge" [ngClass]="{percentage:tax.type =='percentage',flat:tax.type =='amount'}">
-                    {{ tax.type | titlecase }}
-                  </div>
-                </span>
-                <span>
-                  <div class="badge" [ngClass]="{product:tax.mode == 'product',bill:tax.mode =='bill'}">
-                    {{ tax.mode | titlecase }}
-                  </div>
-                </span>
-                <span>{{ tax.creationDate.toDate() | date }}</span>
-                <span>{{ tax.updateDate.toDate() | date }}</span>
-                <span class="tableActions">
-                  <viraj-button
-                    *ngIf="this.dataProvider.getAccess('editTaxes')"
-                    (vclick)="mode.editTax(tax)"
-                    ><i class="ri-pencil-line"></i
-                  ></viraj-button>
-                  <viraj-button
-                    *ngIf="this.dataProvider.getAccess('deleteTaxes')"
-                    (vclick)="mode.deleteTax(tax.id)"
-                    ><i class="ri-delete-bin-line"></i
-                  ></viraj-button>
-                </span>
+              <ng-container *ngIf="!mode.loadingTax">
+                <div
+                  class="item"
+                  *ngFor="
+                    let tax of mode.filteredTaxes.length
+                      ? mode.filteredTaxes
+                      : mode.taxes
+                  "
+                >
+                  <span>{{ tax.name }}</span>
+                  <span>{{ tax.cost }}</span>
+                  <span>
+                    <div class="badge" [ngClass]="{percentage:tax.type =='percentage',flat:tax.type =='amount'}">
+                      {{ tax.type | titlecase }}
+                    </div>
+                  </span>
+                  <span>
+                    <div class="badge" [ngClass]="{product:tax.mode == 'product',bill:tax.mode =='bill'}">
+                      {{ tax.mode | titlecase }}
+                    </div>
+                  </span>
+                  <span>{{ tax.creationDate.toDate() | date }}</span>
+                  <span>{{ tax.updateDate.toDate() | date }}</span>
+                  <span class="tableActions">
+                    <viraj-button
+                      *ngIf="this.dataProvider.getAccess('editTaxes')"
+                      (vclick)="mode.editTax(tax)"
+                      ><i class="ri-pencil-line"></i
+                    ></viraj-button>
+                    <viraj-button
+                      *ngIf="this.dataProvider.getAccess('deleteTaxes')"
+                      (vclick)="mode.deleteTax(tax.id)"
+                      ><i class="ri-delete-bin-line"></i
+                    ></viraj-button>
+                  </span>
+                </div>
+              </ng-container>
+              <div class="itemLoading" *ngIf="mode.loadingTax">
+                <mat-spinner diameter="30"></mat-spinner>
               </div>
             </div>
           </div>
@@ -745,6 +760,7 @@
               >
             </span>
           </div>
+          <p>Total {{ mode.discounts.length }} discounts</p>
           <div class="gridTable discounts">
             <div class="heading">
               <span>Name</span>
@@ -758,7 +774,8 @@
               <span>Action</span>
             </div>
             <div class="items">
-              <div
+              <ng-container *ngIf="!mode.loadingDiscount">
+                <div
                 class="item"
                 *ngFor="
                     let discount of mode.filteredDiscounts.length
@@ -805,44 +822,57 @@
                 ></viraj-button>
               </span>
               </div>
+              </ng-container>
+              <div class="itemLoading" *ngIf="mode.loadingDiscount">
+                <mat-spinner diameter="30"></mat-spinner>
+              </div>
             </div>
           </div>
         </ng-container>
         <ng-container *ngIf="activeTab == 'Combos'">
           <h3>All Combos</h3>
           <div class="comboCards">
-            <div
-              class="card new"
-              *ngIf="this.dataProvider.getAccess('addNewCombos')"
-              (click)="mode.addCombo()"
-            >
-              <p><i class="ri-add-fill"></i>Add New Combo</p>
-            </div>
-            <div
-              class="card combo"
-              *ngFor="let combo of mode.combos"
-              (click)="mode.editCombo(combo)"
-            >
-              <img
-                [src]="combo.offerImage || 'assets/images/defaultCombo.jpg'"
-              />
-              <mat-slide-toggle
-                *ngIf="!combo.visibilityEnabled"
-                [(ngModel)]="combo.enabled"
-                (change)="mode.updateComboVisibility(combo, toggleElm.checked)"
-                #toggleElm
-                >{{ combo.name }}</mat-slide-toggle
+            <ng-container *ngIf="!mode.loadingCombos">
+              <div
+                class="card new"
+                *ngIf="this.dataProvider.getAccess('addNewCombos')"
+                (click)="mode.addCombo()"
               >
-              <p *ngIf="combo.visibilityEnabled">{{ combo.name }}</p>
-            </div>
-            <div
-              class="card new"
-              *ngIf="
-                mode.combos.length > 10 &&
-                this.dataProvider.getAccess('addNewCombos')
-              "
-            >
-              <p><i class="ri-add-fill"></i>Add New Combo</p>
+                <p><i class="ri-add-fill"></i>Add New Combo</p>
+              </div>
+              <div
+                class="card combo"
+                *ngFor="let combo of mode.combos"
+                (click)="mode.editCombo(combo)"
+              >
+                <div class="image">
+                  <img
+                    [src]="combo.offerImage || 'assets/images/defaultCombo.jpg'"
+                  />
+                </div>
+                <div class="content">
+                  <mat-slide-toggle
+                    *ngIf="!combo.visibilityEnabled"
+                    [(ngModel)]="combo.enabled"
+                    (change)="mode.updateComboVisibility(combo, toggleElm.checked)"
+                    #toggleElm
+                    ></mat-slide-toggle
+                  >
+                  <p>{{ combo.name }}</p>
+                </div>
+              </div>
+              <div
+                class="card new"
+                *ngIf="
+                  mode.combos.length > 10 &&
+                  this.dataProvider.getAccess('addNewCombos')
+                "
+              >
+                <p><i class="ri-add-fill"></i>Add New Combo</p>
+              </div>
+            </ng-container>
+            <div class="itemLoading" *ngIf="mode.loadingCombos">
+              <mat-spinner diameter="30"></mat-spinner>
             </div>
           </div>
         </ng-container>
@@ -858,6 +888,7 @@
               <span>
                 <input
                   matInput
+                  placeholder="Search"
                   (input)="mode.loyaltySearchSubject.next(search.value)"
                   #search
                 />
@@ -884,7 +915,8 @@
                 <span>Actions</span>
               </div>
               <div class="items">
-                <div
+                <ng-container *ngIf="!mode.loadingLoyaltySettings">
+                  <div
                   class="item"
                   *ngFor="
                       let loyaltySetting of mode.filteredLoyaltySettings.length
@@ -892,35 +924,39 @@
                         : mode.loyaltySettings
                   "
                 >
-                <span>
-                  <mat-radio-button [value]="loyaltySetting.id">{{
-                    loyaltySetting.name
-                  }}</mat-radio-button>
-                </span>
-                <span>{{ loyaltySetting.baseRate }}</span>
-                <span>{{ loyaltySetting.expiryDays }}</span>
-                <span>{{ loyaltySetting.creationDate.toDate() | date }}</span>
-                <span>
-                  <div class="badge percentage">
-                    {{ loyaltySetting.addedBy }}
+                  <span>
+                    <mat-radio-button [value]="loyaltySetting.id">{{
+                      loyaltySetting.name
+                    }}</mat-radio-button>
+                  </span>
+                  <span>{{ loyaltySetting.baseRate }}</span>
+                  <span>{{ loyaltySetting.expiryDays }}</span>
+                  <span>{{ loyaltySetting.creationDate.toDate() | date }}</span>
+                  <span>
+                    <div class="badge percentage">
+                      {{ loyaltySetting.addedBy }}
+                    </div>
+                  </span>
+                  <span class="tableActions">
+                    <viraj-button
+                      *ngIf="
+                        this.dataProvider.getAccess('editLoyaltySetting')
+                      "
+                      (vclick)="mode.editLoyaltySetting(loyaltySetting)"
+                      ><i class="ri-pencil-line"></i
+                    ></viraj-button>
+                    <viraj-button
+                      *ngIf="
+                        this.dataProvider.getAccess('deleteLoyaltySetting')
+                      "
+                      (vclick)="mode.deleteLoyaltySetting(loyaltySetting)"
+                      ><i class="ri-delete-bin-line"></i
+                    ></viraj-button>
+                  </span>
                   </div>
-                </span>
-                <span class="tableActions">
-                  <viraj-button
-                    *ngIf="
-                      this.dataProvider.getAccess('editLoyaltySetting')
-                    "
-                    (vclick)="mode.editLoyaltySetting(loyaltySetting)"
-                    ><i class="ri-pencil-line"></i
-                  ></viraj-button>
-                  <viraj-button
-                    *ngIf="
-                      this.dataProvider.getAccess('deleteLoyaltySetting')
-                    "
-                    (vclick)="mode.deleteLoyaltySetting(loyaltySetting)"
-                    ><i class="ri-delete-bin-line"></i
-                  ></viraj-button>
-                </span>
+                </ng-container>
+                <div class="itemLoading" *ngIf="mode.loadingLoyaltySettings">
+                  <mat-spinner diameter="30"></mat-spinner>
                 </div>
               </div>
             </div>

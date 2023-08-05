@@ -105,18 +105,6 @@ export class ProductsService {
       ),
     );
   }
-  getProductsByMenu(menu: Menu) {
-    return getDocs(
-      collection(
-        this.firestore,
-        'business/' +
-          this.dataProvider.businessId +
-          '/menus/' +
-          menu.id +
-          '/products/',
-      ),
-    );
-  }
 
   async updateBulkProducts(products: Product[],selectedMenuId:string) {
     this.dataProvider.loading = true;

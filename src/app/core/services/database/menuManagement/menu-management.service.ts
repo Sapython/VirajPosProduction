@@ -300,6 +300,8 @@ export class MenuManagementService {
     if (localMenu?.recommendedCategories) {
       return localMenu?.recommendedCategories;
     }
+    console.log("recommended: Not available on local fetching from online");
+    
     let res = await getDocs(
       collection(
         this.firestore,
@@ -325,6 +327,7 @@ export class MenuManagementService {
     if (localMenu?.viewCategories[this.dataProvider.currentUser.username]) {
       return localMenu?.viewCategories[this.dataProvider.currentUser.username];
     }
+    console.log("view: Not available on local fetching from online");
     let res = await getDocs(
       collection(
         this.firestore,
@@ -352,6 +355,7 @@ export class MenuManagementService {
     if (localMenu?.rootCategories) {
       return localMenu?.rootCategories;
     }
+    console.log("main: Not available on local fetching from online");
     let res = await getDocs(
       collection(
         this.firestore,
@@ -366,6 +370,32 @@ export class MenuManagementService {
       return res.docs.map((d) => {
         return { ...d.data(), id: d.id };
       });
+    } else {
+      return [];
+    }
+  }
+
+
+  async getProductsByMenu(menu:Menu){
+    let localMenu = await this.getLocalMenu(menu.id)
+    if (localMenu.products){
+      return localMenu.products
+    }
+    console.log("products: Not available on local fetching from online");
+    let res = await getDocs(
+      collection(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menu.id +
+          '/products/',
+      ),
+    );
+    if (res){
+      return res.docs.map((doc)=>{
+        return {...doc.data(),id:doc.id} as Product
+      })
     } else {
       return [];
     }

@@ -378,7 +378,7 @@ export class MenuManagementService {
 
   async getProductsByMenu(menu:Menu){
     let localMenu = await this.getLocalMenu(menu.id)
-    if (localMenu.products){
+    if (localMenu?.products){
       return localMenu.products
     }
     console.log("products: Not available on local fetching from online");

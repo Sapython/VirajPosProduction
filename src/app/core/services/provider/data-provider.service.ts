@@ -810,7 +810,6 @@ export class DataProvider {
       'addNewMenu',
       'switchMenu',
       'viewTable',
-      'reArrangeGroupOrder',
       'settleFromTable',
       'addTable',
       'addNewTakeawayToken',

@@ -386,7 +386,7 @@ export class MenuManagementService {
 
   async getMenu(menuId: string) {
     try {
-      console.log("Downloading menu from server",menuId);
+      // console.log("Downloading menu from server",menuId);
       // get products
       let productsFetchRequest = getDocs(
         collection(
@@ -455,7 +455,7 @@ export class MenuManagementService {
         recommendedCategoriesFetchRequest,
         menuFetchRequest,
       ]);
-      console.log("menu data fetched");
+      // console.log("menu data fetched");
       // check if the menu exists if yes then delete entry
       try {
         var menuExists:any = await firstValueFrom(
@@ -493,7 +493,7 @@ export class MenuManagementService {
         printerSettings: menuExists ? menuExists.printerSettings : [],
         defaultPrinter:menuExists ? menuExists.defaultPrinter : {billPrinter:'',kotPrinter:''}
       };
-      console.log("Saving menu to local db");
+      // console.log("Saving menu to local db");
       firstValueFrom(this.indexedDbService.add('menu', menuData))
         .then((res) => {
           this.dataProvider.menus
@@ -710,7 +710,7 @@ export class MenuManagementService {
         });
         
         allProducts = [...allProducts, ...catGroup.products];
-        console.log("PRODUCTS",catGroup.products,allProducts);
+        // console.log("PRODUCTS",catGroup.products,allProducts);
         let newCategoryData = {
           name: catGroup.name,
           enabled: true,
@@ -723,7 +723,7 @@ export class MenuManagementService {
           printer: '',
           disabled: [],
         }
-        console.log("new newCategoryData",newCategoryData);
+        // console.log("new newCategoryData",newCategoryData);
         let res = await addDoc(
           collection(
             this.firestore,
@@ -1254,7 +1254,7 @@ export class MenuManagementService {
   addCombo(data: Combo, menu: Menu) {
     this.updatableMenus.push(menu.id);
     this.menuUpdated.next();
-    console.log('Add Combo: ', data);
+    // console.log('Add Combo: ', data);
     return addDoc(
       collection(
         this.firestore,
@@ -1517,16 +1517,16 @@ export class MenuManagementService {
   async updatePrinterList(menu:Menu,printerList:PrinterSetting[]){
     // this.updatableMenus.push(menu.id);
     // this.menuUpdated.next();
-    console.log("menu.id",menu.id);
+    // console.log("menu.id",menu.id);
     let localMenu = await this.getLocalMenu(menu.id);
-    console.log("localMenu",localMenu);
+    // console.log("localMenu",localMenu);
     if(localMenu){
       localMenu.printerSettings = printerList;
-      console.log("Updating locally",localMenu);
+      // console.log("Updating locally",localMenu);
       this.indexedDbService.update('menu',localMenu).subscribe((res)=>{
-        console.log("updated the menu",res);
+        // console.log("updated the menu",res);
         this.indexedDbService.getByKey('menu',menu.id).subscribe((res)=>{
-          console.log("updated menu",res);
+          // console.log("updated menu",res);
         });
       },(err)=>{console.log(err);});
     }
@@ -1534,7 +1534,7 @@ export class MenuManagementService {
 
   async getDefaultPrinter(menu:Menu){
     let localMenu = await this.getLocalMenu(menu.id);
-    console.log("defaultPrinters localMenu",localMenu);
+    // console.log("defaultPrinters localMenu",localMenu);
     return localMenu?.defaultPrinter;
   }
 
@@ -1543,7 +1543,7 @@ export class MenuManagementService {
     if(localMenu){
       localMenu.defaultPrinter = printer;
       this.indexedDbService.update('menu',localMenu).subscribe((res)=>{
-        console.log("success",res);
+        // console.log("success",res);
       },(err)=>{console.log(err);});
     }
   }

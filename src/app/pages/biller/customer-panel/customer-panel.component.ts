@@ -60,7 +60,7 @@ export class CustomerPanelComponent implements OnInit {
     redeemLoyalty: new FormControl(),
     totalToBeRedeemedPoints: new FormControl(0, [
       Validators.min(0),
-      Validators.max(this.dataProvider.currentBill.customerInfo.loyaltyPoints),
+      Validators.max(this.dataProvider.currentBill?.customerInfo.loyaltyPoints),
     ]),
   });
   @Input() padding: boolean = true;
@@ -167,7 +167,7 @@ export class CustomerPanelComponent implements OnInit {
       !controls.includes('deliveryName') ||
       !controls.includes('deliveryPhone')
     ) {
-      if (this.dataProvider.currentBill.mode == 'online') {
+      if (this.dataProvider.currentBill?.mode == 'online') {
         // update controls instead of adding them
         this.customerInfoForm.controls['deliveryName'].setValue(
           this.dataProvider.currentBill?.customerInfo.deliveryName,
@@ -231,11 +231,12 @@ export class CustomerPanelComponent implements OnInit {
         this.alertify.presentToast('Loyalty points exceeded');
       }
       console.log("REDEEM",this.dataProvider.currentBill.currentLoyalty.totalToBeRedeemedCost,this.dataProvider.currentBill.currentLoyalty.totalLoyaltyCost,this.dataProvider.currentBill.currentLoyalty.totalLoyaltyPoints,Number(value));
-      
-      this.dataProvider.currentBill.currentLoyalty.totalToBeRedeemedCost =
-        (this.dataProvider.currentBill.currentLoyalty.totalLoyaltyCost /
-          this.dataProvider.currentBill.currentLoyalty.totalLoyaltyPoints) *
-        Number(value);
+      if(this.dataProvider.currentBill){
+        this.dataProvider.currentBill.currentLoyalty.totalToBeRedeemedCost =
+          (this.dataProvider.currentBill.currentLoyalty.totalLoyaltyCost /
+            this.dataProvider.currentBill.currentLoyalty.totalLoyaltyPoints) *
+          Number(value);
+      }
     }
   }
 }

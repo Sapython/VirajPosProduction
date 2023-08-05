@@ -87,7 +87,6 @@ export class EditMenuComponent implements OnInit {
         menuSwitcher: false,
         menu: menu,
       });
-      console.log('Menu', menu);
     });
   }
 
@@ -102,7 +101,6 @@ export class EditMenuComponent implements OnInit {
   }
 
   switchMode(mode: any) {
-    console.log("mode",mode);
     this.dataProvider.billingMode = mode.value;
     if (mode.value == 'dineIn') {
       // console.log("this.dataProvider.dineInMenu",this.dataProvider.dineInMenu);
@@ -113,7 +111,6 @@ export class EditMenuComponent implements OnInit {
       this.dataProvider.currentMenu = this.dataProvider.menus.find((menu) => {
         return menu.selectedMenu?.id == this.dataProvider.dineInMenu?.id && menu.type =='dineIn';
       });
-      console.log("this.dataProvider.dineInMenu?.id",this.dataProvider.dineInMenu?.id,this.dataProvider.currentMenu);
       if (this.dataProvider.currentMenu) {
         this.dataProvider.currentMenu.type = 'dineIn';
         this.dataProvider.products = this.dataProvider.currentMenu.products;
@@ -154,7 +151,6 @@ export class EditMenuComponent implements OnInit {
       }
       // console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
     }
-    console.log("Current menu updated",this.dataProvider.currentMenu);
     this.dataProvider.modeChanged.next(mode.value);
   }
 }

@@ -51,7 +51,7 @@
         Online
       </button>
     </div>
-    <div class="selectMenu">
+    <div class="selectMenu" *ngIf="this.dataProvider.currentMenu">
       <span>Selected Menu: </span>
       <select
         *ngIf="this.dataProvider.getAccess('switchMenu')"
@@ -84,6 +84,7 @@
       class="mode"
       *ngIf="
         mode.active &&
+        this.dataProvider.currentMenu &&
         mode.type == this.dataProvider.currentMenu.type &&
         mode.selectedMenuId == this.dataProvider.currentMenu.selectedMenuId
       "

@@ -4,6 +4,7 @@ import { Billing, Payment } from './payment.structure';
 import { KotConstructor } from './kot.structure';
 import { TableConstructor } from './table.structure';
 import { splittedProduct } from './product.structure';
+import { Menu } from './menu.structure';
 
 export interface BillConstructor {
   id: string;
@@ -37,6 +38,7 @@ export interface BillConstructor {
   billingMode: 'cash' | 'card' | 'upi' | 'nonChargeable';
   mode: 'dineIn' | 'takeaway' | 'online';
   user: UserConstructor;
+  menu:Menu;
   kots: KotConstructor[];
   table: TableConstructor;
   billing: Billing;

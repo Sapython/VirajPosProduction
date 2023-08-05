@@ -58,6 +58,7 @@ section {
       button {
         display: flex;
         border: none;
+        align-items: center;
         background: white;
         color: var(--Viraj-primary);
         gap: 10px;
@@ -94,40 +95,6 @@ section {
       }
     }
   }
-  // .sidebar{
-  //     .menus{
-  //         width: 300px;
-  //         .menu{
-  //             background: #FFD1A2;
-  //             .head{
-  //                 display: flex;
-  //                 justify-content: space-between;
-  //                 align-items: center;
-  //                 border-bottom: 3px solid #962E40;
-  //                 padding: 20px 10px;
-  //                 font-size: var(--Viraj-font-xxlarge);
-  //                 font-weight: 700;
-  //                 color:var(--Viraj-primary-text);
-  //                 i{
-  //                     color:var(--Viraj-primary);
-  //                 }
-  //             }
-  //             .subItems{
-  //                 .section{
-  //                     background:#FFF1E3;
-  //                     padding: 20px 10px;
-  //                     border-bottom: 3px solid var(--Viraj-primary);
-  //                     display: flex;
-  //                     align-items: center;
-  //                     justify-content: space-between;
-  //                 }
-  //                 .active{
-  //                     background: #FFE1C2;
-  //                 }
-  //             }
-  //         }
-  //     }
-  // }
   .actions {
     display: flex;
     justify-content: center;
@@ -468,6 +435,83 @@ section {
             width: 30px;
             height: 30px;
           }
+        }
+      }
+    }
+    .gridTable{
+      border-radius: 8px;
+      border: 2px solid var(--Viraj-primary);
+      background: #FFF;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.25);
+      padding: 0px;
+      overflow: hidden;
+      .heading{
+        display: grid;
+        grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr 1fr 1.2fr;
+        gap:0px;
+        border-bottom: 2px solid var(--Viraj-primary);
+        font-size: var(--Viraj-font-xlarge);
+        font-weight: 600;
+        padding: 15px;
+        background: var(--Viraj-primary-shade);
+        color:var(--Viraj-primary-text);
+      }
+      .items{
+        padding-inline: 15px;
+        .item{
+          display: grid;
+          grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr 1fr 1.2fr;
+          border-bottom: 2px solid #e1e1e1;
+          font-size: var(--Viraj-font-large);
+          font-weight: normal;
+          padding-block: 15px;
+          align-items: center;
+          .tableActions{
+            display: flex;
+            gap:10px;
+          }
+          .badge{
+            border-radius: 14px;
+            padding: 11px;
+            height: min-content;
+            width: 70%;
+            text-overflow: ellipsis;
+            overflow: overflow;
+          }
+          .product{
+            border: 2px solid #494ECF;
+            background: #F5F6FF;
+            color:#494ECF;
+          }
+          .bill{
+            border: 2px solid #962E40;
+            background: #FFF4F6;
+            color:#962E40;
+          }
+          .flat{
+            border: 2px solid #E81E5A;
+            background: #FFF2F6;
+            color:#E81E5A;
+          }
+          .percentage{
+            border: 2px solid #1D9908;
+            background: #F3FFF1;
+            color:#1D9908;
+          }
+        }
+        .item:last-child{
+          border-bottom: none;
+        }
+      }
+
+      &.discounts{
+        .heading,.item{
+          grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1.2fr !important;
+        }
+      }
+      &.loyalty{
+        .heading,.item{
+          grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr 1.2fr !important;
         }
       }
     }

@@ -16,7 +16,7 @@
     "ng": "ng",
     "start": "npm-run-all -p electron:serve ng:serve",
     "ng:serve": "ng serve -c web -o",
-    "ng:serve:external": "ng serve -c web -o --host 192.168.29.182",
+    "ng:serve:external": "ng serve -c web -o --host 192.168.43.183",
     "build": "npm run electron:serve-tsc && ng build --aot --base-href ./ --stats-json",
     "analyze": "webpack-bundle-analyzer dist/stats.json",
     "analyze:build": "npm run build && npm run analyze",

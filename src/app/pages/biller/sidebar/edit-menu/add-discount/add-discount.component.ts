@@ -17,7 +17,6 @@ export class AddDiscountComponent implements OnInit {
     minimumAmount: new FormControl(),
     minimumProducts: new FormControl(),
     maximumDiscount: new FormControl(),
-    menus: new FormControl(null, Validators.required),
     accessLevels: new FormControl(null, Validators.required),
   });
 

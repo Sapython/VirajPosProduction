@@ -129,6 +129,7 @@ export class SplitBillComponent {
       user: this.bill.user,
       createdDate: this.bill.createdDate,
       stage: 'active',
+      menu:this.bill.menu,
       customerInfo: {
         name: this.bill.customerInfo.name || '',
         phone: this.bill.customerInfo.phone || '',

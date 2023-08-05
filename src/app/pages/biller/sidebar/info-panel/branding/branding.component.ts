@@ -12,7 +12,7 @@ export class BrandingComponent {
   @Output() upgrade: EventEmitter<void> = new EventEmitter();
   constructor(public dataProvider: DataProvider) {}
   clicked() {
-    window.open('https://virajglobal.org/', '_blank');
+    // window.open('https://virajglobal.org/', '_blank');
   }
   // generate list of stages
   stages: string[] = Array.from(Array(this.stageNumber).keys()).map(

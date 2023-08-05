@@ -11,7 +11,6 @@ export interface CodeBaseDiscount {
   minimumAmount?: number;
   minimumProducts?: number;
   maximumDiscount?: number;
-  menus?: string[];
   accessLevels: string[];
   reason: string;
 }

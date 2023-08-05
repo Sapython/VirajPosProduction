@@ -61,25 +61,17 @@
               (valueChange)="switchDiscount($event, currentIndex)"
               name="discount"
             >
-              <ng-container
-                *ngFor="
-                  let discount of this.dataProvider.currentBill
-                    .availableDiscounts
-                "
-              >
-                <mat-option
-                  [value]="discount.id"
-                  *ngIf="this.dataProvider.getAccess(discount.accessLevels)"
-                >
-                  <ng-container *ngIf="discount.name">
-                    {{ discount.name }}
-                  </ng-container>
-                  <ng-container *ngIf="!discount.name">
-                    {{ discount.value }}
-                    {{ discount.type == "percentage" ? "%" : "Rs" }}
-                  </ng-container>
-                </mat-option>
+            <mat-option *ngFor="let discount of this.availableDiscounts"
+              [value]="discount.id"
+            >
+              <ng-container *ngIf="discount.name">
+                {{ discount.name }}
               </ng-container>
+              <ng-container *ngIf="!discount.name">
+                {{ discount.value }}
+                {{ discount.type == "percentage" ? "%" : "Rs" }}
+              </ng-container>
+            </mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field appearance="outline">
@@ -234,37 +226,30 @@
           </p></strong
         >
         <mat-form-field
-          appearance="outline"
-          *ngIf="currentDiscount.mode == 'codeBased'"
-        >
-          <mat-label>Select Discount</mat-label>
-          <mat-select
-            placeholder="Discount"
-            (keydown.enter)="reasonInput.focus()"
-            [(ngModel)]="currentDiscount.id"
-            (valueChange)="switchDiscount($event, currentIndex)"
-            name="discount"
+            appearance="outline"
+            *ngIf="currentDiscount.mode == 'codeBased'"
           >
-            <ng-container
-              *ngFor="
-                let discount of this.dataProvider.currentBill.availableDiscounts
-              "
+            <mat-label>Select Discount</mat-label>
+            <mat-select
+              placeholder="Discount"
+              (keydown.enter)="reasonInput.focus()"
+              [(ngModel)]="currentDiscount.id"
+              (valueChange)="switchDiscount($event, currentIndex)"
+              name="discount"
             >
-              <mat-option
-                [value]="discount.id"
-                *ngIf="this.dataProvider.getAccess(discount.accessLevels)"
-              >
-                <ng-container *ngIf="discount.name">
-                  {{ discount.name }}
-                </ng-container>
-                <ng-container *ngIf="!discount.name">
-                  {{ discount.value }}
-                  {{ discount.type == "percentage" ? "%" : "Rs" }}
-                </ng-container>
-              </mat-option>
-            </ng-container>
-          </mat-select>
-        </mat-form-field>
+            <mat-option *ngFor="let discount of this.availableDiscounts"
+              [value]="discount.id"
+            >
+              <ng-container *ngIf="discount.name">
+                {{ discount.name }}
+              </ng-container>
+              <ng-container *ngIf="!discount.name">
+                {{ discount.value }}
+                {{ discount.type == "percentage" ? "%" : "Rs" }}
+              </ng-container>
+            </mat-option>
+            </mat-select>
+          </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Reason</mat-label>
           <input

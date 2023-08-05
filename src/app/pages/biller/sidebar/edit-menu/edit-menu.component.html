@@ -9,22 +9,43 @@
     </span>
     <div class="tabsToggle large">
       <button
-        *ngIf="this.dataProvider.getAccess('editDineInMenu') && this.dataProvider.activeModes[0]"
-        [ngClass]="{ active: this.dataProvider.currentMenu && this.dataProvider.currentMenu.type == 'dineIn' }"
+        *ngIf="
+          this.dataProvider.getAccess('editDineInMenu') &&
+          this.dataProvider.activeModes[0]
+        "
+        [ngClass]="{
+          active:
+            this.dataProvider.currentMenu &&
+            this.dataProvider.currentMenu.type == 'dineIn'
+        }"
         (click)="switchMode({ value: 'dineIn' })"
       >
         Dine In
       </button>
       <button
-        *ngIf="this.dataProvider.getAccess('editTakeawayMenu') && this.dataProvider.activeModes[1]"
-        [ngClass]="{ active: this.dataProvider.currentMenu && this.dataProvider.currentMenu.type == 'takeaway' }"
+        *ngIf="
+          this.dataProvider.getAccess('editTakeawayMenu') &&
+          this.dataProvider.activeModes[1]
+        "
+        [ngClass]="{
+          active:
+            this.dataProvider.currentMenu &&
+            this.dataProvider.currentMenu.type == 'takeaway'
+        }"
         (click)="switchMode({ value: 'takeaway' })"
       >
         Takeaway
       </button>
       <button
-        *ngIf="this.dataProvider.getAccess('editOnlineMenu') && this.dataProvider.activeModes[2]"
-        [ngClass]="{ active: this.dataProvider.currentMenu && this.dataProvider.currentMenu.type == 'online' }"
+        *ngIf="
+          this.dataProvider.getAccess('editOnlineMenu') &&
+          this.dataProvider.activeModes[2]
+        "
+        [ngClass]="{
+          active:
+            this.dataProvider.currentMenu &&
+            this.dataProvider.currentMenu.type == 'online'
+        }"
         (click)="switchMode({ value: 'online' })"
       >
         Online
@@ -54,10 +75,19 @@
     >
       Printer Setting
     </viraj-button>
-    <viraj-button (click)="addNewMenu()" [large]="true" [animated]="true">New Menu</viraj-button>
+    <viraj-button (click)="addNewMenu()" [large]="true" [animated]="true"
+      >New Menu</viraj-button
+    >
   </div>
   <ng-container *ngFor="let mode of this.dataProvider.menus">
-    <div class="mode" *ngIf="mode.active && mode.type == this.dataProvider.currentMenu.type && mode.selectedMenuId == this.dataProvider.currentMenu.selectedMenuId">
+    <div
+      class="mode"
+      *ngIf="
+        mode.active &&
+        mode.type == this.dataProvider.currentMenu.type &&
+        mode.selectedMenuId == this.dataProvider.currentMenu.selectedMenuId
+      "
+    >
       <div class="tabs">
         <div class="tabList">
           <button
@@ -168,11 +198,11 @@
               </div>
               <span *ngIf="this.dataProvider.getAccess('mainCategories')"
                 >Main Categories<viraj-button
-                *ngIf="this.dataProvider.getAccess('addMainCategory')"
-                type="icon"
-                (vclick)="mode.addMainCategory()"
-                ><i class="ri-add-box-fill"></i></viraj-button></span
-              >
+                  *ngIf="this.dataProvider.getAccess('addMainCategory')"
+                  type="icon"
+                  (vclick)="mode.addMainCategory()"
+                  ><i class="ri-add-box-fill"></i></viraj-button
+              ></span>
               <div
                 cdkDropList
                 *ngIf="this.dataProvider.getAccess('mainCategories')"
@@ -252,27 +282,32 @@
                 </viraj-button>
                 <viraj-button
                   *ngIf="this.dataProvider.getAccess('addNewProduct')"
-                  (click)="mode.downloadProducts(mode.selectedCategory.products)"
+                  (click)="
+                    mode.downloadProducts(mode.selectedCategory.products)
+                  "
                   color="primary"
                 >
                   Download Recipe
                 </viraj-button>
                 <viraj-button
-                  *ngIf="['all'].includes(mode.currentType) && this.dataProvider.getAccess('addNewProduct')"
+                  *ngIf="
+                    ['all'].includes(mode.currentType) &&
+                    this.dataProvider.getAccess('addNewProduct')
+                  "
                   (click)="mode.setBulkTaxes(mode.selectedCategory.products)"
                   color="primary"
                 >
                   Set Bulk Taxes
                 </viraj-button>
                 <viraj-button
-                  *ngIf="['view'].includes('editViewCategory')"
+                  *ngIf="['view'].includes(mode.currentType) && dataProvider.getAccess('editViewCategory')"
                   (click)="mode.addUploadedRecipe()"
                   color="primary"
                 >
                   Edit
                 </viraj-button>
                 <viraj-button
-                  *ngIf="['view'].includes('deleteViewCategory')"
+                  *ngIf="['view'].includes(mode.currentType) && dataProvider.getAccess('deleteViewCategory')"
                   (click)="mode.deleteViewCategory()"
                   color="primary"
                 >
@@ -445,11 +480,13 @@
                       type="outline"
                       class="dateSelector"
                       (vclick)="minPicker.open()"
-                      >
-                      {{mode.newDishesForm.value.min ? (mode.newDishesForm.value.min | date) : 'Select Date'}}
-                      <i
-                        class="ri-calendar-2-fill"
-                      ></i
+                    >
+                      {{
+                        mode.newDishesForm.value.min
+                          ? (mode.newDishesForm.value.min | date)
+                          : "Select Date"
+                      }}
+                      <i class="ri-calendar-2-fill"></i
                     ></viraj-button>
                   </div>
                   <div class="customDatePicker">
@@ -465,11 +502,14 @@
                     <viraj-button
                       type="outline"
                       class="dateSelector"
-                      (vclick)="picker.open()">
-                      {{mode.newDishesForm.value.max ? (mode.newDishesForm.value.max | date) : 'Select Date'}}
-                      <i
-                        class="ri-calendar-2-fill"
-                      ></i
+                      (vclick)="picker.open()"
+                    >
+                      {{
+                        mode.newDishesForm.value.max
+                          ? (mode.newDishesForm.value.max | date)
+                          : "Select Date"
+                      }}
+                      <i class="ri-calendar-2-fill"></i
                     ></viraj-button>
                   </div>
                   <viraj-button
@@ -491,7 +531,7 @@
                 cdkDropList
                 (cdkDropListDropped)="mode.reorderProduct($event)"
               >
-              <mat-paginator
+                <mat-paginator
                   *ngIf="
                     mode.filteredProducts.length == 0 &&
                     mode.currentType == 'all'
@@ -502,21 +542,27 @@
                   (page)="mode.pageChanged($event)"
                   aria-label="Select page"
                 >
-              </mat-paginator>
-              <div
+                </mat-paginator>
+                <div
                   cdkDrag
                   class="product"
                   *ngFor="
                     let product of mode.filteredProducts.length > 0
                       ? mode.filteredProducts
-                      : (mode.selectedCategory.id == 'allProducts' ? mode.products : mode.selectedCategory.products)
+                      : mode.selectedCategory.products
                   "
                 >
                   <p>{{ product.name }}</p>
                   <div class="pricing">
                     <strong>{{ product.price | currency: "INR" }}</strong>
                     <span
-                      *ngIf="!(product.taxes && product.taxes.length > 0 && mode.hasValidTaxes(product.taxes))"
+                      *ngIf="
+                        !(
+                          product.taxes &&
+                          product.taxes.length > 0 &&
+                          mode.hasValidTaxes(product.taxes)
+                        )
+                      "
                       class="danger"
                       >No Taxes</span
                     >
@@ -600,13 +646,21 @@
                       <i class="ri-delete-bin-6-fill"></i>
                     </viraj-button>
                   </div>
-              </div>
+                </div>
               </div>
             </div>
           </div>
         </ng-container>
       </div>
-      <div class="tableView" *ngIf="activeTab == 'Taxes' || activeTab == 'Discounts' || activeTab == 'Combos' || activeTab == 'Loyalty'">
+      <div
+        class="tableView"
+        *ngIf="
+          activeTab == 'Taxes' ||
+          activeTab == 'Discounts' ||
+          activeTab == 'Combos' ||
+          activeTab == 'Loyalty'
+        "
+      >
         <ng-container *ngIf="activeTab == 'Taxes'">
           <div class="rowHeading">
             <h3>Taxes</h3>
@@ -624,58 +678,53 @@
             </span>
           </div>
           <p>Total {{ mode.taxes.length }} taxes</p>
-          <div class="tableContainer">
-            <table>
-              <thead>
-                <tr>
-                  <th>Tax Name</th>
-                  <th>Tax Cost</th>
-                  <th>Type</th>
-                  <th>Mode</th>
-                  <th>Add Date</th>
-                  <th>Update Date</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  *ngFor="
-                    let tax of mode.filteredTaxes.length
-                      ? mode.filteredTaxes
-                      : mode.taxes
-                  "
-                >
-                  <td>{{ tax.name }}</td>
-                  <td>{{ tax.cost }}</td>
-                  <td>
-                    <div class="badge inactive">
-                      {{ tax.type | titlecase }}
-                    </div>
-                  </td>
-                  <td>
-                    <div class="badge active">
-                      {{ tax.mode | titlecase }}
-                    </div>
-                  </td>
-                  <td>{{ tax.creationDate.toDate() | date }}</td>
-                  <td>{{ tax.updateDate.toDate() | date }}</td>
-                  <td>
-                    <viraj-button
-                      *ngIf="this.dataProvider.getAccess('editTaxes')"
-                      (vclick)="mode.editTax(tax)"
-                      type="icon"
-                      ><i class="ri-pencil-line"></i
-                    ></viraj-button>
-                    <viraj-button
-                      *ngIf="this.dataProvider.getAccess('deleteTaxes')"
-                      (vclick)="mode.deleteTax(tax.id)"
-                      type="icon"
-                      ><i class="ri-delete-bin-line"></i
-                    ></viraj-button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="gridTable">
+            <div class="heading">
+              <span>Tax Name</span>
+              <span>Amount</span>
+              <span>Mode</span>
+              <span>Type</span>
+              <span>Created On</span>
+              <span>Last Updated</span>
+              <span>Actions</span>
+            </div>
+            <div class="items">
+              <div
+                class="item"
+                *ngFor="
+                  let tax of mode.filteredTaxes.length
+                    ? mode.filteredTaxes
+                    : mode.taxes
+                "
+              >
+                <span>{{ tax.name }}</span>
+                <span>{{ tax.cost }}</span>
+                <span>
+                  <div class="badge" [ngClass]="{percentage:tax.type =='percentage',flat:tax.type =='amount'}">
+                    {{ tax.type | titlecase }}
+                  </div>
+                </span>
+                <span>
+                  <div class="badge" [ngClass]="{product:tax.mode == 'product',bill:tax.mode =='bill'}">
+                    {{ tax.mode | titlecase }}
+                  </div>
+                </span>
+                <span>{{ tax.creationDate.toDate() | date }}</span>
+                <span>{{ tax.updateDate.toDate() | date }}</span>
+                <span class="tableActions">
+                  <viraj-button
+                    *ngIf="this.dataProvider.getAccess('editTaxes')"
+                    (vclick)="mode.editTax(tax)"
+                    ><i class="ri-pencil-line"></i
+                  ></viraj-button>
+                  <viraj-button
+                    *ngIf="this.dataProvider.getAccess('deleteTaxes')"
+                    (vclick)="mode.deleteTax(tax.id)"
+                    ><i class="ri-delete-bin-line"></i
+                  ></viraj-button>
+                </span>
+              </div>
+            </div>
           </div>
         </ng-container>
         <ng-container *ngIf="activeTab == 'Discounts'">
@@ -683,7 +732,8 @@
             <h3>Discounts</h3>
             <span>
               <input
-                matInput placeholder="Search"
+                matInput
+                placeholder="Search"
                 (input)="mode.discountsSearchSubject.next(search.value)"
                 #search
               />
@@ -694,83 +744,67 @@
               >
             </span>
           </div>
-          <div class="tableContainer">
-            <table>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Value</th>
-                  <th>Type</th>
-                  <th>Min Amount</th>
-                  <th>Max Products</th>
-                  <th>Max Discount</th>
-                  <th>Created On</th>
-                  <th>Menus</th>
-                  <th>Access</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  *ngFor="
+          <div class="gridTable discounts">
+            <div class="heading">
+              <span>Name</span>
+              <span>Value</span>
+              <span>Type</span>
+              <span>Min Amount</span>
+              <span>Max Products</span>
+              <span>Max Discount</span>
+              <span>Created On</span>
+              <span>Access</span>
+              <span>Action</span>
+            </div>
+            <div class="items">
+              <div
+                class="item"
+                *ngFor="
                     let discount of mode.filteredDiscounts.length
                       ? mode.filteredDiscounts
                       : mode.discounts
                   "
-                >
-                  <td>{{ discount.name }}</td>
-                  <td>
-                    <div class="badge inactive">
-                      {{ discount.value }}
-                    </div>
-                  </td>
-                  <td>
-                    <div class="badge active">
-                      {{ discount.type | titlecase}}
-                    </div>
-                  </td>
-                  <td>{{ discount.minimumAmount }}</td>
-                  <td>{{ discount.minimumProducts }}</td>
-                  <td>{{ discount.maximumDiscount }}</td>
-                  <td>
-                    {{
-                      discount.creationDate
-                        ? (discount.creationDate.toDate() | date)
-                        : "N/A"
-                    }}
-                  </td>
-                  <td>
-                    <li *ngFor="let item of mode.getMappedMenu(discount.menus)">
-                      {{ item.name }}
-                    </li>
-                  </td>
-                  <td>
-                    <li *ngFor="let item of discount.accessLevels">
-                      {{ item }}
-                    </li>
-                  </td>
-                  <td>
-                    <viraj-button
-                      *ngIf="this.dataProvider.getAccess('editDiscount')"
-                      (vclick)="mode.editDiscount(discount)"
-                      type="icon"
-                      ><i class="ri-pencil-fill"></i
-                    ></viraj-button>
-                    <viraj-button
-                      *ngIf="this.dataProvider.getAccess('deleteDiscounts')"
-                      (vclick)="mode.deleteDiscount(discount.id)"
-                      type="icon"
-                      ><i class="ri-delete-bin-2-fill"></i
-                    ></viraj-button>
-                  </td>
-                </tr>
-                <tr *ngIf="mode.loadingDiscount">
-                  <td colspan="8">
-                    <mat-spinner mode="indeterminate"> </mat-spinner>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+              >
+              <span>{{ discount.name }}</span>
+              <span>
+                <div class="badge product">
+                  {{ discount.value }}
+                </div>
+              </span>
+              <span>
+                <div class="badge" [ngClass]="{percentage:discount.type =='percentage',flat:discount.type =='flat'}">
+                  {{ discount.type | titlecase }}
+                </div>
+              </span>
+              <span>{{ discount.minimumAmount }}</span>
+              <span>{{ discount.minimumProducts }}</span>
+              <span>{{ discount.maximumDiscount }}</span>
+              <span>
+                {{
+                  discount.creationDate
+                    ? (discount.creationDate.toDate() | date)
+                    : "N/A"
+                }}
+              </span>
+              <span>
+                <li *ngFor="let item of discount.accessLevels">
+                  {{ item }}
+                </li>
+              </span>
+              <span class="tableActions">
+                <viraj-button
+                  *ngIf="this.dataProvider.getAccess('editDiscount')"
+                  (vclick)="mode.editDiscount(discount)"
+                  ><i class="ri-pencil-fill"></i
+                ></viraj-button>
+                <viraj-button
+                  *ngIf="this.dataProvider.getAccess('deleteDiscounts')"
+                  (vclick)="mode.deleteDiscount(discount.id)"
+                  ><i class="ri-delete-bin-2-fill"></i
+                ></viraj-button>
+              </span>
+              </div>
+            </div>
           </div>
         </ng-container>
         <ng-container *ngIf="activeTab == 'Combos'">
@@ -783,9 +817,21 @@
             >
               <p><i class="ri-add-fill"></i>Add New Combo</p>
             </div>
-            <div class="card combo" *ngFor="let combo of mode.combos" (click)="mode.editCombo(combo)">
-              <img [src]="combo.offerImage || 'assets/images/defaultCombo.jpg'" />
-              <mat-slide-toggle *ngIf="!combo.visibilityEnabled" [(ngModel)]="combo.enabled" (change)="mode.updateComboVisibility(combo,toggleElm.checked)" #toggleElm>{{ combo.name }}</mat-slide-toggle>
+            <div
+              class="card combo"
+              *ngFor="let combo of mode.combos"
+              (click)="mode.editCombo(combo)"
+            >
+              <img
+                [src]="combo.offerImage || 'assets/images/defaultCombo.jpg'"
+              />
+              <mat-slide-toggle
+                *ngIf="!combo.visibilityEnabled"
+                [(ngModel)]="combo.enabled"
+                (change)="mode.updateComboVisibility(combo, toggleElm.checked)"
+                #toggleElm
+                >{{ combo.name }}</mat-slide-toggle
+              >
               <p *ngIf="combo.visibilityEnabled">{{ combo.name }}</p>
             </div>
             <div
@@ -827,56 +873,55 @@
               </span>
             </div>
             <p>Total {{ mode.loyaltySettings.length }} Configurations</p>
-            <div class="tableContainer">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Loyalty Setting Name</th>
-                    <th>Base rate</th>
-                    <th>Expiry Days</th>
-                    <th>Added Date</th>
-                    <th>Added By</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    *ngFor="
+            <div class="gridTable loyalty">
+              <div class="heading">
+                <span>Loyalty Setting Name</span>
+                <span>Base rate</span>
+                <span>Expiry Days</span>
+                <span>Added Date</span>
+                <span>Added By</span>
+                <span>Actions</span>
+              </div>
+              <div class="items">
+                <div
+                  class="item"
+                  *ngFor="
                       let loyaltySetting of mode.filteredLoyaltySettings.length
                         ? mode.filteredLoyaltySettings
                         : mode.loyaltySettings
+                  "
+                >
+                <span>
+                  <mat-radio-button [value]="loyaltySetting.id">{{
+                    loyaltySetting.name
+                  }}</mat-radio-button>
+                </span>
+                <span>{{ loyaltySetting.baseRate }}</span>
+                <span>{{ loyaltySetting.expiryDays }}</span>
+                <span>{{ loyaltySetting.creationDate.toDate() | date }}</span>
+                <span>
+                  <div class="badge percentage">
+                    {{ loyaltySetting.addedBy }}
+                  </div>
+                </span>
+                <span class="tableActions">
+                  <viraj-button
+                    *ngIf="
+                      this.dataProvider.getAccess('editLoyaltySetting')
                     "
-                  >
-                    <td>
-                      <mat-radio-button [value]="loyaltySetting.id">{{
-                        loyaltySetting.name
-                      }}</mat-radio-button>
-                    </td>
-                    <td>{{ loyaltySetting.baseRate }}</td>
-                    <td>{{ loyaltySetting.expiryDays }}</td>
-                    <td>{{ loyaltySetting.creationDate.toDate() | date }}</td>
-                    <td>{{ loyaltySetting.addedBy }}</td>
-                    <td>
-                      <viraj-button
-                        *ngIf="
-                          this.dataProvider.getAccess('editLoyaltySetting')
-                        "
-                        (vclick)="mode.editLoyaltySetting(loyaltySetting)"
-                        type="icon"
-                        ><i class="ri-pencil-line"></i
-                      ></viraj-button>
-                      <viraj-button
-                        *ngIf="
-                          this.dataProvider.getAccess('deleteLoyaltySetting')
-                        "
-                        (vclick)="mode.deleteLoyaltySetting(loyaltySetting)"
-                        type="icon"
-                        ><i class="ri-delete-bin-line"></i
-                      ></viraj-button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                    (vclick)="mode.editLoyaltySetting(loyaltySetting)"
+                    ><i class="ri-pencil-line"></i
+                  ></viraj-button>
+                  <viraj-button
+                    *ngIf="
+                      this.dataProvider.getAccess('deleteLoyaltySetting')
+                    "
+                    (vclick)="mode.deleteLoyaltySetting(loyaltySetting)"
+                    ><i class="ri-delete-bin-line"></i
+                  ></viraj-button>
+                </span>
+                </div>
+              </div>
             </div>
           </mat-radio-group>
         </ng-container>

@@ -128,6 +128,7 @@ export class Bill implements BillConstructor {
     this.kots.find((kot) => kot.stage === 'active') || null;
   billUpdated: Subject<boolean | void> = new Subject<boolean | void>();
   canPrintKot: boolean = false;
+  canBeDiscounted: boolean = true;
   constructor(
     id: string,
     table: Table,

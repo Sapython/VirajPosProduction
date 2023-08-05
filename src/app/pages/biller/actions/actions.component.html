@@ -134,7 +134,7 @@
       <viraj-button (vclick)="finalizeBill()">Finalize Bill</viraj-button>
       <ng-container *ngIf="this.dataProvider.getAccess('applyDiscount')">
         <viraj-button
-          [disabled]="!!this.dataProvider.currentBill?.nonChargeableDetail"
+          [disabled]="!!this.dataProvider.currentBill?.nonChargeableDetail || !this.dataProvider.currentBill?.canBeDiscounted"
           [matTooltip]="
             !!this.dataProvider.currentBill?.nonChargeableDetail
               ? 'Cannot apply discount to NC bill'

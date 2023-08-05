@@ -33,17 +33,31 @@ export class AddDiscountComponent implements OnInit {
     | DirectFlatDiscount
     | DirectPercentDiscount
   )[] = [];
+  availableDiscounts: CodeBaseDiscount[] = [];
   constructor(
     private dialogRef: DialogRef,
     public dataProvider: DataProvider,
     private dialog: Dialog,
-    @Inject(DIALOG_DATA) bill: Bill | BillConstructor,
+    @Inject(DIALOG_DATA) public bill: Bill | BillConstructor,
   ) {
+    console.log("Discount Bill",bill);
+    if(this.bill){
+      this.currentDiscount = this.appliedDiscounts[0];
+      let billMenu = this.dataProvider.menus.find((menu)=>menu.selectedMenuId == this.bill.menu.id);
+      console.log("THis menu",billMenu);
+      if(billMenu){
+        this.availableDiscounts = billMenu.discounts;
+      } else {
+        this.availableDiscounts = [];
+      }
+      console.log("this.availableDiscounts disc modal",this.availableDiscounts.map((discount)=>discount.accessLevels));
+      this.availableDiscounts = this.availableDiscounts.filter((discount)=> discount.accessLevels.includes(this.dataProvider.currentBusinessUser.access.accessLevel))
+      console.log("filtered this.availableDiscounts disc modal",this.availableDiscounts);
+    }
     if (this.dataProvider.currentBill) {
       this.appliedDiscounts = bill.billing.discount.map((discount) => {
         return discount;
       });
-      this.currentDiscount = this.appliedDiscounts[0];
     }
   }
 
@@ -73,7 +87,6 @@ export class AddDiscountComponent implements OnInit {
         id: '',
         name: '',
         type: 'percentage',
-        menus: [],
         reason: '',
         value: 0,
         totalAppliedDiscount: 0,
@@ -107,7 +120,6 @@ export class AddDiscountComponent implements OnInit {
         id: '',
         name: '',
         type: 'percentage',
-        menus: [],
         reason: '',
         value: 0,
         totalAppliedDiscount: 0,

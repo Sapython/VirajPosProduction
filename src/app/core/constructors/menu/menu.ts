@@ -547,25 +547,27 @@ export class ModeConfig {
     const dialog = this.dialog.open(AddMainCategoryComponent);
   }
 
-  deleteViewCategory() {
-    this.dataProvider.loading = true;
-    this.menuManagementService
-      .deleteViewCategory(this.selectedMenuId, this.selectedCategory.id)
-      .then((data) => {
-        this.alertify.presentToast('Category Deleted Successfully');
-        this.viewCategories = this.viewCategories.filter(
-          (cat) => cat.id != this.selectedCategory.id,
-        );
-        this.getViewCategories();
-        this.selectedCategory = this.allProductsCategory;
-        this.currentType = 'all';
-      })
-      .catch((err) => {
-        this.alertify.presentToast('Category Delete Failed');
-      })
-      .finally(() => {
-        this.dataProvider.loading = false;
-      });
+  async deleteViewCategory() {
+    if (await this.dataProvider.confirm('Are you sure you want to delete',[1])){
+      this.dataProvider.loading = true;
+      this.menuManagementService
+        .deleteViewCategory(this.selectedMenuId, this.selectedCategory.id)
+        .then((data) => {
+          this.alertify.presentToast('Category Deleted Successfully');
+          this.viewCategories = this.viewCategories.filter(
+            (cat) => cat.id != this.selectedCategory.id,
+          );
+          this.getViewCategories();
+          this.selectedCategory = this.allProductsCategory;
+          this.currentType = 'all';
+        })
+        .catch((err) => {
+          this.alertify.presentToast('Category Delete Failed');
+        })
+        .finally(() => {
+          this.dataProvider.loading = false;
+        });
+    }
   }
 
   addViewCategory() {

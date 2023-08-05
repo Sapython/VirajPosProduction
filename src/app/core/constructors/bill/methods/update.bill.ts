@@ -99,6 +99,7 @@ export function toObject(this: Bill) {
     table: this.table.id,
     billNo: this.billNo || null,
     orderNo: this.orderNo || null,
+    menu: this.menu,
     mode: this.mode,
     billReprints: this.billReprints,
     optionalTax: this.optionalTax,

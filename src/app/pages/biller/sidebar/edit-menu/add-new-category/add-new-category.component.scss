@@ -9,9 +9,15 @@ section {
     align-items: center;
     justify-content: space-between;
     border-bottom: 2px solid #c7c7c7;
-    padding: 0px 20px;
-    padding-bottom: 20px;
+    padding: 20px;
     margin-bottom: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    h1{
+      margin:0;
+    }
+  }
+  mat-form-field{
     width: 100%;
   }
   form {

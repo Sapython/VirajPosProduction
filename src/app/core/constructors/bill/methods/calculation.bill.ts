@@ -10,7 +10,6 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   // check individual product for tax and if the tax.mode is inclusive then add the applicable tax to totalTaxValue or if the tax.mode is exclusive then decrease the price of product by tax rate and add the applicableValue to totalTaxValue
   let calculationResults = calculateProducts(this.kots);
   this.calculateLoyalty(calculationResults.allProducts);
-  console.log("calculationResults",calculationResults);
   let allProducts = calculationResults.allProducts;
   let finalTaxes: Tax[] = calculationResults.finalTaxes;
   let finalAdditionalTax = calculationResults.finalAdditionalTax;
@@ -20,8 +19,9 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   let localSubtotalForLoyalty = this.currentLoyalty.totalToBeRedeemedCost;
   // console.log("this.billing.subTotal",this.billing.subTotal);
   let applicableDiscount = 0;
+  this.anyComboCanBeDiscounted();
   // console.log("bill allProducts",allProducts);
-  if(this.anyComboCanBeDiscounted()){
+  if(this.canBeDiscounted){
       // apply discount to subTotal
     this.billing.discount.forEach((discount) => {
       discount.totalAppliedDiscount = 0;
@@ -47,9 +47,7 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
     this.billing.discount = [];
   }
   
-  console.log("Prev final taxes",finalTaxes);
   this.billing.taxes = finalTaxes;
-  console.log("Billing taxes",this.billing.taxes);
   let totalApplicableTax = this.billing.taxes.reduce((acc, cur) => {
     return acc + cur.amount;
   }, 0);
@@ -185,7 +183,6 @@ export function calculateProducts(kots: (Kot | KotConstructor)[]) {
       } else {
         modifiedAllProducts.push(JSON.parse(JSON.stringify(product)));
       }
-      console.log('product taxes',product.name,product.id, finalTaxes.map((d)=>d.id),finalTaxes.map((t)=>t.amount));
     } else {
       // calculation for combo
       // combo is an ApplicableCombo class
@@ -200,10 +197,8 @@ export function calculateProducts(kots: (Kot | KotConstructor)[]) {
           finalTaxes.push(JSON.parse(JSON.stringify(comboTax)));
         }
       });
-      console.log('combo taxes',combo.name,combo.id, combo.finalTaxes.map((d)=>d.id),combo.finalTaxes.map((t)=>t.amount));
     }
   });
-  console.log("Final taxes",finalTaxes);
   // merge all finalTaxes by mathcing their id and then adding their amount
   let groupedFinalTaxes = [];
   finalTaxes.forEach((tax: Tax) => {
@@ -237,5 +232,7 @@ export function anyComboCanBeDiscounted(this:Bill){
       }
     });
   });
+  console.log("Can be discounted",this.canBeDiscounted);
+  this.canBeDiscounted = canBeDiscounted;
   return canBeDiscounted;
 }

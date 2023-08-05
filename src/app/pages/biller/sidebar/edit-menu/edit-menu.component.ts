@@ -1,5 +1,5 @@
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { AlertsAndNotificationsService } from '../../../../core/services/alerts-and-notification/alerts-and-notifications.service';
 import { AddMenuComponent } from './add-menu/add-menu.component';
 import { Category } from '../../../../types/category.structure';
@@ -12,6 +12,7 @@ import { ModeConfig } from '../../../../core/constructors/menu/menu';
   selector: 'app-edit-menu',
   templateUrl: './edit-menu.component.html',
   styleUrls: ['./edit-menu.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditMenuComponent implements OnInit {
   public recommended: Category[] = [];

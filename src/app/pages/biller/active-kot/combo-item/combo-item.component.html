@@ -23,7 +23,7 @@
     <ng-container *ngIf="editMode && !newCombo">
       <viraj-button (vclick)="activateCombo()">Activate</viraj-button>
     </ng-container>
-    <viraj-button [disabled]="editMode || newCombo" (vclick)="delete.emit()"
+    <viraj-button [disabled]="!(editMode && newCombo)" (vclick)="delete.emit()"
       >Delete</viraj-button
     >
   </div>

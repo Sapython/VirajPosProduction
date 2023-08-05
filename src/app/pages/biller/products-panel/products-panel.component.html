@@ -20,6 +20,7 @@
             categoryComboSearchResults.length) > 5)
     }"
   >
+  <ng-container *ngIf="!this.searchVisible">
     <ng-container *ngIf="mode == 'products'">
       <ng-container
         *ngFor="
@@ -54,6 +55,23 @@
         ></app-combo-card>
       </ng-container>
     </ng-container>
+  </ng-container>
+  <ng-container *ngIf="this.searchVisible">
+    <ng-container
+        *ngFor="let item of this.searchResults"
+      >
+        <app-product-card
+          [taxes]="item.taxes"
+          (click)="item.taxes ? selectProduct(item) : {}"
+          [tags]="item.tags"
+          [category]="item.category.name"
+          [productName]="item.name"
+          [veg]="item.type == 'veg'"
+          [price]="item.price"
+          *ngIf="item.visible"
+        ></app-product-card>
+      </ng-container>
+  </ng-container>
   </section>
 </ng-container>
 <ng-container *ngIf="this.selectedCombo">
@@ -70,7 +88,6 @@
         <viraj-button type="icon" (vclick)="selectedCombo = undefined"
           ><i class="ri-arrow-left-fill"></i
         ></viraj-button>
-        <img [src]="selectedCombo.offerImage" alt="" />
         <p>{{ selectedCombo.name }}</p>
       </div>
       <div class="categories">

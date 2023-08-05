@@ -99,10 +99,10 @@
     >
       <div class="heading">
         <h3>{{ tableGroup.name }}</h3>
-        <viraj-button type="icon" (vclick)="editGroup(tableGroup.name)"
+        <viraj-button type="icon" *ngIf="this.dataProvider.getAccess('reArrangeGroupOrder')" (vclick)="editGroup(tableGroup.name)"
           ><i class="ri-edit-line"></i
         ></viraj-button>
-        <viraj-button type="icon" (vclick)="deleteSection(tableGroup.name)"
+        <viraj-button type="icon" *ngIf="this.dataProvider.getAccess('reArrangeGroupOrder')" (vclick)="deleteSection(tableGroup.name)"
           ><i class="ri-delete-bin-6-line"></i
         ></viraj-button>
       </div>
@@ -158,6 +158,7 @@
               [noPropogation]="true"
               [minimalPadding]="true"
               type="icon"
+              *ngIf="this.dataProvider.getAccess('reArrangeGroupOrder')"
               (vclick)="editTable(table)"
               ><i class="ri-edit-line"></i
             ></viraj-button>

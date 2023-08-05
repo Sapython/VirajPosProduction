@@ -15,7 +15,6 @@
         <th>Min Products</th>
         <th>Max Discount</th>
         <th>Created On</th>
-        <th>Menus</th>
         <th>Access</th>
         <th>Action</th>
       </tr>
@@ -34,11 +33,6 @@
               ? (discount.creationDate.toDate() | date)
               : "N/A"
           }}
-        </td>
-        <td>
-          <li *ngFor="let item of getMappedMenu(discount.menus)">
-            {{ item.name }}
-          </li>
         </td>
         <td>
           <li *ngFor="let item of discount.accessLevels">

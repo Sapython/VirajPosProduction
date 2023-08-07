@@ -1019,6 +1019,7 @@ export interface ChannelWiseAnalyticsData {
     },
     tableWise:{
       table:string;
+      tableId:string;
       totalSales:number;
       totalBills:number;
       bills:{
@@ -1028,8 +1029,10 @@ export interface ChannelWiseAnalyticsData {
         totalSales: number,
       }[]
     }[],
+    maxTables:number;
     time:{
       time:string;
+      timeNumber:number;
       totalSales:number;
       totalBills:number;
       bills:{
@@ -1061,21 +1064,22 @@ export interface ChannelWiseAnalyticsData {
         id: string;
       };
     }[];
+    priceTopCategory:any;
+    quantityTopCategory:any;
     byPriceMax:number;
     byQuantityMax:number;
   };
   suspiciousActivities: any[];
-  userWiseActions: [
-    {
-      userId: string;
-      userRef: any;
-      actions: {
-        bills:any[];
-        kots:any[];
-        discounts: any[];
-        settlements: any[];
-        ncs: any[];
-      };
-    },
+  userWiseActions: {
+    userId: string;
+    userRef: any;
+    actions: {
+      bills:any[];
+      kots:any[];
+      discounts: any[];
+      settlements: any[];
+      ncs: any[];
+    };
+  }[
   ];
 }

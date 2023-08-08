@@ -25,7 +25,7 @@
 
 ## ActionsModule
 
-Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/pages/biller/actions/actions.module.ts
+Filename: /Users/sapython/Documents/GitHub/VrajeraPosProduction/src/app/pages/biller/actions/actions.module.ts
 
 | Section | Classes, service, modules |
 | ---- |:-----------|
@@ -38,7 +38,7 @@ Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/pages/bill
 
 ## ActiveKotModule
 
-Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/pages/biller/active-kot/active-kot.module.ts
+Filename: /Users/sapython/Documents/GitHub/VrajeraPosProduction/src/app/pages/biller/active-kot/active-kot.module.ts
 
 | Section | Classes, service, modules |
 | ---- |:-----------|
@@ -51,7 +51,7 @@ Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/pages/bill
 
 ## AppRoutingModule
 
-Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/app-routing.module.ts
+Filename: /Users/sapython/Documents/GitHub/VrajeraPosProduction/src/app/app-routing.module.ts
 
 | Section | Classes, service, modules |
 | ---- |:-----------|
@@ -64,7 +64,7 @@ Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/app-routin
 
 ## AppModule
 
-Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/app.module.ts
+Filename: /Users/sapython/Documents/GitHub/VrajeraPosProduction/src/app/app.module.ts
 
 | Section | Classes, service, modules |
 | ---- |:-----------|
@@ -77,7 +77,7 @@ Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/app.module
 
 ## BaseComponentsModule
 
-Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/shared/base-components/base-components.module.ts
+Filename: /Users/sapython/Documents/GitHub/VrajeraPosProduction/src/app/shared/base-components/base-components.module.ts
 
 | Section | Classes, service, modules |
 | ---- |:-----------|
@@ -90,7 +90,7 @@ Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/shared/bas
 
 ## BillerRoutingModule
 
-Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/pages/biller/biller-routing.module.ts
+Filename: /Users/sapython/Documents/GitHub/VrajeraPosProduction/src/app/pages/biller/biller-routing.module.ts
 
 | Section | Classes, service, modules |
 | ---- |:-----------|
@@ -103,7 +103,7 @@ Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/pages/bill
 
 ## BillerModule
 
-Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/pages/biller/biller.module.ts
+Filename: /Users/sapython/Documents/GitHub/VrajeraPosProduction/src/app/pages/biller/biller.module.ts
 
 | Section | Classes, service, modules |
 | ---- |:-----------|
@@ -116,7 +116,7 @@ Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/pages/bill
 
 ## EmergencyModule
 
-Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/pages/biller/emergency/emergency.module.ts
+Filename: /Users/sapython/Documents/GitHub/VrajeraPosProduction/src/app/pages/biller/emergency/emergency.module.ts
 
 | Section | Classes, service, modules |
 | ---- |:-----------|
@@ -129,7 +129,7 @@ Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/pages/bill
 
 ## HelpersModule
 
-Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/shared/helpers/helpers.module.ts
+Filename: /Users/sapython/Documents/GitHub/VrajeraPosProduction/src/app/shared/helpers/helpers.module.ts
 
 | Section | Classes, service, modules |
 | ---- |:-----------|
@@ -142,7 +142,7 @@ Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/shared/hel
 
 ## LoadingRoutingModule
 
-Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/pages/auth/loading/loading-routing.module.ts
+Filename: /Users/sapython/Documents/GitHub/VrajeraPosProduction/src/app/pages/auth/loading/loading-routing.module.ts
 
 | Section | Classes, service, modules |
 | ---- |:-----------|
@@ -155,7 +155,7 @@ Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/pages/auth
 
 ## LoadingModule
 
-Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/pages/auth/loading/loading.module.ts
+Filename: /Users/sapython/Documents/GitHub/VrajeraPosProduction/src/app/pages/auth/loading/loading.module.ts
 
 | Section | Classes, service, modules |
 | ---- |:-----------|
@@ -168,7 +168,7 @@ Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/pages/auth
 
 ## PopoverModule
 
-Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/shared/popover/popover.module.ts
+Filename: /Users/sapython/Documents/GitHub/VrajeraPosProduction/src/app/shared/popover/popover.module.ts
 
 | Section | Classes, service, modules |
 | ---- |:-----------|
@@ -181,7 +181,7 @@ Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/shared/pop
 
 ## ProductsPanelModule
 
-Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/pages/biller/products-panel/products-panel.module.ts
+Filename: /Users/sapython/Documents/GitHub/VrajeraPosProduction/src/app/pages/biller/products-panel/products-panel.module.ts
 
 | Section | Classes, service, modules |
 | ---- |:-----------|
@@ -194,7 +194,7 @@ Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/pages/bill
 
 ## RecommendedModule
 
-Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/pages/biller/recommended/recommended.module.ts
+Filename: /Users/sapython/Documents/GitHub/VrajeraPosProduction/src/app/pages/biller/recommended/recommended.module.ts
 
 | Section | Classes, service, modules |
 | ---- |:-----------|
@@ -207,7 +207,7 @@ Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/pages/bill
 
 ## SearchPanelModule
 
-Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/pages/biller/search-panel/search-panel.module.ts
+Filename: /Users/sapython/Documents/GitHub/VrajeraPosProduction/src/app/pages/biller/search-panel/search-panel.module.ts
 
 | Section | Classes, service, modules |
 | ---- |:-----------|
@@ -220,7 +220,7 @@ Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/pages/bill
 
 ## SidebarModule
 
-Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/pages/biller/sidebar/sidebar.module.ts
+Filename: /Users/sapython/Documents/GitHub/VrajeraPosProduction/src/app/pages/biller/sidebar/sidebar.module.ts
 
 | Section | Classes, service, modules |
 | ---- |:-----------|
@@ -233,7 +233,7 @@ Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/pages/bill
 
 ## SystemModule
 
-Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/pages/biller/system/system.module.ts
+Filename: /Users/sapython/Documents/GitHub/VrajeraPosProduction/src/app/pages/biller/system/system.module.ts
 
 | Section | Classes, service, modules |
 | ---- |:-----------|
@@ -246,7 +246,7 @@ Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/pages/bill
 
 ## TableModule
 
-Filename: /Users/sapython/Documents/GitHub/VirajPosProduction/src/app/pages/biller/table/table.module.ts
+Filename: /Users/sapython/Documents/GitHub/VrajeraPosProduction/src/app/pages/biller/table/table.module.ts
 
 | Section | Classes, service, modules |
 | ---- |:-----------|

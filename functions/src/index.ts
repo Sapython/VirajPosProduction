@@ -364,7 +364,7 @@ export const resetPasswordMail = functions.https.onCall(
           {
             From: {
               Email: 'create@shreeva.com',
-              Name: 'Viraj Hospitality',
+              Name: 'Vrajera Hospitality',
             },
             To: [
               {
@@ -373,8 +373,8 @@ export const resetPasswordMail = functions.https.onCall(
               },
             ],
             Subject: 'Otp for resetting the password of account.',
-            TextPart: `Dear ${request.username}, ${generatedOtp} is the otp for resetting the password of account ${request.username} on Viraj Hospitality. Please do not share this otp with anyone. This email is sent to you because of ${request.email} is registered as email with this account.`,
-            HtmlPart: `Dear ${request.username}, <strong>${generatedOtp}</strong> is the otp for resetting the password of account <strong>${request.username}</strong> on Viraj Hospitality. Please do not share this otp with anyone. This email is sent to you because of ${request.email} is registered as email with this account.`,
+            TextPart: `Dear ${request.username}, ${generatedOtp} is the otp for resetting the password of account ${request.username} on Vrajera Hospitality. Please do not share this otp with anyone. This email is sent to you because of ${request.email} is registered as email with this account.`,
+            HtmlPart: `Dear ${request.username}, <strong>${generatedOtp}</strong> is the otp for resetting the password of account <strong>${request.username}</strong> on Vrajera Hospitality. Please do not share this otp with anyone. This email is sent to you because of ${request.email} is registered as email with this account.`,
           },
         ],
       });
@@ -547,7 +547,7 @@ export const addExistingUser = functions.https.onCall(
                 Name: request.username,
               },
             ],
-            Subject: `Otp for adding your account to Viraj Hospitality.`,
+            Subject: `Otp for adding your account to Vrajera Hospitality.`,
             TextPart: `Dear ${
               request.username
             }, ${generatedOtp} is the otp for adding your account ${
@@ -634,9 +634,10 @@ export const verifyOtpExistingUser = functions.https.onCall(
     } else if (accessType == 'custom') {
       newUserData['propertiesAllowed'] = otpDoc.data()?.propertiesAllowed;
     }
-    await firestore.doc('business/' + businessId).update({
-      users: admin.firestore.FieldValue.arrayUnion(newUserData),
-    });
+    // await firestore.doc('business/' + businessId).update({
+    //   users: admin.firestore.FieldValue.arrayUnion(newUserData),
+    // });
+    await firestore.collection('business/' + businessId+'/users').add(newUserData);
     // sign in with custom token
     return { status: 'success', message: 'User approved successfully' };
   },

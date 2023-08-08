@@ -20,7 +20,7 @@
 }
 .small {
   display: flex;
-  font-size: var(--Viraj-font-small);
+  font-size: var(--Vrajera-font-small);
 }
 .overlay {
   position: fixed;
@@ -39,6 +39,6 @@
 @media screen and (max-width: 1366px) {
   .offlineBar {
     height: 20px;
-    font-size: var(--Viraj-font-medium);
+    font-size: var(--Vrajera-font-medium);
   }
 }

@@ -30,12 +30,12 @@ section {
         display: flex;
         border: none;
         background: white;
-        color: var(--Viraj-primary);
+        color: var(--Vrajera-primary);
         gap: 10px;
-        font-size: var(--Viraj-font-xlarge);
+        font-size: var(--Vrajera-font-xlarge);
         i {
-          color: var(--Viraj-primary);
-          font-size: var(--Viraj-font-xxlarge);
+          color: var(--Vrajera-primary);
+          font-size: var(--Vrajera-font-xxlarge);
         }
       }
     }
@@ -44,9 +44,9 @@ section {
         width: 150px;
         background: white;
         display: flex;
-        color: var(--Viraj-primary);
+        color: var(--Vrajera-primary);
         gap: 10px;
-        border: 2px solid var(--Viraj-primary);
+        border: 2px solid var(--Vrajera-primary);
         padding: 10px;
         border-radius: 5px;
       }
@@ -57,9 +57,9 @@ section {
     gap: 15px;
     button {
       border-radius: 8px;
-      border: 2px solid var(--Viraj-primary);
+      border: 2px solid var(--Vrajera-primary);
       background: #fff;
-      color: var(--Viraj-primary);
+      color: var(--Vrajera-primary);
       padding: 10px 15px;
       display: flex;
       align-items: center;
@@ -137,7 +137,7 @@ section {
       .legend:nth-child(4) {
         span {
           background: #fff1e2;
-          border: var(--Viraj-primary) 2px solid;
+          border: var(--Vrajera-primary) 2px solid;
         }
       }
     }
@@ -145,12 +145,12 @@ section {
       display: flex;
       gap: 20px;
       button {
-        border: 2px solid var(--Viraj-primary);
+        border: 2px solid var(--Vrajera-primary);
         background: white;
-        color: var(--Viraj-primary);
+        color: var(--Vrajera-primary);
         padding: 10px 10px;
         border-radius: 5px;
-        font-size: var(--Viraj-font-large);
+        font-size: var(--Vrajera-font-large);
       }
     }
   }
@@ -179,19 +179,19 @@ section {
       transition: scale 0.4s cubic-bezier(0.65, 0, 0.35, 1);
       box-sizing: content-box;
       * {
-        font-size: var(--Viraj-font-xlarge);
+        font-size: var(--Vrajera-font-xlarge);
       }
       p {
         margin: 0px;
       }
       p.name {
-        font-size: var(--Viraj-font-large);
+        font-size: var(--Vrajera-font-large);
         font-weight: 500;
       }
       &:hover {
         cursor: pointer;
         background: #fff1e2;
-        border-color: var(--Viraj-primary);
+        border-color: var(--Vrajera-primary);
         scale: 1.05;
       }
       .actions {
@@ -200,10 +200,10 @@ section {
     }
     .table.active {
       background: #fff1e2;
-      border-color: var(--Viraj-primary);
+      border-color: var(--Vrajera-primary);
     }
     .table.late {
-      border: 3px solid var(--Viraj-danger);
+      border: 3px solid var(--Vrajera-danger);
       background: #ff4848;
       * {
         color: white;
@@ -211,7 +211,7 @@ section {
       &:hover {
         cursor: pointer;
         background: #ff5656;
-        border-color: var(--Viraj-primary);
+        border-color: var(--Vrajera-primary);
         scale: 1.05;
       }
     }
@@ -247,14 +247,14 @@ section {
       width: 90px !important;
       height: 90px !important;
       * {
-        font-size: var(--Viraj-font-large) !important;
+        font-size: var(--Vrajera-font-large) !important;
       }
     }
     button.small {
       width: 60px !important;
       height: 60px !important;
       * {
-        font-size: var(--Viraj-font-medium) !important;
+        font-size: var(--Vrajera-font-medium) !important;
       }
     }
     .table.inactive {
@@ -275,19 +275,19 @@ section {
       }
     }
     .table.highlight {
-      border: 3px solid var(--Viraj-success);
+      border: 3px solid var(--Vrajera-success);
       background: #e4ffe8;
-      color: var(--Viraj-success);
+      color: var(--Vrajera-success);
       * {
-        color: var(--Viraj-success);
+        color: var(--Vrajera-success);
       }
       &:hover {
         cursor: pointer;
         background: #e4ffe8;
-        border-color: var(--Viraj-success);
+        border-color: var(--Vrajera-success);
         scale: 1.05;
         * {
-          color: var(--Viraj-success);
+          color: var(--Vrajera-success);
         }
       }
     }

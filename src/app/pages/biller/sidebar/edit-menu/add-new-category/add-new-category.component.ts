@@ -118,6 +118,7 @@ export class AddNewCategoryComponent implements OnInit {
         ...this.dialogData.category,
         name: this.newCategoryForm.value.name,
         products: selectedItems,
+        enabled:true,
         productOrders: selectedItems.map((item) => item.id),
       };
       this.dialogRef.close(category);
@@ -126,18 +127,20 @@ export class AddNewCategoryComponent implements OnInit {
     if (this.dialogData.noSave) {
       let selectedItems = this.products.filter((item) => item.selected);
       // let averagePrice = selectedItems.reduce((acc, item) => acc + item.price, 0) / selectedItems.length;
-      let category: { name: string; products: string[] } = {
+      let category: any = {
         name: this.newCategoryForm.value.name,
         products: selectedItems,
+        enabled:true,
       };
       this.dialogRef.close(category);
     } else {
       try {
         let selectedItems = this.products.filter((item) => item.selected);
         // let averagePrice = selectedItems.reduce((acc, item) => acc + item.price, 0) / selectedItems.length;
-        let category: { name: string; products: string[] } = {
+        let category:any= {
           name: this.newCategoryForm.value.name,
           products: selectedItems.map((item) => item.id),
+          enabled:true,
         };
         // selectedItems.forEach(item => {
         //   category.products.push(item.id)

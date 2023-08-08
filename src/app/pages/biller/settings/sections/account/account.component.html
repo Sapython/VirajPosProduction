@@ -52,6 +52,7 @@
               {{ access | titlecase }}
             </mat-option>
           </mat-select>
+          <p *ngIf="account.accessType == 'custom'">Custom Access</p>
         </td>
         <td>{{ account.updatedBy }}</td>
         <td>

@@ -16,14 +16,14 @@ section {
     div.badge {
       align-items: center;
       width: 100%;
-      font-size: var(--Viraj-font-medium);
+      font-size: var(--Vrajera-font-medium);
       padding: 10px;
       border: 2px solid #ccc;
       display: flex;
       flex-direction: column;
       gap: 5px;
-      border-radius: var(--Viraj-border-radius);
-      font-size: var(--Viraj-font-large);
+      border-radius: var(--Vrajera-border-radius);
+      font-size: var(--Vrajera-font-large);
       color: #e78c31;
       background: #fff1e2;
       border-color: #e78c31;
@@ -37,7 +37,7 @@ section {
       strong {
         color: #e78c31;
         font-weight: bold;
-        font-size: var(--Viraj-font-xlarge);
+        font-size: var(--Vrajera-font-xlarge);
       }
     }
     div.sales {
@@ -58,8 +58,8 @@ section {
   .closeIn {
     padding: 7px 20px;
     width: 100%;
-    font-size: var(--Viraj-font-xxlarge);
-    background: var(--Viraj-primary);
+    font-size: var(--Vrajera-font-xxlarge);
+    background: var(--Vrajera-primary);
     border-radius: 7px;
     color: white;
     box-shadow: 0px 0px 10px 0px rgba(255, 60, 0, 0.2);

@@ -34,7 +34,7 @@ section {
           background: white;
           padding: 10px;
           text-align: left;
-          font-size: var(--Viraj-font-large);
+          font-size: var(--Vrajera-font-large);
           color: #5a5a5a;
           border: 1px solid #ccc;
         }
@@ -45,11 +45,11 @@ section {
         td {
           padding: 10px;
           text-align: left;
-          font-size: var(--Viraj-font-large);
+          font-size: var(--Vrajera-font-large);
           color: #777;
           border-bottom: 1px solid #ccc;
           &:first-child {
-            color: var(--Viraj-primary-tint);
+            color: var(--Vrajera-primary-tint);
           }
         }
       }

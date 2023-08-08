@@ -56,9 +56,9 @@ section {
             color: #444;
             text-align: left;
             th {
-              font-size: var(--Viraj-font-xlarge);
+              font-size: var(--Vrajera-font-xlarge);
               font-weight: 600;
-              background: var(--Viraj-danger);
+              background: var(--Vrajera-danger);
               color: white;
             }
           }
@@ -77,11 +77,11 @@ section {
             background-color: #f3f3f3;
           }
           tr:last-of-type {
-            border-bottom: 2px solid var(--Viraj-primary-text);
+            border-bottom: 2px solid var(--Vrajera-primary-text);
           }
           tr.active-row {
             font-weight: bold;
-            color: var(--Viraj-primary-text);
+            color: var(--Vrajera-primary-text);
           }
         }
       }

@@ -12,12 +12,12 @@ section {
     min-width: 100px;
     border: 2px solid #ccc;
     padding: 0px 10px;
-    border-radius: var(--Viraj-border-radius);
+    border-radius: var(--Vrajera-border-radius);
     padding: 10px 5px;
     input {
       border: none;
       width: 100%;
-      font-size: var(--Viraj-font-large);
+      font-size: var(--Vrajera-font-large);
       &:focus,
       &:active {
         outline: none;
@@ -25,16 +25,16 @@ section {
     }
   }
   .active {
-    border-color: var(--Viraj-primary) !important;
+    border-color: var(--Vrajera-primary) !important;
   }
   button.button {
     height: 100%;
     background-color: #fff;
-    border: 2px solid var(--Viraj-primary);
+    border: 2px solid var(--Vrajera-primary);
     border-radius: 4px;
-    font-size: var(--Viraj-font-xlarge);
+    font-size: var(--Vrajera-font-xlarge);
     font-weight: 400;
-    color: var(--Viraj-primary);
+    color: var(--Vrajera-primary);
     padding: 10px 10px;
     display: flex;
     align-items: center;
@@ -42,8 +42,8 @@ section {
   }
   button.active,
   .button {
-    background-color: var(--Viraj-primary);
-    border: 2px solid var(--Viraj-primary);
+    background-color: var(--Vrajera-primary);
+    border: 2px solid var(--Vrajera-primary);
     color: white;
   }
 }

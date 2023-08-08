@@ -17,7 +17,7 @@ section {
   .seeMore {
     display: flex;
     justify-content: flex-end;
-    color: var(--Viraj-primary);
+    color: var(--Vrajera-primary);
     font-weight: 600;
     cursor: pointer;
     .actions {
@@ -39,7 +39,7 @@ section {
       width: min-content;
       margin: 0 auto;
       display: block;
-      background: var(--Viraj-primary);
+      background: var(--Vrajera-primary);
       border-top-right-radius: 10px;
       border-top-left-radius: 10px;
 
@@ -66,8 +66,8 @@ section {
         }
 
         strong {
-          font-size: var(--Viraj-font-large);
-          color: var(--Viraj-primary);
+          font-size: var(--Vrajera-font-large);
+          color: var(--Vrajera-primary);
           font-weight: 600;
         }
       }
@@ -107,8 +107,8 @@ section {
       padding: 7px 20px;
       width: 100%;
       margin: 0 auto;
-      font-size: var(--Viraj-font-xxlarge);
-      background: var(--Viraj-primary);
+      font-size: var(--Vrajera-font-xxlarge);
+      background: var(--Vrajera-primary);
       border-radius: 7px;
       color: white;
       box-shadow: 0px 0px 10px 0px rgba(255, 60, 0, 0.2);

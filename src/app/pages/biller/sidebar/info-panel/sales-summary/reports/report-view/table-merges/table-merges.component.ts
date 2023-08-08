@@ -45,7 +45,7 @@ export class TableMergesComponent implements OnInit, OnDestroy {
     logo.src = 'assets/images/viraj.png';
     doc.addImage(logo, 'JPEG', 10, 10, 30.5, 17.5);
     doc.setFontSize(25);
-    doc.text('Viraj', 40, 23);
+    doc.text('Vrajera', 40, 23);
     doc.line(10, 30, 200, 30);
     doc.setFontSize(18);
     let y;

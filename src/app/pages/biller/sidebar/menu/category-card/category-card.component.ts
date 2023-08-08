@@ -17,6 +17,7 @@ export class CategoryCardComponent implements OnInit {
   @Input() active: boolean = false;
   @Input() hiddenIconVisible: boolean = false;
   @Input() hidden: boolean = false;
+  @Input() customLength:number=0;
   length: number = 0;
   constructor(public dataProvider: DataProvider) {}
   ngOnInit(): void {

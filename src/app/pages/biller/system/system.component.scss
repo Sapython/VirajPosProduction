@@ -7,23 +7,23 @@ section {
   // border-bottom: 2px solid #ccc;
   .info {
     color: #444444;
-    font-family: var(--Viraj-font);
+    font-family: var(--Vrajera-font);
     padding: 0px 10px;
     p {
       font-weight: 400;
       margin: 0px;
-      font-size: var(--Viraj-font-xxlarge);
+      font-size: var(--Vrajera-font-xxlarge);
     }
     span {
       font-weight: 400;
       margin: 0px;
       color: rgb(95, 95, 95);
-      font-size: var(--Viraj-font-medium);
+      font-size: var(--Vrajera-font-medium);
       margin-right: 10px;
       word-break: break-all;
     }
     button[mat-stroked-button] {
-      border: 2px solid var(--Viraj-primary);
+      border: 2px solid var(--Vrajera-primary);
     }
   }
 }
@@ -35,7 +35,7 @@ section {
       padding: 0px;
       p {
         text-overflow: clip;
-        font-size: var(--Viraj-font-large);
+        font-size: var(--Vrajera-font-large);
       }
     }
   }

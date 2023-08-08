@@ -8,7 +8,7 @@
   width: 100%;
 }
 .styled-table thead tr {
-  background-color: var(--Viraj-primary);
+  background-color: var(--Vrajera-primary);
   color: #ffffff;
   text-align: left;
 }
@@ -25,9 +25,9 @@
 }
 
 .styled-table tbody tr:last-of-type {
-  border-bottom: 2px solid var(--Viraj-primary);
+  border-bottom: 2px solid var(--Vrajera-primary);
 }
 .styled-table tbody tr.active-row {
   font-weight: bold;
-  color: var(--Viraj-primary);
+  color: var(--Vrajera-primary);
 }

@@ -58,7 +58,7 @@ section {
       }
 
       p.name {
-        font-size: var(--Viraj-font-large);
+        font-size: var(--Vrajera-font-large);
         overflow: hidden;
         // word-break: break-all;
       }
@@ -85,8 +85,8 @@ section {
           text-align: center;
           background: white;
           border-radius: 4px;
-          font-size: var(--Viraj-font-large);
-          box-shadow: var(--Viraj-shadow-light);
+          font-size: var(--Vrajera-font-large);
+          box-shadow: var(--Vrajera-shadow-light);
         }
 
         .quantity {
@@ -98,20 +98,20 @@ section {
             width: 20px;
             border: none;
             text-align: center;
-            font-size: var(--Viraj-font-large);
+            font-size: var(--Vrajera-font-large);
           }
 
           // button {
           //     border: none;
           //     width: 32px;
           //     height: 32px;
-          //     background: var(--Viraj-primary);
+          //     background: var(--Vrajera-primary);
           //     color: white;
           //     border-radius: 4px;
           //     display: flex;
           //     justify-content: center;
           //     align-items: center;
-          //     box-shadow: var(--Viraj-shadow-light);
+          //     box-shadow: var(--Vrajera-shadow-light);
           // }
 
           // button[disabled] {
@@ -123,7 +123,7 @@ section {
           border: none;
           width: 32px;
           height: 32px;
-          color: var(--Viraj-primary);
+          color: var(--Vrajera-primary);
           background: white;
           border-radius: 4px;
           display: flex;
@@ -135,9 +135,9 @@ section {
       .infoStatement {
         display: flex;
         gap: 20px;
-        font-size: var(--Viraj-font-medium);
+        font-size: var(--Vrajera-font-medium);
         strong {
-          color: var(--Viraj-success);
+          color: var(--Vrajera-success);
         }
       }
     }

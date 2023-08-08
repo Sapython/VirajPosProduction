@@ -152,7 +152,7 @@ export class ModeConfig {
     this.filteredProducts = [];
     this.selectedMenuId = selectedMenuId;
     this.selectedMenu = selectedMenu;
-    this.selectedLoyaltyId = selectedMenu.selectedLoyaltyId;
+    this.selectedLoyaltyId = selectedMenu.selectedLoyaltyId || '';
     // console.log('HERHERHEHRE', this.selectedLoyaltyId, selectedMenu);
 
     this.categoryUpdated = false;
@@ -1544,7 +1544,8 @@ export class ModeConfig {
     });
   }
 
-  deleteCombo(combo: Combo) {
+  deleteCombo(event:any,combo: Combo) {
+    event.stopPropagation();
     this.menuManagementService
       .deleteCombo(combo, this.selectedMenu)
       .then(() => {

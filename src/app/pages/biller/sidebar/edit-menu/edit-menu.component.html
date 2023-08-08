@@ -51,10 +51,9 @@
         Online
       </button>
     </div>
-    <div class="selectMenu" *ngIf="this.dataProvider.currentMenu">
+    <div class="selectMenu" *ngIf="this.dataProvider.currentMenu && this.dataProvider.getAccess('switchMenu')">
       <span>Selected Menu: </span>
       <select
-        *ngIf="this.dataProvider.getAccess('switchMenu')"
         [(ngModel)]="this.dataProvider.currentMenu.selectedMenuId"
         (change)="this.dataProvider.currentMenu.updateMenu()"
         placeholder="Menu"
@@ -75,7 +74,7 @@
     >
       Printer Setting
     </viraj-button>
-    <viraj-button (click)="addNewMenu()" [large]="true" [animated]="true"
+    <viraj-button (click)="addNewMenu()" *ngIf="this.dataProvider.getAccess('addNewMenu')" [large]="true" [animated]="true"
       >New Menu</viraj-button
     >
   </div>
@@ -144,6 +143,7 @@
               <app-category-card
                 [full]="true"
                 *ngIf="this.dataProvider.getAccess('seeAllProducts')"
+                [customLength]="mode.products.length"
                 (click)="
                   mode.selectCategory(mode.allProductsCategory);
                   mode.currentType = 'all'
@@ -843,7 +843,7 @@
               <div
                 class="card combo"
                 *ngFor="let combo of mode.combos"
-                (click)="mode.editCombo(combo)"
+                (click)="this.dataProvider.getAccess('editCombo') ? mode.editCombo(combo) : {}"
               >
                 <div class="image">
                   <img
@@ -852,12 +852,13 @@
                 </div>
                 <div class="content">
                   <mat-slide-toggle
-                    *ngIf="!combo.visibilityEnabled"
+                    *ngIf="!combo.visibilityEnabled && this.dataProvider.getAccess('editCombo')"
                     [(ngModel)]="combo.enabled"
                     (change)="mode.updateComboVisibility(combo, toggleElm.checked)"
                     #toggleElm
                     ></mat-slide-toggle
                   >
+                  <viraj-button *ngIf="this.dataProvider.getAccess('deleteCombos')" type="icon" (click)="mode.deleteCombo($event,combo)"><i class="ri-delete-bin-5-fill"></i></viraj-button>
                   <p>{{ combo.name }}</p>
                 </div>
               </div>
@@ -893,7 +894,7 @@
                   #search
                 />
                 <p>
-                  <mat-radio-button value="none"
+                  <mat-radio-button value=""
                     >Disable Loyalty</mat-radio-button
                   >
                 </p>

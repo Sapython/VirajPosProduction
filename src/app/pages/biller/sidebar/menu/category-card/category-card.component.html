@@ -9,7 +9,7 @@
       }}{{ category.averagePrice | currency: "INR" }}
     </p>
     <span *ngIf="length">
-      <p>{{ length }}</p>
+      <p>{{ customLength ? customLength : length }}</p>
     </span>
     <i *ngIf="hiddenIconVisible && !hidden" class="ri-eye-close-fill"></i>
     <i *ngIf="hiddenIconVisible && hidden" class="ri-eye-fill"></i>

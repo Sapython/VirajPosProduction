@@ -12,8 +12,8 @@ section {
   padding: 5px 0px 5px 15px;
   > p {
     margin: 0px;
-    color: var(--Viraj-primary);
-    font-size: var(--Viraj-font-xxxlarge);
+    color: var(--Vrajera-primary);
+    font-size: var(--Vrajera-font-xxxlarge);
   }
   span {
     color: #2ba063;
@@ -24,7 +24,7 @@ section {
     background: #f2fff8;
     p {
       margin: 0px;
-      font-size: var(--Viraj-font-medium);
+      font-size: var(--Vrajera-font-medium);
     }
   }
   .pending {
@@ -33,8 +33,8 @@ section {
     background: #fffafa;
   }
   i.ri-arrow-right-s-line {
-    color: var(--Viraj-primary);
-    font-size: var(--Viraj-font-xxxlarge);
+    color: var(--Vrajera-primary);
+    font-size: var(--Vrajera-font-xxxlarge);
   }
 }
 @media screen and (max-width: 1370px) {
@@ -43,8 +43,8 @@ section {
     grid-template-columns: 1fr 1fr;
     > p {
       margin: 0px;
-      color: var(--Viraj-primary);
-      font-size: var(--Viraj-font-large);
+      color: var(--Vrajera-primary);
+      font-size: var(--Vrajera-font-large);
     }
   }
 }

@@ -24,10 +24,10 @@ section {
         margin: 0px;
       }
       .red {
-        color: var(--Viraj-primary);
+        color: var(--Vrajera-primary);
       }
       .paid {
-        color: var(--Viraj-success);
+        color: var(--Vrajera-success);
       }
     }
   }
@@ -41,21 +41,21 @@ section {
       select,
       input {
         border: 2px solid #555;
-        font-size: var(--Viraj-font-large);
+        font-size: var(--Vrajera-font-large);
         border-radius: 3px;
         background: white;
         padding: 5px 15px;
         box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
         &:focus {
           outline: none;
-          border: 2px solid var(--Viraj-primary);
+          border: 2px solid var(--Vrajera-primary);
         }
       }
     }
     .addMethod {
       border: 2px solid #ccc;
       color: #ccc;
-      font-size: var(--Viraj-font-large);
+      font-size: var(--Vrajera-font-large);
       border-radius: 3px;
       background: white;
       padding: 5px 15px;

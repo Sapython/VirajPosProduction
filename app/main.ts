@@ -121,7 +121,7 @@ function createWindow(): BrowserWindow {
     autoHideMenuBar: true,
   });
   // set title to current version
-  win.title = 'Viraj POS ' + app.getVersion();
+  win.title = 'Vrajera POS ' + app.getVersion();
   win.on('closed', () => {
     // Dereference the window object, usually you would store window
     // in an array if your app supports multi windows, this is the time
@@ -171,7 +171,7 @@ function createWindow(): BrowserWindow {
   autoUpdater.on('checking-for-update', () => {
     const NOTIFICATION_TITLE = 'Checking for updates.';
     const NOTIFICATION_BODY =
-      'Viraj is running and checking for updates in background.';
+      'Vrajera is running and checking for updates in background.';
 
     new Notification({
       title: NOTIFICATION_TITLE,
@@ -188,7 +188,7 @@ function createWindow(): BrowserWindow {
   });
   autoUpdater.on('update-available', (info) => {
     const NOTIFICATION_TITLE = 'Update available.';
-    const NOTIFICATION_BODY = 'A new version of Viraj is available.';
+    const NOTIFICATION_BODY = 'A new version of Vrajera is available.';
 
     new Notification({
       title: NOTIFICATION_TITLE,

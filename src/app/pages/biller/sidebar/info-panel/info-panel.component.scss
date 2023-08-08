@@ -12,20 +12,20 @@ section {
     grid-template-columns: 1fr 1fr;
     gap: 10px;
     span.badge {
-      font-size: var(--Viraj-font-medium);
+      font-size: var(--Vrajera-font-medium);
       padding: 5px;
       border: 1px solid #ccc;
       display: flex;
       // flex-direction: column;
       gap: 5px;
-      border-radius: var(--Viraj-border-radius);
-      font-size: var(--Viraj-font-large);
+      border-radius: var(--Vrajera-border-radius);
+      font-size: var(--Vrajera-font-large);
       span {
         color: black;
       }
       b {
         font-weight: 500;
-        font-size: var(--Viraj-font-xlarge);
+        font-size: var(--Vrajera-font-xlarge);
       }
     }
     span.sales {
@@ -41,7 +41,7 @@ section {
       background: #fff8f8;
       border-color: #ff5e35;
       b {
-        color: var(--Viraj-primary-tint);
+        color: var(--Vrajera-primary-tint);
       }
     }
   }

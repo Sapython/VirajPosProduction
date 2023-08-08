@@ -113,7 +113,7 @@ export class UserManagementService {
     // clear local storage
     this.electronService.clearAuth();
     // localStorage.clear();
-    // indexedDB.deleteDatabase('Viraj');
+    // indexedDB.deleteDatabase('Vrajera');
     let deleteRequests = Promise.all(
       dbConfig.objectStoresMeta.map(async (store) => {
         return await firstValueFrom(
@@ -121,7 +121,7 @@ export class UserManagementService {
         );
       }),
     );
-    //  console.log("Deleting Viraj cache ",deleteRequests)
+    //  console.log("Deleting Vrajera cache ",deleteRequests)
     this.dataProvider.loading = false;
     let url = window.location.href.split('/');
     url.pop();

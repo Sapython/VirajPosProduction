@@ -394,18 +394,18 @@ export class TableComponent implements OnInit {
   }
 
   switchMode(mode: any) {
-    console.log("mode",mode);
+    // console.log("mode",mode);
     this.dataProvider.billingMode = mode.value;
     if (mode.value == 'dineIn') {
+      localStorage.setItem('billingMode', 'dineIn');
       // console.log("this.dataProvider.dineInMenu",this.dataProvider.dineInMenu);
       if (!this.dataProvider.dineInMenu) {
         alert('No dine-in menu found');
         return;
       }
       this.dataProvider.currentMenu = this.dataProvider.menus.find((menu) => {
-        return menu.selectedMenu?.id == this.dataProvider.dineInMenu?.id && menu.type =='dineIn';
+        return menu.selectedMenu?.id == this.dataProvider.dineInMenu?.id;
       });
-      console.log("this.dataProvider.dineInMenu?.id",this.dataProvider.dineInMenu?.id,this.dataProvider.currentMenu);
       if (this.dataProvider.currentMenu) {
         this.dataProvider.currentMenu.type = 'dineIn';
         this.dataProvider.products = this.dataProvider.currentMenu.products;
@@ -414,13 +414,14 @@ export class TableComponent implements OnInit {
       }
       // console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
     } else if (mode.value == 'takeaway') {
+      localStorage.setItem('billingMode', 'takeaway');
       // console.log("this.dataProvider.takeawayMenu",this.dataProvider.takeawayMenu);
       if (!this.dataProvider.takeawayMenu) {
         alert('No takeaway menu found');
         return;
       }
       this.dataProvider.currentMenu = this.dataProvider.menus.find((menu) => {
-        return menu.selectedMenu?.id == this.dataProvider.takeawayMenu?.id && menu.type =='takeaway';
+        return menu.selectedMenu?.id == this.dataProvider.takeawayMenu?.id;
       });
       if (this.dataProvider.currentMenu) {
         this.dataProvider.currentMenu.type = 'takeaway';
@@ -430,13 +431,14 @@ export class TableComponent implements OnInit {
       }
       // console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
     } else if (mode.value == 'online') {
+      localStorage.setItem('billingMode', 'online');
       // console.log("this.dataProvider.onlineMenu",this.dataProvider.onlineMenu);
       if (!this.dataProvider.onlineMenu) {
         alert('No online menu found');
         return;
       }
       this.dataProvider.currentMenu = this.dataProvider.menus.find((menu) => {
-        return menu.selectedMenu?.id == this.dataProvider.onlineMenu?.id && menu.type =='online';
+        return menu.selectedMenu?.id == this.dataProvider.onlineMenu?.id;
       });
       if (this.dataProvider.currentMenu) {
         this.dataProvider.currentMenu.type = 'online';
@@ -446,7 +448,6 @@ export class TableComponent implements OnInit {
       }
       // console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
     }
-    console.log("Current menu updated",this.dataProvider.currentMenu);
     this.dataProvider.modeChanged.next(mode.value);
   }
 
@@ -603,20 +604,22 @@ export class TableComponent implements OnInit {
   }
 
   async deleteSection(groupName: string) {
-    this.dataProvider.loading = true;
-    this.tableService
-      .deleteSection(groupName)
-      .then(() => {
-        this.alertify.presentToast('Section deleted successfully');
-        this.onboardingService.getTables();
-      })
-      .catch((error) => {
-        this.alertify.presentToast('Error deleting section');
-        console.log('Error ', error);
-      })
-      .finally(() => {
-        this.dataProvider.loading = false;
-      });
+    if (await this.dataProvider.confirm('Are you sure you want to delete ?',[1])) {
+      this.dataProvider.loading = true;
+      this.tableService
+        .deleteSection(groupName)
+        .then(() => {
+          this.alertify.presentToast('Section deleted successfully');
+          this.onboardingService.getTables();
+        })
+        .catch((error) => {
+          this.alertify.presentToast('Error deleting section');
+          console.log('Error ', error);
+        })
+        .finally(() => {
+          this.dataProvider.loading = false;
+        });
+    }
   }
 
   // new functions

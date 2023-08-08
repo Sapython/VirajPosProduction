@@ -725,6 +725,7 @@ export class MenuManagementService {
       businessId = this.dataProvider.businessId;
     }
     try {
+      menu.selectedLoyaltyId = '';
       let menuRes = await addDoc(
         collection(this.firestore, 'business/' + businessId + '/menus'),
         menu,

@@ -4,12 +4,12 @@
       *ngIf="
         ((currentMenu?.recommendedCategories | enabled).length > 0 ||
           currentMenu?.comboCategory) &&
-        (this.dataProvider.getAccess('seeVirajCategories') ||
+        (this.dataProvider.getAccess('seeVrajeraCategories') ||
           this.dataProvider.getAccess('seeCombos'))
       "
     >
-      <span>Viraj Categories</span>
-      <ng-container *ngIf="this.dataProvider.getAccess('seeVirajCategories')">
+      <span>Vrajera Categories</span>
+      <ng-container *ngIf="this.dataProvider.getAccess('seeVrajeraCategories')">
         <ng-container
           *ngFor="
             let category of currentMenu?.recommendedCategories | enabled;

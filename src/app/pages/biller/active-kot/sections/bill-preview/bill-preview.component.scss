@@ -8,13 +8,13 @@
     margin: 0px;
   }
   p:nth-child(1) {
-    color: var(--Viraj-primary);
+    color: var(--Vrajera-primary);
   }
   p:nth-child(2) {
-    color: var(--Viraj-success);
+    color: var(--Vrajera-success);
   }
   p:nth-child(3) {
-    color: var(--Viraj-success);
+    color: var(--Vrajera-success);
   }
 }
 table {
@@ -22,7 +22,7 @@ table {
   td {
     padding: 4px 7px;
     background: white;
-    font-size: var(--Viraj-font-large);
+    font-size: var(--Vrajera-font-large);
   }
   td,
   th {
@@ -37,7 +37,7 @@ table {
     text-align: right;
   }
   th {
-    font-size: var(--Viraj-font-xlarge);
+    font-size: var(--Vrajera-font-xlarge);
   }
   table.products {
     border-collapse: collapse;
@@ -46,16 +46,16 @@ table {
       border-bottom: 1px solid #eee;
     }
     td:nth-child(1) {
-      color: var(--Viraj-primary);
+      color: var(--Vrajera-primary);
     }
     td:nth-child(2) {
-      color: var(--Viraj-success);
+      color: var(--Vrajera-success);
     }
     td:nth-child(3) {
-      color: var(--Viraj-success);
+      color: var(--Vrajera-success);
     }
     td:nth-child(4) {
-      color: var(--Viraj-success);
+      color: var(--Vrajera-success);
     }
   }
   hr {
@@ -65,10 +65,10 @@ table {
     width: 100%;
   }
   .big {
-    font-size: var(--Viraj-font-xxlarge) !important;
+    font-size: var(--Vrajera-font-xxlarge) !important;
     font-weight: bolder !important;
     * {
-      font-size: var(--Viraj-font-xxlarge) !important;
+      font-size: var(--Vrajera-font-xxlarge) !important;
       font-weight: bolder !important;
     }
   }
@@ -76,6 +76,6 @@ table {
     text-align: center;
   }
   td.noteHead {
-    font-size: var(--Viraj-font-large);
+    font-size: var(--Vrajera-font-large);
   }
 }

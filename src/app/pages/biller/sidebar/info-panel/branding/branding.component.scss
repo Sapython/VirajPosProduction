@@ -26,7 +26,7 @@ section {
       margin: 0px;
       text-align: start;
       text-transform: uppercase;
-      font-size: var(--Viraj-font-size-xxxlarge);
+      font-size: var(--Vrajera-font-size-xxxlarge);
       letter-spacing: 2px;
     }
     .row {
@@ -36,18 +36,18 @@ section {
         margin: 0px;
         display: flex;
         align-items: center;
-        font-size: var(--Viraj-font-medium);
+        font-size: var(--Vrajera-font-medium);
         img {
           width: 12px;
           height: 20px;
           margin-right: 0px;
         }
         i {
-          color: var(--Viraj-primary);
+          color: var(--Vrajera-primary);
         }
       }
       .version {
-        font-size: var(--Viraj-font-medium);
+        font-size: var(--Vrajera-font-medium);
         color: darkgray;
       }
       button {

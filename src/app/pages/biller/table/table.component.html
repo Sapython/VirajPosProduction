@@ -86,10 +86,10 @@
       <p>Please select a table to continue</p>
     </ng-container>
     <ng-container *ngIf="!this.moveKotMode">
-      <button (click)="addSection()">Add Section</button>
-      <button (click)="rearrangeTables()">Re-Arrange Tables</button>
-      <button (click)="moveKotMode = true">Move KOT/Item</button>
-      <button (click)="mergeExchangeTable()">Merge/Exchange Table</button>
+      <button *ngIf="this.dataProvider.getAccess('reArrangeGroupOrder')" (click)="addSection()">Add Section</button>
+      <button *ngIf="this.dataProvider.getAccess('reArrangeGroupOrder')" (click)="rearrangeTables()">Re-Arrange Tables</button>
+      <button *ngIf="this.dataProvider.getAccess('moveAndMergeOptions')" (click)="moveKotMode = true">Move KOT/Item</button>
+      <button *ngIf="this.dataProvider.getAccess('moveAndMergeOptions')" (click)="mergeExchangeTable()">Merge/Exchange Table</button>
     </ng-container>
   </div>
   <div class="tableWrapper" *ngIf="this.dataProvider.billingMode == 'dineIn'">

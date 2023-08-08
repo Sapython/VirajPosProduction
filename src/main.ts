@@ -6,7 +6,7 @@ import { APP_CONFIG } from './environments/environment';
 // import * as Sentry from "@sentry/angular-ivy";
 // Sentry.init({
 //   dsn: "https://6fcbec22155f4de9b764efd0d32c4aa7@o4505153176469504.ingest.sentry.io/4505153179615232",
-//   release:"Viraj@"+APP_CONFIG.appVersion,
+//   release:"Vrajera@"+APP_CONFIG.appVersion,
 //   integrations: [
 //     new Sentry.BrowserTracing({
 //       routingInstrumentation: Sentry.routingInstrumentation,

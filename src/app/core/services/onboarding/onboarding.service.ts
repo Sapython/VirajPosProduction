@@ -191,7 +191,7 @@ export class OnboardingService {
         if(!this.router.url.includes('biller')){
           this.stage = 'userExists';
           this.loadingSteps.next('Loaded user details.');
-          this.startViraj(this.dataProvider.currentBusiness);
+          this.startVrajera(this.dataProvider.currentBusiness);
         }
       } else {
         this.stage = 'businessError';
@@ -211,8 +211,8 @@ export class OnboardingService {
     }
   }
 
-  startViraj(business: BusinessRecord) {
-    if (debug) console.log('Starting Viraj', business);
+  startVrajera(business: BusinessRecord) {
+    if (debug) console.log('Starting Vrajera', business);
     firstValueFrom(this.dataProvider.settingsChanged).then(async (setting) => {
       // console.log(setting);
       this.dataProvider.businessId = business.businessId;
@@ -317,19 +317,31 @@ export class OnboardingService {
               if (verifiedMenus.length == menuInits.length) {
                 this.loadingSteps.next('All menus loaded');
                 // set current menu in order of dineIn, takeaway, online
-                let currentMenu = this.dataProvider.menus.find(
-                  (menu) =>
-                    (menu.type == 'dineIn' && setting.modes[0]) ||
-                    (this.dataProvider.menus.find(
-                      (menu) => menu.type == 'takeaway',
-                    ) &&
-                      setting.modes[1]) ||
-                    (this.dataProvider.menus.find(
-                      (menu) => menu.type == 'online',
-                    ) &&
-                      setting.modes[2]),
-                );
-                // console.log("currentMenu",currentMenu);
+                let lastLocalMode = localStorage.getItem('billingMode');
+                var currentMenu;
+                if(lastLocalMode){
+                  currentMenu = this.dataProvider.menus.find(
+                    (menu) =>
+                      (menu.type == 'dineIn' && lastLocalMode == 'dineIn') ||
+                      (menu.type == 'takeaway' && lastLocalMode == 'takeaway') ||
+                      (menu.type == 'online' && lastLocalMode == 'online'),
+                  );
+                }
+                if (!currentMenu){
+                  currentMenu = this.dataProvider.menus.find(
+                    (menu) =>
+                      (menu.type == 'dineIn' && setting.modes[0]) ||
+                      (this.dataProvider.menus.find(
+                        (menu) => menu.type == 'takeaway',
+                      ) &&
+                        setting.modes[1]) ||
+                      (this.dataProvider.menus.find(
+                        (menu) => menu.type == 'online',
+                      ) &&
+                        setting.modes[2]),
+                  );
+                }
+                console.log("currentMenu",currentMenu,this.dataProvider.menus);
                 if (currentMenu) {
                   this.dataProvider.menuLoadSubject.next(currentMenu);
                 } else {
@@ -370,7 +382,7 @@ export class OnboardingService {
                 // console.log('Loaded table size');
                 menuSubscription.unsubscribe();
                 this.loadingSteps.next('Setup Completed');
-                this.message = 'Viraj is ready to use.';
+                this.message = 'Vrajera is ready to use.';
                 this.dataProvider.loading = false;
                 this.stage = 'virajReady';
                 this.router.navigate(['biller']);

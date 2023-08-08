@@ -59,17 +59,17 @@ main {
     app-search-panel {
       animation: slideFromTop 0.5s ease-in-out;
       border: 2px solid #ccc;
-      border-radius: 0px 0px var(--Viraj-border-radius)
-        var(--Viraj-border-radius);
-      box-shadow: var(--Viraj-shadow-light);
+      border-radius: 0px 0px var(--Vrajera-border-radius)
+        var(--Vrajera-border-radius);
+      box-shadow: var(--Vrajera-shadow-light);
     }
     app-products-panel {
       height: 100%;
       position: relative;
       top: 0px;
       border: 2px solid #ccc;
-      border-radius: var(--Viraj-border-radius);
-      box-shadow: var(--Viraj-shadow-light);
+      border-radius: var(--Vrajera-border-radius);
+      box-shadow: var(--Vrajera-shadow-light);
       overflow-y: scroll;
       animation: slideFromTop 0.5s ease-in-out;
       // &.smartMode{
@@ -84,8 +84,8 @@ main {
       // height: 100%;
       grid-template-columns: 1fr 1fr;
       border: 2px solid #ccc;
-      border-radius: var(--Viraj-border-radius);
-      box-shadow: var(--Viraj-shadow-light);
+      border-radius: var(--Vrajera-border-radius);
+      box-shadow: var(--Vrajera-shadow-light);
       animation: slideFromBottom 0.5s ease-in-out;
       overflow: hidden;
       app-recommended {
@@ -114,8 +114,8 @@ main {
     gap: 10px;
     app-system {
       border: 2px solid #ccc;
-      border-radius: 0px 0px 0px var(--Viraj-border-radius);
-      box-shadow: var(--Viraj-shadow-light);
+      border-radius: 0px 0px 0px var(--Vrajera-border-radius);
+      box-shadow: var(--Vrajera-shadow-light);
       animation: slideFromRight 0.5s ease-in-out;
     }
     app-active-kot {
@@ -124,9 +124,9 @@ main {
       // height: 40vh;
       // height: calc(100% - 570px);
       border: 2px solid #ccc;
-      border-radius: var(--Viraj-border-radius) 0px 0px
-        var(--Viraj-border-radius);
-      box-shadow: var(--Viraj-shadow-light);
+      border-radius: var(--Vrajera-border-radius) 0px 0px
+        var(--Vrajera-border-radius);
+      box-shadow: var(--Vrajera-shadow-light);
       animation: slideFromRight 0.5s ease-in-out;
       transition: height 0.5s ease-in-out;
       // &.smartMode{
@@ -144,8 +144,8 @@ main {
     // }
     app-actions {
       border: 2px solid #ccc;
-      border-radius: var(--Viraj-border-radius);
-      box-shadow: var(--Viraj-shadow-light);
+      border-radius: var(--Vrajera-border-radius);
+      box-shadow: var(--Vrajera-shadow-light);
       animation: slideFromRight 0.5s ease-in-out;
       transition: height 0.5s ease-in-out;
     }
@@ -154,8 +154,8 @@ main {
       padding-bottom: 20px;
       // overflow-y: auto;
       border: 2px solid #ccc;
-      border-radius: var(--Viraj-border-radius);
-      box-shadow: var(--Viraj-shadow-light);
+      border-radius: var(--Vrajera-border-radius);
+      box-shadow: var(--Vrajera-shadow-light);
       animation: slideFromRight 0.5s ease-in-out;
       // &.smartMode{
       //     height: calc(100vh - calc(75vh + 70px));

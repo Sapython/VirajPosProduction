@@ -14,7 +14,7 @@ main {
             position: sticky;
             top: 0px;
             background: white;
-            font-size: var(--Viraj-font-xxlarge);
+            font-size: var(--Vrajera-font-xxlarge);
             padding: 8px;
             font-weight: 700;
           }
@@ -26,7 +26,7 @@ main {
         tr {
           td {
             background: white;
-            font-size: var(--Viraj-font-xlarge);
+            font-size: var(--Vrajera-font-xlarge);
             padding: 8px;
             color: #5f5f5f;
             input {
@@ -63,13 +63,13 @@ main {
         background: #ffe1c2;
         display: flex;
         justify-content: space-between;
-        font-size: var(--Viraj-font-xlarge);
+        font-size: var(--Vrajera-font-xlarge);
         span {
           display: flex;
           align-items: center;
           gap: 30px;
           p {
-            color: var(--Viraj-primary);
+            color: var(--Vrajera-primary);
             font-weight: 500;
           }
         }
@@ -87,25 +87,25 @@ main {
         background: #e9fdf2;
         display: flex;
         justify-content: space-between;
-        font-size: var(--Viraj-font-xlarge);
+        font-size: var(--Vrajera-font-xlarge);
         span {
           display: flex;
           align-items: center;
           gap: 30px;
           p {
-            color: var(--Viraj-success);
+            color: var(--Vrajera-success);
             font-weight: 500;
           }
         }
       }
     }
     .quotedPrice {
-      font-size: var(--Viraj-font-xlarge);
+      font-size: var(--Vrajera-font-xlarge);
       font-weight: 400;
       color: #5f5f5f;
       strong {
         font-weight: 500;
-        color: var(--Viraj-primary);
+        color: var(--Vrajera-primary);
       }
     }
     .alignCenter {

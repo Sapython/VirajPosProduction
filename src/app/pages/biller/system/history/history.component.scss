@@ -19,7 +19,7 @@ section {
       input {
         border: none;
         transition: scale 0.2s cubic-bezier(0.22, 1, 0.36, 1);
-        font-size: var(--Viraj-font-medium);
+        font-size: var(--Vrajera-font-medium);
         &:active,
         &:focus {
           border: none;
@@ -34,7 +34,7 @@ section {
         opacity: 0;
       }
       input[type="search"] {
-        border: 2px solid var(--Viraj-primary);
+        border: 2px solid var(--Vrajera-primary);
         border-radius: 4px;
         height: 35px;
         padding: 0px 10px;
@@ -42,7 +42,7 @@ section {
     }
     .tabsToggle {
       display: flex;
-      border: 2px solid var(--Viraj-primary);
+      border: 2px solid var(--Vrajera-primary);
       border-radius: 8px;
       overflow: hidden;
       @media screen and (max-width: 1200px) {
@@ -63,13 +63,13 @@ section {
       }
       button {
         background: white;
-        border-left: 2px solid var(--Viraj-primary);
+        border-left: 2px solid var(--Vrajera-primary);
         border: none;
         padding: 8px 20px;
-        font-size: var(--Viraj-font-medium);
+        font-size: var(--Vrajera-font-medium);
       }
       button.active {
-        background: var(--Viraj-primary);
+        background: var(--Vrajera-primary);
         color: white;
       }
     }
@@ -98,7 +98,7 @@ section {
       }
     }
     p.date {
-      font-size: var(--Viraj-font-medium);
+      font-size: var(--Vrajera-font-medium);
       font-weight: 500;
     }
   }
@@ -114,7 +114,7 @@ section {
     align-content: flex-start;
     .bill {
       border-radius: 8px;
-      border: 3px solid var(--Viraj-success);
+      border: 3px solid var(--Vrajera-success);
       background: #fff;
       box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.1);
       padding: 15px;
@@ -125,13 +125,13 @@ section {
         display: flex;
         flex-direction: column;
         gap: 10px;
-        font-size: var(--Viraj-font-medium);
+        font-size: var(--Vrajera-font-medium);
         .items {
           display: flex;
           flex-direction: column;
           gap: 10px;
           .item {
-            border-bottom: 3px solid var(--Viraj-success);
+            border-bottom: 3px solid var(--Vrajera-success);
             display: flex;
             justify-content: space-between;
             border-bottom: 1px solid #ddd;
@@ -158,9 +158,9 @@ section {
             strong {
               span {
                 padding: 5px 10px;
-                border: 1px solid var(--Viraj-primary);
+                border: 1px solid var(--Vrajera-primary);
                 background: #fff6f3;
-                color: var(--Viraj-primary);
+                color: var(--Vrajera-primary);
                 border-radius: 6px;
               }
             }
@@ -185,7 +185,7 @@ section {
             tr {
               width: 100%;
               td:nth-child(1) {
-                color: var(--Viraj-success);
+                color: var(--Vrajera-success);
               }
               td:nth-child(2) {
                 color: #aaa;
@@ -235,19 +235,19 @@ section {
       }
     }
     .primary {
-      border: 3px solid var(--Viraj-primary);
+      border: 3px solid var(--Vrajera-primary);
       background: #fff;
       .heading {
-        border-bottom: 3px solid var(--Viraj-primary);
+        border-bottom: 3px solid var(--Vrajera-primary);
         padding: 0px;
         padding-left: 10px;
       }
     }
     .yellow {
-      border: 3px solid var(--Viraj-accent);
+      border: 3px solid var(--Vrajera-accent);
       background: #fff;
       .heading {
-        border-bottom: 3px solid var(--Viraj-accent);
+        border-bottom: 3px solid var(--Vrajera-accent);
         padding: 0px;
         padding-left: 10px;
       }
@@ -268,7 +268,7 @@ section {
       .kotFlip {
         width: 235px;
         table {
-          font-size: var(--Viraj-font-medium);
+          font-size: var(--Vrajera-font-medium);
         }
       }
     }

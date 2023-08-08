@@ -46,11 +46,11 @@ section {
         top: 0px;
       }
       table thead tr {
-        background-color: var(--Viraj-primary-text);
+        background-color: var(--Vrajera-primary-text);
         color: #ffffff;
         text-align: left;
         th {
-          font-size: var(--Viraj-font-xlarge);
+          font-size: var(--Vrajera-font-xlarge);
         }
       }
       table th,
@@ -66,11 +66,11 @@ section {
       }
 
       table tbody tr:last-of-type {
-        border-bottom: 2px solid var(--Viraj-primary-text);
+        border-bottom: 2px solid var(--Vrajera-primary-text);
       }
       table tbody tr.active-row {
         font-weight: bold;
-        color: var(--Viraj-primary-text);
+        color: var(--Vrajera-primary-text);
       }
       .spacer {
         height: 200px;

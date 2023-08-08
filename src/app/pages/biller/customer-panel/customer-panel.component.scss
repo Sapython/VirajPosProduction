@@ -33,7 +33,7 @@
     justify-content: space-between;
     align-items: center;
     * {
-      font-size: var(--Viraj-font-medium);
+      font-size: var(--Vrajera-font-medium);
     }
     .redeem {
       display: flex;
@@ -53,20 +53,20 @@
   gap: 10px;
   p {
     color: rgb(56, 56, 56);
-    font-size: var(--Viraj-font-large);
+    font-size: var(--Vrajera-font-large);
     margin: 0px;
     b {
       font-weight: 600;
     }
     span {
       display: inline-flex;
-      border: 2px solid var(--Viraj-success);
+      border: 2px solid var(--Vrajera-success);
       padding: 5px;
       border-radius: 4px;
-      color: var(--Viraj-success);
+      color: var(--Vrajera-success);
     }
     strong {
-      color: var(--Viraj-success);
+      color: var(--Vrajera-success);
     }
   }
   p:nth-child(3) {

@@ -95,17 +95,17 @@ export class AddComboComponent {
     type: new FormControl('', Validators.required),
     offerPrice: new FormControl(''),
   });
-
+  visibilityDateRangeForm:FormGroup = new FormGroup({
+    startDate: new FormControl(),
+    endDate: new FormControl(),
+  });
   visibilityEnabled: boolean = false;
   visibilitySettings = {
     mode: 'monthly',
     repeating: false,
     dateRange: {},
     selectedMonths: this.selectedMonths,
-    visibilityDateRangeForm: new FormGroup({
-      startDate: new FormControl(),
-      endDate: new FormControl(),
-    }),
+    visibilityDateRangeForm: this.visibilityDateRangeForm,
     selectedWeeks: {
       week1: true,
       week2: true,
@@ -174,6 +174,8 @@ export class AddComboComponent {
         ...this.dialogData.combo,
       });
       // menu is selected
+      console.log("this.dialogData.combo",this.dialogData.combo);
+      
       this.selectedCategories = this.dialogData.combo.selectedCategories;
       this.selectedMonths = this.dialogData.combo.visibilitySettings.selectedMonths;
       this.visibilityEnabled = this.dialogData.combo.visibilityEnabled;

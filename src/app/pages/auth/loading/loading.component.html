@@ -5,8 +5,8 @@
     [@zoomOutOnLeave]
     *ngIf="onboardingService.stage == 'noUser'"
   >
-    <img src="assets/images/viraj.png" alt="Viraj" />
-    <h1>Welcome to <strong>Viraj</strong></h1>
+    <img src="assets/images/viraj.png" alt="Vrajera" />
+    <h1>Welcome to <strong>Vrajera</strong></h1>
     <form
       [formGroup]="loginForm"
       (ngSubmit)="login()"
@@ -106,7 +106,7 @@
       onboardingService.stage == 'resetPasswordStage3'
     "
   >
-    <img src="assets/images/viraj.png" alt="Viraj" />
+    <img src="assets/images/viraj.png" alt="Vrajera" />
     <h1>Reset Password</h1>
     <ng-container *ngIf="onboardingService.stage == 'resetPasswordStage1'">
       <form
@@ -286,7 +286,7 @@
   >
     <h3>Logged in with {{ this.dataProvider.currentUser?.username }}</h3>
     <ng-container *ngIf="onboardingService.stage == 'userExists'">
-      <p>Please wait we are preparing <strong>Viraj</strong></p>
+      <p>Please wait we are preparing <strong>Vrajera</strong></p>
       <div class="center">
         <mat-spinner [diameter]="30"></mat-spinner>
       </div>
@@ -296,12 +296,12 @@
       >
     </ng-container>
     <ng-container *ngIf="onboardingService.stage == 'virajReady'">
-      <p>Viraj is ready to use</p>
+      <p>Vrajera is ready to use</p>
       <viraj-button
         style="margin-bottom: 10px"
         color="primary"
         routerLink="../biller"
-        >Continue To Viraj</viraj-button
+        >Continue To Vrajera</viraj-button
       >
       <viraj-button color="primary" type="outline" (click)="logout()"
         >Logout</viraj-button
@@ -363,7 +363,7 @@
     <mat-stepper #onboardingStepper [linear]="false">
       <mat-step label="Welcome" state="flag">
         <div>
-          <h1>Welcome to <strong>Viraj</strong></h1>
+          <h1>Welcome to <strong>Vrajera</strong></h1>
           <p>The restaurant <strong>standard</strong> for modern age.</p>
           <h3>Let's get started</h3>
           <h3></h3>

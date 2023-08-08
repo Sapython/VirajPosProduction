@@ -92,7 +92,7 @@ var FirebaseAppInstance:FirebaseApp|undefined;
 
 // AoT requires an exported function for factories
 export const dbConfig: DBConfig = {
-  name: 'Viraj',
+  name: 'Vrajera',
   version: 23,
   objectStoresMeta: [
     {

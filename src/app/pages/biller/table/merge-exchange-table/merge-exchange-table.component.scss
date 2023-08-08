@@ -67,19 +67,19 @@ section {
               transition: scale 0.4s cubic-bezier(0.65, 0, 0.35, 1);
               box-sizing: content-box;
               * {
-                font-size: var(--Viraj-font-xlarge);
+                font-size: var(--Vrajera-font-xlarge);
               }
               p {
                 margin: 0px;
               }
               p.name {
-                font-size: var(--Viraj-font-large);
+                font-size: var(--Vrajera-font-large);
                 font-weight: 500;
               }
               &:hover {
                 cursor: pointer;
                 background: #fff1e2;
-                border-color: var(--Viraj-primary);
+                border-color: var(--Vrajera-primary);
                 scale: 1.05;
               }
               .actions {
@@ -88,10 +88,10 @@ section {
             }
             .table.active {
               background: #fff1e2;
-              border-color: var(--Viraj-primary);
+              border-color: var(--Vrajera-primary);
             }
             .table.late {
-              border: 3px solid var(--Viraj-danger);
+              border: 3px solid var(--Vrajera-danger);
               background: #ff4848;
               * {
                 color: white !important;
@@ -99,7 +99,7 @@ section {
               &:hover {
                 cursor: pointer;
                 background: #ff5656;
-                border-color: var(--Viraj-primary);
+                border-color: var(--Vrajera-primary);
                 scale: 1.05;
               }
             }
@@ -135,14 +135,14 @@ section {
               width: 90px !important;
               height: 90px !important;
               * {
-                font-size: var(--Viraj-font-large) !important;
+                font-size: var(--Vrajera-font-large) !important;
               }
             }
             button.small {
               width: 60px !important;
               height: 60px !important;
               * {
-                font-size: var(--Viraj-font-medium) !important;
+                font-size: var(--Vrajera-font-medium) !important;
               }
             }
             .table.inactive {
@@ -157,12 +157,12 @@ section {
               }
             }
             .table.highlight {
-              border: 3px solid var(--Viraj-success);
+              border: 3px solid var(--Vrajera-success);
               background: #e4ffe8;
               &:hover {
                 cursor: pointer;
                 background: #e4ffe8;
-                border-color: var(--Viraj-success);
+                border-color: var(--Vrajera-success);
                 scale: 1.05;
               }
             }

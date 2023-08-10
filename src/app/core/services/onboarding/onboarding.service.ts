@@ -10,6 +10,7 @@ import {
   getDoc,
   getDocs,
   query,
+  updateDoc,
   where,
 } from '@angular/fire/firestore';
 import { Subject, firstValueFrom } from 'rxjs';
@@ -21,6 +22,7 @@ import {
   BusinessRecord,
   CustomerInfo,
   Member,
+  UserBusiness,
 } from '../../../types/user.structure';
 import { AlertsAndNotificationsService } from '../alerts-and-notification/alerts-and-notifications.service';
 import { AuthService } from '../auth/auth.service';
@@ -65,6 +67,7 @@ export class OnboardingService {
     | 'validityExpired'
     | 'errorOccured' = 'noUser';
   loadingSteps: Subject<string> = new Subject<string>();
+  groupedBusiness:{state:string,cities:{city:string,businesses:UserBusiness[]}[]}[] = [];
   private checkIfAccessTokenIsValidFunction = httpsCallable(this.functions,'checkIfAccessTokenIsValid');
   constructor(
     private dataProvider: DataProvider,
@@ -84,6 +87,20 @@ export class OnboardingService {
     private router: Router,
     private functions:Functions
   ) {
+    // getDocs(collection(this.firestore,'users')).then((res)=>{
+    //   console.log("Res",res);
+    //   res.docs.forEach((document)=>{
+    //     if(document.data()['business']){
+    //       let userDoc = document.data();
+    //       let business = userDoc['business'] as UserBusiness[];
+    //       business.forEach((business)=>{
+    //         business.city = business.city || 'Jaipur';
+    //         business.state = business.state || 'Rajasthan';
+    //       });
+    //       updateDoc(doc(this.firestore,'users',document.id),{...userDoc});
+    //     }
+    //   });
+    // })
     console.log('Onboarding Service Initialized');
     this.loadingSteps.next('Checking User');
     // fetchTimeout('https://firestore.googleapis.com/',{method:'GET'},2000).then((res)=>{
@@ -112,6 +129,38 @@ export class OnboardingService {
           if (localRead) {
             this.loadBusiness(localRead);
           }
+          this.groupedBusiness = [];
+          // generate a grouped business list
+          data.user.business.forEach((business) => {
+            let state = business.state;
+            let city = business.city;
+            console.log("state",state,"city",city);
+            let stateIndex = this.groupedBusiness.findIndex((stateObj)=>{
+              return stateObj.state == state;
+            });
+            if (stateIndex == -1){
+              this.groupedBusiness.push({
+                state:state,
+                cities:[{
+                  city:city,
+                  businesses:[business]
+                }]
+              });
+            } else {
+              let cityIndex = this.groupedBusiness[stateIndex].cities.findIndex((cityObj)=>{
+                return cityObj.city == city;
+              });
+              if (cityIndex == -1){
+                this.groupedBusiness[stateIndex].cities.push({
+                  city:city,
+                  businesses:[business]
+                });
+              } else {
+                this.groupedBusiness[stateIndex].cities[cityIndex].businesses.push(business);
+              }
+            }
+          });
+          console.log("groupedBusiness",this.groupedBusiness);
           this.stage = 'multipleBusiness';
         } else if (data.user.business.length == 1) {
           this.loadingSteps.next('User Found with a business');

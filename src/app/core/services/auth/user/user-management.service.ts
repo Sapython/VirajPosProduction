@@ -220,12 +220,13 @@ export class UserManagementService {
     });
   }
 
-  addExistingUser(username: string, accessLevel: string) {
+  addExistingUser(username: string, accessType:'role'|'custom', access:{role?: string, propertiesAllowed?: string[]}) {
     return this.addExistingUserFunction({
       username,
       businessId: this.dataProvider.currentBusiness.businessId,
-      accessLevel,
+      accessType:accessType,
       currentUser: this.dataProvider.currentUser.username,
+      ...access
     });
   }
 

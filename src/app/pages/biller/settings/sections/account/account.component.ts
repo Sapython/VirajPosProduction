@@ -9,6 +9,8 @@ import { firstValueFrom } from 'rxjs';
 import { Timestamp } from '@angular/fire/firestore';
 import { AlertsAndNotificationsService } from '../../../../../core/services/alerts-and-notification/alerts-and-notifications.service';
 import { MenuManagementService } from '../../../../../core/services/database/menuManagement/menu-management.service';
+import { Member } from '../../../../../types/user.structure';
+import { UpdateComponent } from './update/update.component';
 
 @Component({
   selector: 'app-account',
@@ -90,14 +92,27 @@ export class AccountComponent {
     }
   }
 
-  // updateSettings(){
-  //   this.dataProvider.loading = true;
-  //   this.menuManagementService.updateRootSettings({password:this.dataProvider.password},this.dataProvider.currentBusiness.businessId).then(()=>{
-  //     this.alertify.presentToast("Password updated successfully")
-  //   }).catch((err)=>{
-  //     this.alertify.presentToast("Failed to update password",'error')
-  //   }).finally(()=>{
-  //     this.dataProvider.loading = false;
-  //   })
-  // }
+  deleteUser(user:Member){
+
+  }
+
+  updateUser(user:Member){
+    const dialog = this.dialog.open(UpdateComponent,{data:user});
+    dialog.closed.subscribe(async (res: any) => {
+      if (res){
+        console.log("res",res);
+        let foundUserIndex = this.dataProvider.currentBusiness.users.findIndex((usr)=>user.username==usr.username);
+        if (foundUserIndex){
+          this.dataProvider.currentBusiness.users[foundUserIndex] = {
+            ...user,
+           ...res,
+           lastUpdated: Timestamp.now(),
+           updatedBy: this.dataProvider.currentUser?.username || 'user',
+         };
+         console.log("this.dataProvider.currentBusiness.users[foundUserIndex]",this.dataProvider.currentBusiness);
+         this.settingsService.updateBusiness(this.dataProvider.currentBusiness);
+        }
+      }
+    });
+  }
 }

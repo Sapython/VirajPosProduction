@@ -15,6 +15,7 @@
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Type</mat-label>
+      <app-helper matSuffix tooltip="Veg or Non-Veg"></app-helper>
       <mat-select placeholder="Tag" formControlName="type" name="tag">
         <mat-option *ngFor="let tag of type" [value]="tag">
           {{ tag }}
@@ -22,6 +23,7 @@
       </mat-select>
     </mat-form-field>
     <mat-form-field appearance="outline">
+      <app-helper matSuffix tooltip="Portion size for indication Half/Full"></app-helper>
       <mat-label>Select Label</mat-label>
       <mat-select formControlName="tag" name="label">
         <mat-option *ngFor="let label of tags" [value]="label">
@@ -31,6 +33,7 @@
     </mat-form-field>
     <mat-form-field appearance="outline" class="fullWidth">
       <mat-label>Printer</mat-label>
+      <app-helper matSuffix tooltip="Printer for this given dish."></app-helper>
       <mat-select formControlName="specificPrinter" name="label">
         <mat-option *ngFor="let label of localPrinterConfig" [value]="label.printerName">
           {{ label.printerName }}

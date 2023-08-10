@@ -16,9 +16,12 @@ import { SidebarModule } from '../../biller/sidebar/sidebar.module';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { BusinessCardComponent } from './business-card/business-card.component';
+import { NewBusinessCardComponent } from './new-business-card/new-business-card.component';
+import { AreaCardComponent } from './area-card/area-card.component';
 
 @NgModule({
-  declarations: [LoadingComponent],
+  declarations: [LoadingComponent, BusinessCardComponent, NewBusinessCardComponent, AreaCardComponent],
   imports: [
     CommonModule,
     LoadingRoutingModule,

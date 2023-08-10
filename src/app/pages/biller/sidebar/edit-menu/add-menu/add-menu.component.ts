@@ -145,18 +145,26 @@ export class AddMenuComponent {
     this.dialogRef.close();
   }
 
-  downloadFormat(){
-    // create a csv file with this format
-    // name, category, price,veg/nonveg , half/full (half/full is optional),
-    let csvContent = "data:text/csv;charset=utf-8,";
-    csvContent += "name,category,price,veg/nonveg,half/full\n";
-    // download the file
-    var encodedUri = encodeURI(csvContent);
-    var link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", "menu_format.csv");
-    document.body.appendChild(link); // Required for Firefox
-    link.click(); // This will download the data file named "my_data.csv".
+  downloadFormat(format:'csv'|'excel'){
+    if(format == 'csv'){
+      // create a csv file with this format
+      // name, category, price,veg/nonveg , half/full (half/full is optional),
+      let csvContent = "data:text/csv;charset=utf-8,";
+      csvContent += "name,category,price,veg/nonveg,half/full\n";
+      // download the file
+      var encodedUri = encodeURI(csvContent);
+      var link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "menu_format.csv");
+      document.body.appendChild(link); // Required for Firefox
+      link.click(); // This will download the data file named "my_data.csv".
+    } else {
+      // use xlsx library
+      let workBook = utils.book_new();
+      let workSheet = utils.json_to_sheet<any>([{name:'',category:'',price:0,tag:'',type:''}]);
+      utils.book_append_sheet(workBook,workSheet,'menu_format');
+      writeFile(workBook,'menu_format.xlsx');
+    }
   }
 
   readFormat(event:any){

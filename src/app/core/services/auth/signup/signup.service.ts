@@ -74,6 +74,8 @@ export class SignupService {
             updatedBy: 'controller',
           },
           address: business.address,
+          city:business.city,
+          state:business.state,
           name: business.hotelName,
           businessId: business.businessId,
           joiningDate: Timestamp.now(),

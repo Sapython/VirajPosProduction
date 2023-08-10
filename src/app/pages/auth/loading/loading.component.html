@@ -141,6 +141,7 @@
         >
           Send Reset OTP
         </button>
+
       </form>
     </ng-container>
     <ng-container *ngIf="onboardingService.stage == 'resetPasswordStage2'">
@@ -245,17 +246,29 @@
         >
           Reset Password
         </button>
+        <button
+              color="primary"
+              mat-stroked-button
+              (click)="
+                this.dataProvider.currentUser?.business.length > 1
+                  ? (onboardingService.stage = 'multipleBusiness')
+                  : this.dataProvider.currentUser?.business.length == 1
+                  ? (onboardingService.stage = 'virajReady')
+                  : (onboardingService.stage = 'noUser')
+              "
+            >
+              Cancel
+            </button>
       </form>
     </ng-container>
   </section>
   <section
     [@zoomInOnEnter]
     [@zoomOutOnLeave]
-    *ngIf="onboardingService.stage == 'validityExpired'">
+    *ngIf="onboardingService.stage == 'validityExpired'"
+  >
     <h3>Your validity is expired</h3>
-    <p>
-      Please contact +919621062111 to renew your validity.
-    </p>
+    <p>Please contact +919621062111 to renew your validity.</p>
     <viraj-button color="primary" type="outline" (click)="logout()"
       >Logout</viraj-button
     >
@@ -310,7 +323,6 @@
   </section>
   <section
     [@zoomInOnEnter]
-    [@zoomOutOnLeave]
     class="multipleBusiness"
     *ngIf="onboardingService.stage == 'multipleBusiness'"
   >
@@ -319,8 +331,51 @@
       These are all accounts available on
       <strong>{{ this.dataProvider.currentUser?.username }}</strong>
     </p>
-    <div class="businessWrapper">
-      <div
+    <ng-container *ngIf="!this.currentAreaState">
+      <p>Select State</p>
+      <div class="businessWrapper">
+        <app-area-card
+          [@zoomInOnEnter]
+          [areaName]="state.state"
+          *ngFor="let state of this.onboardingService.groupedBusiness"
+          (click)="currentAreaState = state"
+        ></app-area-card>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!this.currentAreaCity && this.currentAreaState">
+      <p>Select City</p>
+      <div class="businessWrapper">
+        <app-area-card
+          [@zoomInOnEnter]
+          [areaName]="city.city"
+          *ngFor="let city of this.currentAreaState.cities"
+          (click)="currentAreaCity = city"
+        ></app-area-card>
+      </div>
+    </ng-container>
+    <ng-container
+      *ngIf="
+        this.currentAreaCity &&
+        this.currentAreaState &&
+        this.dataProvider.currentUser
+      "
+    >
+      <p>Select Outlet</p>
+      <div class="businessWrapper">
+        <app-business-card
+          (click)="setDefaultAccount(business)"
+          [@zoomInOnEnter]
+          [userId]="this.dataProvider.currentUser.username"
+          *ngFor="let business of this.currentAreaCity.businesses"
+          [business]="business"
+        ></app-business-card>
+        <app-new-business-card
+          (click)="onboardingService.stage = 'onboardingStep1'"
+          [@zoomInOnEnter]
+        ></app-new-business-card>
+      </div>
+    </ng-container>
+    <!-- <div
         class="business"
         (click)="setDefaultAccount(business)"
         *ngFor="let business of this.dataProvider.currentUser?.business"
@@ -337,19 +392,19 @@
           </span>
           <span> #{{ business.businessId }}</span>
         </div>
-      </div>
-      <div class="newAccount" (click)="onboardingService.stage = 'onboardingStep1'">
+      </div> -->
+    <!-- <div class="newAccount" (click)="onboardingService.stage = 'onboardingStep1'">
         <i class="ri-add-line"></i>
         <h3>Add Account</h3>
-      </div>
-    </div>
+      </div> -->
     <div class="actions">
       <viraj-button color="primary" type="outline" (click)="logout()"
-      >Logout</viraj-button
-    >
+        >Logout</viraj-button
+      >
     </div>
   </section>
-  <section class="onboardingForm"
+  <section
+    class="onboardingForm"
     [@zoomInOnEnter]
     [@zoomOutOnLeave]
     *ngIf="
@@ -371,7 +426,13 @@
             <button
               color="primary"
               mat-stroked-button
-              (click)="this.dataProvider.currentUser?.business.length > 1 ? onboardingService.stage ='multipleBusiness' : (this.dataProvider.currentUser?.business.length == 1 ? onboardingService.stage = 'virajReady' : onboardingService.stage = 'noUser')"
+              (click)="
+                this.dataProvider.currentUser?.business.length > 1
+                  ? (onboardingService.stage = 'multipleBusiness')
+                  : this.dataProvider.currentUser?.business.length == 1
+                  ? (onboardingService.stage = 'virajReady')
+                  : (onboardingService.stage = 'noUser')
+              "
             >
               Cancel
             </button>
@@ -396,24 +457,57 @@
           >
             <mat-form-field appearance="outline">
               <mat-label>Business Name</mat-label>
-              <input
-                type="text"
-                matInput
-                formControlName="name"
-                #business
-              />
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Address</mat-label>
-              <input type="text" matInput formControlName="address" />
+              <input type="text" matInput formControlName="name" #business />
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>Phone</mat-label>
               <input type="tel" matInput formControlName="phone" />
             </mat-form-field>
+            <div class="addressLine">
+              <mat-form-field appearance="outline">
+                <mat-label>Address</mat-label>
+                <input type="text" matInput formControlName="address" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>States</mat-label>
+                <mat-select formControlName="state">
+                  <mat-option
+                    [value]="state"
+                    *ngFor="let state of statesAndCities"
+                    >{{ state.state }}</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>City</mat-label>
+                <mat-select
+                  formControlName="city"
+                  [disabled]="
+                    !this.onboardingBusinessForm.value.state.districts
+                  "
+                >
+                  <mat-option
+                    [value]="city"
+                    *ngFor="
+                      let city of this.onboardingBusinessForm.value.state
+                        .districts
+                    "
+                    >{{ city }}</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+            </div>
             <mat-form-field appearance="outline">
               <mat-label>Email</mat-label>
               <input type="email" matInput formControlName="email" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>FSSAI</mat-label>
+              <input type="text" matInput formControlName="fssai" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>GST</mat-label>
+              <input type="text" matInput formControlName="gst" />
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>Username</mat-label>
@@ -458,14 +552,6 @@
               ></mat-spinner>
             </mat-form-field>
             <mat-form-field appearance="outline">
-              <mat-label>FSSAI</mat-label>
-              <input type="text" matInput formControlName="fssai" />
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>GST</mat-label>
-              <input type="text" matInput formControlName="gst" />
-            </mat-form-field>
-            <mat-form-field appearance="outline">
               <mat-label>Account Password</mat-label>
               <input
                 type="password"
@@ -484,12 +570,16 @@
               <mat-error
                 *ngIf="
                   onboardingBusinessForm.controls['password'].errors &&
-                  onboardingBusinessForm.controls['password'].errors['minlength']
+                  onboardingBusinessForm.controls['password'].errors[
+                    'minlength'
+                  ]
                 "
               >
                 Password must be at least 8 characters long.
               </mat-error>
-              <mat-error *ngIf="!(accConfirmPassword.value == accPassword.value)">
+              <mat-error
+                *ngIf="!(accConfirmPassword.value == accPassword.value)"
+              >
                 Password don't match.
               </mat-error>
               <button
@@ -534,7 +624,9 @@
               <mat-error
                 *ngIf="
                   onboardingBusinessForm.controls['confirmPassword'].errors &&
-                  onboardingBusinessForm.controls['confirmPassword'].errors['required']
+                  onboardingBusinessForm.controls['confirmPassword'].errors[
+                    'required'
+                  ]
                 "
               >
                 Please enter a password
@@ -542,12 +634,16 @@
               <mat-error
                 *ngIf="
                   onboardingBusinessForm.controls['confirmPassword'].errors &&
-                  onboardingBusinessForm.controls['confirmPassword'].errors['minlength']
+                  onboardingBusinessForm.controls['confirmPassword'].errors[
+                    'minlength'
+                  ]
                 "
               >
                 Password must be at least 8 characters long.
               </mat-error>
-              <mat-error *ngIf="!(accConfirmPassword.value == accPassword.value)">
+              <mat-error
+                *ngIf="!(accConfirmPassword.value == accPassword.value)"
+              >
                 Password don't match.
               </mat-error>
               <button
@@ -630,7 +726,12 @@
             ></textarea>
           </mat-form-field>
           <div class="actions">
-            <input type="file" (change)="readFormat($event)" #menuUploader hidden>
+            <input
+              type="file"
+              (change)="readFormat($event)"
+              #menuUploader
+              hidden
+            />
             <!-- show uploaded file name -->
             <div class="upload">
               <span *ngIf="menuUploader.files.length > 0">
@@ -638,27 +739,45 @@
                 <viraj-button type="icon"></viraj-button>
               </span>
             </div>
-            <viraj-button type="outline" (click)="menuUploader.click()">Upload Excel</viraj-button>
-            <viraj-button type="outline"(click)="downloadFormat()">Download Excel Format</viraj-button>
-            <viraj-button type="outline" (click)="addCategory()">Add Category</viraj-button>
+            <viraj-button type="outline" (click)="menuUploader.click()"
+              >Upload Excel</viraj-button
+            >
+            <viraj-button type="outline" (click)="downloadFormat()"
+              >Download Excel Format</viraj-button
+            >
+            <viraj-button type="outline" (click)="addCategory()"
+              >Add Category</viraj-button
+            >
           </div>
           <div class="loadedCategories">
             <mat-accordion class="example-headers-align">
               <mat-expansion-panel *ngFor="let category of rootCategories">
                 <mat-expansion-panel-header>
                   <mat-panel-title>
-                    {{category.name}}
+                    {{ category.name }}
                   </mat-panel-title>
                 </mat-expansion-panel-header>
                 <div class="actions categoryAction">
-                  <viraj-button type="outline" (click)="addProduct(category)">Add Product</viraj-button>
-                  <viraj-button type="outline" (click)="deleteCategory(category)">Delete Category</viraj-button>
+                  <viraj-button type="outline" (click)="addProduct(category)"
+                    >Add Product</viraj-button
+                  >
+                  <viraj-button
+                    type="outline"
+                    (click)="deleteCategory(category)"
+                    >Delete Category</viraj-button
+                  >
                 </div>
                 <div class="products">
                   <table>
                     <thead>
                       <tr>
-                        <th><mat-checkbox [checked]="checkedAll(category)" (change)="switchAll($event,category)">Product Name</mat-checkbox></th>
+                        <th>
+                          <mat-checkbox
+                            [checked]="checkedAll(category)"
+                            (change)="switchAll($event, category)"
+                            >Product Name</mat-checkbox
+                          >
+                        </th>
                         <th>Price</th>
                         <th>Tag</th>
                         <th>Type</th>
@@ -667,19 +786,35 @@
                     <tbody>
                       <tr *ngFor="let product of category.products">
                         <td>
-                          <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="product.selected">{{product.name}}</mat-checkbox>
+                          <mat-checkbox
+                            [ngModelOptions]="{ standalone: true }"
+                            [(ngModel)]="product.selected"
+                            >{{ product.name }}</mat-checkbox
+                          >
                         </td>
                         <td>
                           <mat-form-field appearance="outline">
                             <mat-label>Price</mat-label>
-                            <input matInput type="number" [ngModelOptions]="{standalone: true}" [(ngModel)]="product.price" />
+                            <input
+                              matInput
+                              type="number"
+                              [ngModelOptions]="{ standalone: true }"
+                              [(ngModel)]="product.price"
+                            />
                           </mat-form-field>
                         </td>
                         <td>
                           <mat-form-field appearance="outline">
                             <mat-label>Select Tag</mat-label>
-                            <mat-select [ngModelOptions]="{standalone: true}" [(ngModel)]="product.tag" name="label">
-                              <mat-option *ngFor="let label of tags" [value]="label">
+                            <mat-select
+                              [ngModelOptions]="{ standalone: true }"
+                              [(ngModel)]="product.tag"
+                              name="label"
+                            >
+                              <mat-option
+                                *ngFor="let label of tags"
+                                [value]="label"
+                              >
                                 {{ label.name | titlecase }}
                               </mat-option>
                             </mat-select>
@@ -688,8 +823,16 @@
                         <td>
                           <mat-form-field appearance="outline">
                             <mat-label>Select Type</mat-label>
-                            <mat-select placeholder="Tag" [ngModelOptions]="{standalone: true}" [(ngModel)]="product.type" name="tag">
-                              <mat-option *ngFor="let tag of type" [value]="tag">
+                            <mat-select
+                              placeholder="Tag"
+                              [ngModelOptions]="{ standalone: true }"
+                              [(ngModel)]="product.type"
+                              name="tag"
+                            >
+                              <mat-option
+                                *ngFor="let tag of type"
+                                [value]="tag"
+                              >
                                 {{ tag }}
                               </mat-option>
                             </mat-select>

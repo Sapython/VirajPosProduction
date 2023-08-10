@@ -477,12 +477,14 @@ export class Table implements TableConstructor {
       this.triggerUpdate();
     } else {
       if (this.bill && !table.bill) {
-        // start the table
-        table.occupyTable();
+        // shift the bill from current table to this.table
         table.bill = this.bill;
+        table.occupiedStart = Timestamp.now();
+        table.status = 'occupied';
+        table.updated.next();
         this.bill = null;
-        this.updated.next();
-        this.triggerUpdate();
+        // empty this.table
+        this.clearTable();
       } else {
         alert('Table ' + table.name + ' is not occupied');
       }

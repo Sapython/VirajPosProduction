@@ -11,7 +11,7 @@
     <form [formGroup]="comboFormGroup">
       <input matInput placeholder="Combo Name" formControlName="name" type="text" />
       <input matInput placeholder="Maximum No. Of Purchase" type="number" formControlName="maximumNoOfPurchases" />
-      <div class="select">
+      <div class="select" matTooltip="Combo is general combo where the price get's automatically calculated. Offer is a fixed price group for products.">
         <mat-select
           placeholder="Type"
           formControlName="type"
@@ -24,15 +24,15 @@
         </mat-select>
       </div>
       <input type="file" #fileUploader (change)="setImage($event)" hidden />
-      <viraj-button type="outline" (click)="fileUploader.click()">Upload Image</viraj-button>
+      <viraj-button type="outline" (click)="fileUploader.click()" matTooltip="You can select optional image for this combo/offer.">Upload Image</viraj-button>
       <input matInput placeholder="Offer Cost" type="text" *ngIf="offerType.value == 'offer'" formControlName="offerPrice" />
       <div class="toggle">
-        <mat-slide-toggle formControlName="discounted"
+        <mat-slide-toggle matTooltip="If you switch this on then discount can be applied to the bill that has this item in it. If not than no one can apply discount on the bill if the bill has this item in it." formControlName="discounted"
           >Can Be Discounted</mat-slide-toggle
         >
       </div>
       <div class="toggle">
-        <mat-slide-toggle
+        <mat-slide-toggle matTooltip="This will make you set automatic settings like visible only on certain day, date, time, month etc. If not then you will have manual control"
           [ngModelOptions]="{ standalone: true }"
           [(ngModel)]="visibilityEnabled"
           >Enable Visibility</mat-slide-toggle
@@ -41,6 +41,7 @@
     </form>
     <div class="config">
       <mat-form-field class="selectCategory" appearance="outline">
+        <app-helper matPrefix tooltip="Select categories from your main categories list under this menu. You can select multiple and also same one multiple times."></app-helper>
         <mat-label>Select Category</mat-label>
         <mat-chip-grid #categoryChipGrid aria-label="Category selection">
           <mat-chip-row
@@ -75,6 +76,7 @@
             {{ category.name }}
           </mat-option>
         </mat-autocomplete>
+
       </mat-form-field>
     </div>
     <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
@@ -85,13 +87,14 @@
         <div class="configBody">
           <div class="fields">
             <mat-form-field appearance="outline">
+              <app-helper matPrefix tooltip="Select offer type, then set on how many products someone can buy a minimum amount is required"></app-helper>
               <mat-label>Offer Type</mat-label>
               <mat-select
-                placeholder="Offer Type"
+              placeholder="Offer Type"
                 [(ngModel)]="selectedCategory.offerType"
                 #offerType
                 name="type"
-              >
+                >
                 <mat-option value="fixed">Fixed Price</mat-option>
                 <mat-option value="free">Free</mat-option>
                 <mat-option value="discount">Discount</mat-option>
@@ -100,28 +103,32 @@
               </mat-select>
             </mat-form-field>
             <mat-form-field appearance="outline" *ngIf="offerType.value == 'fixed'">
+              <app-helper matPrefix tooltip="Is the offer applied on all products or only on selected product."></app-helper>
               <mat-label>Applied On</mat-label>
               <mat-select
-                placeholder="Applied On"
-                [(ngModel)]="selectedCategory.appliedOn"
+              placeholder="Applied On"
+              [(ngModel)]="selectedCategory.appliedOn"
                 name="type"
-              >
+                >
                 <mat-option value="item">Item</mat-option>
                 <mat-option value="group">Group</mat-option>
               </mat-select>
             </mat-form-field>
             <mat-form-field
-              appearance="outline"
-              *ngIf="offerType.value == 'discount' && offerType.value == 'fixed' && offerType.value == 'loyalty'"
+            appearance="outline"
+            *ngIf="offerType.value == 'discount' && offerType.value == 'fixed' && offerType.value == 'loyalty'"
             >
+              <app-helper matPrefix tooltip="The total cost of this offer."></app-helper>
               <mat-label>Amount</mat-label>
               <input type="number" matInput [(ngModel)]="selectedCategory.amount" />
             </mat-form-field>
             <mat-form-field appearance="outline">
+              <app-helper matPrefix tooltip="Minimum number of products required."></app-helper>
               <mat-label>Minimum Products</mat-label>
               <input
                 type="number"
                 matInput
+                required
                 [(ngModel)]="selectedCategory.minimumProducts"
               />
             </mat-form-field>
@@ -186,6 +193,7 @@
           <div class="settings">
             <div class="actions">
               <mat-form-field appearance="outline">
+                <app-helper matPrefix>Weekly will allow you to set something that repeats every month, while monthly will allow you to set something that repeats every year.</app-helper>
                 <mat-label>Monthly / Weekly</mat-label>
                 <mat-select
                   placeholder="Select Mode"
@@ -199,6 +207,7 @@
               </mat-form-field>
               <mat-radio-group
                 aria-label="Select repeat mode"
+                [matTooltip]="monthlyWeeklyMode.value == 'monthly' ? 'If you select repeating then this setting will repeat every year' : 'If you select repeating then this setting will repeat every month'"
                 [(ngModel)]="visibilitySettings.repeating"
               >
                 <mat-radio-button [value]="false">Not Repeating</mat-radio-button>
@@ -227,7 +236,7 @@
                 </mat-date-range-input>
                 <viraj-button type="outline" (vclick)="picker.open()"
                   >Select Date Range <i class="ri-calendar-2-fill"></i
-                ></viraj-button>
+                ><app-helper tooltip="Select the range on which you want to apply this setting"></app-helper> </viraj-button>
               </ng-container>
               <ng-container *ngIf="monthlyWeeklyMode.value == 'weekly'">
                 <mat-form-field appearance="outline">
@@ -248,7 +257,7 @@
             </div>
             <div class="weeks" *ngIf="monthlyWeeklyMode.value == 'weekly'">
               <div class="selectWeeks">
-                <p>Select Weeks</p>
+                <p>Select Weeks <app-helper tooltip="This allows you to select all the days of that week from every month."></app-helper></p>
                 <mat-checkbox
                   (change)="generateMonthsData()"
                   [(ngModel)]="visibilitySettings.selectedWeeks.week1"
@@ -295,7 +304,7 @@
                     generateMonthsData()
                   "
                   #allWeeks
-                  >All Weeks</mat-checkbox
+                  ><app-helper tooltip="This will allows you to select all weeks and days of every month."></app-helper> All Weeks</mat-checkbox
                 >
               </div>
               <div class="tableContainer">
@@ -460,6 +469,7 @@
               <thead>
                 <tr>
                   <th>
+                    <app-helper tooltip="This will allows you to set certain timings for this offer to visible upon."></app-helper>
                     <mat-checkbox [checked]="allTimeSlotsSelected" (change)="checkAllTimeSlots(allSlotChecker.checked)" #allSlotChecker>Time Slot Name</mat-checkbox>
                   </th>
                   <th>Start Time</th>
@@ -567,21 +577,4 @@
       <viraj-button type="outline" (vclick)="cancel()">Cancel</viraj-button>
     </div>
   </div>
-  <!-- <div
-    class="dragArea"
-    (drop)="droppedImage($event)"
-    dropzone=""
-    (click)="fileUploader.click()"
-  >
-    <input type="file" #fileUploader (change)="setImage($event)" hidden />
-    <div class="noImage" *ngIf="!imagePreviewData">
-      <i class="ri-add-line"></i>
-      <p>Click to upload</p>
-    </div>
-    <img [src]="imagePreviewData" *ngIf="imagePreviewData" />
-  </div> -->
-  <!--  -->
-  <!--  -->
-  <!--  -->
-  
 </section>

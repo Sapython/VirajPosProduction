@@ -63,12 +63,24 @@ section {
     }
   }
 }
-
-.noItem {
-  width: 200px;
-  height: auto;
-  display: block;
-  margin: 0 auto;
+.kotSection{
+  height: calc(100% - 42px);
+  .normalKotView.noItems{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    .noItemText{
+      text-align: center;
+      font-size: var(--Vrajera-font-large);
+    }
+    .noItem {
+      width: 80%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+  }
 }
 
 .expandable {

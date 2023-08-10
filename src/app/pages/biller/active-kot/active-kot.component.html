@@ -17,9 +17,10 @@
     </div>
   </div>
 </div>
-<section #kotListElement>
+<section #kotListElement class="kotSection">
   <div
     class="normalKotView"
+    [ngClass]="{noItems:showImage}"
     *ngIf="!dataProvider.kotViewVisible && !dataProvider.allProducts"
     [@zoomInOnEnter]
     [@zoomOutOnLeave]
@@ -51,9 +52,10 @@
       "
     >
     </app-edit-kot>
+    <!-- <p *ngIf="showImage" class="noItemText">Select item to add kot. KOTs will appear here.</p> -->
     <img
       class="noItem"
-      src="assets/images/notFound.svg"
+      src="assets/images/Viraj-mascot.png"
       alt="No Items"
       *ngIf="showImage"
     />

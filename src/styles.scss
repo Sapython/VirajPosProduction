@@ -407,3 +407,42 @@ i[class^="ri-"] {
 .passwordAlert {
   z-index: 99999999999;
 }
+.virajInput{
+  label{
+    position: absolute;
+    transform: translate(-180%,10px);
+    font-size: var(--Vrajera-font-medium);
+    color: var(--Vrajera-primary);
+    transition: all 0.3s ease-in-out;
+    pointer-events: none;
+  }
+  input{
+    border: 2px solid var(--Vrajera-primary);
+    border-radius: 4px;
+    height: 35px;
+    padding: 0px 10px;
+    color: var(--Vrajera-primary);
+    font-size: var(--Vrajera-font-medium);
+    transition: all 0.3s ease-in-out;
+    input::placeholder{
+      opacity:0;
+    }
+    &:focus{
+      outline:none;
+      border-bottom: 4px solid var(--Vrajera-primary);
+      & + label,
+      &:not(:placeholder-shown) + label{
+        transform:translate(-180%,-20px);
+      }
+    }
+  }
+  &:focus-within,&.active{
+    input{
+      border-bottom: 4px solid var(--Vrajera-primary);
+      & + label,
+      &:not(:placeholder-shown) + label{
+        transform:translate(-180%,-20px);
+      }
+    }
+  }
+}

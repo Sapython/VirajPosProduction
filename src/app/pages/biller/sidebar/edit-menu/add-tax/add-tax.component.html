@@ -12,6 +12,7 @@
     </mat-select>
   </mat-form-field>
   <mat-form-field appearance="outline">
+    <app-helper matSuffix tooltip="When mode is bill, this charge is automatically applied to the bill. When mode is product, it works like common taxes, you can select on what product to apply."></app-helper>
     <mat-label>Mode</mat-label>
     <mat-select placeholder="Mode" formControlName="mode">
       <mat-option value="bill"> Bill Type </mat-option>

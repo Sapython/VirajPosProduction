@@ -33,6 +33,8 @@ export interface UserBusiness {
   access: Access;
   name: string;
   address: string;
+  city:string;
+  state:string;
   joiningDate: Timestamp;
 }
 export interface BusinessRecord {
@@ -40,6 +42,8 @@ export interface BusinessRecord {
   hotelName: string;
   hotelLogo: string;
   address: string;
+  city:string;
+  state:string;
   phone: string;
   username: string;
   email: string;

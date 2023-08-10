@@ -13,6 +13,7 @@
       </mat-form-field>
       <mat-form-field appearance="outline">
         <mat-label>Base Loyalty Point</mat-label>
+        <app-helper matSuffix tooltip="This point will be assigned to all products by default."></app-helper>
         <input
           type="number"
           (change)="
@@ -25,6 +26,7 @@
         />
       </mat-form-field>
       <div class="rate">
+        <app-helper tooltip="This rate will be assigned to all products by default."></app-helper>
         <input
           placeholder="Base Rate"
           type="number"
@@ -37,9 +39,10 @@
           #conversionRate
           matInput
         />
-        <span> = {{ 1 | currency: "INR" }}</span>
+        <span matTooltip="Total points that is equal to 1 INR. eg: 25(P) = 1 INR; 1(p) = 0.04 INR"> = {{ 1 | currency: "INR" }}</span>
       </div>
       <mat-form-field appearance="outline">
+        <app-helper matSuffix tooltip="In how many days will these assigned points expire."></app-helper>
         <mat-label>Expiry Days</mat-label>
         <input type="number" formControlName="expiryDays" matInput />
       </mat-form-field>

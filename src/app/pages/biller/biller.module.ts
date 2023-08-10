@@ -49,6 +49,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { LoyaltyComponent } from './settings/sections/loyalty/loyalty.component';
 import { OffersComponent } from './settings/sections/offers/offers.component';
 import { ReportsComponent } from './info-panel/sales-summary/reports/reports.component';
+import { UpdateComponent } from './settings/sections/account/update/update.component';
 
 @NgModule({
   declarations: [
@@ -72,6 +73,7 @@ import { ReportsComponent } from './info-panel/sales-summary/reports/reports.com
     LoyaltyComponent,
     OffersComponent,
     ReportsComponent,
+    UpdateComponent,
   ],
   imports: [
     CommonModule,

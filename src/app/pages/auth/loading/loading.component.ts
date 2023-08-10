@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AlertsAndNotificationsService } from '../../../core/services/alerts-and-notification/alerts-and-notifications.service';
 import { Dialog } from '@angular/cdk/dialog';
@@ -40,7 +40,7 @@ var debug = true;
   styleUrls: ['./loading.component.scss'],
   animations: [zoomInOnEnterAnimation(), zoomOutOnLeaveAnimation()],
 })
-export class LoadingComponent {
+export class LoadingComponent implements OnInit {
   products: ExcelProduct[] = [];
   loginForm: FormGroup = new FormGroup({
     username: new FormControl(''),
@@ -101,6 +101,8 @@ export class LoadingComponent {
   onboardingBusinessForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required]),
     address: new FormControl('', [Validators.required]),
+    city: new FormControl('', [Validators.required]),
+    state: new FormControl('', [Validators.required]),
     phone: new FormControl('', [
       Validators.required,
       Validators.pattern('[0-9]{10}'),
@@ -139,11 +141,15 @@ export class LoadingComponent {
   selectedProducts: Product[] = [];
   rootCategories: { name: string; products: any[] }[] = [];
   imageUrl: string = '';
-
+  statesAndCities: {state:string,districts:string[]}[] = [];
   loginStage: Subject<string> = new Subject<string>();
   resetPasswordRequestAuthId: string = '';
   logoFile: File | undefined;
   logoString: string = '';
+
+  currentAreaState:{state:string,cities:{city:string,businesses:UserBusiness[]}[]};
+  currentAreaCity:{city:string,businesses:UserBusiness[]};
+
   constructor(
     public dataProvider: DataProvider,
     private alertify: AlertsAndNotificationsService,
@@ -175,6 +181,16 @@ export class LoadingComponent {
           this.userNameAvailable = 'invalid';
         });
     });
+  }
+
+  ngOnInit(){
+    fetch('assets/states-and-districts.json').then(async (res) => {
+      let states = await res.json()
+      console.log('res',states.states);
+      this.statesAndCities = states.states;
+    }).catch((error) => {
+      console.log('error', error);
+    })
   }
 
   customLogin() {}
@@ -518,6 +534,8 @@ export class LoadingComponent {
         } else {
           let data: BusinessRecord = {
             address: this.onboardingBusinessForm.value.address,
+            city:this.onboardingBusinessForm.value.city,
+            state:this.onboardingBusinessForm.value.state,
             businessId: id,
             hotelName: this.onboardingBusinessForm.value.name,
             hotelLogo: logo || '',
@@ -607,6 +625,8 @@ export class LoadingComponent {
           updatedBy: 'system',
         },
         address: this.onboardingBusinessForm.value.address,
+        city:this.onboardingBusinessForm.value.city,
+        state:this.onboardingBusinessForm.value.state,
         businessId: id,
         joiningDate: Timestamp.fromDate(new Date()),
         name: this.onboardingBusinessForm.value.name,
@@ -620,6 +640,8 @@ export class LoadingComponent {
       if (debug) console.log('userBusinessRes', userBusinessRes);
       let data: BusinessRecord = {
         address: this.onboardingBusinessForm.value.address,
+        city:this.onboardingBusinessForm.value.city,
+        state:this.onboardingBusinessForm.value.state,
         businessId: id,
         hotelName: this.onboardingBusinessForm.value.name,
         hotelLogo: logoImage || '',

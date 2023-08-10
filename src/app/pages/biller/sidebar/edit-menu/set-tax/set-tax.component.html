@@ -3,6 +3,7 @@
     <h3>Select Taxes</h3>
   </div>
   <div class="body">
+    <app-helper matSuffix tooltip="Product can only be either exclusive or inclusive. First select mode and then select what taxes are applicable upon it."></app-helper>
     <mat-radio-group [(ngModel)]="type">
       <mat-radio-button color="primary" value="inclusive"
         >Inclusive</mat-radio-button

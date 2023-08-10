@@ -1,0 +1,14 @@
+<div class="businessCard">
+	<p class="title">{{business.name | titlecase}}</p>
+	<address>
+		<i class="ri-map-pin-fill"></i>
+		<p>{{business.address}}</p>
+	</address>
+	<div class="user">
+		<img src="https://api.dicebear.com/6.x/initials/svg?seed={{userId}}">
+		<div class="detail">
+			<p>{{userId | titlecase}}</p>
+			<p>{{business.joiningDate.toDate() | date}}</p>
+		</div>
+	</div>
+</div>

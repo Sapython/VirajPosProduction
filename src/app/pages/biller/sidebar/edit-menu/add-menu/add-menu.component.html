@@ -18,7 +18,11 @@
         </span>
         <viraj-button type="outline" (click)="menuUploader.click()">Upload Excel</viraj-button>
       </div>
-      <viraj-button type="outline"(click)="downloadFormat()">Download Excel Format</viraj-button>
+      <viraj-button [matMenuTriggerFor]="formatDownloadMenu" type="outline">Download Excel Format</viraj-button>
+      <mat-menu #formatDownloadMenu="matMenu">
+        <button mat-menu-item (click)="downloadFormat('excel')">Microsoft Excel</button>
+        <button mat-menu-item (click)="downloadFormat('csv')">Commonly Used CSV</button>
+      </mat-menu>
       <viraj-button type="outline" (click)="addCategory()">Add Category</viraj-button>
     </div>
     <mat-accordion class="example-headers-align">

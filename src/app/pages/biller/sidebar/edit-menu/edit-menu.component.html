@@ -51,7 +51,7 @@
         Online
       </button>
     </div>
-    <div class="selectMenu" *ngIf="this.dataProvider.currentMenu && this.dataProvider.getAccess('switchMenu')">
+    <div matTooltip="Select the menu for this associated mode. If you change it it will apply to all billers under this restaurant" class="selectMenu" *ngIf="this.dataProvider.currentMenu && this.dataProvider.getAccess('switchMenu')">
       <span>Selected Menu: </span>
       <select
         [(ngModel)]="this.dataProvider.currentMenu.selectedMenuId"
@@ -68,13 +68,14 @@
     </div>
     <viraj-button
       type="outline"
+      matTooltip="Allows you to set custom printer settings specific to product wise."
       (click)="this.dataProvider.currentMenu.setPrinterSettings()"
       *ngIf="this.dataProvider.getAccess('setPrinterSettings')"
       [ngClass]="{ active: activeTab == 'Loyalty' }"
     >
       Printer Setting
     </viraj-button>
-    <viraj-button (click)="addNewMenu()" *ngIf="this.dataProvider.getAccess('addNewMenu')" [large]="true" [animated]="true"
+    <viraj-button matTooltip="Click to create a new menu." (click)="addNewMenu()" *ngIf="this.dataProvider.getAccess('addNewMenu')" [large]="true" [animated]="true"
       >New Menu</viraj-button
     >
   </div>
@@ -150,7 +151,7 @@
                 "
                 [category]="mode.allProductsCategory"
               ></app-category-card>
-              <span *ngIf="this.dataProvider.getAccess('recommendedCategories')"
+              <span matTooltip="These are vrajera's special category that works on recommendation basis." *ngIf="this.dataProvider.getAccess('recommendedCategories')"
                 >Recommended</span
               >
               <div
@@ -172,7 +173,7 @@
                   [category]="category"
                 ></app-category-card>
               </div>
-              <span *ngIf="this.dataProvider.getAccess('viewCategories')"
+              <span matTooltip="These categories are specific to the current user, you can have products from multiple main categories" *ngIf="this.dataProvider.getAccess('viewCategories')"
                 >View Categories<viraj-button
                   *ngIf="this.dataProvider.getAccess('addViewCategory')"
                   type="icon"
@@ -197,7 +198,7 @@
                   [category]="category"
                 ></app-category-card>
               </div>
-              <span *ngIf="this.dataProvider.getAccess('mainCategories')"
+              <span matTooltip="Main categories are categories that have products in them, if you affect these then products also get affected, these are unique in itself." *ngIf="this.dataProvider.getAccess('mainCategories')"
                 >Main Categories<viraj-button
                   *ngIf="this.dataProvider.getAccess('addMainCategory')"
                   type="icon"
@@ -259,6 +260,7 @@
                   <viraj-button
                     type="outline"
                     color="primary"
+                    matTooltip="This will disable all the products in this category."
                     (click)="mode.disableAll()"
                   >
                     Disable All
@@ -266,6 +268,7 @@
                   <viraj-button
                     type="outline"
                     color="primary"
+                    matTooltip="This will enable all the products in this category."
                     (click)="mode.enableAll()"
                   >
                     Enable All
@@ -276,6 +279,7 @@
                     ['all'].includes(mode.currentType) &&
                     this.dataProvider.getAccess('addNewProduct')
                   "
+                  matTooltip="This will add a new product to this menu. Then you can select in which category they appear."
                   (click)="mode.addRecipe(mode.selectedMenuId)"
                   color="primary"
                 >
@@ -286,6 +290,7 @@
                   (click)="
                     mode.downloadProducts(mode.selectedCategory.products)
                   "
+                  matTooltip="This will download all the products in this category."
                   color="primary"
                 >
                   Download Recipe
@@ -297,6 +302,7 @@
                   "
                   (click)="mode.setBulkTaxes(mode.selectedCategory.products)"
                   color="primary"
+                  matTooltip="This will set taxes on all the products in this category."
                 >
                   Set Bulk Taxes
                 </viraj-button>
@@ -332,6 +338,7 @@
                 <span
                   *ngIf="mode.currentType != 'all'"
                   class="visibilityToggle"
+                  matTooltip="By enabling or disabling this you can hide or view this category in biller."
                 >
                   <p>Visibility :</p>
                   <mat-slide-toggle
@@ -361,26 +368,30 @@
                   mode.selectedCategory.id == 'highRange'
                 "
               >
-                <h4>Recommendation Setting</h4>
+                <h4>Recommendation Setting <app-helper tooltip="This allows you to set the minimum and maximum prices of product that has to be included in this settings."></app-helper></h4>
                 <form
                   [formGroup]="mode.highRangeForm"
                   #currentForm
                   (ngSubmit)="mode.recommendationSave('highRange')"
                 >
-                  <input
-                    class="settingInput"
-                    type="number"
-                    placeholder="Minimum"
-                    formControlName="min"
-                    matInput
-                  />
-                  <input
-                    class="settingInput"
-                    type="number"
-                    placeholder="Maximum"
-                    formControlName="max"
-                    matInput
-                  />
+                  <div class="virajInput" [ngClass]="{active:inputElm.value}">
+                    <input
+                      type="number"
+                      placeholder=" "
+                      #inputElm
+                      formControlName="min"
+                    />
+                    <label class="label">Minimum Amount</label>
+                  </div>
+                  <div class="virajInput" [ngClass]="{active:inputElm.value}">
+                    <input
+                      type="number"
+                      placeholder=" "
+                      formControlName="max"
+                      matInput
+                    />
+                    <label>Maximum Amount</label>
+                  </div>
                   <viraj-button
                   (click)="mode.recommendationSave('highRange')"
                     color="primary"
@@ -396,26 +407,29 @@
                   mode.selectedCategory.id == 'lowRange'
                 "
               >
-                <h4>Recommendation Setting</h4>
+                <h4>Recommendation Setting <app-helper tooltip="This allows you to set the minimum and maximum prices of product that has to be included in this settings."></app-helper></h4>
                 <form
                   [formGroup]="mode.lowRangeForm"
                   #currentForm
                   (ngSubmit)="mode.recommendationSave('lowRange')"
                 >
+                <div class="virajInput" [ngClass]="{active:inputElm.value}">
                   <input
-                    class="settingInput"
                     type="number"
-                    placeholder="Minimum"
-                    matInput
+                    #inputElm
+                    placeholder=" "
                     formControlName="min"
                   />
-                  <input
-                    class="settingInput"
-                    type="number"
-                    placeholder="Maximum"
-                    matInput
-                    formControlName="max"
-                  />
+                  <label>Minimum Amount</label>
+                </div>
+                <div class="virajInput" [ngClass]="{active:inputElm.value}">
+                    <input
+                      type="number"
+                      placeholder=" "
+                      formControlName="max"
+                    />
+                    <label>Maximum Amount</label>
+                  </div>
                   <viraj-button
                     color="primary"
                     (click)="mode.recommendationSave('lowRange')"
@@ -432,26 +446,30 @@
                   mode.selectedCategory.id == 'mostSelling'
                 "
               >
-                <h4>Recommendation Setting</h4>
+                <h4>Recommendation Setting <app-helper tooltip="This allows you to set the minimum and maximum sales of products that has to be included in this category."></app-helper></h4>
                 <form
                   [formGroup]="mode.mostSellingForm"
                   #currentForm
                   (ngSubmit)="mode.recommendationSave('mostSelling')"
                 >
+                <div class="virajInput" [ngClass]="{active:inputElm.value}">
                   <input
-                    class="settingInput"
+                    #inputElm
                     type="number"
-                    placeholder="Minimum Sales"
-                    matInput
+                    placeholder="  "
                     formControlName="min"
                   />
+                  <label>Minimum Amount</label>
+                </div>
+                <div class="virajInput" [ngClass]="{active:inputElm.value}">
                   <input
-                    class="settingInput"
+                    #inputElm
                     type="number"
-                    placeholder="Maximum Sales"
-                    matInput
+                    placeholder="  "
                     formControlName="max"
                   />
+                  <label>Maximum Amount</label>
+                </div>
                   <viraj-button
                     color="primary"
                     (click)="mode.recommendationSave('mostSelling')"
@@ -467,7 +485,7 @@
                   mode.selectedCategory.id == 'newDishes'
                 "
               >
-                <h4>Recommendation Setting</h4>
+                <h4>Recommendation Setting <app-helper tooltip="This allows you to set the minimum and maximum date on which the product was added to menu, and then automatically add it to this category."></app-helper></h4>
                 <form
                   [formGroup]="mode.newDishesForm"
                   #currentForm
@@ -592,10 +610,12 @@
                           this.dataProvider.getAccess('setTaxesOnMainProducts'))
                       "
                       (click)="mode.setTaxes(product)"
+                      matTooltip="This will set taxes on this product."
                       >Set Taxes</viraj-button
                     >
                     <mat-slide-toggle
                       checked
+                      matTooltip="This will enable or disable this product."
                       *ngIf="
                         (mode.currentType == 'all' &&
                           this.dataProvider.getAccess(
@@ -622,6 +642,7 @@
                       "
                     ></mat-slide-toggle>
                     <viraj-button
+                      matTooltip="This will edit this product globally."
                       *ngIf="
                         (mode.currentType == 'all' &&
                           this.dataProvider.getAccess('editProduct')) ||
@@ -639,6 +660,7 @@
                       <i class="ri-pencil-fill"></i>
                     </viraj-button>
                     <viraj-button
+                      matTooltip=" This will delete this product."
                       *ngIf="
                         (mode.currentType == 'all' &&
                           this.dataProvider.getAccess('deleteProduct')) ||
@@ -894,7 +916,8 @@
                   #search
                 />
                 <p>
-                  <mat-radio-button value=""
+                  <mat-radio-button matTooltip="This will disable loyalty for this menu."
+                   value=""
                     >Disable Loyalty</mat-radio-button
                   >
                 </p>

@@ -1,0 +1,26 @@
+section {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	background: white;
+	padding: 25px;
+	border-radius: 15px;
+  
+	p,
+	h2 {
+	  margin: 0px;
+	}
+  
+	form {
+	  display: flex;
+	  flex-direction: column;
+	  gap: 10px;
+  
+	  .actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 15px;
+	  }
+	}
+  }
+  

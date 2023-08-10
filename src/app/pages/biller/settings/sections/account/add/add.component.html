@@ -24,22 +24,43 @@
         style="float: right; margin-left: 8px"
       ></mat-spinner>
     </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>Access</mat-label>
-      <mat-select
-        placeholder="Access"
-        formControlName="accessLevel"
-        name="access"
-      >
-        <mat-option
-          *ngFor="let access of this.dataProvider.accessLevels"
-          [value]="access"
-        >
-          {{ access | titlecase }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
     <ng-container *ngIf="stage == 'available'">
+      <mat-form-field appearance="outline">
+        <mat-label>Access Type</mat-label>
+        <mat-select
+          placeholder="Access"
+          formControlName="accessType"
+          #accessType
+          name="access"
+        >
+          <mat-option value="role">Role</mat-option>
+          <mat-option value="custom">Custom</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field *ngIf="accessType.value == 'role'" appearance="outline">
+        <mat-label>Access</mat-label>
+        <mat-select
+          placeholder="Access"
+          formControlName="accessLevel"
+          name="access"
+        >
+          <mat-option
+            *ngFor="let access of this.dataProvider.accessLevels"
+            [value]="access"
+          >
+            {{ access | titlecase }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" *ngIf="accessType.value == 'custom'">
+        <mat-select multiple placeholder="Select Properties" formControlName="propertiesAllowed">
+          <mat-optgroup *ngFor="let accessGroup of accessCodes" [label]="accessGroup.name">
+            <mat-option [value]="item.accessCode" *ngFor="let item of accessGroup.accessCodes">{{item.name}}</mat-option>
+          </mat-optgroup>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+    <ng-container *ngIf="stage == 'unavailable'">
       <mat-form-field appearance="outline">
         <mat-label>Email</mat-label>
         <input type="email" matInput formControlName="email" />

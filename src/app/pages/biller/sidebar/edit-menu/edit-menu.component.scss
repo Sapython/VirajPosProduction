@@ -277,13 +277,13 @@ section {
           opacity: 0;
         }
       }
-      .settingInput {
-        border: 2px solid var(--Vrajera-primary);
-        border-radius: 4px;
-        height: 35px;
-        padding: 0px 10px;
-        color: var(--Vrajera-primary);
-      }
+      // .settingInput {
+      //   border: 2px solid var(--Vrajera-primary);
+      //   border-radius: 4px;
+      //   height: 35px;
+      //   padding: 0px 10px;
+      //   color: var(--Vrajera-primary);
+      // }
       .visibilityToggle {
         display: flex;
         width: max-content;
@@ -620,3 +620,5 @@ section {
 .danger {
   color: var(--Vrajera-danger);
 }
+
+

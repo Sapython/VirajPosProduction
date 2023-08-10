@@ -634,10 +634,10 @@ export const verifyOtpExistingUser = functions.https.onCall(
     } else if (accessType == 'custom') {
       newUserData['propertiesAllowed'] = otpDoc.data()?.propertiesAllowed;
     }
-    // await firestore.doc('business/' + businessId).update({
-    //   users: admin.firestore.FieldValue.arrayUnion(newUserData),
-    // });
-    await firestore.collection('business/' + businessId+'/users').add(newUserData);
+    await firestore.doc('business/' + businessId).update({
+      users: admin.firestore.FieldValue.arrayUnion(newUserData),
+    });
+    // await firestore.collection('business/' + businessId+'/users').add(newUserData);
     // sign in with custom token
     return { status: 'success', message: 'User approved successfully' };
   },

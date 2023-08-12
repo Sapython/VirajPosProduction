@@ -19,7 +19,7 @@ export class KotEditsComponent {
   constructor(private dataProvider: DataProvider,private reportService:ReportService) {}
   async downloadPdf() {
     const doc = new jsPDF();
-    let title = 'Bill Wise';
+    let title = 'KOT Edits';
     let logo = new Image();
     logo.src = 'assets/images/viraj.png';
     doc.addImage(logo, 'JPEG', 10, 10, 30.5, 17.5);

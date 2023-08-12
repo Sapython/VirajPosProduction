@@ -6,6 +6,8 @@ import { ReplaySubject, Subject } from 'rxjs';
 import {
   Firestore,
   collection,
+  doc,
+  getDoc,
   getDocs,
   query,
   where,
@@ -20,7 +22,7 @@ export class ReportService {
 
   loading: boolean = false;
   cachedData: CachedData[] = [];
-
+  consolidatedMaxAmount: number = 0;
   downloadPdf: Subject<void> = new Subject<void>();
   downloadExcel: Subject<void> = new Subject<void>();
 
@@ -29,6 +31,7 @@ export class ReportService {
     endDate: new FormControl('', [Validators.required]),
   });
   dataChanged: ReplaySubject<void> = new ReplaySubject<void>(1);
+  refetchConsolidated:Subject<void> = new Subject<void>();
   constructor(
     private billService: BillService,
     private firestore: Firestore,
@@ -116,6 +119,12 @@ export class ReportService {
       return doc.data();
     });
   }
+
+  async getSplittedBill(billId:string,splittedBillId:string,businessId:string){
+    return await getDoc(doc(this.firestore,'business',businessId,'bills',billId,'splittedBills',splittedBillId));
+  }
+
+
 }
 
 interface ActivityBillConstructor extends BillConstructor {

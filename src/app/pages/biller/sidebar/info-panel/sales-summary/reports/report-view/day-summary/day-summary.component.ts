@@ -38,9 +38,15 @@ export class DaySummaryComponent {
     return bill.map((res) => res.id).join(', ');
   }
 
-  constructor(private reportService: ReportService,private dataProvider: DataProvider,) {}
+  constructor(private reportService: ReportService,private dataProvider: DataProvider,) {
+    this.reportService.refetchConsolidated.subscribe(()=>{
+      console.log("Refetching consolidated");
+      this.ngOnInit();
+    });
+  }
 
   ngOnInit(): void {
+    this.reportChangedSubscription.unsubscribe();
     this.reportChangedSubscription = this.reportService.dataChanged.subscribe(
       () => {
         this.loading = true;
@@ -103,6 +109,9 @@ export class DaySummaryComponent {
                 .reduce((acc, res) => acc + res.billing.grandTotal, 0),
             };
             this.loading = false;
+          }).catch(err=>{
+            this.loading = false;
+            console.log("Error in getting bills",err);
           });
       },
     );
@@ -111,7 +120,7 @@ export class DaySummaryComponent {
 
   async downloadPdf() {
     const doc = new jsPDF();
-    let title = 'Bill Wise';
+    let title = 'Day Summary Report';
     let logo = new Image();
     logo.src = 'assets/images/viraj.png';
     doc.addImage(logo, 'JPEG', 10, 10, 30.5, 17.5);

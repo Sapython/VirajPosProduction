@@ -23,6 +23,7 @@ import { SettleComponent } from '../settle/settle.component';
 import { Timestamp } from '@angular/fire/firestore';
 import { BillService } from '../../../../core/services/database/bill/bill.service';
 import { PrinterService } from '../../../../core/services/printing/printer/printer.service';
+import { AnalyticsService } from '../../../../core/services/database/analytics/analytics.service';
 
 @Component({
   selector: 'app-split-bill',
@@ -75,6 +76,7 @@ export class SplitBillComponent {
     private dialog: Dialog,
     private billService: BillService,
     private printingService: PrinterService,
+    private analyticsService:AnalyticsService
   ) {
     this.allKots = JSON.parse(
       JSON.stringify(bill.kots.map((kot) => kot.toObject())),
@@ -216,6 +218,7 @@ export class SplitBillComponent {
       this.dataProvider.loading = true;
       let ids = await Promise.all(
         this.splittedBills.map(async (bill, index) => {
+
           bill.table = bill.table.id || (bill.table as any);
           setTimeout(() => {
             this.printingService.printBill(
@@ -230,6 +233,15 @@ export class SplitBillComponent {
           return res;
         }),
       );
+      this.billService.addActivity(this.bill,{
+        type:'billSplit',
+        message:'Bill splitted by '+this.dataProvider.currentBusinessUser.name,
+        user:this.dataProvider.currentBusinessUser.name,
+        data:{
+          originalBillId:this.bill.id,
+          splittedBillIds:ids
+        }
+      });
       this.bill.settle(
         this.splittedBills.map((bill) => bill.settlement.payments).flat(),
         'internal',

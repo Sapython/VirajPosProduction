@@ -82,7 +82,7 @@ export class ComboComponent {
 
   async downloadPdf() {
     const doc = new jsPDF();
-    let title = 'Bill Wise';
+    let title = 'Combo';
     let logo = new Image();
     logo.src = 'assets/images/viraj.png';
     doc.addImage(logo, 'JPEG', 10, 10, 30.5, 17.5);

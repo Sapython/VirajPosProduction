@@ -46,6 +46,14 @@
 		  {{ combo.billTotal }}
 		</td>
 	  </tr>
+	  <tr *ngIf="(combos|async).length == 0">
+		<td
+		  colspan="5"
+		  style="text-align: center; font-weight: bold; font-size: 1.2rem;color:#aaa"
+		>
+		  <p>No Data Available</p>
+		</td>
+	  </tr>
 	</tbody>
   </table>
   

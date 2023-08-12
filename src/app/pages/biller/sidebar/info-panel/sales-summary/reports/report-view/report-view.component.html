@@ -32,6 +32,7 @@
     <h4 *ngIf="dialogData.stage == 'tableWiseActivity'">Table Wise Activity</h4>
     <h4 *ngIf="dialogData.stage == 'tableWiseSales'">Table Wise Sales</h4>
     <h4 *ngIf="dialogData.stage == 'comboSales'">Combo Sales</h4>
+    <h4 *ngIf="dialogData.stage == 'billSplits'">Bill Split Report</h4>
     <div class="actions">
       <mat-date-range-picker #picker></mat-date-range-picker>
       <mat-date-range-input
@@ -53,6 +54,16 @@
       <viraj-button (click)="reportService.downloadPdf.next()"
         >Download As PDF</viraj-button
       >
+      <div class="virajInput" [ngClass]="{active:inputElm.value}" *ngIf="dialogData.stage == 'consolidated'">
+        <input
+          type="number"
+          placeholder=" "
+          [(ngModel)]="reportService.consolidatedMaxAmount"
+          (change)="change()"
+          #inputElm
+        />
+        <label>Maximum Amount</label>
+      </div>
       <viraj-button type="outline" (vclick)="picker.open()"
         >Select Date Range <i class="ri-calendar-2-fill"></i
       ></viraj-button>
@@ -115,6 +126,8 @@
       <app-table-wise
         *ngIf="dialogData.stage == 'tableWiseSales'"
       ></app-table-wise>
+      <app-split-bills *ngIf="dialogData.stage == 'billSplits'">
+      </app-split-bills>
       <div class="loader"></div>
       <div class="spacer"></div>
     </div>

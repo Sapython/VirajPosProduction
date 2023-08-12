@@ -183,17 +183,13 @@ export class UserManagementService {
       //  console.log("resetPasswordRes",resetPasswordRes);
       if (resetPasswordRes) {
         this.alertify.presentToast('Password reset successfully.');
-        await this.dataProvider.confirm(
-          'Password reset successfully. Please login again.',
-          [0],
-          { buttons: ['Ok'], primary: [0] },
-        );
+        this.dataProvider.loading = false;
         this.dialog.closeAll();
         this.logout();
         this.router.navigateByUrl('/login');
       }
     } catch (error) {
-      //  console.log("resetPasswordError error res",error);
+      this.dataProvider.loading = false;
       throw error;
     } finally {
       this.dataProvider.loading = false;

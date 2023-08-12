@@ -1,5 +1,4 @@
 section {
-  overflow-y: auto;
   background: white;
   border-radius: var(--Vrajera-border-radius) 0px 0px var(--Vrajera-border-radius);
   // background-image: url('^assets/images/background.svg');
@@ -63,9 +62,9 @@ section {
     }
   }
 }
-.kotSection{
+.kotSection.noItems{
   height: calc(100% - 42px);
-  .normalKotView.noItems{
+  .normalKotView{
     height: 100%;
     display: flex;
     flex-direction: column;

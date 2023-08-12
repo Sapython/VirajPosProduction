@@ -48,7 +48,7 @@ import { AddComponent } from './settings/sections/account/add/add.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { LoyaltyComponent } from './settings/sections/loyalty/loyalty.component';
 import { OffersComponent } from './settings/sections/offers/offers.component';
-import { ReportsComponent } from './info-panel/sales-summary/reports/reports.component';
+
 import { UpdateComponent } from './settings/sections/account/update/update.component';
 
 @NgModule({
@@ -72,7 +72,6 @@ import { UpdateComponent } from './settings/sections/account/update/update.compo
     AddComponent,
     LoyaltyComponent,
     OffersComponent,
-    ReportsComponent,
     UpdateComponent,
   ],
   imports: [

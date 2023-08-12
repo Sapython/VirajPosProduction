@@ -17,10 +17,9 @@
     </div>
   </div>
 </div>
-<section #kotListElement class="kotSection">
+<section #kotListElement class="kotSection" [ngClass]="{noItems:showImage}">
   <div
     class="normalKotView"
-    [ngClass]="{noItems:showImage}"
     *ngIf="!dataProvider.kotViewVisible && !dataProvider.allProducts"
     [@zoomInOnEnter]
     [@zoomOutOnLeave]
@@ -70,4 +69,10 @@
     [printableBillData]="this.dataProvider.currentBill.printableBillData"
     *ngIf="dataProvider.allProducts && this.dataProvider.currentBill"
   ></app-bill-preview>
+  <ng-container *ngIf="!showImage">
+    <br>
+    <br>
+    <br>
+    <br>
+  </ng-container>
 </section>

@@ -83,7 +83,7 @@ export class ItemWiseReportComponent {
         this.downloadPdf();
       },
     );
-    this.downloadExcelSubscription = this.reportService.downloadPdf.subscribe(
+    this.downloadExcelSubscription = this.reportService.downloadExcel.subscribe(
       () => {
         this.downloadExcel();
       },
@@ -93,7 +93,7 @@ export class ItemWiseReportComponent {
 
   async downloadPdf() {
     const doc = new jsPDF();
-    let title = 'Bill Wise';
+    let title = 'Item Wise';
     let logo = new Image();
     logo.src = 'assets/images/viraj.png';
     doc.addImage(logo, 'JPEG', 10, 10, 30.5, 17.5);
@@ -127,6 +127,8 @@ export class ItemWiseReportComponent {
   }
 
   downloadExcel() {
+    console.log("Downloading excel");
+    
     let separator = ',';
     // Select rows from table_id
     var rows = document.querySelectorAll('table#reportTable tr');

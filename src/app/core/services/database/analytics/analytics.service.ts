@@ -46,7 +46,6 @@ export class AnalyticsService {
   }
 
   addBillToken() {
-    alert('Adding bill token');
     logEvent(this.analytics, 'add_bill_token', {
       billTokenNo: this.dataProvider.billToken,
     });

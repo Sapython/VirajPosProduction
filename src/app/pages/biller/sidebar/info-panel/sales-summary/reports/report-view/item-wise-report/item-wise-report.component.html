@@ -15,7 +15,7 @@
         {{ product.name }}
       </td>
       <td>
-        {{ product.bills }}
+        {{ product.bills.length > 0 ? product.bills : 'Unsettled' }}
       </td>
       <td>
         {{ product.kots }}
@@ -28,6 +28,14 @@
       </td>
       <td>
         {{ product.quantity * product.price }}
+      </td>
+    </tr>
+    <tr *ngIf="(products|async).length == 0">
+      <td
+        colspan="5"
+        style="text-align: center; font-weight: bold; font-size: 1.2rem;color:#aaa"
+      >
+        <p>No Data Available</p>
       </td>
     </tr>
   </tbody>

@@ -59,7 +59,7 @@ export class DiscountedBillsComponent {
 
   async downloadPdf() {
     const doc = new jsPDF();
-    let title = 'Bill Wise';
+    let title = 'Discounted Bill Wise';
     let logo = new Image();
     logo.src = 'assets/images/viraj.png';
     doc.addImage(logo, 'JPEG', 10, 10, 30.5, 17.5);

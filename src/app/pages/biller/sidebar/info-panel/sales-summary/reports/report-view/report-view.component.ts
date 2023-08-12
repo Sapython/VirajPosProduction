@@ -21,29 +21,29 @@ export class ReportViewComponent implements AfterViewInit {
   constructor(
     @Inject(DIALOG_DATA)
     public dialogData: {
-      stage:
-        | 'billWise'
-        | 'kotWise'
-        | 'itemWise'
-        | 'discounted'
-        | 'ncBills'
-        | 'takeawayBills'
-        | 'onlineBills'
-        | 'daySummary'
-        | 'consolidated'
-        | 'takeawayTokenWise'
-        | 'onlineTokenWise'
-        | 'tableWise'
-        | 'billEdits'
-        | 'customerWiseReport'
-        | 'dineInBills'
-        | 'hourlyItemSales'
-        | 'kotEdits'
-        | 'paymentWise'
-        | 'waiterWiseItems'
-        | 'tableWiseSales'
-        | 'comboSales'
-        | 'tableWiseActivity';
+      stage:'billWise'
+      | 'kotWise'
+      | 'itemWise'
+      | 'discounted'
+      | 'ncBills'
+      | 'takeawayBills'
+      | 'onlineBills'
+      | 'daySummary'
+      | 'consolidated'
+      | 'takeawayTokenWise'
+      | 'onlineTokenWise'
+      | 'tableWise'
+      | 'billEdits'
+      | 'customerWiseReport'
+      | 'dineInBills'
+      | 'hourlyItemSales'
+      | 'kotEdits'
+      | 'paymentWise'
+      | 'waiterWiseItems'
+      | 'tableWiseSales'
+      | 'comboSales'
+      | 'billSplits'
+      | 'tableWiseActivity';
       data: any;
     },
     public reportService: ReportService,
@@ -54,5 +54,10 @@ export class ReportViewComponent implements AfterViewInit {
       "document.getElementById('reportTable')",
       document.getElementById('reportTable'),
     );
+  }
+
+  change(){
+    console.log("changed");
+    this.reportService.refetchConsolidated.next()
   }
 }

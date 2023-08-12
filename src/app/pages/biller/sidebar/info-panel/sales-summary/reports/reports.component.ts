@@ -28,6 +28,11 @@ import Fuse from 'fuse.js';
 export class ReportsComponent implements OnInit {
   reportFormats:ReportFormat[] = [
     {
+      title: 'Consolidated Report',
+      code: 'consolidated',
+      description: 'Consolidated report for a given range of bill amount.',
+    },
+    {
       title: 'Item Wise Sales',
       code: 'itemWise',
       description: 'List of items and their sales, with bills and kots.',
@@ -123,6 +128,11 @@ export class ReportsComponent implements OnInit {
     {
       title: 'Combo Report',
       code: 'comboSales',
+      description: 'List of tables with merge, exchange, split actions.',
+    },
+    {
+      title: 'Bill Split',
+      code: 'billSplits',
       description: 'List of tables with merge, exchange, split actions.',
     },
   ];
@@ -1121,6 +1131,7 @@ export class ReportsComponent implements OnInit {
       | 'waiterWiseItems'
       | 'tableWiseSales'
       | 'comboSales'
+      | 'billSplits'
       | 'tableWiseActivity',
   ) {
     const dialog = this.dialog.open(ReportViewComponent, {
@@ -1154,6 +1165,7 @@ interface ReportFormat {
   | 'waiterWiseItems'
   | 'tableWiseSales'
   | 'comboSales'
+  | 'billSplits'
   | 'tableWiseActivity';
   description: string;
 }

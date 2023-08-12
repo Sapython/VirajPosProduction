@@ -1,1 +1,45 @@
-<p>split-bills works!</p>
+<table id="reportTable">
+	<thead>
+	  <tr>
+		<th>Original Bill No</th>
+		<th>Original Bill Amount</th>
+		<th>Splitted Bill Amount</th>
+		<th>Splitted Bill Tax</th>
+		<th>Splitted Discount</th>
+		<th>Settled At</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr *ngFor="let bill of bills | async">
+		<td>{{bill.originalBillNo}}</td>
+		<td>{{bill.originalBillAmount | currency:'INR'}}</td>
+		<td>{{bill.billing.grandTotal | currency:'INR'}}</td>
+		<td>
+			<ol>
+				<li *ngFor="let tax of bill.billing.taxes">
+					{{tax.name}} - {{tax.amount | currency:'INR'}}
+				</li>
+			</ol>
+		</td>
+		<td>
+			<ol>
+				<li *ngFor="let discount of bill.billing.discount">
+					<ng-container *ngIf="discount.mode == 'directPercent'">
+						Percent - {{discount.value}} => {{discount.totalAppliedDiscount| currency:'INR'}}
+					</ng-container>
+					<ng-container *ngIf="discount.mode == 'directFlat'">
+						Flat - {{discount.value}} => {{discount.totalAppliedDiscount| currency:'INR'}}
+					</ng-container>
+					<ng-container *ngIf="discount.mode == 'codeBased'">
+						{{discount.name}} - {{discount.value}} => {{discount.totalAppliedDiscount| currency:'INR'}}
+					</ng-container>
+				</li>
+				<li *ngIf="bill.billing.discount.length == 0">
+					No Discount
+				</li>
+			</ol>
+		</td>
+		<td>{{bill.settlement.time.toDate() | date:'short'}}</td>
+	  </tr>
+	</tbody>
+  </table>

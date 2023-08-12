@@ -8,7 +8,7 @@
           this.dataProvider.getAccess('seeCombos'))
       "
     >
-      <span>Vrajera Categories</span>
+      <span *ngIf="currentMenu?.comboCategory.combos.length > 0 || (currentMenu?.recommendedCategories | enabled).length > 0">Vrajera Categories</span>
       <ng-container *ngIf="this.dataProvider.getAccess('seeVrajeraCategories')">
         <ng-container
           *ngFor="
@@ -23,7 +23,7 @@
           ></app-category-card>
         </ng-container>
       </ng-container>
-      <ng-container *ngIf="this.dataProvider.getAccess('seeCombos')">
+      <ng-container *ngIf="this.dataProvider.getAccess('seeCombos') && currentMenu?.comboCategory.combos.length">
         <app-category-card
           [active]="activeIndex == 'combo'"
           (click)="openCombo(currentMenu?.comboCategory); activeIndex = 'combo'"

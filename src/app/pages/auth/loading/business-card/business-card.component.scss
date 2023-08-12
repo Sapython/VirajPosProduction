@@ -2,19 +2,22 @@ div.businessCard{
 	display: flex;
 	flex-direction: column;
 	justify-content: space-evenly;
-	gap: 10px;
+	gap: 8px;
 	width: 200px;
-	height: 120px;
+	height: 100px;
 	padding: 10px;
 	border-radius: 10px;
 	border:2px solid var(--Vrajera-primary);
 	box-shadow: 2px 0px 20px rgba(0,0,0,0.1);
+	background: white;
+	color:var(--Vrajera-primary-text);
 	p{
 		margin:0px;
 	}
 	p.title{
 		font-size: var(--Vrajera-font-large);
-		color:var(--Vrajera-primary);
+		color:var(--Vrajera-primary-text);
+		font-weight: 600;
 	}
 	address{
 		display: inline-flex;
@@ -24,6 +27,8 @@ div.businessCard{
 		text-align: start;
 		overflow: hidden;
 		text-overflow: clip;
+		color:var(--Vrajera-primary);
+		justify-content: center;
 		i{
 			font-size: var(--Vrajera-font-xlarge);
 		}

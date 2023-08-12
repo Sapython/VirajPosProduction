@@ -215,7 +215,7 @@ export async function settle(
   this.billService.provideAnalytics().logBill(this);
   if (this.nonChargeableDetail) {
     this.analyticsService.addSales(
-      this.billing.grandTotal,
+      this.billing.subTotal,
       'nonChargeableSales',
     );
   } else if (this.mode == 'dineIn') {

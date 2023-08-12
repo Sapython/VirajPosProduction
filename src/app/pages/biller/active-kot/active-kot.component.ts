@@ -179,9 +179,16 @@ export class ActiveKotComponent implements OnChanges {
         'waiter',
       ])
     ) {
-      let dialog = this.dialog.open(ReasonComponent);
+      var passwordRequired = true;
+      if (kot.totalTimeTakenNumber < 60){
+        passwordRequired = false;
+      }
+      console.log("Password required",passwordRequired);
+      let dialog = this.dialog.open(ReasonComponent,{data:{passwordRequired}});
       firstValueFrom(dialog.closed).then((reason: string) => {
-        this.dataProvider.currentBill?.editKot(kot, reason);
+        if(reason){
+          this.dataProvider.currentBill?.editKot(kot, reason);
+        }
       });
     }
   }

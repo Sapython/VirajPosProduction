@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { DialogRef } from '@angular/cdk/dialog';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { DataProvider } from '../../../../core/services/provider/data-provider.service';
 
 @Component({
@@ -9,15 +9,16 @@ import { DataProvider } from '../../../../core/services/provider/data-provider.s
   styleUrls: ['./reason.component.scss'],
 })
 export class ReasonComponent {
-  reasonForm: FormGroup = new FormGroup({
-    reason: new FormControl('', Validators.required),
-    password: new FormControl('', Validators.required),
-  });
-
   constructor(
     private dataProvider: DataProvider,
     private dialogRef: DialogRef,
+    @Inject(DIALOG_DATA) public dialogData:{passwordRequired:boolean}
   ) {}
+
+  reasonForm: FormGroup = new FormGroup({
+    reason: new FormControl('', Validators.required),
+    password: new FormControl('', this.dialogData.passwordRequired ?  [Validators.required] : []),
+  });
 
   cancel() {
     this.dialogRef.close();
@@ -28,7 +29,7 @@ export class ReasonComponent {
       alert('Invalid Form');
       return;
     }
-    if (await this.dataProvider.checkPassword(this.reasonForm.value.password)) {
+    if (!this.dialogData.passwordRequired || await this.dataProvider.checkPassword(this.reasonForm.value.password)) {
       this.dialogRef.close(this.reasonForm.value.reason);
     } else {
       alert('Wrong Password');

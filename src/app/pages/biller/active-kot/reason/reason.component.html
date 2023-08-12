@@ -3,7 +3,7 @@
     <mat-label>Reason</mat-label>
     <input matInput placeholder="Reason" formControlName="reason" />
   </mat-form-field>
-  <mat-form-field appearance="outline">
+  <mat-form-field appearance="outline" *ngIf="dialogData.passwordRequired">
     <mat-label>Password</mat-label>
     <input
       type="password"

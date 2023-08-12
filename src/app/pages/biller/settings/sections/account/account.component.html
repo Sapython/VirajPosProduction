@@ -16,7 +16,7 @@
         <p *ngIf="user.accessType == 'role'">{{user.role | titlecase}}</p>
         <p *ngIf="user.accessType == 'custom'">Allowed: {{user.propertiesAllowed.length}}</p>
       </span>
-      <p class="time"><i class="ri-time-line"></i>{{user.lastUpdated.toDate() | date:'short'}}</p>
+      <p class="time"><i class="ri-time-line"></i>{{user.lastUpdated?.toDate() | date:'short'}}</p>
       <div class="actions">
         <viraj-button type="icon" (click)="deleteUser(user)"><i class="ri-delete-bin-2-line"></i></viraj-button>
         <viraj-button type="icon" (click)="updateUser(user)"><i class="ri-pencil-fill"></i></viraj-button>

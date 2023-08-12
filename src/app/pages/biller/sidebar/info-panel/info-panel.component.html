@@ -54,7 +54,7 @@
         (mouseenter)="isOpen = true"
       >
         <span>Orders</span>
-        <b>{{ this.dataProvider.billToken }}</b>
+        <b>{{ this.dataProvider.billToken + this.dataProvider.onlineTokenNo + this.dataProvider.takeawayToken + this.dataProvider.ncBillToken}}</b>
       </span>
       <ng-template
         *ngIf="!this.dataProvider.touchMode"

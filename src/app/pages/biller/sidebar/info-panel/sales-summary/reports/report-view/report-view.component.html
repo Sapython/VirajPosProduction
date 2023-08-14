@@ -1,4 +1,4 @@
-<section>
+<section class="reportViewSection">
   <div class="heading">
     <h4 *ngIf="dialogData.stage == 'billWise'">All Bills Wise Report</h4>
     <h4 *ngIf="dialogData.stage == 'kotWise'">Kot Wise Report</h4>
@@ -34,6 +34,14 @@
     <h4 *ngIf="dialogData.stage == 'comboSales'">Combo Sales</h4>
     <h4 *ngIf="dialogData.stage == 'billSplits'">Bill Split Report</h4>
     <div class="actions">
+      <p>
+        <ng-container *ngIf="reportService.dateRangeFormGroup.value.startDate">
+          From: {{reportService.dateRangeFormGroup.value.startDate | date}}
+        </ng-container>
+        <ng-container *ngIf="reportService.dateRangeFormGroup.value.endDate">
+          - To: {{reportService.dateRangeFormGroup.value.endDate | date }}
+        </ng-container>
+      </p>
       <mat-date-range-picker #picker></mat-date-range-picker>
       <mat-date-range-input
         tabindex="-1"

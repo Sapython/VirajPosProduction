@@ -67,6 +67,8 @@ export class OnboardingService {
     | 'validityExpired'
     | 'errorOccured' = 'noUser';
   loadingSteps: Subject<string> = new Subject<string>();
+  currentAreaState:{state:string,cities:{city:string,businesses:UserBusiness[]}[]};
+  currentAreaCity:{city:string,businesses:UserBusiness[]};
   groupedBusiness:{state:string,cities:{city:string,businesses:UserBusiness[]}[]}[] = [];
   private checkIfAccessTokenIsValidFunction = httpsCallable(this.functions,'checkIfAccessTokenIsValid');
   constructor(
@@ -160,6 +162,13 @@ export class OnboardingService {
               }
             }
           });
+          // if only one state is present then select the state
+          if (this.groupedBusiness.length == 1){
+            this.currentAreaState = this.groupedBusiness[0];
+            if (this.currentAreaState.cities.length == 1){
+              this.currentAreaCity = this.currentAreaState.cities[0];
+            }
+          }
           console.log("groupedBusiness",this.groupedBusiness);
           this.stage = 'multipleBusiness';
         } else if (data.user.business.length == 1) {
@@ -260,7 +269,7 @@ export class OnboardingService {
     }
   }
 
-  startVrajera(business: BusinessRecord) {
+  async startVrajera(business: BusinessRecord) {
     if (debug) console.log('Starting Vrajera', business);
     firstValueFrom(this.dataProvider.settingsChanged).then(async (setting) => {
       // console.log(setting);
@@ -446,35 +455,45 @@ export class OnboardingService {
         this.alertify.presentToast('Please enable atleast one mode', 'error');
       }
     });
-    // // console.log('business/' + business.businessId, '/settings/settings');
-    // docData(doc(this.firestore, 'business', business.businessId), {
-    //   idField: 'businessId',
-    // }).subscribe(async (businessRecord) => {
-    //   if (!businessRecord['accessCode']){
-    //     this.router.navigate(['login']);
-    //     this.stage = 'validityExpired';
-    //     this.message = 'Validity Has Expired';
-    //     this.alertify.presentToast(this.message, 'error');
-    //     alert("Validity of your biller is expired please contact support to renew your validity.");
-    //     return;
-    //   } else {
-    //     let res = await this.checkValidity(businessRecord.businessId,businessRecord['accessCode']);
-    //     console.log("Validity",res);
-    //     this.dataProvider.validTill = new Date(res.data['validTill']);
-    //     console.log("this.dataProvider.validTill",this.dataProvider.validTill);
-    //     if (!res || !res.data || !res.data['status']){
-    //       this.router.navigate(['login']);
-    //       this.stage = 'validityExpired';
-    //       this.message = 'Validity Has Expired';
-    //       this.alertify.presentToast(this.message, 'error');
-    //       alert("Validity of your biller is expired please contact support to renew your validity.");
-    //       return
-    //     }
-    //   }
-      
-    //   // console.log("Business Changed",res);
-    // });
+    // get daily counters
     let date = new Date().toISOString().split('T')[0];
+    docData(doc(this.firestore, 'business/' + this.dataProvider.businessId+'/dailyTokens/'+date)).subscribe((tokens)=>{
+      if (tokens && tokens['billTokenNo']){
+        this.dataProvider.dailyTokens.billTokenNo = tokens['billTokenNo'];
+      } else {
+        this.dataProvider.dailyTokens.billTokenNo = 0;
+      }
+
+      if (tokens && tokens['orderTokenNo']){
+        this.dataProvider.dailyTokens.orderTokenNo = tokens['orderTokenNo'];
+      } else {
+        this.dataProvider.dailyTokens.orderTokenNo = 0;
+      }
+
+      if (tokens && tokens['ncBillTokenNo']){
+        this.dataProvider.dailyTokens.ncBillTokenNo = tokens['ncBillTokenNo'];
+      } else {
+        this.dataProvider.dailyTokens.ncBillTokenNo = 0;
+      }
+
+      if (tokens && tokens['takeawayTokenNo']){
+        this.dataProvider.dailyTokens.takeawayTokenNo = tokens['takeawayTokenNo'];
+      } else {
+        this.dataProvider.dailyTokens.takeawayTokenNo = 0;
+      }
+
+      if (tokens && tokens['onlineTokenNo']){
+        this.dataProvider.dailyTokens.onlineTokenNo = tokens['onlineTokenNo'];
+      } else {
+        this.dataProvider.dailyTokens.onlineTokenNo = 0;
+      }
+
+      if (tokens && tokens['kitchenTokenNo']){
+        this.dataProvider.dailyTokens.kitchenTokenNo = tokens['kitchenTokenNo'];
+      } else {
+        this.dataProvider.dailyTokens.kitchenTokenNo = 0;
+      }
+    });
     docData(
       doc(
         this.firestore,

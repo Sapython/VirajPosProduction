@@ -69,7 +69,8 @@ export class SignupService {
       business: [
         {
           access: {
-            accessLevel: 'admin',
+            accessType:'role',
+            role: 'admin',
             lastUpdated: Timestamp.now(),
             updatedBy: 'controller',
           },

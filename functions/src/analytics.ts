@@ -54,22 +54,22 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
       // console.log("Ran ",i);
       let total = 0;
       salesData.all.forEach((hourlySales) => {
-        total += hourlySales[i];
+        total += isValidNumber(hourlySales[i]);
       });
       averageHourlySales.all.push(total / salesData.all.length);
       total = 0;
       salesData.dineIn.forEach((hourlySales) => {
-        total += hourlySales[i];
+        total += isValidNumber(hourlySales[i]);
       });
       averageHourlySales.dineIn.push(total / salesData.dineIn.length);
       total = 0;
       salesData.takeaway.forEach((hourlySales) => {
-        total += hourlySales[i];
+        total += isValidNumber(hourlySales[i]);
       });
       averageHourlySales.takeaway.push(total / salesData.takeaway.length);
       total = 0;
       salesData.online.forEach((hourlySales) => {
-        total += hourlySales[i];
+        total += isValidNumber(hourlySales[i]);
       });
       averageHourlySales.online.push(total / salesData.online.length);
     }
@@ -335,69 +335,71 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
   await Promise.all(
     billsDocs.docs.map(async (billDoc: any) => {
       //   let data:BillConstructor = billDoc.data() as any;
-      let data = billDoc.data() as any;
+      let currentBill = billDoc.data() as any;
       // console.log("BILL DATA:",data);
       // business/businessId/bills/billId/activities
       let activities = firestore.collection(
         `business/${businessDoc.id}/bills/${billDoc.id}/billActivities`,
       );
       let activitiesDocs = await activities.get();
-      console.log('activitiesDocs.length', activitiesDocs.docs.length);
-      analyticsData.salesChannels.all.totalSales += data.billing.grandTotal;
+      // console.log('activitiesDocs.length', activitiesDocs.docs.length);
+      if (currentBill.billing.grandTotal){
+        analyticsData.salesChannels.all.totalSales += isValidNumber(currentBill.billing.grandTotal);
+      }
       // console.log('BILL Total:', data.billing.grandTotal);
-      if (data?.settlement?.time) {
+      if (currentBill?.settlement?.time) {
         analyticsData.salesChannels.all.totalSettledBills += 1;
       } else {
         analyticsData.salesChannels.all.totalUnsettledBills += 1;
       }
-      if (data?.billing?.discount?.length > 0) {
+      if (currentBill?.billing?.discount?.length > 0) {
         analyticsData.salesChannels.all.totalDiscountedBills += 1;
       }
-      if (data?.nonChargeableDetail) {
+      if (currentBill?.nonChargeableDetail) {
         analyticsData.salesChannels.all.totalNcBills += 1;
       }
-      if (data?.billing?.discount?.length > 0) {
+      if (currentBill?.billing?.discount?.length > 0) {
         analyticsData.salesChannels.all.totalDiscountedBills += 1;
       }
-      if (data?.nonChargeableDetail) {
+      if (currentBill?.nonChargeableDetail) {
         analyticsData.salesChannels.all.totalNcBills += 1;
       }
-      analyticsData.salesChannels.all.netSales +=
-        data.billing.grandTotal -
-        data.billing.discount.reduce(
+      analyticsData.salesChannels.all.netSales += isValidNumber(
+        currentBill.billing.grandTotal -
+        currentBill.billing.discount.reduce(
           (total: number, d: any) => d.totalAppliedDiscount + total,
           0,
-        );
-      analyticsData.salesChannels.all.totalDiscount +=
-        data.billing.discount.reduce(
+        ));
+      analyticsData.salesChannels.all.totalDiscount += isValidNumber(
+        currentBill.billing.discount.reduce(
           (total: number, d: any) => d.totalAppliedDiscount + total,
           0,
-        );
-      if (data.nonChargeableDetail) {
-        analyticsData.salesChannels.all.totalNC += data.billing.grandTotal;
+        ));
+      if (currentBill.nonChargeableDetail) {
+        analyticsData.salesChannels.all.totalNC += isValidNumber(currentBill.billing.grandTotal);
       }
-      analyticsData.salesChannels.all.totalTaxes += data.billing.taxes.reduce(
+      analyticsData.salesChannels.all.totalTaxes += isValidNumber(currentBill.billing.taxes.reduce(
         (total: number, t: any) => t.amount + total,
         0,
-      );
+      ));
       analyticsData.salesChannels.all.hourlySales[
-        data.createdDate.toDate().getHours()
-      ] += data.billing.grandTotal;
+        currentBill.createdDate.toDate().getHours()
+      ] += isValidNumber(currentBill.billing.grandTotal);
       analyticsData.salesChannels.all.billWiseSales.rangeWise[
-        data.billing.grandTotal < 500
+        currentBill.billing.grandTotal < 500
           ? 'lowRange'
-          : data.billing.grandTotal < 1000
+          : currentBill.billing.grandTotal < 1000
           ? 'mediumRange'
           : 'highRange'
       ].bills.push({
         billId: billDoc.id,
         billRef: billDoc.ref,
-        time: data.createdDate,
-        totalSales: data.billing.grandTotal,
+        time: currentBill.createdDate,
+        totalSales: isValidNumber(currentBill.billing.grandTotal),
       });
       // payment methods
-      if (data.settlement?.payments) {
-        data.settlement?.payments.forEach((payment: any) => {
+      if (currentBill.settlement?.payments) {
+        currentBill.settlement?.payments.forEach((payment: any) => {
           if (
             !analyticsData.salesChannels.all.paymentReceived[
               payment.paymentMethod
@@ -409,18 +411,18 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
           }
           analyticsData.salesChannels.all.paymentReceived[
             payment.paymentMethod
-          ] += payment.amount;
+          ] += isValidNumber(payment.amount);
         });
       }
       // analyticsData.salesChannels.all.billWiseSales.tableWise
       // find if existing entry for a table exists in tableWise if yes then add the sales and increase the bill number
       let tableIndex =
         analyticsData.salesChannels.all.billWiseSales.tableWise.findIndex(
-          (t: any) => t.tableId == data.table,
+          (t: any) => t.tableId == currentBill.table,
         );
       if (tableIndex === -1) {
-        let tablePath = `business/${businessDoc.id}/tables/${data.table}`;
-        console.log('Table path', tablePath);
+        let tablePath = `business/${businessDoc.id}/tables/${currentBill.table}`;
+        // console.log('Table path', tablePath);
         // find tablePath in cachedTables if not found then fetch from firestore
         if (cachedTables.findIndex((t: any) => t.path === tablePath) === -1) {
           var tableDoc = await firestore.doc(tablePath).get();
@@ -433,20 +435,23 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
             (t: any) => t.path === tablePath,
           ).tableDoc;
         }
-        console.log('Table doc', tableDoc.data(), 'path', tablePath);
+        if (tableDoc.data() == undefined){
+          return;
+        }
+        // console.log('Table doc', tableDoc.data(), 'path', tablePath);
         if (tableDoc.exists) {
           analyticsData.salesChannels.all.billWiseSales.tableWise.push({
             table: tableDoc.data()['name'],
-            tableId: data.table,
+            tableId: currentBill.table,
             bills: [
               {
                 billId: billDoc.id,
                 billRef: billDoc.ref,
-                time: data.createdDate,
-                totalSales: data.billing.grandTotal,
+                time: currentBill.createdDate,
+                totalSales: isValidNumber(currentBill.billing.grandTotal),
               },
             ],
-            totalSales: data.billing.grandTotal,
+            totalSales: isValidNumber(currentBill.billing.grandTotal),
             totalBills: 1,
           });
         }
@@ -456,12 +461,12 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
         ].bills.push({
           billId: billDoc.id,
           billRef: billDoc.ref,
-          time: data.createdDate,
-          totalSales: data.billing.grandTotal,
+          time: currentBill.createdDate,
+          totalSales: isValidNumber(currentBill.billing.grandTotal),
         });
         analyticsData.salesChannels.all.billWiseSales.tableWise[
           tableIndex
-        ].totalSales += data.billing.grandTotal;
+        ].totalSales += isValidNumber(currentBill.billing.grandTotal);
         analyticsData.salesChannels.all.billWiseSales.tableWise[
           tableIndex
         ].totalBills += 1;
@@ -470,21 +475,21 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
       // find if existing entry for a time exists in timeWise if yes then add the sales and increase the bill number
       let timeIndex =
         analyticsData.salesChannels.all.billWiseSales.time.findIndex(
-          (t) => t.time === data.createdDate.toDate().getHours(),
+          (t) => t.time === currentBill.createdDate.toDate().getHours(),
         );
       if (timeIndex === -1) {
         analyticsData.salesChannels.all.billWiseSales.time.push({
-          time: data.createdDate.toDate().getHours(),
+          time: currentBill.createdDate.toDate().getHours(),
           bills: [
             {
               billId: billDoc.id,
               billRef: billDoc.ref,
-              time: data.createdDate,
-              totalSales: data.billing.grandTotal,
+              time: currentBill.createdDate,
+              totalSales: isValidNumber(currentBill.billing.grandTotal),
             },
           ],
-          timeNumber: Number(data.createdDate.toDate().getHours()),
-          totalSales: data.billing.grandTotal,
+          timeNumber: Number(currentBill.createdDate.toDate().getHours()),
+          totalSales: isValidNumber(currentBill.billing.grandTotal),
           totalBills: 1,
         });
       } else {
@@ -493,17 +498,17 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
         ].bills.push({
           billId: billDoc.id,
           billRef: billDoc.ref,
-          time: data.createdDate,
-          totalSales: data.billing.grandTotal,
+          time: currentBill.createdDate,
+          totalSales: isValidNumber(currentBill.billing.grandTotal),
         });
         analyticsData.salesChannels.all.billWiseSales.time[
           timeIndex
-        ].totalSales += data.billing.grandTotal;
+        ].totalSales += isValidNumber(currentBill.billing.grandTotal);
         analyticsData.salesChannels.all.billWiseSales.time[
           timeIndex
         ].totalBills += 1;
       }
-      let items = data.kots
+      let items = currentBill.kots
         .map((kot: any) => {
           return kot.products.map((product: any) => {
             return product;
@@ -544,7 +549,7 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
             itemIndex
           ].price += item.quantity * item.price;
         }
-        if (data.mode == 'dineIn') {
+        if (currentBill.mode == 'dineIn') {
           let itemIndex =
             analyticsData.salesChannels.dineIn.itemWiseSales.byPrice.findIndex(
               (i) => i.id === item.id,
@@ -578,7 +583,7 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
               itemIndex
             ].price += item.quantity * item.price;
           }
-        } else if (data.mode == 'takeaway') {
+        } else if (currentBill.mode == 'takeaway') {
           let itemIndex =
             analyticsData.salesChannels.takeaway.itemWiseSales.byPrice.findIndex(
               (i) => i.id === item.id,
@@ -586,33 +591,33 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
           if (itemIndex === -1) {
             analyticsData.salesChannels.takeaway.itemWiseSales.byPrice.push({
               name: item.name,
-              quantity: item.quantity,
-              price: item.price,
+              quantity: isValidNumber(item.quantity),
+              price: isValidNumber(item.price),
               category: item.category || '',
               id: item.id || '',
             });
             analyticsData.salesChannels.takeaway.itemWiseSales.byQuantity.push({
               name: item.name,
-              quantity: item.quantity,
-              price: item.price,
+              quantity: isValidNumber(item.quantity),
+              price: isValidNumber(item.price),
               category: item.category || '',
               id: item.id || '',
             });
           } else {
             analyticsData.salesChannels.takeaway.itemWiseSales.byPrice[
               itemIndex
-            ].quantity += item.quantity;
+            ].quantity += isValidNumber(item.quantity);
             analyticsData.salesChannels.takeaway.itemWiseSales.byPrice[
               itemIndex
-            ].price += item.quantity * item.price;
+            ].price += isValidNumber(item.quantity * item.price);
             analyticsData.salesChannels.takeaway.itemWiseSales.byQuantity[
               itemIndex
-            ].quantity += item.quantity;
+            ].quantity += isValidNumber(item.quantity);
             analyticsData.salesChannels.takeaway.itemWiseSales.byQuantity[
               itemIndex
-            ].price += item.quantity * item.price;
+            ].price += isValidNumber(item.quantity * item.price);
           }
-        } else if (data.mode == 'online') {
+        } else if (currentBill.mode == 'online') {
           let itemIndex =
             analyticsData.salesChannels.online.itemWiseSales.byPrice.findIndex(
               (i) => i.id === item.id,
@@ -620,31 +625,31 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
           if (itemIndex === -1) {
             analyticsData.salesChannels.online.itemWiseSales.byPrice.push({
               name: item.name,
-              quantity: item.quantity,
-              price: item.price,
+              quantity: isValidNumber(item.quantity),
+              price: isValidNumber(item.price),
               category: item.category || '',
               id: item.id || '',
             });
             analyticsData.salesChannels.online.itemWiseSales.byQuantity.push({
               name: item.name,
-              quantity: item.quantity,
-              price: item.price,
+              quantity: isValidNumber(item.quantity),
+              price: isValidNumber(item.price),
               category: item.category || '',
               id: item.id || '',
             });
           } else {
             analyticsData.salesChannels.online.itemWiseSales.byPrice[
               itemIndex
-            ].quantity += item.quantity;
+            ].quantity += isValidNumber(item.quantity);
             analyticsData.salesChannels.online.itemWiseSales.byPrice[
               itemIndex
-            ].price += item.quantity * item.price;
+            ].price += isValidNumber(item.quantity * item.price);
             analyticsData.salesChannels.online.itemWiseSales.byQuantity[
               itemIndex
-            ].quantity += item.quantity;
+            ].quantity += isValidNumber(item.quantity);
             analyticsData.salesChannels.online.itemWiseSales.byQuantity[
               itemIndex
-            ].price += item.quantity * item.price;
+            ].price += isValidNumber(item.quantity * item.price);
           }
         }
       });
@@ -656,8 +661,12 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
       analyticsData.salesChannels.all.itemWiseSales.byQuantity.sort(
         (a, b) => b.quantity - a.quantity,
       );
-      analyticsData.salesChannels.all.itemWiseSales.priceTopCategory = analyticsData.salesChannels.all.itemWiseSales.byPrice[0].category;
-      analyticsData.salesChannels.all.itemWiseSales.quantityTopCategory = analyticsData.salesChannels.all.itemWiseSales.byQuantity[0].category;
+      if (analyticsData.salesChannels.all.itemWiseSales.byPrice[0]){
+        analyticsData.salesChannels.all.itemWiseSales.priceTopCategory = analyticsData.salesChannels.all.itemWiseSales.byPrice[0].category;
+      }
+      if(analyticsData.salesChannels.all.itemWiseSales.byQuantity[0]){
+        analyticsData.salesChannels.all.itemWiseSales.quantityTopCategory = analyticsData.salesChannels.all.itemWiseSales.byQuantity[0].category;
+      }
       // suspicious activities
       let activitiesList: {
         createdDate: Timestamp;
@@ -714,7 +723,7 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
           },
       );
       activitiesList.forEach((activity) => {
-        console.log('Activity:', activity.activity.user);
+        // console.log('Activity:', activity.activity.user);
         let userIndex =
           analyticsData.salesChannels.all.userWiseActions.findIndex(
             (u) => u.userId === activity.activity.user,
@@ -795,13 +804,19 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
           activity.activity.type === 'billNC' ||
           activity.activity.type === 'billSplit'
         ) {
+          console.log("Adding activity", activity.activity.type, "to suspicious activities",currentBill.mode);
+          
           analyticsData.salesChannels.all.suspiciousActivities.push(activity);
-          if (data.mode === 'dineIn') {
+          if (currentBill.mode === 'dineIn') {
             analyticsData.salesChannels.dineIn.suspiciousActivities.push(
               activity,
             );
-          } else if (data.mode ==='takeaway') {
+          } else if (currentBill.mode ==='takeaway') {
             analyticsData.salesChannels.takeaway.suspiciousActivities.push(
+              activity,
+            );
+          } else if (currentBill.mode ==='online') {
+            analyticsData.salesChannels.online.suspiciousActivities.push(
               activity,
             );
           }
@@ -810,56 +825,56 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
       // generate suspicious activities by categorizing them into bills, kots, discounts
       // analyticsData.salesChannels.all.userWiseActions
       // for dineIn
-      if (data.mode === 'dineIn') {
-        if (data?.settlement?.time) {
+      if (currentBill.mode === 'dineIn') {
+        if (currentBill?.settlement?.time) {
           analyticsData.salesChannels.dineIn.totalSettledBills += 1;
         } else {
           analyticsData.salesChannels.dineIn.totalUnsettledBills += 1;
         }
-        if (data?.billing?.discount?.length > 0) {
+        if (currentBill?.billing?.discount?.length > 0) {
           analyticsData.salesChannels.dineIn.totalDiscountedBills += 1;
         }
-        if (data?.nonChargeableDetail) {
+        if (currentBill?.nonChargeableDetail) {
           analyticsData.salesChannels.dineIn.totalNcBills += 1;
         }
         analyticsData.salesChannels.dineIn.totalSales +=
-          data.billing.grandTotal;
-        analyticsData.salesChannels.dineIn.netSales +=
-          data.billing.grandTotal -
-          data.billing.discount.reduce(
+        isValidNumber(currentBill.billing.grandTotal);
+        analyticsData.salesChannels.dineIn.netSales += isValidNumber(
+          currentBill.billing.grandTotal -
+          currentBill.billing.discount.reduce(
             (total: number, d: any) => d.totalAppliedDiscount + total,
             0,
-          );
-        analyticsData.salesChannels.dineIn.totalDiscount +=
-          data.billing.discount.reduce(
+          ));
+        analyticsData.salesChannels.dineIn.totalDiscount += isValidNumber(
+          currentBill.billing.discount.reduce(
             (total: number, d: any) => d.totalAppliedDiscount + total,
             0,
-          );
-        if (data.nonChargeableDetail) {
-          analyticsData.salesChannels.dineIn.totalNC += data.billing.grandTotal;
+          ));
+        if (currentBill.nonChargeableDetail) {
+          analyticsData.salesChannels.dineIn.totalNC += isValidNumber(currentBill.billing.grandTotal);
         }
         analyticsData.salesChannels.dineIn.totalTaxes +=
-          data.billing.taxes.reduce(
+        isValidNumber(currentBill.billing.taxes.reduce(
             (total: number, t: any) => t.amount + total,
             0,
-          );
+          ));
         analyticsData.salesChannels.dineIn.hourlySales[
-          data.createdDate.toDate().getHours()
-        ] += data.billing.grandTotal;
+          currentBill.createdDate.toDate().getHours()
+        ] += isValidNumber(currentBill.billing.grandTotal);
         analyticsData.salesChannels.dineIn.billWiseSales.rangeWise[
-          data.billing.grandTotal < 500
+          currentBill.billing.grandTotal < 500
             ? 'lowRange'
-            : data.billing.grandTotal < 1000
+            : currentBill.billing.grandTotal < 1000
             ? 'mediumRange'
             : 'highRange'
         ].bills.push({
           billId: billDoc.id,
           billRef: billDoc.ref,
-          time: data.createdDate,
-          totalSales: data.billing.grandTotal,
+          time: currentBill.createdDate,
+          totalSales: isValidNumber(currentBill.billing.grandTotal),
         });
-        if (data.settlement?.payments) {
-          data.settlement?.payments.forEach((payment: any) => {
+        if (currentBill.settlement?.payments) {
+          currentBill.settlement?.payments.forEach((payment: any) => {
             if (
               !analyticsData.salesChannels.dineIn.paymentReceived[
                 payment.paymentMethod
@@ -871,18 +886,18 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
             }
             analyticsData.salesChannels.dineIn.paymentReceived[
               payment.paymentMethod
-            ] += payment.amount;
+            ] += isValidNumber(payment.amount);
           });
         }
         // analyticsData.salesChannels.dineIn.billWiseSales.tableWise
         // find if existing entry for a table exists in tableWise if yes then add the sales and increase the bill number
         let tableIndex =
           analyticsData.salesChannels.dineIn.billWiseSales.tableWise.findIndex(
-            (t: any) => t.tableId == data.table,
+            (t: any) => t.tableId == currentBill.table,
           );
         if (tableIndex === -1) {
-          let tablePath = `business/${businessDoc.id}/tables/${data.table}`;
-          console.log('Table path', tablePath);
+          let tablePath = `business/${businessDoc.id}/tables/${currentBill.table}`;
+          // console.log('Table path', tablePath);
           // find tablePath in cachedTables if not found then fetch from firestore
           if (cachedTables.findIndex((t: any) => t.path === tablePath) === -1) {
             var tableDoc = await firestore.doc(tablePath).get();
@@ -895,20 +910,23 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
               (t: any) => t.path === tablePath,
             ).tableDoc;
           }
-          console.log('Table doc', tableDoc.data(), 'path', tablePath);
+          if (tableDoc.data() == undefined){
+            return;
+          }
+          // console.log('Table doc', tableDoc.data(), 'path', tablePath);
           if (tableDoc.exists) {
             analyticsData.salesChannels.dineIn.billWiseSales.tableWise.push({
               table: tableDoc.data()['name'],
-              tableId: data.table,
+              tableId: currentBill.table,
               bills: [
                 {
                   billId: billDoc.id,
                   billRef: billDoc.ref,
-                  time: data.createdDate,
-                  totalSales: data.billing.grandTotal,
+                  time: currentBill.createdDate,
+                  totalSales: isValidNumber(currentBill.billing.grandTotal),
                 },
               ],
-              totalSales: data.billing.grandTotal,
+              totalSales: isValidNumber(currentBill.billing.grandTotal),
               totalBills: 1,
             });
           }
@@ -918,12 +936,12 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
           ].bills.push({
             billId: billDoc.id,
             billRef: billDoc.ref,
-            time: data.createdDate,
-            totalSales: data.billing.grandTotal,
+            time: currentBill.createdDate,
+            totalSales: isValidNumber(currentBill.billing.grandTotal),
           });
           analyticsData.salesChannels.dineIn.billWiseSales.tableWise[
             tableIndex
-          ].totalSales += data.billing.grandTotal;
+          ].totalSales += isValidNumber(currentBill.billing.grandTotal);
           analyticsData.salesChannels.dineIn.billWiseSales.tableWise[
             tableIndex
           ].totalBills += 1;
@@ -932,21 +950,21 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
         // find if existing entry for a time exists in timeWise if yes then add the sales and increase the bill number
         let timeIndex =
           analyticsData.salesChannels.dineIn.billWiseSales.time.findIndex(
-            (t) => t.time === data.createdDate.toDate().getHours(),
+            (t) => t.time === currentBill.createdDate.toDate().getHours(),
           );
         if (timeIndex === -1) {
           analyticsData.salesChannels.dineIn.billWiseSales.time.push({
-            time: data.createdDate.toDate().getHours(),
+            time: currentBill.createdDate.toDate().getHours(),
             bills: [
               {
                 billId: billDoc.id,
                 billRef: billDoc.ref,
-                time: data.createdDate,
-                totalSales: data.billing.grandTotal,
+                time: currentBill.createdDate,
+                totalSales: isValidNumber(currentBill.billing.grandTotal),
               },
             ],
-            timeNumber: Number(data.createdDate.toDate().getHours()),
-            totalSales: data.billing.grandTotal,
+            timeNumber: Number(currentBill.createdDate.toDate().getHours()),
+            totalSales: isValidNumber(currentBill.billing.grandTotal),
             totalBills: 1,
           });
         } else {
@@ -955,67 +973,67 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
           ].bills.push({
             billId: billDoc.id,
             billRef: billDoc.ref,
-            time: data.createdDate,
-            totalSales: data.billing.grandTotal,
+            time: currentBill.createdDate,
+            totalSales: isValidNumber(currentBill.billing.grandTotal),
           });
           analyticsData.salesChannels.dineIn.billWiseSales.time[
             timeIndex
-          ].totalSales += data.billing.grandTotal;
+          ].totalSales += isValidNumber(currentBill.billing.grandTotal);
           analyticsData.salesChannels.dineIn.billWiseSales.time[
             timeIndex
           ].totalBills += 1;
         }
-      } else if (data.mode === 'takeaway') {
-        if (data?.settlement?.time) {
+      } else if (currentBill.mode === 'takeaway') {
+        if (currentBill?.settlement?.time) {
           analyticsData.salesChannels.takeaway.totalSettledBills += 1;
         } else {
           analyticsData.salesChannels.takeaway.totalUnsettledBills += 1;
         }
-        if (data?.billing?.discount?.length > 0) {
+        if (currentBill?.billing?.discount?.length > 0) {
           analyticsData.salesChannels.takeaway.totalDiscountedBills += 1;
         }
-        if (data?.nonChargeableDetail) {
+        if (currentBill?.nonChargeableDetail) {
           analyticsData.salesChannels.takeaway.totalNcBills += 1;
         }
         analyticsData.salesChannels.takeaway.totalSales +=
-          data.billing.grandTotal;
+        isValidNumber(currentBill.billing.grandTotal);
         analyticsData.salesChannels.takeaway.netSales +=
-          data.billing.grandTotal -
-          data.billing.discount.reduce(
+        isValidNumber(currentBill.billing.grandTotal -
+          currentBill.billing.discount.reduce(
             (total: number, d: any) => d.totalAppliedDiscount + total,
             0,
-          );
+          ));
         analyticsData.salesChannels.takeaway.totalDiscount +=
-          data.billing.discount.reduce(
+        isValidNumber(currentBill.billing.discount.reduce(
             (total: number, d: any) => d.totalAppliedDiscount + total,
             0,
-          );
-        if (data.nonChargeableDetail) {
+          ));
+        if (currentBill.nonChargeableDetail) {
           analyticsData.salesChannels.takeaway.totalNC +=
-            data.billing.grandTotal;
+          isValidNumber(currentBill.billing.grandTotal);
         }
         analyticsData.salesChannels.takeaway.totalTaxes +=
-          data.billing.taxes.reduce(
+          isValidNumber(currentBill.billing.taxes.reduce(
             (total: number, t: any) => t.amount + total,
             0,
-          );
+          ));
         analyticsData.salesChannels.takeaway.hourlySales[
-          data.createdDate.toDate().getHours()
-        ] += data.billing.grandTotal;
+          currentBill.createdDate.toDate().getHours()
+        ] += isValidNumber(currentBill.billing.grandTotal);
         analyticsData.salesChannels.takeaway.billWiseSales.rangeWise[
-          data.billing.grandTotal < 500
+          currentBill.billing.grandTotal < 500
             ? 'lowRange'
-            : data.billing.grandTotal < 1000
+            : currentBill.billing.grandTotal < 1000
             ? 'mediumRange'
             : 'highRange'
         ].bills.push({
           billId: billDoc.id,
           billRef: billDoc.ref,
-          time: data.createdDate,
-          totalSales: data.billing.grandTotal,
+          time: currentBill.createdDate,
+          totalSales: isValidNumber(currentBill.billing.grandTotal),
         });
-        if (data.settlement?.payments) {
-          data.settlement?.payments.forEach((payment: any) => {
+        if (currentBill.settlement?.payments) {
+          currentBill.settlement?.payments.forEach((payment: any) => {
             if (
               !analyticsData.salesChannels.takeaway.paymentReceived[
                 payment.paymentMethod
@@ -1027,18 +1045,18 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
             }
             analyticsData.salesChannels.takeaway.paymentReceived[
               payment.paymentMethod
-            ] += payment.amount;
+            ] += isValidNumber(payment.amount);
           });
         }
         // analyticsData.salesChannels.takeaway.billWiseSales.tableWise
         // find if existing entry for a table exists in tableWise if yes then add the sales and increase the bill number
         let tableIndex =
           analyticsData.salesChannels.takeaway.billWiseSales.tableWise.findIndex(
-            (t: any) => t.tableId == data.table,
+            (t: any) => t.tableId == currentBill.table,
           );
         if (tableIndex === -1) {
-          let tablePath = `business/${businessDoc.id}/tables/${data.table}`;
-          console.log('Table path', tablePath);
+          let tablePath = `business/${businessDoc.id}/tables/${currentBill.table}`;
+          // console.log('Table path', tablePath);
           // find tablePath in cachedTables if not found then fetch from firestore
           if (cachedTables.findIndex((t: any) => t.path === tablePath) === -1) {
             var tableDoc = await firestore.doc(tablePath).get();
@@ -1051,20 +1069,23 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
               (t: any) => t.path === tablePath,
             ).tableDoc;
           }
-          console.log('Table doc', tableDoc.data(), 'path', tablePath);
+          if (tableDoc.data() == undefined){
+            return;
+          }
+          // console.log('Table doc', tableDoc.data(), 'path', tablePath);
           if (tableDoc.exists) {
             analyticsData.salesChannels.takeaway.billWiseSales.tableWise.push({
               table: tableDoc.data()['name'],
-              tableId: data.table,
+              tableId: currentBill.table,
               bills: [
                 {
                   billId: billDoc.id,
                   billRef: billDoc.ref,
-                  time: data.createdDate,
-                  totalSales: data.billing.grandTotal,
+                  time: currentBill.createdDate,
+                  totalSales: isValidNumber(currentBill.billing.grandTotal),
                 },
               ],
-              totalSales: data.billing.grandTotal,
+              totalSales: isValidNumber(currentBill.billing.grandTotal),
               totalBills: 1,
             });
           }
@@ -1074,12 +1095,12 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
           ].bills.push({
             billId: billDoc.id,
             billRef: billDoc.ref,
-            time: data.createdDate,
-            totalSales: data.billing.grandTotal,
+            time: currentBill.createdDate,
+            totalSales: isValidNumber(currentBill.billing.grandTotal),
           });
           analyticsData.salesChannels.takeaway.billWiseSales.tableWise[
             tableIndex
-          ].totalSales += data.billing.grandTotal;
+          ].totalSales += isValidNumber(currentBill.billing.grandTotal);
           analyticsData.salesChannels.takeaway.billWiseSales.tableWise[
             tableIndex
           ].totalBills += 1;
@@ -1088,21 +1109,21 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
         // find if existing entry for a time exists in timeWise if yes then add the sales and increase the bill number
         let timeIndex =
           analyticsData.salesChannels.takeaway.billWiseSales.time.findIndex(
-            (t) => t.time === data.createdDate.toDate().getHours(),
+            (t) => t.time === currentBill.createdDate.toDate().getHours(),
           );
         if (timeIndex === -1) {
           analyticsData.salesChannels.takeaway.billWiseSales.time.push({
-            time: data.createdDate.toDate().getHours(),
+            time: currentBill.createdDate.toDate().getHours(),
             bills: [
               {
                 billId: billDoc.id,
                 billRef: billDoc.ref,
-                time: data.createdDate,
-                totalSales: data.billing.grandTotal,
+                time: currentBill.createdDate,
+                totalSales: isValidNumber(currentBill.billing.grandTotal),
               },
             ],
-            timeNumber: Number(data.createdDate.toDate().getHours()),
-            totalSales: data.billing.grandTotal,
+            timeNumber: Number(currentBill.createdDate.toDate().getHours()),
+            totalSales: isValidNumber(currentBill.billing.grandTotal),
             totalBills: 1,
           });
         } else {
@@ -1111,66 +1132,66 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
           ].bills.push({
             billId: billDoc.id,
             billRef: billDoc.ref,
-            time: data.createdDate,
-            totalSales: data.billing.grandTotal,
+            time: currentBill.createdDate,
+            totalSales: isValidNumber(currentBill.billing.grandTotal),
           });
           analyticsData.salesChannels.takeaway.billWiseSales.time[
             timeIndex
-          ].totalSales += data.billing.grandTotal;
+          ].totalSales += isValidNumber(currentBill.billing.grandTotal);
           analyticsData.salesChannels.takeaway.billWiseSales.time[
             timeIndex
           ].totalBills += 1;
         }
-      } else if (data.mode === 'online') {
-        if (data?.settlement?.time) {
+      } else if (currentBill.mode === 'online') {
+        if (currentBill?.settlement?.time) {
           analyticsData.salesChannels.online.totalSettledBills += 1;
         } else {
           analyticsData.salesChannels.online.totalUnsettledBills += 1;
         }
-        if (data?.billing?.discount?.length > 0) {
+        if (currentBill?.billing?.discount?.length > 0) {
           analyticsData.salesChannels.online.totalDiscountedBills += 1;
         }
-        if (data?.nonChargeableDetail) {
+        if (currentBill?.nonChargeableDetail) {
           analyticsData.salesChannels.online.totalNcBills += 1;
         }
         analyticsData.salesChannels.online.totalSales +=
-          data.billing.grandTotal;
+          isValidNumber(currentBill.billing.grandTotal);
         analyticsData.salesChannels.online.netSales +=
-          data.billing.grandTotal -
-          data.billing.discount.reduce(
+          isValidNumber(isValidNumber(currentBill.billing.grandTotal) -
+          currentBill.billing.discount.reduce(
             (total: number, d: any) => d.totalAppliedDiscount + total,
             0,
-          );
+          ));
         analyticsData.salesChannels.online.totalDiscount +=
-          data.billing.discount.reduce(
+          isValidNumber(currentBill.billing.discount.reduce(
             (total: number, d: any) => d.totalAppliedDiscount + total,
             0,
-          );
-        if (data.nonChargeableDetail) {
-          analyticsData.salesChannels.online.totalNC += data.billing.grandTotal;
+          ));
+        if (currentBill.nonChargeableDetail) {
+          analyticsData.salesChannels.online.totalNC += isValidNumber(currentBill.billing.grandTotal);
         }
         analyticsData.salesChannels.online.totalTaxes +=
-          data.billing.taxes.reduce(
+          isValidNumber(currentBill.billing.taxes.reduce(
             (total: number, t: any) => t.amount + total,
             0,
-          );
+          ));
         analyticsData.salesChannels.online.hourlySales[
-          data.createdDate.toDate().getHours()
-        ] += data.billing.grandTotal;
+          currentBill.createdDate.toDate().getHours()
+        ] += isValidNumber(currentBill.billing.grandTotal);
         analyticsData.salesChannels.online.billWiseSales.rangeWise[
-          data.billing.grandTotal < 500
+          isValidNumber(currentBill.billing.grandTotal) < 500
             ? 'lowRange'
-            : data.billing.grandTotal < 1000
+            : isValidNumber(currentBill.billing.grandTotal) < 1000
             ? 'mediumRange'
             : 'highRange'
         ].bills.push({
           billId: billDoc.id,
           billRef: billDoc.ref,
-          time: data.createdDate,
-          totalSales: data.billing.grandTotal,
+          time: currentBill.createdDate,
+          totalSales: isValidNumber(currentBill.billing.grandTotal),
         });
-        if (data.settlement?.payments) {
-          data.settlement?.payments.forEach((payment: any) => {
+        if (currentBill.settlement?.payments) {
+          currentBill.settlement?.payments.forEach((payment: any) => {
             if (
               !analyticsData.salesChannels.online.paymentReceived[
                 payment.paymentMethod
@@ -1182,18 +1203,18 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
             }
             analyticsData.salesChannels.online.paymentReceived[
               payment.paymentMethod
-            ] += payment.amount;
+            ] += isValidNumber(payment.amount);
           });
         }
         // analyticsData.salesChannels.online.billWiseSales.tableWise
         // find if existing entry for a table exists in tableWise if yes then add the sales and increase the bill number
         let tableIndex =
           analyticsData.salesChannels.online.billWiseSales.tableWise.findIndex(
-            (t: any) => t.tableId == data.table,
+            (t: any) => t.tableId == currentBill.table,
           );
         if (tableIndex === -1) {
-          let tablePath = `business/${businessDoc.id}/tables/${data.table}`;
-          console.log('Table path', tablePath);
+          let tablePath = `business/${businessDoc.id}/tables/${currentBill.table}`;
+          // console.log('Table path', tablePath);
           // find tablePath in cachedTables if not found then fetch from firestore
           if (cachedTables.findIndex((t: any) => t.path === tablePath) === -1) {
             var tableDoc = await firestore.doc(tablePath).get();
@@ -1206,20 +1227,23 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
               (t: any) => t.path === tablePath,
             ).tableDoc;
           }
-          console.log('Table doc', tableDoc.data(), 'path', tablePath);
+          if (tableDoc.data() == undefined){
+            return;
+          }
+          // console.log('Table doc', tableDoc.data(), 'path', tablePath);
           if (tableDoc.exists) {
             analyticsData.salesChannels.online.billWiseSales.tableWise.push({
               table: tableDoc.data()['name'],
-              tableId: data.table,
+              tableId: currentBill.table,
               bills: [
                 {
                   billId: billDoc.id,
                   billRef: billDoc.ref,
-                  time: data.createdDate,
-                  totalSales: data.billing.grandTotal,
+                  time: currentBill.createdDate,
+                  totalSales: isValidNumber(currentBill.billing.grandTotal),
                 },
               ],
-              totalSales: data.billing.grandTotal,
+              totalSales: isValidNumber(currentBill.billing.grandTotal),
               totalBills: 1,
             });
           }
@@ -1229,12 +1253,12 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
           ].bills.push({
             billId: billDoc.id,
             billRef: billDoc.ref,
-            time: data.createdDate,
-            totalSales: data.billing.grandTotal,
+            time: currentBill.createdDate,
+            totalSales: isValidNumber(currentBill.billing.grandTotal),
           });
           analyticsData.salesChannels.online.billWiseSales.tableWise[
             tableIndex
-          ].totalSales += data.billing.grandTotal;
+          ].totalSales += isValidNumber(currentBill.billing.grandTotal);
           analyticsData.salesChannels.online.billWiseSales.tableWise[
             tableIndex
           ].totalBills += 1;
@@ -1243,21 +1267,21 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
         // find if existing entry for a time exists in timeWise if yes then add the sales and increase the bill number
         let timeIndex =
           analyticsData.salesChannels.online.billWiseSales.time.findIndex(
-            (t) => t.time === data.createdDate.toDate().getHours(),
+            (t) => t.time === currentBill.createdDate.toDate().getHours(),
           );
         if (timeIndex === -1) {
           analyticsData.salesChannels.online.billWiseSales.time.push({
-            time: data.createdDate.toDate().getHours(),
+            time: currentBill.createdDate.toDate().getHours(),
             bills: [
               {
                 billId: billDoc.id,
                 billRef: billDoc.ref,
-                time: data.createdDate,
-                totalSales: data.billing.grandTotal,
+                time: currentBill.createdDate,
+                totalSales: isValidNumber(currentBill.billing.grandTotal),
               },
             ],
-            timeNumber: Number(data.createdDate.toDate().getHours()),
-            totalSales: data.billing.grandTotal,
+            timeNumber: Number(currentBill.createdDate.toDate().getHours()),
+            totalSales: isValidNumber(currentBill.billing.grandTotal),
             totalBills: 1,
           });
         } else {
@@ -1266,12 +1290,12 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
           ].bills.push({
             billId: billDoc.id,
             billRef: billDoc.ref,
-            time: data.createdDate,
-            totalSales: data.billing.grandTotal,
+            time: currentBill.createdDate,
+            totalSales: isValidNumber(currentBill.billing.grandTotal),
           });
           analyticsData.salesChannels.online.billWiseSales.time[
             timeIndex
-          ].totalSales += data.billing.grandTotal;
+          ].totalSales += isValidNumber(currentBill.billing.grandTotal);
           analyticsData.salesChannels.online.billWiseSales.time[
             timeIndex
           ].totalBills += 1;
@@ -1337,8 +1361,8 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
     if (tableIndex === -1) {
       filteredTables.push(table);
     } else {
-      filteredTables[tableIndex].totalSales += table.totalSales;
-      filteredTables[tableIndex].totalBills += table.totalBills;
+      filteredTables[tableIndex].totalSales += isValidNumber(table.totalSales);
+      filteredTables[tableIndex].totalBills += isValidNumber(table.totalBills);
       table.bills.forEach((bill) => {
         filteredTables[tableIndex].bills.push(bill);
       });
@@ -1361,8 +1385,8 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
     if (tableIndex === -1) {
       filteredTables.push(table);
     } else {
-      filteredTables[tableIndex].totalSales += table.totalSales;
-      filteredTables[tableIndex].totalBills += table.totalBills;
+      filteredTables[tableIndex].totalSales += isValidNumber(table.totalSales);
+      filteredTables[tableIndex].totalBills += isValidNumber(table.totalBills);
       table.bills.forEach((bill) => {
         filteredTables[tableIndex].bills.push(bill);
       });
@@ -1527,6 +1551,8 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
   await firestore
     .doc(`business/${businessDoc.id}/analyticsData/${year}/${month}/${day}`)
     .set(analyticsData);
+  console.log("Analytics data",analyticsData);
+  
   console.log(
     'Size of analytics data in mb',
     JSON.stringify(analyticsData).length / 1000000,
@@ -1536,4 +1562,14 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
     analyzedBills: billsDocs.docs.length,
     addedPath: `business/${businessDoc.id}/analyticsData/${year}/${month}/${day}`,
   };
+}
+
+
+function isValidNumber(number:any){
+  // check if the number is valid number if not then return 0
+  if (isNaN(number)){
+    return 0;
+  } else {
+    return number;
+  }
 }

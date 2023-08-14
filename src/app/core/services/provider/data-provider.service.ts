@@ -139,6 +139,22 @@ export class DataProvider {
   public kotRePrintable: boolean = false;
   public billerPrinter:string = '';
 
+  public dailyTokens:{
+    billTokenNo:number,
+    orderTokenNo:number;
+    ncBillTokenNo:number;
+    takeawayTokenNo:number;
+    onlineTokenNo:number;
+    kitchenTokenNo:number;
+  } = {
+    billTokenNo:0,
+    orderTokenNo:0,
+    ncBillTokenNo:0,
+    takeawayTokenNo:0,
+    onlineTokenNo:0,
+    kitchenTokenNo:0
+  };
+
   // public access
   public menus: ModeConfig[] = [];
   public products: Product[] = [];

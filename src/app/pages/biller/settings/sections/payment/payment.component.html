@@ -1,5 +1,6 @@
 <h3>Payment Methods</h3>
-<table class="styled-table" id="reportTable">
+<mat-spinner *ngIf="loadingPaymentMethods"></mat-spinner>
+<table class="styled-table" id="reportTable" *ngIf="!loadingPaymentMethods">
   <thead>
     <tr>
       <th>Method Name</th>

@@ -44,6 +44,7 @@ export class ProductsService {
     recipe.quantity = 1;
     recipe.selected = false;
     delete recipe.instruction;
+    delete recipe.updated;
     delete recipe.lineDiscount;
     recipe.createdDate = Timestamp.now();
     return updateDoc(

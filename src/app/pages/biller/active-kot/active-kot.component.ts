@@ -158,7 +158,7 @@ export class ActiveKotComponent implements OnChanges {
           mode: reason.mode,
           time: Timestamp.now(),
           user: {
-            access: this.dataProvider.currentBusinessUser.access.accessLevel,
+            access:this.dataProvider.currentBusinessUser.access.accessType == 'role' ? this.dataProvider.currentBusinessUser.access.role : 'custom',
             username: this.dataProvider.currentBusinessUser.name,
           },
         };

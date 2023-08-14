@@ -113,8 +113,8 @@ export class HistoryComponent {
     });
     filteredBills.forEach((bill) => {
       // recalculate stats totalSales, startKot, endKot, totalKots, totalBills, startingKotNumber, endingKotNumber
-      this.totalSales += bill.billing.grandTotal;
-      this.totalKots += bill.kots.length;
+      this.totalSales += this.returnValidNumber(bill.billing.grandTotal);
+      this.totalKots += this.returnValidNumber(bill.kots.length);
       this.totalBills++;
       if (this.startKot == '') {
         this.startKot = bill.orderNo;
@@ -156,22 +156,23 @@ export class HistoryComponent {
             printableBillData,
           } as ExtendedBillConstructor;
         });
-        this.totalKots = this.bills.reduce((acc, bill) => {
-          return acc + bill.kots.length;
-        }, 0);
-        this.totalBills = this.bills.length;
-        this.startingKotNumber =
-          this.bills.length > 0 ? this.bills[0].orderNo : 0;
-        this.endingKotNumber =
-          this.bills.length > 0 ? this.bills[this.bills.length - 1].orderNo : 0;
-        this.totalSales = this.bills.reduce((acc, bill) => {
-          return acc + bill.billing.grandTotal;
-        }, 0);
-        this.startKot = this.bills.length > 0 ? this.bills[0].orderNo : '0';
-        this.endKot =
-          this.bills.length > 0
-            ? this.bills[this.bills.length - 1].orderNo
-            : '0';
+        this.regenerateStats();
+        // this.totalKots = this.bills.reduce((acc, bill) => {
+        //   return acc + this.returnValidNumber(bill.kots.length);
+        // }, 0);
+        // this.totalBills = this.bills.length;
+        // this.startingKotNumber =
+        //   this.bills.length > 0 ? this.bills[0].orderNo : 0;
+        // this.endingKotNumber =
+        //   this.bills.length > 0 ? this.bills[this.bills.length - 1].orderNo : 0;
+        // this.totalSales = this.bills.reduce((acc, bill) => {
+        //   return acc + this.returnValidNumber(bill.billing.grandTotal);
+        // }, 0);
+        // this.startKot = this.bills.length > 0 ? this.bills[0].orderNo : '0';
+        // this.endKot =
+        //   this.bills.length > 0
+        //     ? this.bills[this.bills.length - 1].orderNo
+        //     : '0';
         this.fuseSearchInstance.setCollection(this.bills);
         this.loading = false;
       });
@@ -205,7 +206,7 @@ export class HistoryComponent {
         reprintReason: res,
         time: Timestamp.now(),
         user: {
-          access: userRes.access.accessLevel,
+          access: userRes.access.accessType == 'role' ? userRes.access.role : 'custom',
           username: userRes.name,
         },
       });
@@ -251,7 +252,7 @@ export class HistoryComponent {
         if (!x) {
           return acc.concat([current]);
         } else {
-          x.quantity += current.quantity;
+          x.quantity += this.returnValidNumber(current.quantity);
           return acc;
         }
       }, []);
@@ -1000,9 +1001,18 @@ export class HistoryComponent {
     document.body.appendChild(link); // Required for FF
     link.click();
   }
+
+  returnValidNumber(num:number){
+    if(isNaN(num)){
+      return 0;
+    } else {
+      return num;
+    }
+  }
 }
 export interface ExtendedBillConstructor extends BillConstructor {
   kotVisible: boolean;
   flipped: boolean;
   kotOrBillVisible: 'kot' | 'bill' | false;
 }
+

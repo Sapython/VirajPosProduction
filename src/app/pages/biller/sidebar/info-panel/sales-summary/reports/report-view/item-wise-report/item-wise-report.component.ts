@@ -16,6 +16,14 @@ import { DataProvider } from '../../../../../../../../core/services/provider/dat
   styleUrls: ['./item-wise-report.component.scss'],
 })
 export class ItemWiseReportComponent {
+  totals = {
+    totalNumberOfProducts: 0,
+    totalNumberOfBills: 0,
+    totalNumberOfKots: 0,
+    totalQuantity: 0,
+    totalPrice: 0,
+    totalAmount: 0,
+  }
   downloadPDfSubscription: Subscription = Subscription.EMPTY;
   downloadExcelSubscription: Subscription = Subscription.EMPTY;
   reportChangedSubscription: Subscription = Subscription.EMPTY;
@@ -73,6 +81,25 @@ export class ItemWiseReportComponent {
                 });
               });
             });
+            this.totals.totalNumberOfProducts = products.length;
+            this.totals.totalNumberOfBills = bills.length;
+            this.totals.totalNumberOfKots = bills.reduce(
+              (acc, cur) => acc + cur.kots.length,
+              0,
+            );
+            this.totals.totalQuantity = products.reduce(
+              (acc, cur) => acc + cur.quantity,
+              0,
+            );
+            this.totals.totalPrice = products.reduce(
+              (acc, cur) => acc + cur.price,
+              0,
+            );
+            this.totals.totalAmount = products.reduce(
+              (acc, cur) => acc + (cur.price * cur.quantity),
+              0,
+            );
+            // total amount is the total price of all the products
             this.products.next(products);
             this.loading = false;
           });
@@ -123,7 +150,7 @@ export class ItemWiseReportComponent {
       },
     });
     autoTable(doc, { html: '#reportTable' });
-    doc.save('Bill Wise Report' + new Date().toLocaleString() + '.pdf');
+    doc.save('Item Wise Report' + new Date().toLocaleString() + '.pdf');
   }
 
   downloadExcel() {
@@ -160,7 +187,7 @@ export class ItemWiseReportComponent {
     var csv_string = csv.join('\n');
     // Download it
     var filename =
-      'export_report-table_' + new Date().toLocaleString() + '.csv';
+      'item_wise_report' + new Date().toLocaleString() + '.csv';
     var link = document.createElement('a');
     link.style.display = 'none';
     link.setAttribute('target', '_blank');

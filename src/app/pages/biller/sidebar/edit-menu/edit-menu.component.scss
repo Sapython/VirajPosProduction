@@ -190,6 +190,11 @@ section {
           padding: 10px 10px;
           color: var(--Vrajera-primary);
           font-size: var(--Vrajera-font-large);
+          img.avatar{
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+          }
           strong {
             color: black;
             text-transform: uppercase;
@@ -249,7 +254,11 @@ section {
         flex-direction: column;
         overflow-y: auto;
         gap: 6px;
-        padding: 10px 0px;
+        mat-paginator{
+          position: sticky;
+          top:0px;
+          z-index: 9999;
+        }
         .product {
           display: flex;
           justify-content: space-between;

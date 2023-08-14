@@ -4,7 +4,7 @@
     <div class="actions">
       <strong>Access:</strong>
       <span>{{
-        this.dataProvider.currentBusinessUser?.access.accessLevel
+        this.dataProvider.currentBusinessUser.access.accessType == 'role' ? this.dataProvider.currentBusinessUser.access.role : 'custom'
       }}</span>
     </div>
   </div>

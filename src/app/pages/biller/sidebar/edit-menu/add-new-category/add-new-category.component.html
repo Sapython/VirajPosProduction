@@ -1,6 +1,10 @@
 <section>
   <div class="heading">
     <h1>Add New Categories</h1>
+    <span *ngIf="this.dialogData.userId">
+      <img src="https://api.dicebear.com/6.x/initials/svg?seed={{this.dialogData.userId}}">
+      {{ this.dialogData.userId | titlecase }}
+    </span>
     <viraj-button (click)="cancel()" type="icon"
       ><i class="ri-close-fill"></i
     ></viraj-button>

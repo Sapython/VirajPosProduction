@@ -92,8 +92,14 @@ export class AccountComponent {
     }
   }
 
-  deleteUser(user:Member){
-
+  async deleteUser(user:Member){
+    if (this.dataProvider.currentBusiness && await this.dataProvider.confirm('Are you sure you want to delete account ?',[1])){
+      let foundUserIndex = this.dataProvider.currentBusiness.users.findIndex((usr)=>user.username==usr.username);
+      if (foundUserIndex){
+        this.dataProvider.currentBusiness.users.splice(foundUserIndex,1);
+        this.settingsService.updateBusiness(this.dataProvider.currentBusiness);
+      }
+    }
   }
 
   updateUser(user:Member){

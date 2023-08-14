@@ -321,11 +321,12 @@ export class MenuManagementService {
     }
   }
 
-  async getViewCategoriesByMenu(menu: Menu) {
+  async getViewCategoriesByMenu(menu: Menu,username?:string) {
+    let userId = username ? username : this.dataProvider.currentUser.username;
     let localMenu = await this.getLocalMenu(menu.id);
     // console.log("menu113 viewCategories",localMenu?.viewCategories);
-    if (localMenu?.viewCategories[this.dataProvider.currentUser.username]) {
-      return localMenu?.viewCategories[this.dataProvider.currentUser.username];
+    if (localMenu?.viewCategories[userId]) {
+      return localMenu?.viewCategories[userId];
     }
     console.log("view: Not available on local fetching from online");
     let res = await getDocs(
@@ -336,7 +337,7 @@ export class MenuManagementService {
           '/menus/' +
           menu.id +
           '/users/' +
-          this.dataProvider.currentUser.username +
+          userId +
           '/viewCategories/',
       ),
     );
@@ -634,8 +635,9 @@ export class MenuManagementService {
     );
   }
 
-  async addViewCategory(category: any, id?: string) {
+  async addViewCategory(category: any,userId:string, id?: string) {
     if (!id) {
+      console.log("Adding new view category",userId,category);
       let categoryRes = await addDoc(
         collection(
           this.firestore,
@@ -644,7 +646,7 @@ export class MenuManagementService {
             '/menus/' +
             this.dataProvider.currentMenu?.selectedMenu?.id +
             '/users/' +
-            this.dataProvider.currentUser.username +
+            userId +
             '/viewCategories',
         ),
         category,
@@ -653,6 +655,7 @@ export class MenuManagementService {
       this.menuUpdated.next();
       return categoryRes;
     }
+    console.log("Updating view category",userId,category);
     let categoryRes = await setDoc(
       doc(
         this.firestore,
@@ -661,7 +664,7 @@ export class MenuManagementService {
           '/menus/' +
           this.dataProvider.currentMenu?.selectedMenu?.id +
           '/users/' +
-          this.dataProvider.currentUser.username +
+          userId +
           '/viewCategories/' +
           id,
       ),

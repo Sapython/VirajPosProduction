@@ -242,9 +242,10 @@ export class AddMenuComponent {
 
   addProduct(category:{name:string,products:any[]}){
     const dishComp = this.dialog.open(AddDishComponent,{data:{mode:'add'}});
-    firstValueFrom(dishComp.closed).then((value)=>{
+    firstValueFrom(dishComp.closed).then((value:any)=>{
       console.log("TO be added product",value);
       if(value){
+        value.selected = true;
         category.products.push(value);
         this.alertify.presentToast("Product Added");
       }

@@ -18,12 +18,25 @@ import { DataProvider } from '../../../../../../../../core/services/provider/dat
   styleUrls: ['./hourly-item-sales.component.scss'],
 })
 export class HourlyItemSalesComponent {
-  hours: number[] = Array(24)
+  hours: string[] = Array(24)
     .fill(0)
-    .map((res, index) => index);
+    .map((res, index) => {
+      if (index > 12) {
+        return index - 12 + ' PM';
+      } else {
+        return index + ' AM';
+      }
+    });
     downloadPDfSubscription: Subscription = Subscription.EMPTY;
   downloadExcelSubscription: Subscription = Subscription.EMPTY;
   reportChangedSubscription: Subscription = Subscription.EMPTY;
+  totals = {
+    totalNumberOfProducts: 0,
+    totalQuantity: 0,
+    totalPrice: 0,
+    totalAmount: 0,
+    hourlyTotal: Array(24).fill(0),
+  };
   items: ReplaySubject<ProductHourlySales[]> = new ReplaySubject<
     ProductHourlySales[]
   >();
@@ -63,8 +76,9 @@ export class HourlyItemSalesComponent {
                       itemType: 'product',
                     });
                   } else {
+                    let hour = kot.createdDate.toDate().getHours();
                     productBaseSales[findIndex].hourlySales[
-                      kot.createdDate.toDate().getHours()
+                      hour
                     ] += product.quantity;
                   }
                 } else if (product.itemType == 'combo') {
@@ -72,6 +86,28 @@ export class HourlyItemSalesComponent {
               });
             });
           });
+          productBaseSales.forEach((product) => {
+            product.hourlySales.forEach((hourlySale, index) => {
+              this.totals.hourlyTotal[index] += hourlySale;
+            });
+          })
+          // this.totals 
+          this.totals = {
+            totalNumberOfProducts: productBaseSales.length,
+            totalQuantity: productBaseSales.reduce(
+              (acc, cur) => acc + cur.quantity,
+              0,
+            ),
+            totalPrice: productBaseSales.reduce(
+              (acc, cur) => acc + cur.price,
+              0,
+            ),
+            totalAmount: productBaseSales.reduce(
+              (acc, cur) => acc + cur.price * cur.quantity,
+              0,
+            ),
+            hourlyTotal: this.totals.hourlyTotal,
+          }
           console.log(
             'productBaseSales',
             productBaseSales,
@@ -89,7 +125,7 @@ export class HourlyItemSalesComponent {
         this.downloadPdf();
       },
     );
-    this.downloadExcelSubscription = this.reportService.downloadPdf.subscribe(
+    this.downloadExcelSubscription = this.reportService.downloadExcel.subscribe(
       () => {
         this.downloadExcel();
       },
@@ -129,7 +165,7 @@ export class HourlyItemSalesComponent {
       },
     });
     autoTable(doc, { html: '#reportTable' });
-    doc.save('Bill Wise Report' + new Date().toLocaleString() + '.pdf');
+    doc.save('Hourly Item Wise Sales Report' + new Date().toLocaleString() + '.pdf');
   }
 
   downloadExcel() {
@@ -189,6 +225,6 @@ interface ProductHourlySales extends Product {
   itemType: 'product';
 }
 interface ComboHourlySales extends ApplicableComboConstructor {
-  hourlySales: number[];
+  hourlySales: string[];
   itemType: 'combo';
 }

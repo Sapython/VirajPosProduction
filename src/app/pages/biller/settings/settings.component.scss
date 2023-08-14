@@ -3,14 +3,23 @@ section {
   padding: 20px;
   border-radius: 15px;
   min-width: 800px;
+  height: 80vh;
+  overflow-y: auto;
+  padding-top: 0px;  
   .header {
     display: flex;
     justify-content: space-between;
     border-bottom: 3px solid #444;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 9999;
+    align-items: center;
   }
   .main {
     display: flex;
     gap: 20px;
+    height: 100%;
     .tabs {
       display: flex;
       flex-direction: column;

@@ -57,6 +57,7 @@ export class ModeConfig {
   products: Product[] = [];
   recommendedCategories: Category[] = [];
   viewCategories: Category[] = [];
+  userWiseViewCategories: {user:string,categories:Category[]}[] = [];
   mainCategories: Category[] = [];
   categoryUpdated: boolean;
   productsUpdated: boolean;
@@ -304,70 +305,144 @@ export class ModeConfig {
   }
 
   async getViewCategories() {
+    this.userWiseViewCategories = [];
     if (this.selectedMenu) {
-      let data = await this.menuManagementService.getViewCategoriesByMenu(
-        this.selectedMenu,
-      );
-      this.viewCategories = data.map((doc) => {
-        let products = this.products.filter((p) => {
-          if (doc['disabled']) {
-            var notDisabled = doc['disabled'].find((id: string) => id == p.id)
-              ? false
-              : true;
-          } else {
-            var notDisabled = true;
-          }
-          p.visible =
-            notDisabled && (p.visible == undefined ? true : p.visible);
-          return doc['products'].includes(p.id);
-        });
-        return {
-          ...doc,
-          name: doc['name'],
-          id: doc.id,
-          products: products,
-          averagePrice:
-            products.reduce((acc, curr) => acc + curr.price, 0) /
-            products.length,
-        } as Category;
-      });
-      // console.log('this.viewCategories', this.viewCategories);
-      // sort by order
-      this.viewCategories.sort((a, b) => {
-        if (a.order && b.order) {
-          return a.order - b.order;
-        } else {
-          return 0;
-        }
-      });
-      // console.log('this.viewCategories', this.viewCategories);
-      // sort all products by productOrder
-      this.viewCategories.forEach((cat) => {
-        // sort by cat.productOrders
-        cat.products.sort((a, b) => {
-          if (cat.productOrders) {
-            let aOrder = cat.productOrders.indexOf(a.id);
-            let bOrder = cat.productOrders.indexOf(b.id);
-            if (aOrder != -1 && bOrder != -1) {
-              return aOrder - bOrder;
-            } else if (aOrder != -1) {
-              return -1;
-            } else if (bOrder != -1) {
-              return 1;
+      if (this.dataProvider.currentBusinessUser.access.accessType == 'role' && (
+        this.dataProvider.currentBusinessUser.access.role == 'admin' || 
+        this.dataProvider.currentBusinessUser.access.role == 'manager'
+      )){
+        this.dataProvider.currentBusiness.users.forEach(async (user)=>{
+          let data = await this.menuManagementService.getViewCategoriesByMenu(
+            this.selectedMenu,
+            user.username
+          );
+          let formedCategory = data.map((doc) => {
+            let products = this.products.filter((p) => {
+              if (doc['disabled']) {
+                var notDisabled = doc['disabled'].find((id: string) => id == p.id)
+                  ? false
+                  : true;
+              } else {
+                var notDisabled = true;
+              }
+              p.visible =
+                notDisabled && (p.visible == undefined ? true : p.visible);
+              return doc['products'].includes(p.id);
+            });
+            return {
+              ...doc,
+              name: doc['name'],
+              id: doc.id,
+              products: products,
+              averagePrice:
+                products.reduce((acc, curr) => acc + curr.price, 0) /
+                products.length,
+            } as Category;
+          });
+          formedCategory.sort((a, b) => {
+            if (a.order && b.order) {
+              return a.order - b.order;
             } else {
               return 0;
             }
+          });
+          // console.log('this.viewCategories', this.viewCategories);
+          // sort all products by productOrder
+          formedCategory.forEach((cat) => {
+            // sort by cat.productOrders
+            cat.products.sort((a, b) => {
+              if (cat.productOrders) {
+                let aOrder = cat.productOrders.indexOf(a.id);
+                let bOrder = cat.productOrders.indexOf(b.id);
+                if (aOrder != -1 && bOrder != -1) {
+                  return aOrder - bOrder;
+                } else if (aOrder != -1) {
+                  return -1;
+                } else if (bOrder != -1) {
+                  return 1;
+                } else {
+                  return 0;
+                }
+              } else {
+                return 0;
+              }
+            });
+          });
+          if (this.dataProvider.currentUser.username == user.username){
+            this.viewCategories = formedCategory;
+          }
+          console.log("formedCategory",formedCategory);
+          this.userWiseViewCategories.push({
+            user:user.username,
+            categories:formedCategory
+          });
+        });
+        console.log("this.userWiseViewCategories",this.userWiseViewCategories);
+      } else {
+        let data = await this.menuManagementService.getViewCategoriesByMenu(
+          this.selectedMenu,
+        );
+        this.viewCategories = data.map((doc) => {
+          let products = this.products.filter((p) => {
+            if (doc['disabled']) {
+              var notDisabled = doc['disabled'].find((id: string) => id == p.id)
+                ? false
+                : true;
+            } else {
+              var notDisabled = true;
+            }
+            p.visible =
+              notDisabled && (p.visible == undefined ? true : p.visible);
+            return doc['products'].includes(p.id);
+          });
+          return {
+            ...doc,
+            name: doc['name'],
+            id: doc.id,
+            products: products,
+            averagePrice:
+              products.reduce((acc, curr) => acc + curr.price, 0) /
+              products.length,
+          } as Category;
+        });
+        // console.log('this.viewCategories', this.viewCategories);
+        // sort by order
+        this.viewCategories.sort((a, b) => {
+          if (a.order && b.order) {
+            return a.order - b.order;
           } else {
             return 0;
           }
         });
-      });
-      if (debug)
-        console.log(
-          'this.viewCategories',
-          this.viewCategories,
-          this.activateCategory,
-        );
+        // console.log('this.viewCategories', this.viewCategories);
+        // sort all products by productOrder
+        this.viewCategories.forEach((cat) => {
+          // sort by cat.productOrders
+          cat.products.sort((a, b) => {
+            if (cat.productOrders) {
+              let aOrder = cat.productOrders.indexOf(a.id);
+              let bOrder = cat.productOrders.indexOf(b.id);
+              if (aOrder != -1 && bOrder != -1) {
+                return aOrder - bOrder;
+              } else if (aOrder != -1) {
+                return -1;
+              } else if (bOrder != -1) {
+                return 1;
+              } else {
+                return 0;
+              }
+            } else {
+              return 0;
+            }
+          });
+        });
+        if (debug)
+          console.log(
+            'this.viewCategories',
+            this.viewCategories,
+            this.activateCategory,
+          );
+      }
     }
   }
 
@@ -574,9 +649,9 @@ export class ModeConfig {
     }
   }
 
-  addViewCategory() {
+  addViewCategory(userId:string) {
     const dialog = this.dialog.open(AddNewCategoryComponent, {
-      data: { products: this.products },
+      data: { products: this.products,userId },
     });
     dialog.closed.subscribe((data: any) => {
       if (data) {
@@ -934,12 +1009,14 @@ export class ModeConfig {
   }
 
   setTaxes(product: Product) {
+
     const dialog = this.dialog.open(SetTaxComponent, {
       data: { product, menu: this },
     });
     firstValueFrom(dialog.closed).then((data: any) => {
       // console.log('data', data);
       if (data) {
+        product.updated = true;
         let filteredTax = data.taxes
           .filter((tax) => tax.checked)
           .map((tax) => {
@@ -948,11 +1025,11 @@ export class ModeConfig {
           });
         this.dataProvider.loading = true;
         // product = { ...product, ...data };
-        // console.log("New Product Data",data);
+        console.log("New Product Data",data);
         product.taxes = filteredTax;
         console.log('Updating product with tax', product);
         this.productService
-          .updateRecipe(product, this.selectedMenuId)
+          .updateRecipe(structuredClone(product), this.selectedMenuId)
           .then((data: any) => {
             this.alertify.presentToast('Taxes Updated Successfully');
           })
@@ -1140,9 +1217,6 @@ export class ModeConfig {
   }
 
   async updateChanged() {
-    this.dataProvider.menus.forEach((menu: ModeConfig) => {
-      // console.log('menu', menu.selectedMenu);
-    });
     this.selectedMenu = this.dataProvider.allMenus.find((menu: Menu) => {
       // console.log(menu.id, this.selectedMenuId, menu.id == this.selectedMenuId);
       return menu.id == this.selectedMenuId;
@@ -1152,7 +1226,7 @@ export class ModeConfig {
       let updatableProducts = this.products.filter(
         (product: Product) => product.updated,
       );
-      // console.log('updatableProducts', updatableProducts);
+      console.log('updatableProducts', updatableProducts);
       let updatablerecommendedCategories = this.recommendedCategories.filter(
         (category: Category) => category.updated,
       );

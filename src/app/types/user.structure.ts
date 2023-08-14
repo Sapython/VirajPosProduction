@@ -57,11 +57,10 @@ export interface BusinessRecord {
   users: Member[];
   devices: string[];
 }
-export interface Access {
+export type Access = {
   lastUpdated: Timestamp;
   updatedBy: string;
-  accessLevel: 'manager' | 'waiter' | 'accountant' | 'admin';
-}
+} & (RoleProps | CustomProps);
 export type Member = {
   updatedBy: string;
   lastUpdated: Timestamp;

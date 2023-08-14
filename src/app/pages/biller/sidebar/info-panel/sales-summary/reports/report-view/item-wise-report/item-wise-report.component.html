@@ -10,30 +10,59 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let product of products | async">
-      <td>
-        {{ product.name }}
-      </td>
-      <td>
-        {{ product.bills.length > 0 ? product.bills : 'Unsettled' }}
-      </td>
-      <td>
-        {{ product.kots }}
-      </td>
-      <td>
-        {{ product.quantity }}
-      </td>
-      <td>
-        {{ product.price }}
-      </td>
-      <td>
-        {{ product.quantity * product.price }}
-      </td>
-    </tr>
-    <tr *ngIf="(products|async).length == 0">
+    <ng-container *ngIf="(products | async).length > 0">
+      <tr *ngFor="let product of products | async">
+        <td>
+          {{ product.name }}
+        </td>
+        <td>
+          {{ product.bills.length > 0 ? product.bills : "Unsettled" }}
+        </td>
+        <td>
+          {{ product.kots }}
+        </td>
+        <td>
+          {{ product.quantity }}
+        </td>
+        <td>
+          {{ product.price }}
+        </td>
+        <td>
+          {{ product.quantity * product.price }}
+        </td>
+      </tr>
+      <tr>
+        <!-- total -->
+        <td style="font-weight: bold">
+          TOTALS:
+          {{ totals.totalNumberOfProducts }}
+        </td>
+        <td style="font-weight: bold">
+          {{ totals.totalNumberOfBills }}
+        </td>
+        <td style="font-weight: bold">
+          {{ totals.totalNumberOfKots }}
+        </td>
+        <td style="font-weight: bold">
+          {{ totals.totalQuantity }}
+        </td>
+        <td style="font-weight: bold">
+          {{ totals.totalPrice }}
+        </td>
+        <td style="font-weight: bold">
+          {{ totals.totalAmount }}
+        </td>
+      </tr>
+    </ng-container>
+    <tr *ngIf="(products | async).length == 0">
       <td
         colspan="5"
-        style="text-align: center; font-weight: bold; font-size: 1.2rem;color:#aaa"
+        style="
+          text-align: center;
+          font-weight: bold;
+          font-size: 1.2rem;
+          color: #aaa;
+        "
       >
         <p>No Data Available</p>
       </td>

@@ -19,6 +19,7 @@ export class AddComponent {
   onboardingStage: 'registration' | 'otp' = 'registration';
   previousUsername: string | undefined;
   authOtpVerificationId: string | undefined;
+  maskedEmailInvitee: string | undefined;
   checkUsernameFunction = httpsCallable(this.functions, 'userNameAvailable');
   loginForm: FormGroup = new FormGroup({
     username: new FormControl('', [Validators.required]),
@@ -386,7 +387,6 @@ export class AddComponent {
             } else if (this.stage == 'unavailable') {
               // this.addPasswordControl();
               // remove all the controls
-              this.loginForm.removeControl('email');
               this.loginForm.removeControl('password');
               this.loginForm.removeControl('confirmPassword');
             }
@@ -466,6 +466,8 @@ export class AddComponent {
             if (res.data['status'] == 'success' && res.data['authId']) {
               this.authOtpVerificationId = res.data['authId'];
               this.onboardingStage = 'otp';
+              this.maskedEmailInvitee = res.data['maskedEmail']
+              this.alertify.presentToast(res.data['message']);
             } else {
               this.alertify.presentToast('Something went wrong');
             }

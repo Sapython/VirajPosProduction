@@ -6,6 +6,7 @@ import { ReportService } from '../../report.service';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { DataProvider } from '../../../../../../../../core/services/provider/data-provider.service';
+import { timedBillConstructor } from '../bill-wise/bill-wise.component';
 
 @Component({
   selector: 'app-discounted-bills',
@@ -16,8 +17,8 @@ export class DiscountedBillsComponent {
   downloadPDfSubscription: Subscription = Subscription.EMPTY;
   downloadExcelSubscription: Subscription = Subscription.EMPTY;
   reportChangedSubscription: Subscription = Subscription.EMPTY;
-  bills: ReplaySubject<BillConstructor[]> = new ReplaySubject<
-    BillConstructor[]
+  bills: ReplaySubject<timedBillConstructor[]> = new ReplaySubject<
+    timedBillConstructor[]
   >();
   loading: boolean = true;
   joinArray(bill: KotConstructor[]) {
@@ -38,8 +39,40 @@ export class DiscountedBillsComponent {
           )
           .then((bills) => {
             bills = bills.filter((bill) => bill.billing.discount.length > 0);
-            console.log('Bills ', bills);
-            this.bills.next(bills);
+            let timedBills: timedBillConstructor[] = bills.map((bill) => {
+              let totalBillTime = '';
+              if (bill?.createdDate?.toDate() && bill.settlement?.time?.toDate()) {
+                let billTime = new Date(bill.createdDate?.toDate());
+                // time difference between bill.createdDate time and bill.settlement.time
+                let settlementTime = new Date(bill.settlement?.time.toDate());
+                let timeDifference = settlementTime.getTime() - billTime.getTime();
+                billTime = new Date(timeDifference);
+                let hours = billTime.getHours();
+                let minutes = billTime.getMinutes();
+                let seconds = billTime.getSeconds();
+                totalBillTime = `${hours}:${minutes}:${seconds}`;
+              };
+              let mergedProducts = [];
+              bill.kots.forEach((kot) =>{
+                if (kot.products) {
+                  kot.products.forEach((product) => {
+                    let index = mergedProducts.findIndex((res) => res.id === product.id);
+                    if (index === -1) {
+                      mergedProducts.push(product);
+                    } else {
+                      mergedProducts[index].quantity += product.quantity;
+                    }
+                  })
+                }
+              });
+              return {
+                ...bill,
+                totalBillTime,
+                mergedProducts
+              };
+            });
+            console.log('Bills ', timedBills);
+            this.bills.next(timedBills);
             this.loading = false;
           });
       },
@@ -49,7 +82,7 @@ export class DiscountedBillsComponent {
         this.downloadPdf();
       },
     );
-    this.downloadExcelSubscription = this.reportService.downloadPdf.subscribe(
+    this.downloadExcelSubscription = this.reportService.downloadExcel.subscribe(
       () => {
         this.downloadExcel();
       },
@@ -89,7 +122,7 @@ export class DiscountedBillsComponent {
       },
     });
     autoTable(doc, { html: '#reportTable' });
-    doc.save('Bill Wise Report' + new Date().toLocaleString() + '.pdf');
+    doc.save('Discounted Bill Wise Report' + new Date().toLocaleString() + '.pdf');
   }
 
   downloadExcel() {

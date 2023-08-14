@@ -22,5 +22,7 @@ export class SettingsComponent {
   constructor(
     public dialogRef: DialogRef,
     public dataProvider: DataProvider,
-  ) {}
+  ) {
+    console.log("this.dataProvider.currentBusinessUser",this.dataProvider.currentBusinessUser)
+  }
 }

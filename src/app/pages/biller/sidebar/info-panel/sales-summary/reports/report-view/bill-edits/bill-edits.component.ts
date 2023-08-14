@@ -107,7 +107,7 @@ export class BillEditsComponent {
       },
     });
     autoTable(doc, { html: '#reportTable' });
-    doc.save('Bill Wise Report' + new Date().toLocaleString() + '.pdf');
+    doc.save('Bill Edits Report' + new Date().toLocaleString() + '.pdf');
   }
 
   downloadExcel() {
@@ -142,7 +142,7 @@ export class BillEditsComponent {
     var csv_string = csv.join('\n');
     // Download it
     var filename =
-      'export_report-table_' + new Date().toLocaleString() + '.csv';
+      'bill_Edits' + new Date().toLocaleString() + '.csv';
     var link = document.createElement('a');
     link.style.display = 'none';
     link.setAttribute('target', '_blank');

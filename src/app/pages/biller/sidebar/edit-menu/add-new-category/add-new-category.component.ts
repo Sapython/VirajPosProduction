@@ -24,18 +24,20 @@ export class AddNewCategoryComponent implements OnInit {
   constructor(
     private dialogRef: DialogRef,
     @Inject(DIALOG_DATA)
-    private dialogData: {
+    public dialogData: {
       products: any[];
       noSave: boolean;
       mode: 'add' | 'edit';
       category: Category;
       rootProducts?: any[];
+      userId:string
     },
     private dataProvider: DataProvider,
     private alertify: AlertsAndNotificationsService,
     private menuManagementService: MenuManagementService,
   ) {
     this.products = dialogData.products || [];
+    this.products.sort((a, b) => a.name.localeCompare(b.name));
     this.newCategoryForm.valueChanges
       .pipe(debounceTime(600))
       .subscribe((value) => {
@@ -146,7 +148,7 @@ export class AddNewCategoryComponent implements OnInit {
         //   category.products.push(item.id)
         // })
         this.dataProvider.loading = true;
-        let res = await this.menuManagementService.addViewCategory(category);
+        let res = await this.menuManagementService.addViewCategory(category,this.dialogData.userId);
         if (res) {
           this.alertify.presentToast('Category Added');
           this.dialogRef.close({ ...category, id: res.id });

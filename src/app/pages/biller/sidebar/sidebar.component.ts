@@ -35,6 +35,7 @@ export class SidebarComponent {
     dialog.closed.subscribe((data) => {
       // update all menus
       this.dataProvider.menus.forEach((menu) => {
+        menu.updateChanged();
         menu.getAllData();
       });
     });

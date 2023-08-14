@@ -1,60 +1,175 @@
 <table id="reportTable">
   <tbody>
     <tr>
-      <td>Sales</td>
-      <td>{{ daySummary.totalBills }}</td>
+      <td
+        colspan="2"
+        style="text-align: center; font-size: 20px; font-weight: bold"
+      >All</td>
     </tr>
     <tr>
-      <td>Amount</td>
-      <td>{{ daySummary.totalAmount }}</td>
+      <td><strong>All - </strong>Sales</td>
+      <td>{{ channelWiseDaySummary.all.totalBills }}</td>
     </tr>
     <tr>
-      <td>Discount</td>
-      <td>{{ daySummary.totalDiscount }}</td>
+      <td><strong>All - </strong>Amount</td>
+      <td>{{ channelWiseDaySummary.all.totalAmount }}</td>
     </tr>
     <tr>
-      <td>Total Tax</td>
-      <td>{{ daySummary.totalTax }}</td>
+      <td><strong>All - </strong>Discount</td>
+      <td>{{ channelWiseDaySummary.all.totalDiscount }}</td>
     </tr>
     <tr>
-      <td>Total Kots</td>
-      <td>{{ daySummary.totalKots }}</td>
+      <td><strong>All - </strong>Total Tax</td>
+      <td>{{ channelWiseDaySummary.all.totalTax }}</td>
     </tr>
     <tr>
-      <td>Total Products</td>
-      <td>{{ daySummary.totalProducts }}</td>
+      <td><strong>All - </strong>Total Kots</td>
+      <td>{{ channelWiseDaySummary.all.totalKots }}</td>
     </tr>
     <tr>
-      <td>Discounted Bills</td>
-      <td>{{ daySummary.totalDiscountedBills }}</td>
+      <td><strong>All - </strong>Total Products</td>
+      <td>{{ channelWiseDaySummary.all.totalProducts }}</td>
     </tr>
     <tr>
-      <td>Discounted Sales</td>
-      <td>{{ daySummary.totalDiscountedAmount }}</td>
+      <td><strong>All - </strong>Discounted Bills</td>
+      <td>{{ channelWiseDaySummary.all.totalDiscountedBills }}</td>
     </tr>
     <tr>
-      <td>Non Chargeable Bills</td>
-      <td>{{ daySummary.totalNcBills }}</td>
+      <td><strong>All - </strong>Non Chargeable Bills</td>
+      <td>{{ channelWiseDaySummary.all.totalNcBills }}</td>
     </tr>
     <tr>
-      <td>Non Chargeable Sales</td>
-      <td>{{ daySummary.totalNcAmount }}</td>
+      <td><strong>All - </strong>Non Chargeable Sales</td>
+      <td>{{ channelWiseDaySummary.all.totalNcAmount }}</td>
+    </tr>
+    <!-- dine In -->
+    <tr>
+      <td
+        colspan="2"
+        style="text-align: center; font-size: 20px; font-weight: bold"
+      >Dine In</td>
     </tr>
     <tr>
-      <td>Takeaway Bills</td>
-      <td>{{ daySummary.totalTakeawayBills }}</td>
+      <td><strong>Dine In - </strong>Sales</td>
+      <td>{{ channelWiseDaySummary.dineIn.totalBills }}</td>
     </tr>
     <tr>
-      <td>Takeaway Sales</td>
-      <td>{{ daySummary.totalTakeawayAmount }}</td>
+      <td><strong>Dine In - </strong>Amount</td>
+      <td>{{ channelWiseDaySummary.dineIn.totalAmount }}</td>
     </tr>
     <tr>
-      <td>Online Bills</td>
-      <td>{{ daySummary.totalOnlineBills }}</td>
+      <td><strong>Dine In - </strong>Discount</td>
+      <td>{{ channelWiseDaySummary.dineIn.totalDiscount }}</td>
     </tr>
     <tr>
-      <td>Online Sales</td>
-      <td>{{ daySummary.totalOnlineAmount }}</td>
+      <td><strong>Dine In - </strong>Total Tax</td>
+      <td>{{ channelWiseDaySummary.dineIn.totalTax }}</td>
+    </tr>
+    <tr>
+      <td><strong>Dine In - </strong>Total Kots</td>
+      <td>{{ channelWiseDaySummary.dineIn.totalKots }}</td>
+    </tr>
+    <tr>
+      <td><strong>Dine In - </strong>Total Products</td>
+      <td>{{ channelWiseDaySummary.dineIn.totalProducts }}</td>
+    </tr>
+    <tr>
+      <td><strong>Dine In - </strong>Discounted Bills</td>
+      <td>{{ channelWiseDaySummary.dineIn.totalDiscountedBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>Dine In - </strong>Non Chargeable Bills</td>
+      <td>{{ channelWiseDaySummary.dineIn.totalNcBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>Dine In - </strong>Non Chargeable Sales</td>
+      <td>{{ channelWiseDaySummary.dineIn.totalNcAmount }}</td>
+    </tr>
+    <!-- takeaway -->
+    <tr>
+      <td
+        colspan="2"
+        style="text-align: center; font-size: 20px; font-weight: bold"
+      >Takeaway</td>
+    </tr>
+    <tr>
+      <td><strong>Takeaway - </strong>Sales</td>
+      <td>{{ channelWiseDaySummary.takeaway.totalBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>Takeaway - </strong>Amount</td>
+      <td>{{ channelWiseDaySummary.takeaway.totalAmount }}</td>
+    </tr>
+    <tr>
+      <td><strong>Takeaway - </strong>Discount</td>
+      <td>{{ channelWiseDaySummary.takeaway.totalDiscount }}</td>
+    </tr>
+    <tr>
+      <td><strong>Takeaway - </strong>Total Tax</td>
+      <td>{{ channelWiseDaySummary.takeaway.totalTax }}</td>
+    </tr>
+    <tr>
+      <td><strong>Takeaway - </strong>Total Kots</td>
+      <td>{{ channelWiseDaySummary.takeaway.totalKots }}</td>
+    </tr>
+    <tr>
+      <td><strong>Takeaway - </strong>Total Products</td>
+      <td>{{ channelWiseDaySummary.takeaway.totalProducts }}</td>
+    </tr>
+    <tr>
+      <td><strong>Takeaway - </strong>Discounted Bills</td>
+      <td>{{ channelWiseDaySummary.takeaway.totalDiscountedBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>Takeaway - </strong>Non Chargeable Bills</td>
+      <td>{{ channelWiseDaySummary.takeaway.totalNcBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>Takeaway - </strong>Non Chargeable Sales</td>
+      <td>{{ channelWiseDaySummary.takeaway.totalNcAmount }}</td>
+    </tr>
+    <!-- online -->
+    <tr>
+      <td
+        colspan="2"
+        style="text-align: center; font-size: 20px; font-weight: bold"
+      >Online</td>
+    </tr>
+    <tr>
+      <td><strong>Online - </strong>Sales</td>
+      <td>{{ channelWiseDaySummary.online.totalBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>Online - </strong>Amount</td>
+      <td>{{ channelWiseDaySummary.online.totalAmount }}</td>
+    </tr>
+    <tr>
+      <td><strong>Online - </strong>Discount</td>
+      <td>{{ channelWiseDaySummary.online.totalDiscount }}</td>
+    </tr>
+    <tr>
+      <td><strong>Online - </strong>Total Tax</td>
+      <td>{{ channelWiseDaySummary.online.totalTax }}</td>
+    </tr>
+    <tr>
+      <td><strong>Online - </strong>Total Kots</td>
+      <td>{{ channelWiseDaySummary.online.totalKots }}</td>
+    </tr>
+    <tr>
+      <td><strong>Online - </strong>Total Products</td>
+      <td>{{ channelWiseDaySummary.online.totalProducts }}</td>
+    </tr>
+    <tr>
+      <td><strong>Online - </strong>Discounted Bills</td>
+      <td>{{ channelWiseDaySummary.online.totalDiscountedBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>Online - </strong>Non Chargeable Bills</td>
+      <td>{{ channelWiseDaySummary.online.totalNcBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>Online - </strong>Non Chargeable Sales</td>
+      <td>{{ channelWiseDaySummary.online.totalNcAmount }}</td>
     </tr>
   </tbody>
 </table>

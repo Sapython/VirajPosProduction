@@ -16,6 +16,19 @@ section {
     h1{
       margin:0;
     }
+    span{
+      display: flex;
+      align-items: center;
+      gap:20px;
+      border: 2px solid var(--Vrajera-primary);
+      padding: 5px 10px;
+      border-radius: 10px;
+      img{
+        width: 30px;
+        height: 30px;
+        border-radius: 15px;
+      }
+    }
   }
   mat-form-field{
     width: 100%;

@@ -487,8 +487,8 @@ export const addExistingUser = functions.https.onCall(
     }
     // check if the user is already in the business
     let userFound = false;
-    for (let business of uidDoc.data()?.business) {
-      if (business.businessId === request.businessId) {
+    for (let user of businessDoc.data()?.users) {
+      if (user.username === request.username) {
         userFound = true;
         break;
       }
@@ -506,7 +506,7 @@ export const addExistingUser = functions.https.onCall(
     if (request.accessType == 'role') {
       if (
         !['manager', 'waiter', 'accountant', 'admin'].includes(
-          request.accessLevel,
+          request.role,
         )
       ) {
         throw new HttpsError('invalid-argument', 'Invalid access level');
@@ -530,7 +530,7 @@ export const addExistingUser = functions.https.onCall(
     if (request.accessType == 'custom') {
       data['propertiesAllowed'] = request.propertiesAllowed;
     } else {
-      data['role'] = request.accessLevel;
+      data['role'] = request.role;
     }
     try {
       let optDocument = await firestore.collection('otps').add(data);
@@ -569,11 +569,12 @@ export const addExistingUser = functions.https.onCall(
       });
       let maskedEmail = uidDoc
         .data()
-        ?.email.replace(/(.{2})(.*)(@.*)/, '$1****$3');
+        ?.email.replace(/(.{5})(.*)(@.*)/, '$1****$3');
       console.log('Sent mail', res.body);
       return {
         status: 'success',
         message: `OTP sent to the email account associated with ${request.username} ending in ${maskedEmail}`,
+        maskedEmail: maskedEmail,
         authId: optDocument.id,
       };
     } catch (error: any) {

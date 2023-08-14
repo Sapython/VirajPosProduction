@@ -23,6 +23,7 @@
         #phone
         (keydown.enter)="reason.focus()"
       />
+      <mat-error *ngIf="this.nonChargeableForm.controls.phone.invalid">Enter a valid 10 digit phone.</mat-error>
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Reason</mat-label>
@@ -33,6 +34,7 @@
         #reason
         (keydown.enter)="passwordInput.focus()"
       />
+      <mat-error *ngIf="this.nonChargeableForm.controls.reason.invalid">Enter a valid reason.</mat-error>
     </mat-form-field>
     <mat-form-field appearance="outline">
       <mat-label>Password</mat-label>

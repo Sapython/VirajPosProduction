@@ -1,45 +1,55 @@
 <section>
-	<h1>Update User</h1>
-	<h4>User: {{user.username | titlecase}}</h4>
-	<hr>
-	<form [formGroup]="accessForm" (ngSubmit)="submit()">
-		<mat-form-field appearance="outline">
-			<mat-label>Access Type</mat-label>
-			<mat-select
-			  placeholder="Access"
-			  formControlName="accessType"
-			  #accessType
-			  name="access"
-			>
-			  <mat-option value="role">Role</mat-option>
-			  <mat-option value="custom">Custom</mat-option>
-			</mat-select>
-		  </mat-form-field>
-		  <mat-form-field *ngIf="accessType.value == 'role'" appearance="outline">
-			<mat-label>Access</mat-label>
-			<mat-select
-			  placeholder="Access"
-			  formControlName="role"
-			  name="access"
-			>
-			  <mat-option
-				*ngFor="let access of this.dataProvider.accessLevels"
-				[value]="access"
-			  >
-				{{ access | titlecase }}
-			  </mat-option>
-			</mat-select>
-		  </mat-form-field>
-		  <mat-form-field appearance="outline" *ngIf="accessType.value == 'custom'">
-			<mat-select multiple placeholder="Select Properties" formControlName="propertiesAllowed">
-			  <mat-optgroup *ngFor="let accessGroup of accessCodes" [label]="accessGroup.name">
-				<mat-option [value]="item.accessCode" *ngFor="let item of accessGroup.accessCodes">{{item.name}}</mat-option>
-			  </mat-optgroup>
-			</mat-select>
-		  </mat-form-field>
-		  <div class="actions">
-			<button type="button" (click)="dialogRef.close()" mat-flat-button>Cancel</button>
-			<button color="primary" mat-flat-button>Submit</button>
-		  </div>
-	</form>
+  <div class="heading">
+    <h1>Update User</h1>
+    <p>User: {{ user.username | titlecase }}</p>
+  </div>
+  <form [formGroup]="accessForm" (ngSubmit)="submit()">
+    <mat-form-field appearance="outline">
+      <mat-label>Access Type</mat-label>
+      <mat-select
+        placeholder="Access"
+        formControlName="accessType"
+        #accessType
+        name="access"
+      >
+        <mat-option value="role">Role</mat-option>
+        <mat-option value="custom">Custom</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field *ngIf="accessType.value == 'role'" appearance="outline">
+      <mat-label>Access</mat-label>
+      <mat-select placeholder="Access" formControlName="role" name="access">
+        <mat-option
+          *ngFor="let access of this.dataProvider.accessLevels"
+          [value]="access"
+        >
+          {{ access | titlecase }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline" *ngIf="accessType.value == 'custom'">
+      <mat-select
+        multiple
+        placeholder="Select Properties"
+        formControlName="propertiesAllowed"
+      >
+        <mat-optgroup
+          *ngFor="let accessGroup of accessCodes"
+          [label]="accessGroup.name"
+        >
+          <mat-option
+            [value]="item.accessCode"
+            *ngFor="let item of accessGroup.accessCodes"
+            >{{ item.name }}</mat-option
+          >
+        </mat-optgroup>
+      </mat-select>
+    </mat-form-field>
+    <div class="actions">
+      <button type="button" (click)="dialogRef.close()" mat-raised-button>
+        Cancel
+      </button>
+      <button color="primary" mat-flat-button>Submit</button>
+    </div>
+  </form>
 </section>

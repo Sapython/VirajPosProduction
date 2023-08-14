@@ -53,7 +53,7 @@ export async function finalize(this: Bill) {
   this.dataProvider.allProducts = true;
   // check if any kot is active
   if (this.kots.find((kot) => kot.stage === 'active')) {
-    if (confirm('There are active KOTs. Do you want to finalize them?')) {
+    if (await this.dataProvider.confirm('There are active KOTs. Do you want to finalize them?',[1])) {
       this.finalizeAndPrintKot();
     }
   }
@@ -237,20 +237,16 @@ export async function settle(
     this.dataProvider.openTableView.next(true);
   }
   if (this.customerInfo.phone) {
-    let customer = this.dataProvider.customers.find(
-      (customer) => customer.phone == this.customerInfo.phone,
+    console.log("Found customer phone");
+    this.customerService.updateCustomer(
+      {
+        address: this.customerInfo.address,
+        gst: this.customerInfo.gst,
+        name: this.customerInfo.name,
+        phone: this.customerInfo.phone,
+      },
+      this,
     );
-    if (customer) {
-      this.customerService.updateCustomer(
-        {
-          address: this.customerInfo.address,
-          gst: this.customerInfo.gst,
-          name: this.customerInfo.name,
-          phone: this.customerInfo.phone,
-        },
-        this,
-      );
-    }
     console.log('Customer info', this.customerInfo);
   }
   this.billService.addActivity(this, {

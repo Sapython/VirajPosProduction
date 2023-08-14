@@ -1,5 +1,9 @@
 section {
   background: white;
+  background-image: url("^assets/images/background.svg");
+  background-repeat: repeat;
+  background-size: 400px;
+  background-attachment: fixed;
   padding: 30px;
   box-sizing: border-box;
   border-radius: 5px;

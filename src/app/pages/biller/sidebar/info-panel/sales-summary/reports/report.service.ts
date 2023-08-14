@@ -124,6 +124,16 @@ export class ReportService {
     return await getDoc(doc(this.firestore,'business',businessId,'bills',billId,'splittedBills',splittedBillId));
   }
 
+  getCustomers(startDate:Date,endDate:Date,businessId:string){
+    // set hours to 0
+    startDate.setHours(0,0,0,0);
+    // set hours to 23
+    endDate.setHours(23,59,59,999);
+    return getDocs(query(collection(this.firestore,'business',businessId,'customers'),
+      where('created','>=',startDate),
+      where('created','<=',endDate),
+    ));
+  }
 
 }
 

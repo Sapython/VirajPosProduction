@@ -23,6 +23,8 @@ div.category {
   p.name {
     font-size: var(--Vrajera-font-medium);
     font-weight: 400;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   p.average {
     font-size: var(--Vrajera-font-medium);

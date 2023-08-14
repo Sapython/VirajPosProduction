@@ -33,17 +33,16 @@ export class PaymentComponent implements OnInit {
       this.dataProvider.loading = true;
       if (data && data.name && typeof data.detail == 'boolean') {
         this.settingsService
-          .addPaymentMethod({
+          .updatePaymentMethod(method.id,{
             ...data,
-            addDate: new Date(),
             updateDate: new Date(),
           })
           .then((res) => {
-            this.alertify.presentToast('Payment method added successfully');
+            this.alertify.presentToast('Payment method updated successfully');
             this.getPaymentMethods();
           })
           .catch((err) => {
-            this.alertify.presentToast('Error while adding payment method');
+            this.alertify.presentToast('Error while updating payment method');
           })
           .finally(() => {
             this.dataProvider.loading = false;
@@ -54,9 +53,9 @@ export class PaymentComponent implements OnInit {
       }
     });
   }
-  deleteMethod(id: string) {
+  async deleteMethod(id: string) {
     if (
-      this.dataProvider.confirm(
+      await this.dataProvider.confirm(
         'Are you sure you want to delete payment method ?',
         [1],
       )
@@ -64,6 +63,7 @@ export class PaymentComponent implements OnInit {
       this.settingsService
         .deletePaymentMethod(id)
         .then((res) => {
+          this.getPaymentMethods();
           this.alertify.presentToast('Payment method deleted successfully');
         })
         .catch((err) => {
@@ -99,6 +99,7 @@ export class PaymentComponent implements OnInit {
             updateDate: new Date(),
           })
           .then((res) => {
+            this.getPaymentMethods();
             this.alertify.presentToast('Payment method added successfully');
           })
           .catch((err) => {

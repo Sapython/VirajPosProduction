@@ -45,10 +45,14 @@ export class AnalyticsService {
     );
   }
 
-  addBillToken() {
+  async addBillToken() {
     logEvent(this.analytics, 'add_bill_token', {
       billTokenNo: this.dataProvider.billToken,
     });
+    let date = new Date().toISOString().split('T')[0];
+    await setDoc(doc(this.firestore, 'business/' + this.dataProvider.businessId+'/dailyTokens/'+date), {
+      billTokenNo: increment(1),
+    },{merge:true});
     return updateDoc(
       doc(
         this.firestore,
@@ -58,10 +62,14 @@ export class AnalyticsService {
     );
   }
 
-  addOrderToken() {
+  async addOrderToken() {
     logEvent(this.analytics, 'add_order_token', {
       orderTokenNo: this.dataProvider.orderTokenNo,
     });
+    let date = new Date().toISOString().split('T')[0];
+    await setDoc(doc(this.firestore, 'business/' + this.dataProvider.businessId+'/dailyTokens/'+date), {
+      orderTokenNo: increment(1),
+    },{merge:true});
     return updateDoc(
       doc(
         this.firestore,
@@ -71,10 +79,14 @@ export class AnalyticsService {
     );
   }
 
-  addNcBillToken() {
+  async addNcBillToken() {
     logEvent(this.analytics, 'add_nc_bill_token', {
       ncBillTokenNo: this.dataProvider.ncBillToken,
     });
+    let date = new Date().toISOString().split('T')[0];
+    await setDoc(doc(this.firestore, 'business/' + this.dataProvider.businessId+'/dailyTokens/'+date), {
+      ncBillTokenNo: increment(1),
+    },{merge:true});
     return updateDoc(
       doc(
         this.firestore,
@@ -84,11 +96,15 @@ export class AnalyticsService {
     );
   }
 
-  addTakeawayToken() {
+  async addTakeawayToken() {
     // alert("Adding takeaway token");
     logEvent(this.analytics, 'add_takeaway_token', {
       takeawayTokenNo: this.dataProvider.takeawayToken,
     });
+    let date = new Date().toISOString().split('T')[0];
+    await setDoc(doc(this.firestore, 'business/' + this.dataProvider.businessId+'/dailyTokens/'+date), {
+      takeawayTokenNo: increment(1),
+    },{merge:true});
     return updateDoc(
       doc(
         this.firestore,
@@ -98,10 +114,14 @@ export class AnalyticsService {
     );
   }
 
-  addOnlineToken() {
+  async addOnlineToken() {
     logEvent(this.analytics, 'add_online_token', {
       onlineTokenNo: this.dataProvider.onlineTokenNo,
     });
+    let date = new Date().toISOString().split('T')[0];
+    await setDoc(doc(this.firestore, 'business/' + this.dataProvider.businessId+'/dailyTokens/'+date), {
+      onlineTokenNo: increment(1),
+    },{merge:true});
     return updateDoc(
       doc(
         this.firestore,
@@ -111,10 +131,14 @@ export class AnalyticsService {
     );
   }
 
-  addKitchenToken() {
+  async addKitchenToken() {
     logEvent(this.analytics, 'add_kitchen_token', {
       kitchenTokenNo: this.dataProvider.kotToken,
     });
+    let date = new Date().toISOString().split('T')[0];
+    await setDoc(doc(this.firestore, 'business/' + this.dataProvider.businessId+'/dailyTokens/'+date), {
+      kitchenTokenNo: increment(1),
+    },{merge:true});
     return updateDoc(
       doc(
         this.firestore,

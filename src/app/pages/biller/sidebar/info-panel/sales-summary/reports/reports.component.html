@@ -14,11 +14,13 @@
         <div class="chartCard">
           <div class="heading">
             <h4>Average Vs Actual Sales</h4>
+            <p>{{salesDate | date}}</p>
             <div class="datePicker">
               <mat-datepicker #salesPicker></mat-datepicker>
               <input
                 matInput
                 tabindex="-1"
+                #salesPickerInput
                 (dateChange)="fetchChartSalesData($event)"
                 [matDatepicker]="salesPicker"
               />
@@ -34,11 +36,13 @@
         <div class="chartCard">
           <div class="heading">
             <h4>Channel Wise Payment</h4>
+            <p>{{paymentDate | date}}</p>
             <div class="datePicker">
               <mat-datepicker #picker></mat-datepicker>
               <input
                 matInput
                 tabindex="-1"
+                #channelWisePickerInput
                 (dateChange)="fetchChartPaymentData($event)"
                 [matDatepicker]="picker"
               />

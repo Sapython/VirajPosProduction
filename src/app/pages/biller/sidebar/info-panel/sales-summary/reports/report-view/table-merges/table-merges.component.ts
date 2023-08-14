@@ -70,7 +70,7 @@ export class TableMergesComponent implements OnInit, OnDestroy {
       },
     });
     autoTable(doc, { html: '#reportTable' });
-    doc.save('Bill Wise Report' + new Date().toLocaleString() + '.pdf');
+    doc.save('Table Split/Merge/Exchange Report' + new Date().toLocaleString() + '.pdf');
   }
 
   downloadExcel() {
@@ -105,7 +105,7 @@ export class TableMergesComponent implements OnInit, OnDestroy {
     var csv_string = csv.join('\n');
     // Download it
     var filename =
-      'export_report-table_' + new Date().toLocaleString() + '.csv';
+      'table_exchange_merge_report' + new Date().toLocaleString() + '.csv';
     var link = document.createElement('a');
     link.style.display = 'none';
     link.setAttribute('target', '_blank');

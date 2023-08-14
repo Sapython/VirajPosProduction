@@ -1,13 +1,14 @@
 section {
   background: white;
   border-radius: 25px;
-  width: 80vw;
+  width: 90vw;
   border: 2px solid #c7c7c7;
   height: 80vh;
   overflow: hidden;
   .heading {
     display: flex;
     align-items: center;
+    gap:15px;
     justify-content: space-between;
     padding: 10px 30px;
     border-top-left-radius: 25px;

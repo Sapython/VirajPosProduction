@@ -13,21 +13,51 @@ import { DataProvider } from '../../../../../../../../core/services/provider/dat
   styleUrls: ['./day-summary.component.scss'],
 })
 export class DaySummaryComponent {
-  daySummary = {
-    totalBills: 0,
-    totalAmount: 0,
-    totalDiscount: 0,
-    totalTax: 0,
-    totalKots: 0,
-    totalProducts: 0,
-    totalDiscountedBills: 0,
-    totalDiscountedAmount: 0,
-    totalNcBills: 0,
-    totalNcAmount: 0,
-    totalTakeawayBills: 0,
-    totalTakeawayAmount: 0,
-    totalOnlineBills: 0,
-    totalOnlineAmount: 0,
+  channelWiseDaySummary = {
+    all: {
+      totalBills: 0,
+      totalAmount: 0,
+      totalDiscount: 0,
+      totalTax: 0,
+      totalKots: 0,
+      totalProducts: 0,
+      totalDiscountedBills: 0,
+      totalNcBills: 0,
+      totalNcAmount: 0,
+    },
+    dineIn: {
+      totalBills: 0,
+      totalAmount: 0,
+      totalDiscount: 0,
+      totalTax: 0,
+      totalKots: 0,
+      totalProducts: 0,
+      totalDiscountedBills: 0,
+      totalNcBills: 0,
+      totalNcAmount: 0,
+    },
+    takeaway: {
+      totalBills: 0,
+      totalAmount: 0,
+      totalDiscount: 0,
+      totalTax: 0,
+      totalKots: 0,
+      totalProducts: 0,
+      totalDiscountedBills: 0,
+      totalNcBills: 0,
+      totalNcAmount: 0,
+    },
+    online: {
+      totalBills: 0,
+      totalAmount: 0,
+      totalDiscount: 0,
+      totalTax: 0,
+      totalKots: 0,
+      totalProducts: 0,
+      totalDiscountedBills: 0,
+      totalNcBills: 0,
+      totalNcAmount: 0,
+    },
   };
   downloadPDfSubscription: Subscription = Subscription.EMPTY;
   downloadExcelSubscription: Subscription = Subscription.EMPTY;
@@ -38,9 +68,12 @@ export class DaySummaryComponent {
     return bill.map((res) => res.id).join(', ');
   }
 
-  constructor(private reportService: ReportService,private dataProvider: DataProvider,) {
-    this.reportService.refetchConsolidated.subscribe(()=>{
-      console.log("Refetching consolidated");
+  constructor(
+    private reportService: ReportService,
+    private dataProvider: DataProvider,
+  ) {
+    this.reportService.refetchConsolidated.subscribe(() => {
+      console.log('Refetching consolidated');
       this.ngOnInit();
     });
   }
@@ -57,66 +90,225 @@ export class DaySummaryComponent {
           )
           .then((bills) => {
             console.log('Bills ', bills);
-            this.daySummary = {
-              totalBills: bills.length,
-              totalAmount: bills.reduce(
-                (acc, res) => acc + res.billing.grandTotal,
-                0,
-              ),
-              totalDiscount: bills.reduce(
-                (acc, res) =>
-                  acc +
-                  res.billing.discount.reduce(
-                    (a, b) => a + (b.totalAppliedDiscount || 0),
-                    0,
-                  ),
-                0,
-              ),
-              totalTax: bills.reduce(
-                (acc, res) => acc + res.billing.totalTax,
-                0,
-              ),
-              totalKots: bills
-                .map((res) => res.kots.length)
-                .reduce((a, b) => a + b, 0),
-              totalProducts: bills
-                .map((res) =>
-                  res.kots
-                    .map((res) => res.products.length)
-                    .reduce((a, b) => a + b, 0),
-                )
-                .reduce((a, b) => a + b, 0),
-              totalDiscountedBills: bills.filter(
-                (res) => res.billing.discount.length > 0,
-              ).length,
-              totalDiscountedAmount: bills
-                .filter((res) => res.billing.discount.length > 0)
-                .reduce((acc, res) => acc + res.billing.grandTotal, 0),
-              totalNcBills: bills.filter((res) => res.nonChargeableDetail)
-                .length,
-              totalNcAmount: bills
-                .filter((res) => res.nonChargeableDetail)
-                .reduce((acc, res) => acc + res.billing.grandTotal, 0),
-              totalTakeawayBills: bills.filter((res) => res.mode == 'takeaway')
-                .length,
-              totalTakeawayAmount: bills
-                .filter((res) => res.mode == 'takeaway')
-                .reduce((acc, res) => acc + res.billing.grandTotal, 0),
-              totalOnlineBills: bills.filter((res) => res.mode == 'online')
-                .length,
-              totalOnlineAmount: bills
-                .filter((res) => res.mode == 'online')
-                .reduce((acc, res) => acc + res.billing.grandTotal, 0),
+            let dineInBills = bills.filter((res) => res.mode == 'dineIn');
+            let takeawayBills = bills.filter((res) => res.mode == 'takeaway');
+            let onlineBills = bills.filter((res) => res.mode == 'online');
+            // this.daySummary = {
+            //   totalBills: bills.length,
+            //   totalAmount: bills.reduce(
+            //     (acc, res) => acc + res.billing.grandTotal,
+            //     0,
+            //   ),
+            //   totalDiscount: bills.reduce(
+            //     (acc, res) =>
+            //       acc +
+            //       res.billing.discount.reduce(
+            //         (a, b) => a + (b.totalAppliedDiscount || 0),
+            //         0,
+            //       ),
+            //     0,
+            //   ),
+            //   totalTax: bills.reduce(
+            //     (acc, res) => acc + res.billing.totalTax,
+            //     0,
+            //   ),
+            //   totalKots: bills
+            //     .map((res) => res.kots.length)
+            //     .reduce((a, b) => a + b, 0),
+            //   totalProducts: bills
+            //     .map((res) =>
+            //       res.kots
+            //         .map((res) => res.products.length)
+            //         .reduce((a, b) => a + b, 0),
+            //     )
+            //     .reduce((a, b) => a + b, 0),
+            //   totalDiscountedBills: bills.filter(
+            //     (res) => res.billing.discount.length > 0,
+            //   ).length,
+            //   totalDiscountedAmount: bills
+            //     .filter((res) => res.billing.discount.length > 0)
+            //     .reduce((acc, res) => acc + res.billing.grandTotal, 0),
+            //   totalNcBills: bills.filter((res) => res.nonChargeableDetail)
+            //     .length,
+            //   totalNcAmount: bills
+            //     .filter((res) => res.nonChargeableDetail)
+            //     .reduce((acc, res) => acc + res.billing.grandTotal, 0),
+            //   totalTakeawayBills: bills.filter((res) => res.mode == 'takeaway')
+            //     .length,
+            //   totalTakeawayAmount: bills
+            //     .filter((res) => res.mode == 'takeaway')
+            //     .reduce((acc, res) => acc + res.billing.grandTotal, 0),
+            //   totalOnlineBills: bills.filter((res) => res.mode == 'online')
+            //     .length,
+            //   totalOnlineAmount: bills
+            //     .filter((res) => res.mode == 'online')
+            //     .reduce((acc, res) => acc + res.billing.grandTotal, 0),
+            // };
+            this.channelWiseDaySummary = {
+              all: {
+                totalBills: bills.length,
+                totalAmount: bills.reduce(
+                  (acc, res) => acc + res.billing.grandTotal,
+                  0,
+                ),
+                totalDiscount: bills.reduce(
+                  (acc, res) =>
+                    acc +
+                    res.billing.discount.reduce(
+                      (a, b) => a + (b.totalAppliedDiscount || 0),
+                      0,
+                    ),
+                  0,
+                ),
+                totalTax: bills.reduce(
+                  (acc, res) => acc + res.billing.totalTax,
+                  0,
+                ),
+                totalKots: bills
+                  .map((res) => res.kots.length)
+                  .reduce((a, b) => a + b, 0),
+                totalProducts: bills
+                  .map((res) =>
+                    res.kots
+                      .map((res) => res.products.length)
+                      .reduce((a, b) => a + b, 0),
+                  )
+                  .reduce((a, b) => a + b, 0),
+                totalDiscountedBills: bills.filter(
+                  (res) => res.billing.discount.length > 0,
+                ).length,
+                totalNcBills: bills.filter((res) => res.nonChargeableDetail)
+                  .length,
+                totalNcAmount: bills
+                  .filter((res) => res.nonChargeableDetail)
+                  .reduce((acc, res) => acc + res.billing.grandTotal, 0),
+              },
+              dineIn: {
+                totalBills: dineInBills.length,
+                totalAmount: dineInBills.reduce(
+                  (acc, res) => acc + res.billing.grandTotal,
+                  0,
+                ),
+                totalDiscount: dineInBills.reduce(
+                  (acc, res) =>
+                    acc +
+                    res.billing.discount.reduce(
+                      (a, b) => a + (b.totalAppliedDiscount || 0),
+                      0,
+                    ),
+                  0,
+                ),
+                totalTax: dineInBills.reduce(
+                  (acc, res) => acc + res.billing.totalTax,
+                  0,
+                ),
+                totalKots: dineInBills
+                  .map((res) => res.kots.length)
+                  .reduce((a, b) => a + b, 0),
+                totalProducts: dineInBills
+                  .map((res) =>
+                    res.kots
+                      .map((res) => res.products.length)
+                      .reduce((a, b) => a + b, 0),
+                  )
+                  .reduce((a, b) => a + b, 0),
+                totalDiscountedBills: dineInBills.filter(
+                  (res) => res.billing.discount.length > 0,
+                ).length,
+                totalNcBills: dineInBills.filter(
+                  (res) => res.nonChargeableDetail,
+                ).length,
+                totalNcAmount: dineInBills
+                  .filter((res) => res.nonChargeableDetail)
+                  .reduce((acc, res) => acc + res.billing.grandTotal, 0),
+              },
+              takeaway: {
+                totalBills: takeawayBills.length,
+                totalAmount: takeawayBills.reduce(
+                  (acc, res) => acc + res.billing.grandTotal,
+                  0,
+                ),
+                totalDiscount: takeawayBills.reduce(
+                  (acc, res) =>
+                    acc +
+                    res.billing.discount.reduce(
+                      (a, b) => a + (b.totalAppliedDiscount || 0),
+                      0,
+                    ),
+                  0,
+                ),
+                totalTax: takeawayBills.reduce(
+                  (acc, res) => acc + res.billing.totalTax,
+                  0,
+                ),
+                totalKots: takeawayBills
+                  .map((res) => res.kots.length)
+                  .reduce((a, b) => a + b, 0),
+                totalProducts: takeawayBills
+                  .map((res) =>
+                    res.kots
+                      .map((res) => res.products.length)
+                      .reduce((a, b) => a + b, 0),
+                  )
+                  .reduce((a, b) => a + b, 0),
+                totalDiscountedBills: takeawayBills.filter(
+                  (res) => res.billing.discount.length > 0,
+                ).length,
+                totalNcBills: takeawayBills.filter(
+                  (res) => res.nonChargeableDetail,
+                ).length,
+                totalNcAmount: takeawayBills
+                  .filter((res) => res.nonChargeableDetail)
+                  .reduce((acc, res) => acc + res.billing.grandTotal, 0),
+              },
+              online: {
+                totalBills: onlineBills.length,
+                totalAmount: onlineBills.reduce(
+                  (acc, res) => acc + res.billing.grandTotal,
+                  0,
+                ),
+                totalDiscount: onlineBills.reduce(
+                  (acc, res) =>
+                    acc +
+                    res.billing.discount.reduce(
+                      (a, b) => a + (b.totalAppliedDiscount || 0),
+                      0,
+                    ),
+                  0,
+                ),
+                totalTax: onlineBills.reduce(
+                  (acc, res) => acc + res.billing.totalTax,
+                  0,
+                ),
+                totalKots: onlineBills
+                  .map((res) => res.kots.length)
+                  .reduce((a, b) => a + b, 0),
+                totalProducts: onlineBills
+                  .map((res) =>
+                    res.kots
+                      .map((res) => res.products.length)
+                      .reduce((a, b) => a + b, 0),
+                  )
+                  .reduce((a, b) => a + b, 0),
+                totalDiscountedBills: onlineBills.filter(
+                  (res) => res.billing.discount.length > 0,
+                ).length,
+                totalNcBills: onlineBills.filter(
+                  (res) => res.nonChargeableDetail,
+                ).length,
+                totalNcAmount: onlineBills
+                  .filter((res) => res.nonChargeableDetail)
+                  .reduce((acc, res) => acc + res.billing.grandTotal, 0),
+              },
             };
+          })
+          .catch((err) => {
             this.loading = false;
-          }).catch(err=>{
-            this.loading = false;
-            console.log("Error in getting bills",err);
+            console.log('Error in getting bills', err);
           });
       },
     );
   }
-
 
   async downloadPdf() {
     const doc = new jsPDF();
@@ -150,7 +342,7 @@ export class DaySummaryComponent {
       },
     });
     autoTable(doc, { html: '#reportTable' });
-    doc.save('Bill Wise Report' + new Date().toLocaleString() + '.pdf');
+    doc.save('Day Summary Report' + new Date().toLocaleString() + '.pdf');
   }
 
   downloadExcel() {
@@ -185,7 +377,7 @@ export class DaySummaryComponent {
     var csv_string = csv.join('\n');
     // Download it
     var filename =
-      'export_report-table_' + new Date().toLocaleString() + '.csv';
+      'day_summary' + new Date().toLocaleString() + '.csv';
     var link = document.createElement('a');
     link.style.display = 'none';
     link.setAttribute('target', '_blank');

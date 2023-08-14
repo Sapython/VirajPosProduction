@@ -147,9 +147,6 @@ export class LoadingComponent implements OnInit {
   logoFile: File | undefined;
   logoString: string = '';
 
-  currentAreaState:{state:string,cities:{city:string,businesses:UserBusiness[]}[]};
-  currentAreaCity:{city:string,businesses:UserBusiness[]};
-
   constructor(
     public dataProvider: DataProvider,
     private alertify: AlertsAndNotificationsService,
@@ -620,7 +617,8 @@ export class LoadingComponent implements OnInit {
       if (debug) console.log('Started onboarding');
       let userBusiness: UserBusiness = {
         access: {
-          accessLevel: 'admin',
+          role: 'admin',
+          accessType:'role',
           lastUpdated: Timestamp.fromDate(new Date()),
           updatedBy: 'system',
         },

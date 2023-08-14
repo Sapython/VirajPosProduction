@@ -101,7 +101,7 @@ export class ConsolidatedComponent implements OnInit {
       },
     });
     autoTable(doc, { html: '#reportTable' });
-    doc.save('Bill Wise Report' + new Date().toLocaleString() + '.pdf');
+    doc.save('Consolidated Report' + new Date().toLocaleString() + '.pdf');
   }
 
   downloadExcel() {

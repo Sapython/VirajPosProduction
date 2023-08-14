@@ -139,6 +139,8 @@ export class ReportsComponent implements OnInit {
   fuseSearchInstance:Fuse<ReportFormat> = new Fuse(this.reportFormats,{keys:['title','description']});
   filteredReportFormats:ReportFormat[] = [];
   reportSearchSubject:Subject<string> = new Subject<string>();
+  salesDate:Date = new Date();
+  paymentDate:Date = new Date();
   @ViewChild('salesChart') salesChart:
     | { nativeElement: HTMLCanvasElement }
     | undefined;
@@ -223,6 +225,7 @@ export class ReportsComponent implements OnInit {
 
   fetchChartSalesData(event: { value: Date }) {
     console.log('Event', event);
+    this.salesDate = event.value;
     this.billService.getAnalyticsReport(event.value).then((res) => {
       console.log('Analytics data Res', res.data());
       let resData = res.data();
@@ -258,8 +261,9 @@ export class ReportsComponent implements OnInit {
     });
   }
 
-  fetchChartPaymentData(event: any) {
+  fetchChartPaymentData(event: { value: Date }) {
     console.log('Event', event);
+    this.paymentDate = event.value;
     this.billService.getAnalyticsReport(event.value).then((res) => {
       console.log('Analytics data Res', res);
       let resData = res.data();

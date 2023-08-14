@@ -73,7 +73,7 @@ export class ComboComponent {
         this.downloadPdf();
       },
     );
-    this.downloadExcelSubscription = this.reportService.downloadPdf.subscribe(
+    this.downloadExcelSubscription = this.reportService.downloadExcel.subscribe(
       () => {
         this.downloadExcel();
       },
@@ -112,7 +112,7 @@ export class ComboComponent {
       },
     });
     autoTable(doc, { html: '#reportTable' });
-    doc.save('Bill Wise Report' + new Date().toLocaleString() + '.pdf');
+    doc.save('Combo Wise Report' + new Date().toLocaleString() + '.pdf');
   }
 
   downloadExcel() {
@@ -147,7 +147,7 @@ export class ComboComponent {
     var csv_string = csv.join('\n');
     // Download it
     var filename =
-      'export_report-table_' + new Date().toLocaleString() + '.csv';
+      'combo_wise' + new Date().toLocaleString() + '.csv';
     var link = document.createElement('a');
     link.style.display = 'none';
     link.setAttribute('target', '_blank');

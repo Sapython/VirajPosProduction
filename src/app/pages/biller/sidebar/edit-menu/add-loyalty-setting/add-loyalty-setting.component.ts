@@ -5,6 +5,7 @@ import { CategoryLoyaltyRate, LoyaltySetting } from '../../../../../types/loyalt
 import { ModeConfig } from '../../../../../core/constructors/menu/menu';
 import { Timestamp } from '@angular/fire/firestore';
 import { DataProvider } from '../../../../../core/services/provider/data-provider.service';
+import { AlertsAndNotificationsService } from '../../../../../core/services/alerts-and-notification/alerts-and-notifications.service';
 
 @Component({
   selector: 'app-add-loyalty-setting',
@@ -16,6 +17,7 @@ export class AddLoyaltySettingComponent {
     @Inject(DIALOG_DATA) private data: { menu: ModeConfig,loyaltySetting:LoyaltySetting,mode:'add'|'edit' },
     public dialogRef: DialogRef,
     private dataProvider: DataProvider,
+    private alertify:AlertsAndNotificationsService
   ) {
     // now add every missing category from main categories and view categories
     this.data.menu.mainCategories.forEach((mainCategory) => {
@@ -68,6 +70,10 @@ export class AddLoyaltySettingComponent {
   usableMainCategories: CategoryLoyaltyRate[] = [];
 
   submit() {
+    if (this.addNewLoyaltyForm.invalid) {
+      this.alertify.presentToast('Please fill all the fields', 'error');
+      return;
+    }
     this.dialogRef.close({
       ...this.addNewLoyaltyForm.value,
       categoryWiseRates: this.usableMainCategories,

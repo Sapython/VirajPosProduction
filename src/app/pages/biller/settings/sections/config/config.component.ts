@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { DataProvider } from '../../../../../core/services/provider/data-provider.service';
 import { SelectMenuComponent } from '../../select-menu/select-menu.component';
 import { ModeConfig } from '../../../../../core/constructors/menu/menu';
@@ -18,6 +18,7 @@ import { ElectronService } from '../../../../../core/services/electron/electron.
 export class ConfigComponent implements OnInit {
   modes: [boolean, boolean, boolean] = this.dataProvider.activeModes;
   printers: string[] = [];
+  statesAndCities: {state:string,districts:string[]}[] = [];
   constructor(
     public dataProvider: DataProvider,
     private menuManagementService: MenuManagementService,
@@ -29,6 +30,15 @@ export class ConfigComponent implements OnInit {
   ) {}
 
   async ngOnInit(): Promise<void> {
+    fetch('assets/states-and-districts.json').then(async (res) => {
+      let states = await res.json()
+      console.log('res',states.states);
+      this.statesAndCities = states.states;
+      this.settingsForm.get('state')?.setValue(this.statesAndCities.find(state => state.state == this.dataProvider.currentBusiness?.state));
+      this.settingsForm.get('city')?.setValue(this.dataProvider.currentBusiness?.city);
+    }).catch((error) => {
+      console.log('error', error);
+    })
     let localPrinters = await this.electronService.getPrinters();
     this.printers =
       localPrinters?.length > 0 ? localPrinters : ['Test 1', 'Test 2'];
@@ -46,6 +56,12 @@ export class ConfigComponent implements OnInit {
       Validators.required,
     ]),
     address: new FormControl(this.dataProvider.currentBusiness?.address, [
+      Validators.required,
+    ]),
+    state: new FormControl(this.dataProvider.currentBusiness?.state, [
+      Validators.required,
+    ]),
+    city: new FormControl(this.dataProvider.currentBusiness?.city, [
       Validators.required,
     ]),
     gst: new FormControl(this.dataProvider.currentBusiness?.gst, [

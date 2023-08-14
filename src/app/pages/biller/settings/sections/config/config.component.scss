@@ -23,6 +23,12 @@ section {
     display: grid;
     grid-template-columns: 1fr 1fr;
     column-gap: 10px;
+    .addressLine{
+      grid-column: 1/3;
+      display: grid;
+      grid-template-columns: 2fr 0.94fr 1fr;
+      gap:20px;
+    }
     button {
       grid-column: 1/3;
     }

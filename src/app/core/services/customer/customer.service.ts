@@ -93,7 +93,7 @@ export class CustomerService {
         this.dataProvider.currentBusiness.businessId,
         'customers',
       ),
-      customerData,
+      {...customerData,created: serverTimestamp()},
     );
     customerData['id'] = res.id;
     this.dataProvider.customers = [
@@ -106,7 +106,7 @@ export class CustomerService {
 
   async updateCustomer(customer: CustomerInfo, bill: Bill) {
     let localCustomer = this.dataProvider.customers.find(
-      (customer) => customer.phone == customer.phone,
+      (onlineCustomer) => onlineCustomer.phone == customer.phone,
     );
     if (localCustomer) {
       console.log('Updating CUSTOMER', localCustomer);

@@ -43,17 +43,19 @@
           placeholder="Agent Phone"
         />
       </div>
+      <p *ngIf="!this.dataProvider.currentBill.menu.selectedLoyaltyId">You cannot set loyalty because you haven't selected any loyalty setting.</p>
       <ng-container
         *ngIf="
           this.dataProvider.currentBill &&
-          this.customerInfoForm.controls.phone.valid
+          this.customerInfoForm.controls.phone.valid &&
+          this.dataProvider.currentBill.menu.selectedLoyaltyId
         "
       >
         <hr />
         <h4>Loyalty Settings</h4>
         <form [formGroup]="loyaltySettingForm" class="loyaltyForm">
           <mat-checkbox formControlName="receiveLoyalty"
-            >Avail New Points</mat-checkbox
+            >Avail New Points <app-helper tooltip="If you check this the customer will receive new points from this bill."></app-helper></mat-checkbox
           >
           <div
             class="redeem"
@@ -62,7 +64,7 @@
             <mat-checkbox
               formControlName="redeemLoyalty"
               *ngIf="!this.loyaltySettingForm.value.redeemLoyalty"
-              >Redeem Loyalty</mat-checkbox
+              >Redeem Loyalty <app-helper tooltip="If you check this then you will be able to use the points of customer."></app-helper></mat-checkbox
             >
             <mat-checkbox
               formControlName="redeemLoyalty"

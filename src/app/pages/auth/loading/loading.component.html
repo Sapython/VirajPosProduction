@@ -331,32 +331,32 @@
       These are all accounts available on
       <strong>{{ this.dataProvider.currentUser?.username }}</strong>
     </p>
-    <ng-container *ngIf="!this.currentAreaState">
+    <ng-container *ngIf="!this.onboardingService.currentAreaState">
       <p>Select State</p>
       <div class="businessWrapper">
         <app-area-card
           [@zoomInOnEnter]
           [areaName]="state.state"
           *ngFor="let state of this.onboardingService.groupedBusiness"
-          (click)="currentAreaState = state"
+          (click)="this.onboardingService.currentAreaState = state"
         ></app-area-card>
       </div>
     </ng-container>
-    <ng-container *ngIf="!this.currentAreaCity && this.currentAreaState">
+    <ng-container *ngIf="!this.onboardingService.currentAreaCity && this.onboardingService.currentAreaState">
       <p>Select City</p>
       <div class="businessWrapper">
         <app-area-card
           [@zoomInOnEnter]
           [areaName]="city.city"
-          *ngFor="let city of this.currentAreaState.cities"
-          (click)="currentAreaCity = city"
+          *ngFor="let city of this.onboardingService.currentAreaState.cities"
+          (click)="this.onboardingService.currentAreaCity = city"
         ></app-area-card>
       </div>
     </ng-container>
     <ng-container
       *ngIf="
-        this.currentAreaCity &&
-        this.currentAreaState &&
+        this.onboardingService.currentAreaCity &&
+        this.onboardingService.currentAreaState &&
         this.dataProvider.currentUser
       "
     >
@@ -366,7 +366,7 @@
           (click)="setDefaultAccount(business)"
           [@zoomInOnEnter]
           [userId]="this.dataProvider.currentUser.username"
-          *ngFor="let business of this.currentAreaCity.businesses"
+          *ngFor="let business of this.onboardingService.currentAreaCity.businesses"
           [business]="business"
         ></app-business-card>
         <app-new-business-card

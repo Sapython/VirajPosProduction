@@ -695,8 +695,12 @@ export const analyzeAnalytics = functions.pubsub.schedule('every 3 hours').onRun
   let businessDocs = await businessRef.get();
   let workers = businessDocs.docs.map(async (businessDoc)=>{
     await generateAnalytics(firestore,businessDoc)
-  })
+  });
+  let loyaltyWorkers = businessDocs.docs.map(async (businessDoc)=>{
+    
+  });
   let res = await Promise.all(workers);
+  await Promise.all(loyaltyWorkers);
   return res.length;
 });
 
@@ -719,73 +723,69 @@ export const analyzeAnalyticsForBusiness = functions.https.onCall(
   },
 );
 
-export const calculateLoyaltyPoint = functions.https.onCall(
-  async (request, response) => {
+export const calculateLoyaltyPoint = functions.pubsub.schedule('every 3 hours').onRun(
+  async (context) => {
     initFirestore();
-    validateAny(request.businessId, 'string');
-    // get all customers
-    let customers = await firestore.collection(`business/${request.businessId}/customers`).get();
-    await Promise.all(customers.docs.map(async (customer)=>{
-      // get bills under this customer 
-      let billsRef = await firestore.collection(`business/${request.businessId}/customers/${customer.id}/bills`).get();
-      let bills = await Promise.all(billsRef.docs.map(async (bill)=>{
-        let data = bill.data();
-        let billDocument = await data.billRef.get();
-        // console.log("customer ref bill data",billDocument.data());
-        return {...billDocument.data(),id:billDocument.id};
-      }));
-      // console.log("Bills",bills,bills.length);
-      // clean up bills array and remove undefined values
-      // bills = bills.filter((bill)=>bill);
-      // console.log("Bills",bills);
-      // bills.sort((a,b)=>a.createdDate.toDate() - b.createdDate.toDate())
-      // console.log("Filtered Bills",bills);
-
-      let totalBills = bills.length;
-      let totalSales = 0;
-      let totalEarnedLoyaltyPoints = 0;
-      let averageBillValue = 0;
-      if (bills[bills.length-1]){
-        var lastBillDate = bills[bills.length-1].createdDate;
-        var lastBillAmount = bills[bills.length-1].billing.grandTotal;
-        var lastBillId = bills[bills.length-1].id;
-      } else {
-        var lastBillDate = null;
-        var lastBillAmount = null;
-        var lastBillId = null;
-      }
-      let todayDate = new Date();
-      bills.forEach(async (bill)=>{
-        // console.log("counter bill",bill);
-        totalSales += bill.billing.grandTotal;
-        // if bill.currentLoyalty.expiryDate is less than todayDate then add the loyalty points to the customer
-        if(bill.currentLoyalty.expiryDate.toDate() > todayDate){
-          // add loyalty points to the customer
-          if (bill.currentLoyalty.receiveLoyalty){
-            console.log("Adding loyalty",bill.currentLoyalty.totalLoyaltyPoints);
-            totalEarnedLoyaltyPoints += bill.currentLoyalty.totalLoyaltyPoints;
-            console.log("Total loyalty",totalEarnedLoyaltyPoints);
-          }
+    let businessRef = firestore.collection('business');
+    let businessDocs = await businessRef.get();
+    let responses = await Promise.all(businessDocs.docs.map(async (businessDoc)=>{
+      // get all customers
+      let customers = await firestore.collection(`business/${businessDoc.id}/customers`).get();
+      await Promise.all(customers.docs.map(async (customer)=>{
+        // get bills under this customer 
+        let billsRef = await firestore.collection(`business/${businessDoc.id}/customers/${customer.id}/bills`).get();
+        let bills = await Promise.all(billsRef.docs.map(async (bill)=>{
+          let data = bill.data();
+          let billDocument = await data.billRef.get();
+          // console.log("customer ref bill data",billDocument.data());
+          return {...billDocument.data(),id:billDocument.id};
+        }));
+        let totalBills = bills.length;
+        let totalSales = 0;
+        let totalEarnedLoyaltyPoints = 0;
+        let averageBillValue = 0;
+        if (bills[bills.length-1]){
+          var lastBillDate = bills[bills.length-1].createdDate;
+          var lastBillAmount = bills[bills.length-1].billing.grandTotal;
+          var lastBillId = bills[bills.length-1].id;
+        } else {
+          var lastBillDate = null;
+          var lastBillAmount = null;
+          var lastBillId = null;
         }
-
-        // deduct used loyalty point
-        totalEarnedLoyaltyPoints -= bill.currentLoyalty.totalToBeRedeemedPoints;
-        console.log("Deducting",bill.currentLoyalty.totalToBeRedeemedPoints);
-        
-      });
-      averageBillValue = totalSales/totalBills;
-      // update customer
-      await firestore.doc(`business/${request.businessId}/customers/${customer.id}`).update({
-        totalBills,
-        totalSales,
-        loyaltyPoints:totalEarnedLoyaltyPoints,
-        averageBillValue,
-        lastBillDate,
-        lastBillAmount,
-        lastBillId
-      });
-    }))
-    return {analyzedAllCustomers:true};
+        let todayDate = new Date();
+        bills.forEach(async (bill)=>{
+          // console.log("counter bill",bill);
+          totalSales += bill.billing.grandTotal;
+          // if bill.currentLoyalty.expiryDate is less than todayDate then add the loyalty points to the customer
+          if(bill.currentLoyalty.expiryDate.toDate() > todayDate){
+            // add loyalty points to the customer
+            if (bill.currentLoyalty.receiveLoyalty){
+              console.log("Adding loyalty",bill.currentLoyalty.totalLoyaltyPoints);
+              totalEarnedLoyaltyPoints += bill.currentLoyalty.totalLoyaltyPoints;
+              console.log("Total loyalty",totalEarnedLoyaltyPoints);
+            }
+          }
+  
+          // deduct used loyalty point
+          totalEarnedLoyaltyPoints -= bill.currentLoyalty.totalToBeRedeemedPoints;
+          console.log("Deducting",bill.currentLoyalty.totalToBeRedeemedPoints);
+          
+        });
+        averageBillValue = totalSales/totalBills;
+        // update customer
+        await firestore.doc(`business/${businessDoc.id}/customers/${customer.id}`).update({
+          totalBills,
+          totalSales,
+          loyaltyPoints:totalEarnedLoyaltyPoints,
+          averageBillValue,
+          lastBillDate,
+          lastBillAmount,
+          lastBillId
+        });
+      }))
+    }));
+    return {analyzedAllCustomers:true, responses};
   },
 );
 

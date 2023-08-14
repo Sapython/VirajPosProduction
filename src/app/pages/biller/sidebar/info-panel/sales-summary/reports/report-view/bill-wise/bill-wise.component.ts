@@ -93,7 +93,7 @@ export class BillWiseComponent implements OnInit, OnDestroy {
   }
 
   async downloadPdf() {
-    const doc = new jsPDF();
+    const doc = new jsPDF('l');
     let title = 'Bill Wise';
     let logo = new Image();
     logo.src = 'assets/images/viraj.png';

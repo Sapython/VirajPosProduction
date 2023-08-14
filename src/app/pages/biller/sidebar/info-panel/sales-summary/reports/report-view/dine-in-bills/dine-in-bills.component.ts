@@ -91,7 +91,7 @@ export class DineInBillsComponent {
 
 
   async downloadPdf() {
-    const doc = new jsPDF();
+    const doc = new jsPDF('l');
     let title = 'Dine In Bill Wise';
     let logo = new Image();
     logo.src = 'assets/images/viraj.png';

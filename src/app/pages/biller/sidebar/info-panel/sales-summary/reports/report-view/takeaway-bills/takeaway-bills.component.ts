@@ -85,7 +85,7 @@ export class TakeawayBillsComponent {
   }
 
   async downloadPdf() {
-    const doc = new jsPDF();
+    const doc = new jsPDF('l');
     let title = 'Takeaway Bill Wise';
     let logo = new Image();
     logo.src = 'assets/images/viraj.png';

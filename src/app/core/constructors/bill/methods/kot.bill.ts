@@ -40,7 +40,7 @@ export function editKot(this: Bill, kot: Kot, reason: string) {
       )
     ) {
       this.editKotMode = {
-        newKot: kot.products.slice(),
+        newKot: structuredClone(kot.products),
         previousKot: kot.products,
         kot: kot,
         kotIndex: this.kots.findIndex((localKot) => localKot.id == kot.id) || 0,
@@ -61,7 +61,7 @@ export function editKot(this: Bill, kot: Kot, reason: string) {
   } else {
     let clonedArray: (Product | ApplicableCombo)[] = [];
     kot.products.forEach((product) => {
-      clonedArray.push(product);
+      clonedArray.push(structuredClone(product));
     });
     this.editKotMode = {
       newKot: clonedArray,

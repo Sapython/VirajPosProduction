@@ -21,6 +21,27 @@ export class BillWiseComponent implements OnInit, OnDestroy {
   bills: ReplaySubject<timedBillConstructor[]> = new ReplaySubject<
     timedBillConstructor[]
   >();
+  billTotals:{
+    numberOfBills:number,
+    numberOfOrders:number,
+    total:number,
+    numberOfKots:number,
+    numberOfUsers:number,
+    totalBillTime:string,
+    totalAmount:number,
+    totalDiscount:number,
+    totalTax:number,
+  }={
+    numberOfBills:0,
+    numberOfOrders:0,
+    total:0,
+    numberOfKots:0,
+    numberOfUsers:0,
+    totalBillTime:"",
+    totalAmount:0,
+    totalDiscount:0,
+    totalTax:0,
+  }
   loading: boolean = true;
   joinArray(bill: KotConstructor[]) {
     // join to form a string of ids with comma
@@ -75,6 +96,37 @@ export class BillWiseComponent implements OnInit, OnDestroy {
                 mergedProducts
               };
             });
+            this.billTotals ={
+              numberOfBills:bills.length,
+              numberOfOrders:bills.length,
+              total:bills.reduce((acc, curr) => acc + curr.billing.grandTotal, 0),
+              numberOfKots:bills.reduce((acc, curr) => acc + curr.kots.length, 0),
+              numberOfUsers:bills.reduce((acc, curr) => acc + curr.kots.length, 0),
+              totalBillTime:productBaseSales.reduce((acc, curr) => {
+                let timeArray = curr.totalBillTime.split(':');
+                let hours = parseInt(timeArray[0]);
+                let minutes = parseInt(timeArray[1]);
+                let seconds = parseInt(timeArray[2]);
+                acc[0] += hours;
+                acc[1] += minutes;
+                acc[2] += seconds;
+                if (acc[2] > 60) {
+                  acc[1] += Math.floor(acc[2] / 60);
+                  acc[2] = acc[2] % 60;
+                }
+                if (acc[1] > 60) {
+                  acc[0] += Math.floor(acc[1] / 60);
+                  acc[1] = acc[1] % 60;
+                }
+                return acc;
+              }, [0, 0, 0]).join(':'),
+              totalAmount:bills.reduce((acc, curr) => acc + curr.billing.grandTotal, 0),
+              totalDiscount:bills.reduce((acc, curr) => acc + 
+                curr.billing.discount.reduce((acc, curr) => acc + curr.totalAppliedDiscount, 0)
+              , 0),
+              totalTax:bills.reduce((acc, curr) => acc + curr.billing.taxes.reduce((acc, curr) => acc + curr.amount, 0), 0),
+            };
+            console.log("Bill totals",this.billTotals);
             this.bills.next(productBaseSales);
             this.loading = false;
           });
@@ -90,6 +142,29 @@ export class BillWiseComponent implements OnInit, OnDestroy {
         this.downloadExcel();
       },
     );
+  }
+
+  addTimes(time:string[]){
+    // time will be in this string formats
+    // 1. 1:2:3
+    // 2. 1:2
+    // 3. 1
+    let hours = 0;
+    let minutes = 0;
+    let seconds = 0;
+    time.forEach((res) => {
+      let timeArray = res.split(':');
+      if (timeArray.length === 3) {
+        hours += parseInt(timeArray[0]);
+        minutes += parseInt(timeArray[1]);
+        seconds += parseInt(timeArray[2]);
+      } else if (timeArray.length === 2) {
+        minutes += parseInt(timeArray[0]);
+        seconds += parseInt(timeArray[1]);
+      } else if (timeArray.length === 1) {
+        seconds += parseInt(timeArray[0]);
+      }
+    })
   }
 
   async downloadPdf() {

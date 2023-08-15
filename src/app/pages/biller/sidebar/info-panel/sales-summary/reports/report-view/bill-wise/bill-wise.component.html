@@ -16,77 +16,82 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let bill of bills | async">
-      <td>
-        {{ bill.billNo || "Unsettled" }}
-      </td>
-      <td>
-        {{ bill.orderNo }}
-      </td>
-      <td>
-        {{ bill.billing.grandTotal }}
-      </td>
-      <td>
-        {{ joinArray(bill.kots) }}
-      </td>
-      <td>
-        {{ bill.createdDate?.toDate() | date: "short" }}
-      </td>
-      <td>
-        {{ bill.settlement?.time?.toDate() | date: "short" }}
-      </td>
-      <td>
-        {{ bill.settlement?.user?.username }}
-      </td>
-      <td>
-        {{ bill.totalBillTime }}
-      </td>
-      <td>
-        <ol>
-          <li *ngFor="let item of bill.mergedProducts">
-            {{item.name}} ({{item.price}} X {{item.quantity}}),
-          </li>
-        </ol>
-      </td>
-      <td>
-        <ol>
-          <li *ngFor="let discount of bill.billing.discount">
-            {{discount.value}} ({{discount.totalAppliedDiscount}}),
-          </li>
-        </ol>
-      </td>
-      <td>
-        <ng-container *ngIf="!bill.nonChargeableDetail">N/A</ng-container>
-        <ol *ngIf="bill.nonChargeableDetail">
-          <li>
-            Name: {{bill.nonChargeableDetail.name}}
-          </li>
-          <li>
-            Phone: {{bill.nonChargeableDetail.phone}}
-          </li>
-          <li>
-            Date/Time: {{bill.nonChargeableDetail.time.toDate() | date:'short'}}
-          </li>
-          <li>
-            User: {{bill.nonChargeableDetail.user.username}}
-          </li>
-        </ol>
-      </td>
-      <td>
-        <ol>
-          <li *ngFor="let tax of bill.billing.taxes">
-            {{tax.name}} - ({{tax.cost}}) -  ({{tax.amount}}),
-          </li>
-        </ol>
-      </td>
-    </tr>
-    <tr *ngIf="(bills|async).length == 0">
-      <td
-        colspan="5"
-        style="text-align: center; font-weight: bold; font-size: 1.2rem;color:#aaa"
-      >
-        <p>No Data Available</p>
-      </td>
-    </tr>
+    <ng-container *ngIf="(bills | async).length > 0">
+      <tr *ngFor="let bill of bills | async">
+        <td>
+          {{ bill.billNo || "Unsettled" }}
+        </td>
+        <td>
+          {{ bill.orderNo }}
+        </td>
+        <td>
+          {{ bill.billing.grandTotal }}
+        </td>
+        <td>
+          {{ joinArray(bill.kots) }}
+        </td>
+        <td>
+          {{ bill.createdDate?.toDate() | date: "short" }}
+        </td>
+        <td>
+          {{ bill.settlement?.time?.toDate() | date: "short" }}
+        </td>
+        <td>
+          {{ bill.settlement?.user?.username }}
+        </td>
+        <td>
+          {{ bill.totalBillTime }}
+        </td>
+        <td>
+          <ol>
+            <li *ngFor="let item of bill.mergedProducts">
+              {{ item.name }} ({{ item.price }} X {{ item.quantity }}),
+            </li>
+          </ol>
+        </td>
+        <td>
+          <ol>
+            <li *ngFor="let discount of bill.billing.discount">
+              {{ discount.value }} ({{ discount.totalAppliedDiscount }}),
+            </li>
+          </ol>
+        </td>
+        <td>
+          <ng-container *ngIf="!bill.nonChargeableDetail">N/A</ng-container>
+          <ol *ngIf="bill.nonChargeableDetail">
+            <li>Name: {{ bill.nonChargeableDetail.name }}</li>
+            <li>Phone: {{ bill.nonChargeableDetail.phone }}</li>
+            <li>
+              Date/Time:
+              {{ bill.nonChargeableDetail.time.toDate() | date: "short" }}
+            </li>
+            <li>User: {{ bill.nonChargeableDetail.user.username }}</li>
+          </ol>
+        </td>
+        <td>
+          <ol>
+            <li *ngFor="let tax of bill.billing.taxes">
+              {{ tax.name }} - ({{ tax.cost }}) - ({{ tax.amount }}),
+            </li>
+          </ol>
+        </td>
+      </tr>
+      <tr *ngIf="(bills | async).length == 0">
+        <td
+          colspan="5"
+          style="
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #aaa;
+          "
+        >
+          <p>No Data Available</p>
+        </td>
+      </tr>
+      <tr>
+        <!-- totals -->
+      </tr>
+    </ng-container>
   </tbody>
 </table>

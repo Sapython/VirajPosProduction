@@ -16,8 +16,8 @@ let win: BrowserWindow = null;
 const args = process.argv.slice(1),
   serve = args.some((val) => val === '--serve');
 autoUpdater.logger = require('electron-log');
-autoUpdater.autoDownload = false;
-autoUpdater.autoInstallOnAppQuit = false;
+autoUpdater.autoDownload = true;
+autoUpdater.autoInstallOnAppQuit = true;
 // const updater = new NsisUpdater({
 //   provider:'github',
 //   owner:'swayambhu-innovations',

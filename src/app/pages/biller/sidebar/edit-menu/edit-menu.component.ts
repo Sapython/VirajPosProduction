@@ -113,7 +113,7 @@ export class EditMenuComponent implements OnInit {
         return menu.selectedMenu?.id == this.dataProvider.dineInMenu?.id;
       });
       if (this.dataProvider.currentMenu) {
-        this.dataProvider.currentMenu.type = 'dineIn';
+        // this.dataProvider.currentMenu.type = 'dineIn';
         this.dataProvider.products = this.dataProvider.currentMenu.products;
       } else {
         // console.log("this.dataProvider.menus",this.dataProvider.menus);
@@ -130,7 +130,7 @@ export class EditMenuComponent implements OnInit {
         return menu.selectedMenu?.id == this.dataProvider.takeawayMenu?.id;
       });
       if (this.dataProvider.currentMenu) {
-        this.dataProvider.currentMenu.type = 'takeaway';
+        // this.dataProvider.currentMenu.type = 'takeaway';
         this.dataProvider.products = this.dataProvider.currentMenu.products;
       } else {
         // console.log("this.dataProvider.menus",this.dataProvider.menus);
@@ -147,7 +147,7 @@ export class EditMenuComponent implements OnInit {
         return menu.selectedMenu?.id == this.dataProvider.onlineMenu?.id;
       });
       if (this.dataProvider.currentMenu) {
-        this.dataProvider.currentMenu.type = 'online';
+        // this.dataProvider.currentMenu.type = 'online';
         this.dataProvider.products = this.dataProvider.currentMenu.products;
       } else {
         // console.log("this.dataProvider.menus",this.dataProvider.menus);

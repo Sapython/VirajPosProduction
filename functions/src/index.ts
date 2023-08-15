@@ -13,7 +13,7 @@ import {
 import { Firestore, Timestamp } from 'firebase-admin/firestore';
 var debug: boolean = true;
 var admin: any;
-var Mailjet;
+var Mailjet:any;
 var getAuth: any;
 var mailjet: any;
 let app: any;
@@ -29,9 +29,12 @@ console.log('processDate', processDate);
 
 function initAdmin() {
   if (admin) return;
+  console.log("Loading firebase admin");
   admin = require('firebase-admin');
 }
 function initApp() {
+	if (app) return;
+	console.log("Loading firebase app");
   const initApp = require('firebase-admin/app');
   app = initApp.initializeApp({
     credential: admin.credential.cert(
@@ -40,21 +43,25 @@ function initApp() {
   });
 }
 function initFirestore() {
-  let firestoreImport = require('firebase-admin/firestore');
-  getFirestore = firestoreImport.getFirestore;
-  if (!admin) initAdmin();
-  if (!app) initApp();
-  if (firestore) return;
-  firestore = getFirestore(app);
+	if (!admin) initAdmin();
+	if (!app) initApp();
+	if (firestore) return;
+	console.log("Loading firestore");
+	let firestoreImport = require('firebase-admin/firestore');
+	getFirestore = firestoreImport.getFirestore;
+  	firestore = getFirestore(app);
 }
 function initAuth() {
   if (!admin) initAdmin();
   if (!app) initApp();
   if (auth) return;
+  console.log("Loading auth");
   getAuth = require('firebase-admin/auth').getAuth;
   auth = getAuth(app);
 }
 function initMailJet() {
+	if (Mailjet) return;
+	console.log("Loading mailjet");
   Mailjet = require('node-mailjet');
   mailjet = new Mailjet({
     apiKey: '135bbf04888dd455863f5e2a4d15ac2f',

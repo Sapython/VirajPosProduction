@@ -78,7 +78,12 @@ export function calculateProducts(kots: (Kot | KotConstructor)[]) {
         if (item) {
           item.quantity += product.quantity;
         } else {
-          allProducts.push(JSON.parse(JSON.stringify(product)));
+          console.log("Product",product);
+          if (product.itemType == 'combo'){
+            allProducts.push(product)
+          } else {
+            allProducts.push(structuredClone(product));
+          }
         }
       });
     }

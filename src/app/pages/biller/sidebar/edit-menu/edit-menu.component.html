@@ -98,7 +98,8 @@
         mode.active &&
         this.dataProvider.currentMenu &&
         mode.type == this.dataProvider.currentMenu.type &&
-        mode.selectedMenuId == this.dataProvider.currentMenu.selectedMenuId
+        mode.selectedMenuId == this.dataProvider.currentMenu.selectedMenuId &&
+        this.dataProvider.billingMode == mode.type
       "
     >
       <p>{{mode.type}}</p>

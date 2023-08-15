@@ -94,13 +94,7 @@
   <ng-container *ngFor="let mode of this.dataProvider.menus">
     <div
       class="mode"
-      *ngIf="
-        mode.active &&
-        this.dataProvider.currentMenu &&
-        mode.type == this.dataProvider.currentMenu.type &&
-        mode.selectedMenuId == this.dataProvider.currentMenu.selectedMenuId &&
-        this.dataProvider.billingMode == mode.type
-      "
+      *ngIf="this.dataProvider.currentMenu == mode"
     >
       <p>{{mode.type}}</p>
       <div class="tabs">

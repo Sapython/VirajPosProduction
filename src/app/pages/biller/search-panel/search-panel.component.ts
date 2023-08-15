@@ -140,10 +140,10 @@ export class SearchPanelComponent implements OnInit {
         return;
       }
       this.dataProvider.currentMenu = this.dataProvider.menus.find((menu) => {
-        return menu.selectedMenu?.id == this.dataProvider.dineInMenu?.id;
+        return menu.selectedMenu?.id == this.dataProvider.dineInMenu?.id && menu.type == 'dineIn';
       });
       if (this.dataProvider.currentMenu) {
-        this.dataProvider.currentMenu.type = 'dineIn';
+        // this.dataProvider.currentMenu.type = 'dineIn';
         this.dataProvider.products = this.dataProvider.currentMenu.products;
       } else {
         // console.log("this.dataProvider.menus",this.dataProvider.menus);
@@ -157,10 +157,10 @@ export class SearchPanelComponent implements OnInit {
         return;
       }
       this.dataProvider.currentMenu = this.dataProvider.menus.find((menu) => {
-        return menu.selectedMenu?.id == this.dataProvider.takeawayMenu?.id;
+        return menu.selectedMenu?.id == this.dataProvider.takeawayMenu?.id && menu.type == 'takeaway';
       });
       if (this.dataProvider.currentMenu) {
-        this.dataProvider.currentMenu.type = 'takeaway';
+        // this.dataProvider.currentMenu.type = 'takeaway';
         this.dataProvider.products = this.dataProvider.currentMenu.products;
       } else {
         // console.log("this.dataProvider.menus",this.dataProvider.menus);
@@ -174,10 +174,10 @@ export class SearchPanelComponent implements OnInit {
         return;
       }
       this.dataProvider.currentMenu = this.dataProvider.menus.find((menu) => {
-        return menu.selectedMenu?.id == this.dataProvider.onlineMenu?.id;
+        return menu.selectedMenu?.id == this.dataProvider.onlineMenu?.id && menu.type == 'online';
       });
       if (this.dataProvider.currentMenu) {
-        this.dataProvider.currentMenu.type = 'online';
+        // this.dataProvider.currentMenu.type = 'online';
         this.dataProvider.products = this.dataProvider.currentMenu.products;
       } else {
         // console.log("this.dataProvider.menus",this.dataProvider.menus);

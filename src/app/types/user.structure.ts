@@ -43,7 +43,7 @@ export interface BusinessRecord {
   hotelLogo: string;
   address: string;
   city:string;
-  state:string;
+  state:any;
   phone: string;
   username: string;
   email: string;

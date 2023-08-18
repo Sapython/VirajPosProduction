@@ -1,38 +1,93 @@
-.styled-table {
-  border-collapse: collapse;
-  margin: 25px 0;
-  font-size: 0.9em;
-  font-family: sans-serif;
-  min-width: 400px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-  width: 100%;
-}
-.styled-table thead tr {
-  background-color: var(--Vrajera-primary);
-  color: #ffffff;
-  text-align: left;
-}
-.styled-table th,
-.styled-table td {
-  padding: 12px 15px;
-}
-.styled-table tbody tr {
-  border-bottom: 1px solid #dddddd;
-}
+.gridTable{
+  border-radius: 8px;
+  border: 2px solid var(--Vrajera-primary);
+  background: #FFF;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.25);
+  padding: 0px;
+  overflow: hidden;
+  .heading{
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr 1.2fr;
+    gap:0px;
+    border-bottom: 2px solid var(--Vrajera-primary);
+    font-size: var(--Vrajera-font-xlarge);
+    font-weight: 600;
+    padding: 15px;
+    background: var(--Vrajera-primary-shade);
+    color:var(--Vrajera-primary-text);
+  }
+  .items{
+    padding-inline: 15px;
+    .item{
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr 1.2fr;
+      border-bottom: 2px solid #e1e1e1;
+      font-size: var(--Vrajera-font-large);
+      font-weight: normal;
+      padding-block: 15px;
+      align-items: center;
+      span{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      span:nth-child(1){
+        justify-content: flex-start;
+      }
+      span:last-child{
+        justify-content: flex-end;
+      }
+      .tableActions{
+        display: flex;
+        gap:10px;
+      }
+      .badge{
+        border-radius: 14px;
+        padding: 11px;
+        height: min-content;
+        width: 70%;
+        text-overflow: ellipsis;
+        overflow: overflow;
+      }
+      .product{
+        border: 2px solid #494ECF;
+        background: #F5F6FF;
+        color:#494ECF;
+      }
+      .bill{
+        border: 2px solid #962E40;
+        background: #FFF4F6;
+        color:#962E40;
+      }
+      .flat{
+        border: 2px solid #E81E5A;
+        background: #FFF2F6;
+        color:#E81E5A;
+      }
+      .percentage{
+        border: 2px solid #1D9908;
+        background: #F3FFF1;
+        color:#1D9908;
+      }
+    }
+    .item:last-child{
+      border-bottom: none;
+    }
+  }
 
-.styled-table tbody tr:nth-of-type(even) {
-  background-color: #f3f3f3;
-}
-
-.styled-table tbody tr:last-of-type {
-  border-bottom: 2px solid var(--Vrajera-primary);
-}
-.styled-table tbody tr.active-row {
-  font-weight: bold;
-  color: var(--Vrajera-primary);
-}
-
-mat-spinner{
-  display: block;
-  margin:0 auto;
+  &.discounts{
+    .heading,.item{
+      grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1.2fr !important;
+    }
+  }
+  &.loyalty{
+    .heading,.item{
+      grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr 1.2fr !important;
+    }
+  }
+  .itemLoading{
+    display: grid;
+    place-items: center;
+    width: 100%;
+  }
 }

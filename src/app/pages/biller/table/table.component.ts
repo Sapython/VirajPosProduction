@@ -549,6 +549,7 @@ export class TableComponent implements OnInit {
     const dialog = this.dialog.open(MoveKotItemComponent, { data: { table } });
     dialog.closed.subscribe((res) => {
       console.log('Result move-kot-item', res);
+      this.moveKotMode = false;
     });
   }
 

@@ -74,6 +74,10 @@ export class MoveKotItemComponent {
         });
       });
     }
+    // if the products inside this.moveKotSelectedTable?.bill is empty then clear the table
+    if (this.moveKotSelectedTable?.bill?.allFinalProducts.length == 0) {
+      this.moveKotSelectedTable?.clearTable();
+    }
     this.tableService.addTableActivity({
       type: 'move',
       from: this.moveKotSelectedTable.toObject(),

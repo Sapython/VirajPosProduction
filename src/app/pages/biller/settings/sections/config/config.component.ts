@@ -19,6 +19,7 @@ export class ConfigComponent implements OnInit {
   modes: [boolean, boolean, boolean] = this.dataProvider.activeModes;
   printers: string[] = [];
   statesAndCities: {state:string,districts:string[]}[] = [];
+  editMode:boolean = false;
   constructor(
     public dataProvider: DataProvider,
     private menuManagementService: MenuManagementService,
@@ -34,6 +35,7 @@ export class ConfigComponent implements OnInit {
       let states = await res.json()
       console.log('res',states.states);
       this.statesAndCities = states.states;
+      console.log("this.dataProvider.currentBusiness?.state",this.dataProvider.currentBusiness?.state);
       this.settingsForm.get('state')?.setValue(this.statesAndCities.find(state => state.state == this.dataProvider.currentBusiness?.state));
       this.settingsForm.get('city')?.setValue(this.dataProvider.currentBusiness?.city);
     }).catch((error) => {
@@ -69,13 +71,7 @@ export class ConfigComponent implements OnInit {
     ]),
     fssai: new FormControl(this.dataProvider.currentBusiness?.fssai, [
       Validators.required,
-    ]),
-    cgst: new FormControl(this.dataProvider.currentBusiness?.cgst, [
-      Validators.required,
-    ]),
-    sgst: new FormControl(this.dataProvider.currentBusiness?.sgst, [
-      Validators.required,
-    ]),
+    ])
   });
 
   async updateMode() {
@@ -228,6 +224,7 @@ export class ConfigComponent implements OnInit {
       .updateBusiness(this.settingsForm.value)
       .then(() => {
         this.alertify.presentToast('Settings saved successfully');
+        this.editMode = false;
         // this.cancel.emit()
       })
       .catch((err) => {

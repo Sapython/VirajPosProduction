@@ -135,6 +135,17 @@ export class TableService {
         }
       });
     });
+    // there exists a table settings groupOrders with the order of groups like ["od","indoor"]
+    if (this.dataProvider.currentSettings?.groupOrders) {
+      // reorder the groupedTables using the array using that group orders
+      console.log("Grouped orders",this.dataProvider.groupedTables,this.dataProvider.currentSettings?.groupOrders);
+      groupedTables.sort((a, b) => {
+        return (
+          this.dataProvider.currentSettings?.groupOrders.indexOf(a.name) -
+          this.dataProvider.currentSettings?.groupOrders.indexOf(b.name)
+        );
+      });
+    }
     this.dataProvider.groupedTables = groupedTables;
   }
 

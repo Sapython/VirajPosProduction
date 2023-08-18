@@ -1890,4 +1890,27 @@ export class ModeConfig {
     document.body.appendChild(link); // Required for Firefox
     link.click(); // This will download the data file named "my_data.csv".
   }
+
+  async deleteMenu(){
+    // first switch to any other menu and then delete the current menu
+    if(await this.dataProvider.confirm('Are you sure you want to delete this menu?',[1])){
+      if (this.dataProvider.allMenus.length > 1) {
+        let previousMenuId = structuredClone(this.selectedMenu.id);
+        this.selectedMenuId = this.dataProvider.allMenus.find((menu) => menu.id != previousMenuId)!.id;
+        // get all menus
+        let menus = await this.menuManagementService.getMenus();
+        this.dataProvider.allMenus = menus.docs.map((d) => {
+          return { ...d.data(), id: d.id } as Menu;
+        });
+        this.updateMenu();
+        await this.menuManagementService.deleteMenu(previousMenuId);
+        this.alertify.presentToast('Menu deleted successfully');
+      } else {
+        alert("Cannot delete the only last menu. Please create another menu and then delete this menu.")
+      }
+    } else {
+      this.alertify.presentToast('Cancelled deleting menu');
+    }
+  }
+
 }

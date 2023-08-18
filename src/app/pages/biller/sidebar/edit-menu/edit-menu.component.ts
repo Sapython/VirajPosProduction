@@ -156,4 +156,5 @@ export class EditMenuComponent implements OnInit {
     }
     this.dataProvider.modeChanged.next(mode.value);
   }
+
 }

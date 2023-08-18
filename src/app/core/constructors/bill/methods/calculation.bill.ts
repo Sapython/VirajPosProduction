@@ -209,6 +209,7 @@ export function calculateProducts(kots: (Kot | KotConstructor)[]) {
   let groupedFinalTaxes = [];
   finalTaxes.forEach((tax: Tax) => {
     let index = finalTaxes.findIndex((item: Tax) => item.id === tax.id);
+    tax.amount = roundOff(tax.amount)
     if (index !== -1) {
       let taxIndex = groupedFinalTaxes.findIndex(
         (item: Tax) => item.id === tax.id,
@@ -224,6 +225,10 @@ export function calculateProducts(kots: (Kot | KotConstructor)[]) {
   })
   // this.checkCanPrintKot(this);
   return { allProducts, finalTaxes:groupedFinalTaxes, finalAdditionalTax };
+}
+
+export function roundOff(number:number){
+  return Math.round((number + Number.EPSILON) * 100) / 100
 }
 
 

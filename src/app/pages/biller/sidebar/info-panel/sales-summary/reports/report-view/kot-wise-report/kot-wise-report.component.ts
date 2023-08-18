@@ -21,6 +21,19 @@ export class KotWiseReportComponent {
   reportChangedSubscription: Subscription = Subscription.EMPTY;
   kots: ReplaySubject<SalesKot[]> = new ReplaySubject<SalesKot[]>();
   loading: boolean = true;
+  kotTotals:{
+    numberOfKot:number,
+    totalKotAmount:number,
+    totalProducts:number,
+    bills:number,
+    users:number
+  }={
+    numberOfKot:0,
+    totalKotAmount:0,
+    totalProducts:0,
+    bills:0,
+    users:0
+  }
   joinArray(bill: KotConstructor[]) {
     // join to form a string of ids with comma
     return bill.map((res) => res.id).join(', ');
@@ -39,13 +52,14 @@ export class KotWiseReportComponent {
           )
           .then((bills) => {
             console.log('Bills ', bills);
+            bills = bills.filter((bill) => bill.kots.length > 0 && bill.orderNo)
             let kots = [];
             bills.forEach((bill) => {
               bill.kots.forEach((kot) => {
                 let kotData: SalesKot = {
                   ...kot,
                   grandTotal: kot.products.reduce(
-                    (acc, cur) => acc + cur.untaxedValue,
+                    (acc, cur) => acc + (cur.price * cur.quantity),
                     0,
                   ),
                   billNo: bill.billNo,
@@ -53,6 +67,15 @@ export class KotWiseReportComponent {
                 kots.push(kotData);
               });
             });
+            let users = kots.map((kot) => kot.user);
+            users = [...new Set(users)];
+            this.kotTotals={
+              bills: bills.length,
+              numberOfKot: kots.length,
+              totalKotAmount: kots.reduce((acc, cur) => acc + cur.grandTotal, 0),
+              totalProducts: kots.reduce((acc, cur) => acc + cur.products.length, 0),
+              users: users.length
+            }
             this.kots.next(kots);
             this.loading = false;
           });

@@ -60,6 +60,9 @@ section {
               font-weight: 600;
               background: var(--Vrajera-danger);
               color: white;
+              mat-checkbox{
+                --mdc-theme-text-primary-on-background:white;
+              }
             }
           }
         }

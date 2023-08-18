@@ -9,6 +9,7 @@ import { ReportService } from '../../report.service';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { DataProvider } from '../../../../../../../../core/services/provider/data-provider.service';
+import { log } from 'console';
 
 @Component({
   selector: 'app-table-wise',
@@ -22,7 +23,6 @@ export class TableWiseComponent {
   tableWiseSales: ReplaySubject<TableWiseSales[]> = new ReplaySubject<
     TableWiseSales[]
   >();
-  loading: boolean = true;
   joinArray(bill: KotConstructor[]) {
     // join to form a string of ids with comma
     return bill.map((res) => res.id).join(', ');
@@ -33,8 +33,7 @@ export class TableWiseComponent {
   ngOnInit(): void {
     this.reportChangedSubscription = this.reportService.dataChanged.subscribe(
       () => {
-        this.loading = true;
-        let tableWiseSales: { table: string; orders: number[] }[] = [];
+        let tableWiseSales: { table: any; orders: number[] }[] = [];
         this.reportService
           .getBills(
             this.reportService.dateRangeFormGroup.value.startDate,
@@ -45,17 +44,23 @@ export class TableWiseComponent {
             bills.forEach((bill) => {
               if (
                 tableWiseSales.findIndex(
-                  (res) => res.table == bill.table.name,
+                  (res) => {
+                    console.log('res.table ', res.table,bill.table);
+                    return (res.table.id ? res.table.id : res.table) == (bill.table.id ? bill.table.id : bill.table)
+                  },
                 ) == -1
               ) {
                 tableWiseSales.push({
-                  table: bill.table.name,
+                  table: bill.table,
                   orders: [bill.billing.grandTotal],
                 });
               } else {
                 tableWiseSales[
                   tableWiseSales.findIndex(
-                    (res) => res.table == bill.table.name,
+                    (res) => {
+                      console.log('res.table ', res.table,bill.table);
+                      return (res.table.id ? res.table.id : res.table) == (bill.table.id ? bill.table.id : bill.table)
+                    }
                   )
                 ].orders.push(bill.billing.grandTotal);
               }
@@ -67,9 +72,10 @@ export class TableWiseComponent {
                 sales: res.orders.reduce((a, b) => a + b),
                 numberOfOrders: res.orders.length,
                 averageSales:
-                  res.orders.reduce((a, b) => a + b) / res.orders.length,
+                this.roundOff(res.orders.reduce((a, b) => a + b) / res.orders.length),
               });
             });
+            console.log('Table Wise Sales ', tableWiseSalesArray);
             this.tableWiseSales.next(tableWiseSalesArray);
           });
       },
@@ -168,6 +174,10 @@ export class TableWiseComponent {
     document.body.removeChild(link);
   }
 
+  roundOff(number:number){
+    return Math.round((number + Number.EPSILON) * 100) / 100;
+  }
+
   ngOnDestroy(): void {
     this.reportChangedSubscription.unsubscribe();
     this.downloadPDfSubscription.unsubscribe();
@@ -177,7 +187,7 @@ export class TableWiseComponent {
 }
 
 interface TableWiseSales {
-  table: string;
+  table: any;
   sales: number;
   numberOfOrders: number;
   averageSales: number;

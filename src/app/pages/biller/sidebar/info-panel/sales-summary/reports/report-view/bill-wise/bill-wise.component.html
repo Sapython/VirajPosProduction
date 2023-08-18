@@ -22,41 +22,43 @@
           {{ bill.billNo || "Unsettled" }}
         </td>
         <td>
-          {{ bill.orderNo }}
+          {{ bill.orderNo || 'N/A' }}
         </td>
         <td>
-          {{ bill.billing.grandTotal }}
+          {{ (bill.billing.grandTotal | currency:'INR') || 'N/A' }}
         </td>
         <td>
-          {{ joinArray(bill.kots) }}
+          {{ bill.kots.length > 0 ? joinArray(bill.kots) : 'No Kots' }}
         </td>
         <td>
-          {{ bill.createdDate?.toDate() | date: "short" }}
+          {{ bill.createdDate ? (bill.createdDate?.toDate() | date: "short") : 'No Date' }}
         </td>
         <td>
-          {{ bill.settlement?.time?.toDate() | date: "short" }}
+          {{ bill.settlement?.time ? (bill.settlement?.time?.toDate() | date: "short") : 'No Date' }}
         </td>
         <td>
-          {{ bill.settlement?.user?.username }}
+          {{ bill.settlement?.user ? bill.settlement?.user?.username : 'N/A' }}
         </td>
         <td>
-          {{ bill.totalBillTime }}
+          {{ bill.totalBillTime ? bill.totalBillTime : 'N/A' }}
         </td>
-        <td>
-          <ol>
+        <td class="noWrap">
+          <ol *ngIf="bill.mergedProducts.length > 0">
             <li *ngFor="let item of bill.mergedProducts">
-              {{ item.name }} ({{ item.price }} X {{ item.quantity }}),
+              {{ item.name }} ({{ item.price | currency:'INR' }} X {{ item.quantity }}),
             </li>
           </ol>
+          <p *ngIf="bill.mergedProducts.length == 0">No Products</p>
         </td>
-        <td>
-          <ol>
+        <td class="noWrap">
+          <ol *ngIf="bill.billing.discount.length > 0">
             <li *ngFor="let discount of bill.billing.discount">
-              {{ discount.value }} ({{ discount.totalAppliedDiscount }}),
+              Value:{{ discount.value }} (Cost: {{ discount.totalAppliedDiscount | currency:'INR' }}),
             </li>
           </ol>
+          <p *ngIf="bill.billing.discount.length == 0">No Discounts</p>
         </td>
-        <td>
+        <td class="noWrap">
           <ng-container *ngIf="!bill.nonChargeableDetail">N/A</ng-container>
           <ol *ngIf="bill.nonChargeableDetail">
             <li>Name: {{ bill.nonChargeableDetail.name }}</li>
@@ -68,17 +70,33 @@
             <li>User: {{ bill.nonChargeableDetail.user.username }}</li>
           </ol>
         </td>
-        <td>
-          <ol>
+        <td class="noWrap">
+          <ol *ngIf="bill.billing.taxes.length >0">
             <li *ngFor="let tax of bill.billing.taxes">
-              {{ tax.name }} - ({{ tax.cost }}) - ({{ tax.amount }}),
+              {{ tax.name }} - ({{ tax.cost }}) - ({{ tax.amount | currency:'INR' }}),
             </li>
           </ol>
+          <p *ngIf="bill.billing.taxes.length == 0">No Taxes</p>
         </td>
+      </tr>
+      <tr class="totals">
+        <!-- totals -->
+        <td>Bills: {{billTotals.numberOfBills}}</td>
+        <td>Orders: {{billTotals.numberOfOrders}}</td>
+        <td>Total: {{ billTotals.total | currency:'INR'}}</td>
+        <td>Number Of KOTS: {{ billTotals.numberOfKots }}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Total Bill Time: {{ billTotals.totalBillTime }}</td>
+        <td></td>
+        <td>Total Discount: {{ billTotals.totalDiscount | currency:'INR' }}</td>
+        <td></td>
+        <td>Total Tax: {{ billTotals.totalTax | currency:'INR' }}</td>
       </tr>
       <tr *ngIf="(bills | async).length == 0">
         <td
-          colspan="5"
+          colspan="12"
           style="
             text-align: center;
             font-weight: bold;
@@ -88,9 +106,6 @@
         >
           <p>No Data Available</p>
         </td>
-      </tr>
-      <tr>
-        <!-- totals -->
       </tr>
     </ng-container>
   </tbody>

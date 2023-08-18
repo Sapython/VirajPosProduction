@@ -55,7 +55,7 @@ section.reportViewSection {
       }
       table th,
       table td {
-        padding: 22px 25px;
+        padding: 12px 10px;
       }
       table tbody tr {
         border-bottom: 1px solid #dddddd;
@@ -71,6 +71,22 @@ section.reportViewSection {
       table tbody tr.active-row {
         font-weight: bold;
         color: var(--Vrajera-primary-text);
+      }
+      table thead th{
+        white-space: nowrap
+      }
+      table tbody td.noWrap{
+        white-space: nowrap
+      }
+      table tbody tr.totals{
+        background-color: var(--Vrajera-primary-shade);
+        color: var(--Vrajera-primary-text);
+        font-weight: bold;
+        font-size: var(--Vrajera-font-large);
+        white-space: nowrap;
+        td{
+          white-space: nowrap;
+        }
       }
       .spacer {
         height: 200px;

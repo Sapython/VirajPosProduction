@@ -1,4 +1,4 @@
-<table id="reportTable" *ngIf="!loading">
+<table id="reportTable">
   <thead>
     <tr>
       <th>Table Name</th>
@@ -8,20 +8,22 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let table of tableWiseSales | async">
-      <td>
-        {{ table.table }}
-      </td>
-      <td>
-        {{ table.sales }}
-      </td>
-      <td>
-        {{ table.numberOfOrders }}
-      </td>
-      <td>
-        {{ table.averageSales }}
-      </td>
-    </tr>
+    <ng-container *ngIf="(tableWiseSales | async).length > 0">
+      <tr *ngFor="let table of tableWiseSales | async">
+        <td>
+          {{ table.table.id ? table.table.name : table.table }}
+        </td>
+        <td>
+          {{ table.sales | currency: "INR" }}
+        </td>
+        <td>
+          {{ table.numberOfOrders }}
+        </td>
+        <td>
+          {{ table.averageSales | currency: "INR" }}
+        </td>
+      </tr>
+    </ng-container>
     <tr *ngIf="(tableWiseSales|async).length == 0">
       <td
         colspan="5"

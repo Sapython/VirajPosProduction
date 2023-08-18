@@ -126,6 +126,7 @@ export class ProductsPanelComponent implements OnInit {
     product.cancelled = false;
     product.name = product.name + (this.isHalf(product) ? ' Half' : ' Full');
     delete product.instruction;
+    product.quantity = 1;
     if (!this.dataProvider.currentBill) {
       this.dataProvider.tempProduct = product;
     }

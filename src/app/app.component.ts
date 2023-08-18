@@ -10,7 +10,7 @@ import { AuthService } from './core/services/auth/auth.service';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { ElectronService } from './core/services/electron/electron.service';
 import { PrinterService } from './core/services/printing/printer/printer.service';
-
+import {loadFont} from './fontLoader'
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -25,6 +25,7 @@ export class AppComponent {
     private indexedDbService: NgxIndexedDBService,
     private printingService:PrinterService
   ) {
+    loadFont();
     indexedDbService.getAll('config').subscribe(
       (res) => {
         // console.log('112 got config',res);

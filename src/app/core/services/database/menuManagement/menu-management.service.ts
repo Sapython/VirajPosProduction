@@ -16,6 +16,7 @@ import {
   getDoc,
   docData,
   collectionData,
+  Timestamp,
 } from '@angular/fire/firestore';
 import { TableConstructor } from '../../../../types/table.structure';
 import { Product } from '../../../../types/product.structure';
@@ -38,7 +39,7 @@ import { CustomerService } from '../../customer/customer.service';
 import { UserManagementService } from '../../auth/user/user-management.service';
 import { Combo, ComboType, TimeGroup } from '../../../../types/combo.structure';
 import { FileStorageService } from '../fileStorage/file-storage.service';
-import { Tax } from '../../../../types/tax.structure';
+import { Tax, productTax } from '../../../../types/tax.structure';
 import { CodeBaseDiscount } from '../../../../types/discount.structure';
 import { LoyaltySetting } from '../../../../types/loyalty.structure';
 import { PrinterSetting } from '../../../../types/printing.structure';
@@ -733,6 +734,45 @@ export class MenuManagementService {
         collection(this.firestore, 'business/' + businessId + '/menus'),
         menu,
       );
+      // add default taxes
+      let taxes:{
+        cost:number,
+        creationDate:Timestamp,
+        mode:'product'|'bill',
+        name:string,
+        type:'percentage'|'amount',
+        updateDate:Timestamp,
+        id?:string
+      }[] = [
+        {
+          mode:'product',
+          cost:2.5,
+          creationDate:Timestamp.fromDate(new Date()),
+          name:'CGST',
+          type:'percentage',
+          updateDate:Timestamp.fromDate(new Date()),
+        },
+        {
+          mode:'product',
+          cost:2.5,
+          creationDate:Timestamp.fromDate(new Date()),
+          name:'SGST',
+          type:'percentage',
+          updateDate:Timestamp.fromDate(new Date()),
+        },
+      ];
+      let addedTaxes = await Promise.all(taxes.map(async (tax)=>{
+        return await this.addTax(tax as Tax,menuRes.id);
+      }));
+      let productApplicableTaxes:productTax[] = addedTaxes.map((tax,index)=>{
+        taxes[index].id = tax.id;
+        return {
+          ...taxes[index],
+          id:tax.id,
+          nature:'exclusive',
+          amount:0,
+        }
+      });
       let allProducts: Product[] = [];
       let productsRef: Promise<void>[] = [];
       let rootCategoriesRef = catGroups.forEach(async (catGroup, index) => {
@@ -740,9 +780,9 @@ export class MenuManagementService {
           prod.tags = [prod['tag']];
           prod.price = Number(prod.price)
           prod.id = this.generateRandomId();
+          prod.taxes = productApplicableTaxes;
           return prod;
         });
-        
         allProducts = [...allProducts, ...catGroup.products];
         // console.log("PRODUCTS",catGroup.products,allProducts);
         let newCategoryData = {
@@ -1580,5 +1620,14 @@ export class MenuManagementService {
         // console.log("success",res);
       },(err)=>{console.log(err);});
     }
+  }
+
+  deleteMenu(menuId:string){
+    return deleteDoc(
+      doc(
+        this.firestore,
+        'business/' + this.dataProvider.businessId + '/menus/' + menuId,
+      ),
+    );
   }
 }

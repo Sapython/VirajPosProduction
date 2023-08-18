@@ -113,7 +113,7 @@ export class HistoryComponent {
     });
     filteredBills.forEach((bill) => {
       // recalculate stats totalSales, startKot, endKot, totalKots, totalBills, startingKotNumber, endingKotNumber
-      this.totalSales += this.returnValidNumber(bill.billing.grandTotal);
+      this.totalSales += (bill.nonChargeableDetail ? this.returnValidNumber(bill.billing.subTotal) : this.returnValidNumber(bill.billing.grandTotal));
       this.totalKots += this.returnValidNumber(bill.kots.length);
       this.totalBills++;
       if (this.startKot == '') {

@@ -141,6 +141,7 @@
             Printer Setting
           </button> -->
         </div>
+        <viraj-button (click)="mode.deleteMenu()">Delete {{mode.selectedMenu.name}} {{!(mode.selectedMenu.name.endsWith('menu') || mode.selectedMenu.name.endsWith('Menu')) ? 'Menu' : ''}} </viraj-button>
       </div>
       <div class="productsView" *ngIf="activeTab == 'Products'">
         <ng-container *ngIf="activeTab == 'Products'">

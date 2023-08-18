@@ -64,6 +64,7 @@ export class BillWiseComponent implements OnInit, OnDestroy {
           )
           .then((bills) => {
             console.log('Bills ', bills);
+            bills = bills.filter((bill)=>bill.orderNo);
             let productBaseSales: timedBillConstructor[] = bills.map((bill) => {
               let totalBillTime = '';
               if (bill?.createdDate?.toDate() && bill.settlement?.time?.toDate()) {
@@ -97,12 +98,12 @@ export class BillWiseComponent implements OnInit, OnDestroy {
               };
             });
             this.billTotals ={
-              numberOfBills:bills.length,
-              numberOfOrders:bills.length,
+              numberOfBills:bills.reduce((acc, curr) => curr.billNo ? acc + 1 : acc, 0),
+              numberOfOrders:bills.reduce((acc, curr) => curr.orderNo ? acc + 1 : acc, 0),
               total:bills.reduce((acc, curr) => acc + curr.billing.grandTotal, 0),
               numberOfKots:bills.reduce((acc, curr) => acc + curr.kots.length, 0),
               numberOfUsers:bills.reduce((acc, curr) => acc + curr.kots.length, 0),
-              totalBillTime:productBaseSales.reduce((acc, curr) => {
+              totalBillTime:productBaseSales.filter((bill)=>bill.totalBillTime).reduce((acc, curr) => {
                 let timeArray = curr.totalBillTime.split(':');
                 let hours = parseInt(timeArray[0]);
                 let minutes = parseInt(timeArray[1]);
@@ -118,6 +119,7 @@ export class BillWiseComponent implements OnInit, OnDestroy {
                   acc[0] += Math.floor(acc[1] / 60);
                   acc[1] = acc[1] % 60;
                 }
+                console.log("Time formatted",acc);
                 return acc;
               }, [0, 0, 0]).join(':'),
               totalAmount:bills.reduce((acc, curr) => acc + curr.billing.grandTotal, 0),
@@ -173,6 +175,7 @@ export class BillWiseComponent implements OnInit, OnDestroy {
     let logo = new Image();
     logo.src = 'assets/images/viraj.png';
     doc.addImage(logo, 'JPEG', 10, 10, 30.5, 17.5);
+    doc.setFont('Roboto-Regular')
     doc.setFontSize(25);
     doc.text('Vrajera', 40, 23);
     doc.line(10, 30, 200, 30);
@@ -198,7 +201,7 @@ export class BillWiseComponent implements OnInit, OnDestroy {
         y = data.cursor.y;
       },
     });
-    autoTable(doc, { html: '#reportTable' });
+    autoTable(doc, { html: '#reportTable',styles:{font:'Roboto-Regular'} });
     doc.save('Bill Wise Report' + new Date().toLocaleString() + '.pdf');
   }
 

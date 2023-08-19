@@ -93,12 +93,13 @@ section {
           display: grid;
           grid-template-columns: 1fr 1.5fr 1fr;
           gap: 5px;
-
           input {
-            width: 20px;
+            width: 60px;
             border: none;
             text-align: center;
             font-size: var(--Vrajera-font-large);
+            border: 2px solid #bebebe;
+            border-radius: 4px;
           }
 
           // button {

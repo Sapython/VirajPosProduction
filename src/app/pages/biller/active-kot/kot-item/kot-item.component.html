@@ -37,7 +37,7 @@
     <div *ngIf="showKotNo"></div>
     <div class="info">
       <p class="name">{{ productName | titlecase }}</p>
-      <p class="price">{{ price | currency: "INR" }}</p>
+      <p class="price">{{ (price * quantity) | currency: "INR" }}</p>
     </div>
     <div class="more">
       <div class="actions">
@@ -56,7 +56,7 @@
             iconSize="small"
             (vclick)="decrease()"
             [disabled]="
-              quantity <= 1 ||
+              quantity <= 0 ||
               (dataProvider.manageKot == true && !editMode) ||
               disabled
             "

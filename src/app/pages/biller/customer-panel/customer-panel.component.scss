@@ -80,3 +80,18 @@
   color: tomato;
   margin-bottom: 10px;
 }
+.customerCard{
+  display: flex;
+  align-items: center;
+  gap:15px;
+  box-shadow: 0px 2px 20px 10px #ff1e0016;
+  padding: 10px;
+  border-radius: 5px;
+  border: 2px solid var(--Vrajera-primary);
+  background: white;
+  justify-content: space-between;
+  gap:15px;
+  p{
+    margin:0px;
+  }
+}

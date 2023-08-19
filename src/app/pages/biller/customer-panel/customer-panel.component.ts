@@ -35,6 +35,8 @@ export class CustomerPanelComponent implements OnInit {
           ? Validators.required
           : Validators.nullValidator,
         Validators.pattern('^[0-9]*$'),
+        Validators.minLength(10),
+        Validators.maxLength(10)
       ],
     ),
     address: new FormControl(
@@ -95,7 +97,7 @@ export class CustomerPanelComponent implements OnInit {
       .subscribe((value) => {
         if (value.name || value.phone || value.address) {
           this.dataProvider.currentBill?.setCustomerInfo(value);
-          //  console.log('value', this.dataProvider.currentBill?.customerInfo);
+           console.log('value', this.customerInfoForm);
         }
       });
     this.dataProvider.billAssigned.subscribe(() => {
@@ -156,6 +158,7 @@ export class CustomerPanelComponent implements OnInit {
   }
 
   selectCustomer(event: any) {
+    console.log("setting customer info",event.option.value);
     this.customerInfoForm.patchValue(event.option.value);
     this.dataProvider.currentBill?.setCustomerInfo(event.option.value);
   }

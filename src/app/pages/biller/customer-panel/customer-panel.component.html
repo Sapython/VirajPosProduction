@@ -11,10 +11,10 @@
         details.</span
       >
       <div>
-        <input type="text" formControlName="name" placeholder="Customer Info" />
         <input
           (input)="this.searchString.next(phoneInput.value)"
           type="tel"
+          matInput
           [matAutocomplete]="auto"
           formControlName="phone"
           placeholder="Phone Number"
@@ -28,6 +28,7 @@
             {{ street.phone }}
           </mat-option>
         </mat-autocomplete>
+        <input type="text" formControlName="name" placeholder="Customer Info" />
         <input type="text" formControlName="gst" placeholder="Gst" />
         <input matInput placeholder="Address" formControlName="address" />
         <input
@@ -47,10 +48,18 @@
       <ng-container
         *ngIf="
           this.dataProvider.currentBill &&
+          this.dataProvider.currentBill.menu.selectedLoyaltyId &&
+          this.dataProvider.currentBill.customerInfo &&
           this.customerInfoForm.controls.phone.valid &&
-          this.dataProvider.currentBill.menu.selectedLoyaltyId
+          this.customerInfoForm.controls.phone.value &&
+          this.customerInfoForm.valid
         "
       >
+        <div class="customerCard">
+          <p>Total Bills: {{this.dataProvider.currentBill.customerInfo?.totalBills  || 'N/A'}}</p>
+          <!-- <p>Last Bill Amount: {{this.dataProvider.currentBill.customerInfo?.lastBillAmount || 'N/A'}}</p> -->
+          <p>Last Bill Date: {{(this.dataProvider.currentBill.customerInfo?.lastBillDate?.toDate() | date:'short')  || 'N/A'}}</p>
+        </div>
         <hr />
         <h4>Loyalty Settings</h4>
         <form [formGroup]="loyaltySettingForm" class="loyaltyForm">

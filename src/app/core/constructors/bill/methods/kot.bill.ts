@@ -218,7 +218,9 @@ export function printKot(
   }
   if (!this.orderNo) {
     this.orderNo = this.dataProvider.orderTokenNo.toString();
+    console.log("Prev ",this.dataProvider.orderTokenNo);
     this.dataProvider.orderTokenNo++;
+    console.log("After ",this.dataProvider.orderTokenNo);
     this.analyticsService.addOrderToken();
   }
   //  console.log("kot.products",kot.products);

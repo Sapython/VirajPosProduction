@@ -124,7 +124,7 @@ export class EncoderService {
           ],
           [
             'Time: ' + kotData.time,
-            (enc:any)=>enc.bold().text('User: ' + kotData.user).bold(),
+            (enc:any)=>enc.bold().text('Punched By: ' + kotData.user).bold(),
           ],
           [
             (enc:any)=>enc.bold().text('Kot No: ' + kotData.token).bold(),

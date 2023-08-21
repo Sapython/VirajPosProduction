@@ -46,8 +46,9 @@ export class AnalyticsService {
   }
 
   async addBillToken() {
+    let numCopy = structuredClone(this.dataProvider.billToken);
     logEvent(this.analytics, 'add_bill_token', {
-      billTokenNo: this.dataProvider.billToken,
+      billTokenNo: numCopy,
     });
     let date = new Date().toISOString().split('T')[0];
     await setDoc(doc(this.firestore, 'business/' + this.dataProvider.businessId+'/dailyTokens/'+date), {
@@ -58,30 +59,33 @@ export class AnalyticsService {
         this.firestore,
         'business/' + this.dataProvider.businessId + '/settings/settings',
       ),
-      { billTokenNo: this.dataProvider.billToken },
+      { billTokenNo: numCopy },
     );
   }
 
   async addOrderToken() {
+    let numCopy = structuredClone(this.dataProvider.orderTokenNo);
     logEvent(this.analytics, 'add_order_token', {
-      orderTokenNo: this.dataProvider.orderTokenNo,
+      orderTokenNo: numCopy,
     });
     let date = new Date().toISOString().split('T')[0];
     await setDoc(doc(this.firestore, 'business/' + this.dataProvider.businessId+'/dailyTokens/'+date), {
       orderTokenNo: increment(1),
     },{merge:true});
+    console.log("Setting order no",numCopy);
     return updateDoc(
       doc(
         this.firestore,
         'business/' + this.dataProvider.businessId + '/settings/settings',
       ),
-      { orderTokenNo: this.dataProvider.orderTokenNo },
+      { orderTokenNo: numCopy },
     );
   }
 
   async addNcBillToken() {
+    let numCopy = structuredClone(this.dataProvider.ncBillToken);
     logEvent(this.analytics, 'add_nc_bill_token', {
-      ncBillTokenNo: this.dataProvider.ncBillToken,
+      ncBillTokenNo: numCopy,
     });
     let date = new Date().toISOString().split('T')[0];
     await setDoc(doc(this.firestore, 'business/' + this.dataProvider.businessId+'/dailyTokens/'+date), {
@@ -92,14 +96,15 @@ export class AnalyticsService {
         this.firestore,
         'business/' + this.dataProvider.businessId + '/settings/settings',
       ),
-      { ncBillTokenNo: this.dataProvider.ncBillToken },
+      { ncBillTokenNo: numCopy },
     );
   }
 
   async addTakeawayToken() {
     // alert("Adding takeaway token");
+    let numCopy = structuredClone(this.dataProvider.takeawayToken);
     logEvent(this.analytics, 'add_takeaway_token', {
-      takeawayTokenNo: this.dataProvider.takeawayToken,
+      takeawayTokenNo: numCopy,
     });
     let date = new Date().toISOString().split('T')[0];
     await setDoc(doc(this.firestore, 'business/' + this.dataProvider.businessId+'/dailyTokens/'+date), {
@@ -110,13 +115,14 @@ export class AnalyticsService {
         this.firestore,
         'business/' + this.dataProvider.businessId + '/settings/settings',
       ),
-      { takeawayTokenNo: this.dataProvider.takeawayToken },
+      { takeawayTokenNo: numCopy },
     );
   }
 
   async addOnlineToken() {
+    let numCopy = structuredClone(this.dataProvider.onlineTokenNo);
     logEvent(this.analytics, 'add_online_token', {
-      onlineTokenNo: this.dataProvider.onlineTokenNo,
+      onlineTokenNo: numCopy,
     });
     let date = new Date().toISOString().split('T')[0];
     await setDoc(doc(this.firestore, 'business/' + this.dataProvider.businessId+'/dailyTokens/'+date), {
@@ -127,13 +133,14 @@ export class AnalyticsService {
         this.firestore,
         'business/' + this.dataProvider.businessId + '/settings/settings',
       ),
-      { onlineTokenNo: this.dataProvider.onlineTokenNo },
+      { onlineTokenNo: numCopy },
     );
   }
 
   async addKitchenToken() {
+    let numCopy = structuredClone(this.dataProvider.kotToken);
     logEvent(this.analytics, 'add_kitchen_token', {
-      kitchenTokenNo: this.dataProvider.kotToken,
+      kitchenTokenNo: numCopy,
     });
     let date = new Date().toISOString().split('T')[0];
     await setDoc(doc(this.firestore, 'business/' + this.dataProvider.businessId+'/dailyTokens/'+date), {
@@ -144,7 +151,7 @@ export class AnalyticsService {
         this.firestore,
         'business/' + this.dataProvider.businessId + '/settings/settings',
       ),
-      { kitchenTokenNo: this.dataProvider.kotToken },
+      { kitchenTokenNo: numCopy },
     );
   }
 

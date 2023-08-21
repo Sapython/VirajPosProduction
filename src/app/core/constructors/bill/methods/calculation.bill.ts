@@ -54,7 +54,7 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   }, 0);
   // console.log('totalApplicableTax',this.billing.taxes,finalTaxes, totalApplicableTax,finalAdditionalTax);
   this.billing.postDiscountSubTotal = this.billing.subTotal - (this.currentLoyalty.totalToBeRedeemedCost + applicableDiscount);
-  this.billing.grandTotal = Math.round(this.billing.postDiscountSubTotal + totalApplicableTax);
+  this.billing.grandTotal = Math.ceil(this.billing.postDiscountSubTotal + totalApplicableTax);
   if (this.billingMode === 'nonChargeable') {
     // this.billing.subTotal = 0;
     this.billing.grandTotal = 0;

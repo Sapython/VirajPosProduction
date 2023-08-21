@@ -26,7 +26,6 @@ export class SettleComponent implements OnInit {
         'Cash',
         'Card',
         'UPI',
-        'Wallet',
         ...this.additionalMethods,
       ],
       amount: 0,

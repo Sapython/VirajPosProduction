@@ -126,6 +126,7 @@ export class AddMenuComponent {
     this.menuManagementService
       .addNewMenu(this.addNewMenuForm.value, this.rootCategories)
       .then(() => {
+        this.dataProvider.newMenuLoaded = true;
         this.alertify.presentToast('Menu added successfully');
         this.dialogRef.close();
       })

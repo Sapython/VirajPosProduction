@@ -43,6 +43,10 @@ export class DataProvider {
     private functions: Functions,
   ) {
     // read viewSettings from localStorage every 2 seconds
+    let tableSize = localStorage.getItem('tableSize');
+    if(tableSize){
+      this.currentTableSize = tableSize as any;
+    }
     this.clientWidth.next(window.innerWidth);
     this.clientHeight.next(window.innerHeight);
     setInterval(() => {
@@ -137,7 +141,10 @@ export class DataProvider {
   public editKotTime: number = 1;
   public kotEditable: boolean = false;
   public kotRePrintable: boolean = false;
+  public sweetsMode:boolean = false;
   public billerPrinter:string = '';
+
+  public newMenuLoaded:boolean = false;
 
   public dailyTokens:{
     billTokenNo:number,
@@ -165,7 +172,7 @@ export class DataProvider {
   public currentUser: UserRecord | undefined;
   public currentFirebaseUser: User | undefined;
   public activeModes: [boolean, boolean, boolean] = [false, false, false];
-  public allMenus: Menu[] = [];
+  public allMenus: ReplaySubject<Menu[]> = new ReplaySubject<Menu[]>(1);
   public currentMenu: ModeConfig | undefined;
   public tempProduct: Product | undefined;
   public currentTableSize: 'large' | 'medium' | 'small' = 'large';
@@ -225,12 +232,13 @@ export class DataProvider {
   public totalSales: number = 0;
   public clientWidth: ReplaySubject<number> = new ReplaySubject(1);
   public clientHeight: ReplaySubject<number> = new ReplaySubject(1);
+  public menusUpdated: Subject<string> = new Subject<string>();
 
   public get currentBusinessUser() {
     if (this.currentBusiness && this.currentUser) {
-      return this.currentUser.business.find(
-        (business) => business.businessId == this.currentBusiness.businessId,
-      )!;
+      return this.currentBusiness.users.find((user) => {
+        return user.username == this.currentUser?.username;
+      })
     } else {
       return undefined;
     }
@@ -254,6 +262,7 @@ export class DataProvider {
   public openTableView: Subject<boolean> = new Subject<boolean>();
   public billAssigned: Subject<void> = new Subject<void>();
   public searchResults: Subject<any[] | false> = new Subject<any[] | false>();
+  public clearSearchField: Subject<void> = new Subject<void>();
   public productsLoaded: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   public billUpdated: Subject<void> = new Subject<void>();
   public settingsChanged: Subject<any> = new Subject<any>();

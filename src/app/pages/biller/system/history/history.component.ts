@@ -113,17 +113,15 @@ export class HistoryComponent {
     });
     filteredBills.forEach((bill) => {
       // recalculate stats totalSales, startKot, endKot, totalKots, totalBills, startingKotNumber, endingKotNumber
-      this.totalSales += (bill.nonChargeableDetail ? this.returnValidNumber(bill.billing.subTotal) : this.returnValidNumber(bill.billing.grandTotal));
-      this.totalKots += this.returnValidNumber(bill.kots.length);
+      this.totalSales += bill.billing.grandTotal;
+      this.totalKots += bill.kots.length;
       this.totalBills++;
-      if (this.startKot == '') {
-        this.startKot = bill.orderNo;
+      if (bill.kots.length > 0){
+        if (this.startingKotNumber == '') {
+          this.startingKotNumber = bill.kots[0].id;
+        }
+        this.endingKotNumber = bill.kots[bill.kots.length - 1].id;
       }
-      this.endKot = bill.orderNo;
-      if (this.startingKotNumber == 0) {
-        this.startingKotNumber = bill.orderNo;
-      }
-      this.endingKotNumber = bill.orderNo;
     });
   }
 

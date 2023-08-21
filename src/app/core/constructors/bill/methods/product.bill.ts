@@ -7,6 +7,13 @@ export async function addProduct(
   this: Bill,
   product: Product | ApplicableCombo,
 ) {
+  if (product.itemType == 'product'){
+    if(product.sellByAvailable){
+      if (!product.sellBy){
+        product.sellBy = 'quantity';
+      }
+    }
+  }
   if (this.stage == 'finalized') {
     if (
       await this.userManagementService.authenticateAction(['admin', 'manager'])

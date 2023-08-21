@@ -96,7 +96,9 @@ export class Kot implements KotConstructor {
             name: product.name,
             price: product.price,
             type: product.type,
+            sellByAvailable: product.sellByAvailable,
             category: product.category,
+            sellBy: product.sellBy,
             itemType: product.itemType,
             tags: product.tags || [],
             quantity: product.quantity,
@@ -150,9 +152,19 @@ export class Kot implements KotConstructor {
   getTime(date: Timestamp) {
     let milliseconds = new Date().getTime() - date.toDate().getTime();
     // convert milliseconds to minutes and seconds
-    let minutes = Math.floor(milliseconds / 60000);
+    let hours = milliseconds / 3600000;
+    let minutes = ((milliseconds % 3600000) / 60000).toFixed(0);
     let seconds = ((milliseconds % 60000) / 1000).toFixed(0);
-    return minutes + ':' + (Number(seconds) < 10 ? '0' : '') + seconds;
+    if (Number(minutes) < 10) {
+      minutes = '0' + minutes;
+    }
+    if (Number(seconds) < 10) {
+      seconds = '0' + seconds;
+    }
+    if (hours < 1) {
+      return minutes + ':' + seconds;
+    }
+    return hours.toFixed(0) + ':' + minutes + ':' + seconds;
   }
 
   calculateTotalTimeTaken() {

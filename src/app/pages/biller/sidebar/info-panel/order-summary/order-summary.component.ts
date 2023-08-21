@@ -42,18 +42,23 @@ export class OrderSummaryComponent {
         {
           data: [this.takeAway],
           backgroundColor: '#36A2EB',
+          borderSkipped: false,
+          borderRadius: Number.MAX_VALUE,
           width: '20px',
           barThickness: this.barThickness,
         },
         {
           data: [this.online],
           backgroundColor: '#FFCE56',
+          borderSkipped: false,
+          borderRadius: Number.MAX_VALUE,
           width: '20px',
           barThickness: this.barThickness,
         },
         {
           data: [this.nonChargable],
           backgroundColor: '#4BC0C0',
+          borderSkipped: false,
           borderRadius: Number.MAX_VALUE,
           width: '20px',
           barThickness: this.barThickness,

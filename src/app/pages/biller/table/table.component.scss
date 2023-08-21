@@ -28,6 +28,8 @@ section {
     span:nth-child(1) {
       button {
         display: flex;
+        align-items: center;
+        justify-content: center;
         border: none;
         background: white;
         color: var(--Vrajera-primary);
@@ -259,10 +261,10 @@ section {
     }
     .table.inactive {
       background: #f4f4f4;
-      color: #444;
+      color: #444 !important;
       border-color: #ccc;
       * {
-        color: #444;
+        color: #444 !important;
       }
       &:hover {
         cursor: pointer;
@@ -277,9 +279,9 @@ section {
     .table.highlight {
       border: 3px solid var(--Vrajera-success);
       background: #e4ffe8;
-      color: var(--Vrajera-success);
+      color: var(--Vrajera-success) !important;
       * {
-        color: var(--Vrajera-success);
+        color: var(--Vrajera-success) !important;
       }
       &:hover {
         cursor: pointer;

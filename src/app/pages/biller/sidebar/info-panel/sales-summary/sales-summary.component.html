@@ -5,7 +5,7 @@
       <mat-icon>close</mat-icon>
     </button>
   </div>
-  <canvas #myChart></canvas>
+  <canvas #myChart *ngIf="dine || takeAway || online || nonChargable"></canvas>
   <div class="labels">
     <li class="one">
       <div>
@@ -40,13 +40,5 @@
       <p>Total Orders</p>
       <p>{{ dine + takeAway + online | currency: "INR" }}</p>
     </li>
-    <button
-      mat-flat-button
-      color="primary"
-      *ngIf="this.dataProvider.getAccess('seeReports')"
-      (click)="openReports()"
-    >
-      Full Report
-    </button>
   </div>
 </section>

@@ -34,22 +34,26 @@ export class EditMenuComponent implements OnInit {
   ) {
     this.dialogRef.closed.subscribe(() => {
       this.dataProvider.loading = true;
+      let uniqueMenus = this.dataProvider.menus.filter((menu, index, self) => {
+        return (
+          index ===
+          self.findIndex((t) => {
+            return t.selectedMenuId === menu.selectedMenuId;
+          })
+        );
+      });
       Promise.all(
-        this.dataProvider.menus.map((menu) => {
+        uniqueMenus.map(async (menu) => {
           menu.resetActivateCategory();
           this.dataProvider.modeChanged.next();
-          return menu.updateChanged();
+          console.log("Requesting update for menu",menu);
+          let updateReqs = await menu.updateChanged();
+          console.log("Updated requests with",updateReqs,menu);
+          return updateReqs;
         }),
       )
         .then(async (r) => {
-          // if (r.flat().length > 0){
-          //   if (await this.dataProvider.confirm("Data is updated. Please restart the application to see the changes.",[1])){
-          //     let url = window.location.href.split('/')
-          //     url.pop()
-          //     url.push('index.html')
-          //     window.location.href = url.join('/')
-          //   }
-          // }
+          
           this.alertify.presentToast('Menu changes updated successfully');
         })
         .catch((c) => {
@@ -59,14 +63,6 @@ export class EditMenuComponent implements OnInit {
         .finally(() => {
           this.dataProvider.loading = false;
         });
-    });
-  }
-
-  getMenus() {
-    this.menuManagementService.getMenus().then((menus) => {
-      this.dataProvider.allMenus = menus.docs.map((doc) => {
-        return { ...doc.data(), id: doc.id } as Menu;
-      });
     });
   }
 
@@ -93,7 +89,6 @@ export class EditMenuComponent implements OnInit {
     const dialog = this.dialog.open(AddMenuComponent);
     dialog.closed.subscribe((data: any) => {
       //  console.log("data",data);
-      this.getMenus();
       if (data) {
       }
     });
@@ -154,7 +149,21 @@ export class EditMenuComponent implements OnInit {
       }
       // console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
     }
+    this.dataProvider.clearSearchField.next();
     this.dataProvider.modeChanged.next(mode.value);
   }
 
+  async close(){
+    if(this.dataProvider.newMenuLoaded){
+      if (await this.dataProvider.confirm("Have you made changed to the loaded menu ?",[1],{
+        description: "The menu you imported has been added, but it was loaded with default settings. Like default taxes, serving sizes etc. You can always change theses settings. Do you want to keep editing the menu or exit the menu editor?",
+        buttons:["Keep Editing","Exit Menu Editor"]
+      })){
+        this.dialogRef.close();
+        this.dataProvider.newMenuLoaded = false;
+      }
+    } else {
+      this.dialogRef.close();
+    }
+  }
 }

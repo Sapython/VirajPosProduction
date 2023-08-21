@@ -4,7 +4,6 @@
     <viraj-button type="icon" (click)="cancel()"><i class="ri-close-fill"></i></viraj-button>
   </div>
   <form [formGroup]="newDishForm" (ngSubmit)="addDish()">
-
     <mat-form-field appearance="outline">
       <mat-label>Dish Name</mat-label>
       <input matInput formControlName="name" />
@@ -31,6 +30,7 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
+    <mat-checkbox formControlName="sellByAvailable">Allow this product to sell by price/quantity</mat-checkbox>
     <mat-form-field appearance="outline" class="fullWidth">
       <mat-label>Printer</mat-label>
       <app-helper matSuffix tooltip="Printer for this given dish."></app-helper>

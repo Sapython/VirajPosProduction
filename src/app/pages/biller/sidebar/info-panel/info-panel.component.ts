@@ -14,6 +14,7 @@ import { APP_CONFIG } from '../../../../../environments/environment';
 import { DataProvider } from '../../../../core/services/provider/data-provider.service';
 import { ElectronService } from '../../../../core/services/electron/electron.service';
 import { UpdaterComponent } from './updater/updater.component';
+import { ReportsComponent } from '../reports/reports.component';
 declare var Hammer: any;
 @Component({
   selector: 'app-info-panel',
@@ -139,5 +140,9 @@ export class InfoPanelComponent implements OnInit, OnChanges, AfterViewInit {
     // //   // dialog.close();
     // // })
     this.electronService.checkForUpdate();
+  }
+
+  openReports() {
+    this.dialog.open(ReportsComponent);
   }
 }

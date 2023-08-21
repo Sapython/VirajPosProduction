@@ -89,6 +89,11 @@ export class AddLoyaltySettingComponent {
 
   setBaseLoyaltyPoint(value: number | null | string) {
     if (value && typeof Number(value) == 'number') {
+      if(Number(value) < 0){
+        value = 0;
+        this.alertify.presentToast('Base rate cannot be negative','error');
+        return;
+      }
       this.usableMainCategories.forEach((category) => {
         category.products.forEach((prod) => {
           if (

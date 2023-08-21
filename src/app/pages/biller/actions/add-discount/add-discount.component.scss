@@ -1,12 +1,22 @@
 section {
   background: white;
-  padding: 20px;
   border-radius: 5px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
   max-width: 600px;
+  .heading{
+	  display: flex;
+	  justify-content: space-between;
+	  align-items: center;
+	  border-bottom: 2px solid #c7c7c7;
+	  padding: 0px 30px;
+	}
+  .body{
+    padding: 20px;
+  }
   .actions {
     display: flex;
+    width: 100%;
     justify-content: flex-end;
     gap: 10px;
     button[mat-raised-button] {
@@ -47,6 +57,11 @@ section {
     gap: 20px;
     align-items: center;
     justify-content: center;
+    .fields{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
     mat-form-field {
       width: 100%;
     }

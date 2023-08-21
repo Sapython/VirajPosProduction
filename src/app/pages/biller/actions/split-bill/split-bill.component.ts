@@ -24,6 +24,8 @@ import { Timestamp } from '@angular/fire/firestore';
 import { BillService } from '../../../../core/services/database/bill/bill.service';
 import { PrinterService } from '../../../../core/services/printing/printer/printer.service';
 import { AnalyticsService } from '../../../../core/services/database/analytics/analytics.service';
+import { ApplicableCombo } from '../../../../core/constructors/comboKot/comboKot';
+import { Product } from '../../../../types/product.structure';
 
 @Component({
   selector: 'app-split-bill',
@@ -31,7 +33,7 @@ import { AnalyticsService } from '../../../../core/services/database/analytics/a
   styleUrls: ['./split-bill.component.scss'],
 })
 export class SplitBillComponent {
-  allKots: KotConstructor[];
+  allKots: extendedKotConstructor[];
   splittedBills: BillConstructor[] = [];
   kotNoColors: { color: string; contrast: string }[] = [
     { color: '#4dc9f6', contrast: '#000' },
@@ -44,20 +46,20 @@ export class SplitBillComponent {
     { color: '#58595b', contrast: '#fff' },
     { color: '#8549ba', contrast: '#fff' },
   ];
-  selectAll(event: any, kot: KotConstructor) {
+  selectAll(event: any, kot: extendedKotConstructor) {
     //  console.log('event', event);
-    kot.products.forEach((product) => {
+    kot.items.forEach((product) => {
       product.selected = event.checked;
     });
   }
   checkAll(event: any, kot: any, item: any) {
     //  console.log('event', event);
     item.selected = event.checked;
-    if (kot.products.every((product: any) => product.selected)) {
+    if (kot.items.every((product: any) => product.selected)) {
       kot.allSelected = true;
       kot.someSelected = false;
       //  console.log('kot', kot.allSelected);
-    } else if (kot.products.some((product: any) => product.selected)) {
+    } else if (kot.items.some((product: any) => product.selected)) {
       kot.allSelected = false;
       kot.someSelected = true;
       //  console.log('kot', kot.someSelected);
@@ -78,11 +80,23 @@ export class SplitBillComponent {
     private printingService: PrinterService,
     private analyticsService:AnalyticsService
   ) {
-    this.allKots = JSON.parse(
-      JSON.stringify(bill.kots.map((kot) => kot.toObject())),
-    );
+    let kots:any[] = structuredClone(bill.kots.map((kot) => kot.toObject()));
+    this.allKots = kots.map((kot) => {
+      return {
+        ...kot,
+        items:kot.products.map((product)=>{
+          console.log('product',product.sellByAvailable);
+          return {
+            ...product,
+            maxQuantity:product.quantity,
+            newQuantity:product.quantity,
+            amount:product.quantity * product.price
+          }
+        })
+      }
+    });
     this.allKots.forEach((kot) => {
-      kot.products.forEach((product) => {
+      kot.items.forEach((product) => {
         product.selected = false;
       });
     });
@@ -94,21 +108,21 @@ export class SplitBillComponent {
 
   splitBill() {
     let products: any[] = [];
-    let kots: KotConstructor[] = [];
+    let kots: extendedKotConstructor[] = [];
     this.allKots.forEach((kot) => {
       let localProducts = [];
-      kot.products.forEach((product) => {
+      kot.items.forEach((product) => {
         if (product.selected) {
           localProducts.push({ ...product, kot: kot });
         }
       });
       if (localProducts.length > 0) {
         let kotCopy = JSON.parse(JSON.stringify(kot));
-        kotCopy.products = localProducts;
+        kotCopy.items = localProducts;
         kots.push(kotCopy);
       }
     });
-    if (kots.length == 0 || kots[0].products.length == 0) {
+    if (kots.length == 0 || kots[0].items.length == 0) {
       this.alertify.presentToast('Please select atleast one item to split');
       return;
     }
@@ -121,10 +135,24 @@ export class SplitBillComponent {
       totalTax: 0,
       postDiscountSubTotal:0
     };
+    console.log('kots', kots);
+    // convert extendedKotConstructor to KotConstructor
+    let kotsConstructed:any[] = kots.map((kot)=>{
+      return {
+        ...kot,
+        products:kot.items.map((product)=>{
+          return {
+            ...product,
+            quantity:product.newQuantity
+          }
+        })
+      }
+    })
+    console.log('constructed kots: ', kots);
     let billConstructor: BillConstructor = {
       billing: billing,
       id: this.bill.id,
-      kots: kots,
+      kots: kotsConstructed,
       mode: this.bill.mode,
       table: this.bill.table,
       tokens: this.bill.tokens,
@@ -161,10 +189,37 @@ export class SplitBillComponent {
     this.splittedBills.push(billConstructor);
     // remove selected products from original bill
     this.allKots.forEach((kot) => {
-      kot.products = kot.products.filter((product) => !product.selected);
+      kot.items = kot.items.map((product) => {
+        if (product.selected){
+          product.maxQuantity = product.maxQuantity - product.newQuantity;
+          product.newQuantity = product.maxQuantity;
+          return product;
+        } else {
+          return product;
+        }
+      });
+    });
+    this.allKots.forEach((kot) => {
+      kot.items = kot.items.filter((product) => !(product.maxQuantity==0));
     });
     // remove kots with no products
-    this.allKots = this.allKots.filter((kot) => kot.products.length > 0);
+    this.allKots = this.allKots.filter((kot) => kot.items.length > 0);
+  }
+
+  checkQuantity(item){
+    if(item.newQuantity>item.maxQuantity){
+      item.newQuantity = item.maxQuantity;
+    } else if(item.newQuantity<0){
+      item.newQuantity = 0;
+    }
+    item.amount = this.roundOff(item.newQuantity*item.price);
+    if(item.newQuantity==0){
+      item.selected = false;
+    } else if(item.newQuantity>0){
+      item.selected = true;
+    } else {
+      item.selected = false;
+    }
   }
 
   settleBill(billConstructor: BillConstructor) {
@@ -185,8 +240,8 @@ export class SplitBillComponent {
           payments: result.paymentMethods,
           time: Timestamp.now(),
           user: {
-            access: this.dataProvider.currentBusinessUser.access.accessType == 'role' ? this.dataProvider.currentBusinessUser.access.role : 'custom',
-            username: this.dataProvider.currentBusinessUser.name,
+            access: this.dataProvider.currentBusinessUser.accessType == 'role' ? this.dataProvider.currentBusinessUser.role : 'custom',
+            username: this.dataProvider.currentBusinessUser.username,
           },
         };
         billConstructor.stage = 'settled';
@@ -235,8 +290,8 @@ export class SplitBillComponent {
       );
       this.billService.addActivity(this.bill,{
         type:'billSplit',
-        message:'Bill splitted by '+this.dataProvider.currentBusinessUser.name,
-        user:this.dataProvider.currentBusinessUser.name,
+        message:'Bill splitted by '+this.dataProvider.currentBusinessUser.username,
+        user:this.dataProvider.currentBusinessUser.username,
         data:{
           originalBillId:this.bill.id,
           splittedBillIds:ids
@@ -261,6 +316,21 @@ export class SplitBillComponent {
       this.splittedBills.every((bill) => bill.stage == 'settled')
     );
   }
+
+  setItemAmount(item:extendedProduct|extendedApplicableCombo){
+    // generate quantity based upon price and amount
+    if(item.sellBy=='price'){
+      item.newQuantity = this.roundOff(item.amount/item.price);
+      this.checkQuantity(item);
+    }
+  }
+
+  roundOff(amount: number) {
+    // round off to 2 digits epsilon
+    return Math.round((amount + Number.EPSILON) * 100) / 100;
+  }
+
+
 }
 
 export function calculateBill(
@@ -320,4 +390,23 @@ export function calculateBill(
     allProducts,
     dataProvider,
   );
+}
+interface extendedKotConstructor extends KotConstructor {
+  items:(extendedProduct|extendedApplicableCombo)[];
+}
+
+interface extendedProduct extends Product {
+  maxQuantity:number;
+  newQuantity:number;
+  sellByAvailable:boolean;
+  sellBy?:'quantity'|'price';
+  amount:number;
+}
+
+interface extendedApplicableCombo extends ApplicableCombo {
+  maxQuantity:number;
+  newQuantity:number;
+  sellByAvailable:boolean;
+  sellBy?:'quantity'|'price';
+  amount:number;
 }

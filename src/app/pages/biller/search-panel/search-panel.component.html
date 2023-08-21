@@ -10,7 +10,7 @@
       (focus)="active = true"
       (blur)="active = false"
       type="search"
-      [placeholder]="dynamicPlaceholder"
+      placeholder="Search Products ..."
     />
     <viraj-button
       *ngIf="(dataProvider.clientWidth | async) < 900"

@@ -47,7 +47,7 @@ var debug: boolean = true;
   providedIn: 'root',
 })
 export class OnboardingService {
-  previousValidity:boolean = false;
+  previousValidity: boolean = false;
   noUserExists: boolean = false;
   message: string = '';
   stage:
@@ -67,10 +67,19 @@ export class OnboardingService {
     | 'validityExpired'
     | 'errorOccured' = 'noUser';
   loadingSteps: Subject<string> = new Subject<string>();
-  currentAreaState:{state:string,cities:{city:string,businesses:UserBusiness[]}[]};
-  currentAreaCity:{city:string,businesses:UserBusiness[]};
-  groupedBusiness:{state:string,cities:{city:string,businesses:UserBusiness[]}[]}[] = [];
-  private checkIfAccessTokenIsValidFunction = httpsCallable(this.functions,'checkIfAccessTokenIsValid');
+  currentAreaState: {
+    state: string;
+    cities: { city: string; businesses: UserBusiness[] }[];
+  };
+  currentAreaCity: { city: string; businesses: UserBusiness[] };
+  groupedBusiness: {
+    state: string;
+    cities: { city: string; businesses: UserBusiness[] }[];
+  }[] = [];
+  private checkIfAccessTokenIsValidFunction = httpsCallable(
+    this.functions,
+    'checkIfAccessTokenIsValid',
+  );
   constructor(
     private dataProvider: DataProvider,
     private firestore: Firestore,
@@ -87,7 +96,7 @@ export class OnboardingService {
     private billService: BillService,
     private userManagementService: UserManagementService,
     private router: Router,
-    private functions:Functions
+    private functions: Functions,
   ) {
     // getDocs(collection(this.firestore,'users')).then((res)=>{
     //   console.log("Res",res);
@@ -136,40 +145,46 @@ export class OnboardingService {
           data.user.business.forEach((business) => {
             let state = business.state;
             let city = business.city;
-            console.log("state",state,"city",city);
-            let stateIndex = this.groupedBusiness.findIndex((stateObj)=>{
+            console.log('state', state, 'city', city);
+            let stateIndex = this.groupedBusiness.findIndex((stateObj) => {
               return stateObj.state == state;
             });
-            if (stateIndex == -1){
+            if (stateIndex == -1) {
               this.groupedBusiness.push({
-                state:state,
-                cities:[{
-                  city:city,
-                  businesses:[business]
-                }]
+                state: state,
+                cities: [
+                  {
+                    city: city,
+                    businesses: [business],
+                  },
+                ],
               });
             } else {
-              let cityIndex = this.groupedBusiness[stateIndex].cities.findIndex((cityObj)=>{
-                return cityObj.city == city;
-              });
-              if (cityIndex == -1){
+              let cityIndex = this.groupedBusiness[stateIndex].cities.findIndex(
+                (cityObj) => {
+                  return cityObj.city == city;
+                },
+              );
+              if (cityIndex == -1) {
                 this.groupedBusiness[stateIndex].cities.push({
-                  city:city,
-                  businesses:[business]
+                  city: city,
+                  businesses: [business],
                 });
               } else {
-                this.groupedBusiness[stateIndex].cities[cityIndex].businesses.push(business);
+                this.groupedBusiness[stateIndex].cities[
+                  cityIndex
+                ].businesses.push(business);
               }
             }
           });
           // if only one state is present then select the state
-          if (this.groupedBusiness.length == 1){
+          if (this.groupedBusiness.length == 1) {
             this.currentAreaState = this.groupedBusiness[0];
-            if (this.currentAreaState.cities.length == 1){
+            if (this.currentAreaState.cities.length == 1) {
               this.currentAreaCity = this.currentAreaState.cities[0];
             }
           }
-          console.log("groupedBusiness",this.groupedBusiness);
+          console.log('groupedBusiness', this.groupedBusiness);
           this.stage = 'multipleBusiness';
         } else if (data.user.business.length == 1) {
           this.loadingSteps.next('User Found with a business');
@@ -197,40 +212,52 @@ export class OnboardingService {
 
   loadBusiness(businessId: string) {
     if (debug) console.log('Loading business', businessId);
-    docData(doc(this.firestore, 'business', businessId),{idField:'id'}).subscribe(async (business) => {
+    docData(doc(this.firestore, 'business', businessId), {
+      idField: 'id',
+    }).subscribe(async (business) => {
       if (business) {
         this.loadingSteps.next('Checking validity of business');
-        if (!business['accessCode']){
+        if (!business['accessCode']) {
           this.previousValidity = false;
           this.stage = 'validityExpired';
           this.message = 'Validity Has Expired';
           this.alertify.presentToast(this.message, 'error');
-          alert("Validity of your biller is expired please contact support to renew your validity.");
+          alert(
+            'Validity of your biller is expired please contact support to renew your validity.',
+          );
           this.checkAndRefresh();
           this.dataProvider.loading = false;
           return;
         } else {
-          try{
-            let res = await this.checkValidity(business.id,business['accessCode']);
-            if (!res || !res.data || !res.data['status']){
+          try {
+            let res = await this.checkValidity(
+              business.id,
+              business['accessCode'],
+            );
+            if (!res || !res.data || !res.data['status']) {
               this.dataProvider.validTill = new Date(res.data['validTill']);
-              console.log("this.dataProvider.validTill",this.dataProvider.validTill);
+              console.log(
+                'this.dataProvider.validTill',
+                this.dataProvider.validTill,
+              );
               this.stage = 'validityExpired';
               this.message = 'Validity Has Expired';
               this.alertify.presentToast(this.message, 'error');
               this.previousValidity = false;
-              alert("Validity of your biller is expired please contact support to renew your validity.");
+              alert(
+                'Validity of your biller is expired please contact support to renew your validity.',
+              );
               this.checkAndRefresh();
               this.dataProvider.loading = false;
-              return
+              return;
             }
-          } catch (err){
+          } catch (err) {
             this.stage = 'validityExpired';
             this.message = 'Validity Has Expired';
             this.alertify.presentToast(this.message, 'error');
             this.checkAndRefresh();
             this.previousValidity = false;
-            return
+            return;
           }
         }
         var businessRecord = business as BusinessRecord;
@@ -246,7 +273,7 @@ export class OnboardingService {
           businessId: business.id,
         } as BusinessRecord;
         this.dataProvider.businessId = business.id;
-        if(!this.router.url.includes('biller')){
+        if (!this.router.url.includes('biller')) {
           this.stage = 'userExists';
           this.loadingSteps.next('Loaded user details.');
           this.startVrajera(this.dataProvider.currentBusiness);
@@ -259,9 +286,9 @@ export class OnboardingService {
     });
   }
 
-  checkAndRefresh(){
+  checkAndRefresh() {
     // check the current url if the path is biller then refresh the page
-    if (this.router.url.includes('biller')){
+    if (this.router.url.includes('biller')) {
       let url = window.location.href.split('/');
       url.pop();
       url.push('index.html');
@@ -278,217 +305,292 @@ export class OnboardingService {
       if (setting.modes.filter((mode: boolean) => mode).length >= 1) {
         this.loadingSteps.next('Checking available modes');
         if (setting.dineInMenu || setting.takeawayMenu || setting.onlineMenu) {
-          let menus = await this.menuManagementService.getMenus();
-          this.dataProvider.allMenus = [];
-          menus.docs.forEach((menu) => {
-            this.dataProvider.allMenus.push({
-              ...menu.data(),
-              id: menu.id,
-            } as Menu);
-          });
+          this.menuManagementService.getAllMenus();
+          let menus = await firstValueFrom(this.dataProvider.allMenus);
           // get whatever menu is available in currentMenu and set it to currentMenu
-          let menuInits = [];
-          this.dataProvider.menus = [];
-          if (setting.takeawayMenu) {
-            setting.takeawayMenu =
-              this.dataProvider.allMenus.find(
-                (menu) => menu.id == setting.takeawayMenu.id,
-              ) || setting.takeawayMenu;
-            let inst = new ModeConfig(
-              'Takeaway',
-              'takeaway',
-              setting.takeawayMenu,
-              setting.takeawayMenu.id,
-              this.dataProvider,
-              this.menuManagementService,
-              this.productService,
-              this.alertify,
-              this.dialog,
-              this.settingsService,
-            );
-            menuInits.push('takeaway');
-            this.dataProvider.menus.push(inst);
-            this.loadingSteps.next('Found Takeaway Menu');
-          }
-          if (setting.onlineMenu) {
-            setting.onlineMenu =
-              this.dataProvider.allMenus.find(
-                (menu) => menu.id == setting.onlineMenu.id,
-              ) || setting.onlineMenu;
-            let inst = new ModeConfig(
-              'Online',
-              'online',
-              setting.onlineMenu,
-              setting.onlineMenu.id,
-              this.dataProvider,
-              this.menuManagementService,
-              this.productService,
-              this.alertify,
-              this.dialog,
-              this.settingsService,
-            );
-            menuInits.push('online');
-            this.dataProvider.menus.push(inst);
-            this.loadingSteps.next('Found Online Menu');
-          }
-          if (setting.dineInMenu) {
-            setting.dineInMenu =
-              this.dataProvider.allMenus.find(
-                (menu) => menu.id == setting.dineInMenu.id,
-              ) || setting.dineInMenu;
-            let inst = new ModeConfig(
-              'Dine In',
-              'dineIn',
-              setting.dineInMenu,
-              setting.dineInMenu.id,
-              this.dataProvider,
-              this.menuManagementService,
-              this.productService,
-              this.alertify,
-              this.dialog,
-              this.settingsService,
-            );
-            menuInits.push('dineIn');
-            this.dataProvider.menus.push(inst);
-            this.loadingSteps.next('Found Dine In Menu');
-          }
-          console.log(
-            'menus.docs.map',
-            menus.docs.map((doc) => {
-              return {
-                ...doc.data(),
-                id: doc.id,
-                selectedLoyaltyId: doc.data()['selectedLoyaltyId']
-                  ? doc.data()['selectedLoyaltyId']
-                  : null,
-              } as Menu;
+          let toBeLoadedMenus = [
+            {
+              mode: ['dineIn'],
+              menu: menus.find((m)=>m.id == setting.dineInMenu.id),
+            },
+            {
+              mode: ['takeaway'],
+              menu: menus.find((m)=>m.id == setting.takeawayMenu.id),
+            },
+            {
+              mode: ['online'],
+              menu: menus.find((m)=>m.id == setting.onlineMenu.id),
+            },
+          ];
+          let filteredToBeLoadedMenus = [];
+          toBeLoadedMenus.forEach((toBeLoadedMenu) => {
+            if (toBeLoadedMenu) {
+              let matchingMenuModesIndexes = toBeLoadedMenus
+                .map((mode, index) => {
+                  if (mode.menu && mode.menu.id == toBeLoadedMenu.menu.id) {
+                    return {
+                      mode: mode.mode,
+                      index: index,
+                    };
+                  }
+                })
+                .filter((mode) => mode);
+              console.log('matchingMenuModesIndexes', matchingMenuModesIndexes);
+              // merge the modes of matching menus
+              if (matchingMenuModesIndexes.length > 1) {
+                let mergedModes = [];
+                matchingMenuModesIndexes.forEach((matchingMenuModeIndex) => {
+                  mergedModes = [...mergedModes, ...matchingMenuModeIndex.mode];
+                });
+                filteredToBeLoadedMenus.push({
+                  mode: mergedModes,
+                  menu: toBeLoadedMenu.menu,
+                });
+                // remove the matching menus from toBeLoadedMenus
+                matchingMenuModesIndexes.forEach((matchingMenuModeIndex) => {
+                  toBeLoadedMenus[matchingMenuModeIndex.index] = null;
+                });
+              }
+            }
+            return toBeLoadedMenu;
+          });
+          console.log('filteredToBeLoadedMenus', filteredToBeLoadedMenus);
+          let loadingMenus = await Promise.all(
+            filteredToBeLoadedMenus.map(async (toBeLoadedMenu) => {
+              for (const toBeLoadedMode of toBeLoadedMenu.mode) {
+                console.log('toBeLoadedMode', toBeLoadedMenu);
+                if (toBeLoadedMode == 'dineIn') {
+                  let inst = new ModeConfig(
+                    'Dine In',
+                    'dineIn',
+                    toBeLoadedMenu.menu,
+                    toBeLoadedMenu.menu.id,
+                    this.dataProvider,
+                    this.menuManagementService,
+                    this.productService,
+                    this.alertify,
+                    this.dialog,
+                    this.settingsService,
+                  );
+                  this.dataProvider.menus.push(inst);
+                  this.loadingSteps.next('Loading Dine In Menu');
+                  await firstValueFrom(inst.loadedAllData);
+                } else if (toBeLoadedMode == 'takeaway') {
+                  let inst = new ModeConfig(
+                    'Takeaway',
+                    'takeaway',
+                    toBeLoadedMenu.menu,
+                    toBeLoadedMenu.menu.id,
+                    this.dataProvider,
+                    this.menuManagementService,
+                    this.productService,
+                    this.alertify,
+                    this.dialog,
+                    this.settingsService,
+                  );
+                  this.dataProvider.menus.push(inst);
+                  this.loadingSteps.next('Loading Takeaway Menu');
+                  await firstValueFrom(inst.loadedAllData);
+                } else if (toBeLoadedMode == 'online') {
+                  let inst = new ModeConfig(
+                    'Online',
+                    'online',
+                    toBeLoadedMenu.menu,
+                    toBeLoadedMenu.menu.id,
+                    this.dataProvider,
+                    this.menuManagementService,
+                    this.productService,
+                    this.alertify,
+                    this.dialog,
+                    this.settingsService,
+                  );
+                  this.dataProvider.menus.push(inst);
+                  this.loadingSteps.next('Loading Online Menu');
+                  await firstValueFrom(inst.loadedAllData);
+                }
+              }
             }),
           );
+          // let menuInits = [];
+          // if(setting.takeawayMenu.id == setting.onlineMenu.id && setting.onlineMenu.id == setting.dineInMenu.id){
+          //   if (setting.takeawayMenu) {
+          //     let inst = new ModeConfig(
+          //       'Takeaway',
+          //       'takeaway',
+          //       setting.takeawayMenu,
+          //       setting.takeawayMenu.id,
+          //       this.dataProvider,
+          //       this.menuManagementService,
+          //       this.productService,
+          //       this.alertify,
+          //       this.dialog,
+          //       this.settingsService,
+          //     );
+          //     menuInits.push('takeaway');
+          //     this.dataProvider.menus.push(inst);
+          //     this.loadingSteps.next('Found Takeaway Menu');
+          //     await firstValueFrom(inst.loadedAllData);
+          //     if (setting.onlineMenu) {
+          //       setting.onlineMenu =
+          //       menus.find(
+          //           (menu) => menu.id == setting.onlineMenu.id,
+          //         ) || setting.onlineMenu;
+          //       let inst = new ModeConfig(
+          //         'Online',
+          //         'online',
+          //         setting.onlineMenu,
+          //         setting.onlineMenu.id,
+          //         this.dataProvider,
+          //         this.menuManagementService,
+          //         this.productService,
+          //         this.alertify,
+          //         this.dialog,
+          //         this.settingsService,
+          //       );
+          //       menuInits.push('online');
+          //       this.dataProvider.menus.push(inst);
+          //       this.loadingSteps.next('Found Online Menu');
+          //     }
+          //     if (setting.dineInMenu) {
+          //       setting.dineInMenu =
+          //       menus.find(
+          //           (menu) => menu.id == setting.dineInMenu.id,
+          //         ) || setting.dineInMenu;
+          //       let inst = new ModeConfig(
+          //         'Dine In',
+          //         'dineIn',
+          //         setting.dineInMenu,
+          //         setting.dineInMenu.id,
+          //         this.dataProvider,
+          //         this.menuManagementService,
+          //         this.productService,
+          //         this.alertify,
+          //         this.dialog,
+          //         this.settingsService,
+          //       );
+          //       menuInits.push('dineIn');
+          //       this.dataProvider.menus.push(inst);
+          //       this.loadingSteps.next('Found Dine In Menu');
+          //     }
+          //   }
+          // }
           // console.log("loaded discounts",this.dataProvider.discounts);
-          let verifiedMenus = [];
+          // let verifiedMenus = [];
           this.loadingSteps.next('Waiting for menus to load');
-          let menuSubscription = this.dataProvider.menuLoadSubject.subscribe(
-            async (menu) => {
-              // console.log("Loaded",menu,menuInits,verifiedMenus);
-              verifiedMenus.push(menu.type);
-              // check if all menus are loaded
-              if (verifiedMenus.length == menuInits.length) {
-                this.loadingSteps.next('All menus loaded');
-                // set current menu in order of dineIn, takeaway, online
-                let lastLocalMode = localStorage.getItem('billingMode');
-                var currentMenu;
-                if(lastLocalMode){
-                  currentMenu = this.dataProvider.menus.find(
-                    (menu) =>
-                      (menu.type == 'dineIn' && lastLocalMode == 'dineIn') ||
-                      (menu.type == 'takeaway' && lastLocalMode == 'takeaway') ||
-                      (menu.type == 'online' && lastLocalMode == 'online'),
-                  );
-                }
-                if (!currentMenu){
-                  currentMenu = this.dataProvider.menus.find(
-                    (menu) =>
-                      (menu.type == 'dineIn' && setting.modes[0]) ||
-                      (this.dataProvider.menus.find(
-                        (menu) => menu.type == 'takeaway',
-                      ) &&
-                        setting.modes[1]) ||
-                      (this.dataProvider.menus.find(
-                        (menu) => menu.type == 'online',
-                      ) &&
-                        setting.modes[2]),
-                  );
-                }
-                console.log("currentMenu",currentMenu,this.dataProvider.menus);
-                if (currentMenu) {
-                  this.dataProvider.menuLoadSubject.next(currentMenu);
-                } else {
-                  this.loadingSteps.next('No menus found');
-                  this.alertify.presentToast('No menus found', 'error');
-                  this.stage = 'onboardingStep3';
-                  return;
-                }
-                this.dataProvider.currentMenu = currentMenu;
-                this.dataProvider.products =
-                  this.dataProvider.currentMenu.products;
-                if (setting.modes[0]) {
-                  await this.getTables();
-                  this.loadingSteps.next('All tables loaded');
-                }
-                if (setting.modes[1]) {
-                  await this.getTokens();
-                  this.loadingSteps.next('All tokens loaded');
-                }
-                if (setting.modes[2]) {
-                  await this.getOnlineTokens();
-                  this.loadingSteps.next('All online tokens loaded');
-                }
-                this.dataProvider.showTableOnBillAction = JSON.parse(
-                  localStorage.getItem('showTable') || 'false',
-                );
-                // console.log("Loading table size");
-                let tempSize = localStorage.getItem('tableSize');
-                if (
-                  tempSize == 'large' ||
-                  tempSize == 'medium' ||
-                  tempSize == 'small'
-                ) {
-                  this.dataProvider.currentTableSize = tempSize;
-                } else {
-                  this.dataProvider.currentTableSize = 'large';
-                }
-                // console.log('Loaded table size');
-                menuSubscription.unsubscribe();
-                this.loadingSteps.next('Setup Completed');
-                this.message = 'Vrajera is ready to use.';
-                this.dataProvider.loading = false;
-                this.stage = 'virajReady';
-                this.router.navigate(['biller']);
-              }
-            },
+          this.loadingSteps.next('All menus loaded');
+          // set current menu in order of dineIn, takeaway, online
+          let lastLocalMode = localStorage.getItem('billingMode');
+          var currentMenu;
+          if (lastLocalMode) {
+            currentMenu = this.dataProvider.menus.find(
+              (menu) => menu.type == lastLocalMode,
+            );
+          }
+          if (!currentMenu) {
+            currentMenu = this.dataProvider.menus.find(
+              (menu) =>
+                (menu.type == 'dineIn' && setting.modes[0]) ||
+                (this.dataProvider.menus.find(
+                  (menu) => menu.type == 'takeaway',
+                ) &&
+                  setting.modes[1]) ||
+                (this.dataProvider.menus.find(
+                  (menu) => menu.type == 'online',
+                ) &&
+                  setting.modes[2]),
+            );
+          }
+          console.log('currentMenu', currentMenu, this.dataProvider.menus);
+          if (currentMenu) {
+            this.dataProvider.menuLoadSubject.next(currentMenu);
+          } else {
+            this.loadingSteps.next('No menus found');
+            this.alertify.presentToast('No menus found', 'error');
+            this.stage = 'onboardingStep3';
+            return;
+          }
+          this.dataProvider.currentMenu = currentMenu;
+          this.dataProvider.products = this.dataProvider.currentMenu.products;
+          if (setting.modes[0]) {
+            await this.getTables();
+            this.loadingSteps.next('All tables loaded');
+          }
+          if (setting.modes[1]) {
+            await this.getTokens();
+            this.loadingSteps.next('All tokens loaded');
+          }
+          if (setting.modes[2]) {
+            await this.getOnlineTokens();
+            this.loadingSteps.next('All online tokens loaded');
+          }
+          this.dataProvider.showTableOnBillAction = JSON.parse(
+            localStorage.getItem('showTable') || 'false',
           );
+          // console.log("Loading table size");
+          let tempSize = localStorage.getItem('tableSize');
+          if (
+            tempSize == 'large' ||
+            tempSize == 'medium' ||
+            tempSize == 'small'
+          ) {
+            this.dataProvider.currentTableSize = tempSize;
+          } else {
+            this.dataProvider.currentTableSize = 'large';
+          }
+          // console.log('Loaded table size');
+          this.loadingSteps.next('Setup Completed');
+          this.message = 'Vrajera is ready to use.';
+          this.dataProvider.loading = false;
+          this.stage = 'virajReady';
+          this.router.navigate(['biller']);
         } else {
           this.stage = 'onboardingStep3';
         }
       } else {
         this.loadingSteps.next('No modes enabled');
-        this.alertify.presentToast('Please enable atleast one mode', 'error');
+        this.alertify.presentToast('Please enable at-least one mode', 'error');
       }
     });
     // get daily counters
     let date = new Date().toISOString().split('T')[0];
-    docData(doc(this.firestore, 'business/' + this.dataProvider.businessId+'/dailyTokens/'+date)).subscribe((tokens)=>{
-      if (tokens && tokens['billTokenNo']){
+    docData(
+      doc(
+        this.firestore,
+        'business/' + this.dataProvider.businessId + '/dailyTokens/' + date,
+      ),
+    ).subscribe((tokens) => {
+      if (tokens && tokens['billTokenNo']) {
         this.dataProvider.dailyTokens.billTokenNo = tokens['billTokenNo'];
       } else {
         this.dataProvider.dailyTokens.billTokenNo = 0;
       }
 
-      if (tokens && tokens['orderTokenNo']){
+      if (tokens && tokens['orderTokenNo']) {
         this.dataProvider.dailyTokens.orderTokenNo = tokens['orderTokenNo'];
       } else {
         this.dataProvider.dailyTokens.orderTokenNo = 0;
       }
 
-      if (tokens && tokens['ncBillTokenNo']){
+      if (tokens && tokens['ncBillTokenNo']) {
         this.dataProvider.dailyTokens.ncBillTokenNo = tokens['ncBillTokenNo'];
       } else {
         this.dataProvider.dailyTokens.ncBillTokenNo = 0;
       }
 
-      if (tokens && tokens['takeawayTokenNo']){
-        this.dataProvider.dailyTokens.takeawayTokenNo = tokens['takeawayTokenNo'];
+      if (tokens && tokens['takeawayTokenNo']) {
+        this.dataProvider.dailyTokens.takeawayTokenNo =
+          tokens['takeawayTokenNo'];
       } else {
         this.dataProvider.dailyTokens.takeawayTokenNo = 0;
       }
 
-      if (tokens && tokens['onlineTokenNo']){
+      if (tokens && tokens['onlineTokenNo']) {
         this.dataProvider.dailyTokens.onlineTokenNo = tokens['onlineTokenNo'];
       } else {
         this.dataProvider.dailyTokens.onlineTokenNo = 0;
       }
 
-      if (tokens && tokens['kitchenTokenNo']){
+      if (tokens && tokens['kitchenTokenNo']) {
         this.dataProvider.dailyTokens.kitchenTokenNo = tokens['kitchenTokenNo'];
       } else {
         this.dataProvider.dailyTokens.kitchenTokenNo = 0;
@@ -797,12 +899,12 @@ export class OnboardingService {
     this.stage = 'resetPasswordStage1';
   }
 
-  checkValidity(businessId:string,accessCode:string){
+  checkValidity(businessId: string, accessCode: string) {
     return this.checkIfAccessTokenIsValidFunction({
-      businessId:businessId,
-      accessCode:accessCode,
-      username:this.dataProvider.currentUser.username
-    })
+      businessId: businessId,
+      accessCode: accessCode,
+      username: this.dataProvider.currentUser.username,
+    });
   }
 }
 

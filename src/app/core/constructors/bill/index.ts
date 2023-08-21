@@ -151,7 +151,7 @@ export class Bill implements BillConstructor {
       //  console.log("this.printableBillData",this.printableBillData);
     });
     this.updated.pipe(debounceTime(1000)).subscribe(async (data) => {
-      if (!data) {
+      if (!data && this.eligibleForUpdate()) {
         this.updateToFirebase();
       }
     });
@@ -201,6 +201,10 @@ export class Bill implements BillConstructor {
   // common functions
   public calculateBill = calculateBill;
   public calculateLoyalty = calculateLoyalty;
+  public eligibleForUpdate(){
+    // return true if there is atleast 1 finalize kot else false
+    return this.kots.some(kot=>kot.stage==='finalized')
+  }
 
   // bill functions
   public setAsNonChargeable = setAsNonChargeable;

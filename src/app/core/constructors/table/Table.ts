@@ -412,7 +412,7 @@ export class Table implements TableConstructor {
         //   this.dataProvider.tempProduct
         // );
         if (this.dataProvider.tempProduct) {
-          alert('Adding product to bill');
+          // alert('Adding product to bill');
           this.bill.addProduct(this.dataProvider.tempProduct);
           this.dataProvider.tempProduct = undefined;
         }
@@ -468,42 +468,86 @@ export class Table implements TableConstructor {
     }
   }
 
-  exchange(table: Table) {
-    if (this.bill && table.bill) {
-      let tempBill = this.bill;
-      this.bill = table.bill;
-      table.bill = tempBill;
-      this.updated.next();
-      this.triggerUpdate();
-    } else {
-      if (this.bill && !table.bill) {
-        // shift the bill from current table to this.table
-        table.bill = this.bill;
-        table.occupiedStart = Timestamp.now();
-        table.status = 'occupied';
-        table.updated.next();
-        this.bill = null;
-        // empty this.table
-        this.clearTable();
-      } else {
-        alert('Table ' + table.name + ' is not occupied');
-      }
-    }
-    alert('Table exchanged successfully');
+  attachBill(bill: Bill) {
+    this.bill = bill;
+    this.occupiedStart = Timestamp.now();
+    this.status = 'occupied';
+    this.updated.next();
   }
 
-  merge(table: Table) {
-    if (this.bill && table.bill) {
-      this.bill.merge(table.bill);
-      this.updated.next();
-      this.triggerUpdate();
+  createNewBill(){
+    let user: UserConstructor = {
+      username: this.dataProvider.currentUser?.username,
+      access: this.dataProvider.currentBusinessUser.accessType,
+    };
+    var mode: 'takeaway' | 'online' | 'dineIn';
+    if (this.type == 'token') {
+      mode = 'takeaway';
+    } else if (this.type == 'online') {
+      mode = 'online';
+    } else if (this.type == 'table') {
+      mode = 'dineIn';
+    } else if (this.type == 'room') {
+      mode = 'dineIn';
     } else {
-      throw new Error(
-        'No bill is available on table ' +
-          this.tableNo +
-          ' or ' +
-          table.tableNo,
-      );
+      alert('Table corrupted please contact admin');
+      return;
+    }
+    return new Bill(
+      this.generateId(),
+      this,
+      mode,
+      user,
+      this.dataProvider.currentMenu?.selectedMenu,
+      this.dataProvider,
+      this.analyticsService,
+      this.billService,
+      this.printingService,
+      this.customerService,
+      this.userManagementService,
+    );
+  }
+
+  async exchange(table: Table) {
+    if (await this.dataProvider.confirm('Are you sure you want to exchange tables?',[1])){
+      if (this.bill && table.bill) {
+        let tempBill = this.bill;
+        this.bill = table.bill;
+        table.bill = tempBill;
+        this.updated.next();
+        this.triggerUpdate();
+      } else {
+        if (this.bill && !table.bill) {
+          // shift the bill from current table to this.table
+          table.bill = this.bill;
+          table.occupiedStart = Timestamp.now();
+          table.status = 'occupied';
+          table.updated.next();
+          this.bill = null;
+          // empty this.table
+          this.clearTable();
+        } else {
+          alert('Table ' + table.name + ' is not occupied');
+        }
+      }
+      alert('Table exchanged successfully');
+    }
+  }
+
+  async merge(table: Table) {
+    if (await this.dataProvider.confirm('Are you sure you want to merge tables?',[1])){
+      if (this.bill && table.bill) {
+        this.bill.merge(table.bill);
+        this.updated.next();
+        this.triggerUpdate();
+      } else {
+        throw new Error(
+          'No bill is available on table ' +
+            this.tableNo +
+            ' or ' +
+            table.tableNo,
+        );
+      }
     }
   }
 }

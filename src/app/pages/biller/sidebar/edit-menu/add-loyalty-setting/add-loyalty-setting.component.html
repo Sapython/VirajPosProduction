@@ -28,18 +28,19 @@
       <div class="rate">
         <app-helper tooltip="This rate will be assigned to all products by default."></app-helper>
         <input
-          placeholder="Base Rate"
-          type="number"
-          value="1"
-          (change)="
-            setBaseLoyaltyPoint(baseRate.value);
-            calculateLoyaltyCost(conversionRate.value)
-          "
-          formControlName="conversionRate"
-          #conversionRate
-          matInput
+        placeholder="Base Rate"
+        type="number"
+        value="1"
+        min="0"
+        (change)="
+        setBaseLoyaltyPoint(baseRate.value);
+        calculateLoyaltyCost(conversionRate.value)
+        "
+        formControlName="conversionRate"
+        #conversionRate
+        matInput
         />
-        <span matTooltip="Total points that is equal to 1 INR. eg: 25(P) = 1 INR; 1(p) = 0.04 INR"> = {{ 1 | currency: "INR" }}</span>
+        <span style="white-space: nowrap;" matTooltip="Total points that is equal to 1 INR. eg: 25(P) = 1 INR; 1(p) = 0.04 INR"> = {{ 1 | currency: "INR" }}</span>
       </div>
       <mat-form-field appearance="outline">
         <app-helper matSuffix tooltip="In how many days will these assigned points expire."></app-helper>

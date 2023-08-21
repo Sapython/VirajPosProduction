@@ -47,9 +47,7 @@ export class ModeConfig {
   name: string;
   active: boolean;
   selectedMenuId: string = '';
-  selectedMenu: Menu | undefined = this.dataProvider.allMenus.find(
-    (menu) => menu.id == this.selectedMenuId,
-  );
+  selectedMenu: Menu | undefined;
   filteredProducts: Product[];
   productVisibilityChanged: boolean = false;
   allProductsCategory: Category;
@@ -57,7 +55,7 @@ export class ModeConfig {
   products: Product[] = [];
   recommendedCategories: Category[] = [];
   viewCategories: Category[] = [];
-  userWiseViewCategories: {user:string,categories:Category[]}[] = [];
+  userWiseViewCategories: {user:string,categories:Category[],open:boolean}[] = [];
   mainCategories: Category[] = [];
   categoryUpdated: boolean;
   productsUpdated: boolean;
@@ -76,6 +74,7 @@ export class ModeConfig {
   discountsSearchInstance: Fuse<CodeBaseDiscount> = new Fuse([], {
     keys: ['name'],
   });
+  searchFormControl:FormControl = new FormControl('');
   loyaltySettings: LoyaltySetting[] = [];
   filteredLoyaltySettings: LoyaltySetting[] = [];
   loadingLoyaltySettings: boolean = false;
@@ -135,6 +134,7 @@ export class ModeConfig {
   activateCategory: Category | undefined;
   discountSearchControl: string = '';
   selectedLoyaltyId: string = '';
+  loadedAllData:Subject<void> = new Subject<void>();
   constructor(
     name: string,
     type: 'dineIn' | 'takeaway' | 'online',
@@ -154,8 +154,6 @@ export class ModeConfig {
     this.selectedMenuId = selectedMenuId;
     this.selectedMenu = selectedMenu;
     this.selectedLoyaltyId = selectedMenu.selectedLoyaltyId || '';
-    // console.log('HERHERHEHRE', this.selectedLoyaltyId, selectedMenu);
-
     this.categoryUpdated = false;
     this.currentType = 'all';
     this.products.sort((a, b) => {
@@ -186,6 +184,23 @@ export class ModeConfig {
         this.filteredProducts = [];
       }
     });
+    this.menuManagementService.downloadedMenus.subscribe(async (data)=>{
+      if (data == this.selectedMenuId){
+        await this.getAllData();
+      }
+    });
+    this.dataProvider.menusUpdated.pipe(debounceTime(1000)).subscribe(async (data)=>{
+      // alert("Menu updated. refetching data");
+      if (data == this.selectedMenuId){
+        let menus = await firstValueFrom(this.dataProvider.allMenus);
+        this.selectedMenu = menus.find(
+          (menu) => menu.id == this.selectedMenuId,
+        );
+        this.selectedLoyaltyId = this.selectedMenu.selectedLoyaltyId || '';
+        console.log('Selected menu changed updated local menu',this.selectedMenu);
+        this.menuManagementService.requestMenuDownload.next(this.selectedMenuId);
+      }
+    })
     this.typeSearchSubject.pipe(debounceTime(500)).subscribe((searchString) => {
       if (searchString) {
         let res = this.typesSearchInstance.search(searchString);
@@ -214,6 +229,9 @@ export class ModeConfig {
           this.filteredTaxes = [];
         }
       });
+    this.searchFormControl.valueChanges.subscribe((searchString) => {
+      this.searchSubject.next(searchString);
+    })
   }
 
   get isActive() {
@@ -238,6 +256,7 @@ export class ModeConfig {
       // data.forEach((doc)=>{
       //   this.menuManagementService.updateRecipe({id:doc.id,type:doc.data().type.replace('\r','')},this.selectedMenuId)
       // })
+      console.log("main products",data);
       this.products = data;
       // console.log('this.products', this.products);
       let event = {
@@ -266,6 +285,7 @@ export class ModeConfig {
           return 0;
         }
       });
+      // console.log("All products",this.products);
       // alert("Renaming tags");
       // this.products.forEach((prod)=>{
       //   prod.tags = [];
@@ -301,15 +321,50 @@ export class ModeConfig {
           return 0;
         }
       });
+      this.recommendedCategories.forEach((cat) => {
+        if(cat.id == 'highRange'){
+          cat.productOrders = cat.products.sort((a, b) => {
+            if (a.price && b.price) {
+              return b.price - a.price;
+            } else {
+              return 0;
+            }
+          }).map((p)=>p.id);
+        } else if(cat.id == 'lowRange'){
+          cat.productOrders = cat.products.sort((a, b) => {
+            if (a.price && b.price) {
+              return a.price - b.price;
+            } else {
+              return 0;
+            }
+          }).map((p)=>p.id);
+        } else if(cat.id == 'mostSelling'){
+          cat.productOrders = cat.products.sort((a, b) => {
+            if (a.price && b.price) {
+              return b.sales - a.sales;
+            } else {
+              return 0;
+            }
+          }).map((p)=>p.id);
+        } else if(cat.id == 'newDishes'){
+          cat.productOrders = cat.products.sort((a, b) => {
+            if (a.price && b.price) {
+              return b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime();
+            } else {
+              return 0;
+            }
+          }).map((p)=>p.id);
+        }
+      });
     }
   }
 
   async getViewCategories() {
     this.userWiseViewCategories = [];
     if (this.selectedMenu) {
-      if (this.dataProvider.currentBusinessUser.access.accessType == 'role' && (
-        this.dataProvider.currentBusinessUser.access.role == 'admin' || 
-        this.dataProvider.currentBusinessUser.access.role == 'manager'
+      if (this.dataProvider.currentBusinessUser.accessType == 'role' && (
+        this.dataProvider.currentBusinessUser.role == 'admin' || 
+        this.dataProvider.currentBusinessUser.role == 'manager'
       )){
         this.dataProvider.currentBusiness.users.forEach(async (user)=>{
           let data = await this.menuManagementService.getViewCategoriesByMenu(
@@ -371,13 +426,14 @@ export class ModeConfig {
           if (this.dataProvider.currentUser.username == user.username){
             this.viewCategories = formedCategory;
           }
-          console.log("formedCategory",formedCategory);
+          // console.log("formedCategory",formedCategory);
           this.userWiseViewCategories.push({
             user:user.username,
-            categories:formedCategory
+            categories:formedCategory,
+            open:false
           });
         });
-        console.log("this.userWiseViewCategories",this.userWiseViewCategories);
+        // console.log("this.userWiseViewCategories",this.userWiseViewCategories);
       } else {
         let data = await this.menuManagementService.getViewCategoriesByMenu(
           this.selectedMenu,
@@ -527,6 +583,13 @@ export class ModeConfig {
 
   async getAllData() {
     this.dataProvider.loading = true;
+    // let localMenu = await this.menuManagementService.getLocalMenu(this.selectedMenuId);
+    // console.log("Local menu version:",localMenu.menu.menuVersion,"Server menu version:",this.selectedMenu.menuVersion,this.selectedMenu);
+    // if (localMenu.menu.menuVersion != this.selectedMenu.menuVersion){
+    //   console.log("Updating menu");
+    //   await this.menuManagementService.getMenu(this.selectedMenuId);
+    //   console.log("Menu updated");
+    // }
     await this.getProducts();
     await this.getMainCategories();
     await this.getRecommendedCategories();
@@ -559,6 +622,8 @@ export class ModeConfig {
         // this.activateCategory = undefined;
       }
     }
+    // alert("Loaded all data");
+    this.loadedAllData.next();
     this.dataProvider.loading = false;
   }
 
@@ -578,8 +643,9 @@ export class ModeConfig {
     );
   }
 
-  updateMenu() {
-    this.selectedMenu = this.dataProvider.allMenus.find(
+  async updateMenu() {
+    let menus = await firstValueFrom(this.dataProvider.allMenus);
+    this.selectedMenu = menus.find(
       (menu) => menu.id == this.selectedMenuId,
     );
     console.log('this.selectedMenu', this.selectedMenu);
@@ -611,9 +677,13 @@ export class ModeConfig {
           return 0;
         }
       });
-    }
+      this.fuseInstance.setCollection(this.products);
+    } else {
+      this.fuseInstance.setCollection(this.selectedCategory.products);
+    };
+    // reset all variables of searches
+    this.searchFormControl.setValue('');
     this.categoryUpdated = false;
-    this.fuseInstance.setCollection(this.selectedCategory.products);
   }
 
   addMainCategory() {
@@ -952,6 +1022,7 @@ export class ModeConfig {
             itemType: 'product',
             createdDate: Timestamp.now(),
             images: [],
+            sellByAvailable: data.sellByAvailable,
             name: data.name,
             price: data.price,
             quantity: 1,
@@ -1074,15 +1145,18 @@ export class ModeConfig {
       let dialog = this.dialog.open(AddDishComponent, {
         data: { mode: 'edit', product, menu: this.selectedMenu },
       });
+      product.updated = true;
       let data = await firstValueFrom(dialog.closed);
       if (typeof data == 'object') {
         let printerConfigs = await this.menuManagementService.getPrinterList(
           this.selectedMenu,
         );
         await this.productService.updateRecipe(
-          { ...product, ...data, updated: true },
+          { ...product, ...data },
           menuId,
         );
+        console.log("Updated recipe with new data",data);
+        
         let printer = printerConfigs.find(
           (printer) => printer.printerName == data['specificPrinter'],
         );
@@ -1128,55 +1202,59 @@ export class ModeConfig {
   }
 
   async deleteRecipe(product: Product, menuId: string) {
-    this.currentType;
-    if (this.currentType == 'all') {
-      this.dataProvider
-        .confirm('Are you sure you want to delete this recipe?', [1])
-        .then((data) => {
-          if (data) {
-            this.dataProvider.loading = true;
-            this.productService
-              .deleteProduct(product.id, menuId)
-              .then((data: any) => {
-                this.alertify.presentToast('Recipe Deleted Successfully');
-                // remove from products
-                this.products = this.products.filter(
-                  (p: Product) => p.id != product.id,
-                );
-                this.selectedCategory.products =
-                  this.selectedCategory.products.filter(
+    if (
+      await this.dataProvider.confirm('Are you sure you want to delete', [1])
+    ){
+      this.currentType;
+      if (this.currentType == 'all') {
+        this.dataProvider
+          .confirm('Are you sure you want to delete this recipe?', [1])
+          .then((data) => {
+            if (data) {
+              this.dataProvider.loading = true;
+              this.productService
+                .deleteProduct(product.id, menuId)
+                .then((data: any) => {
+                  this.alertify.presentToast('Recipe Deleted Successfully');
+                  // remove from products
+                  this.products = this.products.filter(
                     (p: Product) => p.id != product.id,
                   );
-              })
-              .catch((err) => {
-                this.alertify.presentToast('Recipe Delete Failed');
-              })
-              .finally(() => {
-                this.dataProvider.loading = false;
-              });
-          } else {
-            this.alertify.presentToast('Recipe Delete Cancelled');
-          }
-        });
-    } else if (['root', 'view'].includes(this.currentType)) {
-      this.selectedCategory.products = this.selectedCategory.products.filter(
-        (p: Product) => p.id != product.id,
-      );
-      if (this.selectedCategory.productOrders) {
-        this.selectedCategory.productOrders =
-          this.selectedCategory.productOrders.filter((p) => p != product.id);
+                  this.selectedCategory.products =
+                    this.selectedCategory.products.filter(
+                      (p: Product) => p.id != product.id,
+                    );
+                })
+                .catch((err) => {
+                  this.alertify.presentToast('Recipe Delete Failed');
+                })
+                .finally(() => {
+                  this.dataProvider.loading = false;
+                });
+            } else {
+              this.alertify.presentToast('Recipe Delete Cancelled');
+            }
+          });
+      } else if (['root', 'view'].includes(this.currentType)) {
+        this.selectedCategory.products = this.selectedCategory.products.filter(
+          (p: Product) => p.id != product.id,
+        );
+        if (this.selectedCategory.productOrders) {
+          this.selectedCategory.productOrders =
+            this.selectedCategory.productOrders.filter((p) => p != product.id);
+        } else {
+          this.selectedCategory.productOrders =
+            this.selectedCategory.products.map((p: Product) => p.id);
+        }
+        // console.log(
+        //   'Deleted',
+        //   this.selectedCategory.products.find((p) => p.id == product.id),
+        //   product
+        // );
+        this.selectedCategory.updated = true;
       } else {
-        this.selectedCategory.productOrders =
-          this.selectedCategory.products.map((p: Product) => p.id);
+        this.alertify.presentToast('Cannot delete from this category');
       }
-      // console.log(
-      //   'Deleted',
-      //   this.selectedCategory.products.find((p) => p.id == product.id),
-      //   product
-      // );
-      this.selectedCategory.updated = true;
-    } else {
-      this.alertify.presentToast('Cannot delete from this category');
     }
   }
 
@@ -1217,7 +1295,8 @@ export class ModeConfig {
   }
 
   async updateChanged() {
-    this.selectedMenu = this.dataProvider.allMenus.find((menu: Menu) => {
+    let menus = await firstValueFrom(this.dataProvider.allMenus);
+    this.selectedMenu = menus.find((menu: Menu) => {
       // console.log(menu.id, this.selectedMenuId, menu.id == this.selectedMenuId);
       return menu.id == this.selectedMenuId;
     });
@@ -1226,7 +1305,7 @@ export class ModeConfig {
       let updatableProducts = this.products.filter(
         (product: Product) => product.updated,
       );
-      console.log('updatableProducts', updatableProducts);
+      // console.log('updatableProducts', updatableProducts);
       let updatablerecommendedCategories = this.recommendedCategories.filter(
         (category: Category) => category.updated,
       );
@@ -1282,14 +1361,8 @@ export class ModeConfig {
           ),
       );
       // stats
-      // console.log('total products update', updatableProducts.length);
-      // console.log(
-      //   'total recommended category update',
-      //   updatablerecommendedCategories.length
-      // );
-      // console.log('total view category update', updatableviewCategories.length);
-      // console.log('total main category update', updatablemainCategories.length);
-      return await Promise.all(
+      
+      let updates = await Promise.all(
         [
           updateRequestProducts,
           updateRequestmainCategories,
@@ -1297,6 +1370,11 @@ export class ModeConfig {
           updateRequestviewCategories,
         ].flat(),
       );
+      // console.log("Updates",updates);
+      if (updates.length > 0){
+        this.menuManagementService.updateMenuData(this.selectedMenuId);
+      }
+      return updates;
     } else {
       return Promise.reject('Please Select Menu');
     }
@@ -1491,9 +1569,10 @@ export class ModeConfig {
     this.loadingDiscount = false;
   }
 
-  getMappedMenu(menus?: string[]) {
+  async getMappedMenu(menus?: string[]) {
     if (!menus) return [];
-    return this.dataProvider.allMenus.filter((menu) =>
+    let allMenus = await firstValueFrom(this.dataProvider.allMenus);
+    return allMenus.filter((menu) =>
       menus.includes(menu.id!),
     );
   }
@@ -1531,20 +1610,24 @@ export class ModeConfig {
     });
   }
 
-  deleteDiscount(discountId: string) {
-    this.dataProvider.loading = true;
-    this.menuManagementService
-      .deleteDiscount(discountId, this.selectedMenu.id)
-      .then(() => {
-        this.alertify.presentToast('Discount deleted successfully');
-        this.getDiscounts();
-      })
-      .catch((err) => {
-        this.alertify.presentToast('Error while deleting discount');
-      })
-      .finally(() => {
-        this.dataProvider.loading = false;
-      });
+  async deleteDiscount(discountId: string) {
+    if (
+      await this.dataProvider.confirm('Are you sure you want to delete', [1])
+    ){
+      this.dataProvider.loading = true;
+      this.menuManagementService
+        .deleteDiscount(discountId, this.selectedMenu.id)
+        .then(() => {
+          this.alertify.presentToast('Discount deleted successfully');
+          this.getDiscounts();
+        })
+        .catch((err) => {
+          this.alertify.presentToast('Error while deleting discount');
+        })
+        .finally(() => {
+          this.dataProvider.loading = false;
+        });
+    }
   }
 
   // combo
@@ -1618,17 +1701,21 @@ export class ModeConfig {
     });
   }
 
-  deleteCombo(event:any,combo: Combo) {
+  async deleteCombo(event:any,combo: Combo) {
     event.stopPropagation();
-    this.menuManagementService
-      .deleteCombo(combo, this.selectedMenu)
-      .then(() => {
-        this.alertify.presentToast('Combo deleted successfully');
-        this.getCombos();
-      })
-      .catch((err) => {
-        this.alertify.presentToast('Error while deleting combo');
-      });
+    if (
+      await this.dataProvider.confirm('Are you sure you want to delete', [1])
+    ){
+      this.menuManagementService
+        .deleteCombo(combo, this.selectedMenu)
+        .then(() => {
+          this.alertify.presentToast('Combo deleted successfully');
+          this.getCombos();
+        })
+        .catch((err) => {
+          this.alertify.presentToast('Error while deleting combo');
+        });
+    }
   }
 
   // time group
@@ -1696,16 +1783,20 @@ export class ModeConfig {
     });
   }
 
-  deleteTimeGroup(timeGroup: TimeGroup) {
-    this.menuManagementService
-      .deleteTimeGroup(timeGroup, this.selectedMenu)
-      .then(() => {
-        this.alertify.presentToast('Time group deleted successfully');
-        this.menuManagementService.getTimeGroups(this.selectedMenu.id);
-      })
-      .catch((err) => {
-        this.alertify.presentToast('Error while deleting time group');
-      });
+  async deleteTimeGroup(timeGroup: TimeGroup) {
+    if (
+      await this.dataProvider.confirm('Are you sure you want to delete', [1])
+    ){
+      this.menuManagementService
+        .deleteTimeGroup(timeGroup, this.selectedMenu)
+        .then(() => {
+          this.alertify.presentToast('Time group deleted successfully');
+          this.menuManagementService.getTimeGroups(this.selectedMenu.id);
+        })
+        .catch((err) => {
+          this.alertify.presentToast('Error while deleting time group');
+        });
+    }
   }
 
   // Loyalty CRUD
@@ -1892,16 +1983,12 @@ export class ModeConfig {
   }
 
   async deleteMenu(){
+    let menus = await firstValueFrom(this.dataProvider.allMenus);
     // first switch to any other menu and then delete the current menu
     if(await this.dataProvider.confirm('Are you sure you want to delete this menu?',[1])){
-      if (this.dataProvider.allMenus.length > 1) {
+      if (menus.length > 1) {
         let previousMenuId = structuredClone(this.selectedMenu.id);
-        this.selectedMenuId = this.dataProvider.allMenus.find((menu) => menu.id != previousMenuId)!.id;
-        // get all menus
-        let menus = await this.menuManagementService.getMenus();
-        this.dataProvider.allMenus = menus.docs.map((d) => {
-          return { ...d.data(), id: d.id } as Menu;
-        });
+        this.selectedMenuId = menus.find((menu) => menu.id != previousMenuId)!.id;
         this.updateMenu();
         await this.menuManagementService.deleteMenu(previousMenuId);
         this.alertify.presentToast('Menu deleted successfully');

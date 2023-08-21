@@ -25,18 +25,22 @@ export class ProductsPanelComponent implements OnInit {
   categoryComboSearchResults: Combo[] = [];
   currentCategory: Category | undefined = undefined;
   categoryWiseSearchSubject: Subject<string> = new Subject<string>();
+  categoryWiseSearchedValue: string = '';
   customSearcher: Fuse<any> = new Fuse([], { keys: ['name'] });
   combos: Combo[] = [];
   mode: 'combos' | 'products' | 'types' = 'products';
   selectedCombo: Combo | undefined = undefined;
+  currentlyWaitingForSearchResults: boolean = false;
 
   constructor(private dataProvider: DataProvider) {
     this.dataProvider.menuProducts.subscribe((menu: Category) => {
-      this.mode = 'products';
-      this.products = menu.products;
-      this.currentCategory = menu;
-      this.combos = [];
-      this.customSearcher.setCollection(this.products);
+      if (menu){
+        this.mode = 'products';
+        this.products = menu.products;
+        this.currentCategory = menu;
+        this.combos = [];
+        this.customSearcher.setCollection(this.products);
+      }
     });
     this.dataProvider.comboSelected.subscribe((combo: any) => {
       console.log('Combo Selected: ', combo);
@@ -64,6 +68,7 @@ export class ProductsPanelComponent implements OnInit {
       if (results) {
         this.searchResults = results;
         this.searchVisible = true;
+        this.selectedCombo = undefined;
       } else {
         this.searchVisible = false;
       }
@@ -81,9 +86,12 @@ export class ProductsPanelComponent implements OnInit {
         this.searcher.setCollection(this.products);
       }
     });
+    this.categoryWiseSearchSubject.subscribe(() => {this.currentlyWaitingForSearchResults=true});
     this.categoryWiseSearchSubject
       .pipe(debounceTime(600))
       .subscribe((value) => {
+        this.currentlyWaitingForSearchResults=false;
+        this.categoryWiseSearchedValue = value;
         if (debug) console.log('GOT VALUE: ', value);
         if (this.mode == 'combos') {
           this.categoryProductSearchResults = [];
@@ -127,7 +135,7 @@ export class ProductsPanelComponent implements OnInit {
     product.name = product.name + (this.isHalf(product) ? ' Half' : ' Full');
     delete product.instruction;
     product.quantity = 1;
-    if (!this.dataProvider.currentBill) {
+    if (!this.dataProvider.currentTable) {
       this.dataProvider.tempProduct = product;
     }
     if (!this.dataProvider.currentTable) {
@@ -135,6 +143,10 @@ export class ProductsPanelComponent implements OnInit {
       return;
     }
     if (this.dataProvider.currentBill) {
+      this.dataProvider.currentBill.addProduct(product);
+    } else {
+      this.dataProvider.currentBill = this.dataProvider.currentTable.occupyTable();
+      this.dataProvider.billAssigned.next();
       this.dataProvider.currentBill.addProduct(product);
     }
   }

@@ -50,6 +50,7 @@ import { LoyaltyComponent } from './settings/sections/loyalty/loyalty.component'
 import { OffersComponent } from './settings/sections/offers/offers.component';
 
 import { UpdateComponent } from './settings/sections/account/update/update.component';
+import { SelectPropertiesComponent } from './settings/sections/account/select-properties/select-properties.component';
 
 @NgModule({
   declarations: [
@@ -73,6 +74,7 @@ import { UpdateComponent } from './settings/sections/account/update/update.compo
     LoyaltyComponent,
     OffersComponent,
     UpdateComponent,
+    SelectPropertiesComponent,
   ],
   imports: [
     CommonModule,

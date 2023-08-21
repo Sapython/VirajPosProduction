@@ -21,6 +21,7 @@ import { TableGroupsPipe } from './history/table-groups.pipe';
 import { DateGroupPipe } from './history/date-group.pipe';
 import { ModePipe } from './history/mode.pipe';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { MatMenuModule } from '@angular/material/menu';
     MatSlideToggleModule,
     ActiveKotModule,
     MatMenuModule,
+    MatTooltipModule
   ],
   exports: [SystemComponent],
 })

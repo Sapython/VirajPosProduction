@@ -1,4 +1,10 @@
 <section>
+  <div class="heading">
+    <h1>Add Discount</h1>
+    <button (click)="dialogRef.close()" mat-icon-button mat-dialog-close>
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
   <form
     [formGroup]="discountForm"
     (ngSubmit)="dialogRef.close(this.discountForm.value)"
@@ -50,19 +56,19 @@
     <div class="actions">
       <button
         color="primary"
-        [disabled]="!discountForm.valid"
-        type="submit"
-        mat-flat-button
-      >
-        Submit
-      </button>
-      <button
-        color="primary"
         type="button"
         (click)="dialogRef.close()"
         mat-stroked-button
       >
         Cancel
+      </button>
+      <button
+        color="primary"
+        [disabled]="!discountForm.valid"
+        type="submit"
+        mat-flat-button
+      >
+        Submit
       </button>
     </div>
   </form>

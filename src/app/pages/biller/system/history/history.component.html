@@ -65,8 +65,8 @@
         />
         <input matEndDate formControlName="endDate" placeholder="End date" />
       </mat-date-range-input>
-      <viraj-button type="outline" class="dateSelector" (vclick)="picker.open()"
-        >Select Date<i class="ri-calendar-2-fill"></i
+      <viraj-button style="white-space: nowrap;" type="outline" class="dateSelector" (vclick)="picker.open()"
+        >{{dateRangeFormGroup.value.startDate | date}} - {{dateRangeFormGroup.value.endDate | date}}<i class="ri-calendar-2-fill"></i
       ></viraj-button>
       <input
         (input)="this.numberSearchSubject.next(search.value)"
@@ -469,6 +469,7 @@
         </div>
       </div>
     </div>
+
   </div>
   <div class="groups" *ngIf="groupByDate && groupByTable">
     <div

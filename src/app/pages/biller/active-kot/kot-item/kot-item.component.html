@@ -37,7 +37,14 @@
     <div *ngIf="showKotNo"></div>
     <div class="info">
       <p class="name">{{ productName | titlecase }}</p>
-      <p class="price">{{ (price * quantity) | currency: "INR" }}</p>
+      <span>
+        <p class="price" *ngIf="(product.sellByAvailable && product.sellBy == 'quantity') || !product.sellByAvailable">{{ (price * quantity) | currency: "INR" }}</p>
+        <p class="price" *ngIf="(product.sellByAvailable && product.sellBy == 'price')">Qty: {{quantity }}</p>
+        <select (change)="setAmountInput()" [disabled]="(dataProvider.manageKot == true && !editMode) || disabled" class="sellBy" [(ngModel)]="product.sellBy" *ngIf="product.sellByAvailable">
+          <option value="quantity">By Quantity</option>
+          <option value="price">By Price</option>
+        </select>
+      </span>
     </div>
     <div class="more">
       <div class="actions">
@@ -49,14 +56,31 @@
             {{ config.name }}
           </option>
         </select>
-        <div class="quantity">
+        <div class="quantity price" *ngIf="product.sellByAvailable && product.sellBy == 'price'">
+          <span>&#8377;</span>
+          <input
+            [disabled]="
+              (dataProvider.manageKot == true && !editMode) || disabled
+            "
+            type="number"
+            #amountInput
+            (click)="amountInput.select()"
+            (input)="setAmount(amountInput.value)"
+            (change)="
+              this.dataProvider.currentBill
+                ? this.dataProvider.currentBill.calculateBill()
+                : {}
+            "
+          />
+        </div>
+        <div class="quantity" *ngIf="(product.sellByAvailable && product.sellBy == 'quantity') || !product.sellByAvailable">
           <viraj-button
             [noPropogation]="true"
             [minimalPadding]="true"
             iconSize="small"
             (vclick)="decrease()"
             [disabled]="
-              quantity <= 0 ||
+              quantity <= 1 ||
               (dataProvider.manageKot == true && !editMode) ||
               disabled
             "
@@ -94,6 +118,7 @@
             [noPropogation]="true"
             iconSize="medium"
             type="icon"
+            matTooltip="Add Item Note"
             [disabled]="
               (dataProvider.manageKot == true && !editMode) || disabled
             "
@@ -106,6 +131,7 @@
             [noPropogation]="true"
             iconSize="medium"
             type="icon"
+            matTooltip="Delete Item"
             [disabled]="
               (dataProvider.manageKot == true && !editMode) || disabled
             "

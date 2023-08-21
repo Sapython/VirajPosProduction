@@ -11,6 +11,8 @@ export interface Product {
   name: string;
   price: number;
   itemType: 'product';
+  sellByAvailable: boolean;
+  sellBy?:'quantity'|'price';
   type: 'veg' | 'non-veg';
   tags: { name: string; color: string; contrast: string; important: boolean }[];
   createdDate: Timestamp;

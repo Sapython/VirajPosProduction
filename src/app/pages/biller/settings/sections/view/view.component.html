@@ -1,4 +1,4 @@
-<h3>Settings</h3>
+<!-- <h3>Settings</h3> -->
 <!-- <div class="row smartButtons">
   <button
     [disabled]="true"
@@ -80,6 +80,15 @@
         [(ngModel)]="dataProvider.kotRePrintable"
         (change)="
           updateSettings({ kotRePrintable: dataProvider.kotRePrintable })
+        "
+      ></mat-slide-toggle>
+    </div>
+    <div class="item">
+      <p>Enable <strong>sweets mode</strong>. To sell any item by either gram and price.</p>
+      <mat-slide-toggle
+        [(ngModel)]="dataProvider.sweetsMode"
+        (change)="
+          updateSettings({ sweetsMode: dataProvider.sweetsMode })
         "
       ></mat-slide-toggle>
     </div>

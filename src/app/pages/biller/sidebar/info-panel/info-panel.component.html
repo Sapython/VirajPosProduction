@@ -83,4 +83,12 @@
       </ng-template>
     </ng-container>
   </div>
+  <viraj-button
+      type="outline"
+      color="primary"
+      *ngIf="this.dataProvider.getAccess('seeReports')"
+      (click)="openReports()"
+    >
+      View Reports
+  </viraj-button>
 </section>

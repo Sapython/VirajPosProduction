@@ -94,7 +94,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
         (a, b) => a + (b.quantity || 1),
         0,
       );
-      console.log('Combo category', comboCategory);
+      // console.log('Combo category', comboCategory);
       if (
         (comboCategory.maximumProducts || comboCategory.minimumProducts) &&
         (totalQuantity >=
@@ -113,7 +113,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
       if (productIndex != -1) {
         comboCategory.selectedProducts[productIndex].quantity++;
       } else {
-        console.log('adding product to combo', product.name);
+        // console.log('adding product to combo', product.name);
         comboCategory.selectedProducts.push({ ...product, quantity: 1 });
       }
     } else {
@@ -143,7 +143,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
     category: ComboCategoryCategorized,
     product: Product,
   ) {
-    console.log('this.combo', this.combo);
+    // console.log('this.combo', this.combo);
     const comboCategory = this.combo?.selectedCategories.find(
       (c) => c.id == category.id,
     );
@@ -155,11 +155,11 @@ export class ApplicableCombo implements ApplicableComboConstructor {
         (a, b) => a + (b.quantity || 1),
         0,
       );
-      console.log(
-        'Laden',
-        totalQuantity,
-        comboCategory.maximumProducts || comboCategory.minimumProducts,
-      );
+      // console.log(
+      //   'Laden',
+      //   totalQuantity,
+      //   comboCategory.maximumProducts || comboCategory.minimumProducts,
+      // );
       if (
         (comboCategory.maximumProducts || comboCategory.minimumProducts) &&
         totalQuantity >=
@@ -451,7 +451,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
     // calculate price
     allProducts.forEach((product) => {
       this.untaxedValue += product.untaxedValue;
-      console.log('PRD', product.untaxedValue, product.price, product.quantity);
+      // console.log('PRD', product.untaxedValue, product.price, product.quantity);
       if (!product.lineDiscounted) {
         this.price = this.price + product.price * product.quantity;
       }
@@ -466,13 +466,13 @@ export class ApplicableCombo implements ApplicableComboConstructor {
     if (this.bill && this.bill.calculateBill) {
       this.bill.calculateBill();
     }
-    console.log('untaxedValue', this.untaxedValue, 'finalTaxes', finalTaxes);
+    // console.log('untaxedValue', this.untaxedValue, 'finalTaxes', finalTaxes);
   }
 
   checkDateIsAvailable(combo: Combo, date: Date) {
     let available = true;
     let visibilitySettings = combo.visibilitySettings;
-    console.log("this.combo");
+    // console.log("this.combo");
     if (combo.visibilityEnabled){
       if (visibilitySettings.mode == 'monthly') {
         if (visibilitySettings.repeating) {
@@ -517,7 +517,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
           available = true;
         }
       }
-      console.log('IS DAY VALID', available);
+      // console.log('IS DAY VALID', available);
       return available;
     } else {
       return combo.enabled

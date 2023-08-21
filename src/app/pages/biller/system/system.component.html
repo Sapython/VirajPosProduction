@@ -9,6 +9,7 @@
   <viraj-button
     type="icon"
     *ngIf="this.dataProvider.getAccess('seeHistory')"
+    matTooltip="History"
     (vclick)="openHistory()"
     ><i class="ri-history-line"></i
   ></viraj-button>
@@ -16,6 +17,7 @@
   <viraj-button
     type="icon"
     *ngIf="this.dataProvider.getAccess('settings')"
+    matTooltip="Settings"
     (vclick)="openSettings()"
     ><i class="ri-settings-3-fill"></i
   ></viraj-button>

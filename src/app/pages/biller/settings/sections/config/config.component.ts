@@ -9,6 +9,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { SettingsService } from '../../../../../core/services/database/settings/settings.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ElectronService } from '../../../../../core/services/electron/electron.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-config',
@@ -75,15 +76,16 @@ export class ConfigComponent implements OnInit {
   });
 
   async updateMode() {
+    let allMenus = await firstValueFrom(this.dataProvider.allMenus);
     if (this.modes[0]) {
       if (!this.dataProvider.currentSettings.dineInMenu) {
         const dialog = this.dialog.open(SelectMenuComponent, {
-          data: { type: 'dineIn', menus: this.dataProvider.allMenus },
+          data: { type: 'dineIn', menus: allMenus },
         });
         dialog.closed.subscribe(async (data: any) => {
           //  console.log('data', data);
           if (data) {
-            let currentMenu = this.dataProvider.allMenus.find(
+            let currentMenu = allMenus.find(
               (menu) => menu.id == data,
             );
             let inst = new ModeConfig(
@@ -113,12 +115,12 @@ export class ConfigComponent implements OnInit {
     if (this.modes[1]) {
       if (!this.dataProvider.currentSettings.takeawayMenu) {
         const dialog = this.dialog.open(SelectMenuComponent, {
-          data: { type: 'takeaway', menus: this.dataProvider.allMenus },
+          data: { type: 'takeaway', menus: allMenus },
         });
         dialog.closed.subscribe(async (data: any) => {
           //  console.log('data', data);
           if (data) {
-            let currentMenu = this.dataProvider.allMenus.find(
+            let currentMenu = allMenus.find(
               (menu) => menu.id == data,
             );
             let inst = new ModeConfig(
@@ -148,12 +150,12 @@ export class ConfigComponent implements OnInit {
     if (this.modes[2]) {
       if (!this.dataProvider.currentSettings.onlineMenu) {
         const dialog = this.dialog.open(SelectMenuComponent, {
-          data: { type: 'online', menus: this.dataProvider.allMenus },
+          data: { type: 'online', menus: allMenus },
         });
         dialog.closed.subscribe(async (data: any) => {
           //  console.log('data', data);
           if (data) {
-            let currentMenu = this.dataProvider.allMenus.find(
+            let currentMenu = allMenus.find(
               (menu) => menu.id == data,
             );
             let inst = new ModeConfig(

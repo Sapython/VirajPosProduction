@@ -53,6 +53,11 @@ export class MenuComponent implements OnInit, AfterViewInit {
       this.currentMenu = this.dataProvider.currentMenu;
       this.activeIndex = '';
     });
+    this.dataProvider.searchResults.subscribe((data) => {
+      // reset selected category
+      this.currentCategory = undefined;
+      this.activeIndex = '';
+    })
   }
 
   ngOnInit(): void {
@@ -169,6 +174,7 @@ export class MenuComponent implements OnInit, AfterViewInit {
       console.log('switched', state);
       this.dataProvider.productPanelState.next('products');
     }
+    this.dataProvider.clearSearchField.next();
     this.dataProvider.searchResults.next(false);
     this.dataProvider.menuProducts.next(category);
   }
@@ -179,6 +185,7 @@ export class MenuComponent implements OnInit, AfterViewInit {
       console.log('switched', state);
       this.dataProvider.productPanelState.next('combos');
     }
+    this.dataProvider.clearSearchField.next();
     this.dataProvider.searchResults.next(false);
     console.log('openCombo', combos.combos);
     this.dataProvider.comboSelected.next(combos.combos);

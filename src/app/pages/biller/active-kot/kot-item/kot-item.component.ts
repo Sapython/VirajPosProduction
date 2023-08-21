@@ -1,10 +1,12 @@
 import {
   Component,
+  ElementRef,
   EventEmitter,
   Input,
   OnChanges,
   Output,
   SimpleChanges,
+  ViewChild,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { LineCancelComponent } from './line-cancel/line-cancel.component';
@@ -47,6 +49,9 @@ export class KotItemComponent implements OnChanges {
     new EventEmitter<void>();
   @Output() setQuantityFunction: EventEmitter<number> =
     new EventEmitter<number>();
+
+  @ViewChild('amountInput') amountInput: ElementRef;
+  
   showKotNo: boolean = false;
   constructor(
     public dataProvider: DataProvider,
@@ -138,7 +143,7 @@ export class KotItemComponent implements OnChanges {
           this.billService.addActivity(this.dataProvider.currentBill, {
             type: 'lineDiscounted',
             message: `Line Discounted by ${data.value}% for ${this.product.name} by ${this.dataProvider.currentUser?.username}`,
-            user: this.dataProvider.currentBusinessUser.name,
+            user: this.dataProvider.currentBusinessUser.username,
             data: this.product,
           });
           this.lineDiscounted.emit(discount);
@@ -166,20 +171,36 @@ export class KotItemComponent implements OnChanges {
     }
   }
   decrease() {
-    if (!this.propagateFunctions) {
-      this.product.quantity = this.product.quantity - 1;
-      this.dataProvider.currentBill?.calculateBill();
-    } else {
-      this.removeQuantityFunction.emit();
+    if (this.product.quantity > 1){
+      if (!this.propagateFunctions) {
+        this.product.quantity = this.product.quantity - 1;
+        this.dataProvider.currentBill?.calculateBill();
+      } else {
+        this.removeQuantityFunction.emit();
+      }
     }
   }
 
   setQuantity(quantityValue) {
+    console.log("quantityValue",quantityValue);
     if (!this.propagateFunctions) {
       this.product.quantity = quantityValue;
       this.dataProvider.currentBill?.calculateBill();
     } else {
       this.setQuantityFunction.emit(quantityValue);
+    }
+  }
+
+  setAmount(amountValue:number|string){
+    amountValue = Number(amountValue);
+    if (isNaN(amountValue)) {
+      amountValue = 0;
+    }
+    this.product.quantity = this.roundOff(amountValue/this.product.price);
+    if (!this.propagateFunctions) {
+      this.dataProvider.currentBill?.calculateBill();
+    } else {
+      this.setQuantityFunction.emit(amountValue);
     }
   }
 
@@ -193,6 +214,21 @@ export class KotItemComponent implements OnChanges {
     } else {
       return false;
     }
+  }
+
+  roundOff(number:number){
+    // round off number to last 2 digits
+    // use the number.epsilon
+    return Math.round((number + Number.EPSILON) * 100) / 100;
+  }
+
+  setAmountInput(){
+    setTimeout(() => {
+      console.log('this.amountInput',this.amountInput);
+      if (this.amountInput){
+        this.amountInput.nativeElement.value = (this.product.quantity * this.product.price).toString();
+      }
+    },200)
   }
 }
 export interface Config {

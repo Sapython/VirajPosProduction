@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { debounce, debounceTime, Subject, Subscription } from 'rxjs';
 import Fuse from 'fuse.js';
 import { Dialog } from '@angular/cdk/dialog';
@@ -36,6 +36,7 @@ export class SearchPanelComponent implements OnInit {
     keys: ['name'],
   });
   searchVisible: boolean = false;
+  @ViewChild('search') searchInput: ElementRef;
   constructor(
     public dataProvider: DataProvider,
     private billsService: BillService,
@@ -52,6 +53,9 @@ export class SearchPanelComponent implements OnInit {
       }
     });
 
+    this.dataProvider.clearSearchField.subscribe((value) => {
+      this.searchInput.nativeElement.value = '';
+    });
     this.dataProvider.modeChanged.subscribe(() => {
       // console.log("this.dataProvider.modeChanged",mode,this.dataProvider.currentMenu?.products);
       this.searchResults = [];
@@ -69,15 +73,15 @@ export class SearchPanelComponent implements OnInit {
     });
 
     this.dataProvider.productPanelState.subscribe((value) => {
-      if (value == 'combos') {
-        this.searchInstance.setCollection(
-          this.dataProvider.currentMenu?.combos,
-        );
-      } else {
-        this.searchInstance.setCollection(
-          this.dataProvider.currentMenu?.products,
-        );
-      }
+      this.searchInstance.setCollection(
+        this.dataProvider.currentMenu?.products,
+      );
+      // if (value == 'combos') {
+      //   this.searchInstance.setCollection(
+      //     this.dataProvider.currentMenu?.combos,
+      //   );
+      // } else {
+      // }
     });
   }
 
@@ -184,6 +188,7 @@ export class SearchPanelComponent implements OnInit {
       }
       // console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
     }
+    this.dataProvider.clearSearchField.next();
     this.dataProvider.modeChanged.next(mode.value);
   }
 }

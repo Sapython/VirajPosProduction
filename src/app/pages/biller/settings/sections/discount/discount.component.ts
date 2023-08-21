@@ -7,6 +7,7 @@ import { AlertsAndNotificationsService } from '../../../../../core/services/aler
 import { DataProvider } from '../../../../../core/services/provider/data-provider.service';
 import { MenuManagementService } from '../../../../../core/services/database/menuManagement/menu-management.service';
 import { AddDiscountComponent } from '../../../actions/add-discount/add-discount.component';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-discount',
@@ -99,9 +100,10 @@ export class DiscountComponent implements OnInit {
         this.loadingDiscount = false;
       });
   }
-  getMappedMenu(menus?: string[]) {
+  async getMappedMenu(menus?: string[]) {
     if (!menus) return [];
-    return this.dataProvider.allMenus.filter((menu) =>
+    let allMenus = await firstValueFrom(this.dataProvider.allMenus);
+    return allMenus.filter((menu) =>
       menus.includes(menu.id!),
     );
   }

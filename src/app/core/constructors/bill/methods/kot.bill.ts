@@ -84,6 +84,9 @@ export function editKot(this: Bill, kot: Kot, reason: string) {
 }
 
 export function finalizeAndPrintKot(this: Bill) {
+  if (this.table.status == 'available'){
+    this.table.attachBill(this);
+  }
   if (this.editKotMode != null) {
     // console.log(
     //   'Old kot',

@@ -9,7 +9,6 @@ import {
   ViewChild,
 } from '@angular/core';
 import Chart, { ChartItem } from 'chart.js/auto';
-import { ReportsComponent } from './reports/reports.component';
 import { DataProvider } from '../../../../../core/services/provider/data-provider.service';
 @Component({
   selector: 'app-sales-summary',
@@ -28,7 +27,6 @@ export class SalesSummaryComponent implements AfterViewInit {
     | undefined;
   barThickness = 40;
   constructor(
-    private dialog: Dialog,
     public dataProvider: DataProvider,
   ) {}
   ngAfterViewInit(): void {
@@ -50,18 +48,23 @@ export class SalesSummaryComponent implements AfterViewInit {
         {
           data: [this.takeAway],
           backgroundColor: '#36A2EB',
+          borderSkipped: false,
+          borderRadius: Number.MAX_VALUE,
           width: '20px',
           barThickness: this.barThickness,
         },
         {
           data: [this.online],
           backgroundColor: '#FFCE56',
+          borderSkipped: false,
+          borderRadius: Number.MAX_VALUE,
           width: '20px',
           barThickness: this.barThickness,
         },
         {
           data: [this.nonChargable],
           backgroundColor: '#4BC0C0',
+          borderSkipped: false,
           borderRadius: Number.MAX_VALUE,
           width: '20px',
           barThickness: this.barThickness,
@@ -104,9 +107,5 @@ export class SalesSummaryComponent implements AfterViewInit {
         },
       });
     }
-  }
-
-  openReports() {
-    this.dialog.open(ReportsComponent);
   }
 }

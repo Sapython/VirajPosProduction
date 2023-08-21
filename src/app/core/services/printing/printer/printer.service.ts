@@ -25,7 +25,7 @@ export class PrinterService {
     private encoderService: EncoderService,
   ) {}
 
-  printKot(printableKotData: PrintableKot,reprint:boolean = false) {
+  printKot(printableKotData: PrintableKot,reprint:boolean = false,customPrinter?:string) {
     if (debugMode) console.log('Printing kot', printableKotData);
     let filteredProducts = printableKotData.products.filter(
       (product: any) => product.specificPrinter,
@@ -49,50 +49,71 @@ export class PrinterService {
     console.log('printerConfig', printerConfig);
     //  console.log("printableKotData.products",printableKotData.products);
     // group products by printer
-    let groupedProducts: any = {};
-    printableKotData.products.forEach((product: any) => {
-      let category = this.dataProvider.currentMenu.mainCategories.find(
-        (category) => category.id == product.category.id,
-      );
-      if (product.specificPrinter) {
-        if (groupedProducts[product.specificPrinter]) {
-          groupedProducts[product.specificPrinter].push(product);
+    if (!customPrinter){
+      let groupedProducts: any = {};
+      printableKotData.products.forEach((product: any) => {
+        let category = this.dataProvider.currentMenu.mainCategories.find(
+          (category) => category.id == product.category.id,
+        );
+        if (product.specificPrinter) {
+          if (groupedProducts[product.specificPrinter]) {
+            groupedProducts[product.specificPrinter].push(product);
+          } else {
+            groupedProducts[product.specificPrinter] = [product];
+          }
         } else {
-          groupedProducts[product.specificPrinter] = [product];
+          if (groupedProducts[product.specificPrinter]) {
+            groupedProducts[product.specificPrinter].push(product);
+          } else {
+            groupedProducts[product.specificPrinter] = [product];
+          }
         }
-      } else {
-        if (groupedProducts[product.specificPrinter]) {
-          groupedProducts[product.specificPrinter].push(product);
-        } else {
-          groupedProducts[product.specificPrinter] = [product];
-        }
-      }
-    });
-    console.log('grouped products', groupedProducts);
-    Object.keys(groupedProducts).forEach((printer: any, i) => {
-      //  console.log('printing', printer, groupedProducts[printer]);
-      printableKotData.products = groupedProducts[printer];
+      });
+      console.log('grouped products', groupedProducts);
+      Object.keys(groupedProducts).forEach((printer: any, i) => {
+        //  console.log('printing', printer, groupedProducts[printer]);
+        printableKotData.products = groupedProducts[printer];
+        let result = this.encoderService.getKotCode(printableKotData,reprint);
+        console.log('got kot code', result, printer);
+        setTimeout(() => {
+          if (!printer) {
+            const dialog = this.dialog.open(DialogComponent, {
+              data: {
+                title: 'No printer found for printing kot.',
+                description:
+                  'Please select a printer in settings panel. \n Not printed: \n ' +
+                  printableKotData.products
+                    .map((product) => product.name)
+                    .join(', '),
+                buttons: ['Ok'],
+                primary: [0],
+              },
+            });
+            return;
+          }
+          this.printing.printData(result, printer);
+        }, i * 1000);
+      });
+    } else {
       let result = this.encoderService.getKotCode(printableKotData,reprint);
-      console.log('got kot code', result, printer);
-      setTimeout(() => {
-        if (!printer) {
-          const dialog = this.dialog.open(DialogComponent, {
-            data: {
-              title: 'No printer found for printing kot.',
-              description:
-                'Please select a printer in settings panel. \n Not printed: \n ' +
-                printableKotData.products
-                  .map((product) => product.name)
-                  .join(', '),
-              buttons: ['Ok'],
-              primary: [0],
-            },
-          });
-          return;
-        }
-        this.printing.printData(result, printer);
-      }, i * 1000);
-    });
+      console.log('got kot code', result, customPrinter);
+      if (!customPrinter) {
+        const dialog = this.dialog.open(DialogComponent, {
+          data: {
+            title: 'No printer found for printing kot.',
+            description:
+              'Please select a printer in settings panel. \n Not printed: \n ' +
+              printableKotData.products
+                .map((product) => product.name)
+                .join(', '),
+            buttons: ['Ok'],
+            primary: [0],
+          },
+        });
+        return;
+      }
+      this.printing.printData(result, customPrinter);
+    }
   }
 
   printBill(billData: PrintableBill) {

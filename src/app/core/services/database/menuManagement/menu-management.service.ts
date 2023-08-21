@@ -48,8 +48,13 @@ import { PrinterSetting } from '../../../../types/printing.structure';
   providedIn: 'root',
 })
 export class MenuManagementService {
-  menuUpdated: Subject<void> = new Subject();
-  updatableMenus: string[] = [];
+  private menuUpdater: Subject<void> = new Subject();
+  versionToBeUpdatedMenus: string[] = [];
+  toBeDownloadedMenus:string[] = [];
+  updateMenuVersionRequest: Subject<string> = new Subject<string>();
+
+  requestMenuDownload:Subject<string> = new Subject<string>();
+  downloadedMenus:Subject<string> = new Subject<string>();
   constructor(
     private dataProvider: DataProvider,
     private firestore: Firestore,
@@ -63,63 +68,107 @@ export class MenuManagementService {
     private userManagementService: UserManagementService,
     private fileStorageService: FileStorageService,
   ) {
-    // this.menuUpdated.pipe(debounceTime(1000)).subscribe(() => {
-    //   let menus = this.updatableMenus.filter((v, i, a) => a.indexOf(v) === i);
-    //   // console.log('Menus to update', menus);
-    //   // menus.forEach((menuId) => {
-    //   //   this.getMenu(menuId)
-    //   // });
-    //   this.dataProvider.loading = true;
-    //   Promise.all(menus.map(async (menuId)=> await this.getMenu(menuId)))
-    //   this.dataProvider.loading = false;
-    // })
-    this.menuUpdated.pipe(debounceTime(1000)).subscribe(() => {
-      let menus = this.updatableMenus.filter((v, i, a) => a.indexOf(v) === i);
+    this.checkAndUpdateLocalMenus();
+    this.menuUpdater.pipe(debounceTime(1000)).subscribe(() => {
       // console.log('Menus to update', menus);
-      menus.forEach((menuId) => {
+      this.versionToBeUpdatedMenus.forEach((menuId) => {
         this.updateMenuData(menuId);
       });
+      this.versionToBeUpdatedMenus = [];
     });
-    firstValueFrom(this.dataProvider.menuLoadSubject).then((res) => {
-      collectionData(
-        collection(
-          this.firestore,
-          '/business/' +
-            this.dataProvider.currentBusiness.businessId +
-            '/menus',
-        ),
-        { idField: 'id' },
-      ).subscribe((res) => {
-        // this.getMenu()
-        res.forEach(async (menu) => {
-          // console.log('menu112 getting menu', menu);
-          try {
-            let res: any = await firstValueFrom(
-              this.indexedDbService.getByIndex('menu', 'menuId', menu.id),
-            );
-            if (res) {
-              if (res.menu.menuVersion) {
-                // console.log("menu112 id exists",res.menu.menuVersion,menu.menuVersion);
-                if (res.menu.menuVersion < menu.menuVersion) {
-                  // console.log('menu112 res menu version',res.menu.menuVersion,menu.menuVersion);
-                  await this.getMenu(menu.id);
-                } else {
-                  // console.log("menu112 id exists and version is same or lower");
-                }
-              } else {
-                // console.log("menu112 id doesn't exists");
-                await this.getMenu(menu.id);
-              }
-            } else {
-              // console.log('menu112 res error getting menu', res, menu.id);
-              await this.getMenu(menu.id);
-            }
-          } catch (error) {
-            // console.log('menu112 error getting menu', menu.id);
-            await this.getMenu(menu.id);
+    // firstValueFrom(this.dataProvider.menuLoadSubject).then((res) => {
+    //   collectionData(
+    //     collection(
+    //       this.firestore,
+    //       '/business/' +
+    //         this.dataProvider.currentBusiness.businessId +
+    //         '/menus',
+    //     ),
+    //     { idField: 'id' },
+    //   ).subscribe((res) => {
+    //     // this.getMenu()
+    //     res.forEach(async (menu) => {
+    //       // console.log('menu112 getting menu', menu);
+    //       try {
+    //         let res: any = await firstValueFrom(
+    //           this.indexedDbService.getByIndex('menu', 'menuId', menu.id),
+    //         );
+    //         if (res) {
+    //           if (res.menu.menuVersion) {
+    //             // console.log("menu112 id exists",res.menu.menuVersion,menu.menuVersion);
+    //             if (res.menu.menuVersion < menu.menuVersion) {
+    //               // console.log('menu112 res menu version',res.menu.menuVersion,menu.menuVersion);
+    //               await this.getMenu(menu.id);
+    //             } else {
+    //               // console.log("menu112 id exists and version is same or lower");
+    //             }
+    //           } else {
+    //             // console.log("menu112 id doesn't exists");
+    //             await this.getMenu(menu.id);
+    //           }
+    //         } else {
+    //           // console.log('menu112 res error getting menu', res, menu.id);
+    //           await this.getMenu(menu.id);
+    //         }
+    //       } catch (error) {
+    //         // console.log('menu112 error getting menu', menu.id);
+    //         await this.getMenu(menu.id);
+    //       }
+    //     });
+    //   });
+    // });
+    this.updateMenuVersionRequest.subscribe((menuId) => {
+      if (!this.versionToBeUpdatedMenus.includes(menuId)){
+        this.versionToBeUpdatedMenus.push(menuId);
+      }
+      this.menuUpdater.next();
+    });
+    this.requestMenuDownload.pipe(debounceTime(1000)).subscribe((menuId) => {
+      if (!this.toBeDownloadedMenus.includes(menuId)){
+        this.toBeDownloadedMenus.push(menuId);
+      }
+      this.downloadMenus();
+    })
+  }
+
+  downloadMenus(){
+    this.toBeDownloadedMenus.forEach(async (menuId) => {
+      await this.getMenu(menuId);
+      this.downloadedMenus.next(menuId);
+    })
+    this.toBeDownloadedMenus = [];
+  }
+
+
+  checkAndUpdateLocalMenus(){
+    // the job of this function will be to check every menu version in indexed db and update it if it is lower than the online version
+    // console.log("menu112 checking and updating local menus");
+    this.dataProvider.allMenus.subscribe(async (menus) => {
+      let localMenus = await firstValueFrom(
+        this.indexedDbService.getAll('menu'),
+      );
+      console.log("Pre-Loaded Local Menus",localMenus);
+      localMenus.forEach(async (localMenu:any) => {
+        let onlineMenu = menus.find((menu) => menu.id == localMenu.menuId);
+        if (onlineMenu) {
+          if (onlineMenu.menuVersion != localMenu.menu.menuVersion) {
+            // console.log("menu112 online menu version is higher than local menu version");
+            this.dataProvider.menusUpdated.next(onlineMenu.id);
           }
-        });
+        }
       });
+    })
+  }
+
+  getAllMenus() {
+    collectionData(
+      collection(
+        this.firestore,
+        'business/' + this.dataProvider.businessId + '/menus',
+      ),
+      { idField: 'id' },
+    ).subscribe(async (res) => {
+      this.dataProvider.allMenus.next(res as Menu[]);
     });
   }
 
@@ -129,14 +178,29 @@ export class MenuManagementService {
         this.indexedDbService.getByKey('menu', menuId),
       )) as {
         menu: any;
-        menuId:string;
+        menuId: string;
         products: Product[];
         rootCategories: RootCategory[];
         viewCategories: ViewCategory[];
         recommendedCategories: ViewCategory[];
-        printerSettings:PrinterSetting[]
-        defaultPrinter:{billPrinter:string,kotPrinter:string}
+        printerSettings: PrinterSetting[];
+        defaultPrinter: { billPrinter: string; kotPrinter: string };
       };
+      let menus = await firstValueFrom(this.dataProvider.allMenus);
+      let onlineMenu = menus.find(
+        (m) => m.id == localMenu.menuId,
+      );
+      if (localMenu.menu.menuVersion < onlineMenu.menuVersion) {
+        console.log(
+          'Local menu is older than online menu',
+          'Local:',
+          localMenu.menu.menuVersion,
+          '  Online:',
+          onlineMenu.menuVersion,
+        );
+
+        return undefined;
+      }
       // console.log('loaded local menu',menuId, localMenu);
       return localMenu;
     } catch (error) {
@@ -301,8 +365,8 @@ export class MenuManagementService {
     if (localMenu?.recommendedCategories) {
       return localMenu?.recommendedCategories;
     }
-    console.log("recommended: Not available on local fetching from online");
-    
+    console.log('recommended: Not available on local fetching from online');
+
     let res = await getDocs(
       collection(
         this.firestore,
@@ -322,14 +386,14 @@ export class MenuManagementService {
     }
   }
 
-  async getViewCategoriesByMenu(menu: Menu,username?:string) {
+  async getViewCategoriesByMenu(menu: Menu, username?: string) {
     let userId = username ? username : this.dataProvider.currentUser.username;
     let localMenu = await this.getLocalMenu(menu.id);
     // console.log("menu113 viewCategories",localMenu?.viewCategories);
     if (localMenu?.viewCategories[userId]) {
       return localMenu?.viewCategories[userId];
     }
-    console.log("view: Not available on local fetching from online");
+    console.log('view: Not available on local fetching from online');
     let res = await getDocs(
       collection(
         this.firestore,
@@ -357,7 +421,7 @@ export class MenuManagementService {
     if (localMenu?.rootCategories) {
       return localMenu?.rootCategories;
     }
-    console.log("main: Not available on local fetching from online");
+    console.log('main: Not available on local fetching from online');
     let res = await getDocs(
       collection(
         this.firestore,
@@ -377,29 +441,38 @@ export class MenuManagementService {
     }
   }
 
-
-  async getProductsByMenu(menu:Menu){
-    let localMenu = await this.getLocalMenu(menu.id)
-    if (localMenu?.products){
-      return localMenu.products
-    }
-    console.log("products: Not available on local fetching from online");
-    let res = await getDocs(
-      collection(
-        this.firestore,
-        'business/' +
-          this.dataProvider.businessId +
-          '/menus/' +
-          menu.id +
-          '/products/',
-      ),
-    );
-    if (res){
-      return res.docs.map((doc)=>{
-        return {...doc.data(),id:doc.id} as Product
-      })
+  async getProductsByMenu(menu: Menu) {
+    let localMenu = await this.getLocalMenu(menu.id);
+    if (localMenu.menu.menuVersion == menu.menuVersion) {
+      if (localMenu?.products) {
+        return localMenu.products;
+      }
+      await this.getMenu(menu.id);
+      // recheck for localMenu
+      localMenu = await this.getLocalMenu(menu.id);
+      if (localMenu?.products) {
+        return localMenu.products;
+      }
+      console.log('products: Not available on local fetching from online');
+      let res = await getDocs(
+        collection(
+          this.firestore,
+          'business/' +
+            this.dataProvider.businessId +
+            '/menus/' +
+            menu.id +
+            '/products/',
+        ),
+      );
+      if (res) {
+        return res.docs.map((doc) => {
+          return { ...doc.data(), id: doc.id } as Product;
+        });
+      } else {
+        return [];
+      }
     } else {
-      return [];
+      await this.getMenu(menu.id);
     }
   }
 
@@ -418,7 +491,7 @@ export class MenuManagementService {
 
   async getMenu(menuId: string) {
     try {
-      // console.log("Downloading menu from server",menuId);
+      console.log("Downloading menu from server",menuId);
       // get products
       let productsFetchRequest = getDocs(
         collection(
@@ -490,9 +563,9 @@ export class MenuManagementService {
       // console.log("menu data fetched");
       // check if the menu exists if yes then delete entry
       try {
-        var menuExists:any = await firstValueFrom(
+        var menuExists: any = await firstValueFrom(
           this.indexedDbService.getByIndex('menu', 'menuId', menuId),
-          );
+        );
         // console.log("Menu already exists in db",menuExists);
         if (menuExists) {
           let res = await firstValueFrom(
@@ -523,22 +596,19 @@ export class MenuManagementService {
           return { ...doc.data(), id: doc.id };
         }),
         printerSettings: menuExists ? menuExists.printerSettings : [],
-        defaultPrinter:menuExists ? menuExists.defaultPrinter : {billPrinter:'',kotPrinter:''}
+        defaultPrinter: menuExists
+          ? menuExists.defaultPrinter
+          : { billPrinter: '', kotPrinter: '' },
       };
       // console.log("Saving menu to local db");
-      firstValueFrom(this.indexedDbService.add('menu', menuData))
-        .then((res) => {
-          this.dataProvider.menus
-            .find((menu) => menu.selectedMenuId == menuId)
-            .getAllData();
-          if (this.dataProvider.currentMenu.selectedMenuId == menuId) {
-            this.dataProvider.products = menuData.products;
-          }
-          this.dataProvider.menuLoadSubject.next(true);
-        })
-        .catch((err) => {
-          // console.log('menu112 error adding menu to indexedDB', err);
-        });
+      await firstValueFrom(this.indexedDbService.add('menu', menuData));
+      this.dataProvider.menus
+        .find((menu) => menu.selectedMenuId == menuId)
+        .getAllData();
+      if (this.dataProvider.currentMenu.selectedMenuId == menuId) {
+        this.dataProvider.products = menuData.products;
+      }
+      this.dataProvider.menuLoadSubject.next(true);
     } catch (error) {
       // console.log('index not found');
     }
@@ -636,9 +706,9 @@ export class MenuManagementService {
     );
   }
 
-  async addViewCategory(category: any,userId:string, id?: string) {
+  async addViewCategory(category: any, userId: string, id?: string) {
     if (!id) {
-      console.log("Adding new view category",userId,category);
+      console.log('Adding new view category', userId, category);
       let categoryRes = await addDoc(
         collection(
           this.firestore,
@@ -652,11 +722,10 @@ export class MenuManagementService {
         ),
         category,
       );
-      this.updatableMenus.push(this.dataProvider.currentMenu?.selectedMenu?.id);
-      this.menuUpdated.next();
+      this.updateMenuVersionRequest.next(this.dataProvider.currentMenu?.selectedMenu?.id);
       return categoryRes;
     }
-    console.log("Updating view category",userId,category);
+    console.log('Updating view category', userId, category);
     let categoryRes = await setDoc(
       doc(
         this.firestore,
@@ -672,8 +741,7 @@ export class MenuManagementService {
       category,
       { merge: true },
     );
-    this.updatableMenus.push(this.dataProvider.currentMenu?.selectedMenu?.id);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(this.dataProvider.currentMenu?.selectedMenu?.id)
     return categoryRes;
   }
 
@@ -690,8 +758,7 @@ export class MenuManagementService {
         ),
         category,
       );
-      this.updatableMenus.push(this.dataProvider.currentMenu?.selectedMenu?.id);
-      this.menuUpdated.next();
+      this.updateMenuVersionRequest.next(this.dataProvider.currentMenu?.selectedMenu?.id);
       return categoryRes;
     }
     // console.log(
@@ -715,8 +782,7 @@ export class MenuManagementService {
       category,
       { merge: true },
     );
-    this.updatableMenus.push(this.dataProvider.currentMenu?.selectedMenu?.id);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(this.dataProvider.currentMenu?.selectedMenu?.id)
     return categoryRes;
   }
 
@@ -735,50 +801,54 @@ export class MenuManagementService {
         menu,
       );
       // add default taxes
-      let taxes:{
-        cost:number,
-        creationDate:Timestamp,
-        mode:'product'|'bill',
-        name:string,
-        type:'percentage'|'amount',
-        updateDate:Timestamp,
-        id?:string
+      let taxes: {
+        cost: number;
+        creationDate: Timestamp;
+        mode: 'product' | 'bill';
+        name: string;
+        type: 'percentage' | 'amount';
+        updateDate: Timestamp;
+        id?: string;
       }[] = [
         {
-          mode:'product',
-          cost:2.5,
-          creationDate:Timestamp.fromDate(new Date()),
-          name:'CGST',
-          type:'percentage',
-          updateDate:Timestamp.fromDate(new Date()),
+          mode: 'product',
+          cost: 2.5,
+          creationDate: Timestamp.fromDate(new Date()),
+          name: 'CGST',
+          type: 'percentage',
+          updateDate: Timestamp.fromDate(new Date()),
         },
         {
-          mode:'product',
-          cost:2.5,
-          creationDate:Timestamp.fromDate(new Date()),
-          name:'SGST',
-          type:'percentage',
-          updateDate:Timestamp.fromDate(new Date()),
+          mode: 'product',
+          cost: 2.5,
+          creationDate: Timestamp.fromDate(new Date()),
+          name: 'SGST',
+          type: 'percentage',
+          updateDate: Timestamp.fromDate(new Date()),
         },
       ];
-      let addedTaxes = await Promise.all(taxes.map(async (tax)=>{
-        return await this.addTax(tax as Tax,menuRes.id);
-      }));
-      let productApplicableTaxes:productTax[] = addedTaxes.map((tax,index)=>{
-        taxes[index].id = tax.id;
-        return {
-          ...taxes[index],
-          id:tax.id,
-          nature:'exclusive',
-          amount:0,
-        }
-      });
+      let addedTaxes = await Promise.all(
+        taxes.map(async (tax) => {
+          return await this.addTax(tax as Tax, menuRes.id);
+        }),
+      );
+      let productApplicableTaxes: productTax[] = addedTaxes.map(
+        (tax, index) => {
+          taxes[index].id = tax.id;
+          return {
+            ...taxes[index],
+            id: tax.id,
+            nature: 'exclusive',
+            amount: 0,
+          };
+        },
+      );
       let allProducts: Product[] = [];
       let productsRef: Promise<void>[] = [];
       let rootCategoriesRef = catGroups.forEach(async (catGroup, index) => {
-        catGroup.products = catGroup.products.map((prod)=>{
+        catGroup.products = catGroup.products.map((prod) => {
           prod.tags = [prod['tag']];
-          prod.price = Number(prod.price)
+          prod.price = Number(prod.price);
           prod.id = this.generateRandomId();
           prod.taxes = productApplicableTaxes;
           return prod;
@@ -796,7 +866,7 @@ export class MenuManagementService {
           order: index + 1,
           printer: '',
           disabled: [],
-        }
+        };
         // console.log("new newCategoryData",newCategoryData);
         let res = await addDoc(
           collection(
@@ -806,7 +876,8 @@ export class MenuManagementService {
               '/menus/' +
               menuRes.id +
               '/rootCategories',
-          ),newCategoryData
+          ),
+          newCategoryData,
         );
         catGroup.products.forEach((product) => {
           productsRef.push(
@@ -817,10 +888,11 @@ export class MenuManagementService {
                   businessId +
                   '/menus/' +
                   menuRes.id +
-                  '/products/'+product.id,
+                  '/products/' +
+                  product.id,
               ),
               { ...product, category: { id: res.id, name: catGroup.name } },
-              {merge:true}
+              { merge: true },
             ),
           );
         });
@@ -880,46 +952,45 @@ export class MenuManagementService {
         }),
       );
       // console.log('New menu', menuRes.id);
-      this.updatableMenus.push(menuRes.id);
-      this.menuUpdated.next();
+      this.updateMenuVersionRequest.next(menuRes.id);
       return { menuRes, productsRes, categoriesRes };
     } catch (error) {
       throw error;
     }
   }
 
-  async addNewRootCategory(products:any[],name:string){
+  async addNewRootCategory(products: any[], name: string) {
     // first add all products
-    let addedProducts = await Promise.all(products.map(async (prod)=>{
-      prod.tags = [prod['tag']];
-      prod.price = Number(prod.price)
-      let docRef = await addDoc(
-        collection(
-          this.firestore,
-          'business/' +
-            this.dataProvider.businessId +
-            '/menus/' +
-            this.dataProvider.currentMenu?.selectedMenu?.id +
-            '/products',
-        ),prod
-      );
-      prod.id = docRef.id;
-      return prod;
-    }))
+    let addedProducts = await Promise.all(
+      products.map(async (prod) => {
+        prod.tags = [prod['tag']];
+        prod.price = Number(prod.price);
+        let docRef = await addDoc(
+          collection(
+            this.firestore,
+            'business/' +
+              this.dataProvider.businessId +
+              '/menus/' +
+              this.dataProvider.currentMenu?.selectedMenu?.id +
+              '/products',
+          ),
+          prod,
+        );
+        prod.id = docRef.id;
+        return prod;
+      }),
+    );
     let newCategoryData = {
       name: name,
       enabled: true,
       products: addedProducts.map((product) => product.id),
       productOrders: addedProducts.map((product) => product.id),
-      averagePrice:
-        products.reduce((a, b) => a + b.price, 0) /
-        products.length,
+      averagePrice: products.reduce((a, b) => a + b.price, 0) / products.length,
       order: 1,
       printer: '',
       disabled: [],
-    }
-    this.updatableMenus.push(this.dataProvider.currentMenu?.selectedMenu?.id);
-    this.menuUpdated.next();
+    };
+    this.updateMenuVersionRequest.next(this.dataProvider.currentMenu?.selectedMenu?.id)
     return addDoc(
       collection(
         this.firestore,
@@ -928,13 +999,13 @@ export class MenuManagementService {
           '/menus/' +
           this.dataProvider.currentMenu?.selectedMenu?.id +
           '/rootCategories',
-      ),newCategoryData
+      ),
+      newCategoryData,
     );
   }
 
   updateRootCategory(id: string, products: string[]) {
-    this.updatableMenus.push(this.dataProvider.currentMenu?.selectedMenu?.id);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(this.dataProvider.currentMenu?.selectedMenu?.id)
     return updateDoc(
       doc(
         this.firestore,
@@ -950,8 +1021,7 @@ export class MenuManagementService {
   }
 
   updateViewCategory(id: string, products: string[]) {
-    this.updatableMenus.push(this.dataProvider.currentMenu?.selectedMenu?.id);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(this.dataProvider.currentMenu?.selectedMenu?.id)
     return updateDoc(
       doc(
         this.firestore,
@@ -969,8 +1039,7 @@ export class MenuManagementService {
   }
 
   addRecommendedCategory(category: any) {
-    this.updatableMenus.push(this.dataProvider.currentMenu?.selectedMenu?.id);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(this.dataProvider.currentMenu?.selectedMenu?.id)
     return setDoc(
       doc(
         this.firestore,
@@ -987,8 +1056,7 @@ export class MenuManagementService {
   }
 
   updateProductVisiblity(id: string, visible: boolean) {
-    this.updatableMenus.push(this.dataProvider.currentMenu?.selectedMenu?.id);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(this.dataProvider.currentMenu?.selectedMenu?.id)
     return setDoc(
       doc(
         this.firestore,
@@ -1005,8 +1073,7 @@ export class MenuManagementService {
   }
 
   updateCategoryVisiblity(id: string, type: string, enabled: boolean) {
-    this.updatableMenus.push(this.dataProvider.currentMenu?.selectedMenu?.id);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(this.dataProvider.currentMenu?.selectedMenu?.id)
     return setDoc(
       doc(
         this.firestore,
@@ -1058,8 +1125,7 @@ export class MenuManagementService {
   }
 
   updateProductMenu(product: any, menu: Menu) {
-    this.updatableMenus.push(menu.id);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(menu.id);
     return setDoc(
       doc(
         this.firestore,
@@ -1076,8 +1142,7 @@ export class MenuManagementService {
   }
 
   updateRecommendedCategoryMenu(category: any, menu: Menu) {
-    this.updatableMenus.push(menu.id);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(menu.id);
     return setDoc(
       doc(
         this.firestore,
@@ -1094,8 +1159,7 @@ export class MenuManagementService {
   }
 
   updateViewCategoryMenu(category: any, menu: Menu) {
-    this.updatableMenus.push(menu.id);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(menu.id);
     return setDoc(
       doc(
         this.firestore,
@@ -1114,8 +1178,7 @@ export class MenuManagementService {
   }
 
   updateMainCategoryMenu(category: any, menu: Menu) {
-    this.updatableMenus.push(menu.id);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(menu.id);
     return setDoc(
       doc(
         this.firestore,
@@ -1132,8 +1195,7 @@ export class MenuManagementService {
   }
 
   setSettingsMenu(data: any, type: string, productList: string[], menu: Menu) {
-    this.updatableMenus.push(menu.id);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(menu.id);
     return setDoc(
       doc(
         this.firestore,
@@ -1158,8 +1220,7 @@ export class MenuManagementService {
   }
 
   deleteViewCategory(menuId: string, categoryId: string) {
-    this.updatableMenus.push(menuId);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(menuId);
     return deleteDoc(
       doc(
         this.firestore,
@@ -1195,8 +1256,7 @@ export class MenuManagementService {
       }/combos/types/images/${new Date().getTime()}_${imageFile.name}`,
       imageFile,
     );
-    this.updatableMenus.push(menu.id);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(menu.id);
     data.image = imageUrl;
     return addDoc(
       collection(
@@ -1212,8 +1272,7 @@ export class MenuManagementService {
   }
 
   updateType(data: ComboType, menu: Menu) {
-    this.updatableMenus.push(menu.id);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(menu.id);
     return setDoc(
       doc(
         this.firestore,
@@ -1230,8 +1289,7 @@ export class MenuManagementService {
   }
 
   deleteType(data: ComboType, menu: Menu) {
-    this.updatableMenus.push(menu.id);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(menu.id);
     return deleteDoc(
       doc(
         this.firestore,
@@ -1261,8 +1319,7 @@ export class MenuManagementService {
   }
 
   async addTimeGroup(data: TimeGroup, menu: Menu) {
-    this.updatableMenus.push(menu.id);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(menu.id);
     return addDoc(
       collection(
         this.firestore,
@@ -1277,8 +1334,7 @@ export class MenuManagementService {
   }
 
   updateTimeGroup(data: TimeGroup, menu: Menu) {
-    this.updatableMenus.push(menu.id);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(menu.id);
     return setDoc(
       doc(
         this.firestore,
@@ -1295,8 +1351,7 @@ export class MenuManagementService {
   }
 
   deleteTimeGroup(data: TimeGroup, menu: Menu) {
-    this.updatableMenus.push(menu.id);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(menu.id);
     return deleteDoc(
       doc(
         this.firestore,
@@ -1326,8 +1381,7 @@ export class MenuManagementService {
   }
 
   addCombo(data: Combo, menu: Menu) {
-    this.updatableMenus.push(menu.id);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(menu.id);
     // console.log('Add Combo: ', data);
     return addDoc(
       collection(
@@ -1343,8 +1397,7 @@ export class MenuManagementService {
   }
 
   updateCombo(data: Combo, menu: Menu) {
-    this.updatableMenus.push(menu.id);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(menu.id);
     return setDoc(
       doc(
         this.firestore,
@@ -1361,8 +1414,7 @@ export class MenuManagementService {
   }
 
   deleteCombo(data: Combo, menu: Menu) {
-    this.updatableMenus.push(menu.id);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(menu.id);
     return deleteDoc(
       doc(
         this.firestore,
@@ -1390,8 +1442,7 @@ export class MenuManagementService {
   }
 
   addTax(data: Tax, menuId: string) {
-    this.updatableMenus.push(menuId);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(menuId);
     return addDoc(
       collection(
         this.firestore,
@@ -1406,8 +1457,7 @@ export class MenuManagementService {
   }
 
   updateTax(taxId: string, data: Tax, menuId: string) {
-    this.updatableMenus.push(menuId);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(menuId);
     return setDoc(
       doc(
         this.firestore,
@@ -1424,8 +1474,7 @@ export class MenuManagementService {
   }
 
   deleteTax(taxId: string, menuId: string) {
-    this.updatableMenus.push(menuId);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(menuId);
     return deleteDoc(
       doc(
         this.firestore,
@@ -1440,8 +1489,7 @@ export class MenuManagementService {
   }
 
   addDiscount(data: CodeBaseDiscount, menuId: string) {
-    this.updatableMenus.push(menuId);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(menuId);
     return addDoc(
       collection(
         this.firestore,
@@ -1456,8 +1504,7 @@ export class MenuManagementService {
   }
 
   updateDiscount(discountId: string, data: CodeBaseDiscount, menuId: string) {
-    this.updatableMenus.push(menuId);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(menuId);
     return setDoc(
       doc(
         this.firestore,
@@ -1474,8 +1521,7 @@ export class MenuManagementService {
   }
 
   deleteDiscount(discountId: string, menuId: string) {
-    this.updatableMenus.push(menuId);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(menuId);
     return deleteDoc(
       doc(
         this.firestore,
@@ -1516,8 +1562,7 @@ export class MenuManagementService {
   }
 
   addLoyaltySetting(loyaltySetting: LoyaltySetting, menuId: string) {
-    this.updatableMenus.push(menuId);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(menuId);
     return addDoc(
       collection(
         this.firestore,
@@ -1532,8 +1577,7 @@ export class MenuManagementService {
   }
 
   editLoyalSetting(loyaltySetting: LoyaltySetting, menuId: string) {
-    this.updatableMenus.push(menuId);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(menuId);
     return setDoc(
       doc(
         this.firestore,
@@ -1550,8 +1594,7 @@ export class MenuManagementService {
   }
 
   deleteLoyaltySetting(loyaltySettingId: string, menuId: string) {
-    this.updatableMenus.push(menuId);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(menuId);
     return deleteDoc(
       doc(
         this.firestore,
@@ -1566,8 +1609,7 @@ export class MenuManagementService {
   }
 
   selectLoyalty(loyaltyId: string, menuId: string) {
-    this.updatableMenus.push(menuId);
-    this.menuUpdated.next();
+    this.updateMenuVersionRequest.next(menuId);
     return setDoc(
       doc(
         this.firestore,
@@ -1578,51 +1620,67 @@ export class MenuManagementService {
     );
   }
 
-  generateRandomId(){
-    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  generateRandomId() {
+    return (
+      Math.random().toString(36).substring(2, 15) +
+      Math.random().toString(36).substring(2, 15)
+    );
   }
 
-  async getPrinterList(menu:Menu){
+  async getPrinterList(menu: Menu) {
     // first fetch it from indexed db
     let localMenu = await this.getLocalMenu(menu.id);
     return localMenu?.printerSettings;
   }
 
-  async updatePrinterList(menu:Menu,printerList:PrinterSetting[]){
+  async updatePrinterList(menu: Menu, printerList: PrinterSetting[]) {
     // this.updatableMenus.push(menu.id);
     // this.menuUpdated.next();
     // console.log("menu.id",menu.id);
     let localMenu = await this.getLocalMenu(menu.id);
     // console.log("localMenu",localMenu);
-    if(localMenu){
+    if (localMenu) {
       localMenu.printerSettings = printerList;
       // console.log("Updating locally",localMenu);
-      this.indexedDbService.update('menu',localMenu).subscribe((res)=>{
-        // console.log("updated the menu",res);
-        this.indexedDbService.getByKey('menu',menu.id).subscribe((res)=>{
-          // console.log("updated menu",res);
-        });
-      },(err)=>{console.log(err);});
+      this.indexedDbService.update('menu', localMenu).subscribe(
+        (res) => {
+          // console.log("updated the menu",res);
+          this.indexedDbService.getByKey('menu', menu.id).subscribe((res) => {
+            // console.log("updated menu",res);
+          });
+        },
+        (err) => {
+          console.log(err);
+        },
+      );
     }
   }
 
-  async getDefaultPrinter(menu:Menu){
+  async getDefaultPrinter(menu: Menu) {
     let localMenu = await this.getLocalMenu(menu.id);
     // console.log("defaultPrinters localMenu",localMenu);
     return localMenu?.defaultPrinter;
   }
 
-  async updateDefaultPrinter(menu:Menu,printer:{billPrinter:string,kotPrinter:string}){
+  async updateDefaultPrinter(
+    menu: Menu,
+    printer: { billPrinter: string; kotPrinter: string },
+  ) {
     let localMenu = await this.getLocalMenu(menu.id);
-    if(localMenu){
+    if (localMenu) {
       localMenu.defaultPrinter = printer;
-      this.indexedDbService.update('menu',localMenu).subscribe((res)=>{
-        // console.log("success",res);
-      },(err)=>{console.log(err);});
+      this.indexedDbService.update('menu', localMenu).subscribe(
+        (res) => {
+          // console.log("success",res);
+        },
+        (err) => {
+          console.log(err);
+        },
+      );
     }
   }
 
-  deleteMenu(menuId:string){
+  deleteMenu(menuId: string) {
     return deleteDoc(
       doc(
         this.firestore,

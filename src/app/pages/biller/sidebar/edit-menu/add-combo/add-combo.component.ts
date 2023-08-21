@@ -338,9 +338,9 @@ export class AddComboComponent {
     );
   }
 
-  allSelected(category: productTree) {
+  allSelected(category: Category) {
     return (
-      category.products.every((item) => item.selected) && category.selected
+      category.products.every((item) => item.selected)
     );
   }
 
@@ -351,11 +351,8 @@ export class AddComboComponent {
     });
   }
 
-  checkAll(category: productTree) {
-    category.selected = this.allSelected(category);
-    if (!category.selected) {
-      this.someSelected(category);
-    }
+  checkAll(category: Category) {
+
   }
 
   generateSelectedProducts(type: TypeCategory) {
@@ -477,6 +474,9 @@ export class AddComboComponent {
       minimumProducts: 1,
       maximumProducts: null,
     };
+    category.category.products.forEach(element => {
+      element.selected = false;
+    });
     this.selectedCategories.push(category);
     this.fruitInput.nativeElement.value = '';
     this.categorySearchControl.setValue(null);

@@ -33,7 +33,7 @@
               </p>
             </div>
             <div class="items">
-              <ng-container *ngFor="let item of kot.products">
+              <ng-container *ngFor="let item of kot.items">
                 <div class="item">
                   <mat-checkbox
                     [(ngModel)]="item.selected"
@@ -42,8 +42,29 @@
                   >
                     {{ item.name | titlecase }}
                   </mat-checkbox>
-                  <p>{{ item.quantity }}</p>
-                  <p>{{ item.price | currency: "INR" }}</p>
+                  <div class="quantity" *ngIf="(item.sellByAvailable && item.sellBy == 'quantity') || !item.sellByAvailable">
+                    <viraj-button type="icon" [disabled]="item.newQuantity <= 1" (vclick)="item.newQuantity=item.newQuantity-1">
+                      <i class="ri-subtract-fill"></i>
+                    </viraj-button>
+                    <!-- <p>{{ item.newQuantity }}</p> -->
+                    <input type="number" (change)="checkQuantity(item)" #qtyInput [(ngModel)]="item.newQuantity" [max]="item.maxQuantity" [min]="0">
+                    <viraj-button type="icon" [disabled]="item.newQuantity >= item.maxQuantity" (vclick)="item.newQuantity=item.newQuantity+1">
+                      <i class="ri-add-fill"></i>
+                    </viraj-button>
+                  </div>
+                  <div class="quantity" *ngIf="(item.sellByAvailable && item.sellBy == 'price')">
+                    <!-- <viraj-button type="icon" [disabled]="item.newQuantity <= 1" (vclick)="item.newQuantity=item.newQuantity-1">
+                      <i class="ri-subtract-fill"></i>
+                    </viraj-button> -->
+                    <!-- <p>{{ item.newQuantity }}</p> -->
+                    &#8377;
+                    <input type="number" (input)="setItemAmount(item)" #qtyInput [(ngModel)]="item.amount" [max]="item.maxQuantity" [min]="0">
+                    <!-- <viraj-button type="icon" [disabled]="item.newQuantity >= item.maxQuantity" (vclick)="item.newQuantity=item.newQuantity+1">
+                      <i class="ri-add-fill"></i>
+                    </viraj-button> -->
+                  </div>
+                  <p *ngIf="(item.sellByAvailable && item.sellBy == 'price')">{{ item.newQuantity }}</p>
+                  <p *ngIf="!item.sellByAvailable || (item.sellByAvailable && item.sellBy != 'price')">{{ (item.price * item.newQuantity) | currency: "INR" }}</p>
                 </div>
               </ng-container>
             </div>

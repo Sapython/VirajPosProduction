@@ -51,8 +51,8 @@ export class AddDiscountComponent implements OnInit {
         this.availableDiscounts = [];
       }
       console.log("this.availableDiscounts disc modal",this.availableDiscounts.map((discount)=>discount.accessLevels));
-      if (this.dataProvider.currentBusinessUser.access.accessType == 'role'){
-        this.availableDiscounts = this.availableDiscounts.filter((discount)=> discount.accessLevels.includes(this.dataProvider.currentBusinessUser.access.accessType=='role' ? this.dataProvider.currentBusinessUser.access.role : 'custom'))
+      if (this.dataProvider.currentBusinessUser.accessType == 'role'){
+        this.availableDiscounts = this.availableDiscounts.filter((discount)=> discount.accessLevels.includes(this.dataProvider.currentBusinessUser.accessType=='role' ? this.dataProvider.currentBusinessUser.role : 'custom'))
       }
       console.log("filtered this.availableDiscounts disc modal",this.availableDiscounts);
     }

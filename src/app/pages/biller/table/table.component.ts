@@ -12,7 +12,7 @@ import { AnalyticsService } from '../../../core/services/database/analytics/anal
 import { BillService } from '../../../core/services/database/bill/bill.service';
 import { CustomerService } from '../../../core/services/customer/customer.service';
 import { RearrangeComponent } from './rearrange/rearrange.component';
-import { firstValueFrom, last } from 'rxjs';
+import { firstValueFrom, last, min } from 'rxjs';
 import { UserManagementService } from '../../../core/services/auth/user/user-management.service';
 import { ApplicableCombo } from '../../../core/constructors/comboKot/comboKot';
 import { GroupComponent } from './group/group.component';
@@ -84,9 +84,19 @@ export class TableComponent implements OnInit {
   getTime(date: Timestamp) {
     let milliseconds = new Date().getTime() - date.toDate().getTime();
     // convert milliseconds to minutes and seconds
-    let minutes = Math.floor(milliseconds / 60000);
+    let hours = milliseconds / 3600000;
+    let minutes = ((milliseconds % 3600000) / 60000).toFixed(0);
     let seconds = ((milliseconds % 60000) / 1000).toFixed(0);
-    return minutes + ':' + (Number(seconds) < 10 ? '0' : '') + seconds;
+    if (Number(minutes) < 10) {
+      minutes = '0' + minutes;
+    }
+    if (Number(seconds) < 10) {
+      seconds = '0' + seconds;
+    }
+    if (hours < 1) {
+      return minutes + ':' + seconds;
+    }
+    return hours.toFixed(0) + ':' + minutes + ':' + seconds;
   }
 
   printTable(table: Table, event: any) {
@@ -96,17 +106,21 @@ export class TableComponent implements OnInit {
   openTable(table: Table, event: any) {
     this.dialogRef.close(table);
     event.stopPropagation();
-    this.dataProvider.currentBill = table.occupyTable();
     this.dataProvider.currentTable = table;
-    this.dataProvider.billAssigned.next();
-    if (this.dataProvider.tempProduct && this.dataProvider.currentBill) {
+    if (table.bill){
+      this.dataProvider.currentBill = table.bill;
+      let activeKot = this.dataProvider.currentBill.kots.find((kot)=>kot.stage == 'active');
+      if (activeKot){
+        this.dataProvider.kotViewVisible = false;
+      }
+    } else {
+      this.dataProvider.currentBill = this.dataProvider.currentTable.createNewBill();
+    }
+    if (this.dataProvider.tempProduct) {
       this.dataProvider.currentBill.addProduct(this.dataProvider.tempProduct);
       this.dataProvider.tempProduct = undefined;
     }
-    if (
-      this.dataProvider.currentPendingProduct &&
-      this.dataProvider.currentBill
-    ) {
+    if (this.dataProvider.currentPendingProduct) {
       if (this.dataProvider.currentApplicableCombo) {
         this.dataProvider.currentApplicableCombo.addProduct(
           this.dataProvider.currentComboTypeCategory,
@@ -128,12 +142,16 @@ export class TableComponent implements OnInit {
         }
       }
     }
+    this.dataProvider.billAssigned.next();
     this.dialogRef.close();
   }
 
   async addTable(groupName: string) {
     console.log('group Name');
-    const numberOfTablesFromAllGroups = this.dataProvider.tables.length;
+    let sortedTables = this.dataProvider.tables.sort((a, b) => {
+      return Number(b.id) - Number(a.id);
+    });
+    const numberOfTablesFromAllGroups = Number(sortedTables[0].id);
     const newTableId = numberOfTablesFromAllGroups + 1;
     // find all table matching the table group name
     let tables = this.dataProvider.tables.filter((table) => {
@@ -212,14 +230,14 @@ export class TableComponent implements OnInit {
       this.customerService,
       this.userManagementService,
     );
-    this.dataProvider.currentBill = table.occupyTable();
+    this.dataProvider.currentBill = table.createNewBill();
     this.analyticsService.newTable(table, 'takeaway');
     this.dataProvider.currentTable = table;
-    this.dataProvider.billAssigned.next();
     if (this.dataProvider.tempProduct && this.dataProvider.currentBill) {
       this.dataProvider.currentBill.addProduct(this.dataProvider.tempProduct);
       this.dataProvider.tempProduct = undefined;
     }
+    this.dataProvider.billAssigned.next()
     this.dialogRef.close(table);
     this.dataProvider.tokens.push(table);
   }
@@ -247,15 +265,15 @@ export class TableComponent implements OnInit {
       this.customerService,
       this.userManagementService,
     );
-    this.dataProvider.currentBill = table.occupyTable();
+    this.dataProvider.currentBill = table.createNewBill();
     this.dataProvider.currentTable = table;
     this.analyticsService.newTable(table, 'online');
-    this.dataProvider.billAssigned.next();
     if (this.dataProvider.tempProduct && this.dataProvider.currentBill) {
       this.dataProvider.currentBill.addProduct(this.dataProvider.tempProduct);
       this.dataProvider.tempProduct = undefined;
     }
     this.dialogRef.close(table);
+    this.dataProvider.billAssigned.next()
     this.dataProvider.onlineTokens.push(table);
   }
 
@@ -308,9 +326,9 @@ export class TableComponent implements OnInit {
   }
 
   switchTableSize(event: any) {
-    //  console.log("event",event);
-    localStorage.setItem('tableSize', event.value);
-    this.dataProvider.currentTableSize = event.value;
+     console.log("event",event);
+    localStorage.setItem('tableSize', event);
+    this.dataProvider.currentTableSize = event;
   }
 
   switchMode(mode: any) {
@@ -368,6 +386,7 @@ export class TableComponent implements OnInit {
       }
       // console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
     }
+    this.dataProvider.clearSearchField.next();
     this.dataProvider.modeChanged.next(mode.value);
   }
 

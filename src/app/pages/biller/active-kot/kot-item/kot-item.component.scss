@@ -66,6 +66,20 @@ section {
       p.price {
         color: rgb(131, 131, 131);
       }
+      span{
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        white-space: nowrap;
+      }
+      .sellBy{
+        border: 1px solid var(--Vrajera-primary);
+        padding: 2px 5px;
+        background: white;
+        border-radius: 4px;
+        font-size: var(--Vrajera-font-small);
+        color:var(--Vrajera-font-small);
+      }
     }
 
     .more {
@@ -101,29 +115,20 @@ section {
             border: 2px solid #bebebe;
             border-radius: 4px;
           }
+        }
 
-          // button {
-          //     border: none;
-          //     width: 32px;
-          //     height: 32px;
-          //     background: var(--Vrajera-primary);
-          //     color: white;
-          //     border-radius: 4px;
-          //     display: flex;
-          //     justify-content: center;
-          //     align-items: center;
-          //     box-shadow: var(--Vrajera-shadow-light);
-          // }
-
-          // button[disabled] {
-          //     background: #ccc;
-          // }
+        .price{
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: var(--Vrajera-font-large);
+          font-weight: 600;
         }
 
         .iconButton {
           border: none;
-          width: 32px;
-          height: 32px;
+          width: 28px;
+          height: 28px;
           color: var(--Vrajera-primary);
           background: white;
           border-radius: 4px;

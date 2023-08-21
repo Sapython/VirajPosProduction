@@ -158,8 +158,8 @@ export class ActiveKotComponent implements OnChanges {
           mode: reason.mode,
           time: Timestamp.now(),
           user: {
-            access:this.dataProvider.currentBusinessUser.access.accessType == 'role' ? this.dataProvider.currentBusinessUser.access.role : 'custom',
-            username: this.dataProvider.currentBusinessUser.name,
+            access:this.dataProvider.currentBusinessUser.accessType == 'role' ? this.dataProvider.currentBusinessUser.role : 'custom',
+            username: this.dataProvider.currentBusinessUser.username,
           },
         };
         console.log('Cancel reason kot: ', kot.cancelReason);

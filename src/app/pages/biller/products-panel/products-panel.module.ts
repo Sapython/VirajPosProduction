@@ -10,7 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ComboCardComponent } from './combo-card/combo-card.component';
 import { BaseComponentsModule } from '../../../shared/base-components/base-components.module';
-
+import {MatProgressBarModule} from '@angular/material/progress-bar'; 
 @NgModule({
   declarations: [
     ProductsPanelComponent,
@@ -26,6 +26,7 @@ import { BaseComponentsModule } from '../../../shared/base-components/base-compo
     MatFormFieldModule,
     MatInputModule,
     BaseComponentsModule,
+    MatProgressBarModule
   ],
   exports: [ProductsPanelComponent, ProductCardComponent],
 })

@@ -252,6 +252,7 @@ export class ModeConfig {
 
   async getProducts() {
     if (this.selectedMenu) {
+      let defaultPrinter = await this.menuManagementService.getDefaultPrinter(this.selectedMenu)
       let data = await this.menuManagementService.getProductsByMenu(this.selectedMenu);
       // data.forEach((doc)=>{
       //   this.menuManagementService.updateRecipe({id:doc.id,type:doc.data().type.replace('\r','')},this.selectedMenuId)
@@ -275,7 +276,7 @@ export class ModeConfig {
       this.fuseInstance.setCollection(this.products);
       this.selectedCategory = this.allProductsCategory;
       this.products = this.products.map((p) => {
-        return { ...p, itemType: 'product' };
+        return { ...p, itemType: 'product',specificPrinter:p.specificPrinter || defaultPrinter.billPrinter };
       });
       // sort products by name
       this.products.sort((a, b) => {

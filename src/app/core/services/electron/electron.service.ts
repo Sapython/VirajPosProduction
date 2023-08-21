@@ -109,6 +109,8 @@ export class ElectronService {
   }
 
   printData(data: any, printer: string) {
+    console.log("Printing data",data,"to printer:",printer);
+    
     if (!data || !printer) {
       const dialog = this.dialog.open(DialogComponent, {
         data: { title: 'Error', description: 'No Data or Printer Selected' },

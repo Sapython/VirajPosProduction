@@ -1578,17 +1578,14 @@ export class ModeConfig {
   }
 
   editDiscount(discount: CodeBaseDiscount) {
-    //  console.log('discount', discount);
+     console.log('discount', discount);
     const dialog = this.dialog.open(AddDiscountComponent, {
       data: { mode: 'edit', discount: discount },
     });
     dialog.closed.subscribe((data: any) => {
-      //  console.log('data', data);
+       console.log('data', data);
       if (data) {
-        if (data.menus.length === 0) {
-          data.menus = null;
-        }
-        //  console.log('adding', data);
+         console.log('adding', data);
         this.menuManagementService
           .updateDiscount(
             discount.id,
@@ -1596,7 +1593,7 @@ export class ModeConfig {
             this.selectedMenu.id,
           )
           .then((res) => {
-            //  console.log('res', res);
+             console.log('res', res);
             this.getDiscounts();
             this.alertify.presentToast('Discount update successfully');
           })

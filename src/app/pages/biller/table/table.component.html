@@ -289,54 +289,55 @@
         <mat-icon>add</mat-icon>
         <p>Add New Token</p>
       </button>
-      <button
-        class="table"
-        [ngClass]="{
-          active: table.status == 'occupied',
-          late: this.dataProvider.tableTimeOutTime <= table.minutes,
-          finalized: table.bill?.stage == 'finalized',
-          medium: this.dataProvider.currentTableSize == 'medium',
-          small: this.dataProvider.currentTableSize == 'small',
-          inactive: moveKotMode && moveKotSelectedTable.id != table.id,
-          activated: moveKotMode && moveKotSelectedTable.id == table.id
-        }"
-        matRipple
-        *ngFor="let table of this.dataProvider.onlineTokens"
-        (click)="moveKotMode ? moveKotItem(table) : openTable(table, $event)"
-      >
-        <p class="name">Token {{ table.name }}</p>
-        <p
-          class="cost"
-          *ngIf="
-            table.bill?.billing?.grandTotal != undefined &&
-            table.bill?.billing?.grandTotal != null &&
-            isNumber(table.bill?.billing?.grandTotal)
-          "
+      <ng-container *ngFor="let table of this.dataProvider.onlineTokens">
+        <button
+          class="table"
+          [ngClass]="{
+            active: table.status == 'occupied',
+            late: this.dataProvider.tableTimeOutTime <= table.minutes,
+            finalized: table.bill?.stage == 'finalized',
+            medium: this.dataProvider.currentTableSize == 'medium',
+            small: this.dataProvider.currentTableSize == 'small',
+            inactive: moveKotMode && moveKotSelectedTable.id != table.id,
+            activated: moveKotMode && moveKotSelectedTable.id == table.id
+          }"
+          matRipple
+          (click)="moveKotMode ? moveKotItem(table) : openTable(table, $event)"
         >
-          <strong>{{
-            table.bill?.billing?.grandTotal | currency: "INR"
-          }}</strong>
-        </p>
-        <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">
-          {{ table.timeSpent }}
-        </p>
-        <div
-          class="actions"
-          *ngIf="
-            table.status == 'occupied' &&
-            this.dataProvider.getAccess('settleFromTable')
-          "
-        >
-          <viraj-button
-            [noPropogation]="true"
-            *ngIf="table.bill?.stage == 'finalized'"
-            [minimalPadding]="true"
-            type="icon"
-            (vclick)="settleTable(table, $event)"
-            ><i class="ri-save-fill"></i
-          ></viraj-button>
-        </div>
-      </button>
+          <p class="name">Token {{ table.name }}</p>
+          <p
+            class="cost"
+            *ngIf="
+              table.bill?.billing?.grandTotal != undefined &&
+              table.bill?.billing?.grandTotal != null &&
+              isNumber(table.bill?.billing?.grandTotal)
+            "
+          >
+            <strong>{{
+              table.bill?.billing?.grandTotal | currency: "INR"
+            }}</strong>
+          </p>
+          <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">
+            {{ table.timeSpent }}
+          </p>
+          <div
+            class="actions"
+            *ngIf="
+              table.status == 'occupied' &&
+              this.dataProvider.getAccess('settleFromTable')
+            "
+          >
+            <viraj-button
+              [noPropogation]="true"
+              *ngIf="table.bill?.stage == 'finalized'"
+              [minimalPadding]="true"
+              type="icon"
+              (vclick)="settleTable(table, $event)"
+              ><i class="ri-save-fill"></i
+            ></viraj-button>
+          </div>
+        </button>
+      </ng-container>
     </div>
   </div>
 </section>

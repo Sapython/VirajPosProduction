@@ -10,6 +10,7 @@ import {
   docData,
   Firestore,
   Timestamp,
+  getDoc,
 } from '@angular/fire/firestore';
 import { DataProvider } from '../../provider/data-provider.service';
 import { Table } from '../../../constructors/table/Table';
@@ -67,6 +68,15 @@ export class TableService {
         this.firestore,
         'business/' + this.dataProvider.businessId + '/tables',
       ),
+    );
+  }
+
+  getTablePromise(tableId: string, type: 'tables' | 'tokens' | 'onlineTokens'){
+    return getDoc(doc(
+      this.firestore,
+      'business/' + this.dataProvider.businessId + '/' + type,
+      tableId,
+      )
     );
   }
 

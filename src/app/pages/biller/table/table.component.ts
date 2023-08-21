@@ -205,15 +205,18 @@ export class TableComponent implements OnInit {
     this.tableService.reOrderTable();
   }
 
-  addToken() {
+  async addToken() {
     // add a table
     // this.dataProvider.takeawayToken = this.dataProvider.takeawayToken + 1;
     console.log(
       'this.dataProvider.takeawayToken ',
       this.dataProvider.takeawayToken,
     );
-    this.dataProvider.takeawayToken++;
-    this.analyticsService.addTakeawayToken();
+    let tableData = await this.tableService.getTablePromise(this.dataProvider.takeawayToken.toString(),'tokens');
+    if(!tableData.data() || tableData.data()['status']!='available'){
+      this.dataProvider.takeawayToken++;
+      this.analyticsService.addTakeawayToken();
+    }
     let table = new Table(
       this.dataProvider.takeawayToken.toString(),
       this.dataProvider.takeawayToken,
@@ -239,16 +242,21 @@ export class TableComponent implements OnInit {
     }
     this.dataProvider.billAssigned.next()
     this.dialogRef.close(table);
-    this.dataProvider.tokens.push(table);
+    if(!tableData.data() || tableData.data()['status']!='available'){
+      this.dataProvider.tokens.push(table);
+    }
   }
 
-  addOnlineToken() {
+  async addOnlineToken() {
     // console.log(
     //   'this.dataProvider.takeawayToken ',
     //   this.dataProvider.takeawayToken
     // );
-    this.dataProvider.onlineTokenNo++;
-    this.analyticsService.addOnlineToken();
+    let tableData = await this.tableService.getTablePromise(this.dataProvider.takeawayToken.toString(),'onlineTokens');
+    if(!tableData.data() || tableData.data()['status']!='available'){
+      this.dataProvider.onlineTokenNo++;
+      this.analyticsService.addOnlineToken();
+    }
     let table = new Table(
       this.dataProvider.onlineTokenNo.toString(),
       this.dataProvider.onlineTokenNo,
@@ -274,7 +282,9 @@ export class TableComponent implements OnInit {
     }
     this.dialogRef.close(table);
     this.dataProvider.billAssigned.next()
-    this.dataProvider.onlineTokens.push(table);
+    if(!tableData.data() || tableData.data()['status']!='available'){
+      this.dataProvider.onlineTokens.push(table);
+    }
   }
 
   moveKot(table: Table, event: any) {

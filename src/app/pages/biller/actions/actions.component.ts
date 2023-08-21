@@ -152,6 +152,7 @@ export class ActionsComponent {
               result.paymentMethods,
               'internal',
               result.detail || null,
+              true
             );
           }
         });

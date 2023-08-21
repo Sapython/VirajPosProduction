@@ -412,6 +412,7 @@ export class TableComponent implements OnInit {
             result.paymentMethods,
             'external',
             result.detail || null,
+            true
           );
         }
       });

@@ -133,6 +133,9 @@ export class HistoryComponent {
       )
       .then((bills) => {
         //  console.log("bills",bills.docs);
+        this.bills.sort((a,b)=>{
+          return b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime();
+        });
         this.bills = bills.docs.map((doc) => {
           let allProducts = doc.data().kots.reduce((acc, kot) => {
             acc.push(...kot.products);

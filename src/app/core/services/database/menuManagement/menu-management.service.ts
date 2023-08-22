@@ -264,7 +264,7 @@ export class MenuManagementService {
       ),
     )
       .then(async (res) => {
-        if (res.docs.length > 0) {
+        if (res?.docs?.length > 0) {
           let tables = res.docs.map(async (doc) => {
             let table = { ...doc.data(), id: doc.id } as TableConstructor;
             // let tableClass = new Table(table.id,Number(table.tableNo),table.name,table.maxOccupancy,table.type,this.dataProvider,this.databaseService)
@@ -443,7 +443,7 @@ export class MenuManagementService {
 
   async getProductsByMenu(menu: Menu) {
     let localMenu = await this.getLocalMenu(menu.id);
-    if (localMenu.menu.menuVersion == menu.menuVersion) {
+    if (localMenu?.menu?.menuVersion == menu.menuVersion) {
       if (localMenu?.products) {
         return localMenu.products;
       }

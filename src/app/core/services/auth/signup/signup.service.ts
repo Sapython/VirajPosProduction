@@ -84,6 +84,7 @@ export class SignupService {
       ],
       lastLogin: Timestamp.now(),
       username: user.uid,
+      email: user.email,
     };
     return setDoc(doc(this.firestore, 'users/' + user.uid), userRecord);
   }

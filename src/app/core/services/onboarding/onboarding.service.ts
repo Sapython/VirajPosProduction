@@ -77,6 +77,7 @@ export class OnboardingService {
     cities: { city: string; businesses: UserBusiness[] }[];
   }[] = [];
   atLeastOneAdmin:boolean = false;
+  autoOutletFromEmail:string = '';
   private checkIfAccessTokenIsValidFunction = httpsCallable(
     this.functions,
     'checkIfAccessTokenIsValid',
@@ -178,8 +179,11 @@ export class OnboardingService {
                 ].businesses.push(business);
               }
             }
+            console.log('groupedBusiness', business,business.access.accessType,business.access.accessType == 'role' ? business.access.role : 'NA',business.access.accessType == 'role' && business.access.role == 'admin');
             if (business.access.accessType == 'role' && business.access.role == 'admin'){
               this.atLeastOneAdmin = true;
+              console.log("data.user",data.user);
+              this.autoOutletFromEmail = data.user.email;
             }
           });
           // if only one state is present then select the state

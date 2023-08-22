@@ -369,7 +369,7 @@
           [business]="business"
         ></app-business-card>
         <app-new-business-card *ngIf="onboardingService.atLeastOneAdmin"
-          (click)="onboardingService.stage = 'onboardingStep1'"
+          (click)="autoOnboard()"
           [@zoomInOnEnter]
         ></app-new-business-card>
       </div>
@@ -475,6 +475,7 @@
               </mat-form-field>
             </div>
             <mat-form-field appearance="outline">
+              <app-helper *ngIf="this.onboardingService.autoOutletFromEmail" matSuffix tooltip="This email is prefilled so that the new outlet you register is under the same id. If you change this it will not appear as an outlet under this account."></app-helper>
               <mat-label>Email</mat-label>
               <input type="email" matInput formControlName="email" />
             </mat-form-field>

@@ -27,11 +27,13 @@ export interface UserRecord {
   username: string;
   lastLogin: Timestamp;
   business: UserBusiness[];
+  email:string;
 }
 export interface UserBusiness {
   businessId: string;
   access: Access;
   name: string;
+  email?:string;
   address: string;
   city:string;
   state:string;

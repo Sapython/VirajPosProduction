@@ -975,6 +975,12 @@ export class LoadingComponent implements OnInit {
       }
     });
   }
+
+  autoOnboard(){
+    this.onboardingService.stage = 'onboardingStep1';
+    console.log("this.onboardingService.autoOutletFromEmail",this.onboardingService.autoOutletFromEmail);
+    this.onboardingBusinessForm.patchValue({email:this.onboardingService.autoOutletFromEmail});
+  }
 }
 
 

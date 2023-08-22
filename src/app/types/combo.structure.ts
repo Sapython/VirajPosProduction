@@ -13,8 +13,6 @@ export interface Combo {
   offerImage?: string;
   discounted: boolean;
   maximumNoOfPurchases: number;
-  type: 'combo' | 'offer';
-  offerPrice?: number;
   updateDate: Timestamp;
   creationDate: Timestamp;
   selectedCategories: ComboCategoryCategorized[];

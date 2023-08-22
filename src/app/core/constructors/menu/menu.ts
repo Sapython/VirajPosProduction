@@ -427,12 +427,16 @@ export class ModeConfig {
           if (this.dataProvider.currentUser.username == user.username){
             this.viewCategories = formedCategory;
           }
-          // console.log("formedCategory",formedCategory);
-          this.userWiseViewCategories.push({
-            user:user.username,
-            categories:formedCategory,
-            open:false
-          });
+          if (this.userWiseViewCategories.find((u)=>u.user == user.username)){
+            this.userWiseViewCategories.find((u)=>u.user == user.username).categories = formedCategory;
+          } else {
+            // console.log("formedCategory",formedCategory);
+            this.userWiseViewCategories.push({
+              user:user.username,
+              categories:formedCategory,
+              open:false
+            });
+          }
         });
         // console.log("this.userWiseViewCategories",this.userWiseViewCategories);
       } else {
@@ -553,6 +557,7 @@ export class ModeConfig {
           ...doc.data(),
           id: doc.id,
         } as Combo);
+        // preloading stuff
         if (doc.data()['offerImage']) {
           var img = new Image();
           img.src = doc.data()['offerImage'];
@@ -570,6 +575,11 @@ export class ModeConfig {
           // console.log("ADDED",cat.category.products);
         });
       });
+      // filter combos by checking their id and then remove if found duplicate
+      this.combos = this.combos.filter(
+        (combo, index, self) =>
+          index === self.findIndex((t) => t.id === combo.id),
+      );
       console.log("COMBOS",this.combos);
       this.comboCategory = {
         combos: this.combos,
@@ -993,7 +1003,12 @@ export class ModeConfig {
 
   addRecipe(menuId: string) {
     let dialog = this.dialog.open(AddDishComponent, {
-      data: { mode: 'add', menu: this.selectedMenu },
+      data: { 
+        mode: 'add', 
+        menu: this.selectedMenu,
+        mainCategories: this.mainCategories,
+        viewCategories: this.viewCategories
+      },
     });
     firstValueFrom(dialog.closed)
       .then(async (data: any) => {
@@ -1001,25 +1016,17 @@ export class ModeConfig {
           let printerConfigs = await this.menuManagementService.getPrinterList(
             this.selectedMenu,
           );
-          // find data.specificPrinter in printerConfigs by matching printerName
-          const categoryDialog = this.dialog.open(SelectCategoryComponent, {
-            data: {
-              mainCategories: this.mainCategories,
-              viewCategories: this.viewCategories,
-            },
-          });
-          let category: any = await firstValueFrom(categoryDialog.closed);
-          if (category.mainCategory.products) {
-            delete category.mainCategory.products;
+          if (data.mainCategory.products) {
+            delete data.mainCategory.products;
           }
           // console.log('category data', category);
-          let selectedViewCategories = category.viewCategories.filter(
+          let selectedViewCategories = data.viewCategories.filter(
             (c) => c.selected,
           );
           // this.mainCategories
           this.dataProvider.loading = true;
           let product: Product = {
-            category: category.mainCategory,
+            category: data.mainCategory,
             itemType: 'product',
             createdDate: Timestamp.now(),
             images: [],
@@ -1052,7 +1059,7 @@ export class ModeConfig {
           );
           let rootCategoryRes =
             await this.menuManagementService.updateRootCategory(
-              category.mainCategory.id,
+              data.mainCategory.id,
               [productRes.id],
             );
           let viewCategoryRes = await Promise.all(
@@ -1072,7 +1079,7 @@ export class ModeConfig {
         }
       })
       .catch((err) => {
-        // console.log('Recipe add error', err);
+        console.log('Recipe add error', err);
         this.alertify.presentToast('Recipe Added Failed');
       })
       .finally(() => {
@@ -1203,40 +1210,39 @@ export class ModeConfig {
   }
 
   async deleteRecipe(product: Product, menuId: string) {
-    if (
-      await this.dataProvider.confirm('Are you sure you want to delete', [1])
-    ){
-      this.currentType;
-      if (this.currentType == 'all') {
-        this.dataProvider
-          .confirm('Are you sure you want to delete this recipe?', [1])
-          .then((data) => {
-            if (data) {
-              this.dataProvider.loading = true;
-              this.productService
-                .deleteProduct(product.id, menuId)
-                .then((data: any) => {
-                  this.alertify.presentToast('Recipe Deleted Successfully');
-                  // remove from products
-                  this.products = this.products.filter(
+    if (['all','root'].includes(this.currentType)) {
+      this.dataProvider
+        .confirm('Are you sure you want to delete this recipe?', [1])
+        .then((data) => {
+          if (data) {
+            this.dataProvider.loading = true;
+            this.productService
+              .deleteProduct(product.id, menuId)
+              .then((data: any) => {
+                this.alertify.presentToast('Recipe Deleted Successfully');
+                // remove from products
+                this.products = this.products.filter(
+                  (p: Product) => p.id != product.id,
+                );
+                this.selectedCategory.products =
+                  this.selectedCategory.products.filter(
                     (p: Product) => p.id != product.id,
                   );
-                  this.selectedCategory.products =
-                    this.selectedCategory.products.filter(
-                      (p: Product) => p.id != product.id,
-                    );
-                })
-                .catch((err) => {
-                  this.alertify.presentToast('Recipe Delete Failed');
-                })
-                .finally(() => {
-                  this.dataProvider.loading = false;
-                });
-            } else {
-              this.alertify.presentToast('Recipe Delete Cancelled');
-            }
-          });
-      } else if (['root', 'view'].includes(this.currentType)) {
+              })
+              .catch((err) => {
+                this.alertify.presentToast('Recipe Delete Failed');
+              })
+              .finally(() => {
+                this.dataProvider.loading = false;
+              });
+          } else {
+            this.alertify.presentToast('Recipe Delete Cancelled');
+          }
+        });
+    } else if (['view'].includes(this.currentType)) {
+      if (
+        await this.dataProvider.confirm('Are you sure you want to remove this product from this category', [1])
+      ){
         this.selectedCategory.products = this.selectedCategory.products.filter(
           (p: Product) => p.id != product.id,
         );
@@ -1247,15 +1253,10 @@ export class ModeConfig {
           this.selectedCategory.productOrders =
             this.selectedCategory.products.map((p: Product) => p.id);
         }
-        // console.log(
-        //   'Deleted',
-        //   this.selectedCategory.products.find((p) => p.id == product.id),
-        //   product
-        // );
         this.selectedCategory.updated = true;
-      } else {
-        this.alertify.presentToast('Cannot delete from this category');
       }
+    } else {
+      this.alertify.presentToast('Cannot delete from this category');
     }
   }
 

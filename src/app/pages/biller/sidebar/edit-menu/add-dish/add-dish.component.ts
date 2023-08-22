@@ -5,6 +5,7 @@ import { Product, portionColor } from '../../../../../types/product.structure';
 import { ElectronService } from '../../../../../core/services/electron/electron.service';
 import { MenuManagementService } from '../../../../../core/services/database/menuManagement/menu-management.service';
 import { Menu } from '../../../../../types/menu.structure';
+import { Category } from '../../../../../types/category.structure';
 
 @Component({
   selector: 'app-add-dish',
@@ -60,6 +61,7 @@ export class AddDishComponent {
     tag: new FormControl(''),
     specificPrinter: new FormControl(''),
     sellByAvailable: new FormControl(false),
+    mainCategory: new FormControl('',this.data.mainCategories.length ? Validators.required : []),
   });
   defaultPrinters: { billPrinter: string; kotPrinter: string } = {
     billPrinter: '',
@@ -67,10 +69,12 @@ export class AddDishComponent {
   };
   localPrinterConfig:any[] = [];
 
+  viewCategories: ExtendedCategory[] = [];
+
   constructor(
     private dialogRef: DialogRef,
     @Inject(DIALOG_DATA)
-    public data: { mode: 'add' | 'edit'; product?: Product,menu:Menu },
+    public data: { mode: 'add' | 'edit'; product?: Product, menu:Menu, mainCategories: Category[], viewCategories: Category[] },
     private electronService: ElectronService,
     private menuManagementService:MenuManagementService
   ) {
@@ -79,6 +83,9 @@ export class AddDishComponent {
       this.newDishForm.controls.tag.setValue(data.product.tags[0]);
        console.log(this.newDishForm.value,"this.tags",this.tags);
     }
+    this.viewCategories = this.data.viewCategories.map((category) => {
+      return { ...category, selected: false };
+    });
   }
 
   async ngOnInit(): Promise<void> {
@@ -118,13 +125,22 @@ export class AddDishComponent {
       alert('Please fill all the fields');
       return;
     }
+    if (this.data.mainCategories.length && !this.newDishForm.value.mainCategory){
+      alert('Please select a main category');
+      return;
+    }
     this.dialogRef.close({
       ...this.newDishForm.value,
       tags: this.newDishForm.value.tag ? [this.newDishForm.value.tag] : [],
+      viewCategories: this.viewCategories,
     });
   }
 
   switchColor(event: any, i: number) {
     //  console.log(event,i);
   }
+}
+
+interface ExtendedCategory extends Category {
+  selected: boolean;
 }

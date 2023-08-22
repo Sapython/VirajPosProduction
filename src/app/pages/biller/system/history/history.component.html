@@ -223,7 +223,7 @@
                   (click)="bill.flipped = false; bill.kotOrBillVisible = false"
                   >Back</viraj-button
                 >
-                <viraj-button (click)="bill.flipped = false"
+                <viraj-button (click)="reprintBill(bill);"
                   >Re-Print</viraj-button
                 >
                 <viraj-button
@@ -339,7 +339,9 @@
               (click)="bill.flipped = false; bill.kotOrBillVisible = false"
               >Back</viraj-button
             >
-            <viraj-button (click)="bill.flipped = false">Re-Print</viraj-button>
+            <viraj-button (click)="reprintBill(bill);"
+                  >Re-Print</viraj-button
+                >
             <viraj-button (click)="downloadBillInvoice(bill.printableBillData)"
               >Download</viraj-button
             >
@@ -457,7 +459,7 @@
                   (click)="bill.flipped = false; bill.kotOrBillVisible = false"
                   >Back</viraj-button
                 >
-                <viraj-button (click)="bill.flipped = false"
+                <viraj-button (click)="reprintBill(bill);"
                   >Re-Print</viraj-button
                 >
                 <viraj-button
@@ -597,7 +599,7 @@
                       "
                       >Back</viraj-button
                     >
-                    <viraj-button (click)="bill.flipped = false"
+                    <viraj-button (click)="reprintBill(bill);"
                       >Re-Print</viraj-button
                     >
                     <viraj-button

@@ -11,7 +11,7 @@
     <form [formGroup]="comboFormGroup">
       <input matInput placeholder="Combo Name" formControlName="name" type="text" />
       <input matInput placeholder="Maximum No. Of Purchase" type="number" formControlName="maximumNoOfPurchases" />
-      <div class="select" matTooltip="Combo is general combo where the price get's automatically calculated. Offer is a fixed price group for products.">
+      <!-- <div class="select" matTooltip="Combo is general combo where the price get's automatically calculated. Offer is a fixed price group for products.">
         <mat-select
           placeholder="Type"
           formControlName="type"
@@ -22,10 +22,10 @@
           <mat-option value="combo">Combo</mat-option>
           <mat-option value="offer">Offer</mat-option>
         </mat-select>
-      </div>
+      </div> -->
       <input type="file" #fileUploader (change)="setImage($event)" hidden />
       <viraj-button type="outline" (click)="fileUploader.click()" matTooltip="You can select optional image for this combo/offer.">Upload Image</viraj-button>
-      <input matInput placeholder="Offer Cost" type="text" *ngIf="offerType.value == 'offer'" formControlName="offerPrice" />
+      <!-- <input matInput placeholder="Offer Cost" type="text" *ngIf="offerType.value == 'offer'" formControlName="offerPrice" /> -->
       <div class="toggle">
         <mat-slide-toggle matTooltip="If you switch this on then discount can be applied to the bill that has this item in it. If not than no one can apply discount on the bill if the bill has this item in it." formControlName="discounted"
           >Can Be Discounted</mat-slide-toggle
@@ -115,8 +115,8 @@
               </mat-select>
             </mat-form-field>
             <mat-form-field
-            appearance="outline"
-            *ngIf="offerType.value == 'discount' && offerType.value == 'fixed' && offerType.value == 'loyalty'"
+              appearance="outline"
+              *ngIf="offerType.value == 'discount' || offerType.value == 'fixed' || offerType.value == 'loyalty'"
             >
               <app-helper matPrefix tooltip="The total cost of this offer."></app-helper>
               <mat-label>Amount</mat-label>
@@ -124,7 +124,7 @@
             </mat-form-field>
             <mat-form-field appearance="outline">
               <app-helper matPrefix tooltip="Minimum number of products required."></app-helper>
-              <mat-label>Minimum Products</mat-label>
+              <mat-label>Minimum Quantity</mat-label>
               <input
                 type="number"
                 matInput
@@ -133,7 +133,7 @@
               />
             </mat-form-field>
             <mat-form-field appearance="outline">
-              <mat-label>Maximum Products</mat-label>
+              <mat-label>Maximum Quantity</mat-label>
               <input
                 type="number"
                 matInput

@@ -288,7 +288,7 @@ export class HistoryComponent {
         table: bill.table as unknown as string,
         token: kot.id,
       };
-      this.printingService.printKot(printableKot,true);
+      this.printingService.printKot(printableKot,true,this.dataProvider.billerPrinter);
       // this.printingService.reprintKot(kot,bill.table.name,bill);
     } else {
       alert('Reprint Cancelled');

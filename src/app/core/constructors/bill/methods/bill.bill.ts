@@ -81,7 +81,7 @@ export async function finalize(this: Bill) {
   // this.databaseService.updateBill(data);
   if (this.dataProvider.printBillAfterFinalize) {
     this.printBill();
-  } else {
+  } else if (!this.dataProvider.printBillAfterFinalize && this.dataProvider.confirmBeforePrint)  {
     let res = await this.dataProvider.confirm(
       'Do you want to print bill?',
       [1],
@@ -196,12 +196,12 @@ export async function settle(
   };
   console.log(
     'this.dataProvider.printBillAfterFinalize',
-    this.dataProvider.printBillAfterFinalize,
+    this.dataProvider.printBillAfterSettle,
   );
   if (splitSave) {
-    if (this.dataProvider.printBillAfterFinalize) {
+    if (this.dataProvider.printBillAfterSettle) {
       this.printingService.printBill(this.printableBillData);
-    } else {
+    } else if (!this.dataProvider.printBillAfterSettle && this.dataProvider.confirmBeforePrint) {
       let res = await this.dataProvider.confirm(
         'Do you want to print bill?',
         [1],

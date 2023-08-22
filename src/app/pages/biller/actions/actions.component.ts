@@ -94,9 +94,7 @@ export class ActionsComponent {
   async cancelBill() {
     if (
       await this.userManagementService.authenticateAction([
-        'admin',
-        'manager',
-        'accountant',
+        'cancelBill'
       ])
     ) {
       if (this.dataProvider.currentBill) {
@@ -116,10 +114,7 @@ export class ActionsComponent {
   async finalizeBill() {
     if (
       await this.userManagementService.authenticateAction([
-        'admin',
-        'manager',
-        'accountant',
-        'waiter',
+        'finalizeBill'
       ])
     ) {
       if (this.dataProvider.currentBill) {
@@ -131,9 +126,7 @@ export class ActionsComponent {
   async settleBill() {
     if (
       await this.userManagementService.authenticateAction([
-        'admin',
-        'manager',
-        'accountant',
+        'settleBill',
       ])
     ) {
       if (this.dataProvider.currentBill) {
@@ -172,9 +165,7 @@ export class ActionsComponent {
   async splitAndSettle() {
     if (
       await this.userManagementService.authenticateAction([
-        'admin',
-        'manager',
-        'accountant',
+        'splitBill'
       ])
     ) {
       this.dialog.open(SplitBillComponent, {
@@ -186,9 +177,7 @@ export class ActionsComponent {
   async addDiscount() {
     if (
       await this.userManagementService.authenticateAction([
-        'admin',
-        'manager',
-        'accountant',
+        'applyDiscount'
       ])
     ) {
       const dialog = this.dialog.open(AddDiscountComponent, {
@@ -215,9 +204,7 @@ export class ActionsComponent {
     //  console.log(event);
     if (
       await this.userManagementService.authenticateAction([
-        'admin',
-        'manager',
-        'accountant',
+        'setNonChargeable'
       ])
     ) {
       if (this.dataProvider.currentBill && event.checked) {
@@ -274,9 +261,7 @@ export class ActionsComponent {
   async splitBill() {
     if (
       await this.userManagementService.authenticateAction([
-        'admin',
-        'manager',
-        'accountant',
+        'splitBill'
       ])
     ) {
       if (this.dataProvider.currentBill) {

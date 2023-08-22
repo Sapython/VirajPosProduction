@@ -26,6 +26,358 @@ import { generateAnalytics } from './analytics';
 
 let processDate = new Date();
 console.log('processDate', processDate);
+let propertyList = [
+  'updateBiller',
+  'seeSaleSummary',
+  'seeReports', //TODO: new
+  'seeOrderSummary',
+  'seeVrajeraCategories',
+  'seeCombos',
+  'seeLoyalty', // TODO: new
+  'addNewMenu', // TODO: new
+  'addNewLoyaltySettings', // TODO: new
+  'editLoyaltySetting', // TODO: new
+  'deleteLoyaltySetting', // TODO: new
+  'multipleDiscounts', // TODO: new
+  'seeYourCategories',
+  "setPrinterSettings", //TODO: new
+  'seeMainCategories',
+  'reactivateBill', // TODO: new *
+  'editMenu',
+  'editTakeawayMenu',
+  'editOnlineMenu',
+  'editDineInMenu',
+  'seeAllProducts',
+  'addNewProduct',
+  'enableDisableProducts',
+  'setTaxesOnProducts',
+  'editProduct',
+  'canEditDetails',
+  'canSetPrinter',
+  'deleteProduct',
+  'recommendedCategories',
+  'editRecommendedCategorySettings',
+  'enableDisableRecommendedProducts',
+  'setTaxesOnRecommendedProducts',
+  'editRecommendedProduct',
+  'deleteRecommendedProduct',
+  'viewCategories',
+  'addViewCategory',
+  'editViewCategory',
+  'deleteViewCategory',
+  'enableDisableViewProducts',
+  'setTaxesOnViewProducts',
+  'editViewProduct',
+  'deleteViewProduct',
+  'mainCategories',
+  'addMainCategory',
+  'deleteMainCategory',
+  'enableDisableMainProducts',
+  'setTaxesOnMainProducts',
+  'editMainProduct',
+  'deleteMainProduct',
+  'editTaxes',
+  'seeTaxes',
+  'addNewTaxes',
+  'deleteTaxes',
+  'editTax',
+  'discount',
+  'seeDiscount',
+  'addNewDiscounts',
+  'deleteDiscounts',
+  'editDiscount',
+  'combos',
+  'seeCombos',
+  'addNewCombos',
+  'deleteCombos',
+  'editCombo',
+  'types',
+  'seeTypes',
+  'addNewTypes',
+  'deleteTypes',
+  'editTypes',
+  'addNewMenu',
+  'switchMenu',
+  'viewTable',
+  'reArrangeGroupOrder',
+  'settleFromTable',
+  'addTable',
+  'deleteTable',
+  'addNewTakeawayToken',
+  'addNewOnlineToken',
+  'moveAndMergeOptions',
+  'seeHistory',
+  'settings',
+  'about',
+  'readAboutSettings',
+  'changeAboutSettings',
+  'businessSettings',
+  'readBusinessSettings',
+  'switchModes',
+  'changeConfig',
+  'changePrinter',
+  'accountSettings',
+  'readAccountSettings',
+  'addAccount',
+  'removeAccount',
+  'paymentMethods',
+  'newMethod',
+  'editMethod',
+  'deleteMethod',
+  'advancedSettings',
+  'generalSettings',
+  'loyaltySettings',
+  'punchKot',
+  'manageKot',
+  'editKot',
+  'deleteKot',
+  'lineDiscount',
+  'lineCancel',
+  'applyDiscount',
+  'seePreview',
+  'finalizeBill', //TODO new *
+  'splitBill',
+  'setNonChargeable',
+  'billNote',
+  'cancelBill',
+  'settleBill',
+  'writeCustomerInfo',
+];
+
+let defaultAccess = {
+  admin: [...propertyList],
+  manager: [
+    'updateBiller',
+    'seeSaleSummary',
+    'seeReports', //TODO: new
+    'seeOrderSummary',
+    'seeVrajeraCategories',
+    'seeCombos',
+    'seeLoyalty', // TODO: new
+    'addNewMenu', // TODO: new
+    'addNewLoyaltySettings', // TODO: new
+    'editLoyaltySetting', // TODO: new
+    'deleteLoyaltySetting', // TODO: new
+    'multipleDiscounts', // TODO: new
+    'seeYourCategories',
+    "setPrinterSettings", //TODO: new
+    'seeMainCategories',
+    'reactivateBill', // TODO: new *
+    'finalizeBill', //TODO new *
+    'editMenu',
+    'editTakeawayMenu',
+    'editOnlineMenu',
+    'editDineInMenu',
+    'seeAllProducts',
+    'addNewProduct',
+    'enableDisableProducts',
+    'setTaxesOnProducts',
+    'editProduct',
+    'canEditDetails',
+    'canSetPrinter',
+    'deleteProduct',
+    'recommendedCategories',
+    'editRecommendedCategorySettings',
+    'enableDisableRecommendedProducts',
+    'setTaxesOnRecommendedProducts',
+    'editRecommendedProduct',
+    'deleteRecommendedProduct',
+    'viewCategories',
+    'addViewCategory',
+    'editViewCategory',
+    'deleteViewCategory',
+    'enableDisableViewProducts',
+    'setTaxesOnViewProducts',
+    'editViewProduct',
+    'deleteViewProduct',
+    'mainCategories',
+    'addMainCategory',
+    'deleteMainCategory',
+    'enableDisableMainProducts',
+    'setTaxesOnMainProducts',
+    'editMainProduct',
+    'deleteMainProduct',
+    'editTaxes',
+    'seeTaxes',
+    'addNewTaxes',
+    'deleteTaxes',
+    'editTax',
+    'discount',
+    'seeDiscount',
+    'addNewDiscounts',
+    'deleteDiscounts',
+    'editDiscount',
+    'combos',
+    'seeCombos',
+    'addNewCombos',
+    'deleteCombos',
+    'editCombo',
+    'types',
+    'seeTypes',
+    'addNewTypes',
+    'deleteTypes',
+    'editTypes',
+    'addNewMenu',
+    'switchMenu',
+    'viewTable',
+    'reArrangeGroupOrder',
+    'settleFromTable',
+    'addTable',
+    'deleteTable',
+    'addNewTakeawayToken',
+    'addNewOnlineToken',
+    'moveAndMergeOptions',
+    'seeHistory',
+    'settings',
+    'about',
+    'readAboutSettings',
+    'readBusinessSettings',
+    'switchModes',
+    'changeConfig',
+    'changePrinter',
+    'paymentMethods',
+    'newMethod',
+    'editMethod',
+    'deleteMethod',
+    'advancedSettings',
+    'generalSettings',
+    'loyaltySettings',
+    'punchKot',
+    'manageKot',
+    'editKot',
+    'deleteKot',
+    'lineDiscount',
+    'lineCancel',
+    'applyDiscount',
+    'seePreview',
+    'splitBill',
+    'setNonChargeable',
+    'billNote',
+    'cancelBill',
+    'settleBill',
+    'writeCustomerInfo',
+  ],
+  accountant: [
+    'updateBiller',
+    'seeSaleSummary',
+    'seeReports', //TODO: new
+    'seeOrderSummary',
+    'editMenu',
+    'seeVrajeraCategories',
+    'seeCombos',
+    'seeLoyalty', // TODO: new
+    'addNewMenu', // TODO: new
+    'addNewLoyaltySettings', // TODO: new
+    'multipleDiscounts', // TODO: new
+    'seeYourCategories',
+    "setPrinterSettings", //TODO: new
+    'seeMainCategories',
+    'seeAllProducts',
+    'enableDisableProducts',
+    'setTaxesOnProducts',
+    'canSetPrinter',
+    'deleteProduct',
+    'recommendedCategories',
+    'enableDisableRecommendedProducts',
+    'setTaxesOnRecommendedProducts',
+    'deleteRecommendedProduct',
+    'viewCategories',
+    'addViewCategory',
+    'editViewCategory',
+    'deleteViewCategory',
+    'enableDisableViewProducts',
+    'setTaxesOnViewProducts',
+    'editViewProduct',
+    'deleteViewProduct',
+    'mainCategories',
+    'addMainCategory',
+    'deleteMainCategory',
+    'enableDisableMainProducts',
+    'setTaxesOnMainProducts',
+    'seeTaxes',
+    'addNewTaxes',
+    'editTax',
+    'discount',
+    'seeDiscount',
+    'addNewDiscounts',
+    'combos',
+    'seeCombos',
+    'addNewCombos',
+    'types',
+    'seeTypes',
+    'addNewTypes',
+    'deleteTypes',
+    'editTypes',
+    'addNewMenu',
+    'switchMenu',
+    'viewTable',
+    'reArrangeGroupOrder',
+    'settleFromTable',
+    'addTable',
+    'addNewTakeawayToken',
+    'addNewOnlineToken',
+    'moveAndMergeOptions',
+    'seeHistory',
+    'settings',
+    'about',
+    'readAboutSettings',
+    'readBusinessSettings',
+    'switchModes',
+    'changeConfig',
+    'changePrinter',
+    'paymentMethods',
+    'newMethod',
+    'editMethod',
+    'advancedSettings',
+    'generalSettings',
+    'loyaltySettings',
+    'punchKot',
+    'manageKot',
+    'editKot',
+    'lineDiscount',
+    'lineCancel',
+    'applyDiscount',
+    'seePreview',
+    'splitBill',
+    'setNonChargeable',
+    'billNote',
+    'cancelBill',
+    'settleBill',
+    'writeCustomerInfo',
+  ],
+  waiter: [
+    'updateBiller',
+    'seeSaleSummary',
+    'seeOrderSummary',
+    'seeVrajeraCategories',
+    'editMenu',
+    'viewCategories',
+    'addViewCategory',
+    'editViewCategory',
+    'deleteViewCategory',
+    'seeYourCategories',
+    "setPrinterSettings", //TODO: new
+    'canSetPrinter',
+    'viewTable',
+    'addNewTakeawayToken',
+    'addNewOnlineToken',
+    'moveAndMergeOptions',
+    'seeVrajeraCategories',
+    'seeCombos',
+    'seeYourCategories',
+    'seeMainCategories',
+    'about',
+    'readAboutSettings',
+    'readBusinessSettings',
+    'changePrinter',
+    'paymentMethods',
+    'punchKot',
+    'manageKot',
+    'seePreview',
+    'billNote',
+    'writeCustomerInfo',
+  ],
+};
 
 function initAdmin() {
   if (admin) return;
@@ -159,17 +511,27 @@ export const signUpWithUserAndPassword = functions.https.onCall(
       throw new HttpsError('invalid-argument', 'Business is required');
     }
     // validations done
-    //  console.log('validations done');
+    console.log('validations done');
     // get password
-    let hashedPassword = await privateGenerateHashedPassword(
-      request.password,
-      uidDoc.id,
-    );
-    console.log('hashedPassword', hashedPassword);
-    let authReq = await auth.createCustomToken(uidDoc.id, {
-      username: uidDoc.id,
-      ...additionalClaims,
-    });
+    try{
+      var hashedPassword = await privateGenerateHashedPassword(
+        request.password,
+        uidDoc.id,
+      );
+    } catch (e) {
+      console.log("error",e);
+      return { error: 'Error generating password' }
+    }
+    // console.log('hashedPassword', hashedPassword);
+    try{
+      var authReq = await auth.createCustomToken(uidDoc.id, {
+        username: uidDoc.id,
+        ...additionalClaims,
+      });
+    } catch (e) {
+      console.log("error",e); 
+      return { error: 'Error generating custom token' }
+    }
     let userCreds: any = {
       password: hashedPassword,
     };
@@ -194,8 +556,9 @@ export const signUpWithUserAndPassword = functions.https.onCall(
         disabled: false,
         ...userCreds,
       });
-    } catch (error) {
-      return error;
+    } catch (error:any) {
+      console.log('error', error);
+      throw new HttpsError('internal', error.message || 'Error creating user');
     }
     if (debug) console.log('created custom token');
     if (debug) console.log('trying updating email', request.email);
@@ -659,6 +1022,7 @@ export const authenticateAction = functions.https.onCall(
     validateName(request.username);
     validatePassword(request.password);
     validateAny(request.businessId, 'string');
+    validateAny(request.propertiesRequired,'array');
     // check if userId exists
     let uidDoc = await firestore.doc('authData/' + request.username).get();
     if (!uidDoc.exists) {
@@ -683,11 +1047,22 @@ export const authenticateAction = functions.https.onCall(
       uidDoc.data()?.password,
       uidDoc.id,
     );
-    if (authorized) {
+    if (foundUser['accessType'] == 'role') {
+      var allExists = request.propertiesRequired.every((property:string) =>{
+        let role = foundUser['role'] as 'admin' | 'manager' | 'waiter' | 'accountant';
+        return defaultAccess[role].includes(property);
+      })
+    } else if (foundUser['accessType'] == 'custom') {
+      var allExists = request.propertiesRequired.every((property:string) =>{
+        return foundUser['propertiesAllowed'].includes(property);
+      })
+    } else {
+      throw new HttpsError('invalid-argument', 'Invalid access type');
+    }
+    if (authorized && allExists) {
       return {
         status: 'success',
-        authorized: true,
-        access: foundUser['access'],
+        authorized: true
       };
     } else {
       throw new HttpsError('unauthenticated', 'Password incorrect');

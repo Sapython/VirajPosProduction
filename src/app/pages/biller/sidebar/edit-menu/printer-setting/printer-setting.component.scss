@@ -37,6 +37,18 @@ section {
 		flex-direction: column;
 		border: 2px solid #c7c7c7;
 		border-radius: 10px;
+		padding: 10px;
+		.notFound{
+			margin:0 auto;
+			display: block;
+			width: 150px;
+			filter: saturate(0);
+		}
+		p.center{
+			display: block;
+			margin: 0 auto;
+			text-align: center;
+		}
 		.item{
 			display: grid;
 			grid-template-columns: 3fr 2fr 1fr 1fr;

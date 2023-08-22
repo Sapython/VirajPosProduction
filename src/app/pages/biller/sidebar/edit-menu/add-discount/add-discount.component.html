@@ -48,9 +48,16 @@
         formControlName="accessLevels"
         name="access"
       >
-        <mat-option *ngFor="let access of accessLevels" [value]="access">
-          {{ access }}
-        </mat-option>
+        <mat-optgroup label="Access Levels">
+          <mat-option *ngFor="let access of accessLevels" [value]="access">
+            {{ access }}
+          </mat-option>
+        </mat-optgroup>
+        <mat-optgroup label="Users">
+          <mat-option *ngFor="let user of customUsers" [value]="user">
+            {{ user }}
+          </mat-option>
+        </mat-optgroup>
       </mat-select>
     </mat-form-field>
     <div class="actions">

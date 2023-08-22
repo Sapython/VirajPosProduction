@@ -570,7 +570,7 @@ export class ModeConfig {
           // console.log("ADDED",cat.category.products);
         });
       });
-      // console.log("COMBOS",this.combos);
+      console.log("COMBOS",this.combos);
       this.comboCategory = {
         combos: this.combos,
         name: 'Combos',
@@ -1630,25 +1630,6 @@ export class ModeConfig {
 
   // combo
 
-  getCombos() {
-    this.loadingCombos = true;
-    this.menuManagementService
-      .getCombos(this.selectedMenu.id)
-      .then((res) => {
-        console.log('COMBOS res', res.docs);
-        this.combos = [];
-        res.forEach((data) => {
-          this.combos.push({ ...data.data(), id: data.id } as Combo);
-        });
-      })
-      .catch((err) => {
-        this.alertify.presentToast('Error while fetching combos');
-      })
-      .finally(() => {
-        this.loadingCombos = false;
-      });
-  }
-
   addCombo() {
     const dialog = this.dialog.open(AddComboComponent, {
       data: { mode: 'add', menu: this },
@@ -1667,7 +1648,7 @@ export class ModeConfig {
           )
           .then((res) => {
             this.alertify.presentToast('Combo added successfully');
-            this.getCombos();
+            this.getComboCategories();
           })
           .catch((err) => {
             this.alertify.presentToast('Error while adding combo');
@@ -1688,7 +1669,7 @@ export class ModeConfig {
           .updateCombo({ ...combo, ...data }, this.selectedMenu)
           .then((res) => {
             this.alertify.presentToast('Combo updated successfully');
-            this.getCombos();
+            this.getComboCategories();
           })
           .catch((err) => {
             this.alertify.presentToast('Error while updating combo');
@@ -1708,7 +1689,7 @@ export class ModeConfig {
         .deleteCombo(combo, this.selectedMenu)
         .then(() => {
           this.alertify.presentToast('Combo deleted successfully');
-          this.getCombos();
+          this.getComboCategories();
         })
         .catch((err) => {
           this.alertify.presentToast('Error while deleting combo');

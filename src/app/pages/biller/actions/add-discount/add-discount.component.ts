@@ -52,7 +52,9 @@ export class AddDiscountComponent implements OnInit {
       }
       console.log("this.availableDiscounts disc modal",this.availableDiscounts.map((discount)=>discount.accessLevels));
       if (this.dataProvider.currentBusinessUser.accessType == 'role'){
-        this.availableDiscounts = this.availableDiscounts.filter((discount)=> discount.accessLevels.includes(this.dataProvider.currentBusinessUser.accessType=='role' ? this.dataProvider.currentBusinessUser.role : 'custom'))
+        this.availableDiscounts = this.availableDiscounts.filter((discount)=> discount.accessLevels.includes(this.dataProvider.currentBusinessUser.accessType=='role' ? this.dataProvider.currentBusinessUser.role : this.dataProvider.currentBusinessUser.username))
+      } else {
+        this.availableDiscounts = this.availableDiscounts.filter((discount)=> discount.accessLevels.includes(this.dataProvider.currentBusinessUser.username))
       }
       console.log("filtered this.availableDiscounts disc modal",this.availableDiscounts);
     }

@@ -19,6 +19,7 @@
               <input
                 matInput
                 tabindex="-1"
+                [matDatepickerFilter]="noFuture"
                 #salesPickerInput
                 (dateChange)="fetchChartSalesData($event)"
                 [matDatepicker]="salesPicker"
@@ -40,6 +41,7 @@
               <input
                 matInput
                 tabindex="-1"
+                [matDatepickerFilter]="noFuture"
                 #channelWisePickerInput
                 (dateChange)="fetchChartPaymentData($event)"
                 [matDatepicker]="picker"

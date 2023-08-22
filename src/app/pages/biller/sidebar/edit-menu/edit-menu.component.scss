@@ -53,7 +53,7 @@ section {
   box-sizing: border-box;
   .heading {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
     border-bottom: 2px solid #c7c7c7;
     padding: 0px 20px;
@@ -63,7 +63,7 @@ section {
       align-items: center;
       gap: 30px;
     }
-    span:nth-child(1) {
+    span.back {
       button {
         display: flex;
         border: none;
@@ -76,18 +76,6 @@ section {
           color: var(--Vrajera-primary);
           font-size: var(--Vrajera-font-xxlarge);
         }
-      }
-    }
-    span:nth-child(2) {
-      .selector {
-        width: 150px;
-        background: white;
-        display: flex;
-        color: var(--Vrajera-primary);
-        gap: 10px;
-        border: 2px solid var(--Vrajera-primary);
-        padding: 10px;
-        border-radius: 5px;
       }
     }
     .selectMenu {

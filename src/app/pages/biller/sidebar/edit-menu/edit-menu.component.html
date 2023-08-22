@@ -1,101 +1,102 @@
 <section>
   <div class="heading">
     <span>
-      <button (click)="close()">
-        <i class="ri-arrow-left-line"></i>
-        <p>Back</p>
-      </button>
-      <h3>Menu Management</h3>
-    </span>
-    <div class="tabsToggle large">
-      <button
-        *ngIf="
-          this.dataProvider.getAccess('editDineInMenu') &&
-          this.dataProvider.activeModes[0]
-        "
-        [ngClass]="{
-          active:
-            this.dataProvider.currentMenu &&
-            this.dataProvider.currentMenu.type == 'dineIn'
-        }"
-        (click)="switchMode({ value: 'dineIn' })"
-      >
-        Dine In
-      </button>
-      <button
-        *ngIf="
-          this.dataProvider.getAccess('editTakeawayMenu') &&
-          this.dataProvider.activeModes[1]
-        "
-        [ngClass]="{
-          active:
-            this.dataProvider.currentMenu &&
-            this.dataProvider.currentMenu.type == 'takeaway'
-        }"
-        (click)="switchMode({ value: 'takeaway' })"
-      >
-        Takeaway
-      </button>
-      <button
-        *ngIf="
-          this.dataProvider.getAccess('editOnlineMenu') &&
-          this.dataProvider.activeModes[2]
-        "
-        [ngClass]="{
-          active:
-            this.dataProvider.currentMenu &&
-            this.dataProvider.currentMenu.type == 'online'
-        }"
-        (click)="switchMode({ value: 'online' })"
-      >
-        Online
-      </button>
-    </div>
-    <div
-      matTooltip="Select the menu for this associated mode. If you change it it will apply to all billers under this restaurant"
-      class="selectMenu"
-      *ngIf="
-        this.dataProvider.currentMenu &&
-        this.dataProvider.getAccess('switchMenu')
-      "
-    >
-      <span>Selected Menu: </span>
-      <select
-        [(ngModel)]="this.dataProvider.currentMenu.selectedMenuId"
-        (change)="this.dataProvider.currentMenu.updateMenu()"
-        placeholder="Menu"
-      >
-        <option
-          *ngFor="let menu of this.dataProvider.allMenus | async"
-          [value]="menu.id"
+      <span class="back">
+        <button (click)="close()">
+          <i class="ri-arrow-left-line"></i>
+          <p>Back</p>
+        </button>
+        <h3>Menu Management</h3>
+      </span>
+      <div class="tabsToggle large">
+        <button
+          *ngIf="
+            this.dataProvider.getAccess('editDineInMenu') &&
+            this.dataProvider.activeModes[0]
+          "
+          [ngClass]="{
+            active:
+              this.dataProvider.currentMenu &&
+              this.dataProvider.currentMenu.type == 'dineIn'
+          }"
+          (click)="switchMode({ value: 'dineIn' })"
         >
-          {{ menu.name }}
-        </option>
-      </select>
-    </div>
-    <viraj-button
-      type="outline"
-      matTooltip="Allows you to set custom printer settings specific to product wise."
-      (click)="this.dataProvider.currentMenu.setPrinterSettings()"
-      *ngIf="this.dataProvider.getAccess('setPrinterSettings')"
-      [ngClass]="{ active: activeTab == 'Loyalty' }"
-    >
-      Printer Setting
-    </viraj-button>
-    <viraj-button
-      matTooltip="Click to create a new menu."
-      (click)="addNewMenu()"
-      *ngIf="this.dataProvider.getAccess('addNewMenu')"
-      [large]="true"
-      [animated]="true"
-      >New Menu</viraj-button
-    >
+          Dine In
+        </button>
+        <button
+          *ngIf="
+            this.dataProvider.getAccess('editTakeawayMenu') &&
+            this.dataProvider.activeModes[1]
+          "
+          [ngClass]="{
+            active:
+              this.dataProvider.currentMenu &&
+              this.dataProvider.currentMenu.type == 'takeaway'
+          }"
+          (click)="switchMode({ value: 'takeaway' })"
+        >
+          Takeaway
+        </button>
+        <button
+          *ngIf="
+            this.dataProvider.getAccess('editOnlineMenu') &&
+            this.dataProvider.activeModes[2]
+          "
+          [ngClass]="{
+            active:
+              this.dataProvider.currentMenu &&
+              this.dataProvider.currentMenu.type == 'online'
+          }"
+          (click)="switchMode({ value: 'online' })"
+        >
+          Online
+        </button>
+      </div>
+      <div
+        matTooltip="Select the menu for this associated mode. If you change it it will apply to all billers under this restaurant"
+        class="selectMenu"
+        *ngIf="
+          this.dataProvider.currentMenu &&
+          this.dataProvider.getAccess('switchMenu')
+        "
+      >
+        <span>Selected Menu: </span>
+        <select
+          [(ngModel)]="this.dataProvider.currentMenu.selectedMenuId"
+          (change)="this.dataProvider.currentMenu.updateMenu()"
+          placeholder="Menu"
+        >
+          <option
+            *ngFor="let menu of this.dataProvider.allMenus | async"
+            [value]="menu.id"
+          >
+            {{ menu.name }}
+          </option>
+        </select>
+      </div>
+    </span>
+    <span>
+      <viraj-button
+        type="outline"
+        matTooltip="Allows you to set custom printer settings specific to product wise."
+        (click)="this.dataProvider.currentMenu.setPrinterSettings()"
+        *ngIf="this.dataProvider.getAccess('setPrinterSettings')"
+        [ngClass]="{ active: activeTab == 'Loyalty' }"
+      >
+        Printer Setting
+      </viraj-button>
+      <viraj-button
+        matTooltip="Click to create a new menu."
+        (click)="addNewMenu()"
+        *ngIf="this.dataProvider.getAccess('addNewMenu')"
+        [large]="true"
+        [animated]="true"
+        >New Menu</viraj-button
+      >
+    </span>
   </div>
   <ng-container *ngFor="let mode of this.dataProvider.menus">
-    <div
-      class="mode"
-      *ngIf="this.dataProvider.currentMenu == mode"
-    >
+    <div class="mode" *ngIf="this.dataProvider.currentMenu == mode">
       <!-- <p>{{mode.type}}</p> -->
       <div class="tabs">
         <div class="tabList">
@@ -141,7 +142,18 @@
             Printer Setting
           </button> -->
         </div>
-        <viraj-button type="outline" (click)="mode.deleteMenu()"><i class="ri-delete-bin-line"></i> Delete {{mode.selectedMenu.name}} {{!(mode.selectedMenu.name.endsWith('menu') || mode.selectedMenu.name.endsWith('Menu')) ? 'Menu' : ''}} </viraj-button>
+        <viraj-button type="outline" (click)="mode.deleteMenu()"
+          ><i class="ri-delete-bin-line"></i> Delete
+          {{ mode.selectedMenu.name }}
+          {{
+            !(
+              mode.selectedMenu.name.endsWith("menu") ||
+              mode.selectedMenu.name.endsWith("Menu")
+            )
+              ? "Menu"
+              : ""
+          }}
+        </viraj-button>
       </div>
       <div class="productsView" *ngIf="activeTab == 'Products'">
         <ng-container *ngIf="activeTab == 'Products'">
@@ -188,12 +200,9 @@
                 *ngIf="
                   this.dataProvider.currentBusinessUser.accessType ==
                     'custom' ||
-                  (this.dataProvider.currentBusinessUser.accessType ==
-                    'role' &&
-                    this.dataProvider.currentBusinessUser.role !=
-                      'admin' &&
-                      this.dataProvider.currentBusinessUser.role !=
-                        'manager' &&
+                  (this.dataProvider.currentBusinessUser.accessType == 'role' &&
+                    this.dataProvider.currentBusinessUser.role != 'admin' &&
+                    this.dataProvider.currentBusinessUser.role != 'manager' &&
                     this.dataProvider.getAccess('viewCategories'))
                 "
               >
@@ -231,35 +240,34 @@
               </ng-container>
               <ng-container
                 *ngIf="
-                  this.dataProvider.currentBusinessUser.accessType ==
-                    'role' &&
-                  (this.dataProvider.currentBusinessUser.role ==
-                    'admin' ||
-                    this.dataProvider.currentBusinessUser.role ==
-                      'manager') &&
+                  this.dataProvider.currentBusinessUser.accessType == 'role' &&
+                  (this.dataProvider.currentBusinessUser.role == 'admin' ||
+                    this.dataProvider.currentBusinessUser.role == 'manager') &&
                   this.dataProvider.getAccess('viewCategories')
                 "
               >
                 <span> View Categories </span>
                 <ng-container *ngFor="let user of mode.userWiseViewCategories">
-                  <div class="accordion" [ngClass]="{open:user.open}">
-                    <span class="userSpan" (click)="user.open=!user.open">
+                  <div class="accordion" [ngClass]="{ open: user.open }">
+                    <span class="userSpan" (click)="user.open = !user.open">
                       <div class="usr">
                         <img
-                        class="avatar"
-                        src="https://api.dicebear.com/6.x/initials/svg?seed={{
-                          user.user
-                        }}" />
+                          class="avatar"
+                          src="https://api.dicebear.com/6.x/initials/svg?seed={{
+                            user.user
+                          }}"
+                        />
                         {{ user.user | titlecase }}
                       </div>
                       <div class="usr">
-                        <div class="counter">{{user.categories.length}}</div>
+                        <div class="counter">{{ user.categories.length }}</div>
                         <viraj-button
-                        *ngIf="this.dataProvider.getAccess('addViewCategory')"
-                        [noPropogation]="true"
-                        type="icon"
-                        (vclick)="mode.addViewCategory(user.user)"
-                        ><i class="ri-add-box-fill"></i></viraj-button>
+                          *ngIf="this.dataProvider.getAccess('addViewCategory')"
+                          [noPropogation]="true"
+                          type="icon"
+                          (vclick)="mode.addViewCategory(user.user)"
+                          ><i class="ri-add-box-fill"></i
+                        ></viraj-button>
                         <i *ngIf="user.open" class="ri-arrow-down-s-fill"></i>
                         <i *ngIf="!user.open" class="ri-arrow-up-s-fill"></i>
                       </div>
@@ -277,7 +285,8 @@
                         cdkDrag
                         *ngFor="let category of user.categories"
                         (click)="
-                          mode.selectCategory(category); mode.currentType = 'view'
+                          mode.selectCategory(category);
+                          mode.currentType = 'view'
                         "
                         [category]="category"
                       ></app-category-card>
@@ -376,9 +385,7 @@
                 </viraj-button>
                 <viraj-button
                   *ngIf="this.dataProvider.getAccess('addNewProduct')"
-                  (click)="
-                    mode.downloadProducts(mode.products)
-                  "
+                  (click)="mode.downloadProducts(mode.products)"
                   matTooltip="This will download all the products in this category."
                   color="primary"
                 >
@@ -812,355 +819,361 @@
                     </viraj-button>
                   </div>
                 </div>
-                <p class="danger" *ngIf="
-                mode.filteredProducts.length == 0 &&
-                mode.currentType == 'all'
-              ">Why am I not seeing full list of products? Because paginator is active select a range to see all products.</p>
+                <p
+                  class="danger"
+                  *ngIf="
+                    mode.filteredProducts.length == 0 &&
+                    mode.currentType == 'all'
+                  "
+                >
+                  Why am I not seeing full list of products? Because paginator
+                  is active select a range to see all products.
+                </p>
               </div>
             </div>
           </div>
         </ng-container>
       </div>
       <div
-          class="tableView"
-          *ngIf="
-            activeTab == 'Taxes' ||
-            activeTab == 'Discounts' ||
-            activeTab == 'Combos' ||
-            activeTab == 'Loyalty'
-          "
-        >
-          <ng-container *ngIf="activeTab == 'Taxes'">
+        class="tableView"
+        *ngIf="
+          activeTab == 'Taxes' ||
+          activeTab == 'Discounts' ||
+          activeTab == 'Combos' ||
+          activeTab == 'Loyalty'
+        "
+      >
+        <ng-container *ngIf="activeTab == 'Taxes'">
+          <div class="rowHeading">
+            <h3>Taxes</h3>
+            <span>
+              <input
+                matInput
+                placeholder="Search"
+                (input)="mode.taxesSearchSubject.next(search.value)"
+                #search
+              />
+              <viraj-button
+                (vclick)="mode.addTax()"
+                *ngIf="this.dataProvider.getAccess('addNewTaxes')"
+                >Add Tax</viraj-button
+              >
+            </span>
+          </div>
+          <p>Total {{ mode.taxes.length }} taxes</p>
+          <div class="gridTable">
+            <div class="heading">
+              <span>Tax Name</span>
+              <span>Amount</span>
+              <span>Mode</span>
+              <span>Type</span>
+              <span>Created On</span>
+              <span>Last Updated</span>
+              <span>Actions</span>
+            </div>
+            <div class="items">
+              <ng-container *ngIf="!mode.loadingTax">
+                <div
+                  class="item"
+                  *ngFor="
+                    let tax of mode.filteredTaxes.length
+                      ? mode.filteredTaxes
+                      : mode.taxes
+                  "
+                >
+                  <span>{{ tax.name }}</span>
+                  <span>{{ tax.cost }}</span>
+                  <span>
+                    <div
+                      class="badge"
+                      [ngClass]="{
+                        percentage: tax.type == 'percentage',
+                        flat: tax.type == 'amount'
+                      }"
+                    >
+                      {{ tax.type | titlecase }}
+                    </div>
+                  </span>
+                  <span>
+                    <div
+                      class="badge"
+                      [ngClass]="{
+                        product: tax.mode == 'product',
+                        bill: tax.mode == 'bill'
+                      }"
+                    >
+                      {{ tax.mode | titlecase }}
+                    </div>
+                  </span>
+                  <span>{{ tax.creationDate.toDate() | date }}</span>
+                  <span>{{ tax.updateDate.toDate() | date }}</span>
+                  <span class="tableActions">
+                    <viraj-button
+                      *ngIf="this.dataProvider.getAccess('editTaxes')"
+                      (vclick)="mode.editTax(tax)"
+                      ><i class="ri-pencil-line"></i
+                    ></viraj-button>
+                    <viraj-button
+                      *ngIf="this.dataProvider.getAccess('deleteTaxes')"
+                      (vclick)="mode.deleteTax(tax.id)"
+                      ><i class="ri-delete-bin-line"></i
+                    ></viraj-button>
+                  </span>
+                </div>
+              </ng-container>
+              <div class="itemLoading" *ngIf="mode.loadingTax">
+                <mat-spinner diameter="30"></mat-spinner>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="activeTab == 'Discounts'">
+          <div class="rowHeading">
+            <h3>Discounts</h3>
+            <span>
+              <input
+                matInput
+                placeholder="Search"
+                (input)="mode.discountsSearchSubject.next(search.value)"
+                #search
+              />
+              <viraj-button
+                (vclick)="mode.addDiscount()"
+                *ngIf="this.dataProvider.getAccess('addNewDiscounts')"
+                >Add Discount</viraj-button
+              >
+            </span>
+          </div>
+          <p>Total {{ mode.discounts.length }} discounts</p>
+          <div class="gridTable discounts">
+            <div class="heading">
+              <span>Name</span>
+              <span>Value</span>
+              <span>Type</span>
+              <span>Min Amount</span>
+              <span>Max Products</span>
+              <span>Max Discount</span>
+              <span>Created On</span>
+              <span>Access</span>
+              <span>Action</span>
+            </div>
+            <div class="items">
+              <ng-container *ngIf="!mode.loadingDiscount">
+                <div
+                  class="item"
+                  *ngFor="
+                    let discount of mode.filteredDiscounts.length
+                      ? mode.filteredDiscounts
+                      : mode.discounts
+                  "
+                >
+                  <span>{{ discount.name }}</span>
+                  <span>
+                    <div class="badge product">
+                      {{ discount.value }}
+                    </div>
+                  </span>
+                  <span>
+                    <div
+                      class="badge"
+                      [ngClass]="{
+                        percentage: discount.type == 'percentage',
+                        flat: discount.type == 'flat'
+                      }"
+                    >
+                      {{ discount.type | titlecase }}
+                    </div>
+                  </span>
+                  <span>{{ discount.minimumAmount }}</span>
+                  <span>{{ discount.minimumProducts }}</span>
+                  <span>{{ discount.maximumDiscount }}</span>
+                  <span>
+                    {{
+                      discount.creationDate
+                        ? (discount.creationDate.toDate() | date)
+                        : "N/A"
+                    }}
+                  </span>
+                  <span>
+                    <li *ngFor="let item of discount.accessLevels">
+                      {{ item }}
+                    </li>
+                  </span>
+                  <span class="tableActions">
+                    <viraj-button
+                      *ngIf="this.dataProvider.getAccess('editDiscount')"
+                      (vclick)="mode.editDiscount(discount)"
+                      ><i class="ri-pencil-fill"></i
+                    ></viraj-button>
+                    <viraj-button
+                      *ngIf="this.dataProvider.getAccess('deleteDiscounts')"
+                      (vclick)="mode.deleteDiscount(discount.id)"
+                      ><i class="ri-delete-bin-2-fill"></i
+                    ></viraj-button>
+                  </span>
+                </div>
+              </ng-container>
+              <div class="itemLoading" *ngIf="mode.loadingDiscount">
+                <mat-spinner diameter="30"></mat-spinner>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="activeTab == 'Combos'">
+          <h3>All Combos</h3>
+          <div class="comboCards">
+            <ng-container *ngIf="!mode.loadingCombos">
+              <div
+                class="card new"
+                *ngIf="this.dataProvider.getAccess('addNewCombos')"
+                (click)="mode.addCombo()"
+              >
+                <p><i class="ri-add-fill"></i>Add New Combo</p>
+              </div>
+              <div
+                class="card combo"
+                *ngFor="let combo of mode.combos"
+                (click)="
+                  this.dataProvider.getAccess('editCombo')
+                    ? mode.editCombo(combo)
+                    : {}
+                "
+              >
+                <div class="image">
+                  <img
+                    [src]="combo.offerImage || 'assets/images/defaultCombo.jpg'"
+                  />
+                </div>
+                <div class="content">
+                  <mat-slide-toggle
+                    *ngIf="
+                      !combo.visibilityEnabled &&
+                      this.dataProvider.getAccess('editCombo')
+                    "
+                    [(ngModel)]="combo.enabled"
+                    (change)="
+                      mode.updateComboVisibility(combo, toggleElm.checked)
+                    "
+                    #toggleElm
+                  ></mat-slide-toggle>
+                  <viraj-button
+                    *ngIf="this.dataProvider.getAccess('deleteCombos')"
+                    type="icon"
+                    (click)="mode.deleteCombo($event, combo)"
+                    ><i class="ri-delete-bin-5-fill"></i
+                  ></viraj-button>
+                  <p>{{ combo.name }}</p>
+                </div>
+              </div>
+              <div
+                class="card new"
+                *ngIf="
+                  mode.combos.length > 10 &&
+                  this.dataProvider.getAccess('addNewCombos')
+                "
+              >
+                <p><i class="ri-add-fill"></i>Add New Combo</p>
+              </div>
+            </ng-container>
+            <div class="itemLoading" *ngIf="mode.loadingCombos">
+              <mat-spinner diameter="30"></mat-spinner>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="activeTab == 'Loyalty'">
+          <mat-radio-group
+            aria-label="Select an option"
+            (change)="mode.selectLoyaltySetting($event)"
+            [value]="mode.selectedLoyaltyId"
+            #loyaltySelector
+          >
             <div class="rowHeading">
-              <h3>Taxes</h3>
+              <h3>Loyalty</h3>
               <span>
                 <input
                   matInput
                   placeholder="Search"
-                  (input)="mode.taxesSearchSubject.next(search.value)"
+                  (input)="mode.loyaltySearchSubject.next(search.value)"
                   #search
                 />
+                <p>
+                  <mat-radio-button
+                    color="primary"
+                    matTooltip="This will disable loyalty for this menu."
+                    value=""
+                    >Disable Loyalty</mat-radio-button
+                  >
+                </p>
                 <viraj-button
-                  (vclick)="mode.addTax()"
-                  *ngIf="this.dataProvider.getAccess('addNewTaxes')"
-                  >Add Tax</viraj-button
+                  (vclick)="mode.addLoyaltySettings()"
+                  *ngIf="this.dataProvider.getAccess('addNewLoyaltySettings')"
+                  >Add Loyalty Setting</viraj-button
                 >
               </span>
             </div>
-            <p>Total {{ mode.taxes.length }} taxes</p>
-            <div class="gridTable">
+            <p>Total {{ mode.loyaltySettings.length }} Configurations</p>
+            <div class="gridTable loyalty">
               <div class="heading">
-                <span>Tax Name</span>
-                <span>Amount</span>
-                <span>Mode</span>
-                <span>Type</span>
-                <span>Created On</span>
-                <span>Last Updated</span>
+                <span>Loyalty Setting Name</span>
+                <span>Base rate</span>
+                <span>Expiry Days</span>
+                <span>Added Date</span>
+                <span>Added By</span>
                 <span>Actions</span>
               </div>
               <div class="items">
-                <ng-container *ngIf="!mode.loadingTax">
+                <ng-container *ngIf="!mode.loadingLoyaltySettings">
                   <div
                     class="item"
                     *ngFor="
-                      let tax of mode.filteredTaxes.length
-                        ? mode.filteredTaxes
-                        : mode.taxes
+                      let loyaltySetting of mode.filteredLoyaltySettings.length
+                        ? mode.filteredLoyaltySettings
+                        : mode.loyaltySettings
                     "
                   >
-                    <span>{{ tax.name }}</span>
-                    <span>{{ tax.cost }}</span>
                     <span>
-                      <div
-                        class="badge"
-                        [ngClass]="{
-                          percentage: tax.type == 'percentage',
-                          flat: tax.type == 'amount'
-                        }"
+                      <mat-radio-button
+                        color="primary"
+                        [value]="loyaltySetting.id"
+                        >{{ loyaltySetting.name }}</mat-radio-button
                       >
-                        {{ tax.type | titlecase }}
+                    </span>
+                    <span>{{ loyaltySetting.baseRate }}</span>
+                    <span>{{ loyaltySetting.expiryDays }}</span>
+                    <span>{{
+                      loyaltySetting.creationDate.toDate() | date
+                    }}</span>
+                    <span>
+                      <div class="badge percentage">
+                        {{ loyaltySetting.addedBy }}
                       </div>
                     </span>
-                    <span>
-                      <div
-                        class="badge"
-                        [ngClass]="{
-                          product: tax.mode == 'product',
-                          bill: tax.mode == 'bill'
-                        }"
-                      >
-                        {{ tax.mode | titlecase }}
-                      </div>
-                    </span>
-                    <span>{{ tax.creationDate.toDate() | date }}</span>
-                    <span>{{ tax.updateDate.toDate() | date }}</span>
                     <span class="tableActions">
                       <viraj-button
-                        *ngIf="this.dataProvider.getAccess('editTaxes')"
-                        (vclick)="mode.editTax(tax)"
+                        *ngIf="
+                          this.dataProvider.getAccess('editLoyaltySetting')
+                        "
+                        (vclick)="mode.editLoyaltySetting(loyaltySetting)"
                         ><i class="ri-pencil-line"></i
                       ></viraj-button>
                       <viraj-button
-                        *ngIf="this.dataProvider.getAccess('deleteTaxes')"
-                        (vclick)="mode.deleteTax(tax.id)"
+                        *ngIf="
+                          this.dataProvider.getAccess('deleteLoyaltySetting')
+                        "
+                        (vclick)="mode.deleteLoyaltySetting(loyaltySetting)"
                         ><i class="ri-delete-bin-line"></i
                       ></viraj-button>
                     </span>
                   </div>
                 </ng-container>
-                <div class="itemLoading" *ngIf="mode.loadingTax">
+                <div class="itemLoading" *ngIf="mode.loadingLoyaltySettings">
                   <mat-spinner diameter="30"></mat-spinner>
                 </div>
               </div>
             </div>
-          </ng-container>
-          <ng-container *ngIf="activeTab == 'Discounts'">
-            <div class="rowHeading">
-              <h3>Discounts</h3>
-              <span>
-                <input
-                  matInput
-                  placeholder="Search"
-                  (input)="mode.discountsSearchSubject.next(search.value)"
-                  #search
-                />
-                <viraj-button
-                  (vclick)="mode.addDiscount()"
-                  *ngIf="this.dataProvider.getAccess('addNewDiscounts')"
-                  >Add Discount</viraj-button
-                >
-              </span>
-            </div>
-            <p>Total {{ mode.discounts.length }} discounts</p>
-            <div class="gridTable discounts">
-              <div class="heading">
-                <span>Name</span>
-                <span>Value</span>
-                <span>Type</span>
-                <span>Min Amount</span>
-                <span>Max Products</span>
-                <span>Max Discount</span>
-                <span>Created On</span>
-                <span>Access</span>
-                <span>Action</span>
-              </div>
-              <div class="items">
-                <ng-container *ngIf="!mode.loadingDiscount">
-                  <div
-                    class="item"
-                    *ngFor="
-                      let discount of mode.filteredDiscounts.length
-                        ? mode.filteredDiscounts
-                        : mode.discounts
-                    "
-                  >
-                    <span>{{ discount.name }}</span>
-                    <span>
-                      <div class="badge product">
-                        {{ discount.value }}
-                      </div>
-                    </span>
-                    <span>
-                      <div
-                        class="badge"
-                        [ngClass]="{
-                          percentage: discount.type == 'percentage',
-                          flat: discount.type == 'flat'
-                        }"
-                      >
-                        {{ discount.type | titlecase }}
-                      </div>
-                    </span>
-                    <span>{{ discount.minimumAmount }}</span>
-                    <span>{{ discount.minimumProducts }}</span>
-                    <span>{{ discount.maximumDiscount }}</span>
-                    <span>
-                      {{
-                        discount.creationDate
-                          ? (discount.creationDate.toDate() | date)
-                          : "N/A"
-                      }}
-                    </span>
-                    <span>
-                      <li *ngFor="let item of discount.accessLevels">
-                        {{ item }}
-                      </li>
-                    </span>
-                    <span class="tableActions">
-                      <viraj-button
-                        *ngIf="this.dataProvider.getAccess('editDiscount')"
-                        (vclick)="mode.editDiscount(discount)"
-                        ><i class="ri-pencil-fill"></i
-                      ></viraj-button>
-                      <viraj-button
-                        *ngIf="this.dataProvider.getAccess('deleteDiscounts')"
-                        (vclick)="mode.deleteDiscount(discount.id)"
-                        ><i class="ri-delete-bin-2-fill"></i
-                      ></viraj-button>
-                    </span>
-                  </div>
-                </ng-container>
-                <div class="itemLoading" *ngIf="mode.loadingDiscount">
-                  <mat-spinner diameter="30"></mat-spinner>
-                </div>
-              </div>
-            </div>
-          </ng-container>
-          <ng-container *ngIf="activeTab == 'Combos'">
-            <h3>All Combos</h3>
-            <div class="comboCards">
-              <ng-container *ngIf="!mode.loadingCombos">
-                <div
-                  class="card new"
-                  *ngIf="this.dataProvider.getAccess('addNewCombos')"
-                  (click)="mode.addCombo()"
-                >
-                  <p><i class="ri-add-fill"></i>Add New Combo</p>
-                </div>
-                <div
-                  class="card combo"
-                  *ngFor="let combo of mode.combos"
-                  (click)="
-                    this.dataProvider.getAccess('editCombo')
-                      ? mode.editCombo(combo)
-                      : {}
-                  "
-                >
-                  <div class="image">
-                    <img
-                      [src]="
-                        combo.offerImage || 'assets/images/defaultCombo.jpg'
-                      "
-                    />
-                  </div>
-                  <div class="content">
-                    <mat-slide-toggle
-                      *ngIf="
-                        !combo.visibilityEnabled &&
-                        this.dataProvider.getAccess('editCombo')
-                      "
-                      [(ngModel)]="combo.enabled"
-                      (change)="
-                        mode.updateComboVisibility(combo, toggleElm.checked)
-                      "
-                      #toggleElm
-                    ></mat-slide-toggle>
-                    <viraj-button
-                      *ngIf="this.dataProvider.getAccess('deleteCombos')"
-                      type="icon"
-                      (click)="mode.deleteCombo($event, combo)"
-                      ><i class="ri-delete-bin-5-fill"></i
-                    ></viraj-button>
-                    <p>{{ combo.name }}</p>
-                  </div>
-                </div>
-                <div
-                  class="card new"
-                  *ngIf="
-                    mode.combos.length > 10 &&
-                    this.dataProvider.getAccess('addNewCombos')
-                  "
-                >
-                  <p><i class="ri-add-fill"></i>Add New Combo</p>
-                </div>
-              </ng-container>
-              <div class="itemLoading" *ngIf="mode.loadingCombos">
-                <mat-spinner diameter="30"></mat-spinner>
-              </div>
-            </div>
-          </ng-container>
-          <ng-container *ngIf="activeTab == 'Loyalty'">
-            <mat-radio-group
-              aria-label="Select an option"
-              (change)="mode.selectLoyaltySetting($event)"
-              [value]="mode.selectedLoyaltyId"
-              #loyaltySelector
-            >
-              <div class="rowHeading">
-                <h3>Loyalty</h3>
-                <span>
-                  <input
-                    matInput
-                    placeholder="Search"
-                    (input)="mode.loyaltySearchSubject.next(search.value)"
-                    #search
-                  />
-                  <p>
-                    <mat-radio-button
-                      matTooltip="This will disable loyalty for this menu."
-                      value=""
-                      >Disable Loyalty</mat-radio-button
-                    >
-                  </p>
-                  <viraj-button
-                    (vclick)="mode.addLoyaltySettings()"
-                    *ngIf="this.dataProvider.getAccess('addNewLoyaltySettings')"
-                    >Add Loyalty Setting</viraj-button
-                  >
-                </span>
-              </div>
-              <p>Total {{ mode.loyaltySettings.length }} Configurations</p>
-              <div class="gridTable loyalty">
-                <div class="heading">
-                  <span>Loyalty Setting Name</span>
-                  <span>Base rate</span>
-                  <span>Expiry Days</span>
-                  <span>Added Date</span>
-                  <span>Added By</span>
-                  <span>Actions</span>
-                </div>
-                <div class="items">
-                  <ng-container *ngIf="!mode.loadingLoyaltySettings">
-                    <div
-                      class="item"
-                      *ngFor="
-                        let loyaltySetting of mode.filteredLoyaltySettings
-                          .length
-                          ? mode.filteredLoyaltySettings
-                          : mode.loyaltySettings
-                      "
-                    >
-                      <span>
-                        <mat-radio-button [value]="loyaltySetting.id">{{
-                          loyaltySetting.name
-                        }}</mat-radio-button>
-                      </span>
-                      <span>{{ loyaltySetting.baseRate }}</span>
-                      <span>{{ loyaltySetting.expiryDays }}</span>
-                      <span>{{
-                        loyaltySetting.creationDate.toDate() | date
-                      }}</span>
-                      <span>
-                        <div class="badge percentage">
-                          {{ loyaltySetting.addedBy }}
-                        </div>
-                      </span>
-                      <span class="tableActions">
-                        <viraj-button
-                          *ngIf="
-                            this.dataProvider.getAccess('editLoyaltySetting')
-                          "
-                          (vclick)="mode.editLoyaltySetting(loyaltySetting)"
-                          ><i class="ri-pencil-line"></i
-                        ></viraj-button>
-                        <viraj-button
-                          *ngIf="
-                            this.dataProvider.getAccess('deleteLoyaltySetting')
-                          "
-                          (vclick)="mode.deleteLoyaltySetting(loyaltySetting)"
-                          ><i class="ri-delete-bin-line"></i
-                        ></viraj-button>
-                      </span>
-                    </div>
-                  </ng-container>
-                  <div class="itemLoading" *ngIf="mode.loadingLoyaltySettings">
-                    <mat-spinner diameter="30"></mat-spinner>
-                  </div>
-                </div>
-              </div>
-            </mat-radio-group>
-          </ng-container>
-        </div>
+          </mat-radio-group>
+        </ng-container>
+      </div>
     </div>
   </ng-container>
   <!-- <div class="actions">

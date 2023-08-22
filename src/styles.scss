@@ -166,13 +166,13 @@
 $viraj-palette: (
   50: #fadbd3,
   100: #fbcabd,
-  200: #ff4112,
-  300: #ff4112,
-  400: #ff4112,
-  500: #ff4112,
-  600: #ff4112,
-  700: #ff4112,
-  800: #fb4619,
+  200: #fcbeaf,
+  300: #fcaf9c,
+  400: #fd8e73,
+  500: #f97a5a,
+  600: #fd6d48,
+  700: #f85a32,
+  800: #f84f25,
   900: #ff4112,
   contrast: (
     50: rgba(black, 0.87),
@@ -449,4 +449,7 @@ i[class^="ri-"] {
 
 .mat-mdc-tab-body-content {
   overflow: hidden !important;
+}
+button{
+  cursor: pointer;
 }

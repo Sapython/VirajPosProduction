@@ -21,6 +21,7 @@ export class AddDiscountComponent implements OnInit {
   });
 
   accessLevels: string[] = ['manager', 'waiter', 'accountant', 'admin'];
+  customUsers: string[] = [];
 
   constructor(
     public dataProvider: DataProvider,
@@ -30,6 +31,11 @@ export class AddDiscountComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.dataProvider.currentBusiness.users.forEach((user) => {
+      if (user.accessType == 'custom'){
+        this.customUsers.push(user.username);
+      }
+    });
     if (this.data.mode == 'edit') {
       this.discountForm.patchValue(this.data.discount);
     }

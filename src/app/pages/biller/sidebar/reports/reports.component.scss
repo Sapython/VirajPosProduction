@@ -55,6 +55,7 @@ section {
       justify-content: space-between;
       align-items: center;
       .datePicker {
+        display: flex;
         mat-datepicker,
         input {
           height: 0px;
@@ -72,6 +73,13 @@ section {
       padding: 20px;
       width: calc(100vw - 100px);
       position: relative;
+      .heading{
+        padding: 20px 10px;
+        align-items: center;
+        h4{
+          margin: 0px;
+        }
+      }
       .chartContainer {
         position: relative;
         // width: 100% !important;
@@ -115,6 +123,7 @@ section {
       padding: 20px;
       display: flex;
       flex-wrap: wrap;
+      justify-content: space-around;
       gap: 20px;
       .reportCard {
         width: 200px;

@@ -49,6 +49,11 @@ export class ReportViewComponent implements AfterViewInit {
     public reportService: ReportService,
   ) {}
 
+  noFuture = (d: Date | null): boolean => {
+    const today = new Date();
+    return d!.valueOf() < today.valueOf();
+  };
+
   ngAfterViewInit(): void {
     console.log(
       "document.getElementById('reportTable')",

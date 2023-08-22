@@ -16,7 +16,7 @@ export async function addProduct(
   }
   if (this.stage == 'finalized') {
     if (
-      await this.userManagementService.authenticateAction(['admin', 'manager'])
+      await this.userManagementService.authenticateAction(['reactivateBill'])
     ) {
       let reactiveReason = await this.dataProvider.prompt(
         'Please enter reason for adding product',

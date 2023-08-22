@@ -162,6 +162,14 @@ export class ReportsComponent implements OnInit {
       }
     })
   }
+  noFuture = (d: Date | null): boolean => {
+    const today = new Date();
+    if (d){
+      return d!.valueOf() < today.valueOf();
+    } else {
+      return false;
+    }
+  };
   salesChartJS: Chart | undefined;
   paymentChartJS: any;
   selectedDate: Date = new Date();
@@ -1103,7 +1111,16 @@ export class ReportsComponent implements OnInit {
         maintainAspectRatio: false,
         scales: {
           y: {
-            beginAtZero: true,
+            display:false,
+            grid: {
+              display: false,
+            },
+          },
+          x: {
+            display:false,
+            grid: {
+              display: false,
+            },
           },
         },
       },

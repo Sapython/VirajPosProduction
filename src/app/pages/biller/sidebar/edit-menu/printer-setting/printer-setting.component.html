@@ -37,9 +37,11 @@
 		<div class="item" *ngFor="let item of setting.products;let i = index">
 			<p>{{item.name}}</p>
 			<p>{{item.category.name}}</p>
-			<p>{{item.price}}</p>
+			<p>{{item.price | currency:'INR'}}</p>
 			<viraj-button type="icon" (click)="spliceProduct(i,setting)"><i class="ri-delete-bin-2-line"></i></viraj-button>
 		</div>
+		<img src="assets/images/notFound.jpg" class="notFound" *ngIf="setting.products.length == 0">
+		<p class="center">No Products under this printer</p>
 	  </div>
     </mat-expansion-panel>
   </mat-accordion>

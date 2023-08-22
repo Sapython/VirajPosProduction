@@ -61,7 +61,7 @@
                   <mat-form-field appearance="outline">
                     <mat-label>Select Tag</mat-label>
                     <mat-select [ngModelOptions]="{standalone: true}" [(ngModel)]="product.tag" name="label">
-                      <mat-option *ngFor="let label of tags" [value]="label">
+                      <mat-option *ngFor="let label of tags" [value]="label.name">
                         {{ label.name | titlecase }}
                       </mat-option>
                     </mat-select>

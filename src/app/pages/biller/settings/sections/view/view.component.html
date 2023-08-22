@@ -176,6 +176,18 @@
       ></mat-slide-toggle>
     </div>
     <div class="item">
+      <p>Ask for optional bill printing before every print</p>
+      <mat-slide-toggle
+        matTooltip="Print Bill After Settle"
+        [(ngModel)]="dataProvider.confirmBeforePrint"
+        (change)="
+          updateSettings({
+            confirmBeforePrint: dataProvider.confirmBeforePrint
+          })
+        "
+      ></mat-slide-toggle>
+    </div>
+    <div class="item">
       <p>Allow to add multiple discounts to a bill</p>
       <mat-slide-toggle
         [(ngModel)]="this.dataProvider.multipleDiscount"

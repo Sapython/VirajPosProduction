@@ -122,6 +122,17 @@ export class AddMenuComponent {
       category.products = category.products.filter(
         (product) => product.selected,
       );
+    })
+    this.rootCategories.map((category)=>{
+      category.products.map((product)=>{
+        delete product.selected;
+        if(product.tag=='Half'){
+          product.tag = { color: 'tomato', contrast: 'white', name: 'Half'}
+        } else if(product.tag=='Full') {
+          product.tag = {color:'green',contrast:'white',name:'Full'}
+        }
+        return product;
+      })
     });
     this.menuManagementService
       .addNewMenu(this.addNewMenuForm.value, this.rootCategories)
@@ -162,7 +173,7 @@ export class AddMenuComponent {
     } else {
       // use xlsx library
       let workBook = utils.book_new();
-      let workSheet = utils.json_to_sheet<any>([{name:'',category:'',price:0,tag:'',type:''}]);
+      let workSheet = utils.json_to_sheet<any>([{name:'',category:'',price:0,'half/full':'','veg/nonveg':''}]);
       utils.book_append_sheet(workBook,workSheet,'menu_format');
       writeFile(workBook,'menu_format.xlsx');
     }
@@ -190,29 +201,39 @@ export class AddMenuComponent {
       // //  console.log('lines', lines);
       let products = [];
       this.rootCategories = [];
+      let notValidProducts = 0;
       data.forEach((line)=>{
-        line.tag = line['half/full'] == 'full' ? {color:'green',contrast:'white',name:'Full'} : { color: 'tomato', contrast: 'white', name: 'Half'};
+        line.tag = line['half/full'] == 'full' ? 'Full' : 'Half';
         line.type = line['veg/nonveg'] == 'veg' ? 'veg' : 'non-veg';
-        let product = {
-          name:line.name,
-          category:line.category,
-          price:line.price,
-          type:line.type,
-          tag:line.tag,
-          selected:true
-        };
-        products.push(product);
-        // add to root category if not already present
-        if(!this.rootCategories.find((category)=>category.name == line.category)){
-          this.rootCategories.push({name:line.category,products:[product]});
+        if (line.name && line.category && (!isNaN(Number(line.price))) && (line.type == 'veg' || line.type == 'non-veg') && (line.tag == 'Half' || line.tag == 'Full')){
+          let product = {
+            name:line.name,
+            category:line.category,
+            price:line.price,
+            type:line.type,
+            tag:line.tag,
+            selected:true
+          };
+          products.push(product);
+          // add to root category if not already present
+          if(!this.rootCategories.find((category)=>category.name == line.category)){
+            this.rootCategories.push({name:line.category,products:[product]});
+          } else {
+            // add to the products of the category
+            this.rootCategories.find((category)=>category.name == line.category)?.products.push(product);
+          }
         } else {
-          // add to the products of the category
-          this.rootCategories.find((category)=>category.name == line.category)?.products.push(product);
+          notValidProducts++;
         }
       });
-
+      // {color:'green',contrast:'white',name:'Full'} | { color: 'tomato', contrast: 'white', name: 'Half'}
       console.log('products', products);
-      // this.selectedProducts = products;
+      if(notValidProducts && products.length > 0){
+        alert(notValidProducts+' '+ (notValidProducts > 1 ? 'products are' : 'product is') +' not valid, please check the format')
+      }
+      if (products.length == 0){
+        alert('No valid products found, please check the format');
+      }
     }
   }
 
@@ -247,6 +268,11 @@ export class AddMenuComponent {
       console.log("TO be added product",value);
       if(value){
         value.selected = true;
+        if(value.tag.name == 'Half'){
+          value.tag = 'Half'
+        } else if (value.tag.name == 'Full') {
+          value.tag = 'Full'
+        }
         category.products.push(value);
         this.alertify.presentToast("Product Added");
       }
@@ -260,6 +286,6 @@ interface ExcelProduct {
   category:string;
   price:number;
   type:'veg'|'non-veg';
-  tag:{color:'green',contrast:'white',name:'Full'} | { color: 'tomato', contrast: 'white', name: 'Half'};
+  tag:'Half'|'Full';
   selected?:boolean;
 }

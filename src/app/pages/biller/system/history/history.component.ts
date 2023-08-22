@@ -60,6 +60,10 @@ export class HistoryComponent {
     startDate: new FormControl('', [Validators.required]),
     endDate: new FormControl('', [Validators.required]),
   });
+  noFuture = (d: Date | null): boolean => {
+    const today = new Date();
+    return d!.valueOf() < today.valueOf();
+  };
   constructor(
     private historyService: HistoryService,
     private billService: BillService,

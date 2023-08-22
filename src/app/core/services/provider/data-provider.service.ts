@@ -134,6 +134,7 @@ export class DataProvider {
   public optionalTax: boolean = false;
   public printBillAfterSettle: boolean = false;
   public printBillAfterFinalize: boolean = false;
+  public confirmBeforePrint: boolean = false;
   public currentSettings: any;
   public customBillNote: string = '';
   public todaySales: any = {};
@@ -495,6 +496,7 @@ export class DataProvider {
     'seeYourCategories',
     "setPrinterSettings", //TODO: new
     'seeMainCategories',
+    'reactivateBill', // TODO: new *
     'editMenu',
     'editTakeawayMenu',
     'editOnlineMenu',
@@ -587,6 +589,7 @@ export class DataProvider {
     'lineCancel',
     'applyDiscount',
     'seePreview',
+    'finalizeBill', //TODO new *
     'splitBill',
     'setNonChargeable',
     'billNote',
@@ -613,6 +616,8 @@ export class DataProvider {
       'seeYourCategories',
       "setPrinterSettings", //TODO: new
       'seeMainCategories',
+      'reactivateBill', // TODO: new *
+      'finalizeBill', //TODO new *
       'editMenu',
       'editTakeawayMenu',
       'editOnlineMenu',

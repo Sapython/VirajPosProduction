@@ -130,9 +130,7 @@ export class ActiveKotComponent implements OnChanges {
   async printKot(kot: Kot) {
     if (
       await this.userManagementService.authenticateAction([
-        'admin',
-        'manager',
-        'accountant',
+        'punchKot'
       ])
     ) {
       let dialog = this.dialog.open(ReasonComponent);
@@ -145,9 +143,7 @@ export class ActiveKotComponent implements OnChanges {
   async deleteKot(kot: Kot) {
     if (
       await this.userManagementService.authenticateAction([
-        'admin',
-        'manager',
-        'accountant',
+        'deleteKot'
       ])
     ) {
       const dialog = this.dialog.open(CancelKOtComponent);
@@ -173,10 +169,7 @@ export class ActiveKotComponent implements OnChanges {
   async editKot(kot: Kot) {
     if (
       await this.userManagementService.authenticateAction([
-        'admin',
-        'manager',
-        'accountant',
-        'waiter',
+        'editKot'
       ])
     ) {
       var passwordRequired = true;

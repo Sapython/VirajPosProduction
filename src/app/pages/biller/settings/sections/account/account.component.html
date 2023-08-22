@@ -7,19 +7,21 @@
     </span>
     <p>You can add {{20 - this.dataProvider.currentBusiness.users.length}} additional users.</p>
   </div>
-  <div class="user" *ngFor="let user of this.dataProvider.currentBusiness.users">
-    <img src="https://api.dicebear.com/6.x/initials/svg?seed={{user.username}}">
-    <p><strong>{{user.username}}</strong></p>
-    <span class="access">
-      <p><i class="ri-shield-user-fill"></i> {{user.accessType == 'role' ? 'Role' : 'Custom'}}</p>
-      <p *ngIf="user.accessType == 'role'">{{user.role | titlecase}}</p>
-      <p *ngIf="user.accessType == 'custom'">Allowed: {{user.propertiesAllowed.length}}</p>
-    </span>
-    <p class="time"><i class="ri-time-line"></i>{{user.lastUpdated?.toDate() | date:'short'}}</p>
-    <div class="actions">
-      <viraj-button type="icon" (click)="deleteUser(user)"><i class="ri-delete-bin-2-line"></i></viraj-button>
-      <viraj-button type="icon" (click)="updateUser(user)"><i class="ri-pencil-fill"></i></viraj-button>
+  <ng-container *ngFor="let user of this.dataProvider.currentBusiness.users">
+    <div class="user" *ngIf="this.dataProvider.currentUser.username != user.username">
+      <img src="https://api.dicebear.com/6.x/initials/svg?seed={{user.username}}">
+      <p><strong>{{user.username}}</strong></p>
+      <span class="access">
+        <p><i class="ri-shield-user-fill"></i> {{user.accessType == 'role' ? 'Role' : 'Custom'}}</p>
+        <p *ngIf="user.accessType == 'role'">{{user.role | titlecase}}</p>
+        <p *ngIf="user.accessType == 'custom'">Allowed: {{user.propertiesAllowed.length}}</p>
+      </span>
+      <p class="time"><i class="ri-time-line"></i>{{user.lastUpdated?.toDate() | date:'short'}}</p>
+      <div class="actions">
+        <viraj-button type="icon" (click)="deleteUser(user)"><i class="ri-delete-bin-2-line"></i></viraj-button>
+        <viraj-button type="icon" (click)="updateUser(user)"><i class="ri-pencil-fill"></i></viraj-button>
+      </div>
     </div>
-  </div>
+  </ng-container>
 </div>
 <p *ngIf="!this.dataProvider.currentBusiness">No Business selected</p>

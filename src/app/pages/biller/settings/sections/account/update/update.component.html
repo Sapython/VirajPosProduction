@@ -27,24 +27,7 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-form-field appearance="outline" *ngIf="accessType.value == 'custom'">
-      <mat-select
-        multiple
-        placeholder="Select Properties"
-        formControlName="propertiesAllowed"
-      >
-        <mat-optgroup
-          *ngFor="let accessGroup of accessCodes"
-          [label]="accessGroup.name"
-        >
-          <mat-option
-            [value]="item.accessCode"
-            *ngFor="let item of accessGroup.accessCodes"
-            >{{ item.name }}</mat-option
-          >
-        </mat-optgroup>
-      </mat-select>
-    </mat-form-field>
+    <button *ngIf="accessType.value == 'custom'" color="primary" mat-stroked-button (click)="selectProperties()">Select Properties</button>
     <div class="actions">
       <button type="button" (click)="dialogRef.close()" mat-raised-button>
         Cancel

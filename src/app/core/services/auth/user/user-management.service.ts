@@ -235,18 +235,9 @@ export class UserManagementService {
     });
   }
 
-  async authenticateAction(requiredAccessess: string[]) {
-    // check if current user has access to the required accessess
-    // if yes, return true
-    // if no, then fetch the user from firebase and check if the user has access to the required accessess
-
-    if (
-      this.dataProvider.currentAccessLevel &&
-      requiredAccessess.includes(this.dataProvider.currentAccessLevel)
-    ) {
-      console.log('Access granted.', this.dataProvider.currentAccessLevel);
-      return true;
-    } else {
+  async authenticateAction(requiredProperties: string[]) {
+    console.log("Required props",requiredProperties);
+    async function elevateAccess(){
       const dialog = this.dialog.open(RequiresPrivilegeComponent);
       dialog.disableClose = true;
       let userCredentials: any = await firstValueFrom(dialog.closed);
@@ -262,12 +253,12 @@ export class UserManagementService {
             username: userCredentials.username,
             password: userCredentials.password,
             businessId: this.dataProvider.currentBusiness.businessId,
+            propertiesRequired: requiredProperties,
           });
           if (
             response.data &&
             response.data['status'] &&
-            response.data['status'] == 'success' &&
-            requiredAccessess.includes(response.data['access'])
+            response.data['status'] == 'success'
           ) {
             this.alertify.presentToast('Access granted.');
             return true;
@@ -290,6 +281,36 @@ export class UserManagementService {
           'error',
         );
         return false;
+      }
+    }
+
+    if (this.dataProvider.currentBusinessUser.accessType == 'role'){
+      console.log("Local available props",this.dataProvider.defaultAccess[this.dataProvider.currentBusinessUser.role]);
+      let allAllowed = requiredProperties.every((access)=>{
+        if (this.dataProvider.currentBusinessUser.accessType == 'role' && this.dataProvider.defaultAccess[this.dataProvider.currentBusinessUser.role].includes(access)){
+          return true;
+        }
+      })
+      if(allAllowed){
+        console.log("Access granted.");
+        return true;
+      } else {
+        console.log("Elevation required");
+        await elevateAccess.call(this);
+      }
+    } else if(this.dataProvider.currentBusinessUser.accessType=='custom') {
+      console.log("Local available props",this.dataProvider.currentBusinessUser.propertiesAllowed);
+      let allAllowed = requiredProperties.every((access)=>{
+        if (this.dataProvider.currentBusinessUser.accessType == 'custom' && this.dataProvider.currentBusinessUser.propertiesAllowed?.includes(access)){
+          return true;
+        }
+      });
+      if(allAllowed){
+        console.log("Access granted.");
+        return true;
+      } else {
+        console.log("Elevation required");
+        await elevateAccess.call(this);
       }
     }
   }

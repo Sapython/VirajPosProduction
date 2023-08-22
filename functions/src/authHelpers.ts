@@ -8,6 +8,7 @@ export async function generateHashedPassword(password: string, uid: string) {
   password = password + salt;
   let hash = await subtle.digest('SHA-512', new TextEncoder().encode(password));
   let stringHash = new TextDecoder().decode(hash);
+  console.log('stringHash');
   return stringHash;
 }
 

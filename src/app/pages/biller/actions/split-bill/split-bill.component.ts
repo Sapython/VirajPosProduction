@@ -384,7 +384,7 @@ export function calculateBill(
   //   finalAdditionalTax
   // );
   bill.billing.grandTotal =
-    bill.billing.subTotal - applicableDiscount + totalApplicableTax;
+    Math.ceil(bill.billing.subTotal - applicableDiscount + totalApplicableTax);
   bill.printableBillData = getPrintableBillConstructor(
     bill,
     allProducts,

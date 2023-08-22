@@ -76,6 +76,7 @@ export class OnboardingService {
     state: string;
     cities: { city: string; businesses: UserBusiness[] }[];
   }[] = [];
+  atLeastOneAdmin:boolean = false;
   private checkIfAccessTokenIsValidFunction = httpsCallable(
     this.functions,
     'checkIfAccessTokenIsValid',
@@ -134,7 +135,7 @@ export class OnboardingService {
             index ===
             self.findIndex((t) => t.businessId === business.businessId),
         );
-        if (data.user.business.length > 1) {
+        if (data.user.business.length >= 1) {
           this.loadingSteps.next('User Found with multiple businesses');
           let localRead = localStorage.getItem('businessId');
           if (localRead) {
@@ -142,6 +143,7 @@ export class OnboardingService {
           }
           this.groupedBusiness = [];
           // generate a grouped business list
+          this.atLeastOneAdmin = false;
           data.user.business.forEach((business) => {
             let state = business.state;
             let city = business.city;
@@ -176,6 +178,9 @@ export class OnboardingService {
                 ].businesses.push(business);
               }
             }
+            if (business.access.accessType == 'role' && business.access.role == 'admin'){
+              this.atLeastOneAdmin = true;
+            }
           });
           // if only one state is present then select the state
           if (this.groupedBusiness.length == 1) {
@@ -186,9 +191,6 @@ export class OnboardingService {
           }
           console.log('groupedBusiness', this.groupedBusiness);
           this.stage = 'multipleBusiness';
-        } else if (data.user.business.length == 1) {
-          this.loadingSteps.next('User Found with a business');
-          this.loadBusiness(data.user.business[0].businessId);
         } else {
           this.loadingSteps.next('User Found with no business');
           const dialog = this.dialog.open(DialogComponent, {

@@ -1,5 +1,4 @@
 <main>
-  <!-- <h1>{{ onboardingService.stage }}</h1> -->
   <section
     [@zoomInOnEnter]
     [@zoomOutOnLeave]
@@ -369,34 +368,12 @@
           *ngFor="let business of this.onboardingService.currentAreaCity.businesses"
           [business]="business"
         ></app-business-card>
-        <app-new-business-card
+        <app-new-business-card *ngIf="onboardingService.atLeastOneAdmin"
           (click)="onboardingService.stage = 'onboardingStep1'"
           [@zoomInOnEnter]
         ></app-new-business-card>
       </div>
     </ng-container>
-    <!-- <div
-        class="business"
-        (click)="setDefaultAccount(business)"
-        *ngFor="let business of this.dataProvider.currentUser?.business"
-      >
-        <h5>{{ business.name }}</h5>
-        <p class="address">{{ business.address }}</p>
-        <div class="account">
-          <span class="user">
-            <i class="ri-user-3-fill"></i>
-            <div [class]="'badge ' + business.access">
-              {{ business.access.accessLevel | titlecase }}
-            </div>
-            <span>{{ business.joiningDate.toDate() | date }}</span>
-          </span>
-          <span> #{{ business.businessId }}</span>
-        </div>
-      </div> -->
-    <!-- <div class="newAccount" (click)="onboardingService.stage = 'onboardingStep1'">
-        <i class="ri-add-line"></i>
-        <h3>Add Account</h3>
-      </div> -->
     <div class="actions">
       <viraj-button color="primary" type="outline" (click)="logout()"
         >Logout</viraj-button

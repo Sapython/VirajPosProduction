@@ -7,12 +7,16 @@
       >All</td>
     </tr>
     <tr>
-      <td><strong>All - </strong>Sales</td>
+      <td><strong>All - </strong>Total bills</td>
       <td>{{ channelWiseDaySummary.all.totalBills }}</td>
     </tr>
     <tr>
-      <td><strong>All - </strong>Amount</td>
+      <td><strong>All - </strong>Total Sales</td>
       <td>{{ channelWiseDaySummary.all.totalAmount }}</td>
+    </tr>
+    <tr>
+      <td><strong>All - </strong>Net Sales</td>
+      <td>{{ channelWiseDaySummary.all.netSales }}</td>
     </tr>
     <tr>
       <td><strong>All - </strong>Discount</td>
@@ -42,6 +46,15 @@
       <td><strong>All - </strong>Non Chargeable Sales</td>
       <td>{{ channelWiseDaySummary.all.totalNcAmount }}</td>
     </tr>
+    <!-- <tr>
+      <td><strong>All - </strong>Payment Channels</td>
+      <td *ngIf="channelWiseDaySummary.all.paymentChannels">
+        <tr *ngFor="let item of channelWiseDaySummary.all.paymentChannels | keyvalue">
+          <td>{{item.key}}</td>
+          <td>{{item.value | currency:'INR'}}</td>
+        </tr>
+      </td>
+    </tr> -->
     <!-- dine In -->
     <tr>
       <td

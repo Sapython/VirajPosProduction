@@ -25,7 +25,7 @@
           {{ bill.orderNo || 'N/A' }}
         </td>
         <td>
-          {{ (bill.billing.grandTotal | currency:'INR') || 'N/A' }}
+          {{ (bill.billing.subTotal | currency:'INR') || 'N/A' }}
         </td>
         <td>
           {{ bill.kots.length > 0 ? joinArray(bill.kots) : 'No Kots' }}

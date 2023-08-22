@@ -16,6 +16,7 @@ export class DaySummaryComponent {
   channelWiseDaySummary = {
     all: {
       totalBills: 0,
+      netSales:0,
       totalAmount: 0,
       totalDiscount: 0,
       totalTax: 0,
@@ -24,9 +25,11 @@ export class DaySummaryComponent {
       totalDiscountedBills: 0,
       totalNcBills: 0,
       totalNcAmount: 0,
+      paymentChannels:{}
     },
     dineIn: {
       totalBills: 0,
+      netSales:0,
       totalAmount: 0,
       totalDiscount: 0,
       totalTax: 0,
@@ -35,9 +38,11 @@ export class DaySummaryComponent {
       totalDiscountedBills: 0,
       totalNcBills: 0,
       totalNcAmount: 0,
+      paymentChannels:{}
     },
     takeaway: {
       totalBills: 0,
+      netSales:0,
       totalAmount: 0,
       totalDiscount: 0,
       totalTax: 0,
@@ -46,9 +51,11 @@ export class DaySummaryComponent {
       totalDiscountedBills: 0,
       totalNcBills: 0,
       totalNcAmount: 0,
+      paymentChannels:{}
     },
     online: {
       totalBills: 0,
+      netSales:0,
       totalAmount: 0,
       totalDiscount: 0,
       totalTax: 0,
@@ -57,6 +64,7 @@ export class DaySummaryComponent {
       totalDiscountedBills: 0,
       totalNcBills: 0,
       totalNcAmount: 0,
+      paymentChannels:{}
     },
   };
   downloadPDfSubscription: Subscription = Subscription.EMPTY;
@@ -147,11 +155,18 @@ export class DaySummaryComponent {
             this.channelWiseDaySummary = {
               all: {
                 totalBills: bills.length,
-                totalAmount: bills.reduce(
+                totalAmount: this.roundOff(bills.reduce(
                   (acc, res) => acc + res.billing.grandTotal,
                   0,
-                ),
-                totalDiscount: bills.reduce(
+                )),
+                netSales: this.roundOff(bills.reduce(
+                  (acc, res) => acc + res.billing.subTotal,
+                  0,
+                ) - bills.reduce(
+                  (acc, res) => acc + res.billing.taxes.reduce((a, b) => a + b.amount, 0),
+                  0,
+                )),
+                totalDiscount: this.roundOff(bills.reduce(
                   (acc, res) =>
                     acc +
                     res.billing.discount.reduce(
@@ -159,11 +174,11 @@ export class DaySummaryComponent {
                       0,
                     ),
                   0,
-                ),
-                totalTax: bills.reduce(
-                  (acc, res) => acc + res.billing.totalTax,
+                )),
+                totalTax: this.roundOff(bills.reduce(
+                  (acc, res) => acc + res.billing.taxes.reduce((a, b) => a + b.amount, 0),
                   0,
-                ),
+                )),
                 totalKots: bills
                   .map((res) => res.kots.length)
                   .reduce((a, b) => a + b, 0),
@@ -179,17 +194,38 @@ export class DaySummaryComponent {
                 ).length,
                 totalNcBills: bills.filter((res) => res.nonChargeableDetail)
                   .length,
-                totalNcAmount: bills
+                totalNcAmount: this.roundOff(bills
                   .filter((res) => res.nonChargeableDetail)
-                  .reduce((acc, res) => acc + res.billing.grandTotal, 0),
+                  .reduce((acc, res) => acc + res.billing.subTotal, 0)),
+                paymentChannels: bills.reduce((acc, res) => {
+                  if (res.settlement?.payments){
+                    res.settlement.payments.forEach((payment) => {
+                      if (acc && acc[payment.paymentMethod]) {
+                        acc[payment.paymentMethod] += payment.amount;
+                      } else {
+                        if (!acc){
+                          acc = {[payment.paymentMethod]:0}
+                        }
+                        acc[payment.paymentMethod] = payment.amount;
+                      }
+                    })
+                  }
+                },{} as any)
               },
               dineIn: {
                 totalBills: dineInBills.length,
-                totalAmount: dineInBills.reduce(
+                totalAmount: this.roundOff(dineInBills.reduce(
                   (acc, res) => acc + res.billing.grandTotal,
                   0,
-                ),
-                totalDiscount: dineInBills.reduce(
+                )),
+                netSales: this.roundOff(dineInBills.reduce(
+                  (acc, res) => acc + res.billing.subTotal,
+                  0,
+                )- dineInBills.reduce(
+                  (acc, res) => acc + res.billing.taxes.reduce((a, b) => a + b.amount, 0),
+                  0,
+                )),
+                totalDiscount: this.roundOff(dineInBills.reduce(
                   (acc, res) =>
                     acc +
                     res.billing.discount.reduce(
@@ -197,11 +233,11 @@ export class DaySummaryComponent {
                       0,
                     ),
                   0,
-                ),
-                totalTax: dineInBills.reduce(
-                  (acc, res) => acc + res.billing.totalTax,
+                )),
+                totalTax: this.roundOff(dineInBills.reduce(
+                  (acc, res) => acc + res.billing.taxes.reduce((a, b) => a + b.amount, 0),
                   0,
-                ),
+                )),
                 totalKots: dineInBills
                   .map((res) => res.kots.length)
                   .reduce((a, b) => a + b, 0),
@@ -218,17 +254,36 @@ export class DaySummaryComponent {
                 totalNcBills: dineInBills.filter(
                   (res) => res.nonChargeableDetail,
                 ).length,
-                totalNcAmount: dineInBills
+                totalNcAmount: this.roundOff(dineInBills
                   .filter((res) => res.nonChargeableDetail)
-                  .reduce((acc, res) => acc + res.billing.grandTotal, 0),
+                  .reduce((acc, res) => acc + res.billing.subTotal, 0)),
+                paymentChannels: dineInBills.reduce((acc, res) => {
+                  if (res.settlement?.payments){
+                    res.settlement.payments.forEach((payment) => {
+                      if (acc && acc[payment.paymentMethod]) {
+                        acc[payment.paymentMethod] += payment.amount;
+                      } else {
+                        if (!acc){
+                          acc = {[payment.paymentMethod]:0}
+                        }
+                        acc[payment.paymentMethod] = payment.amount;
+                      }
+                    })
+                  }
+                },{} as any)
               },
               takeaway: {
                 totalBills: takeawayBills.length,
-                totalAmount: takeawayBills.reduce(
+                totalAmount: this.roundOff(takeawayBills.reduce(
                   (acc, res) => acc + res.billing.grandTotal,
-                  0,
-                ),
-                totalDiscount: takeawayBills.reduce(
+                  0)),
+                netSales: this.roundOff(takeawayBills.reduce(
+                  (acc, res) => acc + res.billing.subTotal,
+                  0) - takeawayBills.reduce(
+                    (acc, res) => acc + res.billing.taxes.reduce((a, b) => a + b.amount, 0),
+                    0,
+                  )),
+                totalDiscount: this.roundOff(takeawayBills.reduce(
                   (acc, res) =>
                     acc +
                     res.billing.discount.reduce(
@@ -236,11 +291,11 @@ export class DaySummaryComponent {
                       0,
                     ),
                   0,
-                ),
-                totalTax: takeawayBills.reduce(
-                  (acc, res) => acc + res.billing.totalTax,
+                )),
+                totalTax: this.roundOff(takeawayBills.reduce(
+                  (acc, res) => acc + res.billing.taxes.reduce((a, b) => a + b.amount, 0),
                   0,
-                ),
+                )),
                 totalKots: takeawayBills
                   .map((res) => res.kots.length)
                   .reduce((a, b) => a + b, 0),
@@ -257,17 +312,38 @@ export class DaySummaryComponent {
                 totalNcBills: takeawayBills.filter(
                   (res) => res.nonChargeableDetail,
                 ).length,
-                totalNcAmount: takeawayBills
+                totalNcAmount: this.roundOff(takeawayBills
                   .filter((res) => res.nonChargeableDetail)
-                  .reduce((acc, res) => acc + res.billing.grandTotal, 0),
+                  .reduce((acc, res) => acc + res.billing.subTotal, 0)),
+                  paymentChannels: takeawayBills.reduce((acc, res) => {
+                    if (res.settlement?.payments){
+                      res.settlement.payments.forEach((payment) => {
+                        if (acc && acc[payment.paymentMethod]) {
+                          acc[payment.paymentMethod] += payment.amount;
+                        } else {
+                          if (!acc){
+                            acc = {[payment.paymentMethod]:0}
+                          }
+                          acc[payment.paymentMethod] = payment.amount;
+                        }
+                      })
+                    }
+                  },{} as any)
               },
               online: {
                 totalBills: onlineBills.length,
-                totalAmount: onlineBills.reduce(
+                totalAmount: this.roundOff(onlineBills.reduce(
                   (acc, res) => acc + res.billing.grandTotal,
                   0,
-                ),
-                totalDiscount: onlineBills.reduce(
+                )),
+                netSales: this.roundOff(onlineBills.reduce(
+                  (acc, res) => acc + res.billing.subTotal,
+                  0,
+                ) - onlineBills.reduce(
+                  (acc, res) => acc + res.billing.taxes.reduce((a, b) => a + b.amount, 0),
+                  0,
+                )),
+                totalDiscount: this.roundOff(onlineBills.reduce(
                   (acc, res) =>
                     acc +
                     res.billing.discount.reduce(
@@ -275,11 +351,11 @@ export class DaySummaryComponent {
                       0,
                     ),
                   0,
-                ),
-                totalTax: onlineBills.reduce(
-                  (acc, res) => acc + res.billing.totalTax,
+                )),
+                totalTax: this.roundOff(onlineBills.reduce(
+                  (acc, res) => acc + res.billing.taxes.reduce((a, b) => a + b.amount, 0),
                   0,
-                ),
+                )),
                 totalKots: onlineBills
                   .map((res) => res.kots.length)
                   .reduce((a, b) => a + b, 0),
@@ -296,9 +372,23 @@ export class DaySummaryComponent {
                 totalNcBills: onlineBills.filter(
                   (res) => res.nonChargeableDetail,
                 ).length,
-                totalNcAmount: onlineBills
+                totalNcAmount: this.roundOff(onlineBills
                   .filter((res) => res.nonChargeableDetail)
-                  .reduce((acc, res) => acc + res.billing.grandTotal, 0),
+                  .reduce((acc, res) => acc + res.billing.subTotal, 0)),
+                  paymentChannels: onlineBills.reduce((acc, res) => {
+                    if (res.settlement?.payments){
+                      res.settlement.payments.forEach((payment) => {
+                        if (acc && acc[payment.paymentMethod]) {
+                          acc[payment.paymentMethod] += payment.amount;
+                        } else {
+                          if (!acc){
+                            acc = {[payment.paymentMethod]:0}
+                          }
+                          acc[payment.paymentMethod] = payment.amount;
+                        }
+                      })
+                    }
+                  },{} as any)
               },
             };
           })
@@ -308,6 +398,11 @@ export class DaySummaryComponent {
           });
       },
     );
+  }
+
+  roundOff(num: number) {
+    // use epsilon to 2 digits
+    return Math.round((num + Number.EPSILON) * 100) / 100;
   }
 
   async downloadPdf() {

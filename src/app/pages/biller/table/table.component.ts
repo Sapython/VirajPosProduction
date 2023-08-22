@@ -29,6 +29,7 @@ export class TableComponent implements OnInit {
   tables: Table[] = [];
   selectedKotsForKotTransfer: Kot[] = [];
   interval: any;
+  editMode:boolean = false;
   moveKotMode: boolean = false;
   moveKotSelectedTable: Table | undefined;
   transferTableWise: {

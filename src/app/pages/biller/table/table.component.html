@@ -79,17 +79,19 @@
         </div> -->
   </div>
   <div class="actionsRow" *ngIf="this.dataProvider.billingMode == 'dineIn'">
-    <ng-container *ngIf="this.moveKotMode">
-      <button (click)="moveKotMode = false; moveKotSelectedTable = undefined">
+    <ng-container *ngIf="this.moveKotMode || this.editMode">
+      <button (click)="moveKotMode = false; moveKotSelectedTable = undefined; this.editMode = false">
         <i class="ri-arrow-left-line"></i> Cancel
       </button>
-      <p>Please select a table to continue</p>
+      <p *ngIf="this.moveKotMode">Please select a table to continue</p>
+      <p *ngIf="this.editMode">Press back to go to normal mode</p>
     </ng-container>
-    <ng-container *ngIf="!this.moveKotMode">
+    <ng-container *ngIf="!this.moveKotMode && !this.editMode">
       <button *ngIf="this.dataProvider.getAccess('reArrangeGroupOrder')" (click)="addSection()">Add Section</button>
       <button *ngIf="this.dataProvider.getAccess('reArrangeGroupOrder')" (click)="rearrangeTables()">Re-Arrange Tables</button>
       <button *ngIf="this.dataProvider.getAccess('moveAndMergeOptions')" (click)="moveKotMode = true">Move KOT/Item</button>
       <button *ngIf="this.dataProvider.getAccess('moveAndMergeOptions')" (click)="mergeExchangeTable()">Merge/Exchange Table</button>
+      <button *ngIf="this.dataProvider.getAccess('reArrangeGroupOrder')" (click)="editMode = true">Edit Tables</button>
     </ng-container>
   </div>
   <div class="tableWrapper" *ngIf="this.dataProvider.billingMode == 'dineIn'">
@@ -99,10 +101,10 @@
     >
       <div class="heading">
         <h3>{{ tableGroup.name }}</h3>
-        <viraj-button type="icon" *ngIf="this.dataProvider.getAccess('reArrangeGroupOrder')" (vclick)="editGroup(tableGroup.name)"
+        <viraj-button type="icon" *ngIf="this.dataProvider.getAccess('reArrangeGroupOrder') && editMode" (vclick)="editGroup(tableGroup.name)"
           ><i class="ri-edit-line"></i
         ></viraj-button>
-        <viraj-button type="icon" *ngIf="this.dataProvider.getAccess('reArrangeGroupOrder')" (vclick)="deleteSection(tableGroup.name)"
+        <viraj-button type="icon" *ngIf="this.dataProvider.getAccess('reArrangeGroupOrder') && editMode" (vclick)="deleteSection(tableGroup.name)"
           ><i class="ri-delete-bin-6-line"></i
         ></viraj-button>
       </div>
@@ -158,7 +160,7 @@
               [noPropogation]="true"
               [minimalPadding]="true"
               type="icon"
-              *ngIf="this.dataProvider.getAccess('reArrangeGroupOrder')"
+              *ngIf="this.dataProvider.getAccess('reArrangeGroupOrder') && editMode"
               (vclick)="editTable(table)"
               ><i class="ri-edit-line"></i
             ></viraj-button>
@@ -167,7 +169,7 @@
             class="actions"
             *ngIf="
               table.status != 'occupied' &&
-              this.dataProvider.getAccess('reArrangeGroupOrder')
+              this.dataProvider.getAccess('reArrangeGroupOrder') && editMode
             "
           >
             <viraj-button
@@ -193,7 +195,7 @@
             medium: this.dataProvider.currentTableSize == 'medium',
             small: this.dataProvider.currentTableSize == 'small'
           }"
-          *ngIf="this.dataProvider.getAccess('addTable') && !moveKotMode"
+          *ngIf="this.dataProvider.getAccess('addTable') && !moveKotMode && editMode"
         >
           <mat-icon>add</mat-icon>
           <p>Add New {{ tableGroup.name }}</p>

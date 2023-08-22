@@ -156,6 +156,11 @@ export class HourlyItemSalesComponent {
               this.reportService.dateRangeFormGroup.value.startDate.toLocaleString(),
             styles: { halign: 'right', fontSize: 17 },
           },
+          {
+            content:this.reportService.dateRangeFormGroup.value.endDate ? 
+              this.reportService.dateRangeFormGroup.value.endDate.toLocaleString() : '',
+            styles: { halign: 'right', fontSize: 17 },
+          },
         ],
       ],
       theme: 'plain',

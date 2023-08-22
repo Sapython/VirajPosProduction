@@ -57,10 +57,10 @@
         />
         <input matEndDate formControlName="endDate" placeholder="End date" />
       </mat-date-range-input>
-      <viraj-button (click)="reportService.downloadExcel.next()"
+      <viraj-button *ngIf="!reportService.noData" (click)="reportService.downloadExcel.next()"
         >Download As Excel</viraj-button
       >
-      <viraj-button (click)="reportService.downloadPdf.next()"
+      <viraj-button *ngIf="!reportService.noData" (click)="reportService.downloadPdf.next()"
         >Download As PDF</viraj-button
       >
       <div class="virajInput" [ngClass]="{active:inputElm.value}" *ngIf="dialogData.stage == 'consolidated'">

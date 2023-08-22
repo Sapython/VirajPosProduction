@@ -19,7 +19,7 @@ import { DataProvider } from '../../../../core/services/provider/data-provider.s
 })
 export class ReportService {
   // bills: ActivityBillConstructor[] = [];
-
+  noData: boolean = false;
   loading: boolean = false;
   cachedData: CachedData[] = [];
   cachedTables:{[key:string]:any} = {};
@@ -99,6 +99,11 @@ export class ReportService {
     });
     console.log('CACHED BILLS', this.cachedData);
     this.loading = false;
+    if (newBills.length == 0) {
+      this.noData = true;
+    } else {
+      this.noData = false;
+    }
     return newBills;
   }
 
@@ -124,9 +129,15 @@ export class ReportService {
         where('time', '<=', maxTime),
       ),
     );
-    return docs.docs.map((doc) => {
+    let activities = docs.docs.map((doc) => {
       return doc.data();
     });
+    if (activities.length == 0) {
+      this.noData = true;
+    } else {
+      this.noData = false;
+    }
+    return activities
   }
 
   async getSplittedBill(billId:string,splittedBillId:string,businessId:string){

@@ -83,17 +83,27 @@ export class SettleComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.methods.forEach((method) => {
+      method.paymentMethods = [
+        'Cash',
+        'Card',
+        'UPI',
+        'Wallet',
+        ...this.dataProvider.cachedMethods,
+      ];
+    });
     this.settingService.getPaymentMethods().then((methods) => {
       this.additionalMethods = methods.docs.map((d) => {
         return d.data()['name'];
       });
+      this.dataProvider.cachedMethods = this.additionalMethods;
       this.methods.forEach((method) => {
         method.paymentMethods = [
           'Cash',
           'Card',
           'UPI',
           'Wallet',
-          ...this.additionalMethods,
+          ...this.dataProvider.cachedMethods,
         ];
       });
       this.methodsWithDetail = methods.docs

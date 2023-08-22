@@ -254,6 +254,8 @@ export class DataProvider {
   ).touchMode;
   public loading: boolean = false;
 
+  public cachedMethods:any[] = [];
+
   // triggers
   public closeAllPanel: Subject<boolean> = new Subject<boolean>();
   public menuProducts: Subject<Category> = new Subject<Category>();

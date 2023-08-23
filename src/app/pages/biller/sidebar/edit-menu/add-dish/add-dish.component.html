@@ -42,13 +42,13 @@
           <mat-option value="">{{defaultPrinters.kotPrinter}}</mat-option>
         </mat-select>
       </mat-form-field>
-      <mat-form-field appearance="outline" *ngIf="this.data.mainCategories.length" class="fullWidth">
+      <mat-form-field appearance="outline" *ngIf="this.data?.mainCategories?.length" class="fullWidth">
         <mat-label>Select Main Category</mat-label>
         <mat-select formControlName="mainCategory">
           <mat-option [value]="category" *ngFor="let category of data.mainCategories">{{category.name}}</mat-option>
         </mat-select>
       </mat-form-field>
-      <div class="viewCategories" *ngIf="this.data.viewCategories.length">
+      <div class="viewCategories" *ngIf="this.data?.viewCategories?.length">
         <h4>Select Your Categories</h4>
         <div class="list">
           <mat-checkbox

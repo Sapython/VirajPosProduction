@@ -61,7 +61,7 @@ export class AddDishComponent {
     tag: new FormControl(''),
     specificPrinter: new FormControl(''),
     sellByAvailable: new FormControl(false),
-    mainCategory: new FormControl('',this.data.mainCategories.length ? Validators.required : []),
+    mainCategory: new FormControl('',this.data?.mainCategories?.length ? Validators.required : []),
   });
   defaultPrinters: { billPrinter: string; kotPrinter: string } = {
     billPrinter: '',
@@ -83,7 +83,7 @@ export class AddDishComponent {
       this.newDishForm.controls.tag.setValue(data.product.tags[0]);
        console.log(this.newDishForm.value,"this.tags",this.tags);
     }
-    this.viewCategories = this.data.viewCategories.map((category) => {
+    this.viewCategories = this.data?.viewCategories?.map((category) => {
       return { ...category, selected: false };
     });
   }

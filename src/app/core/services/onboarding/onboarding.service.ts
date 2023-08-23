@@ -193,6 +193,10 @@ export class OnboardingService {
               this.currentAreaCity = this.currentAreaState.cities[0];
             }
           }
+          // if only one outlet is present then load that outlet
+          if (data.user.business.length == 1 && !this.atLeastOneAdmin) {
+            this.loadBusiness(data.user.business[0].businessId);
+          }
           console.log('groupedBusiness', this.groupedBusiness);
           this.stage = 'multipleBusiness';
         } else {

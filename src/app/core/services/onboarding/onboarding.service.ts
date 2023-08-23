@@ -77,7 +77,13 @@ export class OnboardingService {
     cities: { city: string; businesses: UserBusiness[] }[];
   }[] = [];
   atLeastOneAdmin:boolean = false;
-  autoOutletFromEmail:string = '';
+  autoOutletFromEmail:{
+    email:string,
+    username:string,
+  }={
+    email:'',
+    username:''
+  };
   private checkIfAccessTokenIsValidFunction = httpsCallable(
     this.functions,
     'checkIfAccessTokenIsValid',
@@ -183,7 +189,10 @@ export class OnboardingService {
             if (business.access.accessType == 'role' && business.access.role == 'admin'){
               this.atLeastOneAdmin = true;
               console.log("data.user",data.user);
-              this.autoOutletFromEmail = data.user.email;
+              this.autoOutletFromEmail = {
+                email:data.user.email,
+                username:data.user.username
+              };
             }
           });
           // if only one state is present then select the state

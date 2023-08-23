@@ -532,7 +532,7 @@ export class LoadingComponent implements OnInit {
           let data: BusinessRecord = {
             address: this.onboardingBusinessForm.value.address,
             city:this.onboardingBusinessForm.value.city,
-            state:this.onboardingBusinessForm.value.state,
+            state:this.onboardingBusinessForm.value.state.state,
             businessId: id,
             hotelName: this.onboardingBusinessForm.value.name,
             hotelLogo: logo || '',
@@ -624,7 +624,7 @@ export class LoadingComponent implements OnInit {
         },
         address: this.onboardingBusinessForm.value.address,
         city:this.onboardingBusinessForm.value.city,
-        state:this.onboardingBusinessForm.value.state,
+        state:this.onboardingBusinessForm.value.state.state,
         businessId: id,
         joiningDate: Timestamp.fromDate(new Date()),
         name: this.onboardingBusinessForm.value.name,
@@ -639,7 +639,7 @@ export class LoadingComponent implements OnInit {
       let data: BusinessRecord = {
         address: this.onboardingBusinessForm.value.address,
         city:this.onboardingBusinessForm.value.city,
-        state:this.onboardingBusinessForm.value.state,
+        state:this.onboardingBusinessForm.value.state.state,
         businessId: id,
         hotelName: this.onboardingBusinessForm.value.name,
         hotelLogo: logoImage || '',
@@ -979,7 +979,7 @@ export class LoadingComponent implements OnInit {
   autoOnboard(){
     this.onboardingService.stage = 'onboardingStep1';
     console.log("this.onboardingService.autoOutletFromEmail",this.onboardingService.autoOutletFromEmail);
-    this.onboardingBusinessForm.patchValue({email:this.onboardingService.autoOutletFromEmail});
+    this.onboardingBusinessForm.patchValue(this.onboardingService.autoOutletFromEmail);
   }
 }
 

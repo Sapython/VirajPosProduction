@@ -65,14 +65,16 @@ export class TableComponent implements OnInit {
     this.interval = setInterval(() => {
       this.dataProvider.tables.forEach((table) => {
         if (table.status == 'occupied' && table.occupiedStart) {
-          table.timeSpent = this.getTime(table.occupiedStart);
-          table.minutes = Number(table.timeSpent.split(':')[0]);
+          let timeTaken = this.getTime(table.occupiedStart);
+          table.timeSpent = timeTaken.time;
+          table.minutes = timeTaken.minutes;
         }
       });
       this.dataProvider.tokens.forEach((table) => {
         if (table.status == 'occupied' && table.occupiedStart) {
-          table.timeSpent = this.getTime(table.occupiedStart);
-          table.minutes = Number(table.timeSpent.split(':')[0]);
+          let timeTaken = this.getTime(table.occupiedStart);
+          table.timeSpent = timeTaken.time;
+          table.minutes = timeTaken.minutes;
         }
       });
     }, 500);
@@ -88,6 +90,7 @@ export class TableComponent implements OnInit {
     let hours = milliseconds / 3600000;
     let minutes = ((milliseconds % 3600000) / 60000).toFixed(0);
     let seconds = ((milliseconds % 60000) / 1000).toFixed(0);
+    let allMinutes = (milliseconds / 60000);
     if (Number(minutes) < 10) {
       minutes = '0' + minutes;
     }
@@ -95,9 +98,15 @@ export class TableComponent implements OnInit {
       seconds = '0' + seconds;
     }
     if (hours < 1) {
-      return minutes + ':' + seconds;
+      return {
+        time:minutes + ':' + seconds,
+        minutes:allMinutes
+      };
     }
-    return hours.toFixed(0) + ':' + minutes + ':' + seconds;
+    return {
+      time:hours.toFixed(0) + ':' + minutes + ':' + seconds,
+      minutes:allMinutes
+    };
   }
 
   printTable(table: Table, event: any) {

@@ -72,7 +72,9 @@ export class MenuManagementService {
     this.menuUpdater.pipe(debounceTime(1000)).subscribe(() => {
       // console.log('Menus to update', menus);
       this.versionToBeUpdatedMenus.forEach((menuId) => {
-        this.updateMenuData(menuId);
+        if (this.dataProvider.currentBusiness.businessId){
+          this.updateMenuData(menuId);
+        }
       });
       this.versionToBeUpdatedMenus = [];
     });
@@ -835,7 +837,7 @@ export class MenuManagementService {
       ];
       let addedTaxes = await Promise.all(
         taxes.map(async (tax) => {
-          return await this.addTax(tax as Tax, menuRes.id);
+          return await this.addTax(tax as Tax, menuRes.id,businessId);
         }),
       );
       let productApplicableTaxes: productTax[] = addedTaxes.map(
@@ -1447,13 +1449,13 @@ export class MenuManagementService {
     );
   }
 
-  addTax(data: Tax, menuId: string) {
+  addTax(data: Tax, menuId: string,businessId?:string) {
     this.updateMenuVersionRequest.next(menuId);
     return addDoc(
       collection(
         this.firestore,
-        'business/' +
-          this.dataProvider.businessId +
+        'business/' +(businessId ||
+          this.dataProvider.businessId) +
           '/menus/' +
           menuId +
           '/taxes',

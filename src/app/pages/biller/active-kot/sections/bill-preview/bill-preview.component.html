@@ -134,7 +134,11 @@
       </td>
     </tr>
   </ng-container>
-  <ng-container *ngIf="printableBillData.discounts.length > 0 || printableBillData.currentLoyalty?.totalToBeRedeemedPoints > 0">
+  <ng-container *ngIf="printableBillData.appliedCharges?.containerCharge ||
+    printableBillData.appliedCharges?.tip ||
+    printableBillData.appliedCharges?.serviceCharge ||
+    printableBillData.appliedCharges?.deliveryCharge
+  ">
     <tr>
       <td colspan="2"><hr /></td>
     </tr>

@@ -205,7 +205,7 @@ export class AddMenuComponent {
       data.forEach((line)=>{
         line.tag = line['half/full'] == 'full' ? 'Full' : 'Half';
         line.type = line['veg/nonveg'] == 'veg' ? 'veg' : 'non-veg';
-        if (line.name && line.category && (!isNaN(Number(line.price))) && (line.type == 'veg' || line.type == 'non-veg') && (line.tag == 'Half' || line.tag == 'Full')){
+        if (line.name && line.category && (!isNaN(Number(line.price))) && (line.type == 'veg' || line.type == 'non-veg') && (line.tag ? (line.tag == 'Half' || line.tag == 'Full') : true)){
           let product = {
             name:line.name,
             category:line.category,

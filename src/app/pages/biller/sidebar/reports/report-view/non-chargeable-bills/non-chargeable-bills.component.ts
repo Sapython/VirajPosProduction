@@ -118,7 +118,7 @@ export class NonChargeableBillsComponent {
                 console.log("Time formatted",acc);
                 return acc;
               }, [0, 0, 0]).join(':'),
-              totalAmount:bills.reduce((acc, curr) => acc + curr.billing.grandTotal, 0),
+              totalAmount:bills.reduce((acc, curr) => acc + curr.billing.subTotal, 0),
               totalDiscount:bills.reduce((acc, curr) => acc + 
                 curr.billing.discount.reduce((acc, curr) => acc + curr.totalAppliedDiscount, 0)
               , 0),

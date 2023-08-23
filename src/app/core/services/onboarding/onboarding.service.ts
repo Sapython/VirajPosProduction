@@ -327,20 +327,16 @@ export class OnboardingService {
           this.menuManagementService.getAllMenus();
           let menus = await firstValueFrom(this.dataProvider.allMenus);
           // get whatever menu is available in currentMenu and set it to currentMenu
-          let toBeLoadedMenus = [
-            {
-              mode: ['dineIn'],
-              menu: menus.find((m)=>m.id == setting.dineInMenu.id),
-            },
-            {
-              mode: ['takeaway'],
-              menu: menus.find((m)=>m.id == setting.takeawayMenu.id),
-            },
-            {
-              mode: ['online'],
-              menu: menus.find((m)=>m.id == setting.onlineMenu.id),
-            },
-          ];
+          let toBeLoadedMenus = [];
+          if (setting.dineInMenu){
+            toBeLoadedMenus.push({mode: ['dineIn'],menu: menus.find((m)=>m.id == setting.dineInMenu?.id),})
+          }
+          if (setting.takeawayMenu){
+            toBeLoadedMenus.push({mode: ['takeaway'],menu: menus.find((m)=>m.id == setting.takeawayMenu?.id),})
+          }
+          if (setting.onlineMenu){
+            toBeLoadedMenus.push({mode: ['online'],menu: menus.find((m)=>m.id == setting.onlineMenu?.id),})
+          }
           let filteredToBeLoadedMenus = [];
           toBeLoadedMenus.forEach((toBeLoadedMenu) => {
             if (toBeLoadedMenu) {

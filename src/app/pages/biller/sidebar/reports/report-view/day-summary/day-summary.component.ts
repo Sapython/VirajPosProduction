@@ -101,57 +101,6 @@ export class DaySummaryComponent {
             let dineInBills = bills.filter((res) => res.mode == 'dineIn');
             let takeawayBills = bills.filter((res) => res.mode == 'takeaway');
             let onlineBills = bills.filter((res) => res.mode == 'online');
-            // this.daySummary = {
-            //   totalBills: bills.length,
-            //   totalAmount: bills.reduce(
-            //     (acc, res) => acc + res.billing.grandTotal,
-            //     0,
-            //   ),
-            //   totalDiscount: bills.reduce(
-            //     (acc, res) =>
-            //       acc +
-            //       res.billing.discount.reduce(
-            //         (a, b) => a + (b.totalAppliedDiscount || 0),
-            //         0,
-            //       ),
-            //     0,
-            //   ),
-            //   totalTax: bills.reduce(
-            //     (acc, res) => acc + res.billing.totalTax,
-            //     0,
-            //   ),
-            //   totalKots: bills
-            //     .map((res) => res.kots.length)
-            //     .reduce((a, b) => a + b, 0),
-            //   totalProducts: bills
-            //     .map((res) =>
-            //       res.kots
-            //         .map((res) => res.products.length)
-            //         .reduce((a, b) => a + b, 0),
-            //     )
-            //     .reduce((a, b) => a + b, 0),
-            //   totalDiscountedBills: bills.filter(
-            //     (res) => res.billing.discount.length > 0,
-            //   ).length,
-            //   totalDiscountedAmount: bills
-            //     .filter((res) => res.billing.discount.length > 0)
-            //     .reduce((acc, res) => acc + res.billing.grandTotal, 0),
-            //   totalNcBills: bills.filter((res) => res.nonChargeableDetail)
-            //     .length,
-            //   totalNcAmount: bills
-            //     .filter((res) => res.nonChargeableDetail)
-            //     .reduce((acc, res) => acc + res.billing.grandTotal, 0),
-            //   totalTakeawayBills: bills.filter((res) => res.mode == 'takeaway')
-            //     .length,
-            //   totalTakeawayAmount: bills
-            //     .filter((res) => res.mode == 'takeaway')
-            //     .reduce((acc, res) => acc + res.billing.grandTotal, 0),
-            //   totalOnlineBills: bills.filter((res) => res.mode == 'online')
-            //     .length,
-            //   totalOnlineAmount: bills
-            //     .filter((res) => res.mode == 'online')
-            //     .reduce((acc, res) => acc + res.billing.grandTotal, 0),
-            // };
             this.channelWiseDaySummary = {
               all: {
                 totalBills: bills.length,

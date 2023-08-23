@@ -276,7 +276,7 @@ export class ModeConfig {
       this.fuseInstance.setCollection(this.products);
       this.selectedCategory = this.allProductsCategory;
       this.products = this.products.map((p) => {
-        return { ...p, itemType: 'product',specificPrinter:p.specificPrinter || defaultPrinter.billPrinter };
+        return { ...p, itemType: 'product',specificPrinter:p.specificPrinter || defaultPrinter?.billPrinter };
       });
       // sort products by name
       this.products.sort((a, b) => {

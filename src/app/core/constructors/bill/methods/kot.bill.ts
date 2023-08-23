@@ -89,12 +89,6 @@ export function finalizeAndPrintKot(this: Bill) {
   }
 
   if (this.editKotMode != null) {
-    // console.log(
-    //   'Old kot',
-    //   this.editKotMode.previousKot,
-    //   'New kot',
-    //   this.editKotMode.newKot,
-    // );
     let kotIndex = this.kots.findIndex(
       (kot) => this.editKotMode && kot.id === this.editKotMode.kot.id,
     );

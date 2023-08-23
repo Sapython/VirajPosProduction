@@ -87,6 +87,7 @@ export function finalizeAndPrintKot(this: Bill) {
   if (this.table.status == 'available'){
     this.table.attachBill(this);
   }
+
   if (this.editKotMode != null) {
     // console.log(
     //   'Old kot',
@@ -108,6 +109,17 @@ export function finalizeAndPrintKot(this: Bill) {
       this.editKotMode.newKot.forEach((product) => {
         product.cancelled = false;
       });
+      let incomplete = this.kots[kotIndex].products.some((product) => {
+        if (product.itemType == 'combo') {
+          return product.incomplete;
+        } else {
+          return false;
+        }
+      });
+      if (incomplete){
+        alert("Please complete the combo before finalizing the kot");
+        return
+      }
       this.kots[kotIndex].products = [
         ...cancelledProducts,
         ...this.editKotMode.newKot,
@@ -126,6 +138,17 @@ export function finalizeAndPrintKot(this: Bill) {
     //  console.log('info =>', activeKot);
 
     if (activeKot) {
+      let incomplete = activeKot.products.some((product) => {
+        if (product.itemType == 'combo') {
+          return product.incomplete;
+        } else {
+          return false;
+        }
+      });
+      if (incomplete){
+        alert("Please complete the combo before finalizing the kot");
+        return
+      }
       activeKot.id = this.dataProvider.kotToken.toString();
       this.dataProvider.kotToken++;
       this.analyticsService.addKitchenToken();

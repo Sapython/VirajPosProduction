@@ -258,7 +258,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
         return;
       }
       let totalQuantity = category.selectedProducts.reduce(
-        (a, b) => a + (b.quantity || 1),
+        (a, b) => a + b.quantity,
         0,
       );
       if (
@@ -332,7 +332,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
       }
       allProducts = allProducts.concat(category.selectedProducts);
     });
-    // console.log("FINAL allProducts",allProducts);
+    console.log("FINAL allProducts",allProducts);
     // check individual product for tax and if the tax.mode is inclusive then add the applicable tax to totalTaxValue or if the tax.mode is exclusive then decrease the price of product by tax rate and add the applicableValue to totalTaxValue
     let finalAdditionalTax: number = 0;
     let finalTaxes: Tax[] = [];
@@ -363,7 +363,6 @@ export class ApplicableCombo implements ApplicableComboConstructor {
         product.taxes.forEach((tax) => {
           // console.log("Combo tax id",tax.id);
           if (tax.type === 'percentage') {
-            // console.log("Total amount",totalAmount);
             let taxAmount = (totalAmount * tax.cost) / 100;
             applicableTax += taxAmount; // applicableTax = applicableTax + taxAmount
             // find tax in finalTaxes and add the taxAmount to it
@@ -420,7 +419,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
             }
           }
         });
-        // console.log("TAX TYPE",inclusive,totalAmount);
+        console.log("TAX TYPE",inclusive,totalAmount,applicableTax);
         if (inclusive) {
           product.untaxedValue = totalAmount - applicableTax;
           finalAdditionalTax += additionalTax;
@@ -453,7 +452,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
       this.untaxedValue += product.untaxedValue;
       // console.log('PRD', product.untaxedValue, product.price, product.quantity);
       if (!product.lineDiscounted) {
-        this.price = this.price + product.price * product.quantity;
+        this.price = this.price + (product.price * product.quantity);
       }
     });
     this.selectedProductsIds = allProducts.map((p) => p.id);
@@ -466,7 +465,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
     if (this.bill && this.bill.calculateBill) {
       this.bill.calculateBill();
     }
-    // console.log('untaxedValue', this.untaxedValue, 'finalTaxes', finalTaxes);
+    console.log('untaxedValue', this.untaxedValue, 'finalTaxes', finalTaxes, "incomplete",this.incomplete);
   }
 
   checkDateIsAvailable(combo: Combo, date: Date) {

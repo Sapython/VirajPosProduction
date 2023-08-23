@@ -22,7 +22,7 @@ export class Table implements TableConstructor {
   maxOccupancy: string;
   billPrice: number;
   order: number;
-  completed?: boolean;
+  completed: boolean = false;
   name: string;
   occupiedStart: Timestamp;
   status: 'available' | 'occupied';
@@ -162,7 +162,7 @@ export class Table implements TableConstructor {
     this.timeSpent = '';
     this.minutes = 0;
     this.status = 'available';
-    if (this.type == 'token') {
+    if (this.type == 'token' || this.type == 'online') {
       // mark table complete
       this.completed = true;
     }

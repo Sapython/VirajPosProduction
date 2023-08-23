@@ -101,6 +101,50 @@
       </td>
     </tr>
   </ng-container>
+  <ng-container *ngIf="
+    printableBillData.appliedCharges?.containerCharge ||
+    printableBillData.appliedCharges?.tip ||
+    printableBillData.appliedCharges?.serviceCharge ||
+    printableBillData.appliedCharges?.deliveryCharge
+  ">
+    <tr>
+      <td colspan="2"><hr /></td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <table>
+          <thead>
+            <tr>
+              <th>Charge</th>
+              <th>Cost</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let charge of printableBillData.appliedCharges | keyvalue">
+              <ng-container *ngIf="charge.value">
+                <td *ngIf="charge.key == 'deliveryCharge'">Delivery Charge</td>
+                <td *ngIf="charge.key == 'containerCharge'">Container Charge</td>
+                <td *ngIf="charge.key == 'serviceCharge'">Service Charge</td>
+                <td *ngIf="charge.key == 'tip'">Tip</td>
+                <td>{{ charge.value | currency: "INR" }}</td>
+              </ng-container>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </ng-container>
+  <ng-container *ngIf="printableBillData.discounts.length > 0 || printableBillData.currentLoyalty?.totalToBeRedeemedPoints > 0">
+    <tr>
+      <td colspan="2"><hr /></td>
+    </tr>
+    <tr>
+      <td>Subtotal</td>
+      <td class="big">
+        {{ printableBillData.postChargesSubTotal | currency: "INR" }}
+      </td>
+    </tr>
+  </ng-container>
   <ng-container *ngIf="printableBillData.taxes.length > 0">
     <tr>
       <td colspan="2"><hr /></td>

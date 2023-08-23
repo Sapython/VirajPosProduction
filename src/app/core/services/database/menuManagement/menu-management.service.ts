@@ -473,6 +473,12 @@ export class MenuManagementService {
       }
     } else {
       await this.getMenu(menu.id);
+      let localMenu = await this.getLocalMenu(menu.id);
+      if (localMenu?.products) {
+        return localMenu.products;
+      } else {
+        throw new Error('No products found');
+      }
     }
   }
 

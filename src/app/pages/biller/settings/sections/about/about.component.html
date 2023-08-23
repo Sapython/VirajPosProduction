@@ -31,6 +31,17 @@
   </div>
   <div class="item">
     <p>
+      <mat-icon>login</mat-icon>
+      Primary Outlet
+    </p>
+    <mat-select (openedChange)="setPrimaryOutlet()" class="primarySelector" placeholder="Select Primary Outlet" [(ngModel)]="this.dataProvider.primaryOutletId">
+      <mat-option *ngFor="let item of this.dataProvider.currentUser.business" [value]="item.businessId">
+        {{item.name}}
+      </mat-option>
+    </mat-select>
+  </div>
+  <div class="item">
+    <p>
       <mat-icon>date_range</mat-icon>
       Last Updated
     </p>

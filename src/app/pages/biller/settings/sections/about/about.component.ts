@@ -27,4 +27,8 @@ export class AboutComponent {
       res.close();
     });
   }
+
+  setPrimaryOutlet(){
+    localStorage.setItem('primaryOutlet', this.dataProvider.primaryOutletId);
+  }
 }

@@ -74,14 +74,11 @@
         </mat-select>
       </div>
     </span>
-    <!-- <div class="close">
-            <viraj-button [extraLarge]="true" type="icon" (vclick)="this.dialogRef.close()"><i class="ri-close-fill"></i></viraj-button>
-        </div> -->
   </div>
   <div class="actionsRow" *ngIf="this.dataProvider.billingMode == 'dineIn'">
     <ng-container *ngIf="this.moveKotMode || this.editMode">
       <button (click)="moveKotMode = false; moveKotSelectedTable = undefined; this.editMode = false">
-        <i class="ri-arrow-left-line"></i> Cancel
+        <i class="ri-arrow-left-line"></i> Back
       </button>
       <p *ngIf="this.moveKotMode">Please select a table to continue</p>
       <p *ngIf="this.editMode">Press back to go to normal mode</p>
@@ -238,8 +235,8 @@
             activated: moveKotMode && moveKotSelectedTable.id == table.id
           }"
           matRipple
-          (click)="moveKotMode ? moveKotItem(table) : openTable(table, $event)"
           *ngIf="!table.completed"
+          (click)="moveKotMode ? moveKotItem(table) : openTable(table, $event)"
         >
           <p class="name">Token {{ table.name }}</p>
           <p
@@ -304,6 +301,7 @@
             activated: moveKotMode && moveKotSelectedTable.id == table.id
           }"
           matRipple
+          *ngIf="!table.completed"
           (click)="moveKotMode ? moveKotItem(table) : openTable(table, $event)"
         >
           <p class="name">Token {{ table.name }}</p>

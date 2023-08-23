@@ -153,7 +153,49 @@ export class customEncoder extends EscPosEncoder {
       discountsColumns,
     ).hr();
   }
+  charges(charges: {tip: number, serviceCharge: number, deliveryCharge: number, containerCharge: number}) {
+    let allSum = charges.tip + charges.serviceCharge + charges.deliveryCharge + charges.containerCharge;
+    // discounts is of type {name: string, value: number, type: string, rate: number}[]
+    if (allSum == 0) return this;
+    this.align('center').h2('Charges', 'left');
+    let chargesColumns = [['Charge', 'Cost']];
+    if(charges.tip){
+      chargesColumns.push([
+        'Tip',
+        'Rs.' + charges.tip.toString(),
+      ]);
+    }
+    if(charges.serviceCharge){
+      chargesColumns.push([
+        'Service Charge',
+        'Rs.' + charges.serviceCharge.toString(),
+      ]);
+    }
+    if(charges.deliveryCharge){
+      chargesColumns.push([
+        'Delivery Charge',
+        'Rs.' + charges.deliveryCharge.toString(),
+      ]);
+    }
+    if(charges.containerCharge){
+      chargesColumns.push([
+        'Container Charge',
+        'Rs.' + charges.containerCharge.toString(),
+      ]);
+    }
+    return this.table(
+      [
+        { width: 20, marginRight: 2, align: 'left' },
+        { width: 10, marginRight: 2, align: 'center' },
+        { width: 10, align: 'right' },
+      ],
+      chargesColumns,
+    ).hr();
+  }
   loyalty(loyalty: billLoyalty) {
+    if (loyalty.totalToBeRedeemedPoints == 0){
+      return this;
+    }
     // taxes is of type {name: string, value: number, rate: number}[]
     this.align('center').h2('Loyalty', 'left');
     let taxesColumns = [
@@ -230,5 +272,25 @@ export class customEncoder extends EscPosEncoder {
     } else {
       return this
     }
+  }
+  postChargesSubtotal(billdata,charges: {tip: number, serviceCharge: number, deliveryCharge: number, containerCharge: number}){
+    let allSum = charges.tip + charges.serviceCharge + charges.deliveryCharge + charges.containerCharge;
+    if (allSum == 0){
+      return this;
+    }
+    return this.hr()
+    .table(
+      [{ marginRight: 2, align: 'left' }, { align: 'right' }],
+      [
+        [
+          '',
+          (encoder: any) =>
+            encoder
+              .bold()
+              .text('Subtotal: Rs.' + billdata.postChargesSubTotal)
+              .bold(),
+        ],
+      ],
+    )
   }
 }

@@ -1,0 +1,83 @@
+<section>
+  <div class="heading">
+    <h3>Set Charges</h3>
+    <button
+      mat-icon-button
+      (click)="
+        dialogRef.close({
+          tip: 0,
+          serviceCharge: 0,
+          deliveryCharge: 0,
+          containerCharge: 0
+        })
+      "
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <form
+    [formGroup]="chargesForm"
+    (ngSubmit)="dialogRef.close(this.chargesForm.value)"
+  >
+    <div class="body">
+      <input
+        *ngIf="
+          this.dataProvider.customCharges[
+            this.dataProvider.currentBill?.mode
+          ].includes('service')
+        "
+        type="tel"
+        formControlName="serviceCharge"
+        placeholder="Service Charge"
+      />
+      <input
+        *ngIf="
+          this.dataProvider.customCharges[
+            this.dataProvider.currentBill?.mode
+          ].includes('delivery')
+        "
+        type="tel"
+        formControlName="deliveryCharge"
+        placeholder="Service Charge"
+      />
+      <input
+        *ngIf="
+          this.dataProvider.customCharges[
+            this.dataProvider.currentBill?.mode
+          ].includes('container')
+        "
+        type="tel"
+        formControlName="containerCharge"
+        placeholder="Container Charge"
+      />
+      <input
+        *ngIf="
+          this.dataProvider.customCharges[
+            this.dataProvider.currentBill?.mode
+          ].includes('tip')
+        "
+        type="tel"
+        formControlName="tip"
+        placeholder="Tip"
+      />
+    </div>
+    <div class="actions">
+      <button
+        type="button"
+        (click)="
+          dialogRef.close({
+            tip: 0,
+            serviceCharge: 0,
+            deliveryCharge: 0,
+            containerCharge: 0
+          })
+        "
+        mat-stroked-button
+        color="primary"
+      >
+        Cancel
+      </button>
+      <button type="submit" mat-flat-button color="primary">Set Charges</button>
+    </div>
+  </form>
+</section>

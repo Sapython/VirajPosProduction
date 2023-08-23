@@ -129,6 +129,17 @@ export class Bill implements BillConstructor {
   billUpdated: Subject<boolean | void> = new Subject<boolean | void>();
   canPrintKot: boolean = false;
   canBeDiscounted: boolean = true;
+  appliedCharges:{
+    serviceCharge:number,
+    tip:number,
+    deliveryCharge:number,
+    containerCharge:number,
+  } = {
+    serviceCharge:0,
+    tip:0,
+    deliveryCharge:0,
+    containerCharge:0,
+  }
   constructor(
     id: string,
     table: Table,
@@ -183,6 +194,7 @@ export class Bill implements BillConstructor {
     this.billing = {
       subTotal: 0,
       postDiscountSubTotal:0,
+      postChargesSubTotal:0,
       discount: [],
       taxes: [],
       totalTax: 0,

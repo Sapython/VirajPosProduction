@@ -96,6 +96,8 @@ function printableBillGenerator(
       name: bill.customerInfo.name,
       phone: bill.customerInfo.phone,
     },
+    postChargesSubTotal:bill.billing.postChargesSubTotal,
+    appliedCharges:bill.appliedCharges,
     currentLoyalty: bill.currentLoyalty,
     postDiscountSubTotal:bill.billing.postDiscountSubTotal,
     billNoSuffix: dataProvider.billNoSuffix,

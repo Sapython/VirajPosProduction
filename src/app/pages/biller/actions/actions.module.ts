@@ -20,6 +20,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { DialogModule } from '@angular/cdk/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { SetChargesComponent } from './set-charges/set-charges.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     AddDiscountComponent,
     NonChargeableComponent,
     SplitBillComponent,
+    SetChargesComponent,
   ],
   imports: [
     CommonModule,

@@ -148,8 +148,10 @@ export class CustomerService {
       await this.addBillToCustomer(localCustomer.id, bill);
       return updatedCustomerDoc;
     } else {
-      let newCustomerDoc = await this.addCustomer(customer, bill);
-      await this.addBillToCustomer(newCustomerDoc.id, bill);
+      if (customer.phone && customer.phone.length == 10){
+        let newCustomerDoc = await this.addCustomer(customer, bill);
+        await this.addBillToCustomer(newCustomerDoc.id, bill);
+      }
     }
   }
 

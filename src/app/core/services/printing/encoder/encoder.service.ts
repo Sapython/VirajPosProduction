@@ -70,6 +70,8 @@ export class EncoderService {
       .loyalty(billdata.currentLoyalty)
       .discounts(billdata.discounts)
       .postDiscountSubtotal(billdata,billdata.discounts,billdata.currentLoyalty)
+      .charges(billdata.appliedCharges)
+      .postChargesSubtotal(billdata,billdata.appliedCharges)
       .hr()
       .taxes(billdata.taxes)
       .hr(true)

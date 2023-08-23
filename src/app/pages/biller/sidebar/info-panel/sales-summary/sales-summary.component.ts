@@ -40,35 +40,27 @@ export class SalesSummaryComponent implements AfterViewInit {
         {
           data: [this.dine],
           backgroundColor: '#FF6384',
-          borderSkipped: false,
-          borderRadius: Number.MAX_VALUE,
           width: '20px',
           barThickness: this.barThickness,
         },
         {
           data: [this.takeAway],
           backgroundColor: '#36A2EB',
-          borderSkipped: false,
-          borderRadius: Number.MAX_VALUE,
           width: '20px',
           barThickness: this.barThickness,
         },
         {
           data: [this.online],
           backgroundColor: '#FFCE56',
-          borderSkipped: false,
-          borderRadius: Number.MAX_VALUE,
-          width: '20px',
-          barThickness: this.barThickness,
+
+          width: '20px',          barThickness: this.barThickness,
         },
         {
           data: [this.nonChargable],
           backgroundColor: '#4BC0C0',
-          borderSkipped: false,
-          borderRadius: Number.MAX_VALUE,
+
           width: '20px',
-          barThickness: this.barThickness,
-        },
+          barThickness: this.barThickness,        },
       ],
     };
     if (this.myChart) {

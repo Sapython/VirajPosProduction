@@ -107,6 +107,14 @@
             <button
               [disabled]="bill.stage == 'settled'"
               mat-flat-button
+              (click)="addCharges(bill)"
+              color="primary"
+            >
+              Add Charges
+            </button>
+            <button
+              [disabled]="bill.stage == 'settled'"
+              mat-flat-button
               (click)="settleBill(bill)"
               color="primary"
             >

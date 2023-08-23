@@ -50,6 +50,12 @@ export interface BillConstructor {
     phone: string;
     name: string;
   };
+  appliedCharges:{
+    serviceCharge:number,
+    tip:number,
+    deliveryCharge:number,
+    containerCharge:number,
+  };
   currentLoyalty: billLoyalty;
 }
 export interface billLoyalty {
@@ -88,12 +94,19 @@ export interface PrintableBill {
   totalQuantity: number;
   subTotal: number;
   postDiscountSubTotal: number;
+  postChargesSubTotal: number;
   discounts: printableDiscount[];
   taxes: printableTax[];
   grandTotal: number;
   note: string;
   notes: string[];
   currentLoyalty: billLoyalty;
+  appliedCharges:{
+    serviceCharge:number,
+    tip:number,
+    deliveryCharge:number,
+    containerCharge:number,
+  };
 }
 
 export interface printableBillItem {

@@ -44,7 +44,9 @@
           placeholder="Agent Phone"
         />
       </div>
-      <p *ngIf="!this.dataProvider.currentBill.menu.selectedLoyaltyId">You cannot set loyalty because you haven't selected any loyalty setting.</p>
+      <p *ngIf="!this.dataProvider.currentBill.menu.selectedLoyaltyId">
+        You cannot set loyalty because you haven't selected any loyalty setting.
+      </p>
       <ng-container
         *ngIf="
           this.dataProvider.currentBill &&
@@ -56,16 +58,30 @@
         "
       >
         <div class="customerCard">
-          <p>Total Bills: {{this.dataProvider.currentBill.customerInfo?.totalBills  || 'N/A'}}</p>
+          <p>
+            Total Bills:
+            {{
+              this.dataProvider.currentBill.customerInfo?.totalBills || "N/A"
+            }}
+          </p>
           <!-- <p>Last Bill Amount: {{this.dataProvider.currentBill.customerInfo?.lastBillAmount || 'N/A'}}</p> -->
-          <p>Last Bill Date: {{(this.dataProvider.currentBill.customerInfo?.lastBillDate?.toDate() | date:'short')  || 'N/A'}}</p>
+          <p>
+            Last Bill Date:
+            {{
+              (this.dataProvider.currentBill.customerInfo?.lastBillDate?.toDate()
+                | date: "short") || "N/A"
+            }}
+          </p>
         </div>
         <hr />
         <h4>Loyalty Settings</h4>
         <form [formGroup]="loyaltySettingForm" class="loyaltyForm">
           <mat-checkbox formControlName="receiveLoyalty"
-            >Avail New Points <app-helper tooltip="If you check this the customer will receive new points from this bill."></app-helper></mat-checkbox
-          >
+            >Avail New Points
+            <app-helper
+              tooltip="If you check this the customer will receive new points from this bill."
+            ></app-helper
+          ></mat-checkbox>
           <div
             class="redeem"
             *ngIf="this.dataProvider.currentBill?.customerInfo?.loyaltyPoints"
@@ -73,8 +89,11 @@
             <mat-checkbox
               formControlName="redeemLoyalty"
               *ngIf="!this.loyaltySettingForm.value.redeemLoyalty"
-              >Redeem Loyalty <app-helper tooltip="If you check this then you will be able to use the points of customer."></app-helper></mat-checkbox
-            >
+              >Redeem Loyalty
+              <app-helper
+                tooltip="If you check this then you will be able to use the points of customer."
+              ></app-helper
+            ></mat-checkbox>
             <mat-checkbox
               formControlName="redeemLoyalty"
               *ngIf="this.loyaltySettingForm.value.redeemLoyalty"
@@ -99,7 +118,53 @@
             </mat-checkbox>
           </div>
         </form>
+        <hr />
       </ng-container>
+      <h4>Charges Settings</h4>
+      <form [formGroup]="chargesForm">
+        <div>
+          <input
+            *ngIf="
+              this.dataProvider.customCharges[
+                this.dataProvider.currentBill?.mode
+              ].includes('service')
+            "
+            type="number"
+            formControlName="serviceCharge"
+            placeholder="Service Charge"
+          />
+          <input
+            *ngIf="
+              this.dataProvider.customCharges[
+                this.dataProvider.currentBill?.mode
+              ].includes('delivery')
+            "
+            type="number"
+            formControlName="deliveryCharge"
+            placeholder="Service Charge"
+          />
+          <input
+            *ngIf="
+              this.dataProvider.customCharges[
+                this.dataProvider.currentBill?.mode
+              ].includes('container')
+            "
+            type="number"
+            formControlName="containerCharge"
+            placeholder="Container Charge"
+          />
+          <input
+            *ngIf="
+              this.dataProvider.customCharges[
+                this.dataProvider.currentBill?.mode
+              ].includes('tip')
+            "
+            type="number"
+            formControlName="tip"
+            placeholder="Tip"
+          />
+        </div>
+      </form>
       <button
         *ngIf="this.isDialog"
         type="submit"

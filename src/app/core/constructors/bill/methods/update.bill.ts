@@ -29,6 +29,7 @@ export function firebaseUpdate(this: Bill) {
         // this.table = bill['table'];
         this.billing = bill['billing'];
         this.instruction = bill['instruction'];
+        this.appliedCharges = bill['appliedCharges'];
         this.user = bill['user'];
         this.nonChargeableDetail = bill['nonChargeableDetail'];
         this.billingMode = bill['billingMode'];
@@ -110,6 +111,7 @@ export function toObject(this: Bill) {
     instruction: this.instruction || null,
     settlement: this.settlement || null,
     cancelledReason: this.cancelledReason || null,
+    appliedCharges:this.appliedCharges,
     billingMode: this.billingMode,
     nonChargeableDetail: this.nonChargeableDetail || null,
     customerInfo: {

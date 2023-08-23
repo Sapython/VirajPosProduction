@@ -54,7 +54,28 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   }, 0);
   // console.log('totalApplicableTax',this.billing.taxes,finalTaxes, totalApplicableTax,finalAdditionalTax);
   this.billing.postDiscountSubTotal = this.billing.subTotal - (this.currentLoyalty.totalToBeRedeemedCost + applicableDiscount);
-  this.billing.grandTotal = Math.ceil(this.billing.postDiscountSubTotal + totalApplicableTax);
+  this.billing.postChargesSubTotal = this.billing.postDiscountSubTotal;
+  if (!this.appliedCharges){
+    this.appliedCharges = {
+      containerCharge: 0,
+      deliveryCharge: 0,
+      tip: 0,
+      serviceCharge: 0,
+    }
+  }
+  if(this.appliedCharges.containerCharge){
+    this.billing.postChargesSubTotal = this.billing.postDiscountSubTotal + this.appliedCharges.containerCharge;
+  }
+  if(this.appliedCharges.deliveryCharge){
+    this.billing.postChargesSubTotal = this.billing.postDiscountSubTotal + this.appliedCharges.deliveryCharge;
+  }
+  if(this.appliedCharges.tip){
+    this.billing.postChargesSubTotal = this.billing.postDiscountSubTotal + this.appliedCharges.tip;
+  }
+  if(this.appliedCharges.serviceCharge){
+    this.billing.postChargesSubTotal = this.billing.postDiscountSubTotal + this.appliedCharges.serviceCharge;
+  }
+  this.billing.grandTotal = Math.ceil(this.billing.postChargesSubTotal + totalApplicableTax);
   if (this.billingMode === 'nonChargeable') {
     // this.billing.subTotal = 0;
     this.billing.grandTotal = 0;
@@ -117,7 +138,12 @@ export function calculateProducts(kots: (Kot | KotConstructor)[]) {
       product.taxes.forEach((tax) => {
         if (tax.type === 'percentage') {
           // console.log("Total amount",totalAmount);
-          let taxAmount = (totalAmount * tax.cost) / 100;
+          let taxFactor = 100;
+          // if (tax.nature == 'inclusive'){
+          //   taxFactor = 100 + tax.cost;
+          // }
+          let taxAmount = (totalAmount / taxFactor) * tax.cost;
+          console.log("TAX AMT:",taxAmount,product.name," nature:",tax.nature,' cost:',tax.cost);
           applicableTax += taxAmount; // applicableTax = applicableTax + taxAmount
           // find tax in finalTaxes and add the taxAmount to it
           let index = finalTaxes.findIndex((item: Tax) => item.id === tax.id);

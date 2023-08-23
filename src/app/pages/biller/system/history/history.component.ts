@@ -138,7 +138,7 @@ export class HistoryComponent {
       .then((bills) => {
         //  console.log("bills",bills.docs);
         this.bills.sort((a,b)=>{
-          return (b.createdDate?.toDate().getTime() || 0) - (a.createdDate?.toDate().getTime() || 0);
+          return (a.createdDate?.toDate().getTime() || 0) - (b.createdDate?.toDate().getTime() || 0);
         });
         this.bills = bills.docs.map((doc) => {
           let allProducts = doc.data().kots.reduce((acc, kot) => {
@@ -955,7 +955,7 @@ export class HistoryComponent {
             bill.createdDate.toDate().toLocaleString(),
             bill.mode,
             bill.table,
-            bill.billNo,
+            bill.billNo || 'Unsettled',
             bill.orderNo,
             bill.billing.grandTotal,
           ];
@@ -992,7 +992,7 @@ export class HistoryComponent {
         ',' +
         bill.table +
         ',' +
-        bill.billNo +
+        (bill.billNo || 'Unsettled') +
         ',' +
         bill.orderNo +
         ',' +

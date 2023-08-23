@@ -26,6 +26,7 @@ import { PrinterService } from '../../../../core/services/printing/printer/print
 import { AnalyticsService } from '../../../../core/services/database/analytics/analytics.service';
 import { ApplicableCombo } from '../../../../core/constructors/comboKot/comboKot';
 import { Product } from '../../../../types/product.structure';
+import { SetChargesComponent } from '../set-charges/set-charges.component';
 
 @Component({
   selector: 'app-split-bill',
@@ -133,7 +134,8 @@ export class SplitBillComponent {
       subTotal: 0,
       taxes: [],
       totalTax: 0,
-      postDiscountSubTotal:0
+      postDiscountSubTotal:0,
+      postChargesSubTotal:0,
     };
     console.log('kots', kots);
     // convert extendedKotConstructor to KotConstructor
@@ -167,6 +169,12 @@ export class SplitBillComponent {
         deliveryName: this.bill.customerInfo.deliveryName || '',
         deliveryPhone: this.bill.customerInfo.deliveryPhone || '',
         gst: this.bill.customerInfo.gst || '',
+      },
+      appliedCharges:{
+        tip:0,
+        serviceCharge:0,
+        deliveryCharge:0,
+        containerCharge:0,
       },
       orderNo: this.bill.orderNo,
       optionalTax: this.bill.optionalTax,
@@ -330,6 +338,14 @@ export class SplitBillComponent {
     return Math.round((amount + Number.EPSILON) * 100) / 100;
   }
 
+  addCharges(bill:BillConstructor|Bill){
+    const dialog = this.dialog.open(SetChargesComponent);
+    dialog.closed.subscribe((result: any) => {
+      bill.appliedCharges = result;
+      calculateBill(bill,this.dataProvider);
+    })
+  }
+
 
 }
 
@@ -390,6 +406,7 @@ export function calculateBill(
     allProducts,
     dataProvider,
   );
+
 }
 interface extendedKotConstructor extends KotConstructor {
   items:(extendedProduct|extendedApplicableCombo)[];

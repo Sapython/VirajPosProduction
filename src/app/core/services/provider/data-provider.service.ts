@@ -271,8 +271,18 @@ export class DataProvider {
   public settingsChanged: Subject<any> = new Subject<any>();
   public comboSelected: Subject<Combo[]> = new Subject<Combo[]>();
   public productPanelState: ReplaySubject<'products' | 'combos'> =
-    new ReplaySubject<'products' | 'combos'>(1);
+  new ReplaySubject<'products' | 'combos'>(1);
   public productPanelStateValue: 'products' | 'combos' = 'products';
+  public primaryOutletId: string = '';
+  public customCharges:{
+    dineIn:('delivery'|'tip'|'container'|'service')[],
+    takeaway:('delivery'|'tip'|'container'|'service')[],
+    online:('delivery'|'tip'|'container'|'service')[],
+  } = {
+    dineIn:[],
+    takeaway:[],
+    online:[],
+  }
   public offline: boolean = false;
   public updating: boolean = false;
   public backOnline: Subject<boolean> = new Subject<boolean>();

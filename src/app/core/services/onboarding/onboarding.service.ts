@@ -644,6 +644,7 @@ export class OnboardingService {
         this.dataProvider.kotRePrintable = res['kotRePrintable'] || false;
         // this.dataProvider.password = res['password'];
         this.dataProvider.multipleDiscount = res['multipleDiscount'] || false;
+        this.dataProvider.customCharges = res['customCharges'] || {dineIn:[],takeaway:[],online:[]};
         this.dataProvider.activeModes = res['modes'];
         this.dataProvider.dineInMenu = res['dineInMenu'];
         this.dataProvider.takeawayMenu = res['takeawayMenu'];

@@ -51,7 +51,16 @@
       p {
         margin: 0px;
       }
-      input {
+      p.selector{
+        display: flex;
+        align-items: center;
+        gap:10px;
+        white-space: nowrap;
+        mat-select{
+          max-width: 100px;
+        }
+      }
+      input, p.selector{
         border-radius: 5px;
         padding: 5px;
         border: 2px solid #eee;

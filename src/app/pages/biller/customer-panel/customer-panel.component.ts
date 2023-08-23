@@ -65,6 +65,12 @@ export class CustomerPanelComponent implements OnInit {
       Validators.max(this.dataProvider.currentBill?.customerInfo.loyaltyPoints),
     ]),
   });
+  chargesForm:FormGroup = new FormGroup({
+    deliveryCharge:new FormControl(0),
+    tip:new FormControl(0),
+    serviceCharge:new FormControl(0),
+    containerCharge:new FormControl(0),
+  })
   @Input() padding: boolean = true;
   @Input() orderFrequency: number = 0;
   @Input() lastMonth: string = 'Jan';
@@ -86,6 +92,7 @@ export class CustomerPanelComponent implements OnInit {
   ) {
     if (this.dataProvider.currentBill) {
       this.loyaltySettingForm.patchValue(this.dataProvider.currentBill.currentLoyalty);
+      this.chargesForm.patchValue(this.dataProvider.currentBill.appliedCharges);
       this.customerInfoForm.enable();
       this.loyaltySettingForm.enable();
     } else {
@@ -125,10 +132,13 @@ export class CustomerPanelComponent implements OnInit {
               this.dataProvider.currentBill?.customerInfo.deliveryPhone,
           });
           this.customerInfoForm.enable();
+          this.chargesForm.patchValue(this.dataProvider.currentBill.appliedCharges);
         } else {
           this.customerInfoForm.disable();
         }
+        this.setChargesControl();
       });
+      this.setChargesControl();
     });
     this.dataProvider.customersUpdated.subscribe(() => {
       this.numberFuseInstance.setCollection(this.dataProvider.customers);
@@ -155,6 +165,15 @@ export class CustomerPanelComponent implements OnInit {
       };
       this.dataProvider.currentBill.updated.next();
     });
+
+    this.chargesForm.valueChanges.pipe(debounceTime(1000)).subscribe((value)=>{
+      if(this.dataProvider?.currentBill){
+        this.dataProvider.currentBill.appliedCharges = value;
+        this.dataProvider.currentBill.updated.next();
+        console.log("Set charges",this.dataProvider?.currentBill.appliedCharges);
+      }
+    })
+
   }
 
   selectCustomer(event: any) {
@@ -194,6 +213,7 @@ export class CustomerPanelComponent implements OnInit {
   }
 
   submit() {
+    this.dataProvider.currentBill.appliedCharges = this.chargesForm.value;
     this.dataProvider.currentBill?.setCustomerInfo(this.customerInfoForm.value);
     if (this.isDialog) {
       // inject dialofRef
@@ -240,6 +260,25 @@ export class CustomerPanelComponent implements OnInit {
             this.dataProvider.currentBill.currentLoyalty.totalLoyaltyPoints) *
           Number(value);
       }
+    }
+  }
+
+  setChargesControl(){
+    if(this.dataProvider.currentBill.mode == 'dineIn'){
+      // if (this.dataProvider.customCharges.dineIn.includes('delivery')) this.chargesForm.controls.deliveryCharge.setValidators();
+      // if (this.dataProvider.customCharges.dineIn.includes('tip')) this.chargesForm.controls.tip.setValidators();
+      // if (this.dataProvider.customCharges.dineIn.includes('service')) this.chargesForm.controls.serviceCharge.setValidators();
+      // if (this.dataProvider.customCharges.dineIn.includes('container')) this.chargesForm.controls.containerCharge.setValidators();
+    } else if(this.dataProvider.currentBill.mode == 'takeaway'){
+      // if (this.dataProvider.customCharges.takeaway.includes('delivery')) this.chargesForm.controls.deliveryCharge.setValidators();
+      // if (this.dataProvider.customCharges.takeaway.includes('tip')) this.chargesForm.controls.tip.setValidators();
+      // if (this.dataProvider.customCharges.takeaway.includes('service')) this.chargesForm.controls.serviceCharge.setValidators();
+      // if (this.dataProvider.customCharges.takeaway.includes('container')) this.chargesForm.controls.containerCharge.setValidators();
+    } else if(this.dataProvider.currentBill.mode == 'online'){
+      // if (this.dataProvider.customCharges.online.includes('delivery')) this.chargesForm.controls.deliveryCharge.setValidators();
+      // if (this.dataProvider.customCharges.online.includes('tip')) this.chargesForm.controls.tip.setValidators();
+      // if (this.dataProvider.customCharges.online.includes('service')) this.chargesForm.controls.serviceCharge.setValidators();
+      // if (this.dataProvider.customCharges.online.includes('container')) this.chargesForm.controls.containerCharge.setValidators();
     }
   }
 }

@@ -84,24 +84,6 @@
       ></mat-slide-toggle>
     </div>
     <div class="item">
-      <p>Enable <strong>sweets mode</strong>. To sell any item by either gram and price.</p>
-      <mat-slide-toggle
-        [(ngModel)]="dataProvider.sweetsMode"
-        (change)="
-          updateSettings({ sweetsMode: dataProvider.sweetsMode })
-        "
-      ></mat-slide-toggle>
-    </div>
-    <div class="item">
-      <p>Enable <strong>re-print</strong> kot option in manage kot panel.</p>
-      <mat-slide-toggle
-        [(ngModel)]="dataProvider.kotRePrintable"
-        (change)="
-          updateSettings({ kotRePrintable: dataProvider.kotRePrintable })
-        "
-      ></mat-slide-toggle>
-    </div>
-    <div class="item">
       <p>Enable <strong>smart mode</strong> to make your work efficient</p>
       <mat-slide-toggle
         [(ngModel)]="dataProvider.smartMode"

@@ -214,7 +214,7 @@ export class TableComponent implements OnInit {
       this.dataProvider.takeawayToken,
     );
     let tableData = await this.tableService.getTablePromise(this.dataProvider.takeawayToken.toString(),'tokens');
-    if(!tableData.data() || tableData.data()['status']!='available'){
+    if(!tableData.data() ||( tableData.data()['status']!='available' && tableData.data()['status']==false)){
       this.dataProvider.takeawayToken++;
       this.analyticsService.addTakeawayToken();
     }

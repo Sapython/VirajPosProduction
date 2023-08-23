@@ -112,10 +112,11 @@ export class ActionsComponent {
   }
 
   async finalizeBill() {
+    let elevateReq = await this.userManagementService.authenticateAction([
+      'finalizeBill'
+    ])
     if (
-      await this.userManagementService.authenticateAction([
-        'finalizeBill'
-      ])
+      elevateReq.status === true
     ) {
       if (this.dataProvider.currentBill) {
         this.dataProvider.currentBill.finalize();
@@ -124,11 +125,10 @@ export class ActionsComponent {
   }
 
   async settleBill() {
-    if (
-      await this.userManagementService.authenticateAction([
-        'settleBill',
-      ])
-    ) {
+    let elevateReq = await this.userManagementService.authenticateAction([
+      'settleBill',
+    ])
+    if (elevateReq.status === true) {
       if (this.dataProvider.currentBill) {
         let dialog = this.dialog.open(SettleComponent, {
           data: this.dataProvider.currentBill.billing.grandTotal
@@ -141,6 +141,7 @@ export class ActionsComponent {
             result.settling &&
             result.paymentMethods
           ) {
+            this.dataProvider.currentBill.settlementElevatedUser = elevateReq.username;
             this.dataProvider.currentBill.settle(
               result.paymentMethods,
               'internal',
@@ -163,23 +164,24 @@ export class ActionsComponent {
   }
 
   async splitAndSettle() {
-    if (
-      await this.userManagementService.authenticateAction([
-        'splitBill'
-      ])
-    ) {
+    let elevatedReq = await this.userManagementService.authenticateAction([
+      'splitBill'
+    ])
+    if (elevatedReq.status === true) {
       this.dialog.open(SplitBillComponent, {
-        data: this.dataProvider.currentBill,
+        data: {
+          bill:this.dataProvider.currentBill,
+          elevatedUser: elevatedReq.username,
+        },
       });
     }
   }
 
   async addDiscount() {
-    if (
-      await this.userManagementService.authenticateAction([
-        'applyDiscount'
-      ])
-    ) {
+    let elevateReq = await this.userManagementService.authenticateAction([
+      'applyDiscount'
+    ])
+    if (elevateReq.status === true) {
       const dialog = this.dialog.open(AddDiscountComponent, {
         data: this.dataProvider.currentBill,
       });
@@ -187,6 +189,12 @@ export class ActionsComponent {
         //  console.log("Result",result);
         if (typeof result == 'object' && this.dataProvider.currentBill) {
           //  console.log(result);
+          result.forEach(element => {
+            element.appliedBy = {
+              user:this.dataProvider.currentUser.username,
+              elevatedUser:elevateReq.username
+            }
+          });
           this.dataProvider.currentBill.billing.discount = result;
           //  console.log("Applied discount",this.dataProvider.currentBill.billing.discount);
           this.dataProvider.currentBill.calculateBill();
@@ -202,11 +210,10 @@ export class ActionsComponent {
 
   async nonChargeable(event: any) {
     //  console.log(event);
-    if (
-      await this.userManagementService.authenticateAction([
-        'setNonChargeable'
-      ])
-    ) {
+    let elevateReq = await this.userManagementService.authenticateAction([
+      'setNonChargeable'
+    ]);
+    if (elevateReq.status === true) {
       if (this.dataProvider.currentBill && event.checked) {
         const dialog = this.dialog.open(NonChargeableComponent);
         dialog.closed.subscribe((result: any) => {
@@ -219,6 +226,11 @@ export class ActionsComponent {
               result.name || '',
               result.phone || '',
               result.reason || '',
+              {
+                access: this.dataProvider.currentBusinessUser.accessType=='role' ? this.dataProvider.currentBusinessUser.role : 'custom',
+                username: this.dataProvider.currentBusinessUser.username,
+              },
+              elevateReq.username
             );
           }
         });
@@ -259,14 +271,13 @@ export class ActionsComponent {
   }
 
   async splitBill() {
-    if (
-      await this.userManagementService.authenticateAction([
-        'splitBill'
-      ])
-    ) {
+    let elevatedReq = await this.userManagementService.authenticateAction([
+      'splitBill'
+    ])
+    if (elevatedReq.status === true) {
       if (this.dataProvider.currentBill) {
         const dialog = this.dialog.open(SplitBillComponent, {
-          data: this.dataProvider.currentBill,
+          data: {bill:this.dataProvider.currentBill,elevatedUser:elevatedReq.username},
         });
         // this.dataProvider.currentBill.splitBill()
       }

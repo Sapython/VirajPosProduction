@@ -15,8 +15,9 @@ export async function addProduct(
     }
   }
   if (this.stage == 'finalized') {
+    let elevateReq = await this.userManagementService.authenticateAction(['reactivateBill'])
     if (
-      await this.userManagementService.authenticateAction(['reactivateBill'])
+      elevateReq.status === true
     ) {
       let reactiveReason = await this.dataProvider.prompt(
         'Please enter reason for adding product',
@@ -27,7 +28,7 @@ export async function addProduct(
           type: 'billReactivated',
           message: 'Bill reactivated by ' + this.user.username,
           user: this.user.username,
-          data: { reason: reactiveReason },
+          data: { reason: reactiveReason,elevatedUser:elevateReq },
         });
         this.stage = 'active';
       } else {

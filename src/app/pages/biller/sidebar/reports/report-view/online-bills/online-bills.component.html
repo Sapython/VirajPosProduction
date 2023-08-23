@@ -5,13 +5,17 @@
       <th>Order No</th>
       <th>Bill Amount</th>
       <th>Bill Kots</th>
+      <th>Punched By</th>
       <th>Date-Time</th>
       <th>Settle Date/Time</th>
       <th>Settle By</th>
+      <th>Settle Approved By</th>
       <th>Total Bill Time</th>
       <th>Items</th>
       <th>Discounts</th>
+      <th>Discount Approved By</th>
       <th>NC Detail</th>
+      <th>NC Approved By</th>
       <th>Taxes</th>
     </tr>
   </thead>
@@ -28,7 +32,19 @@
           {{ (bill.billing.grandTotal | currency:'INR') || 'N/A' }}
         </td>
         <td>
-          {{ bill.kots.length > 0 ? joinArray(bill.kots) : 'No Kots' }}
+          <ol>
+            <li *ngFor="let kot of bill.kots" class="noWrap">
+              KOT no:{{kot.id}} - Date:{{kot.createdDate.toDate() | date:'short'}}
+            </li>
+          </ol>
+        </td>
+        <td>
+          <ng-container *ngIf="bill.kots.length > 0">
+            {{bill.kots[0].user.username || 'N/A'}}
+          </ng-container>
+          <ng-container *ngIf="bill.kots.length == 0">
+            N/A
+          </ng-container>
         </td>
         <td>
           {{ bill.createdDate ? (bill.createdDate?.toDate() | date: "short") : 'No Date' }}
@@ -36,8 +52,11 @@
         <td>
           {{ bill.settlement?.time ? (bill.settlement?.time?.toDate() | date: "short") : 'No Date' }}
         </td>
-        <td>
-          {{ bill.settlement?.user ? bill.settlement?.user?.username : 'N/A' }}
+        <td class="noWrap">
+          User: {{ bill.settlement?.user ? bill.settlement?.user?.username : 'N/A' }}
+        </td>
+        <td class="noWrap">
+          Approved By: {{ bill.settlement?.elevatedUser ? bill.settlement?.elevatedUser : 'N/A' }} 
         </td>
         <td>
           {{ bill.totalBillTime ? bill.totalBillTime : 'N/A' }}
@@ -52,11 +71,19 @@
         </td>
         <td class="noWrap">
           <ol *ngIf="bill.billing.discount.length > 0">
-            <li *ngFor="let discount of bill.billing.discount">
+            <li *ngFor="let discount of bill.billing.discount" class="noWrap">
               Value:{{ discount.value }} (Cost: {{ discount.totalAppliedDiscount | currency:'INR' }}),
             </li>
           </ol>
           <p *ngIf="bill.billing.discount.length == 0">No Discounts</p>
+        </td>
+        <td>
+          <ng-container *ngIf="bill.billing.discount.length > 0">
+            {{bill.billing.discount[0].appliedBy.elevatedUser || 'N/A'}}
+          </ng-container>
+          <ng-container *ngIf="bill.billing.discount.length == 0">
+            N/A
+          </ng-container>
         </td>
         <td class="noWrap">
           <ng-container *ngIf="!bill.nonChargeableDetail">N/A</ng-container>
@@ -70,6 +97,7 @@
             <li>User: {{ bill.nonChargeableDetail.user.username }}</li>
           </ol>
         </td>
+        <td>{{bill.nonChargeableDetail?.elevatedUser || 'N/A'}}</td>
         <td class="noWrap">
           <ol *ngIf="bill.billing.taxes.length >0">
             <li *ngFor="let tax of bill.billing.taxes">

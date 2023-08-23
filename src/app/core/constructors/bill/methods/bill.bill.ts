@@ -10,18 +10,22 @@ import {
   DirectPercentDiscount,
 } from '../../../../types/discount.structure';
 import { ApplicableCombo } from '../../comboKot/comboKot';
+import { User } from '../../user/User';
 
 export function setAsNonChargeable(
   this: Bill,
   name: string,
   contact: string,
   reason: string,
+  user: User,
+  elevatedUser:string
 ) {
   this.billingMode = 'nonChargeable';
   this.nonChargeableDetail = {
     reason,
     time: Timestamp.now(),
-    user: this.user,
+    user: user,
+    elevatedUser:elevatedUser,
     phone: contact,
     name,
   };
@@ -189,6 +193,7 @@ export async function settle(
   );
   this.stage = 'settled';
   this.settlement = {
+    elevatedUser:this.settlementElevatedUser,
     payments: payments,
     time: Timestamp.now(),
     user: this.user,

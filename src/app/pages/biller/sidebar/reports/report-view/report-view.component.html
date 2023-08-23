@@ -138,7 +138,9 @@
       ></app-table-wise>
       <app-split-bills *ngIf="dialogData.stage == 'billSplits'">
       </app-split-bills>
-      <div class="loader"></div>
+      <div class="loader" *ngIf="this.reportService.loading">
+        <mat-spinner></mat-spinner>
+      </div>
       <div class="spacer"></div>
     </div>
   </div>

@@ -94,4 +94,13 @@ section.reportViewSection {
       }
     }
   }
+  .loader{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    mat-spinner{
+      display: block;
+      margin:0 auto;
+    }
+  }
 }

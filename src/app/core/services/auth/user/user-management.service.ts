@@ -235,7 +235,7 @@ export class UserManagementService {
     });
   }
 
-  async authenticateAction(requiredProperties: string[]) {
+  async authenticateAction(requiredProperties: string[]):Promise<{status:boolean,username:string}> {
     console.log("Required props",requiredProperties);
     async function elevateAccess(){
       const dialog = this.dialog.open(RequiresPrivilegeComponent);
@@ -261,17 +261,23 @@ export class UserManagementService {
             response.data['status'] == 'success'
           ) {
             this.alertify.presentToast('Access granted.');
-            return true;
+            return {
+              status:true,
+              username:userCredentials.username
+            };
           } else {
             this.alertify.presentToast(
               "You don't have access to this action.",
               'error',
             );
-            return false;
+            return {
+              status:false,
+              username:userCredentials.username
+            };
           }
         } catch (error) {
           this.alertify.presentToast(error.message, 'error');
-          return false;
+          return {status:false,username: userCredentials.username};
         } finally {
           this.dataProvider.loading = false;
         }
@@ -280,7 +286,7 @@ export class UserManagementService {
           "You don't have access to this action.",
           'error',
         );
-        return false;
+        return {status:false,username: userCredentials.username};
       }
     }
 
@@ -293,7 +299,10 @@ export class UserManagementService {
       })
       if(allAllowed){
         console.log("Access granted.");
-        return true;
+        return {
+          status:true,
+          username:this.dataProvider.currentUser.username
+        };
       } else {
         console.log("Elevation required");
         await elevateAccess.call(this);
@@ -307,7 +316,10 @@ export class UserManagementService {
       });
       if(allAllowed){
         console.log("Access granted.");
-        return true;
+        return {
+          status:true,
+          username:this.dataProvider.currentUser.username
+        };
       } else {
         console.log("Elevation required");
         await elevateAccess.call(this);

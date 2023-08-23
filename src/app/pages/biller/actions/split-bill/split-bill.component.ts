@@ -72,7 +72,7 @@ export class SplitBillComponent {
   }
 
   constructor(
-    @Inject(DIALOG_DATA) private bill: Bill,
+    @Inject(DIALOG_DATA) private bill: {bill:Bill,elevatedUser:string},
     public dialogRef: DialogRef,
     private alertify: AlertsAndNotificationsService,
     public dataProvider: DataProvider,
@@ -81,7 +81,7 @@ export class SplitBillComponent {
     private printingService: PrinterService,
     private analyticsService:AnalyticsService
   ) {
-    let kots:any[] = structuredClone(bill.kots.map((kot) => kot.toObject()));
+    let kots:any[] = structuredClone(bill.bill.kots.map((kot) => kot.toObject()));
     this.allKots = kots.map((kot) => {
       return {
         ...kot,
@@ -153,36 +153,37 @@ export class SplitBillComponent {
     console.log('constructed kots: ', kots);
     let billConstructor: BillConstructor = {
       billing: billing,
-      id: this.bill.id,
+      id: this.bill.bill.id,
       kots: kotsConstructed,
-      mode: this.bill.mode,
-      table: this.bill.table,
-      tokens: this.bill.tokens,
-      user: this.bill.user,
-      createdDate: this.bill.createdDate,
+      mode: this.bill.bill.mode,
+      table: this.bill.bill.table,
+      tokens: this.bill.bill.tokens,
+      user: this.bill.bill.user,
+      createdDate: this.bill.bill.createdDate,
       stage: 'active',
-      menu:this.bill.menu,
+      menu:this.bill.bill.menu,
       customerInfo: {
-        name: this.bill.customerInfo.name || '',
-        phone: this.bill.customerInfo.phone || '',
-        address: this.bill.customerInfo.address || '',
-        deliveryName: this.bill.customerInfo.deliveryName || '',
-        deliveryPhone: this.bill.customerInfo.deliveryPhone || '',
-        gst: this.bill.customerInfo.gst || '',
+        name: this.bill.bill.customerInfo.name || '',
+        phone: this.bill.bill.customerInfo.phone || '',
+        address: this.bill.bill.customerInfo.address || '',
+        deliveryName: this.bill.bill.customerInfo.deliveryName || '',
+        deliveryPhone: this.bill.bill.customerInfo.deliveryPhone || '',
+        gst: this.bill.bill.customerInfo.gst || '',
       },
+      settlementElevatedUser:this.bill.elevatedUser,
       appliedCharges:{
         tip:0,
         serviceCharge:0,
         deliveryCharge:0,
         containerCharge:0,
       },
-      orderNo: this.bill.orderNo,
-      optionalTax: this.bill.optionalTax,
-      instruction: this.bill.instruction || '',
-      modifiedAllProducts: this.bill.modifiedAllProducts,
+      orderNo: this.bill.bill.orderNo,
+      optionalTax: this.bill.bill.optionalTax,
+      instruction: this.bill.bill.instruction || '',
+      modifiedAllProducts: this.bill.bill.modifiedAllProducts,
       billSplits: [],
       billReprints: [],
-      billingMode: this.bill.billingMode,
+      billingMode: this.bill.bill.billingMode,
       currentLoyalty: {
         loyaltySettingId: '',
         totalLoyaltyCost: 0,
@@ -251,6 +252,7 @@ export class SplitBillComponent {
             access: this.dataProvider.currentBusinessUser.accessType == 'role' ? this.dataProvider.currentBusinessUser.role : 'custom',
             username: this.dataProvider.currentBusinessUser.username,
           },
+          elevatedUser:this.bill.elevatedUser
         };
         billConstructor.stage = 'settled';
         calculateBill(billConstructor, this.dataProvider);
@@ -290,22 +292,22 @@ export class SplitBillComponent {
           }, index * 1000);
           // console.log("Printing Bill",bill.printableBillData);
           let res = (
-            await this.billService.saveSplittedBill(this.bill.id, bill)
+            await this.billService.saveSplittedBill(this.bill.bill.id, bill)
           ).id;
           //  console.log("Saved splitted bill");
           return res;
         }),
       );
-      this.billService.addActivity(this.bill,{
+      this.billService.addActivity(this.bill.bill,{
         type:'billSplit',
         message:'Bill splitted by '+this.dataProvider.currentBusinessUser.username,
         user:this.dataProvider.currentBusinessUser.username,
         data:{
-          originalBillId:this.bill.id,
+          originalBillId:this.bill.bill.id,
           splittedBillIds:ids
         }
       });
-      this.bill.settle(
+      this.bill.bill.settle(
         this.splittedBills.map((bill) => bill.settlement.payments).flat(),
         'internal',
         {

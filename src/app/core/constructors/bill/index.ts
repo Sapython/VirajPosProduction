@@ -104,13 +104,16 @@ export class Bill implements BillConstructor {
     user: User;
     phone: string;
     name: string;
+    elevatedUser?:string;
   };
   billingMode: 'cash' | 'card' | 'upi' | 'nonChargeable' = 'cash';
+  settlementElevatedUser:string;
   settlement?: {
     payments: Payment[];
     time: Timestamp;
     user: User;
     additionalInfo: any;
+    elevatedUser?:string;
   } = undefined;
   cancelledReason?: {
     reason: string;

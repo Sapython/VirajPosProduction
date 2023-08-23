@@ -32,7 +32,9 @@ export interface BillConstructor {
     time: Timestamp;
     user: UserConstructor;
     additionalInfo: any;
+    elevatedUser?:string;
   };
+  settlementElevatedUser:string;
   instruction?: string;
   customerInfo: CustomerInfo;
   billingMode: 'cash' | 'card' | 'upi' | 'nonChargeable';
@@ -49,6 +51,7 @@ export interface BillConstructor {
     user: UserConstructor;
     phone: string;
     name: string;
+    elevatedUser?:string;
   };
   appliedCharges:{
     serviceCharge:number,

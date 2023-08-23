@@ -143,7 +143,7 @@ export function calculateProducts(kots: (Kot | KotConstructor)[]) {
           //   taxFactor = 100 + tax.cost;
           // }
           let taxAmount = (totalAmount / taxFactor) * tax.cost;
-          console.log("TAX AMT:",taxAmount,product.name," nature:",tax.nature,' cost:',tax.cost);
+          // console.log("TAX AMT:",taxAmount,product.name," nature:",tax.nature,' cost:',tax.cost);
           applicableTax += taxAmount; // applicableTax = applicableTax + taxAmount
           // find tax in finalTaxes and add the taxAmount to it
           let index = finalTaxes.findIndex((item: Tax) => item.id === tax.id);

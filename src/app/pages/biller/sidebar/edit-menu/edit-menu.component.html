@@ -246,9 +246,28 @@
                   this.dataProvider.getAccess('viewCategories')
                 "
               >
-                <span> View Categories </span>
+              <span> My View Category </span>
+                <div
+                  cdkDropList
+                  class="example-list"
+                  (cdkDropListDropped)="mode.reorderViewCategory($event)"
+                >
+                  <app-category-card
+                    cdkDrag
+                    [full]="true"
+                    [hiddenIconVisible]="true"
+                    [hidden]="category.enabled"
+                    *ngFor="let category of mode.viewCategories"
+                    (click)="
+                      mode.selectCategory(category);
+                      mode.currentType = 'recommended'
+                    "
+                    [category]="category"
+                  ></app-category-card>
+                </div>
+                <span> User View Categories </span>
                 <ng-container *ngFor="let user of mode.userWiseViewCategories">
-                  <div class="accordion" [ngClass]="{ open: user.open }">
+                  <div class="accordion" [ngClass]="{ open: user.open }" *ngIf="user.user != this.dataProvider.currentUser.username">
                     <span class="userSpan" (click)="user.open = !user.open">
                       <div class="usr">
                         <img

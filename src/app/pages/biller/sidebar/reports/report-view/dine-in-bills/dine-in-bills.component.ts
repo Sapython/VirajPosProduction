@@ -40,7 +40,7 @@ export class DineInBillsComponent {
     totalAmount:0,
     totalDiscount:0,
     totalTax:0,
-  }
+  };
   loading: boolean = true;
   joinArray(bill: KotConstructor[]) {
     // join to form a string of ids with comma

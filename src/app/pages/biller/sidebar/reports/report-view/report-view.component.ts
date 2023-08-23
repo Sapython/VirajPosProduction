@@ -1,4 +1,4 @@
-import { DIALOG_DATA } from '@angular/cdk/dialog';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import {
   AfterViewInit,
   Component,
@@ -18,6 +18,7 @@ import { ReportService } from '../report.service';
 })
 export class ReportViewComponent implements AfterViewInit {
   loading: boolean = false;
+  today:Date = new Date();
   constructor(
     @Inject(DIALOG_DATA)
     public dialogData: {
@@ -47,6 +48,7 @@ export class ReportViewComponent implements AfterViewInit {
       data: any;
     },
     public reportService: ReportService,
+    public dialogRef:DialogRef
   ) {}
 
   noFuture = (d: Date | null): boolean => {
@@ -64,5 +66,17 @@ export class ReportViewComponent implements AfterViewInit {
   change(){
     console.log("changed");
     this.reportService.refetchConsolidated.next()
+  }
+
+  get getDate() {
+    // if start date and end date is same as today then return today or else return date in this format From: date1 to date2
+    const today = new Date();
+    if (
+      this.reportService.dateRangeFormGroup.value.startDate.getDate() === today.getDate() &&
+      this.reportService.dateRangeFormGroup.value.endDate.getDate() === today.getDate()
+    ) {
+      return 'Today';
+    }
+    return `From: ${this.reportService.dateRangeFormGroup.value.startDate.toLocaleDateString()} to ${this.reportService.dateRangeFormGroup.value.endDate.toLocaleDateString()}`;
   }
 }

@@ -135,6 +135,7 @@ export class ModeConfig {
   discountSearchControl: string = '';
   selectedLoyaltyId: string = '';
   loadedAllData:Subject<void> = new Subject<void>();
+  currentUserViewCategory:Category|undefined;
   constructor(
     name: string,
     type: 'dineIn' | 'takeaway' | 'online',

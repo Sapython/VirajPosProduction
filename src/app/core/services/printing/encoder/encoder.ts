@@ -61,7 +61,7 @@ export class customEncoder extends EscPosEncoder {
         (index + 1).toString() + '. ' + product.name,
         product.quantity.toString(),
         'Rs.' + product.untaxedValue.toString(),
-        'Rs.' + (product.untaxedValue * product.quantity).toString(),
+        'Rs.' + (product.total).toString(),
       ]);
     });
     return this.table(table, data);

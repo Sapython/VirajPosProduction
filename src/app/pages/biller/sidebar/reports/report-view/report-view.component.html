@@ -34,14 +34,6 @@
     <h4 *ngIf="dialogData.stage == 'comboSales'">Combo Sales</h4>
     <h4 *ngIf="dialogData.stage == 'billSplits'">Bill Split Report</h4>
     <div class="actions">
-      <p>
-        <ng-container *ngIf="reportService.dateRangeFormGroup.value.startDate">
-          From: {{reportService.dateRangeFormGroup.value.startDate | date}}
-        </ng-container>
-        <ng-container *ngIf="reportService.dateRangeFormGroup.value.endDate">
-          - To: {{reportService.dateRangeFormGroup.value.endDate | date }}
-        </ng-container>
-      </p>
       <mat-date-range-picker #picker></mat-date-range-picker>
       <mat-date-range-input
         tabindex="-1"
@@ -74,9 +66,17 @@
         <label>Maximum Amount</label>
       </div>
       <viraj-button type="outline" (vclick)="picker.open()"
-        >Select Date Range <i class="ri-calendar-2-fill"></i
+        >
+        <ng-container *ngIf="this.reportService.dateRangeFormGroup.value.startDate.getDate() === today.getDate() && this.reportService.dateRangeFormGroup.value.endDate.getDate() === today.getDate()">
+          Today
+        </ng-container>
+        <ng-container *ngIf="this.reportService.dateRangeFormGroup.value.startDate.getDate() !== today.getDate() || this.reportService.dateRangeFormGroup.value.endDate.getDate() !== today.getDate()">
+          From {{this.reportService.dateRangeFormGroup.value.startDate | date}}
+          To {{this.reportService.dateRangeFormGroup.value.endDate | date}}
+        </ng-container>
+        <i class="ri-calendar-2-fill"></i
       ></viraj-button>
-      <viraj-button></viraj-button>
+      <viraj-button type="icon" (click)="dialogRef.close()"><i class="ri-close-fill"></i></viraj-button>
     </div>
   </div>
   <div class="body">

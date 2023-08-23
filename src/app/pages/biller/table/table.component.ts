@@ -223,7 +223,8 @@ export class TableComponent implements OnInit {
       this.dataProvider.takeawayToken,
     );
     let tableData = await this.tableService.getTablePromise(this.dataProvider.takeawayToken.toString(),'tokens');
-    if(!tableData.data() ||( tableData.data()['status']!='available' && tableData.data()['completed']==false)){
+    console.log("Found old table",tableData.data());
+    if(!tableData.data() || tableData.data()['status']!='available' || tableData.data()['completed']==true){
       this.dataProvider.takeawayToken++;
       this.analyticsService.addTakeawayToken();
     }
@@ -263,7 +264,8 @@ export class TableComponent implements OnInit {
     //   this.dataProvider.takeawayToken
     // );
     let tableData = await this.tableService.getTablePromise(this.dataProvider.takeawayToken.toString(),'onlineTokens');
-    if(!tableData.data() || tableData.data()['status']!='available' && tableData.data()['completed']==false){
+    console.log("Found old table",tableData);
+    if(!tableData.data() || (tableData.data()['status']!='available' && tableData.data()['completed']==true) || tableData.data()['completed']==true){
       this.dataProvider.onlineTokenNo++;
       this.analyticsService.addOnlineToken();
     }

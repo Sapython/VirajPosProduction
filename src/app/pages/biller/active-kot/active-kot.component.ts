@@ -58,6 +58,9 @@ export class ActiveKotComponent implements OnChanges {
           this.dataProvider.currentBill.kots.filter(
             (kot) => kot.stage == 'active',
           ) || [];
+        if (this.kots.length > 0) {
+          this.dataProvider.kotViewVisible = false;
+        }
         this.activeKotSubscription.unsubscribe();
         this.activeKotSubscription = merge(
           this.dataProvider.currentBill.updated,
@@ -80,6 +83,7 @@ export class ActiveKotComponent implements OnChanges {
             //  console.log('this.activeKotIndex', this.activeKotIndex);
             if (activeKot) {
               this.kots = [activeKot];
+              this.dataProvider.kotViewVisible = false;
             } else {
               this.kots = [];
             }

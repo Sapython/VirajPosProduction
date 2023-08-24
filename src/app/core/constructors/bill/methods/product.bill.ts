@@ -7,6 +7,7 @@ export async function addProduct(
   this: Bill,
   product: Product | ApplicableCombo,
 ) {
+  
   if (product.itemType == 'product'){
     if(product.sellByAvailable){
       if (!product.sellBy){

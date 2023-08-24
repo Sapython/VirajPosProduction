@@ -60,7 +60,14 @@ export class ActionsComponent {
             (kot) => kot.stage == 'finalized',
           )[0].products.length > 0
         ) {
-          this.dataProvider.kotViewVisible = true;
+          let activeKot = this.dataProvider.currentBill.kots.find(
+            (kot: Kot) => kot.stage === 'active' || kot.stage === 'edit',
+          );
+          if (activeKot){
+            this.dataProvider.kotViewVisible =  false;
+          } else {
+            this.dataProvider.kotViewVisible = true;
+          }
         }
         this.dataProvider.currentBill.updated.subscribe(() => {
           if (this.dataProvider.currentBill) {

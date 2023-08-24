@@ -859,6 +859,7 @@ export class MenuManagementService {
           prod.price = Number(prod.price);
           prod.id = this.generateRandomId();
           prod.taxes = productApplicableTaxes;
+          prod.visible = true;
           return prod;
         });
         allProducts = [...allProducts, ...catGroup.products];

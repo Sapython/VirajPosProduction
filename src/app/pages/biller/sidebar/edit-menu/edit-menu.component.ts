@@ -95,7 +95,7 @@ export class EditMenuComponent implements OnInit {
   }
 
   switchMode(mode: any) {
-    // console.log("mode",mode);
+    console.log("mode",mode);
     this.dataProvider.billingMode = mode.value;
     if (mode.value == 'dineIn') {
       localStorage.setItem('billingMode', 'dineIn');
@@ -107,6 +107,7 @@ export class EditMenuComponent implements OnInit {
       this.dataProvider.currentMenu = this.dataProvider.menus.find((menu) => {
         return menu.selectedMenu?.id == this.dataProvider.dineInMenu?.id && menu.type == 'dineIn';
       });
+      console.log("selected current menu",this.dataProvider.currentMenu);
       if (this.dataProvider.currentMenu) {
         // this.dataProvider.currentMenu.type = 'dineIn';
         this.dataProvider.products = this.dataProvider.currentMenu.products;
@@ -116,7 +117,7 @@ export class EditMenuComponent implements OnInit {
       // console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
     } else if (mode.value == 'takeaway') {
       localStorage.setItem('billingMode', 'takeaway');
-      // console.log("this.dataProvider.takeawayMenu",this.dataProvider.takeawayMenu);
+      console.log("this.dataProvider.takeawayMenu",this.dataProvider.takeawayMenu);
       if (!this.dataProvider.takeawayMenu) {
         alert('No takeaway menu found');
         return;
@@ -124,6 +125,7 @@ export class EditMenuComponent implements OnInit {
       this.dataProvider.currentMenu = this.dataProvider.menus.find((menu) => {
         return menu.selectedMenu?.id == this.dataProvider.takeawayMenu?.id && menu.type == 'takeaway';
       });
+      console.log("selected current menu",this.dataProvider.currentMenu,this.dataProvider.menus);
       if (this.dataProvider.currentMenu) {
         // this.dataProvider.currentMenu.type = 'takeaway';
         this.dataProvider.products = this.dataProvider.currentMenu.products;
@@ -149,8 +151,10 @@ export class EditMenuComponent implements OnInit {
       }
       // console.log("this.dataProvider.currentMenu",this.dataProvider.currentMenu);
     }
+    if (mode.value){
+      this.dataProvider.modeChanged.next(mode.value);
+    }
     this.dataProvider.clearSearchField.next();
-    this.dataProvider.modeChanged.next(mode.value);
   }
 
   async close(){

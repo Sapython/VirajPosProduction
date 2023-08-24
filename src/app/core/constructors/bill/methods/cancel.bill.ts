@@ -48,6 +48,7 @@ export function cancel(this: Bill, reason: string, phone: string) {
     type: 'billCancelled',
     message: 'Bill cancelled by ' + this.user.username,
     user: this.user.username,
+    data: {reason:this.cancelledReason},
   });
   this.updated.next();
 }

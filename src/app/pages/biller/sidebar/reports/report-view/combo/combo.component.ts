@@ -33,7 +33,7 @@ export class ComboComponent {
   ngOnInit(): void {
     this.reportChangedSubscription = this.reportService.dataChanged.subscribe(
       () => {
-        this.loading = true;
+        console.log('Date range ', this.reportService.dateRangeFormGroup.value);
         this.reportService
           .getBills(
             this.reportService.dateRangeFormGroup.value.startDate,
@@ -48,23 +48,32 @@ export class ComboComponent {
               bill.kots.forEach((kot) => {
                 kot.products.forEach((combo) => {
                   if(combo.itemType == 'combo'){
-                    comboReports.push({
-                      billNo: bill.billNo,
-                      orderNo: bill.orderNo,
-                      date: bill.createdDate.toDate().toLocaleDateString(),
-                      time: bill.createdDate.toDate().toLocaleTimeString(),
-                      comboId: combo.id,
-                      comboName: combo.name,
-                      quantity: combo.quantity,
-                      price: combo.price,
-                      total: combo.price * combo.quantity,
-                      billTotal: bill.billing.grandTotal,
-                    });
+                    let comboReportIndex = comboReports.findIndex((res)=>res.comboId == combo.id);
+                    if(comboReportIndex == -1){
+                      comboReports.push({
+                        comboName: combo.name,
+                        comboId:combo.id,
+                        quantity: combo.quantity,
+                        price: combo.price,
+                        total: combo.price * combo.quantity,
+                        selectedProducts:combo.combo.selectedCategories.map((category)=>{
+                          return category.selectedProducts
+                        }).flat(),
+                        bills: [bill.billNo],
+                        kots: [kot.id],
+                        billTotal: bill.billing.grandTotal,
+                      });
+                    } else {
+                      comboReports[comboReportIndex].quantity += combo.quantity;
+                      comboReports[comboReportIndex].total += combo.price * combo.quantity;
+                      comboReports[comboReportIndex].bills.push(bill.billNo);
+                      comboReports[comboReportIndex].kots.push(kot.id);
+                    }
                   }
                 });
               });
             });
-            this.loading = false;
+            this.combos.next(comboReports);
           });
       },
     );
@@ -174,14 +183,13 @@ export class ComboComponent {
 }
 
 interface comboReport {
-  billNo: string;
-  orderNo: string;
-  date: string;
-  time: string;
-  comboId: string;
   comboName: string;
+  comboId:string;
   quantity: number;
   price: number;
   total: number;
+  selectedProducts:any[];
+  bills: string[];
+  kots: string[];
   billTotal: number;
 }

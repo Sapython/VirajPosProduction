@@ -1,38 +1,58 @@
-<table id="reportTable" *ngIf="!loading">
+<table id="reportTable">
   <thead>
     <tr>
       <th>Kot No</th>
-      <th>Kot Amount</th>
-      <th>Products</th>
       <th>Bill No</th>
-      <th>Token No</th>
-      <th>Date-Time</th>
+      <th>Order No</th>
+      <th>Reason</th>
+      <th>User</th>
+      <th>Table</th>
+      <th>Mode</th>
+      <th>Bill Start Time</th>
+      <th>Kot Edit Date-Time</th>
+      <th>Products</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let kot of kots">
-      <td>
+    <tr *ngFor="let kot of kotEditsActivity|async">
+      <td class="noWrap">
         {{ kot.id }}
       </td>
-      <td>
-        {{ kot.grandTotal }}
+      <td class="noWrap">
+        {{ kot.billNo || 'N/A' }}
       </td>
-      <td>
-        {{ kot.products.length }}
+      <td class="noWrap">
+        {{ kot.orderNo || 'N/A' }}
       </td>
-      <td>
-        {{ kot.billNo }}
+      <td class="noWrap">
+        {{ kot.reason || 'N/A' }}
       </td>
-      <td>
-        {{ kot.tokenNo }}
+      <td class="noWrap">
+        {{ kot.user || 'N/A' }}
       </td>
-      <td>
-        {{ kot.createdDate.toDate() | date: "short" }}
+      <td class="noWrap">
+        {{ kot.table || 'N/A' }}
+      </td>
+      <td class="noWrap">
+        {{ kot.mode || 'N/A' }}
+      </td>
+      <td class="noWrap">
+        {{ (kot.billStartTime.toDate() | date:'short') || 'N/A' }}
+      </td>
+      <td class="noWrap">
+        {{ (kot.kotEditTime.toDate() | date:'short') || 'N/A' }}
+      </td>
+      <td class="noWrap">
+        <ol>
+          <li *ngFor="let product of kot.products">
+            {{ product.name }} - {{ product.price }} - ({{ product.quantity }}) - ({{product.instruction}})
+          </li>
+        </ol>
       </td>
     </tr>
-    <tr *ngIf="(kots).length == 0">
+    <tr *ngIf="((kotEditsActivity|async) || []).length == 0">
       <td
-        colspan="5"
+        colspan="10"
         style="text-align: center; font-weight: bold; font-size: 1.2rem;color:#aaa"
       >
         <p>No Data Available</p>

@@ -22,7 +22,10 @@ let firestore: Firestore;
 let getFirestore: any;
 var generateHashedPassword: any;
 var verifyPassword: any;
+var storage:any;
 import { generateAnalytics } from './analytics';
+
+// upload a string of json to firebase storage
 
 let processDate = new Date();
 console.log('processDate', processDate);
@@ -419,6 +422,14 @@ function initMailJet() {
     apiKey: '135bbf04888dd455863f5e2a4d15ac2f',
     apiSecret: 'a2ae82fc0885ae701311acf96c139a3f',
   });
+}
+function initStorage(){
+  if (storage) return;
+  console.log("Loading storage");
+  let storageRef = require('firebase-admin/storage');
+  storage = admin.storage();
+  console.log("Storage loaded",storage);
+  
 }
 function privateGenerateHashedPassword(password: string, uid: string) {
   if (!generateHashedPassword)
@@ -1073,10 +1084,11 @@ export const authenticateAction = functions.https.onCall(
 export const analyzeAnalytics = functions.pubsub.schedule('every 3 hours').onRun(async (context) => {
   console.log('Running a task every 3 hours');
   initFirestore();
+  initStorage();
   let businessRef = firestore.collection('business');
   let businessDocs = await businessRef.get();
   let workers = businessDocs.docs.map(async (businessDoc)=>{
-    await generateAnalytics(firestore,businessDoc)
+    await generateAnalytics(firestore,storage,businessDoc)
   });
   let loyaltyWorkers = businessDocs.docs.map(async (businessDoc)=>{
     
@@ -1089,13 +1101,14 @@ export const analyzeAnalytics = functions.pubsub.schedule('every 3 hours').onRun
 export const analyzeAnalyticsForBusiness = functions.https.onCall(
   async (request, response) => {
     initFirestore();
+    initStorage();
     validateAny(request.businessId, 'string');
     console.log("request.businessId",request.businessId);
     let businessRef = firestore.doc(`business/${request.businessId}`);
     let businessDoc = await businessRef.get();
     console.log('businessDoc.exists', businessDoc.exists);
     if (businessDoc.exists) {
-      let analyticsData = await generateAnalytics(firestore, businessDoc);
+      let analyticsData = await generateAnalytics(firestore,storage, businessDoc);
       return { status: true, data: analyticsData };
     } else {
       throw new HttpsError(
@@ -1377,7 +1390,6 @@ export interface ChannelWiseAnalyticsData {
       lowRange: {
         bills: {
           billId: string;
-          billRef: any;
           totalSales: number;
           time: Timestamp;
         }[];
@@ -1386,7 +1398,6 @@ export interface ChannelWiseAnalyticsData {
       mediumRange: {
         bills: {
           billId: string;
-          billRef: any;
           totalSales: number;
           time: Timestamp;
         }[];
@@ -1395,7 +1406,6 @@ export interface ChannelWiseAnalyticsData {
       highRange: {
         bills: {
           billId: string;
-          billRef: any;
           totalSales: number;
           time: Timestamp;
         }[];
@@ -1409,7 +1419,6 @@ export interface ChannelWiseAnalyticsData {
       totalBills:number;
       bills:{
         billId: string,
-        billRef: any,
         time: any,
         totalSales: number,
       }[]
@@ -1422,7 +1431,6 @@ export interface ChannelWiseAnalyticsData {
       totalBills:number;
       bills:{
         billId: string,
-        billRef: any,
         time: any,
         totalSales: number,
       }[]
@@ -1457,7 +1465,6 @@ export interface ChannelWiseAnalyticsData {
   suspiciousActivities: any[];
   userWiseActions: {
     userId: string;
-    userRef: any;
     actions: {
       bills:any[];
       kots:any[];

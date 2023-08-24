@@ -48,7 +48,7 @@ export class MenuComponent implements OnInit, AfterViewInit {
       this.currentMenu = this.dataProvider.currentMenu;
       this.activeIndex = '';
     });
-    this.dataProvider.modeChanged.subscribe((data) => {
+    this.dataProvider.modeChanged.subscribe(() => {
       // console.log("MODE CHANGED",data);
       this.currentMenu = this.dataProvider.currentMenu;
       this.activeIndex = '';

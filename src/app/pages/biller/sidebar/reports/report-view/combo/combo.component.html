@@ -1,37 +1,20 @@
-<table class="styled-table" id="reportTable" id="reportTable" *ngIf="!loading">
+<table class="styled-table" id="reportTable">
 	<thead>
 	  <tr>
-		<th>Bill No</th>
-		<th>Order No</th>
-		<th>Date</th>
-		<th>Time</th>
-		<th>Combo Id</th>
 		<th>Combo Name</th>
 		<th>Quantity</th>
 		<th>Price</th>
 		<th>Total</th>
+		<th>Selected Products</th>
+		<th>Bills</th>
+		<th>KOTs</th>
 		<th>Bill Total</th>
 	  </tr>
 	</thead>
 	<tbody>
 	  <tr *ngFor="let combo of combos | async">
 		<td>
-		  {{ combo.billNo || "Unsettled" }}
-		</td>
-		<td>
-		  {{ combo.orderNo }}
-		</td>
-		<td>
-		  {{ combo.date }}
-		</td>
-		<td>
-		  {{ combo.time }}
-		</td>
-		<td>
-		  {{ combo.comboId }}
-		</td>
-		<td>
-		  {{ combo.comboName }}
+		  {{ combo.comboName || "N/A" }}
 		</td>
 		<td>
 		  {{ combo.quantity }}
@@ -43,12 +26,29 @@
 		  {{ combo.total }}
 		</td>
 		<td>
+		  <ol>
+			<li *ngFor="let item of combo.selectedProducts">
+				{{item.name}} - {{item.price}} - ({{item.quantity}})
+			</li>
+		  </ol>
+		</td>
+		<td>
+		  <ol>
+			<li *ngFor="let bill of combo.bills">{{bill}}</li>
+		  </ol>
+		</td>
+		<td>
+			<ol>
+				<li *ngFor="let bill of combo.kots">{{bill}}</li>
+			</ol>
+		</td>
+		<td>
 		  {{ combo.billTotal }}
 		</td>
 	  </tr>
 	  <tr *ngIf="(combos|async).length == 0">
 		<td
-		  colspan="5"
+		  colspan="8"
 		  style="text-align: center; font-weight: bold; font-size: 1.2rem;color:#aaa"
 		>
 		  <p>No Data Available</p>

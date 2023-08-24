@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Combo, TimeGroup } from '../../../../types/combo.structure';
+import { Combo, TimeGroup, VisibilitySettings } from '../../../../types/combo.structure';
 
 @Component({
   selector: 'app-combo-card',
@@ -20,89 +20,65 @@ export class ComboCardComponent implements OnInit {
     'saturday',
   ];
   ngOnInit(): void {
-    // this.disabled = !this.checkDateIsAvailable(this.combo.timeGroups) TODO: checker
+    this.disabled = !this.checkDateIsAvailable(this.combo,new Date());
   }
-  checkDateIsAvailable(timeGroups: TimeGroup[]) {
+  checkDateIsAvailable(combo: Combo, date: Date) {
     let available = true;
-    timeGroups.forEach((timeGroup) => {
-      timeGroup.conditions.forEach((condition) => {
-        if (condition.type == 'date') {
-          if (condition.condition == 'is') {
-            if (condition.value != new Date().toISOString().split('T')[0]) {
-              available = false;
-            }
-          } else if (condition.condition == 'is not') {
-            if (condition.value == new Date().toISOString().split('T')[0]) {
-              available = false;
-            }
-          } else if (condition.condition == 'is before') {
-            if (condition.value >= new Date().toISOString().split('T')[0]) {
-              available = false;
-            }
-          } else if (condition.condition == 'is after') {
-            if (condition.value <= new Date().toISOString().split('T')[0]) {
-              available = false;
-            }
-          }
-        } else if (condition.type == 'day') {
-          console.log('IS day');
-          if (condition.condition == 'is') {
-            console.log('IS day', condition.value, new Date().getDay());
-            if (
-              !condition.value.includes(
-                this.getDayFromIndex(new Date().getDay()),
-              )
-            ) {
-              available = false;
-            }
-          } else if (condition.condition == 'is not') {
-            if (
-              !condition.value.includes(
-                this.getDayFromIndex(new Date().getDay()),
-              )
-            ) {
-              available = false;
-            }
-          } else if (condition.condition == 'is before') {
-            if (
-              !condition.value.includes(
-                this.getDayFromIndex(new Date().getDay()),
-              )
-            ) {
-              available = false;
-            }
-          } else if (condition.condition == 'is after') {
-            if (
-              !condition.value.includes(
-                this.getDayFromIndex(new Date().getDay()),
-              )
-            ) {
-              available = false;
-            }
-          }
-        } else if (condition.type == 'time') {
-          if (condition.condition == 'is') {
-            if (condition.value != new Date().getHours()) {
-              available = false;
-            }
-          } else if (condition.condition == 'is not') {
-            if (condition.value == new Date().getHours()) {
-              available = false;
-            }
-          } else if (condition.condition == 'is before') {
-            if (condition.value >= new Date().getHours()) {
-              available = false;
-            }
-          } else if (condition.condition == 'is after') {
-            if (condition.value <= new Date().getHours()) {
-              available = false;
-            }
+    let visibilitySettings = combo.visibilitySettings;
+    // console.log("this.combo");
+    if (combo.visibilityEnabled){
+      if (visibilitySettings.mode == 'monthly') {
+        if (visibilitySettings.repeating) {
+          let todayYear = new Date().getFullYear();
+          let comboYear = date.getFullYear();
+          if (todayYear != comboYear) {
+            available = false;
+            return;
           }
         }
-      });
-    });
-    console.log('IS DAY VALID', available);
-    return available;
+        let currentMonth = new Date().toLocaleDateString('en-US', {
+          month: 'long',
+        });
+        let currentDay = new Date().toLocaleDateString('en-US', {
+          weekday: 'long',
+        });
+        let currentMonthVisibility = visibilitySettings.daysSetting.find(
+          (month) => month.month == currentMonth,
+        );
+        let availableDays = currentMonthVisibility.days.filter((day) =>
+          day.week.find(
+            (week) => week.day == currentDay && week.possible && week.selected,
+          ),
+        );
+        if (availableDays.length == 0) {
+          available = false;
+        } else {
+          available = true;
+        }
+      } else if (visibilitySettings.mode == 'weekly') {
+        let currentDay = new Date().toLocaleDateString('en-US', {
+          weekday: 'long',
+        });
+        if (visibilitySettings.daysSetting.length){
+          let availableDays = visibilitySettings.daysSetting[0].days.filter((day) =>
+            day.week.find(
+              (week) => week.day == currentDay && week.possible && week.selected,
+            ),
+          );
+          if (availableDays.length == 0) {
+            available = false;
+          } else {
+            available = true;
+          }
+        } else {
+          available = false;
+        }
+      }
+      // console.log('IS DAY VALID', available);
+      return available;
+    } else {
+      return combo.enabled
+    }
   }
 
   getDayFromIndex(dayIndex: number) {

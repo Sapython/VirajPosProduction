@@ -28,11 +28,7 @@
         ><i class="ri-delete-bin-fill"></i
       ></viraj-button>
       <viraj-button
-        *ngIf="
-          ((kot.totalTimeTakenNumber <= this.dataProvider.editKotTime) || this.dataProvider.getAccess('editKot')) &&
-          kot.stage != 'cancelled' &&
-          this.dataProvider.kotEditable
-        "
+        *ngIf="((kot.totalTimeTakenNumber <= this.dataProvider.editKotTime) || this.dataProvider.getAccess('editKot')) && kot.stage != 'cancelled'"
         type="icon"
         (click)="editKot.emit(kot)"
         ><i class="ri-pencil-fill"></i

@@ -394,7 +394,7 @@ export class AddComboComponent {
     }
     this.dataProvider.loading = true;
     if (this.offerImageFile) {
-      let url = await this.fileService.upload(
+      var url = await this.fileService.upload(
         `business/${this.dataProvider.currentBusiness.businessId}/menus/${
           this.dialogData.menu.selectedMenu.id
         }/combos/images/${new Date().getTime()}_${this.offerImageFile.name}`,
@@ -402,7 +402,7 @@ export class AddComboComponent {
       );
       console.log(url);
     } else {
-      var url = '';
+      var url:any = '';
     }
     delete this.visibilitySettings.activatedWeeks;
     this.visibilitySettings.daysSetting.forEach((month) => {

@@ -1,7 +1,8 @@
 import { Timestamp } from 'firebase-admin/firestore';
 import { AnalyticsData } from '.';
+import { Storage } from 'firebase-admin/lib/storage/storage';
 
-export async function generateAnalytics(firestore: any, businessDoc: any) {
+export async function generateAnalytics(firestore: any,storage:Storage, businessDoc: any) {
   let cachedTables: any[] = [];
   // /business/uqd9dm0its2v9xx6fey2q/analyticsData/2023/7
   console.log('Fetching for date', new Date().toDateString());
@@ -139,7 +140,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
         userWiseActions: [
           {
             userId: '',
-            userRef: null,
             actions: {
               bills: [],
               kots: [],
@@ -194,7 +194,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
         userWiseActions: [
           {
             userId: '',
-            userRef: null,
             actions: {
               bills: [],
               kots: [],
@@ -249,7 +248,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
         userWiseActions: [
           {
             userId: '',
-            userRef: null,
             actions: {
               bills: [],
               kots: [],
@@ -304,7 +302,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
         userWiseActions: [
           {
             userId: '',
-            userRef: null,
             actions: {
               bills: [],
               kots: [],
@@ -406,7 +403,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
         : 'highRange'
     ].bills.push({
       billId: billDoc.id,
-      billRef: billDoc.ref,
       time: currentBill.createdDate,
       totalSales: isValidNumber(currentBill.billing.grandTotal),
     });
@@ -468,7 +464,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
           bills: [
             {
               billId: billDoc.id,
-              billRef: billDoc.ref,
               time: currentBill.createdDate,
               totalSales: isValidNumber(currentBill.billing.grandTotal),
             },
@@ -482,7 +477,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
         tableIndex
       ].bills.push({
         billId: billDoc.id,
-        billRef: billDoc.ref,
         time: currentBill.createdDate,
         totalSales: isValidNumber(currentBill.billing.grandTotal),
       });
@@ -506,7 +500,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
         bills: [
           {
             billId: billDoc.id,
-            billRef: billDoc.ref,
             time: currentBill.createdDate,
             totalSales: isValidNumber(currentBill.billing.grandTotal),
           },
@@ -518,7 +511,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
     } else {
       analyticsData.salesChannels.all.billWiseSales.time[timeIndex].bills.push({
         billId: billDoc.id,
-        billRef: billDoc.ref,
         time: currentBill.createdDate,
         totalSales: isValidNumber(currentBill.billing.grandTotal),
       });
@@ -775,7 +767,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
       if (userIndex === -1) {
         analyticsData.salesChannels.all.userWiseActions.push({
           userId: activity.activity.user,
-          userRef: null,
           actions: {
             bills: BILL_ACTIVITY.includes(activity.activity.type)
               ? [activity]
@@ -904,7 +895,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
           : 'highRange'
       ].bills.push({
         billId: billDoc.id,
-        billRef: billDoc.ref,
         time: currentBill.createdDate,
         totalSales: isValidNumber(currentBill.billing.grandTotal),
       });
@@ -956,7 +946,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
             bills: [
               {
                 billId: billDoc.id,
-                billRef: billDoc.ref,
                 time: currentBill.createdDate,
                 totalSales: isValidNumber(currentBill.billing.grandTotal),
               },
@@ -970,7 +959,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
           tableIndex
         ].bills.push({
           billId: billDoc.id,
-          billRef: billDoc.ref,
           time: currentBill.createdDate,
           totalSales: isValidNumber(currentBill.billing.grandTotal),
         });
@@ -993,7 +981,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
           bills: [
             {
               billId: billDoc.id,
-              billRef: billDoc.ref,
               time: currentBill.createdDate,
               totalSales: isValidNumber(currentBill.billing.grandTotal),
             },
@@ -1007,7 +994,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
           timeIndex
         ].bills.push({
           billId: billDoc.id,
-          billRef: billDoc.ref,
           time: currentBill.createdDate,
           totalSales: isValidNumber(currentBill.billing.grandTotal),
         });
@@ -1069,7 +1055,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
           : 'highRange'
       ].bills.push({
         billId: billDoc.id,
-        billRef: billDoc.ref,
         time: currentBill.createdDate,
         totalSales: isValidNumber(currentBill.billing.grandTotal),
       });
@@ -1127,7 +1112,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
             bills: [
               {
                 billId: billDoc.id,
-                billRef: billDoc.ref,
                 time: currentBill.createdDate,
                 totalSales: isValidNumber(currentBill.billing.grandTotal),
               },
@@ -1141,7 +1125,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
           tableIndex
         ].bills.push({
           billId: billDoc.id,
-          billRef: billDoc.ref,
           time: currentBill.createdDate,
           totalSales: isValidNumber(currentBill.billing.grandTotal),
         });
@@ -1164,7 +1147,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
           bills: [
             {
               billId: billDoc.id,
-              billRef: billDoc.ref,
               time: currentBill.createdDate,
               totalSales: isValidNumber(currentBill.billing.grandTotal),
             },
@@ -1178,7 +1160,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
           timeIndex
         ].bills.push({
           billId: billDoc.id,
-          billRef: billDoc.ref,
           time: currentBill.createdDate,
           totalSales: isValidNumber(currentBill.billing.grandTotal),
         });
@@ -1241,7 +1222,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
             : 'highRange'
         ].bills.push({
           billId: billDoc.id,
-          billRef: billDoc.ref,
           time: currentBill.createdDate,
           totalSales: isValidNumber(currentBill.billing.grandTotal),
         });
@@ -1301,7 +1281,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
               bills: [
                 {
                   billId: billDoc.id,
-                  billRef: billDoc.ref,
                   time: currentBill.createdDate,
                   totalSales: isValidNumber(currentBill.billing.grandTotal),
                 },
@@ -1315,7 +1294,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
             tableIndex
           ].bills.push({
             billId: billDoc.id,
-            billRef: billDoc.ref,
             time: currentBill.createdDate,
             totalSales: isValidNumber(currentBill.billing.grandTotal),
           });
@@ -1340,7 +1318,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
             bills: [
               {
                 billId: billDoc.id,
-                billRef: billDoc.ref,
                 time: currentBill.createdDate,
                 totalSales: isValidNumber(currentBill.billing.grandTotal),
               },
@@ -1354,7 +1331,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
             timeIndex
           ].bills.push({
             billId: billDoc.id,
-            billRef: billDoc.ref,
             time: currentBill.createdDate,
             totalSales: isValidNumber(currentBill.billing.grandTotal),
           });
@@ -1664,15 +1640,37 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
   let year = date.getFullYear();
   let month = date.getMonth() + 1;
   let day = date.getDate();
-  await firestore
-    .doc(`business/${businessDoc.id}/analyticsData/${year}/${month}/${day}`)
-    .set(analyticsData);
   console.log('Analytics data', analyticsData);
-
   console.log(
     'Size of analytics data in mb',
     JSON.stringify(analyticsData).length / 1000000,
   );
+
+  // // create a blob object of this analyticsData
+  // let analyticsDataFile = new Blob([JSON.stringify(analyticsData)], {
+  //   type: 'application/json',
+  // });
+  // // upload this file to firebase storage
+  // let bucket = storage.bucket('fbms-shreeva-demo.appspot.com').file(
+  //   `business/${businessDoc.id}/analyticsData/${year}/${month}/${day}/analyticsData.json`,
+  // );
+  // let storageRef = bucket.createWriteStream({
+  //   metadata: {
+  //     contentType: 'application/json',
+  //   },
+  // });
+
+  // storageRef.write(JSON.stringify(analyticsData),(err: any) => {
+  //   console.log('Error in writing file', err);
+  // });
+  // await storageRef.end();
+  // storage.bucket('fbms-shreeva-demo.appspot.com').file('analytics.json').save(JSON.stringify(analyticsData), {
+  //   gzip: true,
+  // })
+  await firestore
+    .doc(`business/${businessDoc.id}/analyticsData/${year}/${month}/${day}`)
+    .set(analyticsData);
+
   return {
     ...analyticsData,
     analyzedBills: billsDocs.docs.length,

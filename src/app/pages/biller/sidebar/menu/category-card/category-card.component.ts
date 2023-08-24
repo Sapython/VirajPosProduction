@@ -26,7 +26,7 @@ export class CategoryCardComponent implements OnInit {
       this.category as Category;
       this.category['products'].forEach((product) => {
         if (product.visible) {
-          this.length += product.quantity;
+          this.length += 1;
         }
       });
     } else if (this.category && this.category['combos']) {

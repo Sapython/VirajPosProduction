@@ -2009,27 +2009,26 @@ export class ModeConfig {
         let previousMenuId = structuredClone(this.selectedMenu.id);
         this.selectedMenuId = menus.find((menu) => menu.id != previousMenuId)!.id;
         if(this.dataProvider.currentSettings.dineInMenu){
-          let modeConfig = this.dataProvider.menus.find((m)=>this.dataProvider.currentSettings.dineInMenu.id == m.selectedMenuId);
+          let modeConfig = this.dataProvider.menus.find((m)=>this.dataProvider.currentSettings?.dineInMenu?.id == m.selectedMenuId && m.type == 'dineIn');
           if (modeConfig){
             modeConfig.selectedMenuId = this.selectedMenuId;
             modeConfig.updateMenu();
           }
         }
         if(this.dataProvider.currentSettings.takeawayMenu){
-          let modeConfig = this.dataProvider.menus.find((m)=>this.dataProvider.currentSettings.takeawayMenu.id == m.selectedMenuId);
+          let modeConfig = this.dataProvider.menus.find((m)=>this.dataProvider.currentSettings?.takeawayMenu?.id == m.selectedMenuId && m.type == 'takeaway');
           if (modeConfig){
             modeConfig.selectedMenuId = this.selectedMenuId;
             modeConfig.updateMenu();
           }
         }
         if(this.dataProvider.currentSettings.onlineMenu){
-          let modeConfig = this.dataProvider.menus.find((m)=>this.dataProvider.currentSettings.onlineMenu.id == m.selectedMenuId);
+          let modeConfig = this.dataProvider.menus.find((m)=>this.dataProvider.currentSettings?.onlineMenu?.id == m.selectedMenuId && m.type == 'online');
           if (modeConfig){
             modeConfig.selectedMenuId = this.selectedMenuId;
             modeConfig.updateMenu();
           }
         }
-        this.dataProvider.currentSettings.
         this.updateMenu();
         await this.menuManagementService.deleteMenu(previousMenuId);
         this.alertify.presentToast('Menu deleted successfully');

@@ -101,6 +101,7 @@ export async function setInstruction(this: Bill) {
   this.billService.addActivity(this, {
     message: `Instruction set by ${this.user.username}`,
     type: 'instructionSet',
+    data: {instruction:this.instruction},
     user: this.user.username,
   });
   this.calculateBill();
@@ -110,6 +111,7 @@ export async function printBill(this: Bill) {
   this.billService.addActivity(this, {
     message: `Bill printed by ${this.user.username}`,
     type: 'billPrinted',
+    data: this.printableBillData,
     user: this.user.username,
   });
   this.printingService.printBill(this.printableBillData);
@@ -242,6 +244,7 @@ export async function settle(
   this.billService.addActivity(this, {
     type: 'billSettled',
     message: 'Bill settled by ' + this.user.username,
+    data: this.settlement,
     user: this.user.username,
   });
 

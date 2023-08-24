@@ -353,7 +353,7 @@ export class OnboardingService {
                   }
                 })
                 .filter((mode) => mode);
-              console.log('matchingMenuModesIndexes', matchingMenuModesIndexes);
+              console.log('matchingMenuModesIndexes len', matchingMenuModesIndexes,matchingMenuModesIndexes.length);
               // merge the modes of matching menus
               if (matchingMenuModesIndexes.length > 1) {
                 let mergedModes = [];
@@ -364,10 +364,13 @@ export class OnboardingService {
                   mode: mergedModes,
                   menu: toBeLoadedMenu.menu,
                 });
+                console.log('adding new menu to be loaded',filteredToBeLoadedMenus);
                 // remove the matching menus from toBeLoadedMenus
                 matchingMenuModesIndexes.forEach((matchingMenuModeIndex) => {
                   toBeLoadedMenus[matchingMenuModeIndex.index] = null;
                 });
+              } else {
+                filteredToBeLoadedMenus.push(toBeLoadedMenu);
               }
             }
             return toBeLoadedMenu;
@@ -572,6 +575,7 @@ export class OnboardingService {
     });
     // get daily counters
     let date = new Date().toISOString().split('T')[0];
+    console.log('ISO date:', date);
     docData(
       doc(
         this.firestore,

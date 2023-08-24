@@ -65,21 +65,6 @@ export async function finalize(this: Bill) {
     alert('No products to finalize');
     return;
   }
-  // if (this.mode == 'online') {
-  //   //  console.log('customer info', this.customerInfo);
-  //   if (
-  //     !(
-  //       this.customerInfo.name &&
-  //       this.customerInfo.phone &&
-  //       this.customerInfo.address &&
-  //       this.customerInfo.deliveryName &&
-  //       this.customerInfo.deliveryPhone
-  //     )
-  //   ) {
-  //     alert('Please fill customer details');
-  //     return;
-  //   }
-  // }
   this.stage = 'finalized';
   let data = this.toObject();
   // this.databaseService.updateBill(data);

@@ -17,14 +17,14 @@
     (mouseenter)="showKotNo = true"
     (mouseleave)="showKotNo = false"
     [ngStyle]="{
-      background: this.kotNoColors[kotNo % this.kotNoColors.length].color,
+      background: this.kotNoColors[kotNo % this.kotNoColors.length]?.color,
       padding: showKotNo ? '10px' : '0px'
     }"
   >
     <p
       *ngIf="showKotNo"
       [ngStyle]="{
-        color: this.kotNoColors[kotNo % this.kotNoColors.length].contrast
+        color: this.kotNoColors[kotNo % this.kotNoColors.length]?.contrast
       }"
     >
       {{ kotId }}

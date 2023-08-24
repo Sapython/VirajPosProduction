@@ -326,6 +326,8 @@ export class OnboardingService {
         if (setting.dineInMenu || setting.takeawayMenu || setting.onlineMenu) {
           this.menuManagementService.getAllMenus();
           let menus = await firstValueFrom(this.dataProvider.allMenus);
+          console.log("Available menus",menus);
+          
           // get whatever menu is available in currentMenu and set it to currentMenu
           let toBeLoadedMenus = [];
           if (setting.dineInMenu){
@@ -338,7 +340,7 @@ export class OnboardingService {
             toBeLoadedMenus.push({mode: ['online'],menu: menus.find((m)=>m.id == setting.onlineMenu?.id),})
           }
           let filteredToBeLoadedMenus = [];
-          console.log("mode",setting.modes);
+          console.log("mode",setting.modes,toBeLoadedMenus);
           toBeLoadedMenus.forEach((toBeLoadedMenu) => {
             if (toBeLoadedMenu) {
               let matchingMenuModesIndexes = toBeLoadedMenus
@@ -503,6 +505,7 @@ export class OnboardingService {
             );
           }
           if (!currentMenu) {
+            console.log("No menus",this.dataProvider.menus);
             currentMenu = this.dataProvider.menus.find(
               (menu) =>
                 (menu.type == 'dineIn' && setting.modes[0]) ||

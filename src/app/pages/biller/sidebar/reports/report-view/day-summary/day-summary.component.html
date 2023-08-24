@@ -12,19 +12,19 @@
     </tr>
     <tr>
       <td><strong>All - </strong>Total Sales</td>
-      <td>{{ channelWiseDaySummary.all.totalAmount }}</td>
+      <td>{{ channelWiseDaySummary.all.totalAmount |currency:'INR' }}</td>
     </tr>
     <tr>
       <td><strong>All - </strong>Net Sales</td>
-      <td>{{ channelWiseDaySummary.all.netSales }}</td>
+      <td>{{ channelWiseDaySummary.all.netSales |currency:'INR' }}</td>
     </tr>
     <tr>
       <td><strong>All - </strong>Discount</td>
-      <td>{{ channelWiseDaySummary.all.totalDiscount }}</td>
+      <td>{{ channelWiseDaySummary.all.totalDiscount |currency:'INR' }}</td>
     </tr>
     <tr>
       <td><strong>All - </strong>Total Tax</td>
-      <td>{{ channelWiseDaySummary.all.totalTax }}</td>
+      <td>{{ channelWiseDaySummary.all.totalTax |currency:'INR' }}</td>
     </tr>
     <tr>
       <td><strong>All - </strong>Total Kots</td>
@@ -44,7 +44,7 @@
     </tr>
     <tr>
       <td><strong>All - </strong>Non Chargeable Sales</td>
-      <td>{{ channelWiseDaySummary.all.totalNcAmount }}</td>
+      <td>{{ channelWiseDaySummary.all.totalNcAmount  |currency:'INR'}}</td>
     </tr>
     <!-- <tr>
       <td><strong>All - </strong>Payment Channels</td>

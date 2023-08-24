@@ -22,6 +22,19 @@ section.reportViewSection {
         opacity: 0;
       }
     }
+    span{
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap:15px;
+      h4{
+        margin: 0px;
+      }
+      p{
+        margin: 0px;
+      }
+    }
   }
   .body {
     height: 100%;

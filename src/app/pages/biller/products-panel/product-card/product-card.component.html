@@ -11,7 +11,7 @@
     <div class="tags">
       <span
         class="tag"
-        [ngStyle]="{ background: tag.color, color: tag.contrast }"
+        [ngStyle]="{ background: tag?.color, color: tag?.contrast }"
         *ngFor="let tag of tags"
       >
         {{ tag.name }}

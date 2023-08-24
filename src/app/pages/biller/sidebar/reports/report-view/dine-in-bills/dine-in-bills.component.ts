@@ -96,7 +96,7 @@ export class DineInBillsComponent {
             this.billTotals ={
               numberOfBills:bills.reduce((acc, curr) => curr.billNo ? acc + 1 : acc, 0),
               numberOfOrders:bills.reduce((acc, curr) => curr.orderNo ? acc + 1 : acc, 0),
-              total:bills.reduce((acc, curr) => acc + curr.billing.grandTotal, 0),
+              total:bills.reduce((acc, curr) => acc +  (curr.cancelledReason ? 0 : curr.billing.grandTotal), 0),
               numberOfKots:bills.reduce((acc, curr) => acc + curr.kots.length, 0),
               numberOfUsers:bills.reduce((acc, curr) => acc + curr.kots.length, 0),
               totalBillTime:timedBills.filter((bill)=>bill.totalBillTime).reduce((acc, curr) => {

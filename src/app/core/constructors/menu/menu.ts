@@ -574,8 +574,9 @@ export class ModeConfig {
             if (fromAllProducts){
               return {
                 ...fromAllProducts,
+                sellBy: fromAllProducts.sellByAvailable ? 'quantity' : undefined,
                 selected:product.selected
-              };
+              } as Product;
             } else {
               return undefined;
             }
@@ -2007,6 +2008,28 @@ export class ModeConfig {
       if (menus.length > 1) {
         let previousMenuId = structuredClone(this.selectedMenu.id);
         this.selectedMenuId = menus.find((menu) => menu.id != previousMenuId)!.id;
+        if(this.dataProvider.currentSettings.dineInMenu){
+          let modeConfig = this.dataProvider.menus.find((m)=>this.dataProvider.currentSettings.dineInMenu.id == m.selectedMenuId);
+          if (modeConfig){
+            modeConfig.selectedMenuId = this.selectedMenuId;
+            modeConfig.updateMenu();
+          }
+        }
+        if(this.dataProvider.currentSettings.takeawayMenu){
+          let modeConfig = this.dataProvider.menus.find((m)=>this.dataProvider.currentSettings.takeawayMenu.id == m.selectedMenuId);
+          if (modeConfig){
+            modeConfig.selectedMenuId = this.selectedMenuId;
+            modeConfig.updateMenu();
+          }
+        }
+        if(this.dataProvider.currentSettings.onlineMenu){
+          let modeConfig = this.dataProvider.menus.find((m)=>this.dataProvider.currentSettings.onlineMenu.id == m.selectedMenuId);
+          if (modeConfig){
+            modeConfig.selectedMenuId = this.selectedMenuId;
+            modeConfig.updateMenu();
+          }
+        }
+        this.dataProvider.currentSettings.
         this.updateMenu();
         await this.menuManagementService.deleteMenu(previousMenuId);
         this.alertify.presentToast('Menu deleted successfully');

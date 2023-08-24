@@ -10,7 +10,7 @@
   </h3>
   <div class="labels">
     <div class="label" *ngFor="let item of labels">
-      <span [ngStyle]="{ background: item.color.color }"></span>
+      <span [ngStyle]="{ background: item.color?.color }"></span>
       <p [ngStyle]="{ color: '#000' }">
         {{ item.name }}
       </p>

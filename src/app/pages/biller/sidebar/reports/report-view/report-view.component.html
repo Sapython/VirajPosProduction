@@ -1,39 +1,45 @@
 <section class="reportViewSection">
   <div class="heading">
-    <h4 *ngIf="dialogData.stage == 'billWise'">All Bills Wise Report</h4>
-    <h4 *ngIf="dialogData.stage == 'kotWise'">Kot Wise Report</h4>
-    <h4 *ngIf="dialogData.stage == 'itemWise'">Item Wise Sales Report</h4>
-    <h4 *ngIf="dialogData.stage == 'discounted'">Discounted Bills Report</h4>
-    <h4 *ngIf="dialogData.stage == 'ncBills'">Non Chargeable Bills Report</h4>
-    <h4 *ngIf="dialogData.stage == 'takeawayBills'">Takeaway Bills Report</h4>
-    <h4 *ngIf="dialogData.stage == 'onlineBills'">Online Bills Report</h4>
-    <h4 *ngIf="dialogData.stage == 'daySummary'">Day Summary Report</h4>
-    <h4 *ngIf="dialogData.stage == 'consolidated'">Consolidated Report</h4>
-    <h4 *ngIf="dialogData.stage == 'takeawayTokenWise'">
-      Takeaway Token Wise Report
-    </h4>
-    <h4 *ngIf="dialogData.stage == 'onlineTokenWise'">
-      Online Token Wise Report
-    </h4>
-    <h4 *ngIf="dialogData.stage == 'tableWise'">Table Wise Report</h4>
-    <h4 *ngIf="dialogData.stage == 'billEdits'">Bill Edits Report</h4>
-    <h4 *ngIf="dialogData.stage == 'customerWiseReport'">
-      Customer Wise Report
-    </h4>
-    <h4 *ngIf="dialogData.stage == 'dineInBills'">Dine In Bills Report</h4>
-    <h4 *ngIf="dialogData.stage == 'hourlyItemSales'">
-      Hourly Item Sales Report
-    </h4>
-    <h4 *ngIf="dialogData.stage == 'kotEdits'">Kot Edits Report</h4>
-    <h4 *ngIf="dialogData.stage == 'paymentWise'">Payment Wise Report</h4>
-    <h4 *ngIf="dialogData.stage == 'waiterWiseItems'">
-      Waiter Wise Items Report
-    </h4>
-    <h4 *ngIf="dialogData.stage == 'tableWiseActivity'">Table Wise Activity</h4>
-    <h4 *ngIf="dialogData.stage == 'tableWiseSales'">Table Wise Sales</h4>
-    <h4 *ngIf="dialogData.stage == 'comboSales'">Combo Sales</h4>
-    <h4 *ngIf="dialogData.stage == 'billSplits'">Bill Split Report</h4>
-    <p>Data loaded at {{reportService.reportLoadTime | date:'shortTime'}}</p>
+    <span>
+      <h4 *ngIf="dialogData.stage == 'billWise'">All Bills Wise Report</h4>
+      <h4 *ngIf="dialogData.stage == 'kotWise'">Kot Wise Report</h4>
+      <h4 *ngIf="dialogData.stage == 'itemWise'">Item Wise Sales Report</h4>
+      <h4 *ngIf="dialogData.stage == 'discounted'">Discounted Bills Report</h4>
+      <h4 *ngIf="dialogData.stage == 'ncBills'">Non Chargeable Bills Report</h4>
+      <h4 *ngIf="dialogData.stage == 'takeawayBills'">Takeaway Bills Report</h4>
+      <h4 *ngIf="dialogData.stage == 'onlineBills'">Online Bills Report</h4>
+      <h4 *ngIf="dialogData.stage == 'daySummary'">Day Summary Report</h4>
+      <h4 *ngIf="dialogData.stage == 'consolidated'">Consolidated Report</h4>
+      <h4 *ngIf="dialogData.stage == 'takeawayTokenWise'">
+        Takeaway Token Wise Report
+      </h4>
+      <h4 *ngIf="dialogData.stage == 'onlineTokenWise'">
+        Online Token Wise Report
+      </h4>
+      <h4 *ngIf="dialogData.stage == 'tableWise'">Table Wise Report</h4>
+      <h4 *ngIf="dialogData.stage == 'billEdits'">Bill Edits Report</h4>
+      <h4 *ngIf="dialogData.stage == 'customerWiseReport'">
+        Customer Wise Report
+      </h4>
+      <h4 *ngIf="dialogData.stage == 'dineInBills'">Dine In Bills Report</h4>
+      <h4 *ngIf="dialogData.stage == 'hourlyItemSales'">
+        Hourly Item Sales Report
+      </h4>
+      <h4 *ngIf="dialogData.stage == 'kotEdits'">Kot Edits Report</h4>
+      <h4 *ngIf="dialogData.stage == 'paymentWise'">Payment Wise Report</h4>
+      <h4 *ngIf="dialogData.stage == 'waiterWiseItems'">
+        Waiter Wise Items Report
+      </h4>
+      <h4 *ngIf="dialogData.stage == 'tableWiseActivity'">
+        Table Wise Activity
+      </h4>
+      <h4 *ngIf="dialogData.stage == 'tableWiseSales'">Table Wise Sales</h4>
+      <h4 *ngIf="dialogData.stage == 'comboSales'">Combo Sales</h4>
+      <h4 *ngIf="dialogData.stage == 'billSplits'">Bill Split Report</h4>
+      <p>
+        Data loaded at {{ reportService.reportLoadTime | date: "shortTime" }}
+      </p>
+    </span>
     <div class="actions">
       <mat-date-range-picker #picker></mat-date-range-picker>
       <mat-date-range-input
@@ -50,16 +56,26 @@
         />
         <input matEndDate formControlName="endDate" placeholder="End date" />
       </mat-date-range-input>
-      <viraj-button *ngIf="!reportService.noData" (click)="reportService.downloadExcel.next()"
+      <viraj-button
+        *ngIf="!reportService.noData"
+        (click)="reportService.downloadExcel.next()"
         >Download As Excel</viraj-button
       >
-      <viraj-button *ngIf="!reportService.noData" (click)="reportService.downloadPdf.next()"
+      <viraj-button
+        *ngIf="!reportService.noData"
+        (click)="reportService.downloadPdf.next()"
         >Download As PDF</viraj-button
       >
-      <viraj-button *ngIf="!reportService.noData" (click)="reportService.dataChanged.next()"
-        >Refresh Data <i class="ri-refresh-line"></i></viraj-button
+      <viraj-button
+        *ngIf="!reportService.noData"
+        (click)="reportService.dataChanged.next()"
+        >Refresh Data <i class="ri-refresh-line"></i
+      ></viraj-button>
+      <div
+        class="virajInput"
+        [ngClass]="{ active: inputElm.value }"
+        *ngIf="dialogData.stage == 'consolidated'"
       >
-      <div class="virajInput" [ngClass]="{active:inputElm.value}" *ngIf="dialogData.stage == 'consolidated'">
         <input
           type="number"
           placeholder=" "
@@ -69,18 +85,34 @@
         />
         <label>Maximum Amount</label>
       </div>
-      <viraj-button type="outline" (vclick)="picker.open()"
+      <viraj-button type="outline" (vclick)="picker.open()">
+        <ng-container
+          *ngIf="
+            this.reportService.dateRangeFormGroup.value.startDate.getDate() ===
+              today.getDate() &&
+            this.reportService.dateRangeFormGroup.value.endDate.getDate() ===
+              today.getDate()
+          "
         >
-        <ng-container *ngIf="this.reportService.dateRangeFormGroup.value.startDate.getDate() === today.getDate() && this.reportService.dateRangeFormGroup.value.endDate.getDate() === today.getDate()">
           Today
         </ng-container>
-        <ng-container *ngIf="this.reportService.dateRangeFormGroup.value.startDate.getDate() !== today.getDate() || this.reportService.dateRangeFormGroup.value.endDate.getDate() !== today.getDate()">
-          From {{this.reportService.dateRangeFormGroup.value.startDate | date}}
-          To {{this.reportService.dateRangeFormGroup.value.endDate | date}}
+        <ng-container
+          *ngIf="
+            this.reportService.dateRangeFormGroup.value.startDate.getDate() !==
+              today.getDate() ||
+            this.reportService.dateRangeFormGroup.value.endDate.getDate() !==
+              today.getDate()
+          "
+        >
+          From
+          {{ this.reportService.dateRangeFormGroup.value.startDate | date }} To
+          {{ this.reportService.dateRangeFormGroup.value.endDate | date }}
         </ng-container>
         <i class="ri-calendar-2-fill"></i
       ></viraj-button>
-      <viraj-button type="icon" (click)="dialogRef.close()"><i class="ri-close-fill"></i></viraj-button>
+      <viraj-button type="icon" (click)="dialogRef.close()"
+        ><i class="ri-close-fill"></i
+      ></viraj-button>
     </div>
   </div>
   <div class="body">

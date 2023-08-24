@@ -18,8 +18,8 @@
             <div
               class="heading"
               [ngStyle]="{
-                background: this.kotNoColors[i % this.kotNoColors.length].color,
-                color: this.kotNoColors[i % this.kotNoColors.length].contrast
+                background: this.kotNoColors[i % this.kotNoColors.length]?.color,
+                color: this.kotNoColors[i % this.kotNoColors.length]?.contrast
               }"
             >
               <mat-checkbox

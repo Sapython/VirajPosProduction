@@ -121,13 +121,31 @@ export class ActiveKotComponent implements OnChanges {
       const index = this.dataProvider.currentBill?.editKotMode.newKot.findIndex(
         (item) => item.id === product.id,
       );
+      if (product.itemType == 'combo'){
+        this.dataProvider.currentApplicableCombo = undefined;
+        this.dataProvider.currentCombo = undefined;
+      }
       this.dataProvider.currentBill?.editKotMode.newKot.splice(index, 1);
       this.dataProvider.currentBill.calculateBill();
+      if(this.dataProvider.currentBill.kots[this.activeKotIndex].products.length == 0){
+        if (this.dataProvider.currentBill.kots.length >= 2){
+          this.dataProvider.kotViewVisible = true;
+        }
+      }
     } else {
       this.dataProvider.currentBill?.removeProduct(
         product,
         this.activeKotIndex,
       );
+      if (product.itemType == 'combo'){
+        this.dataProvider.currentApplicableCombo = undefined;
+        this.dataProvider.currentCombo = undefined;
+      }
+      if(this.dataProvider.currentBill.kots[this.activeKotIndex].products.length == 0){
+        if (this.dataProvider.currentBill.kots.length >= 2){
+          this.dataProvider.kotViewVisible = true;
+        }
+      }
     }
   }
 

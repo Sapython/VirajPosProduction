@@ -162,22 +162,7 @@ export class HistoryComponent {
           } as ExtendedBillConstructor;
         });
         this.regenerateStats();
-        // this.totalKots = this.bills.reduce((acc, bill) => {
-        //   return acc + this.returnValidNumber(bill.kots.length);
-        // }, 0);
-        // this.totalBills = this.bills.length;
-        // this.startingKotNumber =
-        //   this.bills.length > 0 ? this.bills[0].orderNo : 0;
-        // this.endingKotNumber =
-        //   this.bills.length > 0 ? this.bills[this.bills.length - 1].orderNo : 0;
-        // this.totalSales = this.bills.reduce((acc, bill) => {
-        //   return acc + this.returnValidNumber(bill.billing.grandTotal);
-        // }, 0);
-        // this.startKot = this.bills.length > 0 ? this.bills[0].orderNo : '0';
-        // this.endKot =
-        //   this.bills.length > 0
-        //     ? this.bills[this.bills.length - 1].orderNo
-        //     : '0';
+        this.bills.reverse();
         this.fuseSearchInstance.setCollection(this.bills);
         this.loading = false;
       });
@@ -302,18 +287,6 @@ export class HistoryComponent {
         bill.billing.grandTotal >= this.minimumAmount &&
         bill.stage == 'settled',
     );
-    // let consolidated = filteredBills.reduce((acc,bill) => {
-    //   bill.modifiedAllProducts.forEach((product) => {
-    //     let index = acc.findIndex((accProduct) => accProduct.name == product.name);
-    //     if(index == -1){
-    //       acc.push({...product,quantity:1});
-    //     } else {
-    //       acc[index].quantity++;
-    //     }
-    //   })
-    //   return acc;
-    // },[] as Product[])
-    // let consolidated
   }
 
   async downloadBillInvoice(bill: PrintableBill) {

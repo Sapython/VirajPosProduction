@@ -246,7 +246,13 @@
                   this.dataProvider.getAccess('viewCategories')
                 "
               >
-              <span> My View Category </span>
+              <span> My View Category <viraj-button
+                *ngIf="this.dataProvider.getAccess('addViewCategory')"
+                [noPropogation]="true"
+                type="icon"
+                (vclick)="mode.addViewCategory(this.dataProvider.currentUser.username)"
+                ><i class="ri-add-box-fill"></i
+              ></viraj-button></span>
                 <div
                   cdkDropList
                   class="example-list"
@@ -259,8 +265,8 @@
                     [hidden]="category.enabled"
                     *ngFor="let category of mode.viewCategories"
                     (click)="
-                      mode.selectCategory(category);
-                      mode.currentType = 'recommended'
+                      mode.selectCategory(category,this.dataProvider.currentUser.username);
+                      mode.currentType = 'view'
                     "
                     [category]="category"
                   ></app-category-card>
@@ -305,7 +311,7 @@
                           cdkDrag
                           *ngFor="let category of user.categories"
                           (click)="
-                            mode.selectCategory(category);
+                            mode.selectCategory(category,user.user);
                             mode.currentType = 'view'
                           "
                           [category]="category"
@@ -439,6 +445,16 @@
                     dataProvider.getAccess('deleteViewCategory')
                   "
                   (click)="mode.deleteViewCategory()"
+                  color="primary"
+                >
+                  Delete
+                </viraj-button>
+                <viraj-button
+                  *ngIf="
+                    ['root'].includes(mode.currentType) &&
+                    dataProvider.getAccess('deleteMainCategory')
+                  "
+                  (click)="mode.deleteMainCategory()"
                   color="primary"
                 >
                   Delete

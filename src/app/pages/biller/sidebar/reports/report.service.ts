@@ -19,6 +19,7 @@ import { DataProvider } from '../../../../core/services/provider/data-provider.s
 })
 export class ReportService {
   // bills: ActivityBillConstructor[] = [];
+  reportLoadTime:Date = new Date();
   noData: boolean = false;
   loading: boolean = false;
   cachedData: CachedData[] = [];
@@ -51,6 +52,7 @@ export class ReportService {
 
   async getBills(startDate: Date, endDate?: Date) {
     this.loading = true;
+    this.reportLoadTime = new Date();
     // don't fetch if already cached or even if it is cached, fetch if it is more than 20 minutes old
     if (this.cachedData.length > 0) {
       let cachedData = this.cachedData.find((data) => {
@@ -67,7 +69,7 @@ export class ReportService {
       if (cachedData) {
         let now = new Date();
         let diff = now.getTime() - cachedData.endDate.getTime();
-        if (diff < 20 * 60 * 1000) {
+        if (diff < 3 * 1000) {
           this.loading = false;
           return cachedData.bills;
         }
@@ -108,6 +110,7 @@ export class ReportService {
   }
 
   async getTableActivity() {
+    this.reportLoadTime = new Date();
     let date: Date = this.dateRangeFormGroup.value.startDate;
     let endDate: Date = this.dateRangeFormGroup.value.endDate;
     let minTime = new Date(date);
@@ -146,6 +149,7 @@ export class ReportService {
 
   getCustomers(startDate:Date,endDate:Date,businessId:string){
     // set hours to 0
+    this.reportLoadTime = new Date();
     startDate.setHours(0,0,0,0);
     // set hours to 23
     endDate.setHours(23,59,59,999);

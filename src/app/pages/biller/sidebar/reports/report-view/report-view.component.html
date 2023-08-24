@@ -33,6 +33,7 @@
     <h4 *ngIf="dialogData.stage == 'tableWiseSales'">Table Wise Sales</h4>
     <h4 *ngIf="dialogData.stage == 'comboSales'">Combo Sales</h4>
     <h4 *ngIf="dialogData.stage == 'billSplits'">Bill Split Report</h4>
+    <p>Data loaded at {{reportService.reportLoadTime | date:'shortTime'}}</p>
     <div class="actions">
       <mat-date-range-picker #picker></mat-date-range-picker>
       <mat-date-range-input
@@ -55,9 +56,9 @@
       <viraj-button *ngIf="!reportService.noData" (click)="reportService.downloadPdf.next()"
         >Download As PDF</viraj-button
       >
-      <!-- <viraj-button *ngIf="!reportService.noData" (click)="reportService.refresh()"
+      <viraj-button *ngIf="!reportService.noData" (click)="reportService.dataChanged.next()"
         >Refresh Data <i class="ri-refresh-line"></i></viraj-button
-      > -->
+      >
       <div class="virajInput" [ngClass]="{active:inputElm.value}" *ngIf="dialogData.stage == 'consolidated'">
         <input
           type="number"
@@ -84,6 +85,9 @@
   </div>
   <div class="body">
     <div class="tableContainer">
+      <div class="loader" *ngIf="this.reportService.loading">
+        <mat-spinner></mat-spinner>
+      </div>
       <app-bill-wise *ngIf="dialogData.stage == 'billWise'"></app-bill-wise>
       <app-kot-wise-report
         *ngIf="dialogData.stage == 'kotWise'"
@@ -141,9 +145,6 @@
       ></app-table-wise>
       <app-split-bills *ngIf="dialogData.stage == 'billSplits'">
       </app-split-bills>
-      <div class="loader" *ngIf="this.reportService.loading">
-        <mat-spinner></mat-spinner>
-      </div>
       <div class="spacer"></div>
     </div>
   </div>

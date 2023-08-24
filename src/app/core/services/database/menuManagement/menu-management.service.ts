@@ -968,38 +968,20 @@ export class MenuManagementService {
   }
 
   async addNewRootCategory(products: any[], name: string) {
-    // first add all products
-    let addedProducts = await Promise.all(
-      products.map(async (prod) => {
-        prod.tags = [prod['tag']];
-        prod.price = Number(prod.price);
-        let docRef = await addDoc(
-          collection(
-            this.firestore,
-            'business/' +
-              this.dataProvider.businessId +
-              '/menus/' +
-              this.dataProvider.currentMenu?.selectedMenu?.id +
-              '/products',
-          ),
-          prod,
-        );
-        prod.id = docRef.id;
-        return prod;
-      }),
-    );
+    products.forEach((prod)=>{
+      prod.id = this.generateRandomId();
+    })
     let newCategoryData = {
       name: name,
       enabled: true,
-      products: addedProducts.map((product) => product.id),
-      productOrders: addedProducts.map((product) => product.id),
+      products: products.map((product) => product.id),
+      productOrders: products.map((product) => product.id),
       averagePrice: products.reduce((a, b) => a + b.price, 0) / products.length,
       order: 1,
       printer: '',
       disabled: [],
     };
-    this.updateMenuVersionRequest.next(this.dataProvider.currentMenu?.selectedMenu?.id)
-    return addDoc(
+    let categoryRef = await addDoc(
       collection(
         this.firestore,
         'business/' +
@@ -1010,6 +992,27 @@ export class MenuManagementService {
       ),
       newCategoryData,
     );
+    // first add all products
+    await Promise.all(
+      products.map(async (prod) => {
+        prod.tags = [prod['tag']];
+        prod.price = Number(prod.price);
+        prod.category = { id: categoryRef.id, name: name };
+        await setDoc(
+          doc(
+            this.firestore,
+            'business/' +
+              this.dataProvider.businessId +
+              '/menus/' +
+              this.dataProvider.currentMenu?.selectedMenu?.id +
+              '/products/'+prod.id,
+          ),
+          prod,
+        );
+        return prod;
+      }),
+    );
+    this.updateMenuVersionRequest.next(this.dataProvider.currentMenu?.selectedMenu?.id)
   }
 
   updateRootCategory(id: string, products: string[]) {
@@ -1227,7 +1230,7 @@ export class MenuManagementService {
     );
   }
 
-  deleteViewCategory(menuId: string, categoryId: string) {
+  deleteViewCategory(menuId: string, categoryId: string,userId:string) {
     this.updateMenuVersionRequest.next(menuId);
     return deleteDoc(
       doc(
@@ -1237,7 +1240,7 @@ export class MenuManagementService {
           '/menus/' +
           menuId +
           '/users/' +
-          this.dataProvider.currentUser.username +
+          userId +
           '/viewCategories/' +
           categoryId,
       ),
@@ -1693,6 +1696,24 @@ export class MenuManagementService {
       doc(
         this.firestore,
         'business/' + this.dataProvider.businessId + '/menus/' + menuId,
+      ),
+    );
+  }
+
+  async deleteMainCategory(menuId: string, category:Category) {
+    this.updateMenuVersionRequest.next(menuId);
+    let docs = await Promise.all(category.products.map(async (prod)=>{
+      await deleteDoc(doc(this.firestore,`business/${this.dataProvider.businessId}/menus/${menuId}/products/${prod}`))
+    }));
+    return deleteDoc(
+      doc(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menuId +
+          '/rootCategories/' +
+          category.id,
       ),
     );
   }

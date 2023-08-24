@@ -136,6 +136,7 @@ export class ModeConfig {
   selectedLoyaltyId: string = '';
   loadedAllData:Subject<void> = new Subject<void>();
   currentUserViewCategory:Category|undefined;
+  selectedUserViewCategory:string;
   constructor(
     name: string,
     type: 'dineIn' | 'takeaway' | 'online',
@@ -683,8 +684,9 @@ export class ModeConfig {
     }
   }
 
-  selectCategory(cat: Category) {
+  selectCategory(cat: Category,userId?:string) {
     this.selectedCategory = cat;
+    this.selectedUserViewCategory = userId;
     console.log('this.selectedCategory', this.selectedCategory);
     if (this.selectedCategory.id == 'allProducts') {
       // sort products by name
@@ -706,7 +708,7 @@ export class ModeConfig {
 
   addMainCategory() {
     let unusedProducts = this.products.filter(
-      (product) => !product.category.id,
+      (product) => !product?.category?.id,
     );
     console.log('unusedProducts', unusedProducts);
     const dialog = this.dialog.open(AddMainCategoryComponent);
@@ -717,14 +719,42 @@ export class ModeConfig {
       await this.dataProvider.confirm('Are you sure you want to delete', [1])
     ) {
       this.dataProvider.loading = true;
+      console.log("deleteing view category of user",this.selectedUserViewCategory);
       this.menuManagementService
-        .deleteViewCategory(this.selectedMenuId, this.selectedCategory.id)
+        .deleteViewCategory(this.selectedMenuId, this.selectedCategory.id,this.selectedUserViewCategory)
         .then((data) => {
           this.alertify.presentToast('Category Deleted Successfully');
           this.viewCategories = this.viewCategories.filter(
             (cat) => cat.id != this.selectedCategory.id,
           );
           this.getViewCategories();
+          this.selectedCategory = this.allProductsCategory;
+          this.currentType = 'all';
+        })
+        .catch((err) => {
+          this.alertify.presentToast('Category Delete Failed');
+        })
+        .finally(() => {
+          this.dataProvider.loading = false;
+        });
+    }
+  }
+
+  async deleteMainCategory(){
+    if (
+      await this.dataProvider.confirm('Are you sure you want to delete.', [1],{
+        description:'All the dishes inside this main category will also get deleted.'
+      })
+    ) {
+      this.dataProvider.loading = true;
+      this.menuManagementService
+        .deleteMainCategory(this.selectedMenuId, this.selectedCategory)
+        .then((data) => {
+          this.alertify.presentToast('Category Deleted Successfully');
+          this.mainCategories = this.mainCategories.filter(
+            (cat) => cat.id != this.selectedCategory.id,
+          );
+          this.getMainCategories();
           this.selectedCategory = this.allProductsCategory;
           this.currentType = 'all';
         })
@@ -1120,6 +1150,7 @@ export class ModeConfig {
             this.alertify.presentToast('Taxes Updated Successfully');
           })
           .catch((err) => {
+            console.log('err', err);
             this.alertify.presentToast('Taxes Update Failed');
           })
           .finally(() => {

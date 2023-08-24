@@ -13,7 +13,11 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   this.calculateLoyalty(calculationResults.allProducts);
   let allProducts = calculationResults.allProducts;
   let finalTaxes: Tax[] = calculationResults.finalTaxes;
-  let finalAdditionalTax = calculationResults.finalAdditionalTax;
+  finalTaxes.forEach((tax)=>{
+    if(this.nonChargeableDetail){
+      tax.amount = 0;
+    }
+  })
   this.billing.subTotal = allProducts.reduce((acc, cur) => {
     return acc + cur.untaxedValue;
   }, 0);
@@ -24,22 +28,27 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   // console.log("bill allProducts",allProducts);
   if(this.canBeDiscounted){
       // apply discount to subTotal
+    console.log("Starting applicable discount",applicableDiscount);
     this.billing.discount.forEach((discount) => {
       discount.totalAppliedDiscount = 0;
       if (discount.mode == 'codeBased') {
         if (discount.type === 'percentage') {
-          let discountValue = (this.billing.subTotal / 100) * discount.value;
-          applicableDiscount += discountValue;
+          let discountValue = Number((this.billing.subTotal / 100) * discount.value);
+          console.log("Code based percent",discountValue);
+          applicableDiscount += Number(discountValue);
           discount.totalAppliedDiscount += Number(discountValue);
         } else {
-          applicableDiscount += discount.value;
+          console.log("Code based flat",discount.value);
+          applicableDiscount += Number(discount.value);
           discount.totalAppliedDiscount += Number(discount.value);
         }
       } else if (discount.mode == 'directFlat') {
-        applicableDiscount += discount.value;
+        console.log("Direct based flat",discount.value);
+        applicableDiscount += Number(discount.value);
         discount.totalAppliedDiscount += Number(discount.value);
       } else if (discount.mode == 'directPercent') {
-        let discountValue = (this.billing.subTotal / 100) * discount.value;
+        let discountValue = Number((this.billing.subTotal / 100) * Number(discount.value));
+        console.log("Direct based percent",discountValue);
         applicableDiscount += discountValue;
         discount.totalAppliedDiscount += Number(discountValue);
       }
@@ -52,7 +61,7 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   let totalApplicableTax = this.billing.taxes.reduce((acc, cur) => {
     return acc + cur.amount;
   }, 0);
-  // console.log('totalApplicableTax',this.billing.taxes,finalTaxes, totalApplicableTax,finalAdditionalTax);
+  console.log('applicableDiscount',applicableDiscount);
   this.billing.postDiscountSubTotal = this.billing.subTotal - (this.currentLoyalty.totalToBeRedeemedCost + applicableDiscount);
   this.billing.postChargesSubTotal = this.billing.postDiscountSubTotal;
   if (!this.appliedCharges){
@@ -81,6 +90,7 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
     this.billing.grandTotal = 0;
   }
   this.printableBillData = this.getPrintableBillData(allProducts);
+  console.log("printableBillData",this.printableBillData);
   this.checkCanPrintKot();
   // console.log('currentLoyalty', this.currentLoyalty);
   this.updated.next(noUpdate);
@@ -156,15 +166,16 @@ export function calculateProducts(kots: (Kot | KotConstructor)[]) {
             finalTaxes[index].amount = taxAmount;
           }
         } else {
-          applicableTax += tax.cost;
+          let taxAmount = tax.cost;
+          applicableTax += taxAmount;
           // find tax in finalTaxes and add the taxAmount to it
           let index = finalTaxes.findIndex((item: Tax) => item.id === tax.id);
           if (index !== -1) {
-            finalTaxes[index].amount += tax.cost;
+            finalTaxes[index].amount += taxAmount;
           } else {
             finalTaxes.push(JSON.parse(JSON.stringify(tax)));
             let index = finalTaxes.findIndex((item: Tax) => item.id === tax.id);
-            finalTaxes[index].amount = tax.cost;
+            finalTaxes[index].amount = taxAmount;
           }
         }
       });
@@ -182,11 +193,12 @@ export function calculateProducts(kots: (Kot | KotConstructor)[]) {
               finalTaxes[index].amount += taxAmount;
             }
           } else {
-            additionalTax += tax.cost;
+            let taxAmount = tax.cost;
+            additionalTax += taxAmount;
             // find tax in finalTaxes and add the taxAmount to it
             let index = finalTaxes.findIndex((item: Tax) => item.id === tax.id);
             if (index !== -1) {
-              finalTaxes[index].amount += tax.cost;
+              finalTaxes[index].amount += taxAmount;
             }
           }
         }

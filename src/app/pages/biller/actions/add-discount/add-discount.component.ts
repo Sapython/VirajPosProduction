@@ -40,23 +40,41 @@ export class AddDiscountComponent implements OnInit {
     private dialog: Dialog,
     @Inject(DIALOG_DATA) public bill: Bill | BillConstructor,
   ) {
-    console.log("Discount Bill",bill);
-    if(this.bill){
+    console.log('Discount Bill', bill);
+    if (this.bill) {
       this.currentDiscount = this.appliedDiscounts[0];
-      let billMenu = this.dataProvider.menus.find((menu)=>menu.selectedMenuId == this.bill.menu.id);
-      console.log("THis menu",billMenu);
-      if(billMenu){
+      let billMenu = this.dataProvider.menus.find(
+        (menu) => menu.selectedMenuId == this.bill.menu.id,
+      );
+      console.log('THis menu', billMenu);
+      if (billMenu) {
         this.availableDiscounts = billMenu.discounts;
       } else {
         this.availableDiscounts = [];
       }
-      console.log("this.availableDiscounts disc modal",this.availableDiscounts.map((discount)=>discount.accessLevels));
-      if (this.dataProvider.currentBusinessUser.accessType == 'role'){
-        this.availableDiscounts = this.availableDiscounts.filter((discount)=> discount.accessLevels.includes(this.dataProvider.currentBusinessUser.accessType=='role' ? this.dataProvider.currentBusinessUser.role : this.dataProvider.currentBusinessUser.username))
+      console.log(
+        'this.availableDiscounts disc modal',
+        this.availableDiscounts.map((discount) => discount.accessLevels),
+      );
+      if (this.dataProvider.currentBusinessUser.accessType == 'role') {
+        this.availableDiscounts = this.availableDiscounts.filter((discount) =>
+          discount.accessLevels.includes(
+            this.dataProvider.currentBusinessUser.accessType == 'role'
+              ? this.dataProvider.currentBusinessUser.role
+              : this.dataProvider.currentBusinessUser.username,
+          ),
+        );
       } else {
-        this.availableDiscounts = this.availableDiscounts.filter((discount)=> discount.accessLevels.includes(this.dataProvider.currentBusinessUser.username))
+        this.availableDiscounts = this.availableDiscounts.filter((discount) =>
+          discount.accessLevels.includes(
+            this.dataProvider.currentBusinessUser.username,
+          ),
+        );
       }
-      console.log("filtered this.availableDiscounts disc modal",this.availableDiscounts);
+      console.log(
+        'filtered this.availableDiscounts disc modal',
+        this.availableDiscounts,
+      );
     }
     if (this.dataProvider.currentBill) {
       this.appliedDiscounts = bill.billing.discount.map((discount) => {
@@ -200,16 +218,16 @@ export class AddDiscountComponent implements OnInit {
     // }
   }
 
-  cancel(remove?: boolean, index?: number) {
-    if (this.dataProvider.multipleDiscount && index) {
-      this.appliedDiscounts.splice(index, 1);
-      if (this.appliedDiscounts.length - 1 >= 0) {
-        this.currentDiscount =
-          this.appliedDiscounts[this.appliedDiscounts.length - 1];
-      }
-    } else {
-      this.dialogRef.close(remove ? [] : false);
+  removeDiscount(index: number) {
+    this.appliedDiscounts.splice(index, 1);
+    if (this.appliedDiscounts.length - 1 >= 0) {
+      this.currentDiscount =
+        this.appliedDiscounts[this.appliedDiscounts.length - 1];
     }
+  }
+
+  cancel(remove?: boolean) {
+    this.dialogRef.close(remove ? [] : false);
   }
 
   get discountsValid() {

@@ -568,11 +568,6 @@ export class ModeConfig {
       this.combos.forEach((combo) => {
         // remap all products in every category to the new printer from local config
         combo.selectedCategories.forEach((cat) => {
-          let productIds = cat.category.products.map((prod) => prod.id);
-          // console.log("Adding",productIds);
-          // cat.category.products = this.products.filter((prod) =>
-          //   productIds.includes(prod.id),
-          // );
           cat.category.products = cat.category.products.map((product)=>{
             let fromAllProducts = this.products.find((p)=>p.id == product.id);
             if (fromAllProducts){

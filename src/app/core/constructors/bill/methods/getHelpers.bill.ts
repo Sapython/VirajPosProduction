@@ -134,6 +134,7 @@ function printableBillGenerator(
     }, 0),
     subTotal: roundOffPipe(bill.billing.subTotal),
     discounts: bill.billing.discount.map((discount) => {
+      console.log("Discount value in printable data",discount.value);
       if (discount.mode == 'codeBased') {
         return {
           name: discount.name,
@@ -171,5 +172,5 @@ function printableBillGenerator(
 }
 
 function roundOffPipe(num: number) {
-  return Math.round((num + Number.EPSILON) * 100) / 100;
+  return Math.round((Number(num) + Number.EPSILON) * 100) / 100;
 }

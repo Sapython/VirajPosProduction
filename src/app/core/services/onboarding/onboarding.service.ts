@@ -338,11 +338,12 @@ export class OnboardingService {
             toBeLoadedMenus.push({mode: ['online'],menu: menus.find((m)=>m.id == setting.onlineMenu?.id),})
           }
           let filteredToBeLoadedMenus = [];
+          console.log("mode",setting.modes);
           toBeLoadedMenus.forEach((toBeLoadedMenu) => {
             if (toBeLoadedMenu) {
               let matchingMenuModesIndexes = toBeLoadedMenus
                 .map((mode, index) => {
-                  if (mode.menu && mode.menu.id == toBeLoadedMenu.menu.id) {
+                  if (mode?.menu && mode?.menu?.id == toBeLoadedMenu?.menu?.id) {
                     return {
                       mode: mode.mode,
                       index: index,

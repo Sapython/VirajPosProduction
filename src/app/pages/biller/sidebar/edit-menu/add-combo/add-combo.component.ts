@@ -413,6 +413,12 @@ export class AddComboComponent {
     this.selectedCategories = this.selectedCategories.map((category) => {
       // category.category.products = category.category.products.filter((prod)=>prod.selected);
       category.id = this.generateID();
+      category.category.products = category.category.products.map((prod) => {
+        return {
+          id: prod.id,
+          selected: prod.selected,
+        } as Product
+      })
       return category;
     });
     let data = {

@@ -55,6 +55,9 @@
       <viraj-button *ngIf="!reportService.noData" (click)="reportService.downloadPdf.next()"
         >Download As PDF</viraj-button
       >
+      <!-- <viraj-button *ngIf="!reportService.noData" (click)="reportService.refresh()"
+        >Refresh Data <i class="ri-refresh-line"></i></viraj-button
+      > -->
       <div class="virajInput" [ngClass]="{active:inputElm.value}" *ngIf="dialogData.stage == 'consolidated'">
         <input
           type="number"

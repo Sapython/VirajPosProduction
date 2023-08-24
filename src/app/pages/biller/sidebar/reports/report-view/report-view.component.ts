@@ -79,4 +79,5 @@ export class ReportViewComponent implements AfterViewInit {
     }
     return `From: ${this.reportService.dateRangeFormGroup.value.startDate.toLocaleDateString()} to ${this.reportService.dateRangeFormGroup.value.endDate.toLocaleDateString()}`;
   }
+
 }

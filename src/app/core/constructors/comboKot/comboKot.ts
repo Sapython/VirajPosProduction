@@ -586,7 +586,13 @@ export class ApplicableCombo implements ApplicableComboConstructor {
     let allProducts: Product[] = [];
     this.combo.selectedCategories.forEach((category) => {
       if (category.selectedProducts) {
-        allProducts = allProducts.concat(category.selectedProducts);
+        allProducts = allProducts.concat(
+        category.selectedProducts.map((product) => {
+          return {
+            ...product,
+            quantity: product.quantity * this.quantity,
+          };
+        }));
       }
     });
     return allProducts; 

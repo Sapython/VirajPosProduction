@@ -1090,6 +1090,7 @@ export const analyzeAnalyticsForBusiness = functions.https.onCall(
   async (request, response) => {
     initFirestore();
     validateAny(request.businessId, 'string');
+    console.log("request.businessId",request.businessId);
     let businessRef = firestore.doc(`business/${request.businessId}`);
     let businessDoc = await businessRef.get();
     console.log('businessDoc.exists', businessDoc.exists);

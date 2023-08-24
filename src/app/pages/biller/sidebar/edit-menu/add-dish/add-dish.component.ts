@@ -125,14 +125,14 @@ export class AddDishComponent {
       alert('Please fill all the fields');
       return;
     }
-    if (this.data.mainCategories.length && !this.newDishForm.value.mainCategory){
+    if (this.data?.mainCategories?.length && !this.newDishForm.value.mainCategory){
       alert('Please select a main category');
       return;
     }
     this.dialogRef.close({
       ...this.newDishForm.value,
       tags: this.newDishForm.value.tag ? [this.newDishForm.value.tag] : [],
-      viewCategories: this.viewCategories,
+      viewCategories: this.viewCategories ? this.viewCategories : [],
     });
   }
 

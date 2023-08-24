@@ -266,52 +266,54 @@
                   ></app-category-card>
                 </div>
                 <span> User View Categories </span>
-                <ng-container *ngFor="let user of mode.userWiseViewCategories">
-                  <div class="accordion" [ngClass]="{ open: user.open }" *ngIf="user.user != this.dataProvider.currentUser.username">
-                    <span class="userSpan" (click)="user.open = !user.open">
-                      <div class="usr">
-                        <img
-                          class="avatar"
-                          src="https://api.dicebear.com/6.x/initials/svg?seed={{
-                            user.user
-                          }}"
-                        />
-                        {{ user.user | titlecase }}
+                <div class="userWiseCategories">
+                  <ng-container *ngFor="let user of mode.userWiseViewCategories">
+                    <div class="accordion" [ngClass]="{ open: user.open }" *ngIf="user.user != this.dataProvider.currentUser.username">
+                      <span class="userSpan" (click)="user.open = !user.open">
+                        <div class="usr">
+                          <img
+                            class="avatar"
+                            src="https://api.dicebear.com/6.x/initials/svg?seed={{
+                              user.user
+                            }}"
+                          />
+                          {{ user.user | titlecase }}
+                        </div>
+                        <div class="usr">
+                          <div class="counter">{{ user.categories.length }}</div>
+                          <viraj-button
+                            *ngIf="this.dataProvider.getAccess('addViewCategory')"
+                            [noPropogation]="true"
+                            type="icon"
+                            (vclick)="mode.addViewCategory(user.user)"
+                            ><i class="ri-add-box-fill"></i
+                          ></viraj-button>
+                          <i *ngIf="!user.open" class="ri-arrow-down-s-fill"></i>
+                          <i *ngIf="user.open" class="ri-arrow-up-s-fill"></i>
+                        </div>
+                      </span>
+                      <div
+                        *ngIf="this.dataProvider.getAccess('viewCategories')"
+                        cdkDropList
+                        class="example-list"
+                        (cdkDropListDropped)="mode.reorderViewCategory($event)"
+                      >
+                        <app-category-card
+                          [full]="true"
+                          [hiddenIconVisible]="true"
+                          [hidden]="category.enabled"
+                          cdkDrag
+                          *ngFor="let category of user.categories"
+                          (click)="
+                            mode.selectCategory(category);
+                            mode.currentType = 'view'
+                          "
+                          [category]="category"
+                        ></app-category-card>
                       </div>
-                      <div class="usr">
-                        <div class="counter">{{ user.categories.length }}</div>
-                        <viraj-button
-                          *ngIf="this.dataProvider.getAccess('addViewCategory')"
-                          [noPropogation]="true"
-                          type="icon"
-                          (vclick)="mode.addViewCategory(user.user)"
-                          ><i class="ri-add-box-fill"></i
-                        ></viraj-button>
-                        <i *ngIf="!user.open" class="ri-arrow-down-s-fill"></i>
-                        <i *ngIf="user.open" class="ri-arrow-up-s-fill"></i>
-                      </div>
-                    </span>
-                    <div
-                      *ngIf="this.dataProvider.getAccess('viewCategories')"
-                      cdkDropList
-                      class="example-list"
-                      (cdkDropListDropped)="mode.reorderViewCategory($event)"
-                    >
-                      <app-category-card
-                        [full]="true"
-                        [hiddenIconVisible]="true"
-                        [hidden]="category.enabled"
-                        cdkDrag
-                        *ngFor="let category of user.categories"
-                        (click)="
-                          mode.selectCategory(category);
-                          mode.currentType = 'view'
-                        "
-                        [category]="category"
-                      ></app-category-card>
                     </div>
-                  </div>
-                </ng-container>
+                  </ng-container>
+                </div>
               </ng-container>
               <span
                 matTooltip="Main categories are categories that have products in them, if you affect these then products also get affected, these are unique in itself."

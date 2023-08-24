@@ -376,7 +376,7 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
           0,
         ));
       if (currentBill.nonChargeableDetail) {
-        analyticsData.salesChannels.all.totalNC += isValidNumber(currentBill.billing.grandTotal);
+        analyticsData.salesChannels.all.totalNC += isValidNumber(currentBill.billing.subTotal);
       }
       analyticsData.salesChannels.all.totalTaxes += isValidNumber(currentBill.billing.taxes.reduce(
         (total: number, t: any) => t.amount + total,
@@ -851,7 +851,7 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
             0,
           ));
         if (currentBill.nonChargeableDetail) {
-          analyticsData.salesChannels.dineIn.totalNC += isValidNumber(currentBill.billing.grandTotal);
+          analyticsData.salesChannels.dineIn.totalNC += isValidNumber(currentBill.billing.subTotal);
         }
         analyticsData.salesChannels.dineIn.totalTaxes +=
         isValidNumber(currentBill.billing.taxes.reduce(
@@ -1010,7 +1010,7 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
           ));
         if (currentBill.nonChargeableDetail) {
           analyticsData.salesChannels.takeaway.totalNC +=
-          isValidNumber(currentBill.billing.grandTotal);
+          isValidNumber(currentBill.billing.subTotal);
         }
         analyticsData.salesChannels.takeaway.totalTaxes +=
           isValidNumber(currentBill.billing.taxes.reduce(
@@ -1168,7 +1168,7 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
             0,
           ));
         if (currentBill.nonChargeableDetail) {
-          analyticsData.salesChannels.online.totalNC += isValidNumber(currentBill.billing.grandTotal);
+          analyticsData.salesChannels.online.totalNC += isValidNumber(currentBill.billing.subTotal);
         }
         analyticsData.salesChannels.online.totalTaxes +=
           isValidNumber(currentBill.billing.taxes.reduce(

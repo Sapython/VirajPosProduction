@@ -95,7 +95,7 @@ export class AddComboComponent {
     // type: new FormControl('', Validators.required),
     offerPrice: new FormControl(''),
   });
-  visibilityDateRangeForm:FormGroup = new FormGroup({
+  visibilityDateRangeForm: FormGroup = new FormGroup({
     startDate: new FormControl(),
     endDate: new FormControl(),
   });
@@ -160,24 +160,32 @@ export class AddComboComponent {
   constructor(
     public dialogRef: DialogRef,
     @Inject(DIALOG_DATA)
-    public dialogData: { mode: 'add' | 'edit'; menu: ModeConfig, combo:any },
+    public dialogData: { mode: 'add' | 'edit'; menu: ModeConfig; combo: any },
     private fileService: FileStorageService,
     private dataProvider: DataProvider,
   ) {
-    if (dialogData.menu){
+    if (dialogData.menu) {
       this.allCategories = this.dialogData.menu.mainCategories;
-      this.categorySearchFuseInstance = new Fuse(this.allCategories)
+      this.allCategories.push({
+        id: 'all',
+        name: 'All Products',
+        products: this.dialogData.menu.products,
+        enabled:true
+      });
+      this.categorySearchFuseInstance = new Fuse(this.allCategories,{keys:['name']});
+      console.log('Search Instance', this.categorySearchFuseInstance);
     }
-    console.log("this.allCategories",this.allCategories);
+    console.log('this.allCategories', this.allCategories);
     if (dialogData.combo) {
       this.comboFormGroup.patchValue({
         ...this.dialogData.combo,
       });
       // menu is selected
-      console.log("this.dialogData.combo",this.dialogData.combo);
-      
+      console.log('this.dialogData.combo', this.dialogData.combo);
+
       this.selectedCategories = this.dialogData.combo.selectedCategories;
-      this.selectedMonths = this.dialogData.combo.visibilitySettings.selectedMonths;
+      this.selectedMonths =
+        this.dialogData.combo.visibilitySettings.selectedMonths;
       this.visibilityEnabled = this.dialogData.combo.visibilityEnabled;
       this.visibilitySettings = this.dialogData.combo.visibilitySettings;
     }
@@ -195,11 +203,11 @@ export class AddComboComponent {
       map((searchQuery: string | null) => {
         if (searchQuery && typeof searchQuery == 'string') {
           console.log('searchQuery', searchQuery);
-          return this.categorySearchFuseInstance
-            .search(searchQuery)
-            .map((category) => {
-              return category.item;
-            });
+          let results = this.categorySearchFuseInstance.search(searchQuery);
+          console.log('results', results);
+          return results.map((category) => {
+            return category.item;
+          });
         } else {
           return this.allCategories.map((category) => category);
         }
@@ -339,9 +347,7 @@ export class AddComboComponent {
   }
 
   allSelected(category: Category) {
-    return (
-      category.products.every((item) => item.selected)
-    );
+    return category.products.every((item) => item.selected);
   }
 
   selectAll(category: productTree) {
@@ -351,9 +357,7 @@ export class AddComboComponent {
     });
   }
 
-  checkAll(category: Category) {
-
-  }
+  checkAll(category: Category) {}
 
   generateSelectedProducts(type: TypeCategory) {
     type.products = [];
@@ -389,7 +393,7 @@ export class AddComboComponent {
       return;
     }
     this.dataProvider.loading = true;
-    if(this.offerImageFile){
+    if (this.offerImageFile) {
       let url = await this.fileService.upload(
         `business/${this.dataProvider.currentBusiness.businessId}/menus/${
           this.dialogData.menu.selectedMenu.id
@@ -398,7 +402,7 @@ export class AddComboComponent {
       );
       console.log(url);
     } else {
-      var url='';
+      var url = '';
     }
     delete this.visibilitySettings.activatedWeeks;
     this.visibilitySettings.daysSetting.forEach((month) => {
@@ -407,6 +411,7 @@ export class AddComboComponent {
       });
     });
     this.selectedCategories = this.selectedCategories.map((category) => {
+      // category.category.products = category.category.products.filter((prod)=>prod.selected);
       category.id = this.generateID();
       return category;
     });
@@ -419,11 +424,11 @@ export class AddComboComponent {
         visibilityDateRangeForm:
           this.visibilitySettings.visibilityDateRangeForm.value,
       },
-      visibilityEnabled:this.visibilityEnabled,
-      enabled:true
+      visibilityEnabled: this.visibilityEnabled,
+      enabled: true,
     };
-    this.dialogRef.close(data);
     console.log('data', data);
+    this.dialogRef.close(data);
     this.dataProvider.loading = false;
   }
 
@@ -474,7 +479,7 @@ export class AddComboComponent {
       minimumProducts: 1,
       maximumProducts: null,
     };
-    category.category.products.forEach(element => {
+    category.category.products.forEach((element) => {
       element.selected = false;
     });
     this.selectedCategories.push(category);

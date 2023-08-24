@@ -118,7 +118,7 @@
                   [productName]="product.name"
                   [veg]="product.type == 'veg'"
                   [price]="product.price"
-                  *ngIf="product.visible"
+                  *ngIf="product.visible && product.selected"
                 ></app-product-card>
               </ng-container>
             </div>

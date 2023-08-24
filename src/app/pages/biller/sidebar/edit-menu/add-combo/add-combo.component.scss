@@ -21,15 +21,16 @@ section {
       input{
         border: 2px solid var(--Vrajera-primary);
         border-radius: 4px;
-        height: 35px;
+        height: 56px;
         padding: 0px 10px;
         width: 100%;
         box-sizing: border-box;
+        font-size: var(--Vrajera-font-large);
       }
       .select{
         border: 2px solid var(--Vrajera-primary);
         border-radius: 4px;
-        height: 35px;
+        height: 56px;
         padding: 0px 10px;
         width: 100%;
         box-sizing: border-box;
@@ -41,8 +42,12 @@ section {
     .config{
       display: flex;
       width: 100%;
+      margin-top: 20px;
       mat-form-field{
         width: 100%;
+      }
+      mat-chip-grid{
+        padding: 0px 10px;
       }
     }
     mat-tab-group{

@@ -123,46 +123,60 @@
       <h4>Charges Settings</h4>
       <form [formGroup]="chargesForm">
         <div>
-          <input
-            *ngIf="
+          <div class="chargeInput"
+          *ngIf="
               this.dataProvider.customCharges[
                 this.dataProvider.currentBill?.mode
               ].includes('service')
             "
+          >
+            <p>Service Charge</p>
+            <input
             type="number"
             formControlName="serviceCharge"
             placeholder="Service Charge"
           />
-          <input
-            *ngIf="
-              this.dataProvider.customCharges[
-                this.dataProvider.currentBill?.mode
-              ].includes('delivery')
-            "
-            type="number"
-            formControlName="deliveryCharge"
-            placeholder="Service Charge"
-          />
-          <input
-            *ngIf="
-              this.dataProvider.customCharges[
-                this.dataProvider.currentBill?.mode
-              ].includes('container')
-            "
-            type="number"
-            formControlName="containerCharge"
-            placeholder="Container Charge"
-          />
-          <input
-            *ngIf="
+          </div>
+          <div class="chargeInput"
+          *ngIf="
+                this.dataProvider.customCharges[
+                  this.dataProvider.currentBill?.mode
+                ].includes('delivery')
+              "
+          >
+            <p>Delivery Charge</p>
+            <input
+              type="number"
+              formControlName="deliveryCharge"
+              placeholder="Delivery Charge"
+            />
+          </div>
+          <div class="chargeInput"
+          *ngIf="
+          this.dataProvider.customCharges[
+            this.dataProvider.currentBill?.mode
+          ].includes('container')
+        ">
+            <p>Container Charge</p>
+            <input
+              type="number"
+              formControlName="containerCharge"
+              placeholder="Container Charge"
+            />
+          </div>
+          <div class="chargeInput"
+          *ngIf="
               this.dataProvider.customCharges[
                 this.dataProvider.currentBill?.mode
               ].includes('tip')
-            "
+            ">
+            <p>Tip</p>
+            <input
             type="number"
             formControlName="tip"
             placeholder="Tip"
           />
+          </div>
         </div>
       </form>
       <button

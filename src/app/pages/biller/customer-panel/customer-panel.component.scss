@@ -95,3 +95,12 @@
     margin:0px;
   }
 }
+.chargeInput{
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start;
+  align-items: flex-start;
+  p{
+    margin: 0;
+  }
+}

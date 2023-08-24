@@ -1310,7 +1310,6 @@ export async function generateAnalytics(firestore: any, businessDoc: any) {
             ].totalBills += 1;
           }
         }
-        console.log("Ran till here");
       }),
     );
   } catch (error) {

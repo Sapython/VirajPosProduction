@@ -33,7 +33,7 @@ export class UpdateComponent implements OnInit {
   }
 
   selectProperties(){
-    const dialog = this.dialog.open(SelectPropertiesComponent,{data:this.user.accessType=='custom'?this.user.propertiesAllowed:[]});
+    const dialog = this.dialog.open(SelectPropertiesComponent,{data:this.user.accessType=='custom' ? this.accessForm.value.propertiesAllowed:[]});
     dialog.closed.subscribe((data)=>{
       console.log("Received data from prop selector",data);
       if (data) this.accessForm.patchValue({propertiesAllowed:data});

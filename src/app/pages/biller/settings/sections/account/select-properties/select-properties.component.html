@@ -1,7 +1,7 @@
 <section>
 	<div class="heading">
 		<h3>Select Properties</h3>
-		<viraj-button (click)="this.dialogRef.close()" type="icon"><i class="ri-close-fill"></i></viraj-button>
+		<viraj-button [noPropogation]="true" (vclick)="this.dialogRef.close()" type="icon"><i class="ri-close-fill"></i></viraj-button>
 	</div>
 	<div class="list">
 		<div class="searchBar">
@@ -27,7 +27,7 @@
 		</div>
 	</div>
 	<div class="actions">
-		<viraj-button type="outline" (click)="this.dialogRef.close()">Cancel</viraj-button>
-		<viraj-button (click)="this.dialogRef.close(this.allowedAccessCodes)">Submit</viraj-button>
+		<viraj-button [noPropogation]="true" type="outline" (vclick)="this.dialogRef.close()">Cancel</viraj-button>
+		<viraj-button [noPropogation]="true" (vclick)="this.dialogRef.close(this.allowedAccessCodes)">Submit</viraj-button>
 	</div>
 </section>

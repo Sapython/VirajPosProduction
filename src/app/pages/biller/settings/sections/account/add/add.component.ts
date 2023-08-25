@@ -238,10 +238,10 @@ export class AddComponent {
   }
 
   selectProperties(){
-    const dialog = this.dialog.open(SelectPropertiesComponent,{data:[]});
+    const dialog = this.dialog.open(SelectPropertiesComponent,{data:this.loginForm.value.propertiesAllowed});
     dialog.closed.subscribe((data)=>{
       console.log("Received data from prop selector",data);
       if (data) this.loginForm.patchValue({propertiesAllowed:data});
-    })
+    });
   }
 }

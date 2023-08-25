@@ -27,7 +27,8 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <button *ngIf="accessType.value == 'custom'" color="primary" mat-stroked-button (click)="selectProperties()">Select Properties</button>
+    <button *ngIf="accessType.value == 'custom'" type="button" color="primary" mat-stroked-button (click)="selectProperties()">Select Properties</button>
+    <p>Selected properties: {{accessForm?.value?.propertiesAllowed?.length}}</p>
     <div class="actions">
       <button type="button" (click)="dialogRef.close()" mat-raised-button>
         Cancel

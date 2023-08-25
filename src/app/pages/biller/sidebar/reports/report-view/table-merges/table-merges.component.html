@@ -11,10 +11,10 @@
   <tbody>
     <tr *ngFor="let activity of tableMergeReport | async">
       <td>
-        {{ activity.from.name }}
+        {{ activity.from.name  || 'N/A'}}
       </td>
       <td>
-        {{ activity.to.name }}
+        {{ activity.to.name  || 'N/A'}}
       </td>
       <td>
         {{ activity.time.toDate() | date: "shortTime" }}
@@ -23,7 +23,7 @@
         {{ activity.time.toDate() | date: "short" }}
       </td>
       <td>
-        {{ activity.type }}
+        {{ activity.type  || 'N/A'}}
       </td>
     </tr>
   </tbody>

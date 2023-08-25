@@ -16,22 +16,22 @@
         {{ bill.phone || "N/A" }}
       </td>
       <td>
-        {{ bill.name }}
+        {{ bill.name || 'N/A' }}
       </td>
       <td>
-        {{ bill.loyaltyPoints }}
+        {{ bill.loyaltyPoints  || 'N/A'}}
       </td>
       <td>
-        {{ bill.averageBillPrice }}
+        {{ bill.averageBillPrice  || 'N/A'}}
       </td>
       <td>
-        {{ bill.bills }}
+        {{ bill.bills  || 'N/A'}}
       </td>
       <td>
-        {{ bill.items }}
+        {{ bill.items || 'N/A' }}
       </td>
       <td>
-        {{ bill.totalAmount }}
+        {{ bill.totalAmount || 'N/A' }}
       </td>
     </tr>
   </tbody>

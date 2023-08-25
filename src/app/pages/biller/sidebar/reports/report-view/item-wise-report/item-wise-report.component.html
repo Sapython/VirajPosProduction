@@ -13,22 +13,22 @@
     <ng-container *ngIf="(products | async).length > 0">
       <tr *ngFor="let product of products | async">
         <td>
-          {{ product.name }}
+          {{ product.name  || 'N/A'}}
         </td>
         <td>
           {{ product.bills.length > 0 ? product.bills : "Unsettled" }}
         </td>
         <td>
-          {{ product.kots }}
+          {{ product.kots  || 'N/A'}}
         </td>
         <td>
-          {{ product.quantity }}
+          {{ product.quantity || 'N/A' }}
         </td>
         <td>
-          {{ product.price }}
+          {{ product.price || 'N/A' }}
         </td>
         <td>
-          {{ product.quantity * product.price }}
+          {{ product.quantity * product.price  || 'N/A'}}
         </td>
       </tr>
       <tr>

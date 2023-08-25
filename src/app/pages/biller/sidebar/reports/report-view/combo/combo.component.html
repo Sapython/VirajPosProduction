@@ -17,13 +17,13 @@
 		  {{ combo.comboName || "N/A" }}
 		</td>
 		<td>
-		  {{ combo.quantity }}
+		  {{ combo.quantity || 'N/A' }}
 		</td>
 		<td>
-		  {{ combo.price }}
+		  {{ combo.price || 'N/A' }}
 		</td>
 		<td>
-		  {{ combo.total }}
+		  {{ combo.total || 'N/A' }}
 		</td>
 		<td>
 		  <ol>
@@ -31,19 +31,22 @@
 				{{item.name}} - {{item.price}} - ({{item.quantity}})
 			</li>
 		  </ol>
+		  <ng-container *ngIf="combo.selectedProducts.length == 0">N/A</ng-container>
 		</td>
 		<td>
 		  <ol>
 			<li *ngFor="let bill of combo.bills">{{bill}}</li>
 		  </ol>
+		  <ng-container *ngIf="combo.bills.length == 0">N/A</ng-container>
 		</td>
 		<td>
 			<ol>
 				<li *ngFor="let bill of combo.kots">{{bill}}</li>
 			</ol>
+			<ng-container *ngIf="combo.kots.length == 0">N/A</ng-container>
 		</td>
 		<td>
-		  {{ combo.billTotal }}
+		  {{ combo.billTotal  || 'N/A'}}
 		</td>
 	  </tr>
 	  <tr *ngIf="(combos|async).length == 0">

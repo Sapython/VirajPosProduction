@@ -11,7 +11,7 @@
         {{ bill.key }}
       </td>
       <td>
-        {{ bill.value }}
+        {{ bill.value  || 'N/A'}}
       </td>
     </tr>
     <tr *ngIf="(paymentMethods|async|keyvalue).length == 0">

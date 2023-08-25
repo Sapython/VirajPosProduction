@@ -16,13 +16,13 @@
 		  {{ bill.billNo || "Unsettled" }}
 		</td>
 		<td>
-		  {{ bill.orderNo }}
+		  {{ bill.orderNo || 'N/A' }}
 		</td>
 		<td>
 		  {{ bill.createdDate.toDate() | date : "short" }}
 		</td>
 		<td>
-		  {{ joinArray(bill.kots) }}
+		  {{ joinArray(bill.kots)  || 'N/A'}}
 		</td>
 		<td>
 		  {{ bill.billing.subTotal | currency:'INR'}}

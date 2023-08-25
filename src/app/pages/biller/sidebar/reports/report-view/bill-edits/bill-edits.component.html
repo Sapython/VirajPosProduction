@@ -15,19 +15,19 @@
         {{ bill.bill.billNo || "Unsettled" }}
       </td>
       <td>
-        {{ bill.bill.orderNo }}
+        {{ bill.bill.orderNo || 'N/A' }}
       </td>
       <td>
-        {{ bill.bill.billing.grandTotal }}
+        {{ bill.bill.billing.grandTotal || 'N/A' }}
       </td>
       <td>
-        {{ bill.user }}
+        {{ bill.user || 'N/A' }}
       </td>
       <td>
         {{ bill.time.toDate() | date: "short" }}
       </td>
       <td>
-        {{ bill.reason }}
+        {{ bill.reason || 'N/A' }}
       </td>
     </tr>
     <tr *ngIf="(bills|async).length == 0">

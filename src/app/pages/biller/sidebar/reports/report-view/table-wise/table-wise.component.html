@@ -17,7 +17,7 @@
           {{ table.sales | currency: "INR" }}
         </td>
         <td>
-          {{ table.numberOfOrders }}
+          {{ table.numberOfOrders || 'N/A'}}
         </td>
         <td>
           {{ table.averageSales | currency: "INR" }}

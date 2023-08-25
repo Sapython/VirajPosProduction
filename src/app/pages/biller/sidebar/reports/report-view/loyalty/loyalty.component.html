@@ -18,22 +18,22 @@
 		  {{ bill.billNo || "Unsettled" }}
 		</td>
 		<td>
-		  {{ bill.orderNo }}
+		  {{ bill.orderNo  || 'N/A'}}
 		</td>
 		<td>
-		  {{ bill.billing.grandTotal }}
+		  {{ bill.billing.grandTotal  || 'N/A'}}
 		</td>
 		<td>
-		  {{ bill.currentLoyalty.totalLoyaltyPoints }}
+		  {{ bill.currentLoyalty.totalLoyaltyPoints  || 'N/A'}}
 		</td>
 		<td>
-		  {{ bill.currentLoyalty.totalLoyaltyCost }}
+		  {{ bill.currentLoyalty.totalLoyaltyCost  || 'N/A'}}
 		</td>
 		<td>
-		  {{ bill.currentLoyalty.totalToBeRedeemedPoints }}
+		  {{ bill.currentLoyalty.totalToBeRedeemedPoints  || 'N/A'}}
 		</td>
 		<td>
-		  {{ bill.currentLoyalty.totalToBeRedeemedCost }}
+		  {{ bill.currentLoyalty.totalToBeRedeemedCost  || 'N/A'}}
 		</td>
 		<td>
 		  {{ joinArray(bill.kots) }}

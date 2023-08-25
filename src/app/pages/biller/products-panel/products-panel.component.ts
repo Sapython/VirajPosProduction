@@ -131,18 +131,21 @@ export class ProductsPanelComponent implements OnInit {
     if (product) {
       for (const tag of product.tags || []) {
         if (tag?.name?.toLocaleLowerCase() == 'half') {
-          return true;
+          return ' Half';
+        }
+        if (tag?.name?.toLocaleLowerCase() == 'full') {
+          return ' Full';
         }
       }
     } else {
-      return false;
+      return '';
     }
   }
 
   selectProduct(product: Product) {
     product = JSON.parse(JSON.stringify(product));
     product.cancelled = false;
-    product.name = product.name + (this.isHalf(product) ? ' Half' : ' Full');
+    product.name = product.name + this.isHalf(product);
     delete product.instruction;
     product.quantity = 1;
     if (!this.dataProvider.currentTable) {

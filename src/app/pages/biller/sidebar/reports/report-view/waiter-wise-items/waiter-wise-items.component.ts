@@ -49,6 +49,7 @@ export class WaiterWiseItemsComponent {
             bills.forEach((bill) => {
               bill.kots.forEach((kot) => {
                 if (kot.user) {
+                  console.log('kot user:', kot.user);
                   if (
                     users.findIndex((res) => res == kot.user.username) == -1
                   ) {

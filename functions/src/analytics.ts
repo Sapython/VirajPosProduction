@@ -356,17 +356,11 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
     } else {
       analyticsData.salesChannels.all.totalUnsettledBills += 1;
     }
-    if (currentBill?.billing?.discount?.length > 0) {
-      analyticsData.salesChannels.all.totalDiscountedBills += 1;
-    }
     if (currentBill?.nonChargeableDetail) {
       analyticsData.salesChannels.all.totalNcBills += 1;
     }
     if (currentBill?.billing?.discount?.length > 0) {
       analyticsData.salesChannels.all.totalDiscountedBills += 1;
-    }
-    if (currentBill?.nonChargeableDetail) {
-      analyticsData.salesChannels.all.totalNcBills += 1;
     }
     analyticsData.salesChannels.all.netSales += isValidNumber(
       currentBill.billing.grandTotal -

@@ -24,7 +24,7 @@
         </mat-select>
       </div> -->
       <input type="file" #fileUploader (change)="setImage($event)" hidden />
-      <viraj-button type="outline" (click)="fileUploader.click()" matTooltip="You can select optional image for this combo/offer.">Upload Image</viraj-button>
+      <!-- <viraj-button type="outline" (click)="fileUploader.click()" matTooltip="You can select optional image for this combo/offer.">Upload Image</viraj-button> -->
       <!-- <input matInput placeholder="Offer Cost" type="text" *ngIf="offerType.value == 'offer'" formControlName="offerPrice" /> -->
       <div class="toggle">
         <mat-slide-toggle matTooltip="If you switch this on then discount can be applied to the bill that has this item in it. If not than no one can apply discount on the bill if the bill has this item in it." formControlName="discounted"

@@ -268,6 +268,18 @@ export class ModeConfig {
         pageSize: 10,
         length: this.products.length,
       };
+      this.products.forEach((product)=>{
+        if (product.taxes){
+          product.taxes = product.taxes.map((tax)=>{
+            let foundTax = this.taxes.find((t)=>t.id == tax.id);
+            if (foundTax){
+              return {...foundTax,nature:tax.nature};
+            } else {
+              return tax;
+            }
+          });
+        }
+      });
       this.allProductsCategory.products = this.products.slice(
         event.pageIndex * event.pageSize,
         (event.pageIndex + 1) * event.pageSize,
@@ -610,11 +622,11 @@ export class ModeConfig {
     //   await this.menuManagementService.getMenu(this.selectedMenuId);
     //   console.log("Menu updated");
     // }
+    await this.getTaxes();
     await this.getProducts();
     await this.getMainCategories();
     await this.getRecommendedCategories();
     await this.getViewCategories();
-    await this.getTaxes();
     await this.getDiscounts();
     await this.getComboCategories();
     await this.getLoyaltySettings();
@@ -1107,13 +1119,8 @@ export class ModeConfig {
               ]);
             }),
           );
-          // console.log(
-          //   'productRes',
-          //   productRes.id,
-          //   'viewCategoryRes',
-          //   viewCategoryRes
-          // );
           this.alertify.presentToast('Recipe Added Successfully');
+          alert("Product has been added. The new product is uploaded with no taxes. Update product taxes from the edit menu.")
         }
       })
       .catch((err) => {

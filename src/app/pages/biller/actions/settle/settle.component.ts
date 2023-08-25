@@ -88,7 +88,6 @@ export class SettleComponent implements OnInit {
         'Cash',
         'Card',
         'UPI',
-        'Wallet',
         ...this.dataProvider.cachedMethods,
       ];
     });
@@ -102,7 +101,6 @@ export class SettleComponent implements OnInit {
           'Cash',
           'Card',
           'UPI',
-          'Wallet',
           ...this.dataProvider.cachedMethods,
         ];
       });
@@ -173,7 +171,6 @@ export class SettleComponent implements OnInit {
       'Cash',
       'Card',
       'UPI',
-      'Wallet',
       ...this.additionalMethods,
     ];
     if (unusedMethods.length === 0) {

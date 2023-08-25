@@ -130,28 +130,30 @@ export class TableComponent implements OnInit {
       this.dataProvider.currentBill.addProduct(this.dataProvider.tempProduct);
       this.dataProvider.tempProduct = undefined;
     }
-    if (this.dataProvider.currentPendingProduct) {
-      if (this.dataProvider.currentApplicableCombo) {
-        this.dataProvider.currentApplicableCombo.addProduct(
-          this.dataProvider.currentComboTypeCategory,
-          this.dataProvider.currentPendingProduct,
-        );
-      } else {
-        this.dataProvider.currentApplicableCombo = new ApplicableCombo(
-          this.dataProvider.currentCombo,
-          this.dataProvider.currentBill,
-        );
-        this.dataProvider.currentApplicableCombo.addProduct(
-          this.dataProvider.currentComboTypeCategory,
-          this.dataProvider.currentPendingProduct,
-        );
-        if (this.dataProvider.currentBill) {
-          this.dataProvider.currentBill.addProduct(
-            this.dataProvider.currentApplicableCombo,
-          );
-        }
-      }
-    }
+    this.dataProvider.currentApplicableCombo = undefined;
+    this.dataProvider.currentPendingProduct = undefined;
+    // if (this.dataProvider.currentPendingProduct) {
+    //   if (this.dataProvider.currentApplicableCombo) {
+    //     this.dataProvider.currentApplicableCombo.addProduct(
+    //       this.dataProvider.currentComboTypeCategory,
+    //       this.dataProvider.currentPendingProduct,
+    //     );
+    //   } else {
+    //     this.dataProvider.currentApplicableCombo = new ApplicableCombo(
+    //       this.dataProvider.currentCombo,
+    //       this.dataProvider.currentBill,
+    //     );
+    //     this.dataProvider.currentApplicableCombo.addProduct(
+    //       this.dataProvider.currentComboTypeCategory,
+    //       this.dataProvider.currentPendingProduct,
+    //     );
+    //     if (this.dataProvider.currentBill) {
+    //       this.dataProvider.currentBill.addProduct(
+    //         this.dataProvider.currentApplicableCombo,
+    //       );
+    //     }
+    //   }
+    // }
     this.dataProvider.billAssigned.next();
     this.dialogRef.close();
   }
@@ -253,6 +255,8 @@ export class TableComponent implements OnInit {
     }
     this.dataProvider.billAssigned.next()
     this.dialogRef.close(table);
+    this.dataProvider.currentApplicableCombo = undefined;
+    this.dataProvider.currentPendingProduct = undefined;
     if(!tableData.data() || tableData.data()['status']!='available'){
       this.dataProvider.tokens.push(table);
     }
@@ -294,6 +298,8 @@ export class TableComponent implements OnInit {
     }
     this.dialogRef.close(table);
     this.dataProvider.billAssigned.next()
+    this.dataProvider.currentApplicableCombo = undefined;
+    this.dataProvider.currentPendingProduct = undefined;
     if(!tableData.data() || tableData.data()['status']!='available'){
       this.dataProvider.onlineTokens.push(table);
     }

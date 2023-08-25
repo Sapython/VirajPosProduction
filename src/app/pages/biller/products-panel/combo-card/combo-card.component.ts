@@ -26,6 +26,7 @@ export class ComboCardComponent implements OnInit {
     let available = true;
     let visibilitySettings = combo.visibilitySettings;
     // console.log("this.combo");
+    console.log("visibility",combo.visibilitySettings);
     if (combo.visibilityEnabled){
       if (visibilitySettings.mode == 'monthly') {
         if (visibilitySettings.repeating) {

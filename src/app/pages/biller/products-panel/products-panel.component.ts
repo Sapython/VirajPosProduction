@@ -79,6 +79,7 @@ export class ProductsPanelComponent implements OnInit {
       this.products = [];
       this.searchVisible = false;
       this.currentCategory = undefined;
+      this.selectedCombo = undefined;
       this.combos = [];
     });
     this.dataProvider.menuLoadSubject.subscribe((value) => {
@@ -109,6 +110,15 @@ export class ProductsPanelComponent implements OnInit {
             });
         }
       });
+    this.dataProvider.selectTable.subscribe((value) => {
+      this.searchResults = [];
+      this.categoryProductSearchResults = [];
+      this.products = [];
+      this.searchVisible = false;
+      this.currentCategory = undefined;
+      this.selectedCombo = undefined;
+      this.combos = [];
+    });
   }
 
   ngOnInit(): void {
@@ -120,7 +130,7 @@ export class ProductsPanelComponent implements OnInit {
   isHalf(product: Product) {
     if (product) {
       for (const tag of product.tags || []) {
-        if (tag.name.toLocaleLowerCase() == 'half') {
+        if (tag?.name?.toLocaleLowerCase() == 'half') {
           return true;
         }
       }

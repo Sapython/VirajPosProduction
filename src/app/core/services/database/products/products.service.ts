@@ -15,6 +15,7 @@ import {
 } from '@angular/fire/firestore';
 import { DataProvider } from '../../provider/data-provider.service';
 import { Menu } from '../../../../types/menu.structure';
+import { MenuManagementService } from '../menuManagement/menu-management.service';
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +24,7 @@ export class ProductsService {
   constructor(
     private dataProvider: DataProvider,
     private firestore: Firestore,
+    private menuManagementService: MenuManagementService,
   ) {}
 
   addRecipe(recipe: any, menuId: string) {
@@ -109,6 +111,7 @@ export class ProductsService {
 
   async updateBulkProducts(products: Product[],selectedMenuId:string) {
     this.dataProvider.loading = true;
+    this.menuManagementService.updateMenuVersionRequest.next(selectedMenuId);
     const batch = writeBatch(this.firestore);
     products.forEach(async (product)=>{
       batch.set(

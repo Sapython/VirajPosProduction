@@ -26,6 +26,9 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   let applicableDiscount = 0;
   this.anyComboCanBeDiscounted();
   // console.log("bill allProducts",allProducts);
+  let quantityOfProduct = this.allProducts().reduce((acc, cur) => {
+    return acc + cur.quantity;
+  },0)
   if(this.canBeDiscounted){
       // apply discount to subTotal
     console.log("Starting applicable discount",applicableDiscount);
@@ -35,12 +38,31 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
         if (discount.type === 'percentage') {
           let discountValue = Number((this.billing.subTotal / 100) * discount.value);
           console.log("Code based percent",discountValue);
+          if (discount.maximumDiscount && discountValue > discount.maximumDiscount){
+            discountValue = discount.maximumDiscount;
+          }
+          if (discount.minimumAmount && this.billing.subTotal < discount.minimumAmount){
+            discountValue = 0;
+          }
+          if (discount.minimumProducts && quantityOfProduct < discount.minimumProducts){
+            discountValue = 0;
+          }
           applicableDiscount += Number(discountValue);
           discount.totalAppliedDiscount += Number(discountValue);
         } else {
           console.log("Code based flat",discount.value);
-          applicableDiscount += Number(discount.value);
-          discount.totalAppliedDiscount += Number(discount.value);
+          let discountValue = discount.value;
+          if (discount.maximumDiscount && discountValue > discount.maximumDiscount){
+            discountValue = discount.maximumDiscount;
+          }
+          if (discount.minimumAmount && this.billing.subTotal < discount.minimumAmount){
+            discountValue = 0;
+          }
+          if (discount.minimumProducts && quantityOfProduct < discount.minimumProducts){
+            discountValue = 0;
+          }
+          applicableDiscount += Number(discountValue);
+          discount.totalAppliedDiscount += Number(discountValue);
         }
       } else if (discount.mode == 'directFlat') {
         console.log("Direct based flat",discount.value);

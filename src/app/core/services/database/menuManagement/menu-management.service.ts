@@ -1704,7 +1704,7 @@ export class MenuManagementService {
   async deleteMainCategory(menuId: string, category:Category) {
     this.updateMenuVersionRequest.next(menuId);
     let docs = await Promise.all(category.products.map(async (prod)=>{
-      await deleteDoc(doc(this.firestore,`business/${this.dataProvider.businessId}/menus/${menuId}/products/${prod}`))
+      await deleteDoc(doc(this.firestore,`business/${this.dataProvider.businessId}/menus/${menuId}/products/${prod.id}`))
     }));
     return deleteDoc(
       doc(

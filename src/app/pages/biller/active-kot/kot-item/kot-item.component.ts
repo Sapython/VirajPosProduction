@@ -191,11 +191,14 @@ export class KotItemComponent implements OnChanges {
     }
   }
 
-  setAmount(amountValue:number|string){
-    amountValue = Number(amountValue);
-    if (isNaN(amountValue)) {
+  finalCheck(amountValue:number|string){
+    if (isNaN(Number(amountValue))) {
       amountValue = 0;
     }
+  }
+
+  setAmount(amountValue:number|string){
+    amountValue = Number(amountValue);
     this.product.quantity = this.roundOff(amountValue/this.product.price);
     if (!this.propagateFunctions) {
       this.dataProvider.currentBill?.calculateBill();

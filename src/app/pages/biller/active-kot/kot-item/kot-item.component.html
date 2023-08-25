@@ -67,6 +67,7 @@
             (click)="amountInput.select()"
             (input)="setAmount(amountInput.value)"
             (change)="
+              finalCheck(amountInput.value);
               this.dataProvider.currentBill
                 ? this.dataProvider.currentBill.calculateBill()
                 : {}

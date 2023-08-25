@@ -19,6 +19,27 @@ export class ComboComponent {
   combos: ReplaySubject<comboReport[]> = new ReplaySubject<
     comboReport[]
   >();
+  billTotals:{
+    numberOfBills:number,
+    numberOfOrders:number,
+    total:number,
+    numberOfKots:number,
+    numberOfUsers:number,
+    totalBillTime:string,
+    totalAmount:number,
+    totalDiscount:number,
+    totalTax:number,
+  }={
+    numberOfBills:0,
+    numberOfOrders:0,
+    total:0,
+    numberOfKots:0,
+    numberOfUsers:0,
+    totalBillTime:"",
+    totalAmount:0,
+    totalDiscount:0,
+    totalTax:0,
+  };
   loading: boolean = true;
   joinArray(bill: KotConstructor[]) {
     // join to form a string of ids with comma

@@ -6,6 +6,7 @@
       <th>Bill Amount</th>
       <th>Bill Kots</th>
       <th>Punched By</th>
+      <th>Mode</th>
       <th>Date-Time</th>
       <th>Settle Date/Time</th>
       <th>Settle By</th>
@@ -45,6 +46,11 @@
           <ng-container *ngIf="bill.kots.length == 0">
             N/A
           </ng-container>
+        </td>
+        <td>
+          <p *ngIf="bill.mode == 'dineIn'">Dine In</p>
+          <p *ngIf="bill.mode == 'takeaway'">Takeaway</p>
+          <p *ngIf="bill.mode == 'online'">Online</p>
         </td>
         <td>
           {{ bill.createdDate ? (bill.createdDate?.toDate() | date: "short") : 'No Date' }}
@@ -113,6 +119,7 @@
         <td>Orders: {{billTotals.numberOfOrders}}</td>
         <td>Total: {{ billTotals.total | currency:'INR'}}</td>
         <td>Number Of KOTS: {{ billTotals.numberOfKots }}</td>
+        <td></td>
         <td></td>
         <td></td>
         <td></td>

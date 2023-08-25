@@ -41,5 +41,13 @@
 		</td>
 		<td>{{bill.settlement.time.toDate() | date:'short'}}</td>
 	  </tr>
+	  <tr *ngIf="this.splitBillTotals" class="total noWrap">
+		<td>Totals</td>
+		<td>Bill Amount: {{this.splitBillTotals.totalSales | currency:'INR'}}</td>
+		<td>Splitted Bill Amount: {{this.splitBillTotals.splittedBillTotal | currency:'INR'}}</td>
+		<td>Total Tax: {{this.splitBillTotals.totalTax | currency:'INR'}}</td>
+		<td>Total Discount: {{this.splitBillTotals.totalDiscount | currency:'INR'}}</td>
+		<td></td>
+	  </tr>
 	</tbody>
   </table>

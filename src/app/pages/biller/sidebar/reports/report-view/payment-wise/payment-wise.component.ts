@@ -18,6 +18,8 @@ export class PaymentWiseComponent {
   reportChangedSubscription: Subscription = Subscription.EMPTY;
   paymentMethods: ReplaySubject<any> = new ReplaySubject<any>();
   loading: boolean = true;
+  totalMethods: number = 0;
+  totalAmount: number = 0;
   joinArray(bill: KotConstructor[]) {
     // join to form a string of ids with comma
     return bill.map((res) => res.id).join(', ');
@@ -61,6 +63,12 @@ export class PaymentWiseComponent {
                 }
               }
             });
+            this.totalAmount = 0;
+            this.totalMethods = 0;
+            for (let key in paymentWise) {
+              this.totalAmount += paymentWise[key];
+              this.totalMethods++;
+            }
             console.log('paymentWise', paymentWise);
             this.paymentMethods.next(paymentWise);
             this.loading = false;

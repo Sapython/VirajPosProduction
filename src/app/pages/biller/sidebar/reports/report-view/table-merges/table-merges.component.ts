@@ -20,7 +20,8 @@ export class TableMergesComponent implements OnInit, OnDestroy {
   loading: boolean = true;
   constructor(private reportService: ReportService,private dataProvider: DataProvider,) {}
   ngOnDestroy(): void {
-    throw new Error('Method not implemented.');
+    this.downloadPDfSubscription.unsubscribe();
+    this.downloadExcelSubscription.unsubscribe();
   }
 
   ngOnInit(): void {

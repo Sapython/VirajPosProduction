@@ -5,9 +5,6 @@ import {
   Inject,
   ViewEncapsulation,
 } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { BillService } from '../../../../../core/services/database/bill/bill.service';
-import { BillConstructor } from '../../../../../types/bill.structure';
 import { ReportService } from '../report.service';
 
 @Component({

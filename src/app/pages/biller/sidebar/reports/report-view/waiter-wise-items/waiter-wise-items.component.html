@@ -16,6 +16,15 @@
         {{ item.sales  || 'N/A'}}
       </td>
     </tr>
+    <tr class="totals noWrap">
+      <td class="noWrap">Totals: {{totalProducts}}</td>
+      <td *ngFor="let userTotal of userTotals" class="=noWrap">
+        <li class="noWrap">User: {{userTotal.user}}</li>
+        <li class="noWrap">Sales: {{userTotal.sales}}</li>
+        <li class="noWrap">Orders: {{userTotal.numberOfOrders}}</li>
+        <li class="noWrap">Avg. Sales: {{userTotal.averageSales}}</li>
+      </td>
+    </tr>
     <tr *ngIf="(waiterWiseSales|async).productSales.length == 0">
       <td
         colspan="5"

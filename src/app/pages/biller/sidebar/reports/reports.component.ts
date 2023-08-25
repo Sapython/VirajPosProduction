@@ -135,6 +135,11 @@ export class ReportsComponent implements OnInit {
       code: 'billSplits',
       description: 'List of tables with merge, exchange, split actions.',
     },
+    {
+      title: 'Cancelled Bills',
+      code: 'cancelledBills',
+      description: 'List of bills that are cancelled.',
+    },
   ];
   fuseSearchInstance:Fuse<ReportFormat> = new Fuse(this.reportFormats,{keys:['title','description']});
   filteredReportFormats:ReportFormat[] = [];
@@ -1153,6 +1158,7 @@ export class ReportsComponent implements OnInit {
       | 'tableWiseSales'
       | 'comboSales'
       | 'billSplits'
+      | 'cancelledBills'
       | 'tableWiseActivity',
   ) {
     const dialog = this.dialog.open(ReportViewComponent, {
@@ -1187,6 +1193,7 @@ interface ReportFormat {
   | 'tableWiseSales'
   | 'comboSales'
   | 'billSplits'
+  | 'cancelledBills'
   | 'tableWiseActivity';
   description: string;
 }

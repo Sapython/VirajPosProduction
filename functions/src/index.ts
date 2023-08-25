@@ -1182,6 +1182,86 @@ export const calculateLoyaltyPoint = functions.pubsub.schedule('every 3 hours').
   },
 );
 
+
+export const calculateLoyaltyPointForBusiness = functions.https.onCall(
+  async (request, response) => {
+    initFirestore();
+    validateAny(request.businessId, 'string');
+    let businessRef = firestore.doc(`business/${request.businessId}`);
+    let businessDoc = await businessRef.get();
+    console.log('businessDoc.exists', businessDoc.exists);
+    if (businessDoc.exists) {
+      let customers = await firestore.collection(`business/${businessDoc.id}/customers`).get();
+      await Promise.all(customers.docs.map(async (customer)=>{
+        // get bills under this customer 
+        let billsRef = await firestore.collection(`business/${businessDoc.id}/customers/${customer.id}/bills`).get();
+        let bills = await Promise.all(billsRef.docs.map(async (bill)=>{
+          let data = bill.data();
+          let billDocument = await data.billRef.get();
+          // console.log("customer ref bill data",billDocument.data());
+          return {...billDocument.data(),id:billDocument.id};
+        }));
+        let totalBills = bills.length;
+        let totalSales = 0;
+        let totalEarnedLoyaltyPoints = 0;
+        let averageBillValue = 0;
+        if (bills[bills.length-1]){
+          var lastBillDate = bills[bills.length-1].createdDate;
+          var lastBillAmount = bills[bills.length-1].billing.grandTotal;
+          var lastBillId = bills[bills.length-1].id;
+        } else {
+          var lastBillDate = null;
+          var lastBillAmount = null;
+          var lastBillId = null;
+        }
+        let todayDate = new Date();
+        bills.forEach(async (bill)=>{
+          // console.log("counter bill",bill);
+          totalSales += bill.billing.grandTotal;
+          // if bill.currentLoyalty.expiryDate is less than todayDate then add the loyalty points to the customer
+          if(bill.currentLoyalty?.expiryDate?.toDate() > todayDate){
+            // add loyalty points to the customer
+            if (bill.currentLoyalty.receiveLoyalty){
+              console.log("Adding loyalty",bill.currentLoyalty.totalLoyaltyPoints);
+              totalEarnedLoyaltyPoints += bill.currentLoyalty.totalLoyaltyPoints;
+              console.log("Total loyalty",totalEarnedLoyaltyPoints);
+            }
+          }
+  
+          // deduct used loyalty point
+          totalEarnedLoyaltyPoints -= bill.currentLoyalty.totalToBeRedeemedPoints;
+          console.log("Deducting",bill.currentLoyalty.totalToBeRedeemedPoints);
+          
+        });
+        averageBillValue = totalSales/totalBills;
+        console.log("averageBillValue",averageBillValue);
+        console.log("Updating customer",customer.id,{
+          totalBills,
+          totalSales,
+          loyaltyPoints:totalEarnedLoyaltyPoints,
+          averageBillValue,
+          lastBillDate,
+          lastBillAmount,
+          lastBillId
+        });
+        // update customer
+        await firestore.doc(`business/${businessDoc.id}/customers/${customer.id}`).update({
+          totalBills,
+          totalSales,
+          loyaltyPoints:totalEarnedLoyaltyPoints,
+          averageBillValue,
+          lastBillDate,
+          lastBillAmount,
+          lastBillId
+        });
+      }))
+    } else {
+      throw new HttpsError(
+        'aborted',
+        `Business not found for ${request.businessId}`,
+      );
+    }
+});
 export const createNewAccessToken = functions.https.onCall(
   async (request, response) => {
     console.log("Request",request);

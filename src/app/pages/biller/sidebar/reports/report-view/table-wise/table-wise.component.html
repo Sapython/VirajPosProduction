@@ -23,6 +23,12 @@
           {{ table.averageSales | currency: "INR" }}
         </td>
       </tr>
+      <tr *ngIf="this.tableWiseTotals" class="totals">
+        <td>Totals:</td>
+        <td>{{this.tableWiseTotals.sales | currency:'INR'}}</td>
+        <td>{{this.tableWiseTotals.numberOfOrders}}</td>
+        <td>{{this.tableWiseTotals.averageSales | currency:'INR'}}</td>
+      </tr>
     </ng-container>
     <tr *ngIf="(tableWiseSales|async).length == 0">
       <td

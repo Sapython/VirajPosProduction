@@ -23,6 +23,15 @@ export class TableWiseComponent {
   tableWiseSales: ReplaySubject<TableWiseSales[]> = new ReplaySubject<
     TableWiseSales[]
   >();
+  tableWiseTotals:{
+    sales:number,
+    numberOfOrders:number,
+    averageSales:number
+  }={
+    sales:0,
+    numberOfOrders:0,
+    averageSales:0
+  }
   joinArray(bill: KotConstructor[]) {
     // join to form a string of ids with comma
     return bill.map((res) => res.id).join(', ');
@@ -75,6 +84,11 @@ export class TableWiseComponent {
                 this.roundOff(res.orders.reduce((a, b) => a + b) / res.orders.length),
               });
             });
+            tableWiseSalesArray.forEach((res)=>{
+              this.tableWiseTotals.sales += res.sales;
+              this.tableWiseTotals.numberOfOrders += res.numberOfOrders;
+              this.tableWiseTotals.averageSales += res.averageSales;
+            })
             console.log('Table Wise Sales ', tableWiseSalesArray);
             this.tableWiseSales.next(tableWiseSalesArray);
           });

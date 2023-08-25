@@ -14,6 +14,10 @@
         {{ bill.value  || 'N/A'}}
       </td>
     </tr>
+    <tr class="totals">
+      <td>Methods: {{totalMethods}}</td>
+      <td>Total: {{totalAmount}}</td>
+    </tr>
     <tr *ngIf="(paymentMethods|async|keyvalue).length == 0">
       <td
         colspan="5"

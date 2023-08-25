@@ -36,6 +36,7 @@
       <h4 *ngIf="dialogData.stage == 'tableWiseSales'">Table Wise Sales</h4>
       <h4 *ngIf="dialogData.stage == 'comboSales'">Combo Sales</h4>
       <h4 *ngIf="dialogData.stage == 'billSplits'">Bill Split Report</h4>
+      <h4 *ngIf="dialogData.stage == 'cancelledBills'">Cancelled Bills</h4>
       <p>
         Data loaded at {{ reportService.reportLoadTime | date: "shortTime" }}
       </p>

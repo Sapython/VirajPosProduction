@@ -370,8 +370,8 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
     }
     analyticsData.salesChannels.all.netSales += isValidNumber(
       currentBill.billing.grandTotal -
-        currentBill.billing.discount.reduce(
-          (total: number, d: any) => d.totalAppliedDiscount + total,
+        currentBill.billing.taxes.reduce(
+          (total: number, d: any) => d.amount + total,
           0,
         ),
     );
@@ -862,10 +862,10 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
       );
       analyticsData.salesChannels.dineIn.netSales += isValidNumber(
         currentBill.billing.grandTotal -
-          currentBill.billing.discount.reduce(
-            (total: number, d: any) => d.totalAppliedDiscount + total,
-            0,
-          ),
+        currentBill.billing.taxes.reduce(
+          (total: number, d: any) => d.amount + total,
+          0,
+        ),
       );
       analyticsData.salesChannels.dineIn.totalDiscount += isValidNumber(
         currentBill.billing.discount.reduce(
@@ -1022,10 +1022,10 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
       );
       analyticsData.salesChannels.takeaway.netSales += isValidNumber(
         currentBill.billing.grandTotal -
-          currentBill.billing.discount.reduce(
-            (total: number, d: any) => d.totalAppliedDiscount + total,
-            0,
-          ),
+        currentBill.billing.taxes.reduce(
+          (total: number, d: any) => d.amount + total,
+          0,
+        ),
       );
       analyticsData.salesChannels.takeaway.totalDiscount += isValidNumber(
         currentBill.billing.discount.reduce(
@@ -1189,10 +1189,10 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
         );
         analyticsData.salesChannels.online.netSales += isValidNumber(
           isValidNumber(currentBill.billing.grandTotal) -
-            currentBill.billing.discount.reduce(
-              (total: number, d: any) => d.totalAppliedDiscount + total,
-              0,
-            ),
+          currentBill.billing.taxes.reduce(
+            (total: number, d: any) => d.amount + total,
+            0,
+          ),
         );
         analyticsData.salesChannels.online.totalDiscount += isValidNumber(
           currentBill.billing.discount.reduce(

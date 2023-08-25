@@ -484,6 +484,10 @@ export class MenuManagementService {
     }
   }
 
+  getPrinterConfigsByMenu(menu: Menu) {
+    
+  }
+
   getRootProducts() {
     return getDocs(collection(this.firestore, 'productsCollection'));
   }

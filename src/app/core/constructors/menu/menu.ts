@@ -289,8 +289,12 @@ export class ModeConfig {
         this.products.length;
       this.fuseInstance.setCollection(this.products);
       this.selectedCategory = this.allProductsCategory;
+      let printerConfig = await this.getPrinterSettings();
+      // printer config is of type [{printerName, dishesId:[productId1,productId2]}]
       this.products = this.products.map((p) => {
-        return { ...p, itemType: 'product',specificPrinter:p.specificPrinter || defaultPrinter?.billPrinter };
+        // console.log("p",p.specificPrinter);
+        let printer = printerConfig?.find((config) => config.dishesId.includes(p.id))?.printerName || defaultPrinter?.billPrinter;
+        return { ...p, itemType: 'product',specificPrinter:printer };
       });
       // sort products by name
       this.products.sort((a, b) => {

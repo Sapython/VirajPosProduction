@@ -1,8 +1,8 @@
 import { Timestamp } from 'firebase-admin/firestore';
 import { AnalyticsData } from '.';
-import { Storage } from 'firebase-admin/lib/storage/storage';
+// import { Storage } from 'firebase-admin/lib/storage/storage';
 
-export async function generateAnalytics(firestore: any,storage:Storage, businessDoc: any) {
+export async function generateAnalytics(firestore: any,storage:any, businessDoc: any) {
   let cachedTables: any[] = [];
   // /business/uqd9dm0its2v9xx6fey2q/analyticsData/2023/7
   console.log('Fetching for date', new Date().toDateString());

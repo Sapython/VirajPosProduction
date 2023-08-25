@@ -426,9 +426,6 @@ function initMailJet() {
 function initStorage(){
   if (storage) return;
   console.log("Loading storage");
-  let storageRef = require('firebase-admin/storage');
-  storage = admin.storage();
-  console.log("Storage loaded",storage);
   
 }
 function privateGenerateHashedPassword(password: string, uid: string) {

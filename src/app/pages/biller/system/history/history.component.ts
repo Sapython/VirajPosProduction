@@ -54,7 +54,7 @@ export class HistoryComponent {
   // Reports
   bills: ExtendedBillConstructor[] = [];
   filteredBills: ExtendedBillConstructor[] = [];
-  fuseSearchInstance = new Fuse(this.bills, { keys: ['billNo', 'orderNo'] });
+  fuseSearchInstance = new Fuse(this.bills, { keys: ['orderNo'] });
   numberSearchSubject: Subject<string> = new Subject<string>();
   dateRangeFormGroup: FormGroup = new FormGroup({
     startDate: new FormControl('', [Validators.required]),
@@ -79,7 +79,7 @@ export class HistoryComponent {
           .map((result) => {
             return result.item;
           });
-        //  console.log("filteredBills",this.filteredBills);
+         console.log("filteredBills",this.filteredBills);
       } else {
         this.filteredBills = [];
       }

@@ -120,7 +120,7 @@
           }"
           *ngFor="let table of tableGroup.tables"
           matRipple
-          (click)="moveKotMode ? moveKotItem(table) : openTable(table, $event)"
+          (click)="moveKotMode ? moveKotItem(table) : (this.editMode ? {} : openTable(table, $event))"
         >
           <p class="name">{{ table.name }}</p>
           <p

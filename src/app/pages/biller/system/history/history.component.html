@@ -71,7 +71,7 @@
       ></viraj-button>
       <input
         (input)="this.numberSearchSubject.next(search.value)"
-        placeholder="Search by bill no"
+        placeholder="Search by order no"
         class="searchByBill"
         (input)="this.numberSearchSubject.next(search.value)"
         #search
@@ -98,10 +98,10 @@
       Total Bills <span>{{ totalBills }}</span>
     </p>
     <p>
-      Starting KOT <span>{{ startKot }}</span>
+      Starting KOT <span>{{ startingKotNumber }}</span>
     </p>
     <p>
-      End KOT <span>{{ endKot }}</span>
+      End KOT <span>{{ endingKotNumber }}</span>
     </p>
     <p>
       Total Sales <span>{{ totalSales | currency: "INR" }}</span>
@@ -246,7 +246,7 @@
         kotFlip: bill.kotOrBillVisible == 'kot',
         billFlip: bill.kotOrBillVisible == 'bill'
       }"
-      *ngFor="let bill of bills | mode: currentMode"
+      *ngFor="let bill of filteredBills.length ? (filteredBills | mode: currentMode) : (bills | mode: currentMode)"
     >
       <div class="summary" *ngIf="!bill.flipped">
         <div class="items">

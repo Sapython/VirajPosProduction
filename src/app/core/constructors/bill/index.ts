@@ -167,6 +167,7 @@ export class Bill implements BillConstructor {
     this.updated.pipe(debounceTime(1000)).subscribe(async (data) => {
       if (!data && this.eligibleForUpdate()) {
         this.updateToFirebase();
+        this.updateTableData()
       }
     });
     this.toObject = this.toObject.bind(this);
@@ -284,4 +285,8 @@ export class Bill implements BillConstructor {
   public toObject = toObject;
   public static fromObject = fromObject;
   public updateToFirebase = updateToFirebase;
+  public updateTableData(){
+    this.table.billPrice = this.billing.grandTotal;
+    this.table.updated.next();
+  }
 }

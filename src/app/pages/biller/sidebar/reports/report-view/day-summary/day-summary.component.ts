@@ -109,7 +109,7 @@ export class DaySummaryComponent {
                   0,
                 )),
                 netSales: this.roundOff(bills.reduce(
-                  (acc, res) => acc + res.billing.subTotal,
+                  (acc, res) => acc + res.billing.grandTotal,
                   0,
                 ) - bills.reduce(
                   (acc, res) => acc + res.billing.taxes.reduce((a, b) => a + b.amount, 0),
@@ -168,7 +168,7 @@ export class DaySummaryComponent {
                   0,
                 )),
                 netSales: this.roundOff(dineInBills.reduce(
-                  (acc, res) => acc + res.billing.subTotal,
+                  (acc, res) => acc + res.billing.grandTotal,
                   0,
                 )- dineInBills.reduce(
                   (acc, res) => acc + res.billing.taxes.reduce((a, b) => a + b.amount, 0),
@@ -227,7 +227,7 @@ export class DaySummaryComponent {
                   (acc, res) => acc + res.billing.grandTotal,
                   0)),
                 netSales: this.roundOff(takeawayBills.reduce(
-                  (acc, res) => acc + res.billing.subTotal,
+                  (acc, res) => acc + res.billing.grandTotal,
                   0) - takeawayBills.reduce(
                     (acc, res) => acc + res.billing.taxes.reduce((a, b) => a + b.amount, 0),
                     0,
@@ -286,7 +286,7 @@ export class DaySummaryComponent {
                   0,
                 )),
                 netSales: this.roundOff(onlineBills.reduce(
-                  (acc, res) => acc + res.billing.subTotal,
+                  (acc, res) => acc + res.billing.grandTotal,
                   0,
                 ) - onlineBills.reduce(
                   (acc, res) => acc + res.billing.taxes.reduce((a, b) => a + b.amount, 0),

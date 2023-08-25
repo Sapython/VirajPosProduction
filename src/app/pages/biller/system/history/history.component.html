@@ -140,7 +140,7 @@
               </div>
               <div class="item">
                 <span>Bill No</span>
-                <span>{{ bill.billNo ? bill.billNo : "Un-Settled" }}</span>
+                <span>{{ bill?.cancelledReason?.reason ? "Cancelled" : (bill.billNo ? bill.billNo : "Un-Settled")}}</span>
               </div>
               <div class="item">
                 <span>Token No</span>
@@ -256,7 +256,7 @@
           </div>
           <div class="item">
             <span>Bill No</span>
-            <span>{{ bill.billNo ? bill.billNo : "Un-Settled" }}</span>
+            <span>{{ bill?.cancelledReason?.reason ? "Cancelled" : (bill.billNo ? bill.billNo : "Un-Settled")}}</span>
           </div>
           <div class="item">
             <span>Order No</span>
@@ -376,7 +376,7 @@
               </div>
               <div class="item">
                 <span>Bill No</span>
-                <span>{{ bill.billNo ? bill.billNo : "Un-Settled" }}</span>
+                <span>{{ bill?.cancelledReason?.reason ? "Cancelled" : (bill.billNo ? bill.billNo : "Un-Settled")}}</span>
               </div>
               <div class="item">
                 <span>Token No</span>
@@ -508,7 +508,7 @@
                   </div>
                   <div class="item">
                     <span>Bill No</span>
-                    <span>{{ bill.billNo ? bill.billNo : "Un-Settled" }}</span>
+                    <span>{{ bill?.cancelledReason?.reason ? "Cancelled" : (bill.billNo ? bill.billNo : "Un-Settled")}}</span>
                   </div>
                   <div class="item">
                     <span>Token No</span>

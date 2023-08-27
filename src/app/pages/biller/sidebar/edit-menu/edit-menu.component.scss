@@ -250,9 +250,8 @@ section {
         }
       }
       .filters {
-        display: grid;
-        grid-template-columns: 4fr 1fr 1fr 1fr 1fr 1fr;
-        justify-content: space-between;
+        display: flex;
+        justify-content: flex-start;
         align-items: center;
         width: 100%;
         gap: 10px;
@@ -262,6 +261,9 @@ section {
           gap: 40px;
           justify-content: space-between;
           align-items: center;
+        }
+        input.customSearchBox{
+          width: 30%;
         }
         form {
           display: flex;

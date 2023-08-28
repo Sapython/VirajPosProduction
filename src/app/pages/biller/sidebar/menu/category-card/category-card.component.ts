@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import {
   Category,
   ComboCategory,
@@ -11,14 +11,16 @@ import { Product } from '../../../../../types/product.structure';
   templateUrl: './category-card.component.html',
   styleUrls: ['./category-card.component.scss'],
 })
-export class CategoryCardComponent implements OnInit {
+export class CategoryCardComponent implements OnInit, AfterViewInit {
   @Input() category: Category | ComboCategory | undefined;
   @Input() full: boolean = false;
   @Input() active: boolean = false;
   @Input() hiddenIconVisible: boolean = false;
   @Input() hidden: boolean = false;
   @Input() customLength:number=0;
+  @Output() vclick:EventEmitter<any> = new EventEmitter<any>();
   length: number = 0;
+  @ViewChild('button') button:ElementRef;
   constructor(public dataProvider: DataProvider) {}
   ngOnInit(): void {
     // console.log("this.category?.products",this.category);
@@ -35,8 +37,18 @@ export class CategoryCardComponent implements OnInit {
     }
   }
 
+  
+
+
   filterVisible(products: Product[]) {
     if (!products) return [];
     return products.filter((product) => product.visible || this.full);
+  }
+
+  ngAfterViewInit(): void {
+    var hammertime = new Hammer(this.button.nativeElement);
+    hammertime.on('panend', (ev)=>{
+      this.filterClick(ev);
+    });
   }
 }

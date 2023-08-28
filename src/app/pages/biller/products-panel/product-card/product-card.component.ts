@@ -36,16 +36,16 @@ export class ProductCardComponent implements OnInit {
     // THIS IS DONE BECAUSE THE WORDS ARE NOT BREAKING ON WRAP WHEN THERE ARE SPECIAL CHARACTERS IN THE WORDS
   }
   ngAfterViewInit(): void {
-    var hammertime = new Hammer(this.button.nativeElement,{
-      recognizers:[
-        [Hammer.Pan,{direction:Hammer.DIRECTION_ALL}]
-      ]
-    });
-    hammertime.on('panend', (ev)=>{
-      console.log("ev.delta",ev.deltaY,ev.deltaX)
-      if ((ev.deltaY > 150 || ev.deltaX > 150) && ev.deltaTime < 1000) {
-        this.vclick.emit();
-      }
-    });
+    // var hammertime = new Hammer(this.button.nativeElement,{
+    //   recognizers:[
+    //     [Hammer.Pan,{direction:Hammer.DIRECTION_ALL}]
+    //   ]
+    // });
+    // hammertime.on('panend', (ev)=>{
+    //   console.log("ev.delta",ev.deltaY,ev.deltaX)
+    //   if ((ev.deltaY > 150 || ev.deltaX > 150) && ev.deltaTime < 1000) {
+    //     this.vclick.emit();
+    //   }
+    // });
   }
 }

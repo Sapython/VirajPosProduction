@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import Fuse from 'fuse.js';
 import { Subject, debounceTime } from 'rxjs';
 import { Product } from '../../../types/product.structure';
@@ -31,7 +31,7 @@ export class ProductsPanelComponent implements OnInit {
   mode: 'combos' | 'products' | 'types' = 'products';
   selectedCombo: Combo | undefined = undefined;
   currentlyWaitingForSearchResults: boolean = false;
-
+  
   constructor(private dataProvider: DataProvider) {
     this.dataProvider.menuProducts.subscribe((menu: Category) => {
       if (menu){

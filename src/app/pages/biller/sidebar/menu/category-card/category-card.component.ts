@@ -46,9 +46,16 @@ export class CategoryCardComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    var hammertime = new Hammer(this.button.nativeElement);
+    var hammertime = new Hammer(this.button.nativeElement,{
+      recognizers:[
+        [Hammer.Pan,{direction:Hammer.DIRECTION_ALL}]
+      ]
+    });
     hammertime.on('panend', (ev)=>{
-      this.filterClick(ev);
+      console.log("ev.delta",ev.deltaY,ev.deltaX)
+      if ((ev.deltaY > 150 || ev.deltaX > 150) && ev.deltaTime < 1000) {
+        this.vclick.emit();
+      }
     });
   }
 }

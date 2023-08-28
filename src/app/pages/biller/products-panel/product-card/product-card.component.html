@@ -1,6 +1,8 @@
 <div
   matRipple
   class="main"
+  #button
+  (click)="vclick.emit($event)"
   [ngClass]="{ small: smaller, veg: veg, nonveg: !veg }"
 >
   <div class="container">

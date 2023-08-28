@@ -18,7 +18,7 @@
         >
           <app-category-card
             [active]="activeIndex == 'viraj' + i"
-            (click)="openCategory(category); activeIndex = 'viraj' + i"
+            (vclick)="openCategory(category); activeIndex = 'viraj' + i"
             [category]="category"
           ></app-category-card>
         </ng-container>
@@ -26,7 +26,7 @@
       <ng-container *ngIf="this.dataProvider.getAccess('seeCombos') && currentMenu?.comboCategory.combos.length">
         <app-category-card
           [active]="activeIndex == 'combo'"
-          (click)="openCombo(currentMenu?.comboCategory); activeIndex = 'combo'"
+          (vclick)="openCombo(currentMenu?.comboCategory); activeIndex = 'combo'"
           [category]="currentMenu?.comboCategory"
         ></app-category-card>
       </ng-container>
@@ -46,7 +46,7 @@
       >
         <app-category-card
           [active]="activeIndex == 'your' + i"
-          (click)="openCategory(category); activeIndex = 'your' + i"
+          (vclick)="openCategory(category); activeIndex = 'your' + i"
           [category]="category"
         ></app-category-card>
       </ng-container>
@@ -66,7 +66,7 @@
       >
         <app-category-card
           [active]="activeIndex == 'main' + i"
-          (click)="openCategory(category); activeIndex = 'main' + i"
+          (vclick)="openCategory(category); activeIndex = 'main' + i"
           [category]="category"
         ></app-category-card>
       </ng-container>

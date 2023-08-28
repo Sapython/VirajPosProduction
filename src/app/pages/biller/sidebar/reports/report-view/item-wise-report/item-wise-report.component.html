@@ -16,7 +16,7 @@
           {{ product.name  || 'N/A'}}
         </td>
         <td>
-          {{ product.bills.length > 0 ? product.bills : "Unsettled" }}
+          {{ (product.bills.length > 0 ? product.bills : "Unsettled") || 'N/A' }}
         </td>
         <td>
           {{ product.kots  || 'N/A'}}

@@ -1,4 +1,4 @@
-<div #button matRipple *ngIf="category" class="category" [ngClass]="{ active: active }">
+<div #button (click)="vclick.emit($event)" matRipple *ngIf="category" class="category" [ngClass]="{ active: active }">
   <p class="">{{ category.name }}</p>
   <div>
     <p class="average" *ngIf="category.averagePrice">

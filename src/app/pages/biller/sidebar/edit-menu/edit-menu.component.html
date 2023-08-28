@@ -166,7 +166,7 @@
                 [full]="true"
                 *ngIf="this.dataProvider.getAccess('seeAllProducts')"
                 [customLength]="mode.products.length"
-                (click)="
+                (vclick)="
                   mode.selectCategory(mode.allProductsCategory);
                   mode.currentType = 'all'
                 "
@@ -189,7 +189,7 @@
                   [hiddenIconVisible]="true"
                   [hidden]="category.enabled"
                   *ngFor="let category of mode.recommendedCategories"
-                  (click)="
+                  (vclick)="
                     mode.selectCategory(category);
                     mode.currentType = 'recommended'
                   "
@@ -231,7 +231,7 @@
                     [hidden]="category.enabled"
                     cdkDrag
                     *ngFor="let category of mode.viewCategories"
-                    (click)="
+                    (vclick)="
                       mode.selectCategory(category); mode.currentType = 'view'
                     "
                     [category]="category"
@@ -264,7 +264,7 @@
                     [hiddenIconVisible]="true"
                     [hidden]="category.enabled"
                     *ngFor="let category of mode.viewCategories"
-                    (click)="
+                    (vclick)="
                       mode.selectCategory(category,this.dataProvider.currentUser.username);
                       mode.currentType = 'view'
                     "
@@ -310,7 +310,7 @@
                           [hidden]="category.enabled"
                           cdkDrag
                           *ngFor="let category of user.categories"
-                          (click)="
+                          (vclick)="
                             mode.selectCategory(category,user.user);
                             mode.currentType = 'view'
                           "

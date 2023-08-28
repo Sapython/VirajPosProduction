@@ -1,4 +1,4 @@
-<div matRipple *ngIf="category" class="category" [ngClass]="{ active: active }">
+<div #button matRipple *ngIf="category" class="category" [ngClass]="{ active: active }">
   <p class="">{{ category.name }}</p>
   <div>
     <p class="average" *ngIf="category.averagePrice">

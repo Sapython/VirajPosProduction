@@ -146,20 +146,19 @@ export class DaySummaryComponent {
                 totalNcAmount: this.roundOff(bills
                   .filter((res) => res.nonChargeableDetail)
                   .reduce((acc, res) => acc + res.billing.subTotal, 0)),
-                paymentChannels: bills.reduce((acc, res) => {
-                  if (res.settlement?.payments){
-                    res.settlement.payments.forEach((payment) => {
-                      if (acc && acc[payment.paymentMethod]) {
-                        acc[payment.paymentMethod] += payment.amount;
-                      } else {
-                        if (!acc){
-                          acc = {[payment.paymentMethod]:0}
+                  paymentChannels: bills.reduce((acc, res) => {
+                    console.log("res?.settlement?.payments",res?.settlement?.payments);
+                    if (res?.settlement?.payments){
+                      res.settlement.payments.forEach((payment) => {
+                        if (acc[payment.paymentMethod]) {
+                          acc[payment.paymentMethod] += payment.amount;
+                        } else {
+                          acc[payment.paymentMethod] = payment.amount;
                         }
-                        acc[payment.paymentMethod] = payment.amount;
-                      }
-                    })
-                  }
-                },{} as any)
+                      });
+                      return acc;
+                    }
+                  },{})
               },
               dineIn: {
                 totalBills: dineInBills.length,
@@ -206,20 +205,19 @@ export class DaySummaryComponent {
                 totalNcAmount: this.roundOff(dineInBills
                   .filter((res) => res.nonChargeableDetail)
                   .reduce((acc, res) => acc + res.billing.subTotal, 0)),
-                paymentChannels: dineInBills.reduce((acc, res) => {
-                  if (res.settlement?.payments){
-                    res.settlement.payments.forEach((payment) => {
-                      if (acc && acc[payment.paymentMethod]) {
-                        acc[payment.paymentMethod] += payment.amount;
-                      } else {
-                        if (!acc){
-                          acc = {[payment.paymentMethod]:0}
+                  // paymentChannels is like this {cash: 100, card: 200}
+                  paymentChannels: dineInBills.reduce((acc, res) => {
+                    if (res?.settlement?.payments){
+                      res.settlement.payments.forEach((payment) => {
+                        if (acc[payment.paymentMethod]) {
+                          acc[payment.paymentMethod] += payment.amount;
+                        } else {
+                          acc[payment.paymentMethod] = payment.amount;
                         }
-                        acc[payment.paymentMethod] = payment.amount;
-                      }
-                    })
-                  }
-                },{} as any)
+                      });
+                      return acc;
+                    }
+                  },{})
               },
               takeaway: {
                 totalBills: takeawayBills.length,
@@ -265,19 +263,17 @@ export class DaySummaryComponent {
                   .filter((res) => res.nonChargeableDetail)
                   .reduce((acc, res) => acc + res.billing.subTotal, 0)),
                   paymentChannels: takeawayBills.reduce((acc, res) => {
-                    if (res.settlement?.payments){
+                    if (res?.settlement?.payments){
                       res.settlement.payments.forEach((payment) => {
-                        if (acc && acc[payment.paymentMethod]) {
+                        if (acc[payment.paymentMethod]) {
                           acc[payment.paymentMethod] += payment.amount;
                         } else {
-                          if (!acc){
-                            acc = {[payment.paymentMethod]:0}
-                          }
                           acc[payment.paymentMethod] = payment.amount;
                         }
-                      })
+                      });
+                      return acc;
                     }
-                  },{} as any)
+                  },{})
               },
               online: {
                 totalBills: onlineBills.length,
@@ -325,21 +321,20 @@ export class DaySummaryComponent {
                   .filter((res) => res.nonChargeableDetail)
                   .reduce((acc, res) => acc + res.billing.subTotal, 0)),
                   paymentChannels: onlineBills.reduce((acc, res) => {
-                    if (res.settlement?.payments){
+                    if (res?.settlement?.payments){
                       res.settlement.payments.forEach((payment) => {
-                        if (acc && acc[payment.paymentMethod]) {
+                        if (acc[payment.paymentMethod]) {
                           acc[payment.paymentMethod] += payment.amount;
                         } else {
-                          if (!acc){
-                            acc = {[payment.paymentMethod]:0}
-                          }
                           acc[payment.paymentMethod] = payment.amount;
                         }
-                      })
+                      });
+                      return acc;
                     }
-                  },{} as any)
+                  },{})
               },
             };
+            console.log('Channel wise summary', this.channelWiseDaySummary);
           })
           .catch((err) => {
             this.loading = false;

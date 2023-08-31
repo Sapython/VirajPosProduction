@@ -128,6 +128,12 @@ export async function settle(
   // update every product and increase their sales counter by their quantity
   // return
   // TODO to be refixed
+  if (this.dataProvider.directSettle){
+    if (this.kots.find((kot) => kot.stage === 'active')) {
+      this.finalizeAndPrintKot();
+    }
+    this.finalize();
+  }
   let products: (Product | ApplicableCombo)[] = [];
   let allProducts = this.kots.reduce((acc, cur) => {
     return acc.concat(cur.products);

@@ -15,7 +15,11 @@
     minimalPadding: minimalPadding,
     smallIcon: iconSize == 'small',
     mediumIcon: iconSize == 'medium',
-    largeIcon: iconSize == 'large'
+    largeIcon: iconSize == 'large',
+    colorPrimary: color == 'primary',
+    colorSuccess: color == 'success',
+    colorWarning: color == 'warning',
+    colorDanger: color == 'danger'
   }"
   (click)="filterClick($event)"
   [disabled]="disabled"

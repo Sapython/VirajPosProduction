@@ -46,7 +46,7 @@
       <td><strong>All - </strong>Non Chargeable Sales</td>
       <td>{{ channelWiseDaySummary.all.totalNcAmount  |currency:'INR'}}</td>
     </tr>
-    <!-- <tr>
+    <tr>
       <td><strong>All - </strong>Payment Channels</td>
       <td *ngIf="channelWiseDaySummary.all.paymentChannels">
         <tr *ngFor="let item of channelWiseDaySummary.all.paymentChannels | keyvalue">
@@ -54,7 +54,7 @@
           <td>{{item.value | currency:'INR'}}</td>
         </tr>
       </td>
-    </tr> -->
+    </tr>
     <!-- dine In -->
     <tr>
       <td
@@ -97,6 +97,15 @@
     <tr>
       <td><strong>Dine In - </strong>Non Chargeable Sales</td>
       <td>{{ channelWiseDaySummary.dineIn.totalNcAmount }}</td>
+    </tr>
+    <tr>
+      <td><strong>Dine In - </strong>Payment Channels</td>
+      <td *ngIf="channelWiseDaySummary.dineIn.paymentChannels">
+        <tr *ngFor="let item of channelWiseDaySummary.dineIn.paymentChannels | keyvalue">
+          <td>{{item.key}}</td>
+          <td>{{item.value | currency:'INR'}}</td>
+        </tr>
+      </td>
     </tr>
     <!-- takeaway -->
     <tr>
@@ -141,6 +150,15 @@
       <td><strong>Takeaway - </strong>Non Chargeable Sales</td>
       <td>{{ channelWiseDaySummary.takeaway.totalNcAmount }}</td>
     </tr>
+    <tr>
+      <td><strong>Takeaway - </strong>Payment Channels</td>
+      <td *ngIf="channelWiseDaySummary.takeaway.paymentChannels">
+        <tr *ngFor="let item of channelWiseDaySummary.takeaway.paymentChannels | keyvalue">
+          <td>{{item.key}}</td>
+          <td>{{item.value | currency:'INR'}}</td>
+        </tr>
+      </td>
+    </tr>
     <!-- online -->
     <tr>
       <td
@@ -183,6 +201,15 @@
     <tr>
       <td><strong>Online - </strong>Non Chargeable Sales</td>
       <td>{{ channelWiseDaySummary.online.totalNcAmount }}</td>
+    </tr>
+    <tr>
+      <td><strong>Online - </strong>Payment Channels</td>
+      <td *ngIf="channelWiseDaySummary.online.paymentChannels">
+        <tr *ngFor="let item of channelWiseDaySummary.online.paymentChannels | keyvalue">
+          <td>{{item.key}}</td>
+          <td>{{item.value | currency:'INR'}}</td>
+        </tr>
+      </td>
     </tr>
   </tbody>
 </table>

@@ -15,6 +15,10 @@ button {
   justify-content: center;
   // transition: all 0s linear;
   gap: 7px;
+  --buttonPrimary: var(--Vrajera-primary);
+  --buttonContrast: whitesmoke;
+  --buttonPrimary-hover: var(--Vrajera-primary-hover);
+  --buttonPrimary-hover-rgb: var(--Vrajera-primary-hover-rgb);
   cursor: pointer;
   ::ng-deep svg {
     max-width: 20px;
@@ -25,17 +29,17 @@ button {
     transform: scale(0.95);
   }
   &.solid {
-    border: 2px solid var(--Vrajera-primary);
+    border: 2px solid var(--buttonPrimary);
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-    background: var(--Vrajera-primary);
-    color: whitesmoke;
+    background: var(--buttonPrimary);
+    color: var(--buttonContrast);
     fill: white;
   }
   &.outline {
-    border: 2px solid var(--Vrajera-primary);
-    color: var(--Vrajera-primary);
+    border: 2px solid var(--buttonPrimary);
+    color: var(--buttonPrimary);
     background: whitesmoke;
-    fill: var(--Vrajera-primary);
+    fill: var(--buttonPrimary);
     text-shadow: 0px 0px 1px rgba(0, 0, 0, 0.1);
   }
   &.icon {
@@ -43,9 +47,9 @@ button {
     max-width: 35px;
     max-height: 35px;
     border-radius: 50%;
-    fill: var(--Vrajera-primary);
+    fill: var(--buttonPrimary);
     background: transparent !important;
-    color: var(--Vrajera-primary);
+    color: var(--buttonPrimary);
     box-shadow: none !important;
     ::ng-deep i {
       font-size: var(--Vrajera-icon-medium);
@@ -132,12 +136,12 @@ button {
   }
   &.icon {
     &:hover {
-      background: rgba(var(--Vrajera-primary-hover-rgb), 0.1) !important;
+      background: rgba(var(--buttonPrimary-hover-rgb), 0.1) !important;
     }
   }
   &.solid {
     &:hover {
-      background: var(--Vrajera-primary-hover) !important;
+      background: var(--buttonPrimary-hover) !important;
     }
   }
   &.minimalPadding {
@@ -148,7 +152,7 @@ button {
     cursor: not-allowed;
     &:hover {
       &.solid {
-        background: var(--Vrajera-primary) !important;
+        background: var(--buttonPrimary) !important;
       }
       &.outline {
         background: whitesmoke !important;
@@ -172,5 +176,29 @@ button {
     ::ng-deep i {
       font-size: var(--Vrajera-icon-large);
     }
+  }
+  &.colorPrimary{
+    --buttonPrimary: var(--Vrajera-primary);
+    --buttonContrast: whitesmoke;
+    --buttonPrimary-hover: var(--Vrajera-primary-hover);
+    --buttonPrimary-hover-rgb: var(--Vrajera-primary-hover-rgb);
+  }
+  &.colorSuccess{
+    --buttonPrimary: var(--Vrajera-success);
+    --buttonContrast: whitesmoke;
+    --buttonPrimary-hover: var(--Vrajera-success-hover);
+    --buttonPrimary-hover-rgb: var(--Vrajera-success-hover-rgb);
+  }
+  &.colorWarning{
+    --buttonPrimary: var(--Vrajera-accent);
+    --buttonContrast: black;
+    --buttonPrimary-hover: var(--Vrajera-accent-hover);
+    --buttonPrimary-hover-rgb: var(--Vrajera-accent-hover-rgb);
+  }
+  &.colorDanger{
+    --buttonPrimary: var(--Vrajera-danger);
+    --buttonContrast: whitesmoke;
+    --buttonPrimary-hover: var(--Vrajera-danger-hover);
+    --buttonPrimary-hover-rgb: var(--Vrajera-danger-hover-rgb);
   }
 }

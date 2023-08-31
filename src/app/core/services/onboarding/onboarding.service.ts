@@ -653,6 +653,10 @@ export class OnboardingService {
           res['printBillAfterSettle'] || false;
         this.dataProvider.printBillAfterFinalize =
           res['printBillAfterFinalize'] || false;
+        this.dataProvider.directSettle =
+          res['directSettle'] || false;
+        this.dataProvider.confirmBeforePrint =
+          res['confirmBeforePrint'] || false;
         this.dataProvider.takeawayToken = res['takeawayTokenNo'] || 0;
         this.dataProvider.editKotTime = res['editKotTime'] || 0;
         this.dataProvider.kotEditable = res['kotEditable'] || false;

@@ -14,6 +14,14 @@ section {
   justify-content: space-between;
   gap: 10px;
   height: 100%;
+  h3{
+    display: block;
+    margin: 0 auto;
+    color: #555;
+    text-align: center;
+    font-weight: 400;
+    padding: 20px;
+  }
   .seeMore {
     display: flex;
     justify-content: flex-end;
@@ -75,7 +83,7 @@ section {
 
     .actions {
       display: grid;
-      grid-template-areas: "a a b b" "c d e f";
+      grid-template-areas: "a a b b c c" "d d d e e e";
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
@@ -83,26 +91,34 @@ section {
       viraj-button {
         width: 100%;
       }
-      viraj-button:nth-child(1) {
+      viraj-button.discount {
         grid-area: a;
       }
-      viraj-button:nth-child(2) {
+      viraj-button.billNote {
         grid-area: b;
       }
-      viraj-button:nth-child(3) {
+      viraj-button.preview {
         grid-area: c;
       }
-      viraj-button:nth-child(4) {
+      viraj-button.printKot, viraj-button.cancel {
         grid-area: d;
       }
-      viraj-button:nth-child(5) {
+      viraj-button.finalize, viraj-button.split {
         grid-area: e;
       }
-      viraj-button:nth-child(5) {
-        grid-area: f;
+      viraj-button.settle {
+        grid-area: e;
+      }
+      &.withSettle{
+        grid-template-areas: "a a b b c c" "d d e e f f";
+        viraj-button.settle {
+          grid-area: f;
+        }
+        viraj-button.split {
+          grid-area: e;
+        }
       }
     }
-
     .customer {
       padding: 7px 20px;
       width: 100%;

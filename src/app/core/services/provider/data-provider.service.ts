@@ -135,6 +135,7 @@ export class DataProvider {
   public printBillAfterSettle: boolean = false;
   public printBillAfterFinalize: boolean = false;
   public confirmBeforePrint: boolean = false;
+  public directSettle: boolean = false;
   public currentSettings: any;
   public customBillNote: string = '';
   public todaySales: any = {};
@@ -809,6 +810,7 @@ export class DataProvider {
       'billNote',
       'cancelBill',
       'settleBill',
+      'finalizeBill',
       'writeCustomerInfo',
     ],
     waiter: [
@@ -841,6 +843,7 @@ export class DataProvider {
       'manageKot',
       'seePreview',
       'billNote',
+      'finalizeBill',
       'writeCustomerInfo',
     ],
   };

@@ -23,6 +23,7 @@ import { Observable, startWith, map } from 'rxjs';
 import { Category } from '../../../../../types/category.structure';
 import Fuse from 'fuse.js';
 import { Product } from '../../../../../types/product.structure';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-add-combo',
@@ -41,6 +42,7 @@ export class AddComboComponent {
   categorySearchFuseInstance: Fuse<Category>;
   monthSearchControl = new FormControl('');
   monthSearchFuseInstance: Fuse<string>;
+  searchQuery: string = '';
 
   filteredCategories: Observable<Category[]>;
   selectedCategories: {
@@ -52,6 +54,8 @@ export class AddComboComponent {
     minimumProducts: number;
     maximumProducts: number;
     id: string;
+    searchQuery: string;
+    filteredProducts: Product[];
   }[] = [];
   allCategories: Category[] = [];
 
@@ -484,6 +488,7 @@ export class AddComboComponent {
       amount: 0,
       minimumProducts: 1,
       maximumProducts: null,
+      searchQuery: '',
     };
     category.category.products.forEach((element) => {
       element.selected = false;
@@ -742,6 +747,23 @@ export class AddComboComponent {
     Object.keys(this.visibilitySettings.timeSlotSelected).forEach((key) => {
       this.visibilitySettings.timeSlotSelected[key].selected = value;
     });
+  }
+
+  searchProducts(selectedCategory){
+    console.log("searchProducts",selectedCategory);
+    selectedCategory.filteredProducts =  selectedCategory.category.products.filter((product)=>{
+      if(product.name.toLowerCase().indexOf(selectedCategory.searchQuery.toLowerCase()) > -1){
+        return true;
+      }else{
+        return false;
+      }
+    })
+  }
+
+
+  drop(event: CdkDragDrop<string[]>,selectedCategory:any) {
+    moveItemInArray(selectedCategory.category.products, event.previousIndex, event.currentIndex);
+    selectedCategory.category.productOrders = selectedCategory.category.products.map((product)=>product.id);
   }
 }
 

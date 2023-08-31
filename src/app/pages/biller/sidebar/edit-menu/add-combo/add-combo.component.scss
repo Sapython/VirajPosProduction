@@ -419,3 +419,14 @@ section {
     }
   }
 }
+
+input[type="search"]{
+  height: 35px;
+  font-size: var(--Vrajera-font-large);
+  background: white;
+  padding: 5px 20px;
+  box-shadow: inset 1px 2px 5px rgba(0, 0, 0, 0.07);
+  border: 2px solid #cbcbcb;
+  border-radius: 5px;
+  box-sizing: border-box;
+}

@@ -154,16 +154,16 @@
                   #allProductsSelect
                   >Product Name</mat-checkbox
                 >
-                <p>Price</p>
+                <input type="search" placeholder="Search Products" [(ngModel)]="selectedCategory.searchQuery" (ngModelChange)="searchProducts(selectedCategory)">
               </div>
               <div
                 class="product"
-                *ngFor="let product of selectedCategory.category.products"
+                *ngFor="let product of selectedCategory.searchQuery ? selectedCategory.filteredProducts : selectedCategory.category.products"
               >
                 <mat-checkbox [(ngModel)]="product.selected">{{
                   product.name
-                }}</mat-checkbox>
-                <strong>{{ product.price }}</strong>
+                }} - {{product.tags[0]?.name}}</mat-checkbox>
+                <strong>{{ product.price | currency:'INR' }}</strong>
               </div>
             </div>
             <div class="selectedProducts">
@@ -171,14 +171,16 @@
                 <p>Product Name</p>
                 <p>Price</p>
               </div>
-              <ng-container
-                *ngFor="let product of selectedCategory.category.products"
-              >
-                <div class="product" *ngIf="product.selected">
-                  <p>{{ product.name }}</p>
-                  <strong>{{ product.price }}</strong>
-                </div>
-              </ng-container>
+              <div class="list" cdkDropList (cdkDropListDropped)="drop($event,selectedCategory)">
+                <ng-container
+                  *ngFor="let product of selectedCategory.category.products"
+                >
+                  <div class="product" cdkDrag *ngIf="product.selected">
+                    <p>{{ product.name }} - {{product.tags[0]?.name}}</p>
+                    <strong>{{ product.price | currency:'INR' }}</strong>
+                  </div>
+                </ng-container>
+              </div>
             </div>
           </div>
         </div>

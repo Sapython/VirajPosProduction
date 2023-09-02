@@ -20,6 +20,7 @@ import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { ReportViewComponent } from './report-view/report-view.component';
 import { Subject, debounceTime } from 'rxjs';
 import Fuse from 'fuse.js';
+import { Functions, httpsCallable } from '@angular/fire/functions';
 @Component({
   selector: 'app-reports',
   templateUrl: './reports.component.html',
@@ -141,6 +142,10 @@ export class ReportsComponent implements OnInit {
       description: 'List of bills that are cancelled.',
     },
   ];
+  private analyzeAnalyticsForBusiness = httpsCallable(
+    this.functions,
+    'analyzeAnalyticsForBusiness'
+  );
   fuseSearchInstance:Fuse<ReportFormat> = new Fuse(this.reportFormats,{keys:['title','description']});
   filteredReportFormats:ReportFormat[] = [];
   reportSearchSubject:Subject<string> = new Subject<string>();
@@ -157,6 +162,7 @@ export class ReportsComponent implements OnInit {
     private dataProvider: DataProvider,
     private dialog: Dialog,
     public dialogRef: DialogRef,
+    private functions:Functions
   ) {
     this.filteredReportFormats = this.reportFormats.slice();
     this.reportSearchSubject.pipe(debounceTime(600)).subscribe((res) => {
@@ -298,6 +304,20 @@ export class ReportsComponent implements OnInit {
       } else {
         alert('No data found for this date');
       }
+    });
+  }
+
+  refreshReport(){
+    this.dataProvider.loading = true;
+    this.analyzeAnalyticsForBusiness({businessId:this.dataProvider.currentBusiness.businessId}).then((result:any)=>{
+      console.log("Result",result);
+      this.fetchChartPaymentData({value:this.paymentDate});
+      this.fetchChartSalesData({value:this.salesDate});
+      alert("Refreshed data");
+    }).catch((e)=>{
+      alert("Error refreshing data");
+    }).finally(()=>{
+      this.dataProvider.loading = false;
     });
   }
 
@@ -1168,6 +1188,7 @@ export class ReportsComponent implements OnInit {
       console.log('Closed', res);
     });
   }
+
 }
 interface ReportFormat {
   title: string;

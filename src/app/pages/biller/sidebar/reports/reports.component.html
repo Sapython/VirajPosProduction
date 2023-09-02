@@ -13,7 +13,11 @@
       <div class="graphs">
         <div class="chartCard">
           <div class="heading">
-            <h4>Average Vs Actual Sales</h4>
+            <h4>Average Vs Actual Sales
+              <viraj-button type="icon" (vclick)="refreshReport()">
+                <i class="ri-refresh-fill"></i>
+              </viraj-button>
+            </h4>
             <div class="datePicker">
               <mat-datepicker #salesPicker></mat-datepicker>
               <input
@@ -35,7 +39,11 @@
         </div>
         <div class="chartCard">
           <div class="heading">
-            <h4>Channel Wise Payment</h4>
+            <h4>Channel Wise Payment 
+              <viraj-button type="icon" (vclick)="refreshReport()">
+                <i class="ri-refresh-fill"></i>
+              </viraj-button>
+            </h4>
             <div class="datePicker">
               <mat-datepicker #picker></mat-datepicker>
               <input

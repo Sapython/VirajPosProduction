@@ -29,13 +29,6 @@
   <section class="productArea" [ngClass]="{notFound:this.searchVisible && this.searchResults.length == 0}">
     <ng-container *ngIf="!this.searchVisible">
       <ng-container *ngIf="mode == 'products'">
-        <ng-container
-          *ngFor="
-            let item of this.categoryProductSearchResults.length > 0
-              ? categoryProductSearchResults
-              : products
-          "
-        >
         <app-product-card
               [taxes]="[]"
               (vclick)="openItem(this.dataProvider.currentMenu.products[0].category)"
@@ -47,6 +40,13 @@
               [price]="0"
             >
             </app-product-card>
+        <ng-container
+          *ngFor="
+            let item of this.categoryProductSearchResults.length > 0
+              ? categoryProductSearchResults
+              : products
+          "
+        >
           <app-product-card
             [taxes]="item.taxes"
             (vclick)="item.taxes ? selectProduct(item) : {}"

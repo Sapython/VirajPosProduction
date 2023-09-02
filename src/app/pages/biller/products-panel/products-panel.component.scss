@@ -19,6 +19,7 @@ section {
   background-repeat: repeat;
   background-size: 400px;
   background-attachment: fixed;
+  min-height: calc(100% - 80px);
   align-items: flex-start;
   align-content: flex-start;
   &.notFound{

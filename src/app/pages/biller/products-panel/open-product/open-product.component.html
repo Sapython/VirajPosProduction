@@ -1,0 +1,22 @@
+<section>
+	<div class="heading">
+		<h3>Open Product</h3>
+		<viraj-button mat-icon-button><mat-icon>close</mat-icon></viraj-button>
+	</div>
+	<form [formGroup]="productForm" (ngSubmit)="dialogRef.close(productForm.value)">
+		<div class="body">
+			<mat-form-field>
+				<mat-label>Product Name</mat-label>
+				<input type="text" matInput formControlName="name">
+			</mat-form-field>
+			<mat-form-field>
+				<mat-label>Price</mat-label>
+				<input type="number" matInput formControlName="price">
+			</mat-form-field>
+		</div>
+		<div class="actions">
+			<button type="button" color="primary" (click)="dialogRef.close()" mat-stroked-button>Cancel</button>
+			<button type="submit" [disabled]="productForm.invalid" color="primary" mat-flat-button>Submit</button>
+		</div>
+	</form>
+</section>

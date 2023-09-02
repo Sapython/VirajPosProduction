@@ -39,8 +39,8 @@ import { AnalyticsService } from '../database/analytics/analytics.service';
 import { TableService } from '../database/table/table.service';
 import { BillService } from '../database/bill/bill.service';
 import { CustomerService } from '../customer/customer.service';
-import { Router } from '@angular/router';
 import { Functions, httpsCallable } from '@angular/fire/functions';
+import { Router } from '@angular/router';
 
 var debug: boolean = true;
 @Injectable({
@@ -665,6 +665,87 @@ export class OnboardingService {
         this.dataProvider.kotRePrintable = res['kotRePrintable'] || false;
         // this.dataProvider.password = res['password'];
         this.dataProvider.multipleDiscount = res['multipleDiscount'] || false;
+        this.dataProvider.charges = res['charges'] || {
+          dineIn:{
+            container:{
+              allowed:false,
+              byDefault:false,
+              fixed:false,
+              charges:0
+            },
+            delivery:{
+              allowed:false,
+              byDefault:false,
+              fixed:false,
+              charges:0
+            },
+            service:{
+              allowed:false,
+              byDefault:false,
+              fixed:false,
+              charges:0
+            },
+            tip:{
+              allowed:false,
+              byDefault:false,
+              fixed:false,
+              charges:0
+            },
+          },
+          takeaway:{
+            container:{
+              allowed:false,
+              byDefault:false,
+              fixed:false,
+              charges:0
+            },
+            delivery:{
+              allowed:false,
+              byDefault:false,
+              fixed:false,
+              charges:0
+            },
+            service:{
+              allowed:false,
+              byDefault:false,
+              fixed:false,
+              charges:0
+            },
+            tip:{
+              allowed:false,
+              byDefault:false,
+              fixed:false,
+              charges:0
+            },
+          },
+          online:{
+            container:{
+              allowed:false,
+              byDefault:false,
+              fixed:false,
+              charges:0
+            },
+            delivery:{
+              allowed:false,
+              byDefault:false,
+              fixed:false,
+              charges:0
+            },
+            service:{
+              allowed:false,
+              byDefault:false,
+              fixed:false,
+              charges:0
+            },
+            tip:{
+              allowed:false,
+              byDefault:false,
+              fixed:false,
+              charges:0
+            },
+          },
+        };
+        this.dataProvider.openItemEnabled = res['openItemEnabled'] || false;
         this.dataProvider.customCharges = res['customCharges'] || {dineIn:[],takeaway:[],online:[]};
         this.dataProvider.activeModes = res['modes'];
         this.dataProvider.dineInMenu = res['dineInMenu'];

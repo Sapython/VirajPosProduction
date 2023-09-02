@@ -14,6 +14,7 @@ export class ProductCardComponent implements OnInit {
   @Input() veg: boolean = true;
   @Input() tags: { name: string; color: string; contrast: string }[] = [];
   @Input() taxes: Tax[] | undefined = undefined;
+  @Input() openItem: boolean = false;
   @ViewChild('button') button:ElementRef;
   @Output() vclick:EventEmitter<any> = new EventEmitter<any>();
   ngOnInit(): void {

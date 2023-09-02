@@ -176,12 +176,15 @@ export async function settle(
   this.billService.addSales(
     allProducts
       .map((product) => {
+        if (product.id.startsWith('CUSTOM-')){
+          return undefined;
+        }
         if (product.itemType == 'product') {
           return product.id;
         } else if (product.itemType == 'combo') {
           return product.selectedProductsIds;
         }
-      })
+      }).filter((product)=>product)
       .flat(),
   );
   this.stage = 'settled';

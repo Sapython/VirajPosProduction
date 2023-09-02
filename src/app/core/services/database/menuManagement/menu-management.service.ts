@@ -127,13 +127,15 @@ export class MenuManagementService {
     });
     this.requestMenuDownload.pipe(debounceTime(1000)).subscribe((menuId) => {
       if (!this.toBeDownloadedMenus.includes(menuId)){
+        console.log("toBeDownloadedMenus",this.toBeDownloadedMenus);
         this.toBeDownloadedMenus.push(menuId);
+        this.downloadMenus();
       }
-      this.downloadMenus();
     })
   }
 
   downloadMenus(){
+    console.log("this.toBeDownloadedMenus");
     this.toBeDownloadedMenus.forEach(async (menuId) => {
       await this.getMenu(menuId);
       this.downloadedMenus.next(menuId);
@@ -1232,6 +1234,13 @@ export class MenuManagementService {
       doc(this.firestore, 'business/' + businessId + '/settings/settings'),
       settings,
       { merge: true },
+    );
+  }
+
+  updateRootSettingsAtomic(settings: any, businessId: string) {
+    return updateDoc(
+      doc(this.firestore, 'business/' + businessId + '/settings/settings'),
+      settings,
     );
   }
 

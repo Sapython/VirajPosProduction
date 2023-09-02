@@ -194,40 +194,16 @@
       ></mat-slide-toggle>
     </div>
     <div class="item">
-      <p>Enable additional charges for Dine In</p>
-      <p class="selector">
-        Dine In: 
-        <mat-select placeholder="Select Charges" multiple [(ngModel)]="this.dataProvider.customCharges.dineIn" (openedChange)="updateSettings({'customCharges': this.dataProvider.customCharges})">
-          <mat-option value="delivery">Delivery Charge</mat-option>
-          <mat-option value="tip">Tip</mat-option>
-          <mat-option value="container">Container Charge</mat-option>
-          <mat-option value="service">Service Charge</mat-option>
-        </mat-select>
-      </p>
-    </div>
-    <div class="item">
-      <p>Enable additional charges for Takeaway</p>
-      <p class="selector">
-        Takeaway: 
-        <mat-select placeholder="Select Charges" multiple [(ngModel)]="this.dataProvider.customCharges.takeaway" (openedChange)="updateSettings({'customCharges': this.dataProvider.customCharges})">
-          <mat-option value="delivery">Delivery Charge</mat-option>
-          <mat-option value="tip">Tip</mat-option>
-          <mat-option value="container">Container Charge</mat-option>
-          <mat-option value="service">Service Charge</mat-option>
-        </mat-select>
-      </p>
-    </div>
-    <div class="item">
-      <p>Enable additional charges for Online</p>
-      <p class="selector">
-        Online: 
-        <mat-select placeholder="Select Charges" multiple [(ngModel)]="this.dataProvider.customCharges.online" (openedChange)="updateSettings({'customCharges': this.dataProvider.customCharges})">
-          <mat-option value="delivery">Delivery Charge</mat-option>
-          <mat-option value="tip">Tip</mat-option>
-          <mat-option value="container">Container Charge</mat-option>
-          <mat-option value="service">Service Charge</mat-option>
-        </mat-select>
-      </p>
+      <p>Enable open item option in products section.</p>
+      <mat-slide-toggle
+        [(ngModel)]="this.dataProvider.openItemEnabled"
+        (change)="
+          updateSettings({
+            openItemEnabled: this.dataProvider.openItemEnabled
+          })
+        "
+        *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+      ></mat-slide-toggle>
     </div>
   </ng-container>
   <!-- <ng-container *ngIf="this.dataProvider.getAccess('loyaltySettings')">

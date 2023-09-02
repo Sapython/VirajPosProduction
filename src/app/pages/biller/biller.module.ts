@@ -51,6 +51,8 @@ import { OffersComponent } from './settings/sections/offers/offers.component';
 
 import { UpdateComponent } from './settings/sections/account/update/update.component';
 import { SelectPropertiesComponent } from './settings/sections/account/select-properties/select-properties.component';
+import { ChargesComponent } from './settings/sections/charges/charges.component';
+import {MatExpansionModule} from '@angular/material/expansion'; 
 
 @NgModule({
   declarations: [
@@ -75,6 +77,7 @@ import { SelectPropertiesComponent } from './settings/sections/account/select-pr
     OffersComponent,
     UpdateComponent,
     SelectPropertiesComponent,
+    ChargesComponent,
   ],
   imports: [
     CommonModule,
@@ -104,6 +107,7 @@ import { SelectPropertiesComponent } from './settings/sections/account/select-pr
     MatProgressSpinnerModule,
     MatTooltipModule,
     MatAutocompleteModule,
+    MatExpansionModule
   ],
 })
 export class BillerModule {}

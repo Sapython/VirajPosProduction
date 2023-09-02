@@ -6,6 +6,7 @@ import { DataProvider } from '../../../core/services/provider/data-provider.serv
 import Fuse from 'fuse.js';
 import { CustomerInfo } from '../../../types/user.structure';
 import { AlertsAndNotificationsService } from '../../../core/services/alerts-and-notification/alerts-and-notifications.service';
+import { Charge } from '../../../types/charges.structure';
 
 @Component({
   selector: 'app-customer-panel',
@@ -66,9 +67,13 @@ export class CustomerPanelComponent implements OnInit {
     ]),
   });
   chargesForm:FormGroup = new FormGroup({
+    deliverySelected:new FormControl(false),
     deliveryCharge:new FormControl(0),
+    tipSelected:new FormControl(false),
     tip:new FormControl(0),
+    serviceSelected:new FormControl(false),
     serviceCharge:new FormControl(0),
+    containerSelected:new FormControl(false),
     containerCharge:new FormControl(0),
   })
   @Input() padding: boolean = true;
@@ -92,7 +97,10 @@ export class CustomerPanelComponent implements OnInit {
   ) {
     if (this.dataProvider.currentBill) {
       this.loyaltySettingForm.patchValue(this.dataProvider.currentBill.currentLoyalty);
-      this.chargesForm.patchValue(this.dataProvider.currentBill.appliedCharges);
+      // this.chargesForm.patchValue(this.dataProvider.currentBill.appliedCharges);
+      let chargesSettings = this.dataProvider.charges[this.dataProvider.currentBill.mode];
+      let appliedCharges = this.dataProvider.currentBill.appliedCharges;
+      this.patchCharges(chargesSettings,appliedCharges);
       this.customerInfoForm.enable();
       this.loyaltySettingForm.enable();
     } else {
@@ -132,7 +140,9 @@ export class CustomerPanelComponent implements OnInit {
               this.dataProvider.currentBill?.customerInfo.deliveryPhone,
           });
           this.customerInfoForm.enable();
-          this.chargesForm.patchValue(this.dataProvider.currentBill.appliedCharges);
+          let chargesSettings = this.dataProvider.charges[this.dataProvider.currentBill.mode];
+          let appliedCharges = this.dataProvider.currentBill.appliedCharges;
+          this.patchCharges(chargesSettings,appliedCharges);
         } else {
           this.customerInfoForm.disable();
         }
@@ -167,13 +177,108 @@ export class CustomerPanelComponent implements OnInit {
     });
 
     this.chargesForm.valueChanges.pipe(debounceTime(1000)).subscribe((value)=>{
-      if(this.dataProvider?.currentBill){
-        this.dataProvider.currentBill.appliedCharges = value;
-        this.dataProvider.currentBill.updated.next();
-        console.log("Set charges",this.dataProvider?.currentBill.appliedCharges);
-      }
+      this.setCharges(value);
     })
 
+  }
+
+  setCharges(value:any){
+    if(this.dataProvider?.currentBill){
+      let chargesSettings = this.dataProvider.charges[this.dataProvider.currentBill.mode];
+      let appliedCharges = this.dataProvider.currentBill.appliedCharges;
+      if (chargesSettings.container.allowed){
+        if(!chargesSettings.container.fixed){
+          appliedCharges.containerCharge = value.containerCharge;
+        } else {
+          if(value.containerSelected){
+            appliedCharges.containerCharge = chargesSettings.container.charges;
+          } else {
+            appliedCharges.containerCharge = 0;
+          }
+        }
+      }
+      if (chargesSettings.delivery.allowed){
+        if(!chargesSettings.delivery.fixed){
+          appliedCharges.deliveryCharge = value.deliveryCharge;
+        } else {
+          if(value.deliverySelected){
+            appliedCharges.deliveryCharge = chargesSettings.delivery.charges;
+          } else {
+            appliedCharges.deliveryCharge = 0;
+          }
+        }
+      }
+      if (chargesSettings.service.allowed){
+        if(!chargesSettings.service.fixed){
+          appliedCharges.serviceCharge = value.serviceCharge;
+        } else {
+          if(value.serviceSelected){
+            appliedCharges.serviceCharge = chargesSettings.service.charges;
+          } else {
+            appliedCharges.serviceCharge = 0;
+          }
+        }
+      }
+      if (chargesSettings.tip.allowed){
+        if(!chargesSettings.tip.fixed){
+          appliedCharges.tip = value.tip;
+        } else {
+          if(value.tipSelected){
+            appliedCharges.tip = chargesSettings.tip.charges;
+          } else {
+            appliedCharges.tip = 0;
+          }
+        }
+      }
+    }
+  }
+
+  patchCharges(chargesSettings:Charge,appliedCharges:{containerCharge:number,deliveryCharge:number,tip:number,serviceCharge:number}) {
+    if (chargesSettings.container.allowed){
+      if(!chargesSettings.container.fixed){
+        this.chargesForm.controls.containerCharge.setValue(appliedCharges.containerCharge);
+      } else {
+        if(appliedCharges.containerCharge == chargesSettings.container.charges){
+          this.chargesForm.controls.containerSelected.setValue(true);
+        } else {
+          this.chargesForm.controls.containerSelected.setValue(false);
+        }
+      }
+    }
+    if (chargesSettings.delivery.allowed){
+      if(!chargesSettings.delivery.fixed){
+        console.log("setting delivery charge",appliedCharges.deliveryCharge);
+        this.chargesForm.controls.deliveryCharge.setValue(appliedCharges.deliveryCharge);
+      } else {
+        if(appliedCharges.deliveryCharge == chargesSettings.delivery.charges){
+          this.chargesForm.controls.deliverySelected.setValue(true);
+        } else {
+          this.chargesForm.controls.deliverySelected.setValue(false);
+        }
+      }
+    }
+    if (chargesSettings.tip.allowed){
+      if(!chargesSettings.tip.fixed){
+        this.chargesForm.controls.tip.setValue(appliedCharges.tip);
+      } else {
+        if(appliedCharges.tip == chargesSettings.tip.charges){
+          this.chargesForm.controls.tipSelected.setValue(true);
+        } else {
+          this.chargesForm.controls.tipSelected.setValue(false);
+        }
+      }
+    }
+    if (chargesSettings.service.allowed){
+      if(!chargesSettings.service.fixed){
+        this.chargesForm.controls.serviceCharge.setValue(appliedCharges.serviceCharge);
+      } else {
+        if(appliedCharges.serviceCharge == chargesSettings.service.charges){
+          this.chargesForm.controls.serviceSelected.setValue(true);
+        } else {
+          this.chargesForm.controls.serviceSelected.setValue(false);
+        }
+      }
+    }
   }
 
   selectCustomer(event: any) {
@@ -213,7 +318,7 @@ export class CustomerPanelComponent implements OnInit {
   }
 
   submit() {
-    this.dataProvider.currentBill.appliedCharges = this.chargesForm.value;
+    this.setCharges(this.chargesForm.value);
     this.dataProvider.currentBill?.setCustomerInfo(this.customerInfoForm.value);
     if (this.isDialog) {
       // inject dialofRef

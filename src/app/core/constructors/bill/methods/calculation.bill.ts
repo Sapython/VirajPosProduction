@@ -31,13 +31,13 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   },0)
   if(this.canBeDiscounted){
       // apply discount to subTotal
-    console.log("Starting applicable discount",applicableDiscount);
+    // console.log("Starting applicable discount",applicableDiscount);
     this.billing.discount.forEach((discount) => {
       discount.totalAppliedDiscount = 0;
       if (discount.mode == 'codeBased') {
         if (discount.type === 'percentage') {
           let discountValue = Number((this.billing.subTotal / 100) * discount.value);
-          console.log("Code based percent",discountValue);
+          // console.log("Code based percent",discountValue);
           if (discount.maximumDiscount && discountValue > discount.maximumDiscount){
             discountValue = discount.maximumDiscount;
           }
@@ -50,7 +50,7 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
           applicableDiscount += Number(discountValue);
           discount.totalAppliedDiscount += Number(discountValue);
         } else {
-          console.log("Code based flat",discount.value);
+          // console.log("Code based flat",discount.value);
           let discountValue = discount.value;
           if (discount.maximumDiscount && discountValue > discount.maximumDiscount){
             discountValue = discount.maximumDiscount;
@@ -65,12 +65,12 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
           discount.totalAppliedDiscount += Number(discountValue);
         }
       } else if (discount.mode == 'directFlat') {
-        console.log("Direct based flat",discount.value);
+        // console.log("Direct based flat",discount.value);
         applicableDiscount += Number(discount.value);
         discount.totalAppliedDiscount += Number(discount.value);
       } else if (discount.mode == 'directPercent') {
         let discountValue = Number((this.billing.subTotal / 100) * Number(discount.value));
-        console.log("Direct based percent",discountValue);
+        // console.log("Direct based percent",discountValue);
         applicableDiscount += discountValue;
         discount.totalAppliedDiscount += Number(discountValue);
       }
@@ -83,7 +83,7 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   let totalApplicableTax = this.billing.taxes.reduce((acc, cur) => {
     return acc + cur.amount;
   }, 0);
-  console.log('applicableDiscount',applicableDiscount);
+  // console.log('applicableDiscount',applicableDiscount);
   this.billing.postDiscountSubTotal = this.billing.subTotal - (this.currentLoyalty.totalToBeRedeemedCost + applicableDiscount);
   this.billing.postChargesSubTotal = this.billing.postDiscountSubTotal;
   if (!this.appliedCharges){
@@ -112,7 +112,7 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
     this.billing.grandTotal = 0;
   }
   this.printableBillData = this.getPrintableBillData(allProducts);
-  console.log("printableBillData",this.printableBillData);
+  // console.log("printableBillData",this.printableBillData);
   this.checkCanPrintKot();
   // console.log('currentLoyalty', this.currentLoyalty);
   this.updated.next(noUpdate);

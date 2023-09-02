@@ -10,12 +10,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ComboCardComponent } from './combo-card/combo-card.component';
 import { BaseComponentsModule } from '../../../shared/base-components/base-components.module';
-import {MatProgressBarModule} from '@angular/material/progress-bar'; 
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { OpenProductComponent } from './open-product/open-product.component'; 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     ProductsPanelComponent,
     ProductCardComponent,
     ComboCardComponent,
+    OpenProductComponent,
   ],
   imports: [
     CommonModule,
@@ -26,7 +29,9 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     MatFormFieldModule,
     MatInputModule,
     BaseComponentsModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    ReactiveFormsModule,
+    FormsModule
   ],
   exports: [ProductsPanelComponent, ProductCardComponent],
 })

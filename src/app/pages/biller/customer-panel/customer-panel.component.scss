@@ -1,3 +1,12 @@
+.chargesForm{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  .charge{
+    display: flex;
+    align-items: center;
+  }
+}
 .customerInfo {
   // border-top: 2px solid #ccc;
   padding: 20px 20px 0px 20px;
@@ -6,14 +15,6 @@
     margin: 0px 0px 10px 0px;
   }
   form {
-    div {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-    // mat-form-field{
-    //     width: 100%;
-    // }
     input,
     textarea {
       height: 40px;
@@ -97,9 +98,10 @@
 }
 .chargeInput{
   display: flex !important;
-  flex-direction: column !important;
+  flex-direction: row !important;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
+  gap:15px;
   p{
     margin: 0;
   }

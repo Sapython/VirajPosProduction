@@ -126,7 +126,7 @@
                 <td *ngIf="charge.key == 'containerCharge'">Container Charge</td>
                 <td *ngIf="charge.key == 'serviceCharge'">Service Charge</td>
                 <td *ngIf="charge.key == 'tip'">Tip</td>
-                <td>{{ charge.value | currency: "INR" }}</td>
+                <td>{{ charge.value }}</td>
               </ng-container>
             </tr>
           </tbody>

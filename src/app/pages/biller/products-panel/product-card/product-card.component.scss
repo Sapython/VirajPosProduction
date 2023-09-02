@@ -70,3 +70,17 @@ div.small {
 .danger {
   color: var(--Vrajera-danger);
 }
+
+.openItem{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 10px;
+  i{
+    font-size: 50px;
+    color:#c7c7c7;
+    text-align: center;
+    width: 100%;
+  }
+}

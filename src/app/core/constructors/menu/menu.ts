@@ -202,7 +202,7 @@ export class ModeConfig {
         console.log('Selected menu changed updated local menu',this.selectedMenu);
         this.menuManagementService.requestMenuDownload.next(this.selectedMenuId);
       }
-    })
+    });
     this.typeSearchSubject.pipe(debounceTime(500)).subscribe((searchString) => {
       if (searchString) {
         let res = this.typesSearchInstance.search(searchString);

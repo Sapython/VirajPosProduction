@@ -179,6 +179,12 @@ export function fromObject(
       receiveLoyalty: false,
       redeemLoyalty: false,
     };
+    instance.appliedCharges = object.appliedCharges || {
+      containerCharge:0,
+      deliveryCharge:0,
+      serviceCharge:0,
+      tip:0
+    };
     // create kots classes from objects and add them to the bill
     object.kots.forEach((kot) => {
       //  console.log('Creating kot', kot);

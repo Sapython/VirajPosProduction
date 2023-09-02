@@ -65,9 +65,15 @@ function getRate(product: Product, loyaltySetting: CategoryLoyaltyRate[]) {
     let foundSetting = category.products.find(
       (categoryProduct) => categoryProduct.id === product.id,
     );
-    return {
-      cost: foundSetting.loyaltyCost * product.quantity,
-      points: foundSetting.loyaltyRate * product.quantity,
-    };
+    if (foundSetting){
+      return {
+        cost: foundSetting.loyaltyCost * product.quantity,
+        points: foundSetting.loyaltyRate * product.quantity,
+      };
+    }
   }
+  return {
+    cost: 0,
+    points: 0,
+  };
 }

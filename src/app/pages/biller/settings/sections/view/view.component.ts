@@ -107,3 +107,4 @@ export class ViewComponent {
     this.updateSettings({ editKotTime: this.dataProvider.editKotTime });
   }
 }
+

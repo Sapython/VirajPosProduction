@@ -1,0 +1,317 @@
+<mat-accordion>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>Dine In</mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="charges">
+		<div class="heading">
+			<p>Charge Name</p>
+			<p>Fixed/Custom</p>
+			<p>Set By Default</p>
+			<p>Charge</p>
+		</div>
+      <div class="charge">
+        <mat-checkbox
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.dineIn.delivery.allowed"
+          >Delivery Charge</mat-checkbox
+        >
+        <mat-slide-toggle
+			[disabled]="!this.dataProvider.charges.dineIn.delivery.allowed"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.dineIn.delivery.fixed"
+        ></mat-slide-toggle>
+        <mat-slide-toggle
+			[disabled]="!(this.dataProvider.charges.dineIn.delivery.allowed && this.dataProvider.charges.dineIn.delivery.fixed)"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.dineIn.delivery.byDefault"
+        ></mat-slide-toggle>
+        <input
+			[disabled]="!(this.dataProvider.charges.dineIn.delivery.allowed && this.dataProvider.charges.dineIn.delivery.fixed)"
+          type="number"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.dineIn.delivery.charges"
+        />
+      </div>
+      <div class="charge">
+        <mat-checkbox
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.dineIn.service.allowed"
+          >Service Charge</mat-checkbox
+        >
+        <mat-slide-toggle
+			[disabled]="!this.dataProvider.charges.dineIn.service.allowed"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.dineIn.service.fixed"
+        ></mat-slide-toggle>
+        <mat-slide-toggle
+			[disabled]="!(this.dataProvider.charges.dineIn.service.allowed && this.dataProvider.charges.dineIn.service.fixed)"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.dineIn.service.byDefault"
+        ></mat-slide-toggle>
+        <input
+			[disabled]="!(this.dataProvider.charges.dineIn.service.allowed && this.dataProvider.charges.dineIn.service.fixed)"
+          type="number"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.dineIn.service.charges"
+        />
+      </div>
+      <div class="charge">
+        <mat-checkbox
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.dineIn.container.allowed"
+          >Container Charge</mat-checkbox
+        >
+        <mat-slide-toggle
+			[disabled]="!this.dataProvider.charges.dineIn.container.allowed"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.dineIn.container.fixed"
+        ></mat-slide-toggle>
+        <mat-slide-toggle
+			[disabled]="!(this.dataProvider.charges.dineIn.container.allowed && this.dataProvider.charges.dineIn.container.fixed)"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.dineIn.container.byDefault"
+        ></mat-slide-toggle>
+        <input
+			[disabled]="!(this.dataProvider.charges.dineIn.container.allowed && this.dataProvider.charges.dineIn.container.fixed)"
+          type="number"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.dineIn.container.charges"
+        />
+      </div>
+      <div class="charge">
+        <mat-checkbox
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.dineIn.tip.allowed"
+          >Tip Charge</mat-checkbox
+        >
+        <mat-slide-toggle
+			[disabled]="!this.dataProvider.charges.dineIn.tip.allowed"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.dineIn.tip.fixed"
+        ></mat-slide-toggle>
+        <mat-slide-toggle
+			[disabled]="!(this.dataProvider.charges.dineIn.tip.allowed && this.dataProvider.charges.dineIn.tip.fixed)"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.dineIn.tip.byDefault"
+        ></mat-slide-toggle>
+        <input
+			[disabled]="!(this.dataProvider.charges.dineIn.tip.allowed && this.dataProvider.charges.dineIn.tip.fixed)"
+          type="number"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.dineIn.tip.charges"
+        />
+      </div>
+    </div>
+  </mat-expansion-panel>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>Takeaway</mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="charges">
+		<div class="heading">
+			<p>Charge Name</p>
+			<p>Fixed/Custom</p>
+			<p>Set By Default</p>
+			<p>Charge</p>
+		</div>
+      <div class="charge">
+        <mat-checkbox
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.takeaway.delivery.allowed"
+          >Delivery Charge</mat-checkbox
+        >
+        <mat-slide-toggle
+			[disabled]="!this.dataProvider.charges.takeaway.delivery.allowed"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.takeaway.delivery.fixed"
+        ></mat-slide-toggle>
+        <mat-slide-toggle
+			[disabled]="!(this.dataProvider.charges.takeaway.delivery.allowed && this.dataProvider.charges.takeaway.delivery.fixed)"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.takeaway.delivery.byDefault"
+        ></mat-slide-toggle>
+        <input
+			[disabled]="!(this.dataProvider.charges.takeaway.delivery.allowed && this.dataProvider.charges.takeaway.delivery.fixed)"
+          type="number"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.takeaway.delivery.charges"
+        />
+      </div>
+      <div class="charge">
+        <mat-checkbox
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.takeaway.service.allowed"
+          >Service Charge</mat-checkbox
+        >
+        <mat-slide-toggle
+			[disabled]="!this.dataProvider.charges.takeaway.service.allowed"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.takeaway.service.fixed"
+        ></mat-slide-toggle>
+        <mat-slide-toggle
+			[disabled]="!(this.dataProvider.charges.takeaway.service.allowed && this.dataProvider.charges.takeaway.service.fixed)"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.takeaway.service.byDefault"
+        ></mat-slide-toggle>
+        <input
+			[disabled]="!(this.dataProvider.charges.takeaway.service.allowed && this.dataProvider.charges.takeaway.service.fixed)"
+          type="number"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.takeaway.service.charges"
+        />
+      </div>
+      <div class="charge">
+        <mat-checkbox
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.takeaway.container.allowed"
+          >Container Charge</mat-checkbox
+        >
+        <mat-slide-toggle
+			[disabled]="!this.dataProvider.charges.takeaway.container.allowed"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.takeaway.container.fixed"
+        ></mat-slide-toggle>
+        <mat-slide-toggle
+			[disabled]="!(this.dataProvider.charges.takeaway.container.allowed && this.dataProvider.charges.takeaway.container.fixed)"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.takeaway.container.byDefault"
+        ></mat-slide-toggle>
+        <input
+			[disabled]="!(this.dataProvider.charges.takeaway.container.allowed && this.dataProvider.charges.takeaway.container.fixed)"
+          type="number"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.takeaway.container.charges"
+        />
+      </div>
+      <div class="charge">
+        <mat-checkbox
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.takeaway.tip.allowed"
+          >Tip Charge</mat-checkbox
+        >
+        <mat-slide-toggle
+			[disabled]="!this.dataProvider.charges.takeaway.tip.allowed"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.takeaway.tip.fixed"
+        ></mat-slide-toggle>
+        <mat-slide-toggle
+			[disabled]="!(this.dataProvider.charges.takeaway.tip.allowed && this.dataProvider.charges.takeaway.tip.fixed)"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.takeaway.tip.byDefault"
+        ></mat-slide-toggle>
+        <input
+			[disabled]="!(this.dataProvider.charges.takeaway.tip.allowed && this.dataProvider.charges.takeaway.tip.fixed)"
+          type="number"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.takeaway.tip.charges"
+        />
+      </div>
+    </div>
+  </mat-expansion-panel>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>Online</mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="charges">
+		<div class="heading">
+			<p>Charge Name</p>
+			<p>Fixed/Custom</p>
+			<p>Set By Default</p>
+			<p>Charge</p>
+		</div>
+      <div class="charge">
+        <mat-checkbox
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.online.delivery.allowed"
+          >Delivery Charge</mat-checkbox
+        >
+        <mat-slide-toggle
+			[disabled]="!this.dataProvider.charges.online.delivery.allowed"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.online.delivery.fixed"
+        ></mat-slide-toggle>
+        <mat-slide-toggle
+			[disabled]="!(this.dataProvider.charges.online.delivery.allowed && this.dataProvider.charges.online.delivery.fixed)"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.online.delivery.byDefault"
+        ></mat-slide-toggle>
+        <input
+			[disabled]="!(this.dataProvider.charges.online.delivery.allowed && this.dataProvider.charges.online.delivery.fixed)"
+          type="number"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.online.delivery.charges"
+        />
+      </div>
+      <div class="charge">
+        <mat-checkbox
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.online.service.allowed"
+          >Service Charge</mat-checkbox
+        >
+        <mat-slide-toggle
+			[disabled]="!this.dataProvider.charges.online.service.allowed"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.online.service.fixed"
+        ></mat-slide-toggle>
+        <mat-slide-toggle
+			[disabled]="!(this.dataProvider.charges.online.service.allowed && this.dataProvider.charges.online.service.fixed)"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.online.service.byDefault"
+        ></mat-slide-toggle>
+        <input
+			[disabled]="!(this.dataProvider.charges.online.service.allowed && this.dataProvider.charges.online.service.fixed)"
+          type="number"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.online.service.charges"
+        />
+      </div>
+      <div class="charge">
+        <mat-checkbox
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.online.container.allowed"
+          >Container Charge</mat-checkbox
+        >
+        <mat-slide-toggle
+			[disabled]="!this.dataProvider.charges.online.container.allowed"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.online.container.fixed"
+        ></mat-slide-toggle>
+        <mat-slide-toggle
+			[disabled]="!(this.dataProvider.charges.online.container.allowed && this.dataProvider.charges.online.container.fixed)"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.online.container.byDefault"
+        ></mat-slide-toggle>
+        <input
+			[disabled]="!(this.dataProvider.charges.online.container.allowed && this.dataProvider.charges.online.container.fixed)"
+          type="number"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.online.container.charges"
+        />
+      </div>
+      <div class="charge">
+        <mat-checkbox
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.online.tip.allowed"
+          >Tip Charge</mat-checkbox
+        >
+        <mat-slide-toggle
+			[disabled]="!this.dataProvider.charges.online.tip.allowed"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.online.tip.fixed"
+        ></mat-slide-toggle>
+        <mat-slide-toggle
+			[disabled]="!(this.dataProvider.charges.online.tip.allowed && this.dataProvider.charges.online.tip.fixed)"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.online.tip.byDefault"
+        ></mat-slide-toggle>
+        <input
+			[disabled]="!(this.dataProvider.charges.online.tip.allowed && this.dataProvider.charges.online.tip.fixed)"
+          type="number"
+          (change)="updateSettings()"
+          [(ngModel)]="this.dataProvider.charges.online.tip.charges"
+        />
+      </div>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>

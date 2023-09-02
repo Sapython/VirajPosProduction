@@ -10,7 +10,7 @@
         ><sup>*</sup> You need to add phone number to save or fetch
         details.</span
       >
-      <div>
+      <div class="chargesForm">
         <input
           (input)="this.searchString.next(phoneInput.value)"
           type="tel"
@@ -75,7 +75,10 @@
         </div>
         <hr />
         <h4>Loyalty Settings</h4>
-        <p class="danger">Loyalty points are distributed every 24 hours. New points will be given next day.</p>
+        <p class="danger">
+          Loyalty points are distributed every 24 hours. New points will be
+          given next day.
+        </p>
         <form [formGroup]="loyaltySettingForm" class="loyaltyForm">
           <mat-checkbox formControlName="receiveLoyalty"
             >Avail New Points
@@ -84,6 +87,7 @@
             ></app-helper
           ></mat-checkbox>
           <div
+            class="chargesForm"
             class="redeem"
             *ngIf="this.dataProvider.currentBill?.customerInfo?.loyaltyPoints"
           >
@@ -122,28 +126,68 @@
         <hr />
       </ng-container>
       <h4>Charges Settings</h4>
-      <form [formGroup]="chargesForm">
-        <div>
-          <div class="chargeInput"
+      <form [formGroup]="chargesForm" class="chargesForm">
+        <div
+          class="charge"
           *ngIf="
-              this.dataProvider.customCharges[
-                this.dataProvider.currentBill?.mode
-              ].includes('service')
+            this.dataProvider.charges[this.dataProvider.currentBill?.mode]
+              .service.allowed
+          "
+        >
+          <mat-checkbox
+            formControlName="serviceSelected"
+            [checked]="this.dataProvider.charges[this.dataProvider.currentBill.mode].service.byDefault"
+            *ngIf="
+              this.dataProvider.charges[this.dataProvider.currentBill?.mode]
+                .service.fixed
+            "
+            >Service Charge
+            {{
+              this.dataProvider.charges[this.dataProvider.currentBill?.mode]
+                .service.charges
+            }}</mat-checkbox
+          >
+          <div
+            class="chargeInput"
+            *ngIf="
+              !this.dataProvider.charges[this.dataProvider.currentBill?.mode]
+                .service.fixed
             "
           >
             <p>Service Charge</p>
             <input
-            type="number"
-            formControlName="serviceCharge"
-            placeholder="Service Charge"
-          />
+              type="number"
+              formControlName="serviceCharge"
+              placeholder="Service Charge"
+            />
           </div>
-          <div class="chargeInput"
+        </div>
+        <div
+          class="charge"
           *ngIf="
-                this.dataProvider.customCharges[
-                  this.dataProvider.currentBill?.mode
-                ].includes('delivery')
-              "
+            this.dataProvider.charges[this.dataProvider.currentBill?.mode]
+              .delivery.allowed
+          "
+        >
+          <mat-checkbox
+            formControlName="deliverySelected"
+            [checked]="this.dataProvider.charges[this.dataProvider.currentBill.mode].delivery.byDefault"
+            *ngIf="
+              this.dataProvider.charges[this.dataProvider.currentBill?.mode]
+                .delivery.fixed
+            "
+            >Delivery Charge
+            {{
+              this.dataProvider.charges[this.dataProvider.currentBill?.mode]
+                .delivery.charges
+            }}</mat-checkbox
+          >
+          <div
+            class="chargeInput"
+            *ngIf="
+              !this.dataProvider.charges[this.dataProvider.currentBill?.mode]
+                .delivery.fixed
+            "
           >
             <p>Delivery Charge</p>
             <input
@@ -152,12 +196,34 @@
               placeholder="Delivery Charge"
             />
           </div>
-          <div class="chargeInput"
+        </div>
+        <div
+          class="charge"
           *ngIf="
-          this.dataProvider.customCharges[
-            this.dataProvider.currentBill?.mode
-          ].includes('container')
-        ">
+            this.dataProvider.charges[this.dataProvider.currentBill?.mode]
+              .container.allowed
+          "
+        >
+          <mat-checkbox
+            [checked]="this.dataProvider.charges[this.dataProvider.currentBill.mode].container.byDefault"
+            formControlName="containerSelected"
+            *ngIf="
+              this.dataProvider.charges[this.dataProvider.currentBill?.mode]
+                .container.fixed
+            "
+            >Container Charge
+            {{
+              this.dataProvider.charges[this.dataProvider.currentBill?.mode]
+                .container.charges
+            }}</mat-checkbox
+          >
+          <div
+            class="chargeInput"
+            *ngIf="
+              !this.dataProvider.charges[this.dataProvider.currentBill?.mode]
+                .container.fixed
+            "
+          >
             <p>Container Charge</p>
             <input
               type="number"
@@ -165,18 +231,40 @@
               placeholder="Container Charge"
             />
           </div>
-          <div class="chargeInput"
+        </div>
+        <div
+          class="charge"
           *ngIf="
-              this.dataProvider.customCharges[
-                this.dataProvider.currentBill?.mode
-              ].includes('tip')
-            ">
+            this.dataProvider.charges[this.dataProvider.currentBill?.mode].tip
+              .allowed
+          "
+        >
+          <mat-checkbox
+            [checked]="this.dataProvider.charges[this.dataProvider.currentBill.mode].tip.byDefault"
+            formControlName="tipSelected"
+            *ngIf="
+              this.dataProvider.charges[this.dataProvider.currentBill?.mode].tip
+                .fixed
+            "
+            >Tip Charge
+            {{
+              this.dataProvider.charges[this.dataProvider.currentBill?.mode].tip
+                .charges
+            }}</mat-checkbox
+          >
+          <div
+            class="chargeInput"
+            *ngIf="
+              !this.dataProvider.charges[this.dataProvider.currentBill?.mode]
+                .tip.fixed
+            "
+          >
             <p>Tip</p>
             <input
-            type="number"
-            formControlName="tip"
-            placeholder="Tip"
-          />
+              type="number"
+              formControlName="tip"
+              placeholder="Tip"
+            />
           </div>
         </div>
       </form>

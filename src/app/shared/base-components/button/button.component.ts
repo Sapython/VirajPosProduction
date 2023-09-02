@@ -30,9 +30,9 @@ export class ButtonComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    var hammertime = new Hammer(this.button.nativeElement);
-    hammertime.on('panend', (ev)=>{
-      this.filterClick(ev);
-    });
+    // var hammertime = new Hammer(this.button.nativeElement);
+    // hammertime.on('panend', (ev)=>{
+    //   this.filterClick(ev);
+    // });
   }
 }

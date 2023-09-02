@@ -1,6 +1,6 @@
 import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import Fuse from 'fuse.js';
-import { Subject, debounceTime } from 'rxjs';
+import { Subject, debounceTime, firstValueFrom } from 'rxjs';
 import { Product } from '../../../types/product.structure';
 import { DataProvider } from '../../../core/services/provider/data-provider.service';
 import { Category } from '../../../types/category.structure';
@@ -9,6 +9,9 @@ import {
   ComboCategoryCategorized,
 } from '../../../types/combo.structure';
 import { ApplicableCombo } from '../../../core/constructors/comboKot/comboKot';
+import { Dialog } from '@angular/cdk/dialog';
+import { OpenProductComponent } from './open-product/open-product.component';
+import { Timestamp } from '@angular/fire/firestore';
 var debug: boolean = true;
 @Component({
   selector: 'app-products-panel',
@@ -32,7 +35,7 @@ export class ProductsPanelComponent implements OnInit {
   selectedCombo: Combo | undefined = undefined;
   currentlyWaitingForSearchResults: boolean = false;
   
-  constructor(private dataProvider: DataProvider) {
+  constructor(public dataProvider: DataProvider, private dialog:Dialog) {
     this.dataProvider.menuProducts.subscribe((menu: Category) => {
       if (menu){
         this.mode = 'products';
@@ -137,9 +140,8 @@ export class ProductsPanelComponent implements OnInit {
           return ' Full';
         }
       }
-    } else {
-      return '';
     }
+    return '';
   }
 
   selectProduct(product: Product) {
@@ -202,5 +204,32 @@ export class ProductsPanelComponent implements OnInit {
   selectCombo(item: Combo) {
     console.log('Combo Selected: ', item);
     this.selectedCombo = item;
+  }
+
+  openItem(category:{id:string,name:string}){
+    console.log("category",category);
+    let dialog = this.dialog.open(OpenProductComponent);
+    firstValueFrom(dialog.closed).then((value:any)=>{
+      console.log("Value",value);
+      if (!value.name || !value.price) return;
+      let product:Product = {
+        name:value.name,
+        price:value.price,
+        id:`CUSTOM-${Math.random().toString()}`,
+        category:category,
+        createdDate:Timestamp.fromDate(new Date()),
+        images:[],
+        itemType:'product',
+        quantity:1,
+        selected:false,
+        sellByAvailable:false,
+        tags:[],
+        taxes:[],
+        type:'veg',
+        variants:[],
+        visible:true,
+      };
+      this.selectProduct(product);
+    })
   }
 }

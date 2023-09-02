@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
 import { BillerComponent } from './biller.component';
+import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [{ path: '', component: BillerComponent }];
 

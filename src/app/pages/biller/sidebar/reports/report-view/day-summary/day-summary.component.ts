@@ -150,6 +150,9 @@ export class DaySummaryComponent {
                     console.log("res?.settlement?.payments",res?.settlement?.payments);
                     if (res?.settlement?.payments){
                       res.settlement.payments.forEach((payment) => {
+                        if (!acc){
+                          acc = {};
+                        }
                         if (acc[payment.paymentMethod]) {
                           acc[payment.paymentMethod] += payment.amount;
                         } else {
@@ -209,6 +212,9 @@ export class DaySummaryComponent {
                   paymentChannels: dineInBills.reduce((acc, res) => {
                     if (res?.settlement?.payments){
                       res.settlement.payments.forEach((payment) => {
+                        if (!acc){
+                          acc = {};
+                        }
                         if (acc[payment.paymentMethod]) {
                           acc[payment.paymentMethod] += payment.amount;
                         } else {
@@ -265,6 +271,9 @@ export class DaySummaryComponent {
                   paymentChannels: takeawayBills.reduce((acc, res) => {
                     if (res?.settlement?.payments){
                       res.settlement.payments.forEach((payment) => {
+                        if (!acc){
+                          acc = {};
+                        }
                         if (acc[payment.paymentMethod]) {
                           acc[payment.paymentMethod] += payment.amount;
                         } else {
@@ -323,6 +332,9 @@ export class DaySummaryComponent {
                   paymentChannels: onlineBills.reduce((acc, res) => {
                     if (res?.settlement?.payments){
                       res.settlement.payments.forEach((payment) => {
+                        if (!acc){
+                          acc = {};
+                        }
                         if (acc[payment.paymentMethod]) {
                           acc[payment.paymentMethod] += payment.amount;
                         } else {

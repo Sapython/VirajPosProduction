@@ -33,6 +33,7 @@ import {
   ComboCategoryCategorized,
 } from '../../../types/combo.structure';
 import { ApplicableCombo } from '../../constructors/comboKot/comboKot';
+import { Charge } from '../../../types/charges.structure';
 
 @Injectable({
   providedIn: 'root',
@@ -140,11 +141,17 @@ export class DataProvider {
   public customBillNote: string = '';
   public todaySales: any = {};
   public multipleDiscount: boolean = false;
+  public openItemEnabled: boolean = false;
   public editKotTime: number = 1;
   public kotEditable: boolean = false;
   public kotRePrintable: boolean = false;
   public sweetsMode:boolean = false;
   public billerPrinter:string = '';
+  public charges:{
+    dineIn:Charge,
+    takeaway:Charge,
+    online:Charge
+  }|undefined;
 
   public newMenuLoaded:boolean = false;
 
@@ -197,6 +204,7 @@ export class DataProvider {
   public differentLoyaltyRate: boolean = false;
   public tableOrders: any = undefined;
   public groupOrders: string[] = [];
+  
   public loyaltyRates: {
     dineIn: number;
     dineInExpiry: number;

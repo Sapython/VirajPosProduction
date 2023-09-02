@@ -1,15 +1,15 @@
 <section>
 	<div class="heading">
 		<h3>Open Product</h3>
-		<viraj-button mat-icon-button><mat-icon>close</mat-icon></viraj-button>
+		<button mat-icon-button (click)="dialogRef.close()"><mat-icon>close</mat-icon></button>
 	</div>
 	<form [formGroup]="productForm" (ngSubmit)="dialogRef.close(productForm.value)">
 		<div class="body">
-			<mat-form-field>
+			<mat-form-field appearance="outline">
 				<mat-label>Product Name</mat-label>
 				<input type="text" matInput formControlName="name">
 			</mat-form-field>
-			<mat-form-field>
+			<mat-form-field appearance="outline">
 				<mat-label>Price</mat-label>
 				<input type="number" matInput formControlName="price">
 			</mat-form-field>

@@ -6,6 +6,8 @@ section {
 	border-radius: 15px;
 	.body{
 	  padding: 20px;
+	  display: flex;
+	  flex-direction: column;
 	}
 	.heading{
 		display: flex;

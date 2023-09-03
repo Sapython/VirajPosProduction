@@ -1,7 +1,6 @@
 <table class="styled-table" id="reportTable" id="reportTable" *ngIf="!loading">
 	<thead>
 	  <tr>
-		<th>Bill No</th>
 		<th>Order No</th>
 		<th>Bill Amount</th>
 		<th>Bill Kots</th>
@@ -23,9 +22,6 @@
 	<tbody>
 	  <ng-container *ngIf="(bills | async).length > 0">
 		<tr *ngFor="let bill of bills | async">
-		  <td>
-			{{ bill.billNo || "Unsettled" }}
-		  </td>
 		  <td>
 			{{ bill.orderNo || 'N/A' }}
 		  </td>

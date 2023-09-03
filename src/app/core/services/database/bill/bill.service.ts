@@ -287,4 +287,16 @@ export class BillService {
       ),
     );
   }
+
+  getSplittedBill(billId:string,splitBillId:string){
+    return getDoc(
+      doc(
+        this.firestore,
+        'business/' + this.dataProvider.businessId + '/bills',
+        billId,
+        'splittedBills',
+        splitBillId
+      ),
+    );
+  }
 }

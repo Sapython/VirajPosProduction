@@ -39,12 +39,20 @@
       <td>{{ channelWiseDaySummary.all.totalDiscountedBills }}</td>
     </tr>
     <tr>
+      <td><strong>All - </strong>Cancelled Bills</td>
+      <td>{{ channelWiseDaySummary.all.totalCancelledBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>All - </strong>Cancelled Amount</td>
+      <td>{{ channelWiseDaySummary.all.totalCancelledAmount | currency:'INR' }}</td>
+    </tr>
+    <tr>
       <td><strong>All - </strong>Non Chargeable Bills</td>
       <td>{{ channelWiseDaySummary.all.totalNcBills }}</td>
     </tr>
     <tr>
       <td><strong>All - </strong>Non Chargeable Sales</td>
-      <td>{{ channelWiseDaySummary.all.totalNcAmount  |currency:'INR'}}</td>
+      <td>{{ channelWiseDaySummary.all.totalNcAmount  | currency:'INR'}}</td>
     </tr>
     <tr>
       <td><strong>All - </strong>Payment Channels</td>
@@ -89,6 +97,14 @@
     <tr>
       <td><strong>Dine In - </strong>Discounted Bills</td>
       <td>{{ channelWiseDaySummary.dineIn.totalDiscountedBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>Dine In - </strong>Cancelled Bills</td>
+      <td>{{ channelWiseDaySummary.dineIn.totalCancelledBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>Dine In - </strong>Cancelled Amount</td>
+      <td>{{ channelWiseDaySummary.dineIn.totalCancelledAmount | currency:'INR' }}</td>
     </tr>
     <tr>
       <td><strong>Dine In - </strong>Non Chargeable Bills</td>
@@ -143,6 +159,14 @@
       <td>{{ channelWiseDaySummary.takeaway.totalDiscountedBills }}</td>
     </tr>
     <tr>
+      <td><strong>Takeaway - </strong>Cancelled Bills</td>
+      <td>{{ channelWiseDaySummary.takeaway.totalCancelledBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>Takeaway - </strong>Cancelled Amount</td>
+      <td>{{ channelWiseDaySummary.takeaway.totalCancelledAmount | currency:'INR' }}</td>
+    </tr>
+    <tr>
       <td><strong>Takeaway - </strong>Non Chargeable Bills</td>
       <td>{{ channelWiseDaySummary.takeaway.totalNcBills }}</td>
     </tr>
@@ -193,6 +217,14 @@
     <tr>
       <td><strong>Online - </strong>Discounted Bills</td>
       <td>{{ channelWiseDaySummary.online.totalDiscountedBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>Online - </strong>Cancelled Bills</td>
+      <td>{{ channelWiseDaySummary.online.totalCancelledBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>Online - </strong>Cancelled Amount</td>
+      <td>{{ channelWiseDaySummary.online.totalCancelledAmount | currency:'INR' }}</td>
     </tr>
     <tr>
       <td><strong>Online - </strong>Non Chargeable Bills</td>

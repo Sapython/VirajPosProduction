@@ -101,6 +101,8 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
         netSales: 0,
         totalDiscount: 0,
         totalNC: 0,
+        totalCancelled: 0,
+        totalCancelledBills: 0,
         totalTaxes: 0,
         totalSettledBills: 0,
         totalDiscountedBills: 0,
@@ -156,6 +158,8 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
         totalDiscount: 0,
         totalNC: 0,
         totalTaxes: 0,
+        totalCancelled: 0,
+        totalCancelledBills: 0,
         totalSettledBills: 0,
         totalDiscountedBills: 0,
         totalNcBills: 0,
@@ -210,6 +214,8 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
         totalDiscount: 0,
         totalNC: 0,
         totalTaxes: 0,
+        totalCancelled: 0,
+        totalCancelledBills: 0,
         totalSettledBills: 0,
         totalDiscountedBills: 0,
         totalNcBills: 0,
@@ -264,6 +270,8 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
         totalDiscount: 0,
         totalNC: 0,
         totalTaxes: 0,
+        totalCancelled: 0,
+        totalCancelledBills: 0,
         totalSettledBills: 0,
         totalDiscountedBills: 0,
         totalNcBills: 0,
@@ -345,116 +353,157 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
     );
     let activitiesDocs = await activities.get();
     // console.log('activitiesDocs.length', activitiesDocs.docs.length);
-    if (currentBill.billing.grandTotal) {
+    if (currentBill.billing.grandTotal && currentBill.stage !== 'cancelled') {
       analyticsData.salesChannels.all.totalSales += isValidNumber(
         currentBill.billing.grandTotal,
       );
-    }
-    // console.log('BILL Total:', data.billing.grandTotal);
-    if (currentBill?.settlement?.time) {
-      analyticsData.salesChannels.all.totalSettledBills += 1;
-    } else {
-      analyticsData.salesChannels.all.totalUnsettledBills += 1;
-    }
-    if (currentBill?.nonChargeableDetail) {
-      analyticsData.salesChannels.all.totalNcBills += 1;
-    }
-    if (currentBill?.billing?.discount?.length > 0) {
-      analyticsData.salesChannels.all.totalDiscountedBills += 1;
-    }
-    analyticsData.salesChannels.all.netSales += isValidNumber(
-      currentBill.billing.grandTotal -
-        currentBill.billing.taxes.reduce(
-          (total: number, d: any) => d.amount + total,
+      if (currentBill?.nonChargeableDetail) {
+        analyticsData.salesChannels.all.totalNcBills += 1;
+      }
+      if (currentBill?.billing?.discount?.length > 0) {
+        analyticsData.salesChannels.all.totalDiscountedBills += 1;
+      }
+      analyticsData.salesChannels.all.netSales += isValidNumber(
+        currentBill.billing.grandTotal -
+          currentBill.billing.taxes.reduce(
+            (total: number, d: any) => d.amount + total,
+            0,
+          ),
+      );
+      analyticsData.salesChannels.all.totalDiscount += isValidNumber(
+        currentBill.billing.discount.reduce(
+          (total: number, d: any) => d.totalAppliedDiscount + total,
           0,
         ),
-    );
-    analyticsData.salesChannels.all.totalDiscount += isValidNumber(
-      currentBill.billing.discount.reduce(
-        (total: number, d: any) => d.totalAppliedDiscount + total,
-        0,
-      ),
-    );
-    if (currentBill.nonChargeableDetail) {
-      analyticsData.salesChannels.all.totalNC += isValidNumber(
-        currentBill.billing.subTotal,
       );
+      if (currentBill.nonChargeableDetail) {
+        analyticsData.salesChannels.all.totalNC += isValidNumber(
+          currentBill.billing.subTotal,
+        );
+      }
+    } else {
+      analyticsData.salesChannels.all.totalCancelled += isValidNumber(
+        currentBill.billing.grandTotal,
+      );
+      analyticsData.salesChannels.all.totalCancelledBills += 1;
     }
-    analyticsData.salesChannels.all.totalTaxes += isValidNumber(
-      currentBill.billing.taxes.reduce(
-        (total: number, t: any) => t.amount + total,
-        0,
-      ),
-    );
-    analyticsData.salesChannels.all.hourlySales[
-      currentBill.createdDate.toDate().getHours()
-    ] += isValidNumber(currentBill.billing.grandTotal);
-    analyticsData.salesChannels.all.billWiseSales.rangeWise[
-      currentBill.billing.grandTotal < 500
-        ? 'lowRange'
-        : currentBill.billing.grandTotal < 1000
-        ? 'mediumRange'
-        : 'highRange'
-    ].bills.push({
-      billId: billDoc.id,
-      time: currentBill.createdDate,
-      totalSales: isValidNumber(currentBill.billing.grandTotal),
-    });
-    console.log("Basic analytics done for all");
-    
-    // payment methods
-    if (currentBill.settlement?.payments) {
-      currentBill.settlement?.payments.forEach((payment: any) => {
-        if (
-          !analyticsData.salesChannels.all.paymentReceived[
-            payment.paymentMethod
-          ]
-        ) {
+    // console.log('BILL Total:', data.billing.grandTotal);
+    if (currentBill?.stage == 'settled') {
+      analyticsData.salesChannels.all.totalSettledBills += 1;
+    } else if (currentBill?.stage == 'finalized' || currentBill?.stage == 'active') {
+      analyticsData.salesChannels.all.totalUnsettledBills += 1;
+    }
+    if (currentBill.stage !== 'cancelled') {
+      analyticsData.salesChannels.all.totalTaxes += isValidNumber(
+        currentBill.billing.taxes.reduce(
+          (total: number, t: any) => t.amount + total,
+          0,
+        ),
+      );
+      analyticsData.salesChannels.all.hourlySales[
+        currentBill.createdDate.toDate().getHours()
+      ] += isValidNumber(currentBill.billing.grandTotal);
+      analyticsData.salesChannels.all.billWiseSales.rangeWise[
+        currentBill.billing.grandTotal < 500
+          ? 'lowRange'
+          : currentBill.billing.grandTotal < 1000
+          ? 'mediumRange'
+          : 'highRange'
+      ].bills.push({
+        billId: billDoc.id,
+        time: currentBill.createdDate,
+        totalSales: isValidNumber(currentBill.billing.grandTotal),
+      });
+      console.log("Basic analytics done for all");
+      
+      // payment methods
+      if (currentBill.settlement?.payments) {
+        currentBill.settlement?.payments.forEach((payment: any) => {
+          if (
+            !analyticsData.salesChannels.all.paymentReceived[
+              payment.paymentMethod
+            ]
+          ) {
+            analyticsData.salesChannels.all.paymentReceived[
+              payment.paymentMethod
+            ] = 0;
+          }
           analyticsData.salesChannels.all.paymentReceived[
             payment.paymentMethod
-          ] = 0;
-        }
-        analyticsData.salesChannels.all.paymentReceived[
-          payment.paymentMethod
-        ] += isValidNumber(payment.amount);
-      });
-    }
-    console.log("Payment analytics done for all");
-    // analyticsData.salesChannels.all.billWiseSales.tableWise
-    // find if existing entry for a table exists in tableWise if yes then add the sales and increase the bill number
-    let tableIndex =
-      analyticsData.salesChannels.all.billWiseSales.tableWise.findIndex(
-        (t: any) => t.tableId == currentBill.table,
-      );
-    console.log("Table index",tableIndex);
-      
-    if (tableIndex === -1) {
-      if (currentBill.mode === 'dineIn'){
-        var tablePath = `business/${businessDoc.id}/tables/${currentBill.table}`;
-      } else if (currentBill.mode === 'online'){
-        var tablePath = `business/${businessDoc.id}/onlineTokens/${currentBill.table}`;
-      } else {
-        var tablePath = `business/${businessDoc.id}/tokens/${currentBill.table}`;
-      }
-      console.log("Table path",tablePath);
-      // console.log('Table path', tablePath);
-      // find tablePath in cachedTables if not found then fetch from firestore
-      if (cachedTables.findIndex((t: any) => t.path === tablePath) === -1) {
-        var tableDoc = await firestore.doc(tablePath).get();
-        cachedTables.push({
-          path: tablePath,
-          tableDoc: tableDoc,
+          ] += isValidNumber(payment.amount);
         });
-      } else {
-        var tableDoc = cachedTables.find(
-          (t: any) => t.path === tablePath,
-        ).tableDoc;
       }
-      // console.log('Table doc', tableDoc.data(), 'path', tablePath);
-      if (tableDoc.exists) {
-        analyticsData.salesChannels.all.billWiseSales.tableWise.push({
-          table: tableDoc.data()['name'],
-          tableId: currentBill.table,
+      console.log("Payment analytics done for all");
+      // analyticsData.salesChannels.all.billWiseSales.tableWise
+      // find if existing entry for a table exists in tableWise if yes then add the sales and increase the bill number
+      let tableIndex =
+        analyticsData.salesChannels.all.billWiseSales.tableWise.findIndex(
+          (t: any) => t.tableId == currentBill.table,
+        );
+      console.log("Table index",tableIndex);
+      if (tableIndex === -1) {
+        if (currentBill.mode === 'dineIn'){
+          var tablePath = `business/${businessDoc.id}/tables/${currentBill.table}`;
+        } else if (currentBill.mode === 'online'){
+          var tablePath = `business/${businessDoc.id}/onlineTokens/${currentBill.table}`;
+        } else {
+          var tablePath = `business/${businessDoc.id}/tokens/${currentBill.table}`;
+        }
+        console.log("Table path",tablePath);
+        // console.log('Table path', tablePath);
+        // find tablePath in cachedTables if not found then fetch from firestore
+        if (cachedTables.findIndex((t: any) => t.path === tablePath) === -1) {
+          var tableDoc = await firestore.doc(tablePath).get();
+          cachedTables.push({
+            path: tablePath,
+            tableDoc: tableDoc,
+          });
+        } else {
+          var tableDoc = cachedTables.find(
+            (t: any) => t.path === tablePath,
+          ).tableDoc;
+        }
+        // console.log('Table doc', tableDoc.data(), 'path', tablePath);
+        if (tableDoc.exists) {
+          analyticsData.salesChannels.all.billWiseSales.tableWise.push({
+            table: tableDoc.data()['name'],
+            tableId: currentBill.table,
+            bills: [
+              {
+                billId: billDoc.id,
+                time: currentBill.createdDate,
+                totalSales: isValidNumber(currentBill.billing.grandTotal),
+              },
+            ],
+            totalSales: isValidNumber(currentBill.billing.grandTotal),
+            totalBills: 1,
+          });
+        }
+      } else {
+        analyticsData.salesChannels.all.billWiseSales.tableWise[
+          tableIndex
+        ].bills.push({
+          billId: billDoc.id,
+          time: currentBill.createdDate,
+          totalSales: isValidNumber(currentBill.billing.grandTotal),
+        });
+        analyticsData.salesChannels.all.billWiseSales.tableWise[
+          tableIndex
+        ].totalSales += isValidNumber(currentBill.billing.grandTotal);
+        analyticsData.salesChannels.all.billWiseSales.tableWise[
+          tableIndex
+        ].totalBills += 1;
+      }
+      console.log("Table wise analytics done for all");
+      // analyticsData.salesChannels.all.billWiseSales.time
+      // find if existing entry for a time exists in timeWise if yes then add the sales and increase the bill number
+      let timeIndex =
+        analyticsData.salesChannels.all.billWiseSales.time.findIndex(
+          (t) => t.time === currentBill.createdDate.toDate().getHours(),
+        );
+      if (timeIndex === -1) {
+        analyticsData.salesChannels.all.billWiseSales.time.push({
+          time: currentBill.createdDate.toDate().getHours(),
           bills: [
             {
               billId: billDoc.id,
@@ -462,114 +511,44 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
               totalSales: isValidNumber(currentBill.billing.grandTotal),
             },
           ],
+          timeNumber: Number(currentBill.createdDate.toDate().getHours()),
           totalSales: isValidNumber(currentBill.billing.grandTotal),
           totalBills: 1,
         });
-      }
-    } else {
-      analyticsData.salesChannels.all.billWiseSales.tableWise[
-        tableIndex
-      ].bills.push({
-        billId: billDoc.id,
-        time: currentBill.createdDate,
-        totalSales: isValidNumber(currentBill.billing.grandTotal),
-      });
-      analyticsData.salesChannels.all.billWiseSales.tableWise[
-        tableIndex
-      ].totalSales += isValidNumber(currentBill.billing.grandTotal);
-      analyticsData.salesChannels.all.billWiseSales.tableWise[
-        tableIndex
-      ].totalBills += 1;
-    }
-    console.log("Tablewise analytics done for all");
-    // analyticsData.salesChannels.all.billWiseSales.time
-    // find if existing entry for a time exists in timeWise if yes then add the sales and increase the bill number
-    let timeIndex =
-      analyticsData.salesChannels.all.billWiseSales.time.findIndex(
-        (t) => t.time === currentBill.createdDate.toDate().getHours(),
-      );
-    if (timeIndex === -1) {
-      analyticsData.salesChannels.all.billWiseSales.time.push({
-        time: currentBill.createdDate.toDate().getHours(),
-        bills: [
-          {
-            billId: billDoc.id,
-            time: currentBill.createdDate,
-            totalSales: isValidNumber(currentBill.billing.grandTotal),
-          },
-        ],
-        timeNumber: Number(currentBill.createdDate.toDate().getHours()),
-        totalSales: isValidNumber(currentBill.billing.grandTotal),
-        totalBills: 1,
-      });
-    } else {
-      analyticsData.salesChannels.all.billWiseSales.time[timeIndex].bills.push({
-        billId: billDoc.id,
-        time: currentBill.createdDate,
-        totalSales: isValidNumber(currentBill.billing.grandTotal),
-      });
-      analyticsData.salesChannels.all.billWiseSales.time[
-        timeIndex
-      ].totalSales += isValidNumber(currentBill.billing.grandTotal);
-      analyticsData.salesChannels.all.billWiseSales.time[
-        timeIndex
-      ].totalBills += 1;
-    }
-    let items = currentBill.kots
-      .map((kot: any) => {
-        return kot.products.map((product: any) => {
-          return product;
-        });
-      })
-      .flat();
-    items.forEach((item: any) => {
-      let itemIndex =
-        analyticsData.salesChannels.all.itemWiseSales.byPrice.findIndex(
-          (i) => i.id === item.id,
-        );
-      if (itemIndex === -1) {
-        analyticsData.salesChannels.all.itemWiseSales.byPrice.push({
-          name: item.name,
-          quantity: item.quantity,
-          price: item.price,
-          category: item.category || '',
-          id: item.id || '',
-        });
-        analyticsData.salesChannels.all.itemWiseSales.byQuantity.push({
-          name: item.name,
-          quantity: item.quantity,
-          price: item.price,
-          category: item.category || '',
-          id: item.id || '',
-        });
       } else {
-        analyticsData.salesChannels.all.itemWiseSales.byPrice[
-          itemIndex
-        ].quantity += item.quantity;
-        analyticsData.salesChannels.all.itemWiseSales.byPrice[
-          itemIndex
-        ].price += item.quantity * item.price;
-        analyticsData.salesChannels.all.itemWiseSales.byQuantity[
-          itemIndex
-        ].quantity += item.quantity;
-        analyticsData.salesChannels.all.itemWiseSales.byQuantity[
-          itemIndex
-        ].price += item.quantity * item.price;
+        analyticsData.salesChannels.all.billWiseSales.time[timeIndex].bills.push({
+          billId: billDoc.id,
+          time: currentBill.createdDate,
+          totalSales: isValidNumber(currentBill.billing.grandTotal),
+        });
+        analyticsData.salesChannels.all.billWiseSales.time[
+          timeIndex
+        ].totalSales += isValidNumber(currentBill.billing.grandTotal);
+        analyticsData.salesChannels.all.billWiseSales.time[
+          timeIndex
+        ].totalBills += 1;
       }
-      if (currentBill.mode == 'dineIn') {
+      let items = currentBill.kots
+        .map((kot: any) => {
+          return kot.products.map((product: any) => {
+            return product;
+          });
+        })
+        .flat();
+      items.forEach((item: any) => {
         let itemIndex =
-          analyticsData.salesChannels.dineIn.itemWiseSales.byPrice.findIndex(
+          analyticsData.salesChannels.all.itemWiseSales.byPrice.findIndex(
             (i) => i.id === item.id,
           );
         if (itemIndex === -1) {
-          analyticsData.salesChannels.dineIn.itemWiseSales.byPrice.push({
+          analyticsData.salesChannels.all.itemWiseSales.byPrice.push({
             name: item.name,
             quantity: item.quantity,
             price: item.price,
             category: item.category || '',
             id: item.id || '',
           });
-          analyticsData.salesChannels.dineIn.itemWiseSales.byQuantity.push({
+          analyticsData.salesChannels.all.itemWiseSales.byQuantity.push({
             name: item.name,
             quantity: item.quantity,
             price: item.price,
@@ -577,104 +556,139 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
             id: item.id || '',
           });
         } else {
-          analyticsData.salesChannels.dineIn.itemWiseSales.byPrice[
+          analyticsData.salesChannels.all.itemWiseSales.byPrice[
             itemIndex
           ].quantity += item.quantity;
-          analyticsData.salesChannels.dineIn.itemWiseSales.byPrice[
+          analyticsData.salesChannels.all.itemWiseSales.byPrice[
             itemIndex
           ].price += item.quantity * item.price;
-          analyticsData.salesChannels.dineIn.itemWiseSales.byQuantity[
+          analyticsData.salesChannels.all.itemWiseSales.byQuantity[
             itemIndex
           ].quantity += item.quantity;
-          analyticsData.salesChannels.dineIn.itemWiseSales.byQuantity[
+          analyticsData.salesChannels.all.itemWiseSales.byQuantity[
             itemIndex
           ].price += item.quantity * item.price;
         }
-      } else if (currentBill.mode == 'takeaway') {
-        let itemIndex =
-          analyticsData.salesChannels.takeaway.itemWiseSales.byPrice.findIndex(
-            (i) => i.id === item.id,
-          );
-        if (itemIndex === -1) {
-          analyticsData.salesChannels.takeaway.itemWiseSales.byPrice.push({
-            name: item.name,
-            quantity: isValidNumber(item.quantity),
-            price: isValidNumber(item.price),
-            category: item.category || '',
-            id: item.id || '',
-          });
-          analyticsData.salesChannels.takeaway.itemWiseSales.byQuantity.push({
-            name: item.name,
-            quantity: isValidNumber(item.quantity),
-            price: isValidNumber(item.price),
-            category: item.category || '',
-            id: item.id || '',
-          });
-        } else {
-          analyticsData.salesChannels.takeaway.itemWiseSales.byPrice[
-            itemIndex
-          ].quantity += isValidNumber(item.quantity);
-          analyticsData.salesChannels.takeaway.itemWiseSales.byPrice[
-            itemIndex
-          ].price += isValidNumber(item.quantity * item.price);
-          analyticsData.salesChannels.takeaway.itemWiseSales.byQuantity[
-            itemIndex
-          ].quantity += isValidNumber(item.quantity);
-          analyticsData.salesChannels.takeaway.itemWiseSales.byQuantity[
-            itemIndex
-          ].price += isValidNumber(item.quantity * item.price);
+        if (currentBill.mode == 'dineIn') {
+          let itemIndex =
+            analyticsData.salesChannels.dineIn.itemWiseSales.byPrice.findIndex(
+              (i) => i.id === item.id,
+            );
+          if (itemIndex === -1) {
+            analyticsData.salesChannels.dineIn.itemWiseSales.byPrice.push({
+              name: item.name,
+              quantity: item.quantity,
+              price: item.price,
+              category: item.category || '',
+              id: item.id || '',
+            });
+            analyticsData.salesChannels.dineIn.itemWiseSales.byQuantity.push({
+              name: item.name,
+              quantity: item.quantity,
+              price: item.price,
+              category: item.category || '',
+              id: item.id || '',
+            });
+          } else {
+            analyticsData.salesChannels.dineIn.itemWiseSales.byPrice[
+              itemIndex
+            ].quantity += item.quantity;
+            analyticsData.salesChannels.dineIn.itemWiseSales.byPrice[
+              itemIndex
+            ].price += item.quantity * item.price;
+            analyticsData.salesChannels.dineIn.itemWiseSales.byQuantity[
+              itemIndex
+            ].quantity += item.quantity;
+            analyticsData.salesChannels.dineIn.itemWiseSales.byQuantity[
+              itemIndex
+            ].price += item.quantity * item.price;
+          }
+        } else if (currentBill.mode == 'takeaway') {
+          let itemIndex =
+            analyticsData.salesChannels.takeaway.itemWiseSales.byPrice.findIndex(
+              (i) => i.id === item.id,
+            );
+          if (itemIndex === -1) {
+            analyticsData.salesChannels.takeaway.itemWiseSales.byPrice.push({
+              name: item.name,
+              quantity: isValidNumber(item.quantity),
+              price: isValidNumber(item.price),
+              category: item.category || '',
+              id: item.id || '',
+            });
+            analyticsData.salesChannels.takeaway.itemWiseSales.byQuantity.push({
+              name: item.name,
+              quantity: isValidNumber(item.quantity),
+              price: isValidNumber(item.price),
+              category: item.category || '',
+              id: item.id || '',
+            });
+          } else {
+            analyticsData.salesChannels.takeaway.itemWiseSales.byPrice[
+              itemIndex
+            ].quantity += isValidNumber(item.quantity);
+            analyticsData.salesChannels.takeaway.itemWiseSales.byPrice[
+              itemIndex
+            ].price += isValidNumber(item.quantity * item.price);
+            analyticsData.salesChannels.takeaway.itemWiseSales.byQuantity[
+              itemIndex
+            ].quantity += isValidNumber(item.quantity);
+            analyticsData.salesChannels.takeaway.itemWiseSales.byQuantity[
+              itemIndex
+            ].price += isValidNumber(item.quantity * item.price);
+          }
+        } else if (currentBill.mode == 'online') {
+          let itemIndex =
+            analyticsData.salesChannels.online.itemWiseSales.byPrice.findIndex(
+              (i) => i.id === item.id,
+            );
+          if (itemIndex === -1) {
+            analyticsData.salesChannels.online.itemWiseSales.byPrice.push({
+              name: item.name,
+              quantity: isValidNumber(item.quantity),
+              price: isValidNumber(item.price),
+              category: item.category || '',
+              id: item.id || '',
+            });
+            analyticsData.salesChannels.online.itemWiseSales.byQuantity.push({
+              name: item.name,
+              quantity: isValidNumber(item.quantity),
+              price: isValidNumber(item.price),
+              category: item.category || '',
+              id: item.id || '',
+            });
+          } else {
+            analyticsData.salesChannels.online.itemWiseSales.byPrice[
+              itemIndex
+            ].quantity += isValidNumber(item.quantity);
+            analyticsData.salesChannels.online.itemWiseSales.byPrice[
+              itemIndex
+            ].price += isValidNumber(item.quantity * item.price);
+            analyticsData.salesChannels.online.itemWiseSales.byQuantity[
+              itemIndex
+            ].quantity += isValidNumber(item.quantity);
+            analyticsData.salesChannels.online.itemWiseSales.byQuantity[
+              itemIndex
+            ].price += isValidNumber(item.quantity * item.price);
+          }
         }
-      } else if (currentBill.mode == 'online') {
-        let itemIndex =
-          analyticsData.salesChannels.online.itemWiseSales.byPrice.findIndex(
-            (i) => i.id === item.id,
-          );
-        if (itemIndex === -1) {
-          analyticsData.salesChannels.online.itemWiseSales.byPrice.push({
-            name: item.name,
-            quantity: isValidNumber(item.quantity),
-            price: isValidNumber(item.price),
-            category: item.category || '',
-            id: item.id || '',
-          });
-          analyticsData.salesChannels.online.itemWiseSales.byQuantity.push({
-            name: item.name,
-            quantity: isValidNumber(item.quantity),
-            price: isValidNumber(item.price),
-            category: item.category || '',
-            id: item.id || '',
-          });
-        } else {
-          analyticsData.salesChannels.online.itemWiseSales.byPrice[
-            itemIndex
-          ].quantity += isValidNumber(item.quantity);
-          analyticsData.salesChannels.online.itemWiseSales.byPrice[
-            itemIndex
-          ].price += isValidNumber(item.quantity * item.price);
-          analyticsData.salesChannels.online.itemWiseSales.byQuantity[
-            itemIndex
-          ].quantity += isValidNumber(item.quantity);
-          analyticsData.salesChannels.online.itemWiseSales.byQuantity[
-            itemIndex
-          ].price += isValidNumber(item.quantity * item.price);
-        }
+      });
+      // sort itemWiseSales by price
+      analyticsData.salesChannels.all.itemWiseSales.byPrice.sort(
+        (a, b) => b.price - a.price,
+      );
+      // sort itemWiseSales by quantity
+      analyticsData.salesChannels.all.itemWiseSales.byQuantity.sort(
+        (a, b) => b.quantity - a.quantity,
+      );
+      if (analyticsData.salesChannels.all.itemWiseSales.byPrice[0]) {
+        analyticsData.salesChannels.all.itemWiseSales.priceTopCategory =
+          analyticsData.salesChannels.all.itemWiseSales.byPrice[0].category;
       }
-    });
-    // sort itemWiseSales by price
-    analyticsData.salesChannels.all.itemWiseSales.byPrice.sort(
-      (a, b) => b.price - a.price,
-    );
-    // sort itemWiseSales by quantity
-    analyticsData.salesChannels.all.itemWiseSales.byQuantity.sort(
-      (a, b) => b.quantity - a.quantity,
-    );
-    if (analyticsData.salesChannels.all.itemWiseSales.byPrice[0]) {
-      analyticsData.salesChannels.all.itemWiseSales.priceTopCategory =
-        analyticsData.salesChannels.all.itemWiseSales.byPrice[0].category;
-    }
-    if (analyticsData.salesChannels.all.itemWiseSales.byQuantity[0]) {
-      analyticsData.salesChannels.all.itemWiseSales.quantityTopCategory =
-        analyticsData.salesChannels.all.itemWiseSales.byQuantity[0].category;
+      if (analyticsData.salesChannels.all.itemWiseSales.byQuantity[0]) {
+        analyticsData.salesChannels.all.itemWiseSales.quantityTopCategory =
+          analyticsData.salesChannels.all.itemWiseSales.byQuantity[0].category;
+      }
     }
     console.log("Itemwise analytics done for all");
     // suspicious activities
@@ -840,378 +854,52 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
     if (currentBill.mode === 'dineIn') {
       console.log('Adding dineIn bill',currentBill?.billing?.grandTotal);
       
-      if (currentBill?.settlement?.time) {
+      if (currentBill?.stage === 'settled') {
         analyticsData.salesChannels.dineIn.totalSettledBills += 1;
-      } else {
+      } else if (currentBill?.stage === 'finalized' || currentBill?.stage === 'active') {
         analyticsData.salesChannels.dineIn.totalUnsettledBills += 1;
       }
-      if (currentBill?.billing?.discount?.length > 0) {
-        analyticsData.salesChannels.dineIn.totalDiscountedBills += 1;
-      }
-      if (currentBill?.nonChargeableDetail) {
-        analyticsData.salesChannels.dineIn.totalNcBills += 1;
-      }
-      analyticsData.salesChannels.dineIn.totalSales += isValidNumber(
-        currentBill.billing.grandTotal,
-      );
-      analyticsData.salesChannels.dineIn.netSales += isValidNumber(
-        currentBill.billing.grandTotal -
-        currentBill.billing.taxes.reduce(
-          (total: number, d: any) => d.amount + total,
-          0,
-        ),
-      );
-      analyticsData.salesChannels.dineIn.totalDiscount += isValidNumber(
-        currentBill.billing.discount.reduce(
-          (total: number, d: any) => d.totalAppliedDiscount + total,
-          0,
-        ),
-      );
-      if (currentBill.nonChargeableDetail) {
-        analyticsData.salesChannels.dineIn.totalNC += isValidNumber(
-          currentBill.billing.subTotal,
-        );
-      }
-      analyticsData.salesChannels.dineIn.totalTaxes += isValidNumber(
-        currentBill.billing.taxes.reduce(
-          (total: number, t: any) => t.amount + total,
-          0,
-        ),
-      );
-      analyticsData.salesChannels.dineIn.hourlySales[
-        currentBill.createdDate.toDate().getHours()
-      ] += isValidNumber(currentBill.billing.grandTotal);
-      analyticsData.salesChannels.dineIn.billWiseSales.rangeWise[
-        currentBill.billing.grandTotal < 500
-          ? 'lowRange'
-          : currentBill.billing.grandTotal < 1000
-          ? 'mediumRange'
-          : 'highRange'
-      ].bills.push({
-        billId: billDoc.id,
-        time: currentBill.createdDate,
-        totalSales: isValidNumber(currentBill.billing.grandTotal),
-      });
-      if (currentBill.settlement?.payments) {
-        currentBill.settlement?.payments.forEach((payment: any) => {
-          if (
-            !analyticsData.salesChannels.dineIn.paymentReceived[
-              payment.paymentMethod
-            ]
-          ) {
-            analyticsData.salesChannels.dineIn.paymentReceived[
-              payment.paymentMethod
-            ] = 0;
-          }
-          analyticsData.salesChannels.dineIn.paymentReceived[
-            payment.paymentMethod
-          ] += isValidNumber(payment.amount);
-        });
-      }
-      // analyticsData.salesChannels.dineIn.billWiseSales.tableWise
-      // find if existing entry for a table exists in tableWise if yes then add the sales and increase the bill number
-      let tableIndex =
-        analyticsData.salesChannels.dineIn.billWiseSales.tableWise.findIndex(
-          (t: any) => t.tableId == currentBill.table,
-        );
-      if (tableIndex === -1) {
-        let tablePath = `business/${businessDoc.id}/tables/${currentBill.table}`;
-        // console.log('Table path', tablePath);
-        // find tablePath in cachedTables if not found then fetch from firestore
-        if (cachedTables.findIndex((t: any) => t.path === tablePath) === -1) {
-          var tableDoc = await firestore.doc(tablePath).get();
-          cachedTables.push({
-            path: tablePath,
-            tableDoc: tableDoc,
-          });
-        } else {
-          var tableDoc = cachedTables.find(
-            (t: any) => t.path === tablePath,
-          ).tableDoc;
-        }
-        if (tableDoc.data() == undefined) {
-          return;
-        }
-        // console.log('Table doc', tableDoc.data(), 'path', tablePath);
-        if (tableDoc.exists) {
-          analyticsData.salesChannels.dineIn.billWiseSales.tableWise.push({
-            table: tableDoc.data()['name'],
-            tableId: currentBill.table,
-            bills: [
-              {
-                billId: billDoc.id,
-                time: currentBill.createdDate,
-                totalSales: isValidNumber(currentBill.billing.grandTotal),
-              },
-            ],
-            totalSales: isValidNumber(currentBill.billing.grandTotal),
-            totalBills: 1,
-          });
-        }
-      } else {
-        analyticsData.salesChannels.dineIn.billWiseSales.tableWise[
-          tableIndex
-        ].bills.push({
-          billId: billDoc.id,
-          time: currentBill.createdDate,
-          totalSales: isValidNumber(currentBill.billing.grandTotal),
-        });
-        analyticsData.salesChannels.dineIn.billWiseSales.tableWise[
-          tableIndex
-        ].totalSales += isValidNumber(currentBill.billing.grandTotal);
-        analyticsData.salesChannels.dineIn.billWiseSales.tableWise[
-          tableIndex
-        ].totalBills += 1;
-      }
-      // analyticsData.salesChannels.dineIn.billWiseSales.time
-      // find if existing entry for a time exists in timeWise if yes then add the sales and increase the bill number
-      let timeIndex =
-        analyticsData.salesChannels.dineIn.billWiseSales.time.findIndex(
-          (t) => t.time === currentBill.createdDate.toDate().getHours(),
-        );
-      if (timeIndex === -1) {
-        analyticsData.salesChannels.dineIn.billWiseSales.time.push({
-          time: currentBill.createdDate.toDate().getHours(),
-          bills: [
-            {
-              billId: billDoc.id,
-              time: currentBill.createdDate,
-              totalSales: isValidNumber(currentBill.billing.grandTotal),
-            },
-          ],
-          timeNumber: Number(currentBill.createdDate.toDate().getHours()),
-          totalSales: isValidNumber(currentBill.billing.grandTotal),
-          totalBills: 1,
-        });
-      } else {
-        analyticsData.salesChannels.dineIn.billWiseSales.time[
-          timeIndex
-        ].bills.push({
-          billId: billDoc.id,
-          time: currentBill.createdDate,
-          totalSales: isValidNumber(currentBill.billing.grandTotal),
-        });
-        analyticsData.salesChannels.dineIn.billWiseSales.time[
-          timeIndex
-        ].totalSales += isValidNumber(currentBill.billing.grandTotal);
-        analyticsData.salesChannels.dineIn.billWiseSales.time[
-          timeIndex
-        ].totalBills += 1;
-      }
-    } else if (currentBill.mode === 'takeaway') {
-      console.log('Mode takeaway found', currentBill?.billing?.grandTotal);
-      if (currentBill?.settlement?.time) {
-        analyticsData.salesChannels.takeaway.totalSettledBills += 1;
-      } else {
-        analyticsData.salesChannels.takeaway.totalUnsettledBills += 1;
-      }
-      if (currentBill?.billing?.discount?.length > 0) {
-        analyticsData.salesChannels.takeaway.totalDiscountedBills += 1;
-      }
-      if (currentBill?.nonChargeableDetail) {
-        analyticsData.salesChannels.takeaway.totalNcBills += 1;
-      }
-      analyticsData.salesChannels.takeaway.totalSales += isValidNumber(
-        currentBill.billing.grandTotal,
-      );
-      analyticsData.salesChannels.takeaway.netSales += isValidNumber(
-        currentBill.billing.grandTotal -
-        currentBill.billing.taxes.reduce(
-          (total: number, d: any) => d.amount + total,
-          0,
-        ),
-      );
-      analyticsData.salesChannels.takeaway.totalDiscount += isValidNumber(
-        currentBill.billing.discount.reduce(
-          (total: number, d: any) => d.totalAppliedDiscount + total,
-          0,
-        ),
-      );
-      if (currentBill.nonChargeableDetail) {
-        analyticsData.salesChannels.takeaway.totalNC += isValidNumber(
-          currentBill.billing.subTotal,
-        );
-      }
-      analyticsData.salesChannels.takeaway.totalTaxes += isValidNumber(
-        currentBill.billing.taxes.reduce(
-          (total: number, t: any) => t.amount + total,
-          0,
-        ),
-      );
-      analyticsData.salesChannels.takeaway.hourlySales[
-        currentBill.createdDate.toDate().getHours()
-      ] += isValidNumber(currentBill.billing.grandTotal);
-      analyticsData.salesChannels.takeaway.billWiseSales.rangeWise[
-        currentBill.billing.grandTotal < 500
-          ? 'lowRange'
-          : currentBill.billing.grandTotal < 1000
-          ? 'mediumRange'
-          : 'highRange'
-      ].bills.push({
-        billId: billDoc.id,
-        time: currentBill.createdDate,
-        totalSales: isValidNumber(currentBill.billing.grandTotal),
-      });
-      if (currentBill.settlement?.payments) {
-        currentBill.settlement?.payments.forEach((payment: any) => {
-          if (
-            !analyticsData.salesChannels.takeaway.paymentReceived[
-              payment.paymentMethod
-            ]
-          ) {
-            analyticsData.salesChannels.takeaway.paymentReceived[
-              payment.paymentMethod
-            ] = 0;
-          }
-          analyticsData.salesChannels.takeaway.paymentReceived[
-            payment.paymentMethod
-          ] += isValidNumber(payment.amount);
-        });
-      }
-      // analyticsData.salesChannels.takeaway.billWiseSales.tableWise
-      // find if existing entry for a table exists in tableWise if yes then add the sales and increase the bill number
-      let tableIndex =
-        analyticsData.salesChannels.takeaway.billWiseSales.tableWise.findIndex(
-          (t: any) => t.tableId == currentBill.table,
-        );
-      if (tableIndex === -1) {
-        if (currentBill.mode === 'dineIn'){
-          var tablePath = `business/${businessDoc.id}/tables/${currentBill.table}`;
-        } else if (currentBill.mode === 'online'){
-          var tablePath = `business/${businessDoc.id}/onlineTokens/${currentBill.table}`;
-        } else {
-          var tablePath = `business/${businessDoc.id}/tokens/${currentBill.table}`;
-        }
-        // console.log('Table path', tablePath);
-        // find tablePath in cachedTables if not found then fetch from firestore
-        if (cachedTables.findIndex((t: any) => t.path === tablePath) === -1) {
-          var tableDoc = await firestore.doc(tablePath).get();
-          cachedTables.push({
-            path: tablePath,
-            tableDoc: tableDoc,
-          });
-        } else {
-          var tableDoc = cachedTables.find(
-            (t: any) => t.path === tablePath,
-          ).tableDoc;
-        }
-        if (tableDoc.data() == undefined) {
-          return;
-        }
-        // console.log('Table doc', tableDoc.data(), 'path', tablePath);
-        if (tableDoc.exists) {
-          analyticsData.salesChannels.takeaway.billWiseSales.tableWise.push({
-            table: tableDoc.data()['name'],
-            tableId: currentBill.table,
-            bills: [
-              {
-                billId: billDoc.id,
-                time: currentBill.createdDate,
-                totalSales: isValidNumber(currentBill.billing.grandTotal),
-              },
-            ],
-            totalSales: isValidNumber(currentBill.billing.grandTotal),
-            totalBills: 1,
-          });
-        }
-      } else {
-        analyticsData.salesChannels.takeaway.billWiseSales.tableWise[
-          tableIndex
-        ].bills.push({
-          billId: billDoc.id,
-          time: currentBill.createdDate,
-          totalSales: isValidNumber(currentBill.billing.grandTotal),
-        });
-        analyticsData.salesChannels.takeaway.billWiseSales.tableWise[
-          tableIndex
-        ].totalSales += isValidNumber(currentBill.billing.grandTotal);
-        analyticsData.salesChannels.takeaway.billWiseSales.tableWise[
-          tableIndex
-        ].totalBills += 1;
-      }
-      // analyticsData.salesChannels.takeaway.billWiseSales.time
-      // find if existing entry for a time exists in timeWise if yes then add the sales and increase the bill number
-      let timeIndex =
-        analyticsData.salesChannels.takeaway.billWiseSales.time.findIndex(
-          (t) => t.time === currentBill.createdDate.toDate().getHours(),
-        );
-      if (timeIndex === -1) {
-        analyticsData.salesChannels.takeaway.billWiseSales.time.push({
-          time: currentBill.createdDate.toDate().getHours(),
-          bills: [
-            {
-              billId: billDoc.id,
-              time: currentBill.createdDate,
-              totalSales: isValidNumber(currentBill.billing.grandTotal),
-            },
-          ],
-          timeNumber: Number(currentBill.createdDate.toDate().getHours()),
-          totalSales: isValidNumber(currentBill.billing.grandTotal),
-          totalBills: 1,
-        });
-      } else {
-        analyticsData.salesChannels.takeaway.billWiseSales.time[
-          timeIndex
-        ].bills.push({
-          billId: billDoc.id,
-          time: currentBill.createdDate,
-          totalSales: isValidNumber(currentBill.billing.grandTotal),
-        });
-        analyticsData.salesChannels.takeaway.billWiseSales.time[
-          timeIndex
-        ].totalSales += isValidNumber(currentBill.billing.grandTotal);
-        analyticsData.salesChannels.takeaway.billWiseSales.time[
-          timeIndex
-        ].totalBills += 1;
-      }
-    } else if (currentBill.mode === 'online') {
-      try {
-        console.log('Mode online found', currentBill?.billing?.grandTotal);
-        if (currentBill?.settlement?.time) {
-          analyticsData.salesChannels.online.totalSettledBills += 1;
-        } else {
-          analyticsData.salesChannels.online.totalUnsettledBills += 1;
-        }
+      if (currentBill?.stage !== 'cancelled'){
         if (currentBill?.billing?.discount?.length > 0) {
-          analyticsData.salesChannels.online.totalDiscountedBills += 1;
+          analyticsData.salesChannels.dineIn.totalDiscountedBills += 1;
         }
         if (currentBill?.nonChargeableDetail) {
-          analyticsData.salesChannels.online.totalNcBills += 1;
+          analyticsData.salesChannels.dineIn.totalNcBills += 1;
         }
-        analyticsData.salesChannels.online.totalSales += isValidNumber(
+        analyticsData.salesChannels.dineIn.totalSales += isValidNumber(
           currentBill.billing.grandTotal,
         );
-        analyticsData.salesChannels.online.netSales += isValidNumber(
-          isValidNumber(currentBill.billing.grandTotal) -
+        analyticsData.salesChannels.dineIn.netSales += isValidNumber(
+          currentBill.billing.grandTotal -
           currentBill.billing.taxes.reduce(
             (total: number, d: any) => d.amount + total,
             0,
           ),
         );
-        analyticsData.salesChannels.online.totalDiscount += isValidNumber(
+        analyticsData.salesChannels.dineIn.totalDiscount += isValidNumber(
           currentBill.billing.discount.reduce(
             (total: number, d: any) => d.totalAppliedDiscount + total,
             0,
           ),
         );
         if (currentBill.nonChargeableDetail) {
-          analyticsData.salesChannels.online.totalNC += isValidNumber(
+          analyticsData.salesChannels.dineIn.totalNC += isValidNumber(
             currentBill.billing.subTotal,
           );
         }
-        analyticsData.salesChannels.online.totalTaxes += isValidNumber(
+        analyticsData.salesChannels.dineIn.totalTaxes += isValidNumber(
           currentBill.billing.taxes.reduce(
             (total: number, t: any) => t.amount + total,
             0,
           ),
         );
-        analyticsData.salesChannels.online.hourlySales[
+        analyticsData.salesChannels.dineIn.hourlySales[
           currentBill.createdDate.toDate().getHours()
         ] += isValidNumber(currentBill.billing.grandTotal);
-        analyticsData.salesChannels.online.billWiseSales.rangeWise[
-          isValidNumber(currentBill.billing.grandTotal) < 500
+        analyticsData.salesChannels.dineIn.billWiseSales.rangeWise[
+          currentBill.billing.grandTotal < 500
             ? 'lowRange'
-            : isValidNumber(currentBill.billing.grandTotal) < 1000
+            : currentBill.billing.grandTotal < 1000
             ? 'mediumRange'
             : 'highRange'
         ].bills.push({
@@ -1222,27 +910,192 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
         if (currentBill.settlement?.payments) {
           currentBill.settlement?.payments.forEach((payment: any) => {
             if (
-              !analyticsData.salesChannels.online.paymentReceived[
+              !analyticsData.salesChannels.dineIn.paymentReceived[
                 payment.paymentMethod
               ]
             ) {
-              analyticsData.salesChannels.online.paymentReceived[
+              analyticsData.salesChannels.dineIn.paymentReceived[
                 payment.paymentMethod
               ] = 0;
             }
-            analyticsData.salesChannels.online.paymentReceived[
+            analyticsData.salesChannels.dineIn.paymentReceived[
               payment.paymentMethod
             ] += isValidNumber(payment.amount);
           });
         }
-        console.log("Stage 1");
-        // analyticsData.salesChannels.online.billWiseSales.tableWise
+        // analyticsData.salesChannels.dineIn.billWiseSales.tableWise
         // find if existing entry for a table exists in tableWise if yes then add the sales and increase the bill number
         let tableIndex =
-          analyticsData.salesChannels.online.billWiseSales.tableWise.findIndex(
+          analyticsData.salesChannels.dineIn.billWiseSales.tableWise.findIndex(
             (t: any) => t.tableId == currentBill.table,
           );
-          
+        if (tableIndex === -1) {
+          let tablePath = `business/${businessDoc.id}/tables/${currentBill.table}`;
+          // console.log('Table path', tablePath);
+          // find tablePath in cachedTables if not found then fetch from firestore
+          if (cachedTables.findIndex((t: any) => t.path === tablePath) === -1) {
+            var tableDoc = await firestore.doc(tablePath).get();
+            cachedTables.push({
+              path: tablePath,
+              tableDoc: tableDoc,
+            });
+          } else {
+            var tableDoc = cachedTables.find(
+              (t: any) => t.path === tablePath,
+            ).tableDoc;
+          }
+          if (tableDoc.data() == undefined) {
+            return;
+          }
+          // console.log('Table doc', tableDoc.data(), 'path', tablePath);
+          if (tableDoc.exists) {
+            analyticsData.salesChannels.dineIn.billWiseSales.tableWise.push({
+              table: tableDoc.data()['name'],
+              tableId: currentBill.table,
+              bills: [
+                {
+                  billId: billDoc.id,
+                  time: currentBill.createdDate,
+                  totalSales: isValidNumber(currentBill.billing.grandTotal),
+                },
+              ],
+              totalSales: isValidNumber(currentBill.billing.grandTotal),
+              totalBills: 1,
+            });
+          }
+        } else {
+          analyticsData.salesChannels.dineIn.billWiseSales.tableWise[
+            tableIndex
+          ].bills.push({
+            billId: billDoc.id,
+            time: currentBill.createdDate,
+            totalSales: isValidNumber(currentBill.billing.grandTotal),
+          });
+          analyticsData.salesChannels.dineIn.billWiseSales.tableWise[
+            tableIndex
+          ].totalSales += isValidNumber(currentBill.billing.grandTotal);
+          analyticsData.salesChannels.dineIn.billWiseSales.tableWise[
+            tableIndex
+          ].totalBills += 1;
+        }
+        // analyticsData.salesChannels.dineIn.billWiseSales.time
+        // find if existing entry for a time exists in timeWise if yes then add the sales and increase the bill number
+        let timeIndex =
+          analyticsData.salesChannels.dineIn.billWiseSales.time.findIndex(
+            (t) => t.time === currentBill.createdDate.toDate().getHours(),
+          );
+        if (timeIndex === -1) {
+          analyticsData.salesChannels.dineIn.billWiseSales.time.push({
+            time: currentBill.createdDate.toDate().getHours(),
+            bills: [
+              {
+                billId: billDoc.id,
+                time: currentBill.createdDate,
+                totalSales: isValidNumber(currentBill.billing.grandTotal),
+              },
+            ],
+            timeNumber: Number(currentBill.createdDate.toDate().getHours()),
+            totalSales: isValidNumber(currentBill.billing.grandTotal),
+            totalBills: 1,
+          });
+        } else {
+          analyticsData.salesChannels.dineIn.billWiseSales.time[
+            timeIndex
+          ].bills.push({
+            billId: billDoc.id,
+            time: currentBill.createdDate,
+            totalSales: isValidNumber(currentBill.billing.grandTotal),
+          });
+          analyticsData.salesChannels.dineIn.billWiseSales.time[
+            timeIndex
+          ].totalSales += isValidNumber(currentBill.billing.grandTotal);
+          analyticsData.salesChannels.dineIn.billWiseSales.time[
+            timeIndex
+          ].totalBills += 1;
+        }
+      } else {
+        analyticsData.salesChannels.dineIn.totalCancelledBills += 1;
+        analyticsData.salesChannels.dineIn.totalCancelled += isValidNumber(
+          currentBill.billing.grandTotal,
+        );
+      }
+    } else if (currentBill.mode === 'takeaway') {
+      console.log('Mode takeaway found', currentBill?.billing?.grandTotal);
+      if (currentBill?.stage === 'settled') {
+        analyticsData.salesChannels.takeaway.totalSettledBills += 1;
+      } else if (currentBill?.stage === 'finalized' || currentBill?.stage === 'active') {
+        analyticsData.salesChannels.takeaway.totalUnsettledBills += 1;
+      }
+      if (currentBill?.stage !== 'cancelled'){
+        if (currentBill?.billing?.discount?.length > 0) {
+          analyticsData.salesChannels.takeaway.totalDiscountedBills += 1;
+        }
+        if (currentBill?.nonChargeableDetail) {
+          analyticsData.salesChannels.takeaway.totalNcBills += 1;
+        }
+        analyticsData.salesChannels.takeaway.totalSales += isValidNumber(
+          currentBill.billing.grandTotal,
+        );
+        analyticsData.salesChannels.takeaway.netSales += isValidNumber(
+          currentBill.billing.grandTotal -
+          currentBill.billing.taxes.reduce(
+            (total: number, d: any) => d.amount + total,
+            0,
+          ),
+        );
+        analyticsData.salesChannels.takeaway.totalDiscount += isValidNumber(
+          currentBill.billing.discount.reduce(
+            (total: number, d: any) => d.totalAppliedDiscount + total,
+            0,
+          ),
+        );
+        if (currentBill.nonChargeableDetail) {
+          analyticsData.salesChannels.takeaway.totalNC += isValidNumber(
+            currentBill.billing.subTotal,
+          );
+        }
+        analyticsData.salesChannels.takeaway.totalTaxes += isValidNumber(
+          currentBill.billing.taxes.reduce(
+            (total: number, t: any) => t.amount + total,
+            0,
+          ),
+        );
+        analyticsData.salesChannels.takeaway.hourlySales[
+          currentBill.createdDate.toDate().getHours()
+        ] += isValidNumber(currentBill.billing.grandTotal);
+        analyticsData.salesChannels.takeaway.billWiseSales.rangeWise[
+          currentBill.billing.grandTotal < 500
+            ? 'lowRange'
+            : currentBill.billing.grandTotal < 1000
+            ? 'mediumRange'
+            : 'highRange'
+        ].bills.push({
+          billId: billDoc.id,
+          time: currentBill.createdDate,
+          totalSales: isValidNumber(currentBill.billing.grandTotal),
+        });
+        if (currentBill.settlement?.payments) {
+          currentBill.settlement?.payments.forEach((payment: any) => {
+            if (
+              !analyticsData.salesChannels.takeaway.paymentReceived[
+                payment.paymentMethod
+              ]
+            ) {
+              analyticsData.salesChannels.takeaway.paymentReceived[
+                payment.paymentMethod
+              ] = 0;
+            }
+            analyticsData.salesChannels.takeaway.paymentReceived[
+              payment.paymentMethod
+            ] += isValidNumber(payment.amount);
+          });
+        }
+        // analyticsData.salesChannels.takeaway.billWiseSales.tableWise
+        // find if existing entry for a table exists in tableWise if yes then add the sales and increase the bill number
+        let tableIndex =
+          analyticsData.salesChannels.takeaway.billWiseSales.tableWise.findIndex(
+            (t: any) => t.tableId == currentBill.table,
+          );
         if (tableIndex === -1) {
           if (currentBill.mode === 'dineIn'){
             var tablePath = `business/${businessDoc.id}/tables/${currentBill.table}`;
@@ -1269,7 +1122,7 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
           }
           // console.log('Table doc', tableDoc.data(), 'path', tablePath);
           if (tableDoc.exists) {
-            analyticsData.salesChannels.online.billWiseSales.tableWise.push({
+            analyticsData.salesChannels.takeaway.billWiseSales.tableWise.push({
               table: tableDoc.data()['name'],
               tableId: currentBill.table,
               bills: [
@@ -1284,30 +1137,28 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
             });
           }
         } else {
-          analyticsData.salesChannels.online.billWiseSales.tableWise[
+          analyticsData.salesChannels.takeaway.billWiseSales.tableWise[
             tableIndex
           ].bills.push({
             billId: billDoc.id,
             time: currentBill.createdDate,
             totalSales: isValidNumber(currentBill.billing.grandTotal),
           });
-          analyticsData.salesChannels.online.billWiseSales.tableWise[
+          analyticsData.salesChannels.takeaway.billWiseSales.tableWise[
             tableIndex
           ].totalSales += isValidNumber(currentBill.billing.grandTotal);
-          analyticsData.salesChannels.online.billWiseSales.tableWise[
+          analyticsData.salesChannels.takeaway.billWiseSales.tableWise[
             tableIndex
           ].totalBills += 1;
         }
-        console.log("Stage 2");
-        
-        // analyticsData.salesChannels.online.billWiseSales.time
+        // analyticsData.salesChannels.takeaway.billWiseSales.time
         // find if existing entry for a time exists in timeWise if yes then add the sales and increase the bill number
         let timeIndex =
-          analyticsData.salesChannels.online.billWiseSales.time.findIndex(
+          analyticsData.salesChannels.takeaway.billWiseSales.time.findIndex(
             (t) => t.time === currentBill.createdDate.toDate().getHours(),
           );
         if (timeIndex === -1) {
-          analyticsData.salesChannels.online.billWiseSales.time.push({
+          analyticsData.salesChannels.takeaway.billWiseSales.time.push({
             time: currentBill.createdDate.toDate().getHours(),
             bills: [
               {
@@ -1321,19 +1172,203 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
             totalBills: 1,
           });
         } else {
-          analyticsData.salesChannels.online.billWiseSales.time[
+          analyticsData.salesChannels.takeaway.billWiseSales.time[
             timeIndex
           ].bills.push({
             billId: billDoc.id,
             time: currentBill.createdDate,
             totalSales: isValidNumber(currentBill.billing.grandTotal),
           });
-          analyticsData.salesChannels.online.billWiseSales.time[
+          analyticsData.salesChannels.takeaway.billWiseSales.time[
             timeIndex
           ].totalSales += isValidNumber(currentBill.billing.grandTotal);
-          analyticsData.salesChannels.online.billWiseSales.time[
+          analyticsData.salesChannels.takeaway.billWiseSales.time[
             timeIndex
           ].totalBills += 1;
+        }
+      } else {
+        analyticsData.salesChannels.takeaway.totalCancelledBills += 1;
+        analyticsData.salesChannels.takeaway.totalCancelled += isValidNumber(
+          currentBill.billing.grandTotal,
+        );
+      }
+    } else if (currentBill.mode === 'online') {
+      try {
+        console.log('Mode online found', currentBill?.billing?.grandTotal);
+        if (currentBill?.stage === 'settled') {
+          analyticsData.salesChannels.takeaway.totalSettledBills += 1;
+        } else if (currentBill?.stage === 'finalized' || currentBill?.stage === 'active') {
+          analyticsData.salesChannels.takeaway.totalUnsettledBills += 1;
+        }
+        if (currentBill?.stage !== 'cancelled'){
+          if (currentBill?.billing?.discount?.length > 0) {
+            analyticsData.salesChannels.online.totalDiscountedBills += 1;
+          }
+          if (currentBill?.nonChargeableDetail) {
+            analyticsData.salesChannels.online.totalNcBills += 1;
+          }
+          analyticsData.salesChannels.online.totalSales += isValidNumber(
+            currentBill.billing.grandTotal,
+          );
+          analyticsData.salesChannels.online.netSales += isValidNumber(
+            isValidNumber(currentBill.billing.grandTotal) -
+            currentBill.billing.taxes.reduce(
+              (total: number, d: any) => d.amount + total,
+              0,
+            ),
+          );
+          analyticsData.salesChannels.online.totalDiscount += isValidNumber(
+            currentBill.billing.discount.reduce(
+              (total: number, d: any) => d.totalAppliedDiscount + total,
+              0,
+            ),
+          );
+          if (currentBill.nonChargeableDetail) {
+            analyticsData.salesChannels.online.totalNC += isValidNumber(
+              currentBill.billing.subTotal,
+            );
+          }
+          analyticsData.salesChannels.online.totalTaxes += isValidNumber(
+            currentBill.billing.taxes.reduce(
+              (total: number, t: any) => t.amount + total,
+              0,
+            ),
+          );
+          analyticsData.salesChannels.online.hourlySales[
+            currentBill.createdDate.toDate().getHours()
+          ] += isValidNumber(currentBill.billing.grandTotal);
+          analyticsData.salesChannels.online.billWiseSales.rangeWise[
+            isValidNumber(currentBill.billing.grandTotal) < 500
+              ? 'lowRange'
+              : isValidNumber(currentBill.billing.grandTotal) < 1000
+              ? 'mediumRange'
+              : 'highRange'
+          ].bills.push({
+            billId: billDoc.id,
+            time: currentBill.createdDate,
+            totalSales: isValidNumber(currentBill.billing.grandTotal),
+          });
+          if (currentBill.settlement?.payments) {
+            currentBill.settlement?.payments.forEach((payment: any) => {
+              if (
+                !analyticsData.salesChannels.online.paymentReceived[
+                  payment.paymentMethod
+                ]
+              ) {
+                analyticsData.salesChannels.online.paymentReceived[
+                  payment.paymentMethod
+                ] = 0;
+              }
+              analyticsData.salesChannels.online.paymentReceived[
+                payment.paymentMethod
+              ] += isValidNumber(payment.amount);
+            });
+          }
+          console.log("Stage 1");
+          // analyticsData.salesChannels.online.billWiseSales.tableWise
+          // find if existing entry for a table exists in tableWise if yes then add the sales and increase the bill number
+          let tableIndex =
+            analyticsData.salesChannels.online.billWiseSales.tableWise.findIndex(
+              (t: any) => t.tableId == currentBill.table,
+            );
+            
+          if (tableIndex === -1) {
+            if (currentBill.mode === 'dineIn'){
+              var tablePath = `business/${businessDoc.id}/tables/${currentBill.table}`;
+            } else if (currentBill.mode === 'online'){
+              var tablePath = `business/${businessDoc.id}/onlineTokens/${currentBill.table}`;
+            } else {
+              var tablePath = `business/${businessDoc.id}/tokens/${currentBill.table}`;
+            }
+            // console.log('Table path', tablePath);
+            // find tablePath in cachedTables if not found then fetch from firestore
+            if (cachedTables.findIndex((t: any) => t.path === tablePath) === -1) {
+              var tableDoc = await firestore.doc(tablePath).get();
+              cachedTables.push({
+                path: tablePath,
+                tableDoc: tableDoc,
+              });
+            } else {
+              var tableDoc = cachedTables.find(
+                (t: any) => t.path === tablePath,
+              ).tableDoc;
+            }
+            if (tableDoc.data() == undefined) {
+              return;
+            }
+            // console.log('Table doc', tableDoc.data(), 'path', tablePath);
+            if (tableDoc.exists) {
+              analyticsData.salesChannels.online.billWiseSales.tableWise.push({
+                table: tableDoc.data()['name'],
+                tableId: currentBill.table,
+                bills: [
+                  {
+                    billId: billDoc.id,
+                    time: currentBill.createdDate,
+                    totalSales: isValidNumber(currentBill.billing.grandTotal),
+                  },
+                ],
+                totalSales: isValidNumber(currentBill.billing.grandTotal),
+                totalBills: 1,
+              });
+            }
+          } else {
+            analyticsData.salesChannels.online.billWiseSales.tableWise[
+              tableIndex
+            ].bills.push({
+              billId: billDoc.id,
+              time: currentBill.createdDate,
+              totalSales: isValidNumber(currentBill.billing.grandTotal),
+            });
+            analyticsData.salesChannels.online.billWiseSales.tableWise[
+              tableIndex
+            ].totalSales += isValidNumber(currentBill.billing.grandTotal);
+            analyticsData.salesChannels.online.billWiseSales.tableWise[
+              tableIndex
+            ].totalBills += 1;
+          }
+          console.log("Stage 2");
+          
+          // analyticsData.salesChannels.online.billWiseSales.time
+          // find if existing entry for a time exists in timeWise if yes then add the sales and increase the bill number
+          let timeIndex =
+            analyticsData.salesChannels.online.billWiseSales.time.findIndex(
+              (t) => t.time === currentBill.createdDate.toDate().getHours(),
+            );
+          if (timeIndex === -1) {
+            analyticsData.salesChannels.online.billWiseSales.time.push({
+              time: currentBill.createdDate.toDate().getHours(),
+              bills: [
+                {
+                  billId: billDoc.id,
+                  time: currentBill.createdDate,
+                  totalSales: isValidNumber(currentBill.billing.grandTotal),
+                },
+              ],
+              timeNumber: Number(currentBill.createdDate.toDate().getHours()),
+              totalSales: isValidNumber(currentBill.billing.grandTotal),
+              totalBills: 1,
+            });
+          } else {
+            analyticsData.salesChannels.online.billWiseSales.time[
+              timeIndex
+            ].bills.push({
+              billId: billDoc.id,
+              time: currentBill.createdDate,
+              totalSales: isValidNumber(currentBill.billing.grandTotal),
+            });
+            analyticsData.salesChannels.online.billWiseSales.time[
+              timeIndex
+            ].totalSales += isValidNumber(currentBill.billing.grandTotal);
+            analyticsData.salesChannels.online.billWiseSales.time[
+              timeIndex
+            ].totalBills += 1;
+          }
+        } else {
+          analyticsData.salesChannels.online.totalCancelledBills += 1;
+          analyticsData.salesChannels.online.totalCancelled += isValidNumber(
+            currentBill.billing.grandTotal,
+          );
         }
         console.log("Stage 3");
       } catch (error) {
@@ -1342,11 +1377,6 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
     }
     console.log("Ran for ",billDoc.id);
   }))
-  try {
-    
-  } catch (error) {
-    console.log('Error in bill', error);
-  }
   let filteredTables: any[] = [];
   analyticsData.salesChannels.all.billWiseSales.tableWise.forEach((table) => {
     // find table in filteredTables
@@ -1640,27 +1670,6 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
     JSON.stringify(analyticsData).length / 1000000,
   );
 
-  // // create a blob object of this analyticsData
-  // let analyticsDataFile = new Blob([JSON.stringify(analyticsData)], {
-  //   type: 'application/json',
-  // });
-  // // upload this file to firebase storage
-  // let bucket = storage.bucket('fbms-shreeva-demo.appspot.com').file(
-  //   `business/${businessDoc.id}/analyticsData/${year}/${month}/${day}/analyticsData.json`,
-  // );
-  // let storageRef = bucket.createWriteStream({
-  //   metadata: {
-  //     contentType: 'application/json',
-  //   },
-  // });
-
-  // storageRef.write(JSON.stringify(analyticsData),(err: any) => {
-  //   console.log('Error in writing file', err);
-  // });
-  // await storageRef.end();
-  // storage.bucket('fbms-shreeva-demo.appspot.com').file('analytics.json').save(JSON.stringify(analyticsData), {
-  //   gzip: true,
-  // })
   await firestore
     .doc(`business/${businessDoc.id}/analyticsData/${year}/${month}/${day}`)
     .set(analyticsData);
@@ -1680,18 +1689,3 @@ function isValidNumber(number: any) {
     return number;
   }
 }
-// var admin = require('firebase-admin');
-// const initApp = require('firebase-admin/app');
-// const app = initApp.initializeApp({
-//     credential: admin.credential.cert(
-//       'fbms-shreeva-demo-firebase-adminsdk-8nk63-28663566a0.json',
-//     ),
-//   });
-// const firestoreImport = require('firebase-admin/firestore');
-// const firestore = firestoreImport.getFirestore(app);
-// let businessRef = firestore.doc(`business/uqd9dm0its2v9xx6fey2q`);
-// businessRef.get().then((doc: any) => {
-//   generateAnalytics(firestore, doc).then((data: any) => {
-//     console.log('Generated Data', data);
-//   })
-// });

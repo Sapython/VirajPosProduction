@@ -1013,8 +1013,21 @@ export const verifyOtpExistingUser = functions.https.onCall(
     } else if (accessType == 'custom') {
       newUserData['propertiesAllowed'] = otpDoc.data()?.propertiesAllowed;
     }
+    let businessDoc = (await firestore.doc('business/' + businessId).get()).data();
     await firestore.doc('business/' + businessId).update({
       users: admin.firestore.FieldValue.arrayUnion(newUserData),
+    });
+    let newUserBusinessData = {
+      access:newUserData,
+      address:businessDoc?.address,
+      businessId:businessId,
+      city:businessDoc?.city,
+      joiningDate:Timestamp.now(),
+      name:businessDoc?.hotelName,
+      state:businessDoc?.state,
+    }
+    await firestore.doc('users/' + username).update({
+      business: admin.firestore.FieldValue.arrayUnion(newUserBusinessData),
     });
     // await firestore.collection('business/' + businessId+'/users').add(newUserData);
     // sign in with custom token
@@ -1533,6 +1546,8 @@ export interface ChannelWiseAnalyticsData {
   totalDiscount: number;
   totalNC: number;
   totalTaxes: number;
+  totalCancelled: number;
+  totalCancelledBills: number;
   hourlySales: number[];
   averageHourlySales: number[];
   totalSettledBills: number;

@@ -146,7 +146,22 @@ export class HistoryComponent {
             return acc;
           }, [] as any[]);
           console.log('BILL: ', doc.data());
-
+          if (doc.data().settlement?.additionalInfo.splitBill){
+            // fetch splitted bill
+            doc.data()['settlement']['additionalInfo']['splittedBills'] = doc.data()['settlement']['additionalInfo']['bills'].map(async (splitBillId:string)=>{
+              let billDoc = await this.billService.getSplittedBill(doc.id,splitBillId);
+              let allProducts = billDoc.data().kots.reduce((acc, kot) => {
+                acc.push(...kot.products);
+              },[]);
+              console.log("allProducts",allProducts);
+              let data = {
+                ...billDoc.data(),
+                id:doc.id,
+                printableBillData:getPrintableBillConstructor(billDoc.data() as BillConstructor,allProducts,this.dataProvider),
+              };
+              return data;
+            })
+          }
           let printableBillData = getPrintableBillConstructor(
             doc.data() as BillConstructor,
             allProducts,

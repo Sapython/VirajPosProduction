@@ -3,7 +3,7 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { AppModule } from './app/app.module';
 import { APP_CONFIG } from './environments/environment';
-import 'hammerjs';
+// import 'hammerjs';
 // import * as Sentry from "@sentry/angular-ivy";
 // Sentry.init({
 //   dsn: "https://6fcbec22155f4de9b764efd0d32c4aa7@o4505153176469504.ingest.sentry.io/4505153179615232",

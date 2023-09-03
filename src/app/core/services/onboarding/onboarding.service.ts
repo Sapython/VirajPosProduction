@@ -330,14 +330,32 @@ export class OnboardingService {
           
           // get whatever menu is available in currentMenu and set it to currentMenu
           let toBeLoadedMenus = [];
+          console.log("setting.dineInMenu",setting.dineInMenu);
+          console.log("setting.takeawayMenu",setting.takeawayMenu);
+          console.log("setting.onlineMenu",setting.onlineMenu);
           if (setting.dineInMenu){
-            toBeLoadedMenus.push({mode: ['dineIn'],menu: menus.find((m)=>m.id == setting.dineInMenu?.id),})
+            let menu = menus.find((m)=>m.id == setting.dineInMenu?.id);
+            if (!menu){
+              menu = menus[0];
+              this.menuManagementService.updateRootSettings({dineInMenu:menu},business.businessId);
+            }
+            toBeLoadedMenus.push({mode: ['dineIn'],menu: menu})
           }
           if (setting.takeawayMenu){
-            toBeLoadedMenus.push({mode: ['takeaway'],menu: menus.find((m)=>m.id == setting.takeawayMenu?.id),})
+            let menu = menus.find((m)=>m.id == setting.takeawayMenu?.id);
+            if (!menu){
+              menu = menus[0];
+              this.menuManagementService.updateRootSettings({takeawayMenu:menu},business.businessId);
+            }
+            toBeLoadedMenus.push({mode: ['takeaway'],menu: menu})
           }
           if (setting.onlineMenu){
-            toBeLoadedMenus.push({mode: ['online'],menu: menus.find((m)=>m.id == setting.onlineMenu?.id),})
+            let menu = menus.find((m)=>m.id == setting.onlineMenu?.id);
+            if (!menu){
+              menu = menus[0];
+              this.menuManagementService.updateRootSettings({onlineMenu:menu},business.businessId);
+            }
+            toBeLoadedMenus.push({mode: ['online'],menu: menu})
           }
           let filteredToBeLoadedMenus = [];
           console.log("mode",setting.modes,toBeLoadedMenus);

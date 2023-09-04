@@ -176,10 +176,10 @@ export class BillWiseComponent implements OnInit, OnDestroy {
     logo.src = 'assets/images/viraj.png';
     doc.addImage(logo, 'JPEG', 10, 10, 30.5, 17.5);
     doc.setFont('Roboto-Regular')
-    doc.setFontSize(25);
+    doc.setFontSize(15);
     doc.text('Vrajera', 40, 23);
     doc.line(10, 30, 200, 30);
-    doc.setFontSize(18);
+    doc.setFontSize(10);
     let y;
     autoTable(doc, {
       body: [

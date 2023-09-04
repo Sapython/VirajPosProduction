@@ -13,7 +13,7 @@
       <div class="chargesForm">
         <input
           (input)="this.searchString.next(phoneInput.value)"
-          type="tel"
+          type="number"
           matInput
           [matAutocomplete]="auto"
           formControlName="phone"
@@ -44,6 +44,9 @@
           placeholder="Agent Phone"
         />
       </div>
+      <p class="danger" *ngIf="this.customerInfoForm.controls.phone.invalid">
+        *Invalid Phone Number
+      </p>
       <p *ngIf="!this.dataProvider.currentBill.menu.selectedLoyaltyId">
         You cannot set loyalty because you haven't selected any loyalty setting.
       </p>

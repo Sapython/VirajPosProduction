@@ -173,6 +173,10 @@ export class AddDiscountComponent implements OnInit {
   }
 
   async submit() {
+    if(!this.bill.customerInfo.phone || this.bill.customerInfo.phone.toString().length != 10){
+      alert("Invalid Phone Number");
+      return
+    }
     if (!(await this.dataProvider.checkPassword(this.password))) {
       const dialog = this.dialog.open(DialogComponent, {
         data: {

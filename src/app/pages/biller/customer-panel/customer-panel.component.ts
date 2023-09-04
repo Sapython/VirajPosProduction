@@ -21,9 +21,7 @@ export class CustomerPanelComponent implements OnInit {
         disabled: this.dataProvider.currentBill?.stage != 'active',
       },
       [
-        this.dataProvider.currentBill?.mode == 'takeaway'
-          ? Validators.required
-          : Validators.nullValidator,
+        Validators.nullValidator,
       ],
     ),
     phone: new FormControl(
@@ -32,12 +30,7 @@ export class CustomerPanelComponent implements OnInit {
         disabled: this.dataProvider.currentBill?.stage != 'active',
       },
       [
-        this.dataProvider.currentBill?.mode == 'takeaway'
-          ? Validators.required
-          : Validators.nullValidator,
-        Validators.pattern('^[0-9]*$'),
-        Validators.minLength(10),
-        Validators.maxLength(10)
+        Validators.pattern('[0-9]{10}'),
       ],
     ),
     address: new FormControl(
@@ -46,9 +39,7 @@ export class CustomerPanelComponent implements OnInit {
         disabled: this.dataProvider.currentBill?.stage != 'active',
       },
       [
-        this.dataProvider.currentBill?.mode == 'takeaway'
-          ? Validators.required
-          : Validators.nullValidator,
+        Validators.nullValidator,
       ],
     ),
     gst: new FormControl({
@@ -93,7 +84,7 @@ export class CustomerPanelComponent implements OnInit {
   constructor(
     public dataProvider: DataProvider,
     private injector: Injector,
-    private alertify:AlertsAndNotificationsService
+    private alertify:AlertsAndNotificationsService,
   ) {
     if (this.dataProvider.currentBill) {
       this.loyaltySettingForm.patchValue(this.dataProvider.currentBill.currentLoyalty);
@@ -111,6 +102,9 @@ export class CustomerPanelComponent implements OnInit {
       .pipe(debounceTime(1000))
       .subscribe((value) => {
         if (value.name || value.phone || value.address) {
+          if (value.phone && value.phone.toString().length != 10) {
+            return;
+          }
           this.dataProvider.currentBill?.setCustomerInfo(value);
            console.log('value', this.customerInfoForm);
         }
@@ -318,6 +312,10 @@ export class CustomerPanelComponent implements OnInit {
   }
 
   submit() {
+    if (this.customerInfoForm.invalid){
+      alert("Invalid form");
+      return;
+    }
     this.setCharges(this.chargesForm.value);
     this.dataProvider.currentBill?.setCustomerInfo(this.customerInfoForm.value);
     if (this.isDialog) {

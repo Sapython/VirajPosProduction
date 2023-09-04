@@ -269,7 +269,8 @@
                 #phoneInput
                 (keydown.enter)="passwordInput.focus()"
                 [(ngModel)]="this.dataProvider.currentBill.customerInfo.phone"
-              />
+                />
+                <mat-error *ngIf="this.dataProvider.currentBill.customerInfo.phone.toString().length != 10">Enter a valid 10 digit phone.</mat-error>
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>Password</mat-label>

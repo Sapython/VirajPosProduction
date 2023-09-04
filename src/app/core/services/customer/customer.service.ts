@@ -150,8 +150,8 @@ export class CustomerService {
       await this.addBillToCustomer(localCustomer.id, bill);
       return updatedCustomerDoc;
     } else {
-      console.log("Adding new customer",customer.phone,customer.phone.length == 10);
-      if (customer.phone && customer.phone.length == 10){
+      console.log("Adding new customer",customer.phone,customer.phone.toString().length == 10);
+      if (customer.phone && customer.phone.toString().length == 10){
         console.log("Trying to add a new customer");
         try {
           let newCustomerDoc = await this.addCustomer(customer, bill);

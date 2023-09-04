@@ -1185,6 +1185,7 @@ export class ReportsComponent implements OnInit {
       | 'comboSales'
       | 'billSplits'
       | 'cancelledBills'
+      | 'settledBills'
       | 'tableWiseActivity',
   ) {
     const dialog = this.dialog.open(ReportViewComponent, {

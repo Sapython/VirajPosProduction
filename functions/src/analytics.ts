@@ -342,6 +342,25 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
   analyticsData.salesChannels.online.hourlySales = new Array(24).fill(0);
   analyticsData.salesChannels.takeaway.hourlySales = new Array(24).fill(0);
   analyticsData.salesChannels.dineIn.hourlySales = new Array(24).fill(0);
+  let users = businessDoc.data()['users'];
+  let usersActionsPreDefined = users.map((user: any) => {
+    return {
+      userId: user.username,
+      actions: {
+        bills: [],
+        kots: [],
+        discounts: [],
+        settlements: [],
+        ncs: [],
+      },
+    };
+  });
+  console.log("User actions predefined",usersActionsPreDefined);
+  
+  analyticsData.salesChannels.all.userWiseActions = JSON.parse(JSON.stringify(usersActionsPreDefined));
+  analyticsData.salesChannels.dineIn.userWiseActions = JSON.parse(JSON.stringify(usersActionsPreDefined));
+  analyticsData.salesChannels.takeaway.userWiseActions = JSON.parse(JSON.stringify(usersActionsPreDefined));
+  analyticsData.salesChannels.online.userWiseActions = JSON.parse(JSON.stringify(usersActionsPreDefined));
   await Promise.all(billsDocs.docs.map(async (billDoc:any)=>{
     //   let data:BillConstructor = billDoc.data() as any;
     console.log("Checking for ",billDoc.id);
@@ -1664,7 +1683,7 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
   let year = date.getFullYear();
   let month = date.getMonth() + 1;
   let day = date.getDate();
-  console.log('Analytics data', analyticsData);
+  // console.log('Analytics data', analyticsData);
   console.log(
     'Size of analytics data in mb',
     JSON.stringify(analyticsData).length / 1000000,

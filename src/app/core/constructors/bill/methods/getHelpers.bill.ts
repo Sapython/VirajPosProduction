@@ -18,7 +18,7 @@ export function allProducts(this: Bill) {
       if (index !== -1) {
         products[index].quantity += product.quantity;
       } else {
-        products.push(product);
+        products.push(structuredClone(product));
       }
     });
   });
@@ -34,7 +34,7 @@ export function allFinalProducts(this: Bill): (Product | ApplicableCombo)[] {
         if (index !== -1) {
           products[index].quantity += product.quantity;
         } else {
-          products.push(product);
+          products.push(structuredClone(product));
         }
       });
     }

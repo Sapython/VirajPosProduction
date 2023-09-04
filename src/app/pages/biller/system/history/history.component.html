@@ -166,6 +166,7 @@
                     : bill.mode
                 }}</span>
               </div>
+              <p>SP{{bill?.settlement?.additionalInfo?.splitBill}}</p>
             </div>
             <viraj-button
               (click)="bill.flipped = true; bill.kotOrBillVisible = 'kot'"
@@ -179,7 +180,7 @@
           <div class="detail" *ngIf="bill.flipped">
             <ng-container *ngIf="bill?.settlement?.additionalInfo?.splitBill">
               <mat-tab-group *ngIf="bill.kotOrBillVisible == 'kot'">
-                <mat-tab label="" *ngFor="let splitBill of bill.settlement.additionalInfo.splittedBills">
+                <mat-tab [label]="'Bill '+i+1" *ngFor="let splitBill of bill.settlement.additionalInfo.splittedBills; let i = index;">
                   <div class="items">
                     <div class="heading">
                       <h3>KOTs</h3>
@@ -219,7 +220,7 @@
                 </mat-tab>
               </mat-tab-group>
               <mat-tab-group *ngIf="bill.kotOrBillVisible == 'bill'">
-                <mat-label *ngFor="let splitBill of bill.settlement.additionalInfo.splittedBills">
+                <mat-tab [label]="'Bill '+i+1" *ngFor="let splitBill of bill.settlement.additionalInfo.splittedBills; let i = index;">
                   <app-bill-preview
                     [printableBillData]="splitBill.printableBillData"
                   ></app-bill-preview>
@@ -237,7 +238,7 @@
                       >Download</viraj-button
                     >
                   </div>
-                </mat-label>
+                </mat-tab>
               </mat-tab-group>
             </ng-container>
             <ng-container *ngIf="!bill?.settlement?.additionalInfo?.splitBill">

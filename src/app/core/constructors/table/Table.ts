@@ -472,6 +472,7 @@ export class Table implements TableConstructor {
     this.bill = bill;
     this.occupiedStart = Timestamp.now();
     this.status = 'occupied';
+    this.billPrice = bill.billing.grandTotal;
     this.updated.next();
   }
 

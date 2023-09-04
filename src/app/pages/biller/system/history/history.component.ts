@@ -24,6 +24,8 @@ import { KotConstructor, PrintableKot } from '../../../../types/kot.structure';
 import { getPrintableBillConstructor } from '../../../../core/constructors/bill/methods/getHelpers.bill';
 import { calculateBill } from '../../actions/split-bill/split-bill.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Product } from '../../../../types/product.structure';
+import { ApplicableCombo } from '../../../../core/constructors/comboKot/comboKot';
 
 @Component({
   selector: 'app-history',
@@ -148,10 +150,11 @@ export class HistoryComponent {
           console.log('BILL: ', doc.data());
           if (doc.data().settlement?.additionalInfo.splitBill){
             // fetch splitted bill
-            doc.data()['settlement']['additionalInfo']['splittedBills'] = doc.data()['settlement']['additionalInfo']['bills'].map(async (splitBillId:string)=>{
+            var splittedBills = doc.data()['settlement']['additionalInfo']['bills'].map(async (splitBillId:string)=>{
               let billDoc = await this.billService.getSplittedBill(doc.id,splitBillId);
-              let allProducts = billDoc.data().kots.reduce((acc, kot) => {
+              let allProducts = (billDoc.data() as BillConstructor).kots.reduce((acc:(Product|ApplicableCombo)[], kot:KotConstructor) => {
                 acc.push(...kot.products);
+                return acc;
               },[]);
               console.log("allProducts",allProducts);
               let data = {
@@ -161,7 +164,7 @@ export class HistoryComponent {
               };
               return data;
             })
-          }
+          };
           let printableBillData = getPrintableBillConstructor(
             doc.data() as BillConstructor,
             allProducts,
@@ -174,6 +177,7 @@ export class HistoryComponent {
             flipped: false,
             kotOrBillVisible: false,
             printableBillData,
+            splittedBills: splittedBills ? splittedBills : [],
           } as ExtendedBillConstructor;
         });
         this.regenerateStats();
@@ -1007,5 +1011,6 @@ export interface ExtendedBillConstructor extends BillConstructor {
   kotVisible: boolean;
   flipped: boolean;
   kotOrBillVisible: 'kot' | 'bill' | false;
+  splittedBills?: BillConstructor[];
 }
 

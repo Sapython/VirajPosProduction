@@ -139,7 +139,7 @@ export class Kot implements KotConstructor {
     products = products.reduce((acc, current) => {
       const x = acc.find((item) => item.id === current.id);
       if (!x) {
-        return acc.concat([current]);
+        return acc.concat([structuredClone(current)]);
       } else {
         x.quantity += current.quantity;
         return acc;

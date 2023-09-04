@@ -108,6 +108,8 @@ export class CustomerService {
     let localCustomer = this.dataProvider.customers.find(
       (onlineCustomer) => onlineCustomer.phone == customer.phone,
     );
+    console.log("Local customer found",localCustomer);
+    
     if (localCustomer) {
       console.log('Updating CUSTOMER', localCustomer);
       // update local customers
@@ -148,9 +150,15 @@ export class CustomerService {
       await this.addBillToCustomer(localCustomer.id, bill);
       return updatedCustomerDoc;
     } else {
+      console.log("Adding new customer");
       if (customer.phone && customer.phone.length == 10){
-        let newCustomerDoc = await this.addCustomer(customer, bill);
-        await this.addBillToCustomer(newCustomerDoc.id, bill);
+        try {
+          let newCustomerDoc = await this.addCustomer(customer, bill);
+          await this.addBillToCustomer(newCustomerDoc.id, bill);
+          console.log("Success: Adding new customer");
+        } catch (error) {
+          console.log("Error: Adding new customer",error);
+        }
       }
     }
   }

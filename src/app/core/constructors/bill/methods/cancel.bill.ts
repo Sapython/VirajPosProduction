@@ -24,6 +24,10 @@ export function lineCancelled(this: Bill, item: Product, event: any, kot: Kot) {
   this.calculateBill();
 }
 export function cancel(this: Bill, reason: string, phone: string) {
+  if (this.dataProvider.deleteCancelledBill && this.stage == 'finalized'){
+    this.deleteBill();
+    return;
+  }
   this.stage = 'cancelled';
   this.cancelledReason = {
     reason: reason,
@@ -51,4 +55,12 @@ export function cancel(this: Bill, reason: string, phone: string) {
     data: {reason:this.cancelledReason},
   });
   this.updated.next();
+}
+
+export function deleteBill(this:Bill) {
+  this.billService.deleteBill(this.id);
+  this.dataProvider.currentBill = undefined;
+  this.table.clearTable();
+  this.dataProvider.currentTable = undefined;
+  this.dataProvider.openTableView.next(true);
 }

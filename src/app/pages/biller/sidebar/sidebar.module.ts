@@ -97,6 +97,7 @@ import { PrinterSettingComponent } from './edit-menu/printer-setting/printer-set
 import { LoyaltyComponent } from './reports/report-view/loyalty/loyalty.component';
 import { AddMainCategoryComponent } from './edit-menu/add-main-category/add-main-category.component';
 import { CancelledBillsComponent } from './reports/report-view/cancelled-bills/cancelled-bills.component';
+import { SettledBillsComponent } from './reports/report-view/settled-bills/settled-bills.component';
 
 @NgModule({
   declarations: [
@@ -167,6 +168,7 @@ import { CancelledBillsComponent } from './reports/report-view/cancelled-bills/c
     LoyaltyComponent,
     AddMainCategoryComponent,
     CancelledBillsComponent,
+    SettledBillsComponent,
   ],
   imports: [
     CommonModule,

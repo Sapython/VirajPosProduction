@@ -5,6 +5,7 @@ import {
   collection,
   collectionChanges,
   collectionData,
+  deleteDoc,
   doc,
   docData,
   getDoc,
@@ -41,6 +42,16 @@ export class BillService {
     //     }
     //   })
     // })
+  }
+
+  deleteBill(billId:string){
+    return deleteDoc(
+      doc(
+        this.firestore,
+        'business/' + this.dataProvider.businessId + '/bills',
+        billId,
+      ),
+    );
   }
 
   updateBill(bill: any) {

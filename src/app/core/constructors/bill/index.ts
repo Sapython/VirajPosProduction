@@ -48,7 +48,7 @@ import {
   kotWithoutFunctions,
   totalProducts,
 } from './methods/getHelpers.bill';
-import { cancel, lineCancelled } from './methods/cancel.bill';
+import { cancel, deleteBill, lineCancelled } from './methods/cancel.bill';
 import { setCustomerInfo } from './methods/customer.bill';
 import { addProduct, removeProduct } from './methods/product.bill';
 import { setTable } from './methods/table';
@@ -234,6 +234,7 @@ export class Bill implements BillConstructor {
   // cancel functions
   public cancel = cancel;
   public lineCancelled = lineCancelled;
+  public deleteBill = deleteBill;
 
   // customer functions
   public setCustomerInfo = setCustomerInfo;

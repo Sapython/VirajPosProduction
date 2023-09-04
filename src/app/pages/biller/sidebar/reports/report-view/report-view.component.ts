@@ -42,6 +42,7 @@ export class ReportViewComponent implements AfterViewInit {
       | 'comboSales'
       | 'billSplits'
       | 'cancelledBills'
+      | 'settledBills'
       | 'tableWiseActivity';
       data: any;
     },

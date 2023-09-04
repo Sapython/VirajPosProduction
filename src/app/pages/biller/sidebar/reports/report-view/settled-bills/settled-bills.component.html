@@ -1,6 +1,7 @@
-<table class="styled-table" id="reportTable" id="reportTable" *ngIf="!loading">
+<table class="styled-table" id="reportTable" *ngIf="!loading">
 	<thead>
 	  <tr>
+		<th>Bill No</th>
 		<th>Order No</th>
 		<th>Bill Amount</th>
 		<th>Bill Kots</th>
@@ -22,6 +23,9 @@
 	<tbody>
 	  <ng-container *ngIf="(bills | async).length > 0">
 		<tr *ngFor="let bill of bills | async">
+		  <td>
+			{{ bill.billNo || "Unsettled" }}
+		  </td>
 		  <td>
 			{{ bill.orderNo || 'N/A' }}
 		  </td>
@@ -110,25 +114,25 @@
 		  </td>
 		</tr>
 		<tr class="totals">
-			<!-- totals -->
-			<td>Bills: {{billTotals.numberOfBills}}</td>
-			<td>Orders: {{billTotals.numberOfOrders}}</td>
-			<td>Total: {{ billTotals.total | currency:'INR'}}</td>
-			<td>Number Of KOTS: {{ billTotals.numberOfKots }}</td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td>Total Bill Time: {{ billTotals.totalBillTime }}</td>
-			<td></td>
-			<td>Total Discount: {{ billTotals.totalDiscount | currency:'INR' }}</td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td>Total Tax: {{ billTotals.totalTax | currency:'INR' }}</td>
-		  </tr>
+		  <!-- totals -->
+		  <td>Bills: {{billTotals.numberOfBills}}</td>
+		  <td>Orders: {{billTotals.numberOfOrders}}</td>
+		  <td>Total: {{ billTotals.total | currency:'INR'}}</td>
+		  <td>Number Of KOTS: {{ billTotals.numberOfKots }}</td>
+		  <td></td>
+		  <td></td>
+		  <td></td>
+		  <td></td>
+		  <td></td>
+		  <td></td>
+		  <td>Total Bill Time: {{ billTotals.totalBillTime }}</td>
+		  <td></td>
+		  <td>Total Discount: {{ billTotals.totalDiscount | currency:'INR' }}</td>
+		  <td></td>
+		  <td></td>
+		  <td></td>
+		  <td>Total Tax: {{ billTotals.totalTax | currency:'INR' }}</td>
+		</tr>
 		<tr *ngIf="(bills | async).length == 0">
 		  <td
 			colspan="12"

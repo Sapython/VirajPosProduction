@@ -38,6 +38,7 @@
       <h4 *ngIf="dialogData.stage == 'billSplits'">Bill Split Report</h4>
       <h4 *ngIf="dialogData.stage == 'cancelledBills'">Cancelled Bills</h4>
       <h4 *ngIf="dialogData.stage == 'comboSales'">Combo Report</h4>
+      <h4 *ngIf="dialogData.stage == 'settledBills'">Settled Bills</h4>
       <p>
         Data loaded at {{ reportService.reportLoadTime | date: "shortTime" }}
       </p>
@@ -183,6 +184,8 @@
       </app-combo>
       <app-cancelled-bills *ngIf="dialogData.stage == 'cancelledBills'">
       </app-cancelled-bills>
+      <app-settled-bills *ngIf="dialogData.stage == 'settledBills'">
+      </app-settled-bills>
       <div class="spacer"></div>
     </div>
   </div>

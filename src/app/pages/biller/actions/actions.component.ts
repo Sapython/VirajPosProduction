@@ -18,6 +18,7 @@ import { Product } from '../../../types/product.structure';
 import { Tax } from '../../../types/tax.structure';
 import { BillConstructor } from '../../../types/bill.structure';
 import { UserManagementService } from '../../../core/services/auth/user/user-management.service';
+import { BillService } from '../../../core/services/database/bill/bill.service';
 
 @Component({
   selector: 'app-actions',
@@ -45,6 +46,7 @@ export class ActionsComponent {
     public dataProvider: DataProvider,
     private dialog: Dialog,
     private userManagementService: UserManagementService,
+    private billService:BillService
   ) {
     this.dataProvider.billAssigned.subscribe(() => {
       if (this.dataProvider.currentBill) {
@@ -200,6 +202,15 @@ export class ActionsComponent {
             element.appliedBy = {
               user:this.dataProvider.currentUser.username,
               elevatedUser:elevateReq.username
+            }
+          });
+          this.billService.addActivity(this.dataProvider.currentBill,{
+            message:`Discount Applied`,
+            type:'billDiscounted',
+            user:this.dataProvider.currentUser.username,
+            data:{
+              discounts:result,
+              customerInfo:this.dataProvider.currentBill.customerInfo
             }
           });
           this.dataProvider.currentBill.billing.discount = result;

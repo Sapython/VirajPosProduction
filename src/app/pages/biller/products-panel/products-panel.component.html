@@ -31,10 +31,10 @@
       <ng-container *ngIf="mode == 'products'">
         <app-product-card
               [taxes]="[]"
-              (vclick)="openItem(this.dataProvider.currentMenu.products[0].category)"
+              (vclick)="openItem(openCategory)"
               [tags]="[]"
               [openItem]="true"
-              [category]="this.dataProvider.currentMenu.products[0].category.name"
+              [category]="openCategory.name"
               productName="Open Item"
               [veg]="true"
               [price]="0"

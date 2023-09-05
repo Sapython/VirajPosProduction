@@ -86,12 +86,12 @@ export class SearchPanelComponent implements OnInit {
   }
 
   getBills() {
-    this.billListenerActive = true;
-    this.billListener = this.billsService
-      .getBillsSubscription()
-      .subscribe((bills) => {
-        this.allBills = bills;
-      });
+    // this.billListenerActive = true;
+    // this.billListener = this.billsService
+    //   .getBillsSubscription()
+    //   .subscribe((bills) => {
+    //     this.allBills = bills;
+    //   });
   }
 
   ngOnInit(): void {

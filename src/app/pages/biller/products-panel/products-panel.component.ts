@@ -34,7 +34,12 @@ export class ProductsPanelComponent implements OnInit {
   mode: 'combos' | 'products' | 'types' = 'products';
   selectedCombo: Combo | undefined = undefined;
   currentlyWaitingForSearchResults: boolean = false;
-  
+  openCategory:Category={
+    id:'open',
+    enabled:true,
+    name:'Open',
+    products:[],
+  }
   constructor(public dataProvider: DataProvider, private dialog:Dialog) {
     this.dataProvider.menuProducts.subscribe((menu: Category) => {
       if (menu){
@@ -187,8 +192,7 @@ export class ProductsPanelComponent implements OnInit {
       this.dataProvider.currentCombo = this.selectedCombo;
       this.dataProvider.currentComboTypeCategory = category;
       this.dataProvider.currentApplicableCombo = new ApplicableCombo(
-        this.selectedCombo,
-        this.dataProvider.currentBill,
+        this.selectedCombo
       );
       if (this.dataProvider.currentApplicableCombo.canBeApplied) {
         this.dataProvider.currentApplicableCombo.addProduct(category, product);

@@ -9,7 +9,7 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   // console.log("Running using calculateBill");
   // check individual product for tax and if the tax.mode is inclusive then add the applicable tax to totalTaxValue or if the tax.mode is exclusive then decrease the price of product by tax rate and add the applicableValue to totalTaxValue
   let calculationResults = calculateProducts(this.kots);
-  console.log("calculationResults",calculationResults);
+  // console.log("calculationResults",calculationResults);
   this.calculateLoyalty(calculationResults.allProducts);
   let allProducts = calculationResults.allProducts;
   let finalTaxes: Tax[] = calculationResults.finalTaxes;
@@ -131,7 +131,8 @@ export function calculateProducts(kots: (Kot | KotConstructor)[]) {
         if (item) {
           item.quantity += product.quantity;
         } else {
-          allProducts.push(structuredClone(product))
+          // console.log("product",product);
+          allProducts.push(JSON.parse(JSON.stringify(product)))
         }
       });
     }

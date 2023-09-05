@@ -23,12 +23,14 @@ import { BillConstructor } from '../../../../types/bill.structure';
 import { AnalyticsService } from '../analytics/analytics.service';
 import { Bill } from '../../../constructors/bill';
 import { BillActivity } from '../../../../types/activity.structure';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BillService {
   updateHistory: any[] = [];
+  recalculateBill:Subject<void> = new Subject<void>();
   constructor(
     private firestore: Firestore,
     private dataProvider: DataProvider,

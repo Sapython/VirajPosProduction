@@ -87,6 +87,7 @@ import { SystemService } from './core/services/database/system/system.service';
 import { TableService } from './core/services/database/table/table.service';
 import { ElectronService } from './core/services/electron/electron.service';
 import { PrinterService } from './core/services/printing/printer/printer.service';
+import { UpdaterService } from './core/services/updater/updater.service';
 export class MyHammerConfig extends HammerGestureConfig  {
   overrides = <any>{
       // override hammerjs default configuration
@@ -272,6 +273,7 @@ export const dbConfig: DBConfig = {
     SettingsService,
     SystemService,
     TableService,
+    UpdaterService,
     { 
       provide: HAMMER_GESTURE_CONFIG, 
       useClass: MyHammerConfig 

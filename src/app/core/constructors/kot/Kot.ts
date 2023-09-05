@@ -8,6 +8,7 @@ import {
   ComboProductSelection,
 } from '../../../types/combo.structure';
 import { Bill } from '../bill';
+import { BillService } from '../../services/database/bill/bill.service';
 
 export class Kot implements KotConstructor {
   id?: string;
@@ -45,7 +46,7 @@ export class Kot implements KotConstructor {
         if (product.itemType == 'product') {
           return product;
         } else {
-          return ApplicableCombo.fromObject(product, bill);
+          return ApplicableCombo.fromObject(product);
         }
       });
       this.user = kotObject.user;

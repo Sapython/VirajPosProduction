@@ -14,6 +14,8 @@ import {
 import { Tax } from '../../../types/tax.structure';
 import { Timestamp } from '@angular/fire/firestore';
 import { Bill } from '../bill';
+import { UpdaterService } from '../../services/updater/updater.service';
+import { BillService } from '../../services/database/bill/bill.service';
 
 export class ApplicableCombo implements ApplicableComboConstructor {
   itemType: 'combo' = 'combo';
@@ -47,8 +49,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
     'saturday',
   ];
   constructor(
-    combo: Combo,
-    private bill: Bill,
+    combo: Combo
   ) {
     this.generateId();
     console.log('combo.from jadoo', combo);
@@ -332,7 +333,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
       }
       allProducts = allProducts.concat(category.selectedProducts);
     });
-    console.log("FINAL allProducts",allProducts);
+    // console.log("FINAL allProducts",allProducts);
     // check individual product for tax and if the tax.mode is inclusive then add the applicable tax to totalTaxValue or if the tax.mode is exclusive then decrease the price of product by tax rate and add the applicableValue to totalTaxValue
     let finalAdditionalTax: number = 0;
     let finalTaxes: Tax[] = [];
@@ -419,7 +420,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
             }
           }
         });
-        console.log("TAX TYPE",inclusive,totalAmount,applicableTax);
+        // console.log("TAX TYPE",inclusive,totalAmount,applicableTax);
         if (inclusive) {
           product.untaxedValue = totalAmount - applicableTax;
           finalAdditionalTax += additionalTax;
@@ -462,10 +463,8 @@ export class ApplicableCombo implements ApplicableComboConstructor {
       tax.amount = tax.amount * this.quantity;
     });
     this.finalTaxes = finalTaxes;
-    if (this.bill && this.bill.calculateBill) {
-      this.bill.calculateBill();
-    }
-    console.log('untaxedValue', this.untaxedValue, 'finalTaxes', finalTaxes, "incomplete",this.incomplete);
+    window.document.dispatchEvent(new CustomEvent('updateBill',{detail:{comboId:this.id}}));
+    // console.log('untaxedValue', this.untaxedValue, 'finalTaxes', finalTaxes, "incomplete",this.incomplete);
   }
 
   checkDateIsAvailable(combo: Combo, date: Date) {
@@ -554,10 +553,9 @@ export class ApplicableCombo implements ApplicableComboConstructor {
 
   static fromObject(
     applicableCombo: ApplicableComboConstructor,
-    billInstance: Bill,
   ): ApplicableCombo {
     if (applicableCombo.combo) {
-      let newCombo = new ApplicableCombo(applicableCombo.combo, billInstance);
+      let newCombo = new ApplicableCombo(applicableCombo.combo);
       newCombo.itemType = 'combo';
       newCombo.id = applicableCombo.id;
       newCombo.combo = applicableCombo.combo;

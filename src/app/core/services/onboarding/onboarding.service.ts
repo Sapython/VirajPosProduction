@@ -253,8 +253,9 @@ export class OnboardingService {
               business.id,
               business['accessCode'],
             );
+            console.log("Validity",res.data['validTill']);
+            this.dataProvider.validTill = new Date(res.data['validTill']);
             if (!res || !res.data || !res.data['status']) {
-              this.dataProvider.validTill = new Date(res.data['validTill']);
               console.log(
                 'this.dataProvider.validTill',
                 this.dataProvider.validTill,

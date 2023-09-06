@@ -506,15 +506,15 @@ export const signUpWithUserAndPassword = functions.https.onCall(
     if (request.business && validateBusiness(request.business)) {
       console.log('request.business.joiningDate', request.business.joiningDate);
       // request.business.joiningDate.nanoseconds, request.business.joiningDate.seconds
-      request.business.joiningDate = new Timestamp(
-        request.business.joiningDate.seconds,
-        request.business.joiningDate.nanoseconds,
-      );
-      request.business.access.lastUpdated = new Timestamp(
-        request.business.access.lastUpdated.seconds,
-        request.business.access.lastUpdated.nanoseconds,
-      );
-      additionalClaims['business'] = [request.business];
+      // request.business.joiningDate = new Timestamp(
+      //   request.business.joiningDate.seconds,
+      //   request.business.joiningDate.nanoseconds,
+      // );
+      // request.business.access.lastUpdated = new Timestamp(
+      //   request.business.access.lastUpdated.seconds,
+      //   request.business.access.lastUpdated.nanoseconds,
+      // );
+      // additionalClaims['business'] = [request.business];
     } else {
       throw new HttpsError('invalid-argument', 'Business is required');
     }

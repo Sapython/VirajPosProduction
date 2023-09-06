@@ -7,9 +7,11 @@ import {
   collectionData,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   serverTimestamp,
   setDoc,
+  updateDoc,
 } from '@angular/fire/firestore';
 import { DataProvider } from '../../provider/data-provider.service';
 import { CodeBaseDiscount } from '../../../../types/discount.structure';
@@ -208,5 +210,26 @@ export class SettingsService {
         id,
       ),
     );
+  }
+
+  async updateUserBusiness(userId:string,data:any) {
+    let userData = await getDoc(doc(this.firestore,'users',userId))
+    if(userData.exists()) {
+      let user = userData.data() as any;
+      user.business = user.business.map((business:any) => {
+        if (business.businessId == data.businessId){
+          let newData = {
+            ...business,
+            ...data
+          }
+          console.log("Updating business",newData);
+          return newData;
+        } else {
+          return business;
+        }
+      });
+      console.log("Updating user",user);
+      return updateDoc(doc(this.firestore,'users',userId),user);
+    }
   }
 }

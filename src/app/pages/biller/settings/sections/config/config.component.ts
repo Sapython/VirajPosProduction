@@ -48,7 +48,11 @@ export class ConfigComponent implements OnInit {
     this.settingsForm.disable();
     if (this.dataProvider.getAccess('changeConfig')) {
       this.settingsForm.enable();
-    }
+    };
+    setTimeout(()=>{
+      this.settingsForm.get('state')?.setValue(this.statesAndCities.find(state => state.state == this.dataProvider.currentBusiness?.state.state));
+      this.settingsForm.get('city')?.setValue(this.dataProvider.currentBusiness?.city);
+    },300);
   }
 
   settingsForm: FormGroup = new FormGroup({
@@ -222,6 +226,18 @@ export class ConfigComponent implements OnInit {
   }
 
   saveSettings() {
+    this.dataProvider.currentBusiness.users.forEach((user) => {
+      console.log('user',user);
+      let userBusinessRecord = {
+        businessId: this.dataProvider.currentBusiness?.businessId,
+        access: this.dataProvider.currentBusinessUser,
+        address: this.settingsForm.get('address')?.value,
+        city: this.settingsForm.get('city')?.value,
+        state: this.settingsForm.get('state')?.value.state,
+        name: this.settingsForm.get('hotelName')?.value,
+      };
+      this.settingsService.updateUserBusiness(user.username,userBusinessRecord);
+    });
     this.settingsService
       .updateBusiness(this.settingsForm.value)
       .then(() => {

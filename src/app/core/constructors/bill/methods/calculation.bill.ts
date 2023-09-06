@@ -107,7 +107,7 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
     this.billing.postChargesSubTotal = this.billing.postDiscountSubTotal + this.appliedCharges.serviceCharge;
   }
   this.billing.grandTotal = Math.ceil(this.billing.postChargesSubTotal + totalApplicableTax);
-  if (this.billingMode === 'nonChargeable') {
+  if (this.nonChargeableDetail) {
     // this.billing.subTotal = 0;
     this.billing.grandTotal = 0;
   }

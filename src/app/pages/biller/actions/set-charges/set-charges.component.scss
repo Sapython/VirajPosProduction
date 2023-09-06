@@ -1,39 +1,44 @@
-section{
-	background: white;
-	.heading{
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		border-bottom: 2px solid #c7c7c7;
-		padding: 0px 30px;
-	}
-	form{
-		input,
-		textarea {
-		  height: 40px;
-		  border: 1px solid #ccc;
-		  border-radius: 5px;
-		  padding: 0 10px;
-		  margin-bottom: 10px;
-		}
-		textarea {
-		  padding: 10px 0px 0px 10px;
-		  width: calc(100% - 10px);
-		  height: calc(40px - 10px);
-		}
-		.body{
-			display: grid;
-			grid-template-columns: 1fr 1fr;
-			gap: 10px;
-			padding: 20px;
-		}
-		.actions{
-			display: flex;
-			justify-content: flex-end;
-			gap:20px;
-			align-items: center;
-			border-top: 2px solid #c7c7c7;
-			padding: 0px 30px;
-		}
-	}
+section {
+  background: white;
+  border-radius: 15px;
+  .heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #c7c7c7;
+    padding: 0px 30px;
+  }
+  form {
+    input,
+    textarea {
+      height: 40px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 0 10px;
+      margin-bottom: 10px;
+    }
+    textarea {
+      padding: 10px 0px 0px 10px;
+      width: calc(100% - 10px);
+      height: calc(40px - 10px);
+    }
+  }
+}
+.chargesForm {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 20px;
+  .charge {
+    display: flex;
+    align-items: center;
+  }
+}
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+  align-items: center;
+  border-top: 2px solid #c7c7c7;
+  padding: 15px;
 }

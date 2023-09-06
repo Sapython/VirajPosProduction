@@ -76,7 +76,7 @@ export class AddDiscountComponent implements OnInit {
         this.availableDiscounts,
       );
     }
-    if (this.dataProvider.currentBill) {
+    if (this.bill) {
       this.appliedDiscounts = bill.billing.discount.map((discount) => {
         return discount;
       });
@@ -85,7 +85,7 @@ export class AddDiscountComponent implements OnInit {
 
   switchDiscount(discount, index: number) {
     this.appliedDiscounts[index] = {
-      ...this.dataProvider.currentBill.availableDiscounts.find(
+      ...this.availableDiscounts.find(
         (d) => d.id == discount,
       ),
       reason: '',
@@ -95,9 +95,6 @@ export class AddDiscountComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // if(this.dataProvider.currentBill){
-    //   this.currentDiscount = this.dataProvider.currentBill.billing.discount[0];
-    // }
     this.password = '';
     this.reason = '';
     // this.currentDiscount =

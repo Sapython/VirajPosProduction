@@ -341,10 +341,12 @@ export class SplitBillComponent {
   }
 
   addCharges(bill:BillConstructor|Bill){
-    const dialog = this.dialog.open(SetChargesComponent);
+    const dialog = this.dialog.open(SetChargesComponent,{data:bill});
     dialog.closed.subscribe((result: any) => {
-      bill.appliedCharges = result;
-      calculateBill(bill,this.dataProvider);
+      if (result && result.appliedCharges){
+        bill.appliedCharges = result.appliedCharges;
+        calculateBill(bill,this.dataProvider);
+      }
     })
   }
 
@@ -390,19 +392,38 @@ export function calculateBill(
     }
   });
 
-  bill.billing.taxes = finalTaxes.filter((tax) => tax.amount > 0);
+  bill.billing.taxes = finalTaxes;
   let totalApplicableTax = bill.billing.taxes.reduce((acc, cur) => {
     return acc + cur.amount;
   }, 0);
-  // console.log(
-  //   'totalApplicableTax',
-  //   bill.billing.taxes,
-  //   finalTaxes,
-  //   totalApplicableTax,
-  //   finalAdditionalTax
-  // );
-  bill.billing.grandTotal =
-    Math.ceil(bill.billing.subTotal - applicableDiscount + totalApplicableTax);
+  // console.log('applicableDiscount',applicableDiscount);
+  bill.billing.postDiscountSubTotal = bill.billing.subTotal - (bill.currentLoyalty.totalToBeRedeemedCost + applicableDiscount);
+  bill.billing.postChargesSubTotal = bill.billing.postDiscountSubTotal;
+  if (!bill.appliedCharges){
+    bill.appliedCharges = {
+      containerCharge: 0,
+      deliveryCharge: 0,
+      tip: 0,
+      serviceCharge: 0,
+    }
+  }
+  if(bill.appliedCharges.containerCharge){
+    bill.billing.postChargesSubTotal = bill.billing.postDiscountSubTotal + bill.appliedCharges.containerCharge;
+  }
+  if(bill.appliedCharges.deliveryCharge){
+    bill.billing.postChargesSubTotal = bill.billing.postDiscountSubTotal + bill.appliedCharges.deliveryCharge;
+  }
+  if(bill.appliedCharges.tip){
+    bill.billing.postChargesSubTotal = bill.billing.postDiscountSubTotal + bill.appliedCharges.tip;
+  }
+  if(bill.appliedCharges.serviceCharge){
+    bill.billing.postChargesSubTotal = bill.billing.postDiscountSubTotal + bill.appliedCharges.serviceCharge;
+  }
+  bill.billing.grandTotal = Math.ceil(bill.billing.postChargesSubTotal + totalApplicableTax);
+  if (bill.nonChargeableDetail) {
+    // bill.billing.subTotal = 0;
+    bill.billing.grandTotal = 0;
+  }
   bill.printableBillData = getPrintableBillConstructor(
     bill,
     allProducts,

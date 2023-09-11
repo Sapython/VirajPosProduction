@@ -9,7 +9,7 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   // console.log("Running using calculateBill");
   // check individual product for tax and if the tax.mode is inclusive then add the applicable tax to totalTaxValue or if the tax.mode is exclusive then decrease the price of product by tax rate and add the applicableValue to totalTaxValue
   let calculationResults = calculateProducts(this.kots);
-  // console.log("calculationResults",calculationResults);
+  console.log("calculationResults",calculationResults);
   this.calculateLoyalty(calculationResults.allProducts);
   let allProducts = calculationResults.allProducts;
   let finalTaxes: Tax[] = calculationResults.finalTaxes;
@@ -17,10 +17,45 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
     if(this.nonChargeableDetail){
       tax.amount = 0;
     }
-  })
+  });
   this.billing.subTotal = allProducts.reduce((acc, cur) => {
     return acc + cur.untaxedValue;
   }, 0);
+  let billMenu = this.dataProvider.menus.find((menu)=>{
+    return menu.selectedMenuId == this.menu.id;
+  });
+  let additionalTax = 0;
+  billMenu.taxes.forEach((tax: Tax) => {
+    if (tax.mode === 'bill') {
+      console.log("Calculating additional tax",tax.name,tax.cost);
+      if (tax.type === 'percentage') {
+        let taxAmount = (this.billing.subTotal * tax.cost) / 100;
+        additionalTax += taxAmount;
+        // find tax in finalTaxes and add the taxAmount to it
+        let index = finalTaxes.findIndex((item: Tax) => item.id === tax.id);
+        if (index !== -1) {
+          //  console.log('adding', taxAmount);
+          finalTaxes[index].amount += taxAmount;
+        } else {
+          finalTaxes.push(JSON.parse(JSON.stringify(tax)));
+          let index = finalTaxes.findIndex((item: Tax) => item.id === tax.id);
+          finalTaxes[index].amount = taxAmount;
+        }
+      } else {
+        let taxAmount = tax.cost;
+        additionalTax += taxAmount;
+        // find tax in finalTaxes and add the taxAmount to it
+        let index = finalTaxes.findIndex((item: Tax) => item.id === tax.id);
+        if (index !== -1) {
+          finalTaxes[index].amount += taxAmount;
+        } else {
+          finalTaxes.push(JSON.parse(JSON.stringify(tax)));
+          let index = finalTaxes.findIndex((item: Tax) => item.id === tax.id);
+          finalTaxes[index].amount = taxAmount;
+        }
+      }
+    }
+  });
   let localSubtotalForLoyalty = this.currentLoyalty.totalToBeRedeemedCost;
   // console.log("this.billing.subTotal",this.billing.subTotal);
   let applicableDiscount = 0;
@@ -28,9 +63,9 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   // console.log("bill allProducts",allProducts);
   let quantityOfProduct = this.allProducts().reduce((acc, cur) => {
     return acc + cur.quantity;
-  },0)
+  },0);
   if(this.canBeDiscounted){
-      // apply discount to subTotal
+    // apply discount to subTotal
     // console.log("Starting applicable discount",applicableDiscount);
     this.billing.discount.forEach((discount) => {
       discount.totalAppliedDiscount = 0;
@@ -69,6 +104,9 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
         }
       } else if (discount.mode == 'directFlat') {
         // console.log("Direct based flat",discount.value);
+        if (discount.value > this.billing.subTotal){
+          discount.value = this.billing.subTotal;
+        }
         applicableDiscount += Number(discount.value);
         discount.totalAppliedDiscount += Number(discount.value);
       } else if (discount.mode == 'directPercent') {
@@ -89,6 +127,10 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   let totalApplicableTax = this.billing.taxes.reduce((acc, cur) => {
     return acc + cur.amount;
   }, 0);
+  // applicableDiscount can never be greater than subTotal
+  if (applicableDiscount > this.billing.subTotal) {
+    applicableDiscount = this.billing.subTotal;
+  }
   // console.log('applicableDiscount',applicableDiscount);
   this.billing.postDiscountSubTotal = this.billing.subTotal - (this.currentLoyalty.totalToBeRedeemedCost + applicableDiscount);
   this.billing.postChargesSubTotal = this.billing.postDiscountSubTotal;
@@ -124,7 +166,8 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   this.updated.next(noUpdate);
 }
 
-export function calculateProducts(kots: (Kot | KotConstructor)[]) {
+export function calculateProducts(kots: (Kot | KotConstructor)[],availableTaxes:Tax[] = []) {
+  // console.log("availableTaxes",availableTaxes);
   let allProducts: (Product | ApplicableCombo)[] = [];
   kots.forEach((kot) => {
     if (kot.stage === 'finalized' || kot.stage === 'active') {
@@ -166,6 +209,9 @@ export function calculateProducts(kots: (Kot | KotConstructor)[]) {
           totalAmount =
             totalAmount - (totalAmount / 100) * product.lineDiscount.value;
         } else {
+          if (product.lineDiscount.value > totalAmount){
+            product.lineDiscount.value = totalAmount;
+          }
           totalAmount = totalAmount - product.lineDiscount.value;
         }
         product.lineDiscounted = true;
@@ -192,7 +238,7 @@ export function calculateProducts(kots: (Kot | KotConstructor)[]) {
             finalTaxes[index].amount = taxAmount;
           }
         } else {
-          let taxAmount = tax.cost;
+          let taxAmount = (tax.cost * product.quantity);
           applicableTax += taxAmount;
           // find tax in finalTaxes and add the taxAmount to it
           let index = finalTaxes.findIndex((item: Tax) => item.id === tax.id);
@@ -206,40 +252,15 @@ export function calculateProducts(kots: (Kot | KotConstructor)[]) {
         }
       });
       //  console.log("Previous tax",finalTaxes);
-      let additionalTax = 0;
-      finalTaxes.forEach((tax: Tax) => {
-        if (tax.mode === 'bill') {
-          if (tax.type === 'percentage') {
-            let taxAmount = (totalAmount * tax.cost) / 100;
-            additionalTax += taxAmount;
-            // find tax in finalTaxes and add the taxAmount to it
-            let index = finalTaxes.findIndex((item: Tax) => item.id === tax.id);
-            if (index !== -1) {
-              //  console.log('adding', taxAmount);
-              finalTaxes[index].amount += taxAmount;
-            }
-          } else {
-            let taxAmount = tax.cost;
-            additionalTax += taxAmount;
-            // find tax in finalTaxes and add the taxAmount to it
-            let index = finalTaxes.findIndex((item: Tax) => item.id === tax.id);
-            if (index !== -1) {
-              finalTaxes[index].amount += taxAmount;
-            }
-          }
-        }
-      });
       if (inclusive) {
         product.untaxedValue = totalAmount - applicableTax;
-        finalAdditionalTax += additionalTax;
         //  console.log('inclusive', product.untaxedValue);
       } else {
         product.untaxedValue = totalAmount;
-        finalAdditionalTax += additionalTax;
         //  console.log('exclusive', product.untaxedValue);
       }
       product.taxedValue = totalAmount;
-      product.applicableTax = applicableTax + additionalTax;
+      product.applicableTax = applicableTax;
       // add product to modifiedAllProducts if it already exists increase quantity or else add it and also add it when the product is lineDiscounted
       let index = modifiedAllProducts.findIndex(
         (item) => item.id === product.id,

@@ -71,7 +71,28 @@ export class CustomerService {
       ),
     )
       .then((customers) => {
-        // console.log('customers', customers);
+        let customerData = [];
+        customers.forEach((customer) => {
+          customerData.push({
+            id: customer.id,
+            ...customer.data(),
+          });
+        });
+        this.indexedDbService
+          .update('config', {
+            id: 'customerDbVersion',
+            customerDbVersion: this.dataProvider.customerDatabaseVersion,
+          })
+          .subscribe(
+            (updated) => {
+              // console.log('updated', updated);
+            },
+            (error) => {
+              // console.log('error', error);
+            },
+          );
+        this.dataProvider.customers = customerData;
+        this.dataProvider.customersUpdated.next();
       })
       .catch((error) => {
         // console.log('error', error);

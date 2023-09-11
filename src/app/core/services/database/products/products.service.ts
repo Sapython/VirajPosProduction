@@ -42,14 +42,14 @@ export class ProductsService {
     );
   }
 
-  updateRecipe(recipe: any, menuId: string) {
+  async updateRecipe(recipe: any, menuId: string) {
     recipe.quantity = 1;
     recipe.selected = false;
     delete recipe.instruction;
     delete recipe.updated;
     delete recipe.lineDiscount;
     recipe.createdDate = Timestamp.now();
-    return updateDoc(
+    let res = await updateDoc(
       doc(
         this.firestore,
         'business/' +
@@ -61,6 +61,8 @@ export class ProductsService {
       ),
       { ...recipe },
     );
+    this.menuManagementService.updateMenuVersionRequest.next(menuId);
+    return res;
   }
   getProducts() {
     return getDocs(

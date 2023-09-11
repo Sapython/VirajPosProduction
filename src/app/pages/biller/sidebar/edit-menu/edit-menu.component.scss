@@ -184,12 +184,17 @@ section {
           background: white;
           display: flex;
           align-items: center;
+          justify-content: space-between;
           padding: 10px 10px;
           color: var(--Vrajera-primary);
           font-size: var(--Vrajera-font-large);
           strong {
             color: black;
             text-transform: uppercase;
+          }
+          .actions{
+            display: flex;
+            align-items: center;
           }
         }
         .accordion{
@@ -237,7 +242,7 @@ section {
         justify-content: space-between;
         align-items: center;
         .actions {
-          width: 300px;
+          width: 100%;
           display: flex;
           gap: 20px;
           align-items: center;

@@ -18,14 +18,14 @@ export function setAsNonChargeable(
   contact: string,
   reason: string,
   user: User,
-  elevatedUser:string
+  elevatedUser: string,
 ) {
   this.billingMode = 'nonChargeable';
   this.nonChargeableDetail = {
     reason,
     time: Timestamp.now(),
     user: user,
-    elevatedUser:elevatedUser,
+    elevatedUser: elevatedUser,
     phone: contact,
     name,
   };
@@ -57,7 +57,12 @@ export async function finalize(this: Bill) {
   this.dataProvider.allProducts = true;
   // check if any kot is active
   if (this.kots.find((kot) => kot.stage === 'active')) {
-    if (await this.dataProvider.confirm('There are active KOTs. Do you want to finalize them?',[1])) {
+    if (
+      await this.dataProvider.confirm(
+        'There are active KOTs. Do you want to finalize them?',
+        [1],
+      )
+    ) {
       this.finalizeAndPrintKot();
     }
   }
@@ -70,7 +75,10 @@ export async function finalize(this: Bill) {
   // this.databaseService.updateBill(data);
   if (this.dataProvider.printBillAfterFinalize) {
     this.printBill();
-  } else if (!this.dataProvider.printBillAfterFinalize && this.dataProvider.confirmBeforePrint)  {
+  } else if (
+    !this.dataProvider.printBillAfterFinalize &&
+    this.dataProvider.confirmBeforePrint
+  ) {
     let res = await this.dataProvider.confirm(
       'Do you want to print bill?',
       [1],
@@ -101,7 +109,7 @@ export async function setInstruction(this: Bill) {
   this.billService.addActivity(this, {
     message: `Instruction set by ${this.user.username}`,
     type: 'instructionSet',
-    data: {instruction:this.instruction},
+    data: { instruction: this.instruction },
     user: this.user.username,
   });
   this.calculateBill();
@@ -117,6 +125,13 @@ export async function printBill(this: Bill) {
   this.printingService.printBill(this.printableBillData);
 }
 
+function recheckCUstomerLoyaltyStatus(this:Bill){
+  // if (this.customerInfo.phone && this.customerInfo.phone.length == 10) {
+  //   // fetch customer from database
+  //   let await = this.customerService.
+  // }
+}
+
 export async function settle(
   this: Bill,
   payments: Payment[],
@@ -125,10 +140,11 @@ export async function settle(
   splitSave?: boolean,
 ) {
   this.calculateBill();
+  await recheckCUstomerLoyaltyStatus.call(this);
   // update every product and increase their sales counter by their quantity
   // return
   // TODO to be refixed
-  if (this.dataProvider.directSettle){
+  if (this.dataProvider.directSettle) {
     if (this.kots.find((kot) => kot.stage === 'active')) {
       this.finalizeAndPrintKot();
     }
@@ -173,23 +189,43 @@ export async function settle(
   }
   // update in database
   // TODO to be refixed
-  this.billService.addSales(
-    allProducts
-      .map((product) => {
-        if (product.id.startsWith('CUSTOM-')){
-          return undefined;
+  let productSales: {
+    item: string;
+    sales: number;
+  }[] = [];
+  allProducts.forEach((product) => {
+    if (product.id.startsWith('CUSTOM-')) {
+      return undefined;
+    }
+    if (product.itemType == 'product') {
+      let find = productSales.find((p) => p.item == product.id);
+      if (find) {
+        find.sales += product.quantity;
+      } else {
+        productSales.push({
+          item: product.id,
+          sales: product.quantity,
+        });
+      }
+    } else if (product.itemType == 'combo') {
+      product.allProducts.forEach((product) => {
+        let find = productSales.find((p) => p.item == product.id);
+        if (find) {
+          find.sales += product.quantity;
+        } else {
+          productSales.push({
+            item: product.id,
+            sales: product.quantity,
+          });
         }
-        if (product.itemType == 'product') {
-          return product.id;
-        } else if (product.itemType == 'combo') {
-          return product.selectedProductsIds;
-        }
-      }).filter((product)=>product)
-      .flat(),
-  );
+      });
+    }
+  });
+  console.log('productSales', productSales);
+  this.billService.addSales(productSales);
   this.stage = 'settled';
   this.settlement = {
-    elevatedUser:this.settlementElevatedUser,
+    elevatedUser: this.settlementElevatedUser,
     payments: payments,
     time: Timestamp.now(),
     user: this.user,
@@ -202,7 +238,10 @@ export async function settle(
   if (splitSave) {
     if (this.dataProvider.printBillAfterSettle) {
       this.printingService.printBill(this.printableBillData);
-    } else if (!this.dataProvider.printBillAfterSettle && this.dataProvider.confirmBeforePrint) {
+    } else if (
+      !this.dataProvider.printBillAfterSettle &&
+      this.dataProvider.confirmBeforePrint
+    ) {
       let res = await this.dataProvider.confirm(
         'Do you want to print bill?',
         [1],
@@ -215,10 +254,7 @@ export async function settle(
   }
   this.billService.provideAnalytics().logBill(this);
   if (this.nonChargeableDetail) {
-    this.analyticsService.addSales(
-      this.billing.subTotal,
-      'nonChargeableSales',
-    );
+    this.analyticsService.addSales(this.billing.subTotal, 'nonChargeableSales');
   } else if (this.mode == 'dineIn') {
     this.analyticsService.addSales(this.billing.grandTotal, 'dineInSales');
   } else if (this.mode == 'takeaway') {
@@ -238,7 +274,7 @@ export async function settle(
     this.dataProvider.openTableView.next(true);
   }
   if (this.customerInfo.phone) {
-    console.log("Found customer phone");
+    console.log('Found customer phone');
     this.customerService.updateCustomer(
       {
         address: this.customerInfo.address,

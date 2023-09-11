@@ -20,11 +20,12 @@ import { Bill } from '../../../../core/constructors/bill';
 })
 export class AddDiscountComponent implements OnInit {
   mode: 'codeBased' | 'directPercent' | 'directFlat' = 'directPercent';
-  currentDiscount:
-    | CodeBaseDiscount
-    | DirectFlatDiscount
-    | DirectPercentDiscount
-    | undefined;
+  get currentDiscount(){
+    return this.appliedDiscounts[this.currentIndex];
+  }
+  set currentDiscount(discount){
+    this.appliedDiscounts[this.currentIndex] = discount;
+  }
   currentIndex: number = 0;
   password: string = '';
   reason: string = '';
@@ -188,7 +189,7 @@ export class AddDiscountComponent implements OnInit {
     this.appliedDiscounts.forEach((discount) => {
       discount.reason = this.reason;
     });
-    //  console.log("applying",this.appliedDiscounts);
+    console.log("applying",this.appliedDiscounts);
     this.dialogRef.close(this.appliedDiscounts);
     // if (this.discountForm.value.mode == 'codeBased'){
     //   this.dialogRef.close({discount:this.discountForm.value.selectDiscount,discounted:true})
@@ -229,6 +230,14 @@ export class AddDiscountComponent implements OnInit {
 
   cancel(remove?: boolean) {
     this.dialogRef.close(remove ? [] : false);
+  }
+
+  changeMode(event:any){
+    console.log("event",event,this.currentDiscount,this.appliedDiscounts[this.currentIndex]);
+    // reset
+    this.currentDiscount.value = 0;
+    this.currentDiscount.totalAppliedDiscount = 0;
+    this.currentDiscount.mode = event.value;
   }
 
   get discountsValid() {

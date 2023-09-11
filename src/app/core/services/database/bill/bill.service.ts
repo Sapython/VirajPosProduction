@@ -163,9 +163,9 @@ export class BillService {
     );
   }
 
-  addSales(productIds: string[]) {
+  addSales(productSales: {item:string,sales:number}[]) {
     return Promise.all(
-      productIds.map((id) => {
+      productSales.map((id) => {
         return updateDoc(
           doc(
             this.firestore,
@@ -174,9 +174,9 @@ export class BillService {
               '/menus/' +
               this.dataProvider.currentMenu?.selectedMenu?.id +
               '/products/' +
-              id,
+              id.item,
           ),
-          { sales: increment(1) },
+          { sales: increment(id.sales) },
         );
       }),
     );

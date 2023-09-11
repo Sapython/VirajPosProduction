@@ -136,6 +136,9 @@
         </div>
       </div>
       <div class="actions">
+        <button mat-stroked-button color="primary" (click)="cancel()">
+          Cancel
+        </button>
         <button
           mat-flat-button
           color="primary"
@@ -151,9 +154,6 @@
           (click)="saveSplittedBill()"
         >
           Save
-        </button>
-        <button mat-flat-button color="primary" (click)="cancel()">
-          Cancel
         </button>
       </div>
     </div>

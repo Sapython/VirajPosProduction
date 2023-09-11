@@ -372,13 +372,16 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
     );
     let activitiesDocs = await activities.get();
     // console.log('activitiesDocs.length', activitiesDocs.docs.length);
+    if (currentBill?.nonChargeableDetail) {
+      analyticsData.salesChannels.all.totalNcBills += 1;
+      analyticsData.salesChannels.all.totalNC += isValidNumber(
+        currentBill.billing.subTotal,
+      );
+    }
     if (currentBill.billing.grandTotal && currentBill.stage !== 'cancelled') {
       analyticsData.salesChannels.all.totalSales += isValidNumber(
         currentBill.billing.grandTotal,
       );
-      if (currentBill?.nonChargeableDetail) {
-        analyticsData.salesChannels.all.totalNcBills += 1;
-      }
       if (currentBill?.billing?.discount?.length > 0) {
         analyticsData.salesChannels.all.totalDiscountedBills += 1;
       }
@@ -395,11 +398,6 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
           0,
         ),
       );
-      if (currentBill.nonChargeableDetail) {
-        analyticsData.salesChannels.all.totalNC += isValidNumber(
-          currentBill.billing.subTotal,
-        );
-      }
     } else {
       analyticsData.salesChannels.all.totalCancelled += isValidNumber(
         currentBill.billing.grandTotal,

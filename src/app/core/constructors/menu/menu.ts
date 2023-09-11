@@ -137,6 +137,10 @@ export class ModeConfig {
   loadedAllData:Subject<void> = new Subject<void>();
   currentUserViewCategory:Category|undefined;
   selectedUserViewCategory:string;
+  reorderRecommendedCategories:boolean = false;
+  reorderViewCategories:boolean = false;
+  reorderMainCategories:boolean = false;
+  reorderProducts:boolean = false;
   constructor(
     name: string,
     type: 'dineIn' | 'takeaway' | 'online',
@@ -173,6 +177,9 @@ export class ModeConfig {
       productOrders: this.products.map((p) => p.id),
       averagePrice: 0,
     };
+
+    console.log("this.dataProvider.lowCostConfig",this.dataProvider.lowRangeConfig);
+    console.log("this.dataProvider.lowCostConfig",this.dataProvider.highRangeConfig);
 
     this.selectedCategory = this.allProductsCategory;
     if (this.selectedMenu) {
@@ -319,6 +326,8 @@ export class ModeConfig {
         await this.menuManagementService.getRecommendedCategoriesByMenu(
           this.selectedMenu,
         );
+      console.log("Recommended categories",data);
+      
       this.recommendedCategories = data.map((doc) => {
         let products = this.products.filter((p) => {
           return doc['products'].includes(p.id) && p.visible;
@@ -349,6 +358,9 @@ export class ModeConfig {
               return 0;
             }
           }).map((p)=>p.id);
+          this.dataProvider.highRangeConfig = cat['settings'];
+          this.highRangeForm.patchValue(this.dataProvider.highRangeConfig);
+          console.log("highRangeConfig",this.dataProvider.highRangeConfig);
         } else if(cat.id == 'lowRange'){
           cat.productOrders = cat.products.sort((a, b) => {
             if (a.price && b.price) {
@@ -357,6 +369,9 @@ export class ModeConfig {
               return 0;
             }
           }).map((p)=>p.id);
+          this.dataProvider.lowRangeConfig = cat['settings'];
+          this.lowRangeForm.patchValue(this.dataProvider.lowRangeConfig);
+          console.log("lowRangeConfig",this.lowRangeForm.value,this.dataProvider.lowRangeConfig);
         } else if(cat.id == 'mostSelling'){
           cat.productOrders = cat.products.sort((a, b) => {
             if (a.price && b.price) {
@@ -365,6 +380,9 @@ export class ModeConfig {
               return 0;
             }
           }).map((p)=>p.id);
+          this.dataProvider.mostSellingConfig = cat['settings'];
+          console.log("mostSellingConfig",this.dataProvider.mostSellingConfig);
+          this.mostSellingForm.patchValue(this.dataProvider.mostSellingConfig);
         } else if(cat.id == 'newDishes'){
           cat.productOrders = cat.products.sort((a, b) => {
             if (a.price && b.price) {
@@ -373,6 +391,9 @@ export class ModeConfig {
               return 0;
             }
           }).map((p)=>p.id);
+          this.dataProvider.newDishesConfig = cat['settings'];
+          this.newDishesForm.patchValue(this.dataProvider.newDishesConfig);
+          console.log("newDishesConfig",this.dataProvider.newDishesConfig);
         }
       });
     }
@@ -963,7 +984,10 @@ export class ModeConfig {
           );
         } else if (this.mostSellingForm.value.min) {
           var filteredList = this.products.filter(
-            (product) => (product.sales || 0) >= this.mostSellingForm.value.min,
+            (product) => {
+              console.log("(product.sales || 0) >= this.mostSellingForm.value.min,",product.sales,(product.sales || 0) >= this.mostSellingForm.value.min);
+              return (product.sales || 0) >= this.mostSellingForm.value.min;
+            }
           );
         } else if (this.mostSellingForm.value.max) {
           var filteredList = this.products.filter(
@@ -972,13 +996,14 @@ export class ModeConfig {
         } else {
           var filteredList = this.products;
         }
+        
         let currSelectedCategory = this.selectedCategory;
         if (currSelectedCategory && this.selectedCategory) {
           this.selectedCategory.products = filteredList;
           // console.log('this.selectedCategory', this.selectedCategory.products);
           currSelectedCategory.loading = true;
         }
-        // console.log('filteredList', filteredList);
+        console.log('filteredList', filteredList);
         this.menuManagementService
           .setSettingsMenu(
             this.mostSellingForm.value,

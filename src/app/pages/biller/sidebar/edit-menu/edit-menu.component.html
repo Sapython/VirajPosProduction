@@ -175,10 +175,11 @@
               <span
                 matTooltip="These are vrajera's special category that works on recommendation basis."
                 *ngIf="this.dataProvider.getAccess('recommendedCategories')"
-                >Recommended</span
+                >Recommended <mat-slide-toggle [(ngModel)]="mode.reorderRecommendedCategories">Reorder </mat-slide-toggle></span
               >
               <div
                 cdkDropList
+                [cdkDropListDisabled]="!mode.reorderRecommendedCategories"
                 *ngIf="this.dataProvider.getAccess('recommendedCategories')"
                 class="example-list"
                 (cdkDropListDropped)="mode.reorderRecommendedCategory($event)"
@@ -209,19 +210,24 @@
                 <span
                   matTooltip="These categories are user specific, you can have products from multiple main categories"
                   *ngIf="this.dataProvider.getAccess('viewCategories')"
-                  >View Categories<viraj-button
-                    *ngIf="this.dataProvider.getAccess('addViewCategory')"
-                    type="icon"
-                    (vclick)="
-                      mode.addViewCategory(
-                        this.dataProvider.currentUser.username
-                      )
-                    "
-                    ><i class="ri-add-box-fill"></i></viraj-button
-                ></span>
+                  >View Categories 
+                  <div class="actions">
+                    <mat-slide-toggle [(ngModel)]="mode.reorderViewCategories">Reorder </mat-slide-toggle><viraj-button
+                        *ngIf="this.dataProvider.getAccess('addViewCategory')"
+                        type="icon"
+                        (vclick)="
+                          mode.addViewCategory(
+                            this.dataProvider.currentUser.username
+                          )
+                        "
+                        ><i class="ri-add-box-fill"></i></viraj-button
+                    >
+                  </div>
+                </span>
                 <div
                   *ngIf="this.dataProvider.getAccess('viewCategories')"
                   cdkDropList
+                  [cdkDropListDisabled]="!mode.reorderViewCategories"
                   class="example-list"
                   (cdkDropListDropped)="mode.reorderViewCategory($event)"
                 >
@@ -246,15 +252,20 @@
                   this.dataProvider.getAccess('viewCategories')
                 "
               >
-              <span> My View Category <viraj-button
-                *ngIf="this.dataProvider.getAccess('addViewCategory')"
-                [noPropogation]="true"
-                type="icon"
-                (vclick)="mode.addViewCategory(this.dataProvider.currentUser.username)"
-                ><i class="ri-add-box-fill"></i
-              ></viraj-button></span>
+              <span> My View Category 
+                <div class="actins">
+                  <mat-slide-toogle [(ngModel)]="mode.reorderMainCategories">Reorder</mat-slide-toogle><viraj-button
+                    *ngIf="this.dataProvider.getAccess('addViewCategory')"
+                    [noPropogation]="true"
+                    type="icon"
+                    (vclick)="mode.addViewCategory(this.dataProvider.currentUser.username)"
+                    ><i class="ri-add-box-fill"></i
+                  ></viraj-button>
+                </div>
+              </span>
                 <div
                   cdkDropList
+                  [cdkDropListDisabled]="!mode.reorderMainCategories"
                   class="example-list"
                   (cdkDropListDropped)="mode.reorderViewCategory($event)"
                 >
@@ -301,6 +312,7 @@
                       <div
                         *ngIf="this.dataProvider.getAccess('viewCategories')"
                         cdkDropList
+                        [cdkDropListDisabled]="!mode.reorderViewCategories"
                         class="example-list"
                         (cdkDropListDropped)="mode.reorderViewCategory($event)"
                       >
@@ -324,14 +336,19 @@
               <span
                 matTooltip="Main categories are categories that have products in them, if you affect these then products also get affected, these are unique in itself."
                 *ngIf="this.dataProvider.getAccess('mainCategories')"
-                >Main Categories<viraj-button
-                  *ngIf="this.dataProvider.getAccess('addMainCategory')"
-                  type="icon"
-                  (vclick)="mode.addMainCategory()"
-                  ><i class="ri-add-box-fill"></i></viraj-button
-              ></span>
+                >Main Categories
+                <div class="actions">
+                  <mat-slide-toggle [(ngModel)]="mode.reorderMainCategories">Reorder </mat-slide-toggle><viraj-button
+                      *ngIf="this.dataProvider.getAccess('addMainCategory')"
+                      type="icon"
+                      (vclick)="mode.addMainCategory()"
+                      ><i class="ri-add-box-fill"></i></viraj-button
+                  >
+                </div>
+              </span>
               <div
                 cdkDropList
+                [cdkDropListDisabled]="!mode.reorderMainCategories"
                 *ngIf="this.dataProvider.getAccess('mainCategories')"
                 class="example-list"
                 (cdkDropListDropped)="mode.reorderMainCategory($event)"
@@ -355,8 +372,6 @@
               <div class="actions">
                 <h2>{{ mode.selectedCategory.name }}</h2>
               </div>
-            </div>
-            <div class="filters">
               <input
                 type="text"
                 placeholder="Search Item"
@@ -365,6 +380,8 @@
                 [formControl]="mode.searchFormControl"
                 #text
               />
+            </div>
+            <div class="filters">
               <ng-container class="actions">
                 <ng-container
                   *ngIf="
@@ -408,7 +425,7 @@
                   (click)="mode.addRecipe(mode.selectedMenuId)"
                   color="primary"
                 >
-                  Add Recipe
+                  Add Product
                 </viraj-button>
                 <viraj-button
                   *ngIf="this.dataProvider.getAccess('addNewProduct')"
@@ -416,7 +433,7 @@
                   matTooltip="This will download all the products in this category."
                   color="primary"
                 >
-                  Download Recipe
+                  Download Products
                 </viraj-button>
                 <viraj-button
                   *ngIf="
@@ -459,6 +476,7 @@
                 >
                   Delete Category
                 </viraj-button>
+                <!-- <viraj-button (click)="mode.reorderProducts=!mode.reorderProducts" [type]="mode.reorderProducts ? 'solid' : 'outline'">Enable Re-Ordering</viraj-button> -->
                 <mat-menu #menu="matMenu">
                   <button
                     mat-menu-item
@@ -486,15 +504,17 @@
                     (change)="mode.selectedCategory.updated = true"
                   ></mat-slide-toggle>
                 </span>
+                <span
+                  class="visibilityToggle"
+                >
+                  <p>Reorder :</p>
+                  <mat-slide-toggle
+                    color="primary"
+                    [(ngModel)]="mode.reorderProducts"
+                  ></mat-slide-toggle>
+                </span>
               </ng-container>
             </div>
-            <div
-              class="printerSettings"
-              *ngIf="
-                mode.currentType == 'root' &&
-                this.dataProvider.getAccess(['admin', 'manager'])
-              "
-            ></div>
             <div
               class="filters recommended"
               *ngIf="
@@ -731,8 +751,9 @@
                 *ngIf="mode.selectedCategory.loading"
               ></mat-spinner>
               <div
-                class="productList"
                 cdkDropList
+                class="productList"
+                [cdkDropListDisabled]="!mode.reorderProducts"
                 (cdkDropListDropped)="mode.reorderProduct($event)"
               >
                 <mat-paginator

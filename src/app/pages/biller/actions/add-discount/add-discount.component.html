@@ -187,6 +187,7 @@
             <mat-button-toggle-group
               name="mode"
               value="Coupon Code"
+              (change)="changeMode($event)"
               [(ngModel)]="currentDiscount.mode"
               aria-label="Font Style"
               #mode

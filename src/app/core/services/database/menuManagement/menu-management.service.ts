@@ -121,9 +121,10 @@ export class MenuManagementService {
     // });
     this.updateMenuVersionRequest.subscribe((menuId) => {
       if (!this.versionToBeUpdatedMenus.includes(menuId)){
+        console.log("versionToBeUpdatedMenus",this.versionToBeUpdatedMenus);
         this.versionToBeUpdatedMenus.push(menuId);
+        this.menuUpdater.next();
       }
-      this.menuUpdater.next();
     });
     this.requestMenuDownload.pipe(debounceTime(1000)).subscribe((menuId) => {
       if (!this.toBeDownloadedMenus.includes(menuId)){

@@ -112,6 +112,7 @@ export function toObject(this: Bill) {
     settlement: this.settlement || null,
     cancelledReason: this.cancelledReason || null,
     appliedCharges:this.appliedCharges,
+    printableBillData:this.printableBillData || null,
     billingMode: this.billingMode,
     nonChargeableDetail: this.nonChargeableDetail || null,
     customerInfo: {

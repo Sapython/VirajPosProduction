@@ -259,7 +259,7 @@ export class ModeConfig {
       // data.forEach((doc)=>{
       //   this.menuManagementService.updateRecipe({id:doc.id,type:doc.data().type.replace('\r','')},this.selectedMenuId)
       // })
-      console.log("main products",data);
+      // console.log("main products",data);
       this.products = data;
       // console.log('this.products', this.products);
       let event = {
@@ -605,7 +605,7 @@ export class ModeConfig {
         (combo, index, self) =>
           index === self.findIndex((t) => t.id === combo.id),
       );
-      console.log("COMBOS",this.combos);
+      // console.log("COMBOS",this.combos);
       this.comboCategory = {
         combos: this.combos,
         name: 'Combos',

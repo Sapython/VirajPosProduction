@@ -11,6 +11,12 @@ div.businessCard{
 	box-shadow: 2px 0px 20px rgba(0,0,0,0.1);
 	background: white;
 	color:var(--Vrajera-primary-text);
+	transition: all 0.3s ease-in-out;
+	cursor: pointer;
+	&:hover{
+		box-shadow: 2px 0px 20px rgba(0,0,0,0.3);
+		scale: 1.1;
+	}
 	p{
 		margin:0px;
 	}

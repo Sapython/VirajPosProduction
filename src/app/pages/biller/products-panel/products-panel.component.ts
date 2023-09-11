@@ -90,6 +90,15 @@ export class ProductsPanelComponent implements OnInit {
       this.selectedCombo = undefined;
       this.combos = [];
     });
+    this.dataProvider.selectTable.subscribe((value) => {
+      this.searchResults = [];
+      this.categoryProductSearchResults = [];
+      this.products = [];
+      this.searchVisible = false;
+      this.currentCategory = undefined;
+      this.selectedCombo = undefined;
+      this.combos = [];
+    });
     this.dataProvider.menuLoadSubject.subscribe((value) => {
       if (value) {
         this.searcher.setCollection(this.products);
@@ -215,7 +224,7 @@ export class ProductsPanelComponent implements OnInit {
     let dialog = this.dialog.open(OpenProductComponent);
     firstValueFrom(dialog.closed).then((value:any)=>{
       console.log("Value",value);
-      if (!value.name || !value.price) return;
+      if (!value?.name || !value?.price) return;
       let product:Product = {
         name:value.name,
         price:value.price,

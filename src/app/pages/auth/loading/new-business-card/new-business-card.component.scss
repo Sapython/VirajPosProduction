@@ -11,6 +11,12 @@
   border: 2px solid var(--Vrajera-primary);
   box-shadow: 2px 0px 20px rgba(0, 0, 0, 0.1);
   color: var(--Vrajera-primary);
+  transition: all 0.3s ease-in-out;
+	cursor: pointer;
+	&:hover{
+		box-shadow: 2px 0px 20px rgba(0,0,0,0.3);
+		scale: 1.1;
+	}
   h3 {
     margin: 0px;
   }

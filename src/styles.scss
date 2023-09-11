@@ -411,16 +411,16 @@ i[class^="ri-"] {
 .passwordAlert {
   z-index: 99999999999;
 }
-.virajInput{
-  label{
+.virajInput {
+  label {
     position: absolute;
-    transform: translate(-180%,10px);
+    transform: translate(-180%, 10px);
     font-size: var(--Vrajera-font-medium);
     color: var(--Vrajera-primary);
     transition: all 0.3s ease-in-out;
     pointer-events: none;
   }
-  input{
+  input {
     border: 2px solid var(--Vrajera-primary);
     border-radius: 4px;
     height: 35px;
@@ -428,24 +428,25 @@ i[class^="ri-"] {
     color: var(--Vrajera-primary);
     font-size: var(--Vrajera-font-medium);
     transition: all 0.3s ease-in-out;
-    input::placeholder{
-      opacity:0;
+    input::placeholder {
+      opacity: 0;
     }
-    &:focus{
-      outline:none;
+    &:focus {
+      outline: none;
       border-bottom: 4px solid var(--Vrajera-primary);
       & + label,
-      &:not(:placeholder-shown) + label{
-        transform:translate(-180%,-20px);
+      &:not(:placeholder-shown) + label {
+        transform: translate(-180%, -20px);
       }
     }
   }
-  &:focus-within,&.active{
-    input{
+  &:focus-within,
+  &.active {
+    input {
       border-bottom: 4px solid var(--Vrajera-primary);
       & + label,
-      &:not(:placeholder-shown) + label{
-        transform:translate(-180%,-20px);
+      &:not(:placeholder-shown) + label {
+        transform: translate(-180%, -20px);
       }
     }
   }
@@ -455,6 +456,19 @@ i[class^="ri-"] {
   overflow: hidden !important;
 }
 
-button{
+button {
   cursor: pointer;
+}
+@keyframes shine {
+  to {
+    background-position-x: -200%;
+  }
+}
+
+.skeleton {
+  background: #eee;
+  background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+  border-radius: 5px;
+  background-size: 200% 100%;
+  animation: 1.5s shine linear infinite;
 }

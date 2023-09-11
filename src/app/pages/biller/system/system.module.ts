@@ -22,6 +22,7 @@ import { DateGroupPipe } from './history/date-group.pipe';
 import { ModePipe } from './history/mode.pipe';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { BillCardComponent } from './history/bill-card/bill-card.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     TableGroupsPipe,
     DateGroupPipe,
     ModePipe,
+    BillCardComponent,
   ],
   imports: [
     FormsModule,

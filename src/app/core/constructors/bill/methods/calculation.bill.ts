@@ -36,6 +36,9 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
       discount.totalAppliedDiscount = 0;
       if (discount.mode == 'codeBased') {
         if (discount.type === 'percentage') {
+          if (discount.value > 100){
+            discount.value = 100;
+          }
           let discountValue = Number((this.billing.subTotal / 100) * discount.value);
           // console.log("Code based percent",discountValue);
           if (discount.maximumDiscount && discountValue > discount.maximumDiscount){
@@ -69,6 +72,9 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
         applicableDiscount += Number(discount.value);
         discount.totalAppliedDiscount += Number(discount.value);
       } else if (discount.mode == 'directPercent') {
+        if (Number(discount.value) > 100){
+          discount.value = 100;
+        }
         let discountValue = Number((this.billing.subTotal / 100) * Number(discount.value));
         // console.log("Direct based percent",discountValue);
         applicableDiscount += discountValue;
@@ -131,7 +137,6 @@ export function calculateProducts(kots: (Kot | KotConstructor)[]) {
         if (item) {
           item.quantity += product.quantity;
         } else {
-          // console.log("product",product);
           allProducts.push(JSON.parse(JSON.stringify(product)))
         }
       });
@@ -155,6 +160,9 @@ export function calculateProducts(kots: (Kot | KotConstructor)[]) {
       if (product.lineDiscount) {
         // console.log("Applying linediscount",product.name,product.lineDiscount);
         if (product.lineDiscount.mode === 'directPercent') {
+          if (product.lineDiscount.value > 100){
+            product.lineDiscount.value = 100;
+          }
           totalAmount =
             totalAmount - (totalAmount / 100) * product.lineDiscount.value;
         } else {

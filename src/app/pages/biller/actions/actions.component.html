@@ -90,6 +90,7 @@
           [disabled]="
             this.dataProvider.currentBill?.stage != 'active' ||
             this.dataProvider.currentBill?.billing.discount.length > 0
+            || this.dataProvider.currentBill.totalProducts == 0
           "
           [(ngModel)]="isNonChargeable"
           (change)="nonChargeable($event)"
@@ -105,7 +106,7 @@
         [small]="true"
         [minimalPadding]="true"
         type="outline"
-        [disabled]="!this.dataProvider.currentBill"
+        [disabled]="!this.dataProvider.currentBill || this.dataProvider.currentBill.totalProducts == 0"
         (vclick)="
           dataProvider.manageKot = !dataProvider.manageKot;
           dataProvider.kotViewVisible = false;
@@ -138,7 +139,8 @@
           type="outline"
           [disabled]="
             !!this.dataProvider.currentBill?.nonChargeableDetail ||
-            !this.dataProvider.currentBill?.canBeDiscounted
+            !this.dataProvider.currentBill?.canBeDiscounted ||
+            this.dataProvider.currentBill.totalProducts == 0
           "
           [matTooltip]="
             !!this.dataProvider.currentBill?.nonChargeableDetail
@@ -154,7 +156,7 @@
         type="outline"
         matTooltip="Add a bill note on the printed bill."
         *ngIf="this.dataProvider.getAccess('billNote')"
-        [disabled]="!this.dataProvider.getAccess('billNote')"
+        [disabled]="!this.dataProvider.getAccess('billNote') || this.dataProvider.currentBill.totalProducts == 0"
         class="billNote"
         (vclick)="
           dataProvider.currentBill
@@ -183,7 +185,7 @@
           [disabled]="this.dataProvider.currentBill.canPrintKot"
           >Print KOT</viraj-button
         >
-        <viraj-button color="success" class="finalize" (vclick)="finalizeBill()"
+        <viraj-button [disabled]="dataProvider.currentBill.totalProducts == 0" color="success" class="finalize" (vclick)="finalizeBill()"
           >Finalize Bill</viraj-button
         >
       </ng-container>
@@ -191,6 +193,7 @@
         color="success"
         class="settle"
         [noPropogation]="true"
+        [disabled]="dataProvider.currentBill.totalProducts == 0"
         (vclick)="settleBill()"
         *ngIf="
           this.dataProvider.getAccess('settleBill') &&
@@ -232,7 +235,7 @@
     <viraj-button
       type="outline"
       [noPropogation]="true"
-      [disabled]="!this.dataProvider.currentBill"
+      [disabled]="!this.dataProvider.currentBill || dataProvider.currentBill.totalProducts == 0"
       (vclick)="addCustomerInfo()"
       *ngIf="(dataProvider.clientHeight | async) < 1500"
       >Add Customer Info</viraj-button

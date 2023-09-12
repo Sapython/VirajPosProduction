@@ -182,6 +182,9 @@ export class KotItemComponent implements OnChanges {
   }
 
   setQuantity(quantityValue) {
+    if (quantityValue > 9999){
+      quantityValue = 9999;
+    }
     console.log("quantityValue",quantityValue);
     if (!this.propagateFunctions) {
       this.product.quantity = quantityValue;

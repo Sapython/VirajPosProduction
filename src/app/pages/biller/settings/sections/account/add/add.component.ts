@@ -193,7 +193,9 @@ export class AddComponent {
           let resolvedUser = accountRes as { username: string };
           return this.dialogRef.close({
             username: resolvedUser.username,
-            access: this.loginForm.value.accessLevel,
+            accessType: this.loginForm.value.accessType,
+            role: this.loginForm.value.accessLevel,
+            propertiesAllowed: this.loginForm.value.propertiesAllowed,
           });
         } else {
           return this.alertify.presentToast('Something went wrong');

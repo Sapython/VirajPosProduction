@@ -124,6 +124,7 @@ export class DineInBillsComponent {
               , 0),
               totalTax:bills.reduce((acc, curr) => acc + curr.billing.taxes.reduce((acc, curr) => acc + curr.amount, 0), 0),
             };
+            console.log("timedBills",timedBills);
             this.bills.next(timedBills);
             this.loading = false;
           });

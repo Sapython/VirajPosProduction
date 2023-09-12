@@ -59,7 +59,7 @@
       </mat-select>
     </mat-form-field> -->
     <button *ngIf="accessType.value == 'custom'" type="button" color="primary" mat-stroked-button (click)="selectProperties()">Select Properties</button>
-    <p>Selected properties: {{loginForm?.value?.propertiesAllowed?.length}}</p>
+    <p *ngIf="accessType.value == 'custom'">Selected properties: {{loginForm?.value?.propertiesAllowed?.length}}</p>
     <ng-container *ngIf="stage == 'available'">
       <mat-form-field appearance="outline">
         <mat-label>Email</mat-label>

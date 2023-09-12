@@ -34,8 +34,7 @@ export class AccountComponent {
     firstValueFrom(dialog.closed).then(async (res: any) => {
       if (res && res.username) {
         this.dataProvider.currentBusiness?.users.push({
-          role: res.access || 'waiter',
-          accessType: 'role',
+          ...res,
           username: res.username,
           lastUpdated: Timestamp.now(),
           updatedBy: this.dataProvider.currentUser?.username || 'user',

@@ -133,19 +133,19 @@
         <td></td>
         <td>Total Tax: {{ billTotals.totalTax | currency:'INR' }}</td>
       </tr>
-      <tr *ngIf="(bills | async).length == 0">
-        <td
-          colspan="12"
-          style="
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.2rem;
-            color: #aaa;
-          "
-        >
-          <p>No Data Available</p>
-        </td>
-      </tr>
     </ng-container>
+    <tr *ngIf="(bills | async).length == 0">
+      <td
+        colspan="12"
+        style="
+          text-align: center;
+          font-weight: bold;
+          font-size: 1.2rem;
+          color: #aaa;
+        "
+      >
+        <p>No Data Available</p>
+      </td>
+    </tr>
   </tbody>
 </table>

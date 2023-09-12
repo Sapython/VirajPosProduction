@@ -44,6 +44,7 @@ export class EditMenuComponent implements OnInit {
       });
       Promise.all(
         uniqueMenus.map(async (menu) => {
+          menu.updateChanged();
           menu.resetActivateCategory();
           this.dataProvider.modeChanged.next();
           console.log("Requesting update for menu",menu);

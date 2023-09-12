@@ -109,6 +109,26 @@ export class DaySummaryComponent {
             let dineInBills = bills.filter((res) => res.mode == 'dineIn');
             let takeawayBills = bills.filter((res) => res.mode == 'takeaway');
             let onlineBills = bills.filter((res) => res.mode == 'online');
+            console.log("DREAM",bills.reduce((acc, res) => {
+              console.log(":res?.settlement?.payments",res?.settlement?.payments);
+              if (res?.settlement?.payments) {
+                res.settlement.payments.forEach((payment) => {
+                  if (!acc) {
+                    acc = {};
+                  }
+                  if (acc[payment.paymentMethod]) {
+                    acc[payment.paymentMethod] += payment.amount;
+                  } else {
+                    acc[payment.paymentMethod] = payment.amount;
+                  }
+                  console.log("Acc",acc);
+                });
+                return acc;
+              } else {
+                return acc
+              }
+            }, {"":""} as any));
+            
             this.channelWiseDaySummary = {
               all: {
                 totalBills: bills.length,
@@ -180,10 +200,7 @@ export class DaySummaryComponent {
                     .reduce((acc, res) => acc + res.billing.subTotal, 0),
                 ),
                 paymentChannels: bills.reduce((acc, res) => {
-                  console.log(
-                    'res?.settlement?.payments',
-                    res?.settlement?.payments,
-                  );
+                  console.log(":res?.settlement?.payments",res?.settlement?.payments);
                   if (res?.settlement?.payments) {
                     res.settlement.payments.forEach((payment) => {
                       if (!acc) {
@@ -194,8 +211,11 @@ export class DaySummaryComponent {
                       } else {
                         acc[payment.paymentMethod] = payment.amount;
                       }
+                      console.log("Acc",acc);
                     });
                     return acc;
+                  } else {
+                    return acc
                   }
                 }, {}),
               },
@@ -285,6 +305,8 @@ export class DaySummaryComponent {
                       }
                     });
                     return acc;
+                  } else {
+                    return acc
                   }
                 }, {}),
               },
@@ -371,6 +393,8 @@ export class DaySummaryComponent {
                       }
                     });
                     return acc;
+                  } else {
+                    return acc
                   }
                 }, {}),
               },
@@ -456,6 +480,8 @@ export class DaySummaryComponent {
                       }
                     });
                     return acc;
+                  } else {
+                    return acc
                   }
                 }, {}),
               },

@@ -568,6 +568,22 @@ export class ModeConfig {
             notDisabled && (p.visible == undefined ? true : p.visible);
           return doc['products'] && doc['products'].includes(p.id);
         });
+        // doc['productOrders'] is array of productIds in order so reorder products in this order
+        if (doc['productOrders']) {
+          products.sort((a, b) => {
+            let aOrder = doc['productOrders'].indexOf(a.id);
+            let bOrder = doc['productOrders'].indexOf(b.id);
+            if (aOrder != -1 && bOrder != -1) {
+              return aOrder - bOrder;
+            } else if (aOrder != -1) {
+              return -1;
+            } else if (bOrder != -1) {
+              return 1;
+            } else {
+              return 0;
+            }
+          });
+        }
         return {
           ...doc,
           name: doc['name'],
@@ -1363,11 +1379,14 @@ export class ModeConfig {
       event.previousIndex,
       event.currentIndex,
     );
+    let previousOrder = structuredClone(this.selectedCategory.productOrders);
+    console.log("this.selectedCategory.productOrders",previousOrder);
     this.selectedCategory.productOrders = this.selectedCategory.products.map(
       (product: Product) => {
         return product.id;
       },
     );
+    console.log("this.selectedCategory.productOrders",previousOrder,this.selectedCategory.productOrders);
     this.selectedCategory.updated = true;
   }
 
@@ -1392,6 +1411,7 @@ export class ModeConfig {
       let updatablemainCategories = this.mainCategories.filter(
         (category: Category) => category.updated,
       );
+      console.log("updatable main categories",updatablemainCategories);
       let updateRequestProducts = updatableProducts.map((product: Product) =>
         this.menuManagementService.updateProductMenu(
           { ...product, updated: false },
@@ -1447,9 +1467,9 @@ export class ModeConfig {
           updateRequestviewCategories,
         ].flat(),
       );
-      // console.log("Updates",updates);
+      console.log("Updates",updates);
       if (updates.length > 0){
-        this.menuManagementService.updateMenuData(this.selectedMenuId);
+        this.menuManagementService.updateMenuVersionRequest.next(this.selectedMenuId)
       }
       return updates;
     } else {

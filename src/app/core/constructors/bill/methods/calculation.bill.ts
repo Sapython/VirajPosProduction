@@ -25,37 +25,39 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
     return menu.selectedMenuId == this.menu.id;
   });
   let additionalTax = 0;
-  billMenu.taxes.forEach((tax: Tax) => {
-    if (tax.mode === 'bill') {
-      console.log("Calculating additional tax",tax.name,tax.cost);
-      if (tax.type === 'percentage') {
-        let taxAmount = (this.billing.subTotal * tax.cost) / 100;
-        additionalTax += taxAmount;
-        // find tax in finalTaxes and add the taxAmount to it
-        let index = finalTaxes.findIndex((item: Tax) => item.id === tax.id);
-        if (index !== -1) {
-          //  console.log('adding', taxAmount);
-          finalTaxes[index].amount += taxAmount;
-        } else {
-          finalTaxes.push(JSON.parse(JSON.stringify(tax)));
+  if (billMenu){
+    billMenu.taxes.forEach((tax: Tax) => {
+      if (tax.mode === 'bill') {
+        console.log("Calculating additional tax",tax.name,tax.cost);
+        if (tax.type === 'percentage') {
+          let taxAmount = (this.billing.subTotal * tax.cost) / 100;
+          additionalTax += taxAmount;
+          // find tax in finalTaxes and add the taxAmount to it
           let index = finalTaxes.findIndex((item: Tax) => item.id === tax.id);
-          finalTaxes[index].amount = taxAmount;
-        }
-      } else {
-        let taxAmount = tax.cost;
-        additionalTax += taxAmount;
-        // find tax in finalTaxes and add the taxAmount to it
-        let index = finalTaxes.findIndex((item: Tax) => item.id === tax.id);
-        if (index !== -1) {
-          finalTaxes[index].amount += taxAmount;
+          if (index !== -1) {
+            //  console.log('adding', taxAmount);
+            finalTaxes[index].amount += taxAmount;
+          } else {
+            finalTaxes.push(JSON.parse(JSON.stringify(tax)));
+            let index = finalTaxes.findIndex((item: Tax) => item.id === tax.id);
+            finalTaxes[index].amount = taxAmount;
+          }
         } else {
-          finalTaxes.push(JSON.parse(JSON.stringify(tax)));
+          let taxAmount = tax.cost;
+          additionalTax += taxAmount;
+          // find tax in finalTaxes and add the taxAmount to it
           let index = finalTaxes.findIndex((item: Tax) => item.id === tax.id);
-          finalTaxes[index].amount = taxAmount;
+          if (index !== -1) {
+            finalTaxes[index].amount += taxAmount;
+          } else {
+            finalTaxes.push(JSON.parse(JSON.stringify(tax)));
+            let index = finalTaxes.findIndex((item: Tax) => item.id === tax.id);
+            finalTaxes[index].amount = taxAmount;
+          }
         }
       }
-    }
-  });
+    });
+  }
   let localSubtotalForLoyalty = this.currentLoyalty.totalToBeRedeemedCost;
   // console.log("this.billing.subTotal",this.billing.subTotal);
   let applicableDiscount = 0;

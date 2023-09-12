@@ -1522,7 +1522,7 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
   // sort suspicious activities by time
   analyticsData.salesChannels.all.suspiciousActivities.sort(
     (a, b) =>
-      a.createdDate.toDate().getTime() - b.createdDate.toDate().getTime(),
+      b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime()
   );
   // sort itemWiseSales by price
   analyticsData.salesChannels.all.itemWiseSales.byPrice.sort(
@@ -1558,7 +1558,7 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
   // sort suspicious activities by time
   analyticsData.salesChannels.dineIn.suspiciousActivities.sort(
     (a, b) =>
-      a.createdDate.toDate().getTime() - b.createdDate.toDate().getTime(),
+      b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime(),
   );
   // sort itemWiseSales by price
   analyticsData.salesChannels.dineIn.itemWiseSales.byPrice.sort(
@@ -1594,7 +1594,7 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
   // sort suspicious activities by time
   analyticsData.salesChannels.takeaway.suspiciousActivities.sort(
     (a, b) =>
-      a.createdDate.toDate().getTime() - b.createdDate.toDate().getTime(),
+      b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime(),
   );
   // sort itemWiseSales by price
   analyticsData.salesChannels.takeaway.itemWiseSales.byPrice.sort(
@@ -1630,7 +1630,7 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
   // sort suspicious activities by time
   analyticsData.salesChannels.online.suspiciousActivities.sort(
     (a, b) =>
-      a.createdDate.toDate().getTime() - b.createdDate.toDate().getTime(),
+      b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime(),
   );
   // sort itemWiseSales by price
   analyticsData.salesChannels.online.itemWiseSales.byPrice.sort(
@@ -1657,24 +1657,93 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
       return action.userId;
     },
   );
+  // sort userActions and put the latest on top
+  userActions.forEach((user) => {
+    user.actions.bills.sort(
+      (a, b) => b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime(),
+    );
+    user.actions.discounts.sort(
+      (a, b) => b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime(),
+    );
+    user.actions.kots.sort(
+      (a, b) => b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime(),
+    );
+    user.actions.ncs.sort(
+      (a, b) => b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime(),
+    );
+    user.actions.settlements.sort(
+      (a, b) => b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime(),
+    );
+  });
   analyticsData.salesChannels.all.userWiseActions = userActions;
   userActions = analyticsData.salesChannels.dineIn.userWiseActions.filter(
     (action) => {
       return action.userId;
     },
   );
+  userActions.forEach((user) => {
+    user.actions.bills.sort(
+      (a, b) => b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime(),
+    );
+    user.actions.discounts.sort(
+      (a, b) => b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime(),
+    );
+    user.actions.kots.sort(
+      (a, b) => b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime(),
+    );
+    user.actions.ncs.sort(
+      (a, b) => b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime(),
+    );
+    user.actions.settlements.sort(
+      (a, b) => b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime(),
+    );
+  });
   analyticsData.salesChannels.dineIn.userWiseActions = userActions;
   userActions = analyticsData.salesChannels.takeaway.userWiseActions.filter(
     (action) => {
       return action.userId;
     },
   );
+  userActions.forEach((user) => {
+    user.actions.bills.sort(
+      (a, b) => b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime(),
+    );
+    user.actions.discounts.sort(
+      (a, b) => b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime(),
+    );
+    user.actions.kots.sort(
+      (a, b) => b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime(),
+    );
+    user.actions.ncs.sort(
+      (a, b) => b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime(),
+    );
+    user.actions.settlements.sort(
+      (a, b) => b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime(),
+    );
+  });
   analyticsData.salesChannels.takeaway.userWiseActions = userActions;
   userActions = analyticsData.salesChannels.online.userWiseActions.filter(
     (action) => {
       return action.userId;
     },
   );
+  userActions.forEach((user) => {
+    user.actions.bills.sort(
+      (a, b) => b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime(),
+    );
+    user.actions.discounts.sort(
+      (a, b) => b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime(),
+    );
+    user.actions.kots.sort(
+      (a, b) => b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime(),
+    );
+    user.actions.ncs.sort(
+      (a, b) => b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime(),
+    );
+    user.actions.settlements.sort(
+      (a, b) => b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime(),
+    );
+  });
   analyticsData.salesChannels.online.userWiseActions = userActions;
   // add this analyticsData to business/id/analyticsData/2021/01/01
   let date = new Date();

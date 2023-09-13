@@ -3,11 +3,13 @@ import { DataProvider } from '../../../../../core/services/provider/data-provide
 import { AlertsAndNotificationsService } from '../../../../../core/services/alerts-and-notification/alerts-and-notifications.service';
 import { MenuManagementService } from '../../../../../core/services/database/menuManagement/menu-management.service';
 import { FormControl, FormGroup } from '@angular/forms';
-import { debounceTime } from 'rxjs';
+import { debounceTime, firstValueFrom } from 'rxjs';
 import {
   zoomInOnEnterAnimation,
   zoomOutOnLeaveAnimation,
 } from 'angular-animations';
+import { Dialog } from '@angular/cdk/dialog';
+import { PromptComponent } from '../../../../../shared/base-components/prompt/prompt.component';
 var debug: boolean = true;
 @Component({
   selector: 'app-view',
@@ -24,6 +26,7 @@ export class ViewComponent {
     public dataProvider: DataProvider,
     private alertify: AlertsAndNotificationsService,
     private menuManagementService: MenuManagementService,
+    private dialog:Dialog
   ) {
     this.viewSettings.patchValue(
       localStorage.getItem('viewSettings')
@@ -105,6 +108,25 @@ export class ViewComponent {
       return;
     }
     this.updateSettings({ editKotTime: this.dataProvider.editKotTime });
+  }
+
+  async addNewQuickReason(){
+    const dialog = this.dialog.open(PromptComponent, {
+      data: {
+        title: 'Enter a quick instruction',
+        placeholder: 'Instruction',
+        value: '',
+        type: 'text',
+        required: false,
+        description: 'Enter a instruction for adding a quick reason',
+      },
+    });
+    let value = await firstValueFrom(dialog.closed);
+    console.log("value",value);
+    if (value){
+      this.dataProvider.quickReasons.push(value as any);
+    }
+    this.updateSettings({quickReasons:this.dataProvider.quickReasons});
   }
 }
 

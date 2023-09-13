@@ -52,7 +52,8 @@ import { OffersComponent } from './settings/sections/offers/offers.component';
 import { UpdateComponent } from './settings/sections/account/update/update.component';
 import { SelectPropertiesComponent } from './settings/sections/account/select-properties/select-properties.component';
 import { ChargesComponent } from './settings/sections/charges/charges.component';
-import {MatExpansionModule} from '@angular/material/expansion'; 
+import {MatExpansionModule} from '@angular/material/expansion';
+import { QuickReasonsComponent } from './settings/sections/quick-reasons/quick-reasons.component'; 
 
 @NgModule({
   declarations: [
@@ -78,6 +79,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
     UpdateComponent,
     SelectPropertiesComponent,
     ChargesComponent,
+    QuickReasonsComponent,
   ],
   imports: [
     CommonModule,

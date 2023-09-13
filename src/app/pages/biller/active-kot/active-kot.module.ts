@@ -23,6 +23,7 @@ import { CancelKOtComponent } from './cancel-kot/cancel-kot.component';
 import { ComboItemComponent } from './combo-item/combo-item.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ItemNoteComponent } from './kot-item/item-note/item-note.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     BillPreviewComponent,
     CancelKOtComponent,
     ComboItemComponent,
+    ItemNoteComponent,
   ],
   imports: [
     CommonModule,

@@ -147,6 +147,7 @@ export class DataProvider {
   public kotRePrintable: boolean = false;
   public sweetsMode:boolean = false;
   public deleteCancelledBill:boolean = false;
+  public quickReasons:string[] = [];
   public billerPrinter:string = '';
   public charges:{
     dineIn:Charge,

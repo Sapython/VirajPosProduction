@@ -766,6 +766,7 @@ export class OnboardingService {
         };
         this.dataProvider.openItemEnabled = res['openItemEnabled'] || false;
         this.dataProvider.deleteCancelledBill = res['deleteCancelledBill'] || false;
+        this.dataProvider.quickReasons = res['quickReasons'] || [];
         this.dataProvider.customCharges = res['customCharges'] || {dineIn:[],takeaway:[],online:[]};
         this.dataProvider.activeModes = res['modes'];
         this.dataProvider.dineInMenu = res['dineInMenu'];

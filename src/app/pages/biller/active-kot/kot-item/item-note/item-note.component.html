@@ -1,0 +1,21 @@
+<section>
+	<div class="heading">
+		<h3>Enter Item Note</h3>
+		<viraj-button (vclick)="dialogRef.close()" tabindex="-1" type="icon"><i class="ri-close-fill"></i></viraj-button>
+	</div>
+	<form [formGroup]="noteForm" (ngSubmit)="dialogRef.close(noteForm.value)">
+		<div class="body">
+			<mat-form-field appearance="outline">
+				<mat-label>Instruction</mat-label>
+				<input type="text" matInput formControlName="instruction" #instructionInput>
+			</mat-form-field>
+			<div class="quickOptions">
+				<div class="option" (click)="dialogRef.close({instruction:option})" *ngFor="let option of quickOptions">{{option}}</div>
+			</div>
+		</div>
+		<div class="actions">
+			<viraj-button (vclick)="dialogRef.close()" type="outline">Cancel</viraj-button>
+			<viraj-button tabindex="2">Submit</viraj-button>
+		</div>
+	</form>
+</section>

@@ -21,6 +21,7 @@ import {
   DirectPercentDiscount,
 } from '../../../../types/discount.structure';
 import { BillService } from '../../../../core/services/database/bill/bill.service';
+import { ItemNoteComponent } from './item-note/item-note.component';
 @Component({
   selector: 'app-kot-item',
   templateUrl: './kot-item.component.html',
@@ -79,7 +80,7 @@ export class KotItemComponent implements OnChanges {
 
   async setInfo() {
     //  console.log("this.info",this.info);
-    const dialog = this.dialog.open(PromptComponent, {
+    const dialog = this.dialog.open(ItemNoteComponent, {
       data: {
         title: 'Enter a instruction',
         placeholder: 'Instruction',
@@ -89,10 +90,10 @@ export class KotItemComponent implements OnChanges {
         description: 'Enter a instruction for the kitchen',
       },
     });
-    let res = await firstValueFrom(dialog.closed);
+    let res:any = await firstValueFrom(dialog.closed);
     //  console.log("res",res);
-    if (typeof res == 'string') {
-      this.info = res;
+    if (typeof res?.instruction == 'string') {
+      this.info = res?.instruction;
       this.product!.instruction = this.info;
     } else {
       delete this.product!.instruction;

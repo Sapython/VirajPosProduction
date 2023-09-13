@@ -206,6 +206,13 @@
       ></mat-slide-toggle>
     </div>
   </ng-container>
+  <div class="item">
+    Add New Quick Reason
+    <viraj-button (click)="addNewQuickReason()">Add New</viraj-button>
+  </div>
+  <div class="item" *ngFor="let item of dataProvider.quickReasons; let i = index">
+    <viraj-button type="icon" (vclick)="dataProvider.quickReasons.splice(i,1);this.updateSettings({quickReasons:this.dataProvider.quickReasons});"><i class="ri-close-fill"></i></viraj-button> Added Reason: {{item}}
+  </div>
   <!-- <ng-container *ngIf="this.dataProvider.getAccess('loyaltySettings')">
     <hr />
     <h4>Loyalty Settings</h4>

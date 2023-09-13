@@ -185,7 +185,7 @@
           [disabled]="this.dataProvider.currentBill.canPrintKot"
           >Print KOT</viraj-button
         >
-        <viraj-button [disabled]="dataProvider.currentBill.totalProducts == 0" color="success" class="finalize" (vclick)="finalizeBill()"
+        <viraj-button color="success" class="finalize" (vclick)="finalizeBill()"
           >Finalize Bill</viraj-button
         >
       </ng-container>
@@ -193,7 +193,6 @@
         color="success"
         class="settle"
         [noPropogation]="true"
-        [disabled]="dataProvider.currentBill.totalProducts == 0"
         (vclick)="settleBill()"
         *ngIf="
           this.dataProvider.getAccess('settleBill') &&

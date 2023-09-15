@@ -77,7 +77,7 @@ export async function finalize(this: Bill) {
     this.printBill();
   } else if (
     !this.dataProvider.printBillAfterFinalize &&
-    this.dataProvider.confirmBeforePrint
+    this.dataProvider.confirmBeforeFinalizePrint
   ) {
     let res = await this.dataProvider.confirm(
       'Do you want to print bill?',
@@ -240,7 +240,7 @@ export async function settle(
       this.printingService.printBill(this.printableBillData);
     } else if (
       !this.dataProvider.printBillAfterSettle &&
-      this.dataProvider.confirmBeforePrint
+      this.dataProvider.confirmBeforeSettlementPrint
     ) {
       let res = await this.dataProvider.confirm(
         'Do you want to print bill?',

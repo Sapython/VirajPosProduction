@@ -135,7 +135,8 @@ export class DataProvider {
   public optionalTax: boolean = false;
   public printBillAfterSettle: boolean = false;
   public printBillAfterFinalize: boolean = false;
-  public confirmBeforePrint: boolean = false;
+  public confirmBeforeFinalizePrint: boolean = false;
+  public confirmBeforeSettlementPrint: boolean = false;
   public directSettle: boolean = false;
   public currentSettings: any;
   public customBillNote: string = '';

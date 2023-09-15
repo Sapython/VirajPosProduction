@@ -106,6 +106,7 @@ export class EncoderService {
       .initPrint()
       .h1(reprint ? 'Reprint' : '')
       .kotHead(kotData)
+      .lineIf(kotData.note, 'left', 'Note:')
       .hr()
       .table(
         [

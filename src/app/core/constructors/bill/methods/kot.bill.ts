@@ -306,6 +306,7 @@ export function printKot(
     orderNo: this.orderNo,
     mode: mode,
     billingMode: this.mode,
+    note: kot.note,
     token: kot.id,
     products: kot.getAllProducts().map((product) => {
       return {

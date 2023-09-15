@@ -108,6 +108,8 @@ export class SignupService {
               updatedBy: string;
             };
         address: string;
+        state:any;
+        city:string;
         businessId: string;
         joiningDate: Timestamp;
         name: string;

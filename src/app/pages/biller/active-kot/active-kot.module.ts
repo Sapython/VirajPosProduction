@@ -24,6 +24,7 @@ import { ComboItemComponent } from './combo-item/combo-item.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ItemNoteComponent } from './kot-item/item-note/item-note.component';
+import { KotNoteComponent } from './sections/kot-note/kot-note.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { ItemNoteComponent } from './kot-item/item-note/item-note.component';
     CancelKOtComponent,
     ComboItemComponent,
     ItemNoteComponent,
+    KotNoteComponent,
   ],
   imports: [
     CommonModule,

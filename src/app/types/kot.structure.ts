@@ -13,6 +13,7 @@ export interface KotConstructor {
   allSelected: boolean;
   someSelected: boolean;
   unmade?: boolean;
+  note: string;
   cancelReason?: {
     reason: string;
     mode: 'un-made' | 'made';
@@ -54,6 +55,7 @@ export interface PrintableKot {
   orderNo: string;
   table: string;
   user:string;
+  note: string;
   products: printableKotItem[];
 }
 

@@ -181,6 +181,8 @@ export class AddComponent {
                 updatedBy: this.dataProvider.currentUser.username,
               },
               address: this.dataProvider.currentBusiness.address,
+              state: this.dataProvider.currentBusiness.state,
+              city: this.dataProvider.currentBusiness.city,
               businessId: this.dataProvider.currentBusiness.businessId,
               joiningDate: Timestamp.now(),
               name: this.dataProvider.currentBusiness.hotelName,

@@ -33,16 +33,16 @@
       (printKot)="printKot($event)"
       (saveEditedKot)="saveEditedKot($event)"
     ></app-manage-kot>
-    <app-normal-kot
-      *ngIf="
-        kots.length > 0 &&
-        !dataProvider.manageKot &&
-        this.dataProvider.currentBill?.editKotMode == null
-      "
-      [kots]="kots"
-      [activeKotIndex]="activeKotIndex"
-      (delete)="delete($event)"
-    ></app-normal-kot>
+    <ng-container *ngIf="kots.length > 0 &&
+      !dataProvider.manageKot &&
+      this.dataProvider.currentBill?.editKotMode == null">
+      <app-kot-note [Kot]="kots[activeKotIndex]"></app-kot-note>
+      <app-normal-kot
+        [kots]="kots"
+        [activeKotIndex]="activeKotIndex"
+        (delete)="delete($event)"
+      ></app-normal-kot>
+    </ng-container>
     <app-edit-kot
       (delete)="delete($event)"
       *ngIf="

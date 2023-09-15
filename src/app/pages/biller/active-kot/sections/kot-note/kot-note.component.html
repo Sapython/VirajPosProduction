@@ -1,0 +1,4 @@
+<section *ngIf="Kot && Kot.products.length > 0">
+	<p>Kot Note<span *ngIf="Kot?.note">:&nbsp;&nbsp;<strong>{{Kot?.note}}</strong></span></p>
+	<viraj-button (click)="setInfo()">Add KOT Note</viraj-button>
+</section>

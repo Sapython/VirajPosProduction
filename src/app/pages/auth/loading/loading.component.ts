@@ -570,6 +570,8 @@ export class LoadingComponent implements OnInit {
                   updatedBy: 'system',
                 },
                 address: this.onboardingBusinessForm.value.address,
+                city:this.onboardingBusinessForm.value.city,
+                state:this.onboardingBusinessForm.value.state.state,
                 businessId: id,
                 joiningDate: Timestamp.fromDate(new Date()),
                 name: this.onboardingBusinessForm.value.name,

@@ -17,6 +17,7 @@ export class Kot implements KotConstructor {
   stage: 'active' | 'finalized' | 'cancelled' | 'edit';
   products: (Product | ApplicableCombo)[];
   mode;
+  note: string;
   user: UserConstructor;
   editMode: boolean;
   selected: boolean;
@@ -61,6 +62,8 @@ export class Kot implements KotConstructor {
       this.unmade = kotObject.unmade || null;
       this.cancelReason = kotObject.cancelReason || null;
       this.user = kotObject.user || null;
+      this.mode = kotObject.mode || null;
+      this.note = kotObject.note || '';
     } else {
       this.products = [product];
       this.editMode = false;
@@ -186,6 +189,7 @@ export class Kot implements KotConstructor {
       selected: this.selected,
       allSelected: this.allSelected,
       editMode: this.editMode,
+      note: this.note || '',
       someSelected: this.someSelected,
       unmade: this.unmade || null,
       cancelReason: this.cancelReason || null,

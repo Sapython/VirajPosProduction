@@ -695,6 +695,7 @@ export class BillCardComponent {
           minute: 'numeric',
           hour12: true,
         }),
+        note:kot.note || '',
         mode: 'reprintKot',
         user: kot.user.username,
         orderNo: bill.orderNo,

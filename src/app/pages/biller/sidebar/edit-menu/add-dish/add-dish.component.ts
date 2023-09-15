@@ -79,8 +79,8 @@ export class AddDishComponent {
     private menuManagementService:MenuManagementService
   ) {
     if (data.mode == 'edit') {
-      this.newDishForm.patchValue({...data.product,tag:data.product.tags[0].name});
-      this.newDishForm.controls.tag.setValue(data.product.tags[0].name);
+      this.newDishForm.patchValue({...data.product,tag:(data.product.tags.length>0  ? data.product.tags[0]?.name : '')});
+      this.newDishForm.controls.tag.setValue((data.product.tags.length>0  ? data.product.tags[0]?.name : ''));
        console.log(this.newDishForm.value,"this.tags",this.tags);
     }
     this.viewCategories = this.data?.viewCategories?.map((category) => {

@@ -448,42 +448,27 @@ export class MenuManagementService {
 
   async getProductsByMenu(menu: Menu) {
     let localMenu = await this.getLocalMenu(menu.id);
-    if (localMenu?.menu?.menuVersion == menu.menuVersion) {
-      if (localMenu?.products) {
-        return localMenu.products;
-      }
-      await this.getMenu(menu.id);
-      // recheck for localMenu
-      localMenu = await this.getLocalMenu(menu.id);
-      if (localMenu?.products) {
-        return localMenu.products;
-      }
-      console.log('products: Not available on local fetching from online');
-      let res = await getDocs(
-        collection(
-          this.firestore,
-          'business/' +
-            this.dataProvider.businessId +
-            '/menus/' +
-            menu.id +
-            '/products/',
-        ),
-      );
-      if (res) {
-        return res.docs.map((doc) => {
-          return { ...doc.data(), id: doc.id } as Product;
-        });
-      } else {
-        return [];
-      }
+    if (localMenu?.products) {
+      return localMenu.products;
+    }
+    this.requestMenuDownload.next(menu.id);
+    console.log('products: Not available on local fetching from online');
+    let res = await getDocs(
+      collection(
+        this.firestore,
+        'business/' +
+          this.dataProvider.businessId +
+          '/menus/' +
+          menu.id +
+          '/products/',
+      ),
+    );
+    if (res) {
+      return res.docs.map((doc) => {
+        return { ...doc.data(), id: doc.id } as Product;
+      });
     } else {
-      await this.getMenu(menu.id);
-      let localMenu = await this.getLocalMenu(menu.id);
-      if (localMenu?.products) {
-        return localMenu.products;
-      } else {
-        throw new Error('No products found');
-      }
+      return [];
     }
   }
 

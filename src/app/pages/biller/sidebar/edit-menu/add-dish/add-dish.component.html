@@ -17,6 +17,7 @@
         <mat-label>Type</mat-label>
         <app-helper matSuffix tooltip="Veg or Non-Veg"></app-helper>
         <mat-select placeholder="Tag" formControlName="type" name="tag">
+          <mat-option value="">None</mat-option>
           <mat-option *ngFor="let tag of type" [value]="tag">
             {{ tag }}
           </mat-option>
@@ -26,6 +27,7 @@
         <app-helper matSuffix tooltip="Portion size for indication Half/Full"></app-helper>
         <mat-label>Select Label</mat-label>
         <mat-select formControlName="tag" name="label">
+          <mat-option value="">None</mat-option>
           <mat-option *ngFor="let label of tags" [value]="label.name">
             {{ label.name | titlecase }}
           </mat-option>

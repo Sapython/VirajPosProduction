@@ -36,7 +36,7 @@
     <ng-container *ngIf="kots.length > 0 &&
       !dataProvider.manageKot &&
       this.dataProvider.currentBill?.editKotMode == null">
-      <app-kot-note [Kot]="kots[activeKotIndex]"></app-kot-note>
+      <app-kot-note [Kot]="allKot[activeKotIndex]"></app-kot-note>
       <app-normal-kot
         [kots]="kots"
         [activeKotIndex]="activeKotIndex"

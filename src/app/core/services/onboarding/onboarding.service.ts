@@ -678,6 +678,8 @@ export class OnboardingService {
           res['confirmBeforeSettlementPrint'] || false;
         this.dataProvider.confirmBeforeFinalizePrint =
           res['confirmBeforeFinalizePrint'] || false;
+        this.dataProvider.confirmBeforeFinalizePrint =
+          res['salesHidden'] || false;
         this.dataProvider.takeawayToken = res['takeawayTokenNo'] || 0;
         this.dataProvider.editKotTime = res['editKotTime'] || 0;
         this.dataProvider.kotEditable = res['kotEditable'] || false;

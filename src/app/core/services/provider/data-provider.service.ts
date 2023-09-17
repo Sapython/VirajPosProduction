@@ -137,6 +137,7 @@ export class DataProvider {
   public printBillAfterFinalize: boolean = false;
   public confirmBeforeFinalizePrint: boolean = false;
   public confirmBeforeSettlementPrint: boolean = false;
+  public salesHidden: boolean = false;
   public directSettle: boolean = false;
   public currentSettings: any;
   public customBillNote: string = '';

@@ -225,9 +225,9 @@ export function calculateProducts(kots: (Kot | KotConstructor)[],availableTaxes:
         if (tax.type === 'percentage') {
           // console.log("Total amount",totalAmount);
           let taxFactor = 100;
-          if (tax.nature == 'inclusive'){
-            taxFactor = 100 + tax.cost;
-          }
+          // if (tax.nature == 'inclusive'){
+          //   taxFactor = 100 + tax.cost;
+          // }
           // ((100/102.5) *2.5 ) * 2 
           // 110*(5/100) / (105/100)
           // prev: (totalAmount / taxFactor) * tax.cost;

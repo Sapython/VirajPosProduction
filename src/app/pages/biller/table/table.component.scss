@@ -160,11 +160,17 @@ section {
     display: flex;
     justify-content: space-between;
   }
-  .tables {
+  cdk-virtual-scroll-viewport{
+    height: calc(100vh - 40px);
+    width: 100%;
+  }
+  .tables, cdk-virtual-scroll-viewport::ng-deep .cdk-virtual-scroll-content-wrapper {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
     gap: 20px;
+    padding: 10px;
+    box-sizing: border-box;
     button.table {
       width: 120px;
       height: 120px;

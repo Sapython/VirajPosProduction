@@ -124,7 +124,9 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   } else {
     this.billing.discount = [];
   }
-  
+  finalTaxes.forEach((tax)=>{
+   tax.amount = roundOff3Digits(tax.amount); 
+  });
   this.billing.taxes = finalTaxes;
   let totalApplicableTax = this.billing.taxes.reduce((acc, cur) => {
     return acc + cur.amount;
@@ -156,7 +158,7 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   if(this.appliedCharges.serviceCharge){
     this.billing.postChargesSubTotal = this.billing.postDiscountSubTotal + this.appliedCharges.serviceCharge;
   }
-  this.billing.grandTotal = Math.ceil(this.billing.postChargesSubTotal + totalApplicableTax);
+  this.billing.grandTotal = Math.round(this.billing.postChargesSubTotal + totalApplicableTax);
   if (this.nonChargeableDetail) {
     // this.billing.subTotal = 0;
     this.billing.grandTotal = 0;
@@ -223,10 +225,13 @@ export function calculateProducts(kots: (Kot | KotConstructor)[],availableTaxes:
         if (tax.type === 'percentage') {
           // console.log("Total amount",totalAmount);
           let taxFactor = 100;
-          // if (tax.nature == 'inclusive'){
-          //   taxFactor = 100 + tax.cost;
-          // }
-          let taxAmount = (totalAmount / taxFactor) * tax.cost;
+          if (tax.nature == 'inclusive'){
+            taxFactor = 100 + tax.cost;
+          }
+          // ((100/102.5) *2.5 ) * 2 
+          // 110*(5/100) / (105/100)
+          // prev: (totalAmount / taxFactor) * tax.cost;
+          let taxAmount = totalAmount * (tax.cost / 100) / (taxFactor / 100);
           // console.log("TAX AMT:",taxAmount,product.name," nature:",tax.nature,' cost:',tax.cost);
           applicableTax += taxAmount; // applicableTax = applicableTax + taxAmount
           // find tax in finalTaxes and add the taxAmount to it
@@ -296,7 +301,7 @@ export function calculateProducts(kots: (Kot | KotConstructor)[],availableTaxes:
   let groupedFinalTaxes = [];
   finalTaxes.forEach((tax: Tax) => {
     let index = finalTaxes.findIndex((item: Tax) => item.id === tax.id);
-    tax.amount = roundOff(tax.amount)
+    // tax.amount = tax.amount
     if (index !== -1) {
       let taxIndex = groupedFinalTaxes.findIndex(
         (item: Tax) => item.id === tax.id,
@@ -316,6 +321,10 @@ export function calculateProducts(kots: (Kot | KotConstructor)[],availableTaxes:
 
 export function roundOff(number:number){
   return Math.round((number + Number.EPSILON) * 100) / 100
+}
+
+export function roundOff3Digits(number:number){
+  return Math.round((number + Number.EPSILON) * 1000) / 1000
 }
 
 

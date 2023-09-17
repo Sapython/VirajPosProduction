@@ -28,10 +28,10 @@ export class AnalyticsService {
     private analytics: Analytics,
   ) {}
 
-  async addSales(sale: number, type: string) {
+  async addSales(sale: number, type: string,billDate:Date) {
     // alert("Adding sales")
     // get date in format of 2021-08-01
-    let date = new Date().toISOString().split('T')[0];
+    let date = billDate.toISOString().split('T')[0];
     logEvent(this.analytics, 'add_sales', { date, sale, type });
     return await setDoc(
       doc(

@@ -254,13 +254,13 @@ export async function settle(
   }
   this.billService.provideAnalytics().logBill(this);
   if (this.nonChargeableDetail) {
-    this.analyticsService.addSales(this.billing.subTotal, 'nonChargeableSales');
+    this.analyticsService.addSales(this.billing.subTotal, 'nonChargeableSales',this.createdDate.toDate());
   } else if (this.mode == 'dineIn') {
-    this.analyticsService.addSales(this.billing.grandTotal, 'dineInSales');
+    this.analyticsService.addSales(this.billing.grandTotal, 'dineInSales',this.createdDate.toDate());
   } else if (this.mode == 'takeaway') {
-    this.analyticsService.addSales(this.billing.grandTotal, 'takeawaySales');
+    this.analyticsService.addSales(this.billing.grandTotal, 'takeawaySales',this.createdDate.toDate());
   } else if (this.mode == 'online') {
-    this.analyticsService.addSales(this.billing.grandTotal, 'onlineSales');
+    this.analyticsService.addSales(this.billing.grandTotal, 'onlineSales',this.createdDate.toDate());
   }
   this.stage = 'settled';
   this.table?.clearTable();

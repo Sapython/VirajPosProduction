@@ -17,6 +17,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MoveKotItemComponent } from './move-kot-item/move-kot-item.component';
 import { MergeExchangeTableComponent } from './merge-exchange-table/merge-exchange-table.component';
+import { SortedPipe } from './sorted.pipe';
+import {ScrollingModule} from '@angular/cdk/scrolling'; 
 
 @NgModule({
   declarations: [
@@ -25,6 +27,7 @@ import { MergeExchangeTableComponent } from './merge-exchange-table/merge-exchan
     GroupComponent,
     MoveKotItemComponent,
     MergeExchangeTableComponent,
+    SortedPipe,
   ],
   imports: [
     CommonModule,
@@ -40,6 +43,7 @@ import { MergeExchangeTableComponent } from './merge-exchange-table/merge-exchan
     MatSelectModule,
     MatInputModule,
     MatExpansionModule,
+    ScrollingModule,
   ],
 })
 export class TableModule {}

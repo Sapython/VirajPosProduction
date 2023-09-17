@@ -36,6 +36,26 @@ export class BillService {
     private dataProvider: DataProvider,
     public analyticsService: AnalyticsService,
   ) {
+    let yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    // setTimeout(()=>{
+    //   this.getBillsByDay(yesterday).then((bills) => {
+    //     bills.docs.forEach((bill) => {
+    //       // console.log('YESTERDAY BILLS', bill);
+    //       if (bill.data()['mode'] == 'takeaway' && bill.data()['stage']=='finalized'){
+    //         console.log("Deleting table",bill.data()['table']);
+    //         console.log("Deleting bill",bill.id);
+    //         this.deleteBill(bill.id);
+    //         deleteDoc(doc(
+    //           this.firestore,
+    //           'business/' + this.dataProvider.businessId + '/tokens',
+    //           bill.data()['table'],
+    //         ));
+    //       }
+    //     });
+    //   });
+    // },15000);
+    
     // this.dataProvider.menuLoadSubject.subscribe((menu)=>{
     //   let res = this.watchToken().subscribe((tokens)=>{
     //     let filtered = tokens.filter((token)=>token.doc.id=='18')

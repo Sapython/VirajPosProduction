@@ -178,9 +178,6 @@ export class ModeConfig {
       averagePrice: 0,
     };
 
-    console.log("this.dataProvider.lowCostConfig",this.dataProvider.lowRangeConfig);
-    console.log("this.dataProvider.lowCostConfig",this.dataProvider.highRangeConfig);
-
     this.selectedCategory = this.allProductsCategory;
     if (this.selectedMenu) {
       this.getAllData();
@@ -326,8 +323,7 @@ export class ModeConfig {
         await this.menuManagementService.getRecommendedCategoriesByMenu(
           this.selectedMenu,
         );
-      console.log("Recommended categories",data);
-      
+      // console.log("Recommended categories",data);
       this.recommendedCategories = data.map((doc) => {
         let products = this.products.filter((p) => {
           return doc['products'].includes(p.id) && p.visible;
@@ -360,7 +356,7 @@ export class ModeConfig {
           }).map((p)=>p.id);
           this.dataProvider.highRangeConfig = cat['settings'];
           this.highRangeForm.patchValue(this.dataProvider.highRangeConfig);
-          console.log("highRangeConfig",this.dataProvider.highRangeConfig);
+          // console.log("highRangeConfig",this.dataProvider.highRangeConfig);
         } else if(cat.id == 'lowRange'){
           cat.productOrders = cat.products.sort((a, b) => {
             if (a.price && b.price) {
@@ -371,7 +367,7 @@ export class ModeConfig {
           }).map((p)=>p.id);
           this.dataProvider.lowRangeConfig = cat['settings'];
           this.lowRangeForm.patchValue(this.dataProvider.lowRangeConfig);
-          console.log("lowRangeConfig",this.lowRangeForm.value,this.dataProvider.lowRangeConfig);
+          // console.log("lowRangeConfig",this.lowRangeForm.value,this.dataProvider.lowRangeConfig);
         } else if(cat.id == 'mostSelling'){
           cat.productOrders = cat.products.sort((a, b) => {
             if (a.price && b.price) {
@@ -381,7 +377,7 @@ export class ModeConfig {
             }
           }).map((p)=>p.id);
           this.dataProvider.mostSellingConfig = cat['settings'];
-          console.log("mostSellingConfig",this.dataProvider.mostSellingConfig);
+          // console.log("mostSellingConfig",this.dataProvider.mostSellingConfig);
           this.mostSellingForm.patchValue(this.dataProvider.mostSellingConfig);
         } else if(cat.id == 'newDishes'){
           cat.productOrders = cat.products.sort((a, b) => {
@@ -393,7 +389,7 @@ export class ModeConfig {
           }).map((p)=>p.id);
           this.dataProvider.newDishesConfig = cat['settings'];
           this.newDishesForm.patchValue(this.dataProvider.newDishesConfig);
-          console.log("newDishesConfig",this.dataProvider.newDishesConfig);
+          // console.log("newDishesConfig",this.dataProvider.newDishesConfig);
         }
       });
     }

@@ -22,7 +22,10 @@ export class TableService {
   constructor(
     private firestore: Firestore,
     private dataProvider: DataProvider,
-  ) {}
+  ) {
+
+    // this.getTables()
+  }
   addTables(tables: TableConstructor[], businessId: string) {
     return Promise.all(
       tables.map((table) => {
@@ -192,6 +195,7 @@ export class TableService {
       activity,
     );
   }
+
 }
 
 export interface TableActivity {

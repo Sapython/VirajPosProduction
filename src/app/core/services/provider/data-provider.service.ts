@@ -58,8 +58,8 @@ export class DataProvider {
           : { smartView: false }
       ).smartView;
     }, 2000);
-    window.alert = (message: string) => {
-      this.confirm('Alert', [0], {
+    window.alert = async (message: string) => {
+      await this.confirm('Alert', [0], {
         description: message,
         buttons: ['ok'],
         primary: [0],

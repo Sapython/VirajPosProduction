@@ -119,7 +119,7 @@ export function editKot(this: Bill, kot: Kot, reason: string) {
   }
 }
 
-export function finalizeAndPrintKot(this: Bill) {
+export async function finalizeAndPrintKot(this: Bill) {
   if (this.table.status == 'available'){
     this.table.attachBill(this);
   }
@@ -147,7 +147,7 @@ export function finalizeAndPrintKot(this: Bill) {
         }
       });
       if (incomplete){
-        alert("Please complete the combo before finalizing the kot");
+        await alert("Please complete the combo before finalizing the kot");
         return
       }
       this.kots[kotIndex].products = [
@@ -176,7 +176,7 @@ export function finalizeAndPrintKot(this: Bill) {
         }
       });
       if (incomplete){
-        alert("Please complete the combo before finalizing the kot");
+        await alert("Please complete the combo before finalizing the kot");
         return
       }
       activeKot.id = this.dataProvider.kotToken.toString();
@@ -212,7 +212,7 @@ export function finalizeAndPrintKot(this: Bill) {
       //  console.log('Must have printed');
       this.dataProvider.kotViewVisible = true;
     } else {
-      alert('No active kot found');
+      await alert('No active kot found');
     }
   }
   if (this.dataProvider.showTableOnBillAction) {

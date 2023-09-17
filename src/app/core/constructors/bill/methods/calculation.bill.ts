@@ -9,7 +9,7 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   // console.log("Running using calculateBill");
   // check individual product for tax and if the tax.mode is inclusive then add the applicable tax to totalTaxValue or if the tax.mode is exclusive then decrease the price of product by tax rate and add the applicableValue to totalTaxValue
   let calculationResults = calculateProducts(this.kots);
-  console.log("calculationResults",calculationResults);
+  // console.log("calculationResults",calculationResults);
   this.calculateLoyalty(calculationResults.allProducts);
   let allProducts = calculationResults.allProducts;
   let finalTaxes: Tax[] = calculationResults.finalTaxes;
@@ -225,14 +225,17 @@ export function calculateProducts(kots: (Kot | KotConstructor)[],availableTaxes:
         if (tax.type === 'percentage') {
           // console.log("Total amount",totalAmount);
           let taxFactor = 100;
-          // if (tax.nature == 'inclusive'){
-          //   taxFactor = 100 + tax.cost;
-          // }
+          if (tax.nature == 'inclusive'){
+            taxFactor = 100 + (product.taxes.reduce((acc,cur)=>{
+              return acc + cur.cost;
+            },0));
+          }
           // ((100/102.5) *2.5 ) * 2 
           // 110*(5/100) / (105/100)
           // prev: (totalAmount / taxFactor) * tax.cost;
-          // let taxAmount = totalAmount * (tax.cost / 100) / (taxFactor / 100);
-          let taxAmount = (totalAmount / taxFactor) * tax.cost;
+          let taxAmount = totalAmount * ((tax.cost / 100) / (taxFactor / 100));
+          console.log("taxFactor",taxFactor,tax.cost,totalAmount,taxAmount);
+          // let taxAmount = (totalAmount / taxFactor) * tax.cost;
           // console.log("TAX AMT:",taxAmount,product.name," nature:",tax.nature,' cost:',tax.cost);
           applicableTax += taxAmount; // applicableTax = applicableTax + taxAmount
           // find tax in finalTaxes and add the taxAmount to it

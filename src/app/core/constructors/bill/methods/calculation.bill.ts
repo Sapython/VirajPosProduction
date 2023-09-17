@@ -231,7 +231,8 @@ export function calculateProducts(kots: (Kot | KotConstructor)[],availableTaxes:
           // ((100/102.5) *2.5 ) * 2 
           // 110*(5/100) / (105/100)
           // prev: (totalAmount / taxFactor) * tax.cost;
-          let taxAmount = totalAmount * (tax.cost / 100) / (taxFactor / 100);
+          // let taxAmount = totalAmount * (tax.cost / 100) / (taxFactor / 100);
+          let taxAmount = (totalAmount / taxFactor) * tax.cost;
           // console.log("TAX AMT:",taxAmount,product.name," nature:",tax.nature,' cost:',tax.cost);
           applicableTax += taxAmount; // applicableTax = applicableTax + taxAmount
           // find tax in finalTaxes and add the taxAmount to it

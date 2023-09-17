@@ -34,6 +34,7 @@ import {
 } from '../../../types/combo.structure';
 import { ApplicableCombo } from '../../constructors/comboKot/comboKot';
 import { Charge } from '../../../types/charges.structure';
+import { PaymentMethod } from '../../../types/payment.structure';
 
 @Injectable({
   providedIn: 'root',
@@ -208,6 +209,7 @@ export class DataProvider {
   public differentLoyaltyRate: boolean = false;
   public tableOrders: any = undefined;
   public groupOrders: string[] = [];
+  public paymentMethods: PaymentMethod[] = [];
   
   public loyaltyRates: {
     dineIn: number;

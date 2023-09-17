@@ -1,12 +1,10 @@
-import { DIALOG_DATA, Dialog, DialogRef } from '@angular/cdk/dialog';
-import { Component, Inject, OnInit, QueryList, ViewChild } from '@angular/core';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AlertsAndNotificationsService } from '../../../../core/services/alerts-and-notification/alerts-and-notifications.service';
 import { DataProvider } from '../../../../core/services/provider/data-provider.service';
 import { SettingsService } from '../../../../core/services/database/settings/settings.service';
-import { Menu } from '../../../../types/menu.structure';
 import { ModeConfig } from '../../../../core/constructors/menu/menu';
-import { Bill } from '../../../../core/constructors/bill';
 
 @Component({
   selector: 'app-settle',
@@ -91,28 +89,21 @@ export class SettleComponent implements OnInit {
         ...this.dataProvider.cachedMethods,
       ];
     });
-    this.settingService.getPaymentMethods().then((methods) => {
-      this.additionalMethods = methods.docs.map((d) => {
-        return d.data()['name'];
-      });
-      this.dataProvider.cachedMethods = this.additionalMethods;
-      this.methods.forEach((method) => {
-        method.paymentMethods = [
-          'Cash',
-          'Card',
-          'UPI',
-          ...this.dataProvider.cachedMethods,
-        ];
-      });
-      this.methodsWithDetail = methods.docs
-        .filter((d) => {
-          return d.data()['detail'];
-        })
-        .map((d) => {
-          return d.data()['name'];
-        });
-      //  console.log("this.methodsWithDetail",this.methodsWithDetail,"this.additionalMethods",this.additionalMethods);
+    this.methods.forEach((method) => {
+      method.paymentMethods = [
+        'Cash',
+        'Card',
+        'UPI',
+        ...this.dataProvider.paymentMethods.map((p)=>p.name),
+      ];
     });
+    this.methodsWithDetail = this.dataProvider.paymentMethods
+      .filter((d) => {
+        return d.detail
+      })
+      .map((d) => {
+        return d.name;
+      });
     // set first value of the first method to the difference of billSum and totalPaid
     this.methods[0].amount = this.billSum;
   }

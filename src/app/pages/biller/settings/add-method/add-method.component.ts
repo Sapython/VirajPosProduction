@@ -10,7 +10,9 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 export class AddMethodComponent implements OnInit {
   paymentMethodForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required]),
-    detail: new FormControl('', [Validators.required]),
+    detail: new FormControl(false, [Validators.required]),
+    directSettleButton: new FormControl(false),
+    holdBill: new FormControl(false),
   });
   constructor(
     private dialog: DialogRef,

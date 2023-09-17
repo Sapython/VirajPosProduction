@@ -41,6 +41,7 @@ import { BillService } from '../database/bill/bill.service';
 import { CustomerService } from '../customer/customer.service';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 import { Router } from '@angular/router';
+import { PaymentMethod } from '../../../types/payment.structure';
 
 var debug: boolean = true;
 @Injectable({
@@ -678,7 +679,7 @@ export class OnboardingService {
           res['confirmBeforeSettlementPrint'] || false;
         this.dataProvider.confirmBeforeFinalizePrint =
           res['confirmBeforeFinalizePrint'] || false;
-        this.dataProvider.confirmBeforeFinalizePrint =
+        this.dataProvider.salesHidden =
           res['salesHidden'] || false;
         this.dataProvider.takeawayToken = res['takeawayTokenNo'] || 0;
         this.dataProvider.editKotTime = res['editKotTime'] || 0;
@@ -830,6 +831,16 @@ export class OnboardingService {
         this.dataProvider.customers = res as CustomerInfo[];
       }
     });
+    collectionData(
+      collection(
+        this.firestore,
+        'business/' + business.businessId + '/paymentMethods',
+      )
+    ).subscribe((res) => {
+      if (res) {
+        this.dataProvider.paymentMethods = res as PaymentMethod[];
+      }
+    })
   }
 
   async getTables() {

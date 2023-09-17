@@ -15,7 +15,7 @@ export class ButtonComponent implements AfterViewInit {
   @Input() minimalPadding: boolean = false;
   @Input() iconSize: 'small' | 'medium' | 'large' = 'medium';
   @Input() noPropogation: boolean = false;
-  @Input() color: 'primary'|'success'|'warning'|'danger' = 'primary';
+  @Input() color: 'primary'|'success'|'warning'|'danger'| 'info' = 'primary';
   @Output() vclick: EventEmitter<any> = new EventEmitter();
   @ViewChild('button') button:ElementRef;
   constructor(){

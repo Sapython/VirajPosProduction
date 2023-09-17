@@ -19,6 +19,7 @@ import { Tax } from '../../../types/tax.structure';
 import { BillConstructor } from '../../../types/bill.structure';
 import { UserManagementService } from '../../../core/services/auth/user/user-management.service';
 import { BillService } from '../../../core/services/database/bill/bill.service';
+import { PaymentMethod } from '../../../types/payment.structure';
 
 @Component({
   selector: 'app-actions',
@@ -160,6 +161,23 @@ export class ActionsComponent {
           }
         });
       }
+    }
+  }
+
+  async quickSettle(paymentMethod: PaymentMethod) {
+    let elevateReq = await this.userManagementService.authenticateAction([
+      'settleBill',
+    ])
+    if (elevateReq.status === true){
+      this.dataProvider.currentBill.settle(
+        [{
+          amount:this.dataProvider.currentBill.billing.grandTotal,
+          paymentMethod:paymentMethod.name
+        }],
+        'internal',
+        null,
+        true
+      );
     }
   }
 

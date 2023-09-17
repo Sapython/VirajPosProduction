@@ -52,6 +52,10 @@ export function setAsNormal(this: Bill) {
 }
 
 export async function finalize(this: Bill) {
+  if (this.allProducts().length == 0) {
+    alert('No products to finalize');
+    return;
+  }
   this.dataProvider.manageKot = false;
   this.dataProvider.kotViewVisible = false;
   this.dataProvider.allProducts = true;

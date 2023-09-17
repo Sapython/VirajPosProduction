@@ -21,6 +21,7 @@ import { DialogModule } from '@angular/cdk/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SetChargesComponent } from './set-charges/set-charges.component';
+import { QuickSettlePipe } from './quick-settle.pipe';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { SetChargesComponent } from './set-charges/set-charges.component';
     NonChargeableComponent,
     SplitBillComponent,
     SetChargesComponent,
+    QuickSettlePipe,
   ],
   imports: [
     CommonModule,

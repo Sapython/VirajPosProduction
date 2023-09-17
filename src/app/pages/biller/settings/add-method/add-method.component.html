@@ -10,6 +10,8 @@
       <mat-option [value]="false"> Not Required </mat-option>
     </mat-select>
   </mat-form-field>
+  <mat-slide-toggle formControlName="directSettleButton">Enable <strong>direct</strong> settle button</mat-slide-toggle>
+  <mat-slide-toggle formControlName="holdBill"><app-helper tooltip="Only available in takeaway and online mode."></app-helper>*Hold bill after <strong>direct</strong> settle.</mat-slide-toggle>
   <div class="actions">
     <button mat-stroked-button type="button" (click)="cancel()" color="primary">
       Cancel

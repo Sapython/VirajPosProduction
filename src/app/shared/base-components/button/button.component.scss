@@ -1,6 +1,7 @@
 button {
   border: 0px;
   width: 100%;
+  height: 100%;
   border-radius: var(--Vrajera-border-radius);
   font-family: var(--Vrajera-font);
   padding: 8px 14px;
@@ -200,5 +201,11 @@ button {
     --buttonContrast: whitesmoke;
     --buttonPrimary-hover: var(--Vrajera-danger-hover);
     --buttonPrimary-hover-rgb: var(--Vrajera-danger-hover-rgb);
+  }
+  &.colorInfo{
+    --buttonPrimary: var(--Vrajera-info);
+    --buttonContrast: whitesmoke;
+    --buttonPrimary-hover: var(--Vrajera-info-hover);
+    --buttonPrimary-hover-rgb: var(--Vrajera-info-hover-rgb);
   }
 }

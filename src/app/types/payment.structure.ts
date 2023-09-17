@@ -9,7 +9,7 @@ import { Tax } from './tax.structure';
 export interface Payment {
   paymentMethod: string;
   amount: number;
-  paymentMethods: string[];
+  paymentMethods?: string[];
 }
 export interface Billing {
   subTotal: number;
@@ -25,6 +25,9 @@ export interface PaymentMethod {
   id?: string;
   name: string;
   detail: boolean;
+  directSettleButton?: boolean;
+  holdBill?: boolean;
+  billNo?: number;
   addDate: Timestamp;
   updateDate: Timestamp;
   custom?: boolean;

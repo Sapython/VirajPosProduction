@@ -24,6 +24,7 @@ import { AnalyticsService } from '../analytics/analytics.service';
 import { Bill } from '../../../constructors/bill';
 import { BillActivity } from '../../../../types/activity.structure';
 import { Subject } from 'rxjs';
+import { PaymentMethod } from '../../../../types/payment.structure';
 
 @Injectable({
   providedIn: 'root',
@@ -330,6 +331,18 @@ export class BillService {
         'splittedBills',
         splitBillId
       ),
+    );
+  }
+
+  updatePaymentMethod(method:PaymentMethod){
+    return setDoc(
+      doc(
+        this.firestore,
+        'business/' + this.dataProvider.businessId + '/paymentMethods',
+        method.id,
+      ),
+      method,
+      { merge: true },
     );
   }
 }

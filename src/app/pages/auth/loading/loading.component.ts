@@ -711,6 +711,7 @@ export class LoadingComponent implements OnInit {
       }
       let tablesRes = await this.tableService.addTables(tables, id);
       if (debug) console.log('menuRes', menuRes);
+      let paymentsRef = await this.settingsService.addDefaultPaymentMethods();
       let settingsRef = await this.menuManagementService.updateRootSettings(
         {
           billTokenNo: 0,

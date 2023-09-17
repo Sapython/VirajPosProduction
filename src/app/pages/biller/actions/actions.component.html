@@ -175,9 +175,9 @@
         >
       </ng-container>
     </div>
-    <!-- <div class="quickSettle" *ngIf="this.dataProvider.currentMenu.type != 'dineIn'">
-      <viraj-button color="info"  *ngFor="let item of this.dataProvider.paymentMethods | quickSettle">Settle By {{item.name | titlecase}}</viraj-button>
-    </div> -->
+    <div class="quickSettle" *ngIf="this.dataProvider.currentMenu.type != 'dineIn'">
+      <viraj-button color="info" (vclick)="item.holdBill ? holdBill(item) : quickSettle(item)" *ngFor="let item of this.dataProvider.paymentMethods | quickSettle">Settle By {{item.name | titlecase}}</viraj-button>
+    </div>
     <viraj-button
       type="outline"
       [noPropogation]="true"

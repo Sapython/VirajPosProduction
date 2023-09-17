@@ -26,6 +26,7 @@ export interface PaymentMethod {
   name: string;
   detail: boolean;
   directSettleButton?: boolean;
+  shortCode?:string;
   holdBill?: boolean;
   billNo?: number;
   addDate: Timestamp;

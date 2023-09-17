@@ -25,7 +25,7 @@
         </td>
         <td *ngFor="let item of product.hourlySales">{{ item }}</td>
       </tr>
-      <tr>
+      <tr class="totals">
         <td style="font-weight: bold">
           Total {{totals.totalNumberOfProducts}}
         </td>
@@ -33,10 +33,10 @@
           {{totals.totalQuantity}}
         </td>
         <td style="font-weight: bold">
-          {{totals.totalPrice}}
+          {{totals.totalPrice | currency:'INR'}}
         </td>
         <td style="font-weight: bold">
-          {{totals.totalAmount}}
+          {{totals.totalAmount | currency:'INR'}}
         </td>
         <td *ngFor="let item of totals.hourlyTotal">{{ item }}</td>
       </tr>

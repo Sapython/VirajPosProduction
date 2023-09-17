@@ -10,6 +10,7 @@ import { SettingsService } from '../../../../../core/services/database/settings/
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ElectronService } from '../../../../../core/services/electron/electron.service';
 import { firstValueFrom } from 'rxjs';
+import { ResetComponent } from './reset/reset.component';
 
 @Component({
   selector: 'app-config',
@@ -270,5 +271,14 @@ export class ConfigComponent implements OnInit {
     //   .catch((err) => {
     //     this.alertify.presentToast('Error while updating printer');
     //   });
+  }
+  
+  async resetAccount(){
+    let dialog = this.dialog.open(ResetComponent);
+    let result = await firstValueFrom(dialog.closed);
+    if (result){
+      console.log('result',result);
+      await this.settingsService.deleteAllData();
+    }
   }
 }

@@ -24,8 +24,6 @@
             <p>Active KOT Table</p>
           </div>
         </div>
-        <!-- <div class="actions" *ngIf="this.dataProvider.currentMenu?.type=='dineIn'">
-                </div> -->
       </div>
     </span>
     <span>
@@ -122,6 +120,59 @@
       </button>
     </ng-container>
   </div>
+  <ng-container *ngIf="this.dataProvider.billingMode == 'takeaway'">
+    <div class="actionsRow">
+      <button
+        *ngIf="
+          (this.dataProvider.tokens | holded).length > 0 && !bulkSettleEnabled
+        "
+        (click)="holdedItemsVisible = !holdedItemsVisible"
+      >
+        {{ holdedItemsVisible ? "Hide" : "See" }} Holded Tokens
+      </button>
+      <button
+        *ngIf="this.dataProvider.getAccess('bulkSettle') && !bulkSettleEnabled"
+        (click)="bulkSettleEnabled = true"
+      >
+        Bulk Settle
+      </button>
+      <button
+        *ngIf="
+          this.dataProvider.getAccess('bulkSettle') &&
+          bulkSettleEnabled &&
+          selectedTablesForBulkSettle.length > 0
+        "
+        (click)="selectedTablesForBulkSettle = []"
+      >
+        Clear Selection
+      </button>
+      <button
+        class="filled"
+        *ngIf="
+          this.dataProvider.getAccess('bulkSettle') &&
+          bulkSettleEnabled &&
+          selectedTablesForBulkSettle.length > 0
+        "
+        (click)="bulkSettle()"
+      >
+        Settle {{ selectedTablesForBulkSettle.length }} Tables
+      </button>
+      <button
+        *ngIf="this.dataProvider.getAccess('bulkSettle') && bulkSettleEnabled"
+        (click)="bulkSettleEnabled = false"
+      >
+        <i class="ri-arrow-left-line"></i> Back
+      </button>
+      <span
+        *ngIf="
+          this.dataProvider.getAccess('bulkSettle') &&
+          bulkSettleEnabled &&
+          selectedTablesForBulkSettle.length > 0
+        "
+        >Grand Total: {{ tobeMergedTotal | currency: "INR" }}</span
+      >
+    </div>
+  </ng-container>
   <div class="tableWrapper" *ngIf="this.dataProvider.billingMode == 'dineIn'">
     <div
       class="tableSection"
@@ -256,13 +307,16 @@
   </div>
   <cdk-virtual-scroll-viewport
     appendOnly
+    *ngIf="this.dataProvider.billingMode == 'takeaway' && !holdedItemsVisible"
     itemSize="1500"
     class="example-viewport"
   >
     <button
       class="table empty"
       (click)="addToken()"
-      *ngIf="this.dataProvider.getAccess('addNewTakeawayToken') && !moveKotMode"
+      *ngIf="
+        this.dataProvider.getAccess('addNewTakeawayToken') && !bulkSettleEnabled
+      "
       [ngClass]="{
         medium: this.dataProvider.currentTableSize == 'medium',
         small: this.dataProvider.currentTableSize == 'small'
@@ -271,7 +325,9 @@
       <mat-icon>add</mat-icon>
       <p>Add New Token</p>
     </button>
-    <ng-container *ngFor="let table of this.dataProvider.tokens | sorted">
+    <ng-container
+      *ngFor="let table of this.dataProvider.tokens | active | sorted"
+    >
       <button
         class="table"
         [ngClass]="{
@@ -280,12 +336,18 @@
           finalized: table.bill?.stage == 'finalized',
           medium: this.dataProvider.currentTableSize == 'medium',
           small: this.dataProvider.currentTableSize == 'small',
-          inactive: moveKotMode && moveKotSelectedTable.id != table.id,
-          activated: moveKotMode && moveKotSelectedTable.id == table.id
+          inactive:
+            (moveKotMode && moveKotSelectedTable.id != table.id) ||
+            (bulkSettleEnabled &&
+              !selectedTablesForBulkSettle.includes(table.id)),
+          highlight:
+            (moveKotMode && moveKotSelectedTable.id == table.id) ||
+            (bulkSettleEnabled &&
+              selectedTablesForBulkSettle.includes(table.id))
         }"
         matRipple
         *ngIf="!table.completed"
-        (click)="moveKotMode ? moveKotItem(table) : openTable(table, $event)"
+        (click)="selectToken(table, $event)"
       >
         <p class="name">Token {{ table.name }}</p>
         <p
@@ -312,7 +374,70 @@
         >
           <viraj-button
             [noPropogation]="true"
-            *ngIf="table.bill?.stage == 'finalized'"
+            *ngIf="table.bill?.stage == 'finalized' && !bulkSettleEnabled"
+            [minimalPadding]="true"
+            type="icon"
+            (vclick)="settleTable(table, $event)"
+            ><i class="ri-save-fill"></i
+          ></viraj-button>
+        </div>
+      </button>
+    </ng-container>
+  </cdk-virtual-scroll-viewport>
+  <cdk-virtual-scroll-viewport
+    appendOnly
+    *ngIf="this.dataProvider.billingMode == 'takeaway' && holdedItemsVisible"
+    itemSize="1500"
+    class="example-viewport"
+  >
+    <ng-container *ngFor="let table of this.dataProvider.tokens | holded">
+      <button
+        class="table"
+        [ngClass]="{
+          active: table.status == 'occupied',
+          late: this.dataProvider.tableTimeOutTime <= table.minutes,
+          finalized: table.bill?.stage == 'hold',
+          medium: this.dataProvider.currentTableSize == 'medium',
+          small: this.dataProvider.currentTableSize == 'small',
+          inactive:
+            (moveKotMode && moveKotSelectedTable.id != table.id) ||
+            (bulkSettleEnabled &&
+              !selectedTablesForBulkSettle.includes(table.id)),
+          highlight:
+            (moveKotMode && moveKotSelectedTable.id == table.id) ||
+            (bulkSettleEnabled &&
+              selectedTablesForBulkSettle.includes(table.id))
+        }"
+        matRipple
+        *ngIf="!table.completed"
+        (click)="selectToken(table, $event)"
+      >
+        <p class="name">Token {{ table.name }}</p>
+        <p
+          class="cost"
+          *ngIf="
+            table.bill?.billing?.grandTotal != undefined &&
+            table.bill?.billing?.grandTotal != null &&
+            isNumber(table.bill?.billing?.grandTotal)
+          "
+        >
+          <strong>{{
+            table.bill?.billing?.grandTotal | currency: "INR"
+          }}</strong>
+        </p>
+        <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">
+          {{ table.timeSpent }}
+        </p>
+        <div
+          class="actions"
+          *ngIf="
+            table.status == 'occupied' &&
+            this.dataProvider.getAccess('settleFromTable')
+          "
+        >
+          <viraj-button
+            [noPropogation]="true"
+            *ngIf="table.bill?.stage == 'hold' && !bulkSettleEnabled"
             [minimalPadding]="true"
             type="icon"
             (vclick)="settleTable(table, $event)"

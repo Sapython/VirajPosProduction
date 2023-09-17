@@ -133,6 +133,10 @@ export class ActiveKotComponent implements OnChanges {
         }
       }
     } else {
+      this.activeKotIndex = this.dataProvider.currentBill.kots.findIndex(
+        (kot: Kot) => kot.stage === 'active' || kot.stage === 'edit',
+      );
+      console.log("Removing this.activeKotIndex",this.activeKotIndex);
       this.dataProvider.currentBill?.removeProduct(
         product,
         this.activeKotIndex,

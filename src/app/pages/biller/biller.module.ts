@@ -53,7 +53,8 @@ import { UpdateComponent } from './settings/sections/account/update/update.compo
 import { SelectPropertiesComponent } from './settings/sections/account/select-properties/select-properties.component';
 import { ChargesComponent } from './settings/sections/charges/charges.component';
 import {MatExpansionModule} from '@angular/material/expansion';
-import { QuickReasonsComponent } from './settings/sections/quick-reasons/quick-reasons.component'; 
+import { QuickReasonsComponent } from './settings/sections/quick-reasons/quick-reasons.component';
+import { ResetComponent } from './settings/sections/config/reset/reset.component'; 
 
 @NgModule({
   declarations: [
@@ -80,6 +81,7 @@ import { QuickReasonsComponent } from './settings/sections/quick-reasons/quick-r
     SelectPropertiesComponent,
     ChargesComponent,
     QuickReasonsComponent,
+    ResetComponent,
   ],
   imports: [
     CommonModule,

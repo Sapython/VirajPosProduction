@@ -673,6 +673,15 @@ export class OnboardingService {
           res['printBillAfterSettle'] || false;
         this.dataProvider.printBillAfterFinalize =
           res['printBillAfterFinalize'] || false;
+        this.dataProvider.printSettings =
+          res['printSettings'] || {
+            showBillTime: true,
+            showBillDate: true,
+            showBillNo: true,
+            showOrderId: true,
+            showCashier: true,
+            showMode: true,
+          };
         this.dataProvider.directSettle =
           res['directSettle'] || false;
         this.dataProvider.confirmBeforeSettlementPrint =
@@ -835,7 +844,7 @@ export class OnboardingService {
       collection(
         this.firestore,
         'business/' + business.businessId + '/paymentMethods',
-      )
+      ),{idField:'id'}
     ).subscribe((res) => {
       if (res) {
         this.dataProvider.paymentMethods = res as PaymentMethod[];

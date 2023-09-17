@@ -11,6 +11,7 @@ import {
   PrintableBill,
 } from '../../../../types/bill.structure';
 import { KotConstructor, PrintableKot } from '../../../../types/kot.structure';
+import { firstValueFrom, timeout } from 'rxjs';
 
 
 var debugMode = true;
@@ -25,7 +26,7 @@ export class PrinterService {
     private encoderService: EncoderService,
   ) {}
 
-  printKot(printableKotData: PrintableKot,reprint:boolean = false,customPrinter?:string) {
+  async printKot(printableKotData: PrintableKot,reprint:boolean = false,customPrinter?:string) {
     if (debugMode) console.log('Printing kot', printableKotData);
     let filteredProducts = printableKotData.products.filter(
       (product: any) => product.specificPrinter,
@@ -42,6 +43,7 @@ export class PrinterService {
           primary: [0],
         },
       });
+      await firstValueFrom(dialog.closed);
     }
     let printerConfig = printableKotData.products.map((product: any) => {
       return { product: product.id, printer: product.specificPrinter };
@@ -70,30 +72,32 @@ export class PrinterService {
         }
       });
       console.log('grouped products', groupedProducts);
-      Object.keys(groupedProducts).forEach((printer: any, i) => {
+      let index= 0;
+      for (const printer of Object.keys(groupedProducts)) {
         //  console.log('printing', printer, groupedProducts[printer]);
         printableKotData.products = groupedProducts[printer];
         let result = this.encoderService.getKotCode(printableKotData,reprint);
         console.log('got kot code', result, printer);
-        setTimeout(() => {
-          if (!printer) {
-            const dialog = this.dialog.open(DialogComponent, {
-              data: {
-                title: 'No printer found for printing kot.',
-                description:
-                  'Please select a printer in settings panel. \n Not printed: \n ' +
-                  printableKotData.products
-                    .map((product) => product.name)
-                    .join(', '),
-                buttons: ['Ok'],
-                primary: [0],
-              },
-            });
-            return;
-          }
-          this.printing.printData(result, printer);
-        }, i * 1000);
-      });
+        if (!printer) {
+          const dialog = this.dialog.open(DialogComponent, {
+            data: {
+              title: 'No printer found for printing kot.',
+              description:
+                'Please select a printer in settings panel. \n Not printed: \n ' +
+                printableKotData.products
+                  .map((product) => product.name)
+                  .join(', '),
+              buttons: ['Ok'],
+              primary: [0],
+            },
+          });
+          await firstValueFrom(dialog.closed);
+          return;
+        }
+        await this.printing.printData(result, printer);
+        await new Promise(resolve => setTimeout(resolve, index * 1000));
+        index++;
+      }
     } else {
       let result = this.encoderService.getKotCode(printableKotData,reprint);
       console.log('got kot code', result, customPrinter);
@@ -110,13 +114,14 @@ export class PrinterService {
             primary: [0],
           },
         });
+        await firstValueFrom(dialog.closed);
         return;
       }
-      this.printing.printData(result, customPrinter);
+      await this.printing.printData(result, customPrinter);
     }
   }
 
-  printBill(billData: PrintableBill) {
+  async printBill(billData: PrintableBill) {
     console.log('Printing bill', billData);
     let data = this.encoderService.getBillCode(billData);
     if (!this.dataProvider.billerPrinter) {
@@ -128,6 +133,7 @@ export class PrinterService {
           primary: [0],
         },
       });
+      await firstValueFrom(dialog.closed);
       return;
     }
     console.log('printing bill', data);
@@ -137,7 +143,7 @@ export class PrinterService {
     );
   }
 
-  reprintBill(billData: PrintableBill,reprint:boolean = false) {
+  async reprintBill(billData: PrintableBill,reprint:boolean = false) {
     //  console.log("Printing bill",billData);
     let data = this.encoderService.getBillCode(billData,reprint);
     if (!this.dataProvider.billerPrinter) {
@@ -149,6 +155,7 @@ export class PrinterService {
           primary: [0],
         },
       });
+      await firstValueFrom(dialog.closed);
       return;
     }
     console.log('printing bill', data);

@@ -16,10 +16,13 @@
           {{ kot.id }}
         </td>
         <td>
-          {{ kot.grandTotal  || 'N/A'}}
+          {{ (kot.grandTotal | currency:'INR')  || 'N/A'}}
         </td>
         <td>
-          {{ kot.products.length }}
+          Total Products: {{ kot.products.length }}
+          <ol>
+            <li *ngFor="let item of kot.products">{{item.name}} x {{item.quantity}}</li>
+          </ol>
         </td>
         <td>
           {{ kot.billNo || "Unsettled" }}
@@ -36,7 +39,7 @@
           No. of KOTs: {{kotTotals.numberOfKot}}
         </td>
         <td>
-          Total KOTs Amount: {{kotTotals.totalKotAmount}}
+          Total KOTs Amount: {{kotTotals.totalKotAmount | currency:'INR'}}
         </td>
         <td>
           No. Of Products: {{kotTotals.totalProducts}}

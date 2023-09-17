@@ -1,6 +1,6 @@
 import { Timestamp, increment } from '@angular/fire/firestore';
 import { Bill } from '..';
-import { Payment } from '../../../../types/payment.structure';
+import { Payment, PaymentMethod } from '../../../../types/payment.structure';
 import { BillConstructor } from '../../../../types/bill.structure';
 import { Product } from '../../../../types/product.structure';
 import { Kot } from '../../kot/Kot';
@@ -51,7 +51,7 @@ export function setAsNormal(this: Bill) {
   this.updated.next();
 }
 
-export async function finalize(this: Bill) {
+export async function finalize(this: Bill, noTable?: boolean,onHold?:boolean) {
   if (this.allProducts().length == 0) {
     alert('No products to finalize');
     return;
@@ -67,14 +67,18 @@ export async function finalize(this: Bill) {
         [1],
       )
     ) {
-      this.finalizeAndPrintKot();
+      await this.finalizeAndPrintKot(true);
     }
   }
   if (this.totalProducts == 0) {
-    alert('No products to finalize');
+    await alert('No products to finalize');
     return;
   }
-  this.stage = 'finalized';
+  if (onHold) {
+    this.stage = 'hold';
+  } else {
+    this.stage = 'finalized';
+  }
   let data = this.toObject();
   // this.databaseService.updateBill(data);
   if (this.dataProvider.printBillAfterFinalize) {
@@ -98,7 +102,7 @@ export async function finalize(this: Bill) {
     user: this.user.username,
   });
   this.updated.next();
-  if (this.dataProvider.showTableOnBillAction) {
+  if (this.dataProvider.showTableOnBillAction && !noTable) {
     this.dataProvider.openTableView.next(true);
   }
 }
@@ -142,52 +146,57 @@ export async function settle(
   type: 'internal' | 'external',
   additionalInfo: any,
   splitSave?: boolean,
+  quickSettle?:PaymentMethod,
+  noTable?: boolean,
+  noDialogs?: boolean,
 ) {
   this.calculateBill();
   await recheckCUstomerLoyaltyStatus.call(this);
   // update every product and increase their sales counter by their quantity
   // return
   // TODO to be refixed
-  if (this.dataProvider.directSettle) {
+  if (this.dataProvider.directSettle && !noDialogs) {
     if (this.kots.find((kot) => kot.stage === 'active')) {
-      this.finalizeAndPrintKot();
+      await this.finalizeAndPrintKot(true);
     }
-    this.finalize();
+    await this.finalize(true);
   }
-  let products: (Product | ApplicableCombo)[] = [];
-  let allProducts = this.kots.reduce((acc, cur) => {
-    return acc.concat(cur.products);
-  }, products);
-  allProducts.forEach((product) => {
-    if (product.itemType == 'product') {
-      if (!product.sales) {
-        product.sales = 0;
-      }
-      product.sales += product.quantity;
-    }
-  });
   if (!this.billNo) {
-    if (this.nonChargeableDetail) {
-      this.billNo = 'NC-' + this.dataProvider.ncBillToken.toString();
-      this.dataProvider.ncBillToken++;
-      this.analyticsService.addNcBillToken();
+    if(quickSettle){
+      let methodIndex = this.dataProvider.paymentMethods.findIndex((method) => method.id == quickSettle.id);
+      console.log('quick settle',quickSettle,methodIndex);
+      if (methodIndex != -1){
+        if (!quickSettle.billNo){
+          quickSettle.billNo = 1;
+        }
+        this.billNo =  this.dataProvider.paymentMethods[methodIndex].shortCode+':'+quickSettle.billNo.toString();
+        this.dataProvider.paymentMethods[methodIndex].billNo++;
+        console.log("this.dataProvider.paymentMethods[methodIndex]",this.dataProvider.paymentMethods[methodIndex]);
+        await this.billService.updatePaymentMethod(this.dataProvider.paymentMethods[methodIndex]);
+      }
     } else {
-      if (this.mode == 'dineIn') {
-        (this.billNo = this.dataProvider.billToken.toString()),
-          this.dataProvider.billToken++;
-        this.analyticsService.addBillToken();
-      } else if (this.mode == 'takeaway') {
-        this.billNo = this.dataProvider.takeawayToken.toString();
-        // this.dataProvider.takeawayToken++;
-        // this.analyticsService.addTakeawayToken();
-      } else if (this.mode == 'online') {
-        (this.billNo = this.dataProvider.onlineTokenNo.toString()),
-          this.dataProvider.onlineTokenNo++;
-        this.analyticsService.addOnlineToken();
+      if (this.nonChargeableDetail) {
+        this.billNo = 'NC-' + this.dataProvider.ncBillToken.toString();
+        this.dataProvider.ncBillToken++;
+        this.analyticsService.addNcBillToken();
       } else {
-        (this.billNo = this.dataProvider.billToken.toString()),
-          this.dataProvider.billToken++;
-        this.analyticsService.addBillToken();
+        if (this.mode == 'dineIn') {
+          (this.billNo = this.dataProvider.billToken.toString()),
+            this.dataProvider.billToken++;
+          this.analyticsService.addBillToken();
+        } else if (this.mode == 'takeaway') {
+          this.billNo = this.dataProvider.takeawayToken.toString();
+          // this.dataProvider.takeawayToken++;
+          // this.analyticsService.addTakeawayToken();
+        } else if (this.mode == 'online') {
+          (this.billNo = this.dataProvider.onlineTokenNo.toString()),
+            this.dataProvider.onlineTokenNo++;
+          this.analyticsService.addOnlineToken();
+        } else {
+          (this.billNo = this.dataProvider.billToken.toString()),
+            this.dataProvider.billToken++;
+          this.analyticsService.addBillToken();
+        }
       }
     }
   }
@@ -197,7 +206,7 @@ export async function settle(
     item: string;
     sales: number;
   }[] = [];
-  allProducts.forEach((product) => {
+  this.allFinalProducts.forEach((product) => {
     if (product.id.startsWith('CUSTOM-')) {
       return undefined;
     }
@@ -244,7 +253,7 @@ export async function settle(
       this.printingService.printBill(this.printableBillData);
     } else if (
       !this.dataProvider.printBillAfterSettle &&
-      this.dataProvider.confirmBeforeSettlementPrint
+      this.dataProvider.confirmBeforeSettlementPrint && !noDialogs
     ) {
       let res = await this.dataProvider.confirm(
         'Do you want to print bill?',
@@ -274,9 +283,6 @@ export async function settle(
   }
   this.dataProvider.totalSales += this.billing.grandTotal;
   this.updated.next();
-  if (this.dataProvider.showTableOnBillAction) {
-    this.dataProvider.openTableView.next(true);
-  }
   if (this.customerInfo.phone) {
     console.log('Found customer phone');
     this.customerService.updateCustomer(
@@ -296,9 +302,11 @@ export async function settle(
     data: this.settlement,
     user: this.user.username,
   });
-
+  if (this.dataProvider.showTableOnBillAction && !noTable) {
+    this.dataProvider.openTableView.next(true);
+  }
   // this.customerService.addLoyaltyPoint(this);
-  console.log('Bill settled');
+  console.log('Bill settled',this.billNo);
   return this.billNo;
 }
 

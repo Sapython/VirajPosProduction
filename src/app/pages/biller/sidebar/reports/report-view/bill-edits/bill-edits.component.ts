@@ -145,6 +145,8 @@ export class BillEditsComponent {
       csv.push(row.join(separator));
     }
     var csv_string = csv.join('\n');
+// csv_string.replace('₹',' ')
+    csv_string = csv_string.replace(/₹/g, ' ');
     // Download it
     var filename =
       'bill_Edits' + new Date().toLocaleString() + '.csv';
@@ -155,6 +157,7 @@ export class BillEditsComponent {
       'href',
       'data:text/csv;charset=utf-8,' + encodeURIComponent(csv_string),
     );
+    
     link.setAttribute('download', filename);
     document.body.appendChild(link);
     link.click();

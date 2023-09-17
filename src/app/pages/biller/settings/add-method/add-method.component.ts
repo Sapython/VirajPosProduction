@@ -13,6 +13,7 @@ export class AddMethodComponent implements OnInit {
     detail: new FormControl(false, [Validators.required]),
     directSettleButton: new FormControl(false),
     holdBill: new FormControl(false),
+    shortCode: new FormControl(''),
   });
   constructor(
     private dialog: DialogRef,

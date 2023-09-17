@@ -7,7 +7,7 @@ import * as childProcess from 'child_process';
 import * as fs from 'fs';
 import { Dialog } from '@angular/cdk/dialog';
 import { DialogComponent } from '../../../shared/base-components/dialog/dialog.component';
-import { ReplaySubject, Subject } from 'rxjs';
+import { ReplaySubject, Subject, firstValueFrom } from 'rxjs';
 import { DataProvider } from '../provider/data-provider.service';
 const updateStages = [
   'checking-for-update',
@@ -108,21 +108,21 @@ export class ElectronService {
     });
   }
 
-  printData(data: any, printer: string) {
+  async printData(data: any, printer: string) {
     console.log("Printing data",data,"to printer:",printer);
     
     if (!data || !printer) {
       const dialog = this.dialog.open(DialogComponent, {
         data: { title: 'Error', description: 'No Data or Printer Selected' },
       });
-      //  console.log("STAGE 1 => Will Print: ", data, printer);
+      await firstValueFrom(dialog.closed)
       return;
     }
     if (!this.ipcRenderer) {
       const dialog = this.dialog.open(DialogComponent, {
         data: { title: 'Error', description: 'No Printer Found' },
       });
-      //  console.log("STAGE 2 => Will Print: ", data, printer);
+      let noPrinterFound = await firstValueFrom(dialog.closed);
       return;
     }
     //  console.log("STAGE 3 => Will Print: ", data, printer);

@@ -76,7 +76,7 @@ export class ItemWiseReportComponent {
                         kot.id,
                       ];
                     }
-                    products[findIndex].quantity += product.quantity;
+                    products[findIndex].quantity += Number(product.quantity);
                   }
                 });
               });
@@ -84,19 +84,19 @@ export class ItemWiseReportComponent {
             this.totals.totalNumberOfProducts = products.length;
             this.totals.totalNumberOfBills = bills.length;
             this.totals.totalNumberOfKots = bills.reduce(
-              (acc, cur) => acc + cur.kots.length,
+              (acc, cur) => acc + Number(cur.kots.length),
               0,
             );
             this.totals.totalQuantity = products.reduce(
-              (acc, cur) => acc + cur.quantity,
+              (acc, cur) => acc + Number(cur.quantity),
               0,
             );
             this.totals.totalPrice = products.reduce(
-              (acc, cur) => acc + cur.price,
+              (acc, cur) => acc + Number(cur.price),
               0,
             );
             this.totals.totalAmount = products.reduce(
-              (acc, cur) => acc + (cur.price * cur.quantity),
+              (acc, cur) => acc + Number(cur.price * cur.quantity),
               0,
             );
             // total amount is the total price of all the products
@@ -190,6 +190,8 @@ export class ItemWiseReportComponent {
       csv.push(row.join(separator));
     }
     var csv_string = csv.join('\n');
+// csv_string.replace('₹',' ')
+    csv_string = csv_string.replace(/₹/g, ' ');
     // Download it
     var filename =
       'item_wise_report' + new Date().toLocaleString() + '.csv';

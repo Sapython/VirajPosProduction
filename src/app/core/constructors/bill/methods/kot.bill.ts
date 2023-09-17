@@ -50,28 +50,28 @@ export function editKot(this: Bill, kot: Kot, reason: string) {
       this.dataProvider.manageKotChanged.next(false);
       let kotObject = kot.toObject();
       let activityData = {
-        id:kotObject.id,
-        table:this.table.id,
-        products:kotObject.products.map((prod)=>{
+        id: kotObject.id,
+        table: this.table.id,
+        products: kotObject.products.map((prod) => {
           return {
-            id:prod.id,
-            name:prod.name,
-            quantity:prod.quantity,
-            price:prod.price,
-            instruction:prod.instruction,
-            cancelled:prod.cancelled,
-            itemType:prod.itemType,
-          }
+            id: prod.id,
+            name: prod.name,
+            quantity: prod.quantity,
+            price: prod.price,
+            instruction: prod.instruction,
+            cancelled: prod.cancelled,
+            itemType: prod.itemType,
+          };
         }),
       };
-      
+
       this.billService.addActivity(this, {
         type: 'kotEdited',
         message: 'Kot edited by ' + this.user.username,
         user: this.user.username,
-        data: { 
+        data: {
           editReason: reason,
-          ...activityData
+          ...activityData,
         },
       });
       this.updated.next();
@@ -94,21 +94,21 @@ export function editKot(this: Bill, kot: Kot, reason: string) {
     this.dataProvider.manageKot = false;
     this.dataProvider.manageKotChanged.next(false);
     let kotObject = kot.toObject();
-      let activityData = {
-        id:kotObject.id,
-        table:this.table.id,
-        products:kotObject.products.map((prod)=>{
-          return {
-            id:prod.id,
-            name:prod.name,
-            quantity:prod.quantity,
-            price:prod.price,
-            instruction:prod.instruction,
-            cancelled:prod.cancelled,
-            itemType:prod.itemType,
-          }
-        }),
-      };
+    let activityData = {
+      id: kotObject.id,
+      table: this.table.id,
+      products: kotObject.products.map((prod) => {
+        return {
+          id: prod.id,
+          name: prod.name,
+          quantity: prod.quantity,
+          price: prod.price,
+          instruction: prod.instruction,
+          cancelled: prod.cancelled,
+          itemType: prod.itemType,
+        };
+      }),
+    };
     this.billService.addActivity(this, {
       type: 'kotEdited',
       message: 'Kot edited by ' + this.user.username,
@@ -119,8 +119,8 @@ export function editKot(this: Bill, kot: Kot, reason: string) {
   }
 }
 
-export async function finalizeAndPrintKot(this: Bill) {
-  if (this.table.status == 'available'){
+export async function finalizeAndPrintKot(this: Bill, noTable?: boolean) {
+  if (this.table.status == 'available') {
     this.table.attachBill(this);
   }
 
@@ -146,9 +146,9 @@ export async function finalizeAndPrintKot(this: Bill) {
           return false;
         }
       });
-      if (incomplete){
-        await alert("Please complete the combo before finalizing the kot");
-        return
+      if (incomplete) {
+        await alert('Please complete the combo before finalizing the kot');
+        return;
       }
       this.kots[kotIndex].products = [
         ...cancelledProducts,
@@ -175,9 +175,9 @@ export async function finalizeAndPrintKot(this: Bill) {
           return false;
         }
       });
-      if (incomplete){
-        await alert("Please complete the combo before finalizing the kot");
-        return
+      if (incomplete) {
+        await alert('Please complete the combo before finalizing the kot');
+        return;
       }
       activeKot.id = this.dataProvider.kotToken.toString();
       this.dataProvider.kotToken++;
@@ -191,22 +191,22 @@ export async function finalizeAndPrintKot(this: Bill) {
         if (this.nonChargeableDetail) {
           // running nonchargeable kot
           this.billService.provideAnalytics().logKot(activeKot, 'new');
-          this.printKot(activeKot, 'runningNonChargeable');
+          await this.printKot(activeKot, 'runningNonChargeable');
         } else {
           this.billService.provideAnalytics().logKot(activeKot, 'new');
           // running chargeable kot
           //  console.log('running chargeable');
-          this.printKot(activeKot, 'runningChargeable');
+          await this.printKot(activeKot, 'runningChargeable');
         }
       } else {
         if (this.nonChargeableDetail) {
           // first nonchargeable kot
           this.billService.provideAnalytics().logKot(activeKot, 'new');
-          this.printKot(activeKot, 'firstNonChargeable');
+          await this.printKot(activeKot, 'firstNonChargeable');
         } else {
           // first chargeable kot
           this.billService.provideAnalytics().logKot(activeKot, 'new');
-          this.printKot(activeKot, 'firstChargeable');
+          await this.printKot(activeKot, 'firstChargeable');
         }
       }
       //  console.log('Must have printed');
@@ -215,13 +215,13 @@ export async function finalizeAndPrintKot(this: Bill) {
       await alert('No active kot found');
     }
   }
-  if (this.dataProvider.showTableOnBillAction) {
+  if (this.dataProvider.showTableOnBillAction && !noTable) {
     this.dataProvider.openTableView.next(true);
   }
   this.calculateBill();
 }
 
-export function deleteKot(this: Bill, kot: Kot) {
+export async function deleteKot(this: Bill, kot: Kot) {
   kot.stage = 'cancelled';
   this.updated.next();
   kot.products.forEach((product) => {
@@ -229,28 +229,31 @@ export function deleteKot(this: Bill, kot: Kot) {
   });
   let kotObject = kot.toObject();
   let activityData = {
-    id:kotObject.id,
-    table:this.table.id,
-    products:kotObject.products.map((prod)=>{
+    id: kotObject.id,
+    table: this.table.id,
+    products: kotObject.products.map((prod) => {
       return {
-        id:prod.id,
-        name:prod.name,
-        quantity:prod.quantity,
-        price:prod.price,
-        instruction:prod.instruction,
-        cancelled:prod.cancelled,
-        itemType:prod.itemType,
-      }
-    })
-  }
+        id: prod.id,
+        name: prod.name,
+        quantity: prod.quantity,
+        price: prod.price,
+        instruction: prod.instruction,
+        cancelled: prod.cancelled,
+        itemType: prod.itemType,
+      };
+    }),
+  };
   this.billService.addActivity(this, {
     type: 'kotCancelled',
     message: 'Kot cancelled by ' + this.user.username,
     user: this.user.username,
-    data: { ...activityData, cancelReason: 'Cancelled by ' + this.user.username},
+    data: {
+      ...activityData,
+      cancelReason: 'Cancelled by ' + this.user.username,
+    },
   });
   this.billService.provideAnalytics().logKot(kot, 'cancelled');
-  this.printKot(kot, 'cancelledKot');
+  await this.printKot(kot, 'cancelledKot');
   this.calculateBill();
   this.updated.next();
   this.dataProvider.kotViewVisible = true;
@@ -259,7 +262,7 @@ export function deleteKot(this: Bill, kot: Kot) {
   this.dataProvider.allProducts = false;
 }
 
-export function printKot(
+export async function printKot(
   this: Bill,
   kot: Kot,
   mode:
@@ -287,9 +290,9 @@ export function printKot(
   }
   if (!this.orderNo) {
     this.orderNo = this.dataProvider.orderTokenNo.toString();
-    console.log("Prev ",this.dataProvider.orderTokenNo);
+    console.log('Prev ', this.dataProvider.orderTokenNo);
     this.dataProvider.orderTokenNo++;
-    console.log("After ",this.dataProvider.orderTokenNo);
+    console.log('After ', this.dataProvider.orderTokenNo);
     this.analyticsService.addOrderToken();
   }
   //  console.log("kot.products",kot.products);
@@ -329,7 +332,7 @@ export function printKot(
     data: data,
   });
   if (debug) console.log('Kot data', data);
-  this.printingService.printKot(data);
+  await this.printingService.printKot(data);
   //  console.log('Send to service');
 }
 

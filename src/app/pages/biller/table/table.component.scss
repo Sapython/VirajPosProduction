@@ -66,6 +66,20 @@ section {
       display: flex;
       align-items: center;
       gap: 15px;
+      &.filled{
+        background: var(--Vrajera-primary);
+        color: white;
+      }
+    }
+    span{
+      border: 2px solid var(--Vrajera-primary);
+      background: #fff;
+      color: var(--Vrajera-primary);
+      padding: 10px 15px;
+      display: flex;
+      align-items: center;
+      border-radius: 5px;
+      gap: 15px;
     }
   }
   .tableWrapper {
@@ -297,6 +311,19 @@ section {
         * {
           color: var(--Vrajera-success);
         }
+      }
+    }
+    .table.holder{
+      background: #40c47e;
+      border: #10954e 2px solid;
+      * {
+        color: rgb(32, 32, 32) !important;
+      }
+      &:hover {
+        cursor: pointer;
+        background: #50e595;
+        border-color: #10954e;
+        scale: 1.05;
       }
     }
   }

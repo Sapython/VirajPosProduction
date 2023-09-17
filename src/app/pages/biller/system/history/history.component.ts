@@ -150,7 +150,7 @@ export class HistoryComponent {
           console.log('BILL: ', doc.data());
           if (doc.data().settlement?.additionalInfo.splitBill){
             // fetch splitted bill
-            var splittedBills = await Promise.all(doc.data()['settlement']['additionalInfo']['bills'].map(async (splitBillId:string)=>{
+            var splittedBills = await Promise.all(doc.data().settlement?.additionalInfo?.bills.map(async (splitBillId:string)=>{
               let billDoc = await this.billService.getSplittedBill(doc.id,splitBillId);
               console.log("allProducts",allProducts);
               let data = {

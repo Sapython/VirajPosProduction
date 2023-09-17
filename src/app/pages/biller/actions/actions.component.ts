@@ -167,7 +167,7 @@ export class ActionsComponent {
   async quickSettle(paymentMethod: PaymentMethod) {
     let elevateReq = await this.userManagementService.authenticateAction([
       'settleBill',
-    ])
+    ]);
     if (elevateReq.status === true){
       this.dataProvider.currentBill.settle(
         [{
@@ -176,8 +176,19 @@ export class ActionsComponent {
         }],
         'internal',
         null,
-        true
+        true,
+        paymentMethod
       );
+    }
+  }
+
+  async holdBill(paymentMethod: PaymentMethod){
+    let elevateReq = await this.userManagementService.authenticateAction([
+      'settleBill',
+    ]);
+    if (elevateReq.status === true){
+      this.dataProvider.currentBill.finalize(false,true);
+      this.dataProvider.currentBill = undefined;
     }
   }
 

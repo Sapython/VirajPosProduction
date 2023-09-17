@@ -21,9 +21,9 @@ export class BillerComponent implements AfterViewInit {
         this.dataProvider.currentBill.allProducts().length == 0
       ) {
         this.dataProvider.currentTable?.clearTable();
-        this.dataProvider.currentBill = undefined;
-        this.dataProvider.currentTable = undefined;
-      } 
+      }
+      this.dataProvider.currentBill = undefined;
+      this.dataProvider.currentTable = undefined;
       // else {
       //   if (
       //     this.dataProvider.currentBill &&

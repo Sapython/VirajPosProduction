@@ -230,6 +230,79 @@
       ></mat-slide-toggle>
     </div>
   </ng-container>
+  <h3>Print Settings</h3>
+  <div class="item">
+    <p>Show Time On Bill</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.printSettings.showBillTime"
+      (change)="
+        updateSettings({
+          printSettings: this.dataProvider.printSettings
+        })
+      "
+      *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
+    <p>Show Date On Bill</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.printSettings.showBillDate"
+      (change)="
+        updateSettings({
+          printSettings: this.dataProvider.printSettings
+        })
+      "
+      *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
+    <p>Show Bill No On Bill</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.printSettings.showBillNo"
+      (change)="
+        updateSettings({
+          printSettings: this.dataProvider.printSettings
+        })
+      "
+      *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
+    <p>Show Cashier On Bill</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.printSettings.showCashier"
+      (change)="
+        updateSettings({
+          printSettings: this.dataProvider.printSettings
+        })
+      "
+      *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
+    <p>Show Order Id Bill</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.printSettings.showOrderId"
+      (change)="
+        updateSettings({
+          printSettings: this.dataProvider.printSettings
+        })
+      "
+      *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
+    <p>Show Mode on Bill</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.printSettings.showMode"
+      (change)="
+        updateSettings({
+          printSettings: this.dataProvider.printSettings
+        })
+      "
+      *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+    ></mat-slide-toggle>
+  </div>
   <h3>Quick Reasons</h3>
   <div class="item">
     Add New Quick Reason

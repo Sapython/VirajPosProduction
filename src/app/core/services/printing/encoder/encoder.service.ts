@@ -1,15 +1,19 @@
 import { Injectable } from '@angular/core';
 import { customEncoder } from './encoder';
-import { PrintableBill } from '../../../../types/bill.structure';
+import {
+  BillConstructor,
+  PrintableBill,
+} from '../../../../types/bill.structure';
 import { PrintableKot } from '../../../../types/kot.structure';
+import { DataProvider } from '../../provider/data-provider.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EncoderService {
-  constructor() {}
+  constructor(private dataProvider:DataProvider) {}
 
-  getBillCode(billdata: PrintableBill,reprint:boolean = false) {
+  getBillCode(billdata: PrintableBill, reprint: boolean = false) {
     //  console.log('billdata.businessDetails.name', billdata.businessDetails.name);
     let encoder = new customEncoder({ width: 48 });
     let result = encoder
@@ -27,29 +31,7 @@ export class EncoderService {
       .lineIf(billdata.customerDetail.address, 'left', 'Add:')
       .lineIf(billdata.customerDetail.gstin, 'left', 'Gst:')
       .hr()
-      .table(
-        [
-          {
-            width: 20,
-            marginRight: 2,
-            align: 'left',
-          },
-          {
-            width: 20,
-            align: 'right',
-          },
-        ],
-        [
-          ['Date: ' + billdata.date, 'Time: ' + billdata.time],
-          [
-            'Order Id: ' + billdata.orderNo,
-            'Bill: ' +
-              (billdata.billNoSuffix ? billdata.billNoSuffix : '') +
-              (billdata.billNo || ''),
-          ],
-          [(enc:any)=>enc.bold().text('Cashier: ' + billdata.cashierName).bold(), 'Mode: ' + billdata.mode],
-        ],
-      )
+      .generateBillInfo(billdata,this.dataProvider)
       .hr()
       .productTable(billdata.products)
       .hr()
@@ -69,9 +51,13 @@ export class EncoderService {
       .hr()
       .loyalty(billdata.currentLoyalty)
       .discounts(billdata.discounts)
-      .postDiscountSubtotal(billdata,billdata.discounts,billdata.currentLoyalty)
+      .postDiscountSubtotal(
+        billdata,
+        billdata.discounts,
+        billdata.currentLoyalty,
+      )
       .charges(billdata.appliedCharges)
-      .postChargesSubtotal(billdata,billdata.appliedCharges)
+      .postChargesSubtotal(billdata, billdata.appliedCharges)
       .hr()
       .taxes(billdata.taxes)
       .hr(true)
@@ -100,7 +86,7 @@ export class EncoderService {
     return result;
   }
 
-  getKotCode(kotData: PrintableKot,reprint:boolean = false) {
+  getKotCode(kotData: PrintableKot, reprint: boolean = false) {
     let encoder = new customEncoder({ width: 48 });
     let result = encoder
       .initPrint()
@@ -121,16 +107,21 @@ export class EncoderService {
           },
         ],
         [
-          [
-            'Date: ' + kotData.date,
-            'Order Id: ' + kotData.orderNo,
-          ],
+          ['Date: ' + kotData.date, 'Order Id: ' + kotData.orderNo],
           [
             'Time: ' + kotData.time,
-            (enc:any)=>enc.bold().text('Punched By: ' + kotData.user).bold(),
+            (enc: any) =>
+              enc
+                .bold()
+                .text('Punched By: ' + kotData.user)
+                .bold(),
           ],
           [
-            (enc:any)=>enc.bold().text('Kot No: ' + kotData.token).bold(),
+            (enc: any) =>
+              enc
+                .bold()
+                .text('Kot No: ' + kotData.token)
+                .bold(),
             this.getModeTitle(kotData.billingMode) + ' No: ' + kotData.table,
           ],
         ],

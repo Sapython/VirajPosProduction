@@ -210,6 +210,21 @@ export class DataProvider {
   public tableOrders: any = undefined;
   public groupOrders: string[] = [];
   public paymentMethods: PaymentMethod[] = [];
+  public printSettings: {
+    showBillTime: boolean;
+    showBillDate: boolean;
+    showBillNo: boolean;
+    showOrderId: boolean;
+    showCashier: boolean;
+    showMode: boolean;
+  } = {
+    showBillTime: true,
+    showBillDate: true,
+    showBillNo: true,
+    showOrderId: true,
+    showCashier: true,
+    showMode: true,
+  };
   
   public loyaltyRates: {
     dineIn: number;
@@ -524,6 +539,7 @@ export class DataProvider {
     "setPrinterSettings", //TODO: new
     'seeMainCategories',
     'reactivateBill', // TODO: new *
+    'bulkSettle', // TODO: new **
     'editMenu',
     'editTakeawayMenu',
     'editOnlineMenu',

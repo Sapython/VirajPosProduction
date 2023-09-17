@@ -72,6 +72,7 @@ export class HourlyItemSalesComponent {
                   if (findIndex == -1) {
                     productBaseSales.push({
                       ...product,
+                      quantity: Number(product.quantity),
                       hourlySales: Array(24).fill(0),
                       itemType: 'product',
                     });
@@ -79,7 +80,10 @@ export class HourlyItemSalesComponent {
                     let hour = kot.createdDate.toDate().getHours();
                     productBaseSales[findIndex].hourlySales[
                       hour
-                    ] += product.quantity;
+                    ] += Number(product.quantity);
+                    productBaseSales[findIndex].quantity += Number(
+                      product.quantity,
+                    );
                   }
                 } else if (product.itemType == 'combo') {
                 }
@@ -203,6 +207,8 @@ export class HourlyItemSalesComponent {
       csv.push(row.join(separator));
     }
     var csv_string = csv.join('\n');
+// csv_string.replace('₹',' ')
+    csv_string = csv_string.replace(/₹/g, ' ');
     // Download it
     var filename =
       'export_report-table_' + new Date().toLocaleString() + '.csv';

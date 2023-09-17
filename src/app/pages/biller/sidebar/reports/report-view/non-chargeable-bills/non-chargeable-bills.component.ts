@@ -214,6 +214,8 @@ export class NonChargeableBillsComponent {
       csv.push(row.join(separator));
     }
     var csv_string = csv.join('\n');
+// csv_string.replace('₹',' ')
+    csv_string = csv_string.replace(/₹/g, ' ');
     // Download it
     var filename =
       'non_chargeable_bill_wise' + new Date().toLocaleString() + '.csv';

@@ -80,7 +80,7 @@ export class Bill implements BillConstructor {
   }[] = [];
   billSplits: PrintableBill[] = [];
   modifiedAllProducts: any[] = [];
-  stage: 'active' | 'finalized' | 'settled' | 'cancelled';
+  stage: 'active' | 'finalized' | 'settled' | 'cancelled' | 'hold';
   customerInfo: CustomerInfo;
   reactivateKotReasons: string[] = [];
   device: Device;
@@ -252,7 +252,7 @@ export class Bill implements BillConstructor {
     return allProducts;
   }
 
-  public get allFinalProducts(): Product[] {
+  public get allFinalProducts(): (Product|ApplicableCombo)[] {
     return allFinalProducts.call(this);
   }
 

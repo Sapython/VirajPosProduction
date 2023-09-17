@@ -74,7 +74,7 @@
 		  <td class="noWrap">
 			<ol *ngIf="bill.billing.discount.length > 0">
 			  <li *ngFor="let discount of bill.billing.discount" class="noWrap">
-				Value:{{ discount.value }} (Cost: {{ discount.totalAppliedDiscount | currency:'INR' }}),
+				Value:{{ discount.value }} (Cost: {{ discount.totalAppliedDiscount | currency:'INR' }}), <strong>Reason: {{discount.reason}}</strong>
 			  </li>
 			</ol>
 			<p *ngIf="bill.billing.discount.length == 0">No Discounts</p>
@@ -129,6 +129,7 @@
 			<td></td>
 			<td>Total Tax: {{ billTotals.totalTax | currency:'INR' }}</td>
 		  </tr>
+		</ng-container>
 		<tr *ngIf="(bills | async).length == 0">
 		  <td
 			colspan="12"
@@ -142,7 +143,6 @@
 			<p>No Data Available</p>
 		  </td>
 		</tr>
-	  </ng-container>
 	</tbody>
   </table>
   

@@ -30,7 +30,7 @@ export class SplitBillsComponent {
         this.bills.next([]);
         let finalizedBills = []
         await Promise.all(res.map(async (bill)=>{
-          if(bill?.settlement?.additionalInfo.splitBill && bill?.settlement?.additionalInfo.bills?.length > 0){
+          if(bill?.settlement?.additionalInfo?.splitBill && bill?.settlement?.additionalInfo?.bills?.length > 0){
             let bills = await Promise.all(bill?.settlement?.additionalInfo.bills.map(async (splitBillId:string)=>{
               let billDoc = await this.reportService.getSplittedBill(bill.id,splitBillId,this.dataProvider.currentBusiness.businessId);
               return billDoc.data();
@@ -131,6 +131,8 @@ export class SplitBillsComponent {
       csv.push(row.join(separator));
     }
     var csv_string = csv.join('\n');
+// csv_string.replace('₹',' ')
+    csv_string = csv_string.replace(/₹/g, ' ');
     // Download it
     var filename =
       'split_bills' + new Date().toLocaleString() + '.csv';

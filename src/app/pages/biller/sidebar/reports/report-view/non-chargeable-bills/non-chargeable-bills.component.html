@@ -78,7 +78,7 @@
         <td class="noWrap">
           <ol *ngIf="bill.billing.discount.length > 0">
             <li *ngFor="let discount of bill.billing.discount" class="noWrap">
-              Value:{{ discount.value }} (Cost: {{ discount.totalAppliedDiscount | currency:'INR' }}),
+              Value:{{ discount.value }} (Cost: {{ discount.totalAppliedDiscount | currency:'INR' }}), <strong>Reason: {{discount.reason}}</strong>
             </li>
           </ol>
           <p *ngIf="bill.billing.discount.length == 0">No Discounts</p>

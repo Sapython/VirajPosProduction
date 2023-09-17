@@ -572,6 +572,8 @@ export class DaySummaryComponent {
       csv.push(row.join(separator));
     }
     var csv_string = csv.join('\n');
+// csv_string.replace('₹',' ')
+    csv_string = csv_string.replace(/₹/g, ' ');
     // Download it
     var filename = 'day_summary' + new Date().toLocaleString() + '.csv';
     var link = document.createElement('a');

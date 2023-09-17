@@ -20,7 +20,7 @@ export interface BillConstructor {
   }[];
   modifiedAllProducts: any[];
   optionalTax: boolean;
-  stage: 'active' | 'finalized' | 'settled' | 'cancelled';
+  stage: 'active' | 'finalized' | 'settled' | 'cancelled' | 'hold';
   cancelledReason?: {
     reason: string;
     time: Timestamp;

@@ -1,10 +1,12 @@
 import {
+  PrintableBill,
   billLoyalty,
   printableBillItem,
   printableDiscount,
   printableTax,
 } from '../../../../types/bill.structure';
 import { printableKotItem } from '../../../../types/kot.structure';
+import { DataProvider } from '../../provider/data-provider.service';
 import * as EscPosEncoder from '../esc-pos-encoder.umd';
 export class customEncoder extends EscPosEncoder {
   constructor(data: any) {
@@ -291,6 +293,48 @@ export class customEncoder extends EscPosEncoder {
               .bold(),
         ],
       ],
+    )
+  }
+  generateBillInfo(billdata: PrintableBill,dataProvider:DataProvider) {
+    let billInfos = [
+    ];
+    if (dataProvider.printSettings.showBillDate){
+      billInfos.push('Date: ' + billdata.date)
+    }
+    if (dataProvider.printSettings.showBillTime){
+      billInfos.push('Time: ' + billdata.time)
+    }
+    if (dataProvider.printSettings.showBillDate){
+      billInfos.push('Order Id: ' + billdata.orderNo)
+    }
+    if (dataProvider.printSettings.showBillDate){
+      billInfos.push('Bill: ' +
+      (billdata.billNoSuffix ? billdata.billNoSuffix : '') +
+      (billdata.billNo || ''))
+    }
+    if (dataProvider.printSettings.showBillDate){
+      billInfos.push((enc: any) =>
+      enc
+        .bold()
+        .text('Cashier: ' + billdata.cashierName)
+        .bold())
+    }
+    if (dataProvider.printSettings.showBillDate){
+      billInfos.push('Mode: ' + billdata.mode)
+    }
+    return this.table(
+      [
+        {
+          width: 20,
+          marginRight: 2,
+          align: 'left',
+        },
+        {
+          width: 20,
+          align: 'right',
+        },
+      ],
+      billInfos,
     )
   }
 }

@@ -1,0 +1,29 @@
+<section>
+	<div class="heading">
+	  <h3>Reset Bill Data</h3>
+	</div>
+	<div class="body">
+		<p>This allows you to delete all bills data every entered upon this account.</p>
+		<p>This action is irreversible and cannot be undone.</p>
+		<p>Enter <strong><i>"I want to delete every data"</i></strong> in the below field to continue.</p>
+		<mat-form-field appearance="outline">
+			<mat-label>Confirmation</mat-label>
+			<input matInput [(ngModel)]="confirmationText" type="text"/>
+			<mat-error *ngIf="'I want to delete every data'!=confirmationText">Doesn't match</mat-error>
+		</mat-form-field>
+		<p>This process is time taking. Please wait while we delete every data.</p>
+	</div>
+	<div class="actions">
+	  <button color="primary" mat-stroked-button (click)="dialogRef.close()">
+		Cancel
+	  </button>
+	  <button
+		color="primary"
+		[disabled]="confirmationText != 'I want to delete every data'"
+		(click)="dialogRef.close(confirmationText == 'I want to delete every data')"
+		mat-flat-button>
+		Submit
+	  </button>
+	</div>
+  </section>
+  

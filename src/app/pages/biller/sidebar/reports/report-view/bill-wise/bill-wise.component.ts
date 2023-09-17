@@ -240,6 +240,8 @@ export class BillWiseComponent implements OnInit, OnDestroy {
       csv.push(row.join(separator));
     }
     var csv_string = csv.join('\n');
+    // csv_string.replace('₹',' ')
+    csv_string = csv_string.replace(/₹/g, ' ');
     // Download it
     var filename =
       'bill-wise' + new Date().toLocaleString() + '.csv';
@@ -250,6 +252,7 @@ export class BillWiseComponent implements OnInit, OnDestroy {
       'href',
       'data:text/csv;charset=utf-8,' + encodeURIComponent(csv_string),
     );
+    console.log("csv_string",csv_string);
     link.setAttribute('download', filename);
     document.body.appendChild(link);
     link.click();

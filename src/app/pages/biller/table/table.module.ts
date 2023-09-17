@@ -18,7 +18,9 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MoveKotItemComponent } from './move-kot-item/move-kot-item.component';
 import { MergeExchangeTableComponent } from './merge-exchange-table/merge-exchange-table.component';
 import { SortedPipe } from './sorted.pipe';
-import {ScrollingModule} from '@angular/cdk/scrolling'; 
+import {ScrollingModule} from '@angular/cdk/scrolling';
+import { ActivePipe } from './active.pipe';
+import { HoldedPipe } from './holded.pipe'; 
 
 @NgModule({
   declarations: [
@@ -28,6 +30,8 @@ import {ScrollingModule} from '@angular/cdk/scrolling';
     MoveKotItemComponent,
     MergeExchangeTableComponent,
     SortedPipe,
+    ActivePipe,
+    HoldedPipe,
   ],
   imports: [
     CommonModule,

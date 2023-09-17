@@ -129,6 +129,8 @@ export class LoyaltyComponent {
       csv.push(row.join(separator));
     }
     var csv_string = csv.join('\n');
+// csv_string.replace('₹',' ')
+    csv_string = csv_string.replace(/₹/g, ' ');
     // Download it
     var filename =
       'loyalty_report' + new Date().toLocaleString() + '.csv';

@@ -7,6 +7,7 @@
 		<th>Splitted Bill Tax</th>
 		<th>Splitted Discount</th>
 		<th>Settled At</th>
+		<th>Products</th>
 	  </tr>
 	</thead>
 	<tbody>
@@ -25,13 +26,13 @@
 			<ol>
 				<li *ngFor="let discount of bill.billing.discount">
 					<ng-container *ngIf="discount.mode == 'directPercent'">
-						Percent - {{discount.value}} => {{discount.totalAppliedDiscount| currency:'INR'}}
+						Percent - {{discount.value}} => {{discount.totalAppliedDiscount| currency:'INR'}}, <strong>Reason: {{discount.reason}}</strong>
 					</ng-container>
 					<ng-container *ngIf="discount.mode == 'directFlat'">
-						Flat - {{discount.value}} => {{discount.totalAppliedDiscount| currency:'INR'}}
+						Flat - {{discount.value}} => {{discount.totalAppliedDiscount| currency:'INR'}},  <strong>Reason: {{discount.reason}}</strong>
 					</ng-container>
 					<ng-container *ngIf="discount.mode == 'codeBased'">
-						{{discount.name}} - {{discount.value}} => {{discount.totalAppliedDiscount| currency:'INR'}}
+						{{discount.name}} - {{discount.value}} => {{discount.totalAppliedDiscount| currency:'INR'}},  <strong>Reason: {{discount.reason}}</strong>
 					</ng-container>
 				</li>
 				<li *ngIf="bill.billing.discount.length == 0">
@@ -40,13 +41,24 @@
 			</ol>
 		</td>
 		<td>{{bill.settlement.time.toDate() | date:'short'}}</td>
+		<td class="noWrap">
+			<ol *ngIf="bill.kots.length > 0">
+				<ng-container *ngFor="let kot of bill.kots">
+					<li *ngFor="let item of kot.products">
+					  {{ item.name }} ({{ item.price | currency:'INR' }} X {{ item.quantity }}),
+					</li>
+				</ng-container>
+			</ol>
+			<p *ngIf="bill.kots.length == 0">No Products</p>
+		</td>
 	  </tr>
-	  <tr *ngIf="this.splitBillTotals" class="total noWrap">
+	  <tr *ngIf="this.splitBillTotals" class="totals noWrap">
 		<td>Totals</td>
 		<td>Bill Amount: {{this.splitBillTotals.totalSales | currency:'INR'}}</td>
 		<td>Splitted Bill Amount: {{this.splitBillTotals.splittedBillTotal | currency:'INR'}}</td>
 		<td>Total Tax: {{this.splitBillTotals.totalTax | currency:'INR'}}</td>
 		<td>Total Discount: {{this.splitBillTotals.totalDiscount | currency:'INR'}}</td>
+		<td></td>
 		<td></td>
 	  </tr>
 	</tbody>

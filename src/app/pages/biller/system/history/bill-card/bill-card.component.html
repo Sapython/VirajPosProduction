@@ -65,7 +65,7 @@
         <mat-tab
           [label]="'Bill ' + i + 1"
           *ngFor="
-            let splitBill of bill.settlement.additionalInfo.splittedBills;
+            let splitBill of bill.settlement?.additionalInfo?.splittedBills;
             let i = index
           "
         >

@@ -30,6 +30,7 @@
     <ng-container *ngIf="!this.searchVisible">
       <ng-container *ngIf="mode == 'products'">
         <app-product-card
+              *ngIf="this.dataProvider.openItemEnabled"
               [taxes]="[]"
               (vclick)="openItem(openCategory)"
               [tags]="[]"

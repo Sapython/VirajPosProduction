@@ -80,16 +80,23 @@ export class ReportService {
       bills.docs.map(async (bill) => {
         let billData = bill.data() as ActivityBillConstructor;
         if(bill.data()['mode'] == 'dineIn'){
-          let reqs = await Promise.all([await this.billService.getActivity(bill.id),await this.getTable(bill.data()['table'],this.dataProvider.currentBusiness.businessId)]);
+          let reqs = await Promise.all([await this.billService.getActivity(bill.id),await this.getTable(bill.data()['table'],'tables',this.dataProvider.currentBusiness.businessId)]);
           billData.activities = reqs[0].docs.map((activity) => {
             return activity.data();
           });
           billData.table = reqs[1];
-        } else {
-          let activities = await this.billService.getActivity(bill.id);
-          billData.activities = activities.docs.map((activity) => {
+        } else if (bill.data()['mode']=='takeaway') {
+          let reqs = await Promise.all([await this.billService.getActivity(bill.id),await this.getTable(bill.data()['table'],'tokens',this.dataProvider.currentBusiness.businessId)]);
+          billData.activities = reqs[0].docs.map((activity) => {
             return activity.data();
           });
+          billData.table = reqs[1];
+        } else if (bill.data()['mode']=='online') {
+          let reqs = await Promise.all([await this.billService.getActivity(bill.id),await this.getTable(bill.data()['table'],'onlineTokens',this.dataProvider.currentBusiness.businessId)]);
+          billData.activities = reqs[0].docs.map((activity) => {
+            return activity.data();
+          });
+          billData.table = reqs[1];
         }
         return billData;
       }),
@@ -159,7 +166,7 @@ export class ReportService {
     ));
   }
 
-  async getTable(tableId:string,businessId:string){
+  async getTable(tableId:string,type:'tables'|'onlineTokens'|'tokens',businessId:string){
     // find in cached data 
     if (this.cachedTables[businessId] && this.cachedTables[businessId][tableId]) {
       let table = this.cachedTables[businessId][tableId];
@@ -167,7 +174,7 @@ export class ReportService {
         return table;
       }
     }
-    let table = await getDoc(doc(this.firestore,'business',businessId,'tables',tableId));
+    let table = await getDoc(doc(this.firestore,'business',businessId,type,tableId));
     // add to cachedTables
     if(!this.cachedTables[businessId]){
       this.cachedTables[businessId] = {};

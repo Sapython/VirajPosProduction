@@ -120,6 +120,7 @@ export function editKot(this: Bill, kot: Kot, reason: string) {
 }
 
 export async function finalizeAndPrintKot(this: Bill, noTable?: boolean) {
+  console.log("Checking for first kot",this.table.status);
   if (this.table.status == 'available') {
     this.table.attachBill(this);
   }

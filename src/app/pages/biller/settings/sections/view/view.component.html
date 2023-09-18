@@ -303,6 +303,79 @@
       *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
     ></mat-slide-toggle>
   </div>
+  <h3>Reset Tokens</h3>
+  <div class="item">
+    <p>Reset Bill No Every Day</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.tokensResetSetting.billNo"
+      (change)="
+        updateSettings({
+          tokensResetSetting: this.dataProvider.tokensResetSetting
+        })
+      "
+      *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
+    <p>Reset Takeaway Token No Every Day</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.tokensResetSetting.takeawayTokenNo"
+      (change)="
+        updateSettings({
+          tokensResetSetting: this.dataProvider.tokensResetSetting
+        })
+      "
+      *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
+    <p>Reset Online Token No Every Day</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.tokensResetSetting.onlineTokenNo"
+      (change)="
+        updateSettings({
+          tokensResetSetting: this.dataProvider.tokensResetSetting
+        })
+      "
+      *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
+    <p>Reset Order No Every Day</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.tokensResetSetting.orderNo"
+      (change)="
+        updateSettings({
+          tokensResetSetting: this.dataProvider.tokensResetSetting
+        })
+      "
+      *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
+    <p>Reset NC Bill No Every Day</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.tokensResetSetting.ncBillNo"
+      (change)="
+        updateSettings({
+          tokensResetSetting: this.dataProvider.tokensResetSetting
+        })
+      "
+      *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
+    <p>Reset Kot No Every Day</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.tokensResetSetting.kotNo"
+      (change)="
+        updateSettings({
+          tokensResetSetting: this.dataProvider.tokensResetSetting
+        })
+      "
+      *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+    ></mat-slide-toggle>
+  </div>
   <h3>Quick Reasons</h3>
   <div class="item">
     Add New Quick Reason

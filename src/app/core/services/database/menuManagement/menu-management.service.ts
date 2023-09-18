@@ -290,7 +290,7 @@ export class MenuManagementService {
           let formedTable = await Promise.all(tables);
           // sort tables by tableNo
           formedTable.sort((a, b) => {
-            return a.tableNo - b.tableNo;
+            return Number(a.tableNo) - Number(b.tableNo);
           });
           this.dataProvider.tables = formedTable;
         } else {
@@ -328,7 +328,7 @@ export class MenuManagementService {
       });
       let formedTable = await Promise.all(tables);
       formedTable.sort((a, b) => {
-        return a.tableNo - b.tableNo;
+        return Number(a.tableNo) - Number(b.tableNo);;
       });
       this.dataProvider.tokens = formedTable;
     });
@@ -358,7 +358,7 @@ export class MenuManagementService {
       });
       let formedTable = await Promise.all(tables);
       formedTable.sort((a, b) => {
-        return a.tableNo - b.tableNo;
+        return Number(a.tableNo) - Number(b.tableNo);;
       });
       this.dataProvider.onlineTokens = formedTable;
     });

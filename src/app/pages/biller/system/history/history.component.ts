@@ -26,6 +26,8 @@ import { calculateBill } from '../../actions/split-bill/split-bill.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Product } from '../../../../types/product.structure';
 import { ApplicableCombo } from '../../../../core/constructors/comboKot/comboKot';
+import { TableService } from '../../../../core/services/database/table/table.service';
+import { TableConstructor } from '../../../../types/table.structure';
 
 @Component({
   selector: 'app-history',
@@ -62,12 +64,14 @@ export class HistoryComponent {
     startDate: new FormControl('', [Validators.required]),
     endDate: new FormControl('', [Validators.required]),
   });
+  tablesCache:any[] = [];
   noFuture = (d: Date | null): boolean => {
     const today = new Date();
     return d!.valueOf() < today.valueOf();
   };
   constructor(
     private historyService: HistoryService,
+    private tableService:TableService,
     private billService: BillService,
     private printingService: PrinterService,
     private dialog: Dialog,
@@ -143,6 +147,29 @@ export class HistoryComponent {
           return (a.createdDate?.toDate().getTime() || 0) - (b.createdDate?.toDate().getTime() || 0);
         });
         this.bills = await Promise.all(bills.docs.map(async (doc) => {
+          var foundTable;
+          if (doc.data()['mode']=='takeaway'){
+            foundTable = this.tablesCache.find((table)=>table.id==doc.data()['id'] && table.type == 'token');
+            if (!foundTable){
+              let tableDoc = await this.tableService.getTablePromise(doc.data()['table'],'tokens');
+              this.tablesCache.push({...tableDoc.data(),id:doc.data()['table'],type:'token'});
+              foundTable = {...tableDoc.data(),id:doc.data()['table'],type:'token'};
+            }
+          } else if (doc.data()['mode']=='dineIn'){
+            foundTable = this.tablesCache.find((table)=>table.id==doc.data()['table'] && table.type == 'table');
+            if (!foundTable){
+              let tableDoc = await this.tableService.getTablePromise(doc.data()['table'],'tables');
+              this.tablesCache.push({...tableDoc.data(),id:doc.data()['table'],type:'table'});
+              foundTable = {...tableDoc.data(),id:doc.data()['table'],type:'token'};
+            }
+          } else if (doc.data()['mode']=='online'){
+            foundTable = this.tablesCache.find((table)=>table.id==doc.data()['table'] && table.type == 'online');
+            if (!foundTable){
+              let tableDoc = await this.tableService.getTablePromise(doc.data()['table'],'onlineTokens');
+              this.tablesCache.push({...tableDoc.data(),id:doc.data()['table'],type:'online'});
+              foundTable = {...tableDoc.data(),id:doc.data()['table'],type:'token'};
+            }
+          }
           let allProducts = doc.data().kots.reduce((acc, kot) => {
             acc.push(...kot.products);
             return acc;
@@ -171,6 +198,7 @@ export class HistoryComponent {
             ...doc.data(),
             id: doc.id,
             kotVisible: false,
+            table: foundTable,
             flipped: false,
             kotOrBillVisible: false,
             splittedBills,
@@ -301,5 +329,6 @@ export interface ExtendedBillConstructor extends BillConstructor {
   flipped: boolean;
   kotOrBillVisible: 'kot' | 'bill' | false;
   splittedBills?: BillConstructor[];
+  table:TableConstructor;
 }
 

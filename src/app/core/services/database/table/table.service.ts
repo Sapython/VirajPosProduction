@@ -57,6 +57,9 @@ export class TableService {
     );
   }
   deleteTable(id: string) {
+    this.dataProvider.tables = this.dataProvider.tables.filter(
+      (token) => token.id != id,
+    );
     return deleteDoc(
       doc(
         this.firestore,
@@ -88,6 +91,32 @@ export class TableService {
       doc(
         this.firestore,
         'business/' + this.dataProvider.businessId + '/' + type,
+        tableId,
+      ),
+    );
+  }
+
+  deleteOnlineToken(tableId: string) {
+    this.dataProvider.onlineTokens = this.dataProvider.onlineTokens.filter(
+      (token) => token.id != tableId,
+    );
+    return deleteDoc(
+      doc(
+        this.firestore,
+        'business/' + this.dataProvider.businessId + '/onlineTokens',
+        tableId,
+      ),
+    );
+  }
+
+  deleteToken(tableId: string) {
+    this.dataProvider.tokens = this.dataProvider.tokens.filter(
+      (token) => token.id != tableId,
+    );
+    return deleteDoc(
+      doc(
+        this.firestore,
+        'business/' + this.dataProvider.businessId + '/tokens',
         tableId,
       ),
     );

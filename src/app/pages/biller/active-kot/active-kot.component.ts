@@ -97,6 +97,14 @@ export class ActiveKotComponent implements OnChanges {
     this.dataProvider.manageKotChanged.subscribe((state: boolean) => {
       this.allKot = this.dataProvider.currentBill?.kots || [];
     });
+    this.dataProvider.openTableView.subscribe((state: boolean) => {
+      // reset the kot view
+      this.kots = [];
+      this.allKot = [];
+      this.dataProvider.kotViewVisible = true;
+      this.dataProvider.manageKot = false;
+      this.dataProvider.allProducts = false;
+    })
   }
 
   ngOnChanges(changes: SimpleChanges): void {

@@ -210,6 +210,21 @@ export class DataProvider {
   public tableOrders: any = undefined;
   public groupOrders: string[] = [];
   public paymentMethods: PaymentMethod[] = [];
+  public tokensResetSetting: {
+    billNo: boolean;
+    takeawayTokenNo: boolean;
+    onlineTokenNo: boolean;
+    orderNo: boolean;
+    ncBillNo: boolean;
+    kotNo: boolean;
+  } = {
+    billNo: false,
+    takeawayTokenNo: false,
+    onlineTokenNo: false,
+    orderNo: false,
+    ncBillNo: false,
+    kotNo: false
+  };
   public printSettings: {
     showBillTime: boolean;
     showBillDate: boolean;

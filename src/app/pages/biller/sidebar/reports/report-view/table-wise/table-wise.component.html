@@ -8,7 +8,7 @@
     </tr>
   </thead>
   <tbody>
-    <ng-container *ngIf="(tableWiseSales | async).length > 0">
+    <ng-container *ngIf="(tableWiseSales | async)?.length > 0">
       <tr *ngFor="let table of tableWiseSales | async">
         <td>
           {{ table.table.id ? table.table.name : table.table }}
@@ -30,7 +30,7 @@
         <td>{{this.tableWiseTotals.averageSales | currency:'INR'}}</td>
       </tr>
     </ng-container>
-    <tr *ngIf="(tableWiseSales|async).length == 0">
+    <tr *ngIf="(tableWiseSales|async)?.length == 0">
       <td
         colspan="5"
         style="text-align: center; font-weight: bold; font-size: 1.2rem;color:#aaa"

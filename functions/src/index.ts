@@ -1469,6 +1469,44 @@ export const checkIfAccessTokenIsValid = functions.https.onCall(
   }
 )
 
+
+// firebase function run every day at 00:00 AM IST
+export const generateDailyReport = functions.pubsub.schedule('0 0 * * *').timeZone('Asia/Kolkata').onRun(
+  async (context) => {
+    initFirestore();
+    let businesses = await firestore.collection('business').get();
+    // loop every business and get their settings
+    businesses.docs.map(async (businessDoc)=>{
+      let settings = await firestore.doc(`business/${businessDoc.id}/settings/settings`).get();
+      if (settings.exists){
+        let settingsData = settings.data();
+        if (settingsData?.tokensResetSetting){
+          if (settingsData?.tokensResetSetting?.billNo){
+            settingsData.billTokenNo = 1;
+          }
+          if (settingsData?.tokensResetSetting?.takeawayTokenNo){
+            settingsData.takeawayTokenNo = 1;
+          }
+          if (settingsData?.tokensResetSetting?.onlineTokenNo){
+            settingsData.onlineTokenNo = 1;
+          }
+          if (settingsData?.tokensResetSetting?.orderNo){
+            settingsData.orderTokenNo = 1;
+          }
+          if (settingsData?.tokensResetSetting?.ncBillNo){
+            settingsData.ncBillToken = 1;
+          }
+          if (settingsData?.tokensResetSetting?.kotNo){
+            settingsData.kitchenTokenNo = 1;
+          }
+        }
+        if (settingsData){
+          await firestore.doc(`business/${businessDoc.id}/settings/settings`).set(settingsData,{merge:true});
+        }
+      }
+    })
+})
+
 function generateAccessCode(){
   // access code it will be 12 random characters
   return Math.random().toString(36).substring(2, 14);

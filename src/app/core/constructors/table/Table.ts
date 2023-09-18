@@ -26,14 +26,14 @@ export class Table implements TableConstructor {
   name: string;
   occupiedStart: Timestamp;
   status: 'available' | 'occupied';
-  tableNo: number;
+  tableNo: number|string;
   type: 'table' | 'room' | 'token' | 'online';
   updated: Subject<void> = new Subject<void>();
 
   updateHistory: any[] = [];
   constructor(
     id: string,
-    tableNo: number,
+    tableNo: number|string,
     name: string,
     groupName: string,
     order: number,
@@ -473,6 +473,18 @@ export class Table implements TableConstructor {
     this.occupiedStart = Timestamp.now();
     this.status = 'occupied';
     this.billPrice = bill.billing.grandTotal;
+    if (this.type == 'token'){
+      this.tableNo = structuredClone(this.dataProvider.takeawayToken);
+      this.order = structuredClone(this.dataProvider.takeawayToken);
+      this.name = structuredClone(this.dataProvider.takeawayToken).toString();
+      console.log("Attaching token no",this.tableNo);
+      this.dataProvider.takeawayToken++;
+      this.analyticsService.addTakeawayToken();
+    } else if (this.type == 'online') {
+      this.tableNo = this.dataProvider.onlineTokenNo;
+      this.dataProvider.onlineTokenNo++;
+      this.analyticsService.addOnlineToken();
+    }
     this.updated.next();
   }
 
@@ -548,6 +560,18 @@ export class Table implements TableConstructor {
             ' or ' +
             table.tableNo,
         );
+      }
+    }
+  }
+
+  deleteTable(){
+    if(this.tableNo == 'new'){
+      if(this.type == 'online'){
+        this.tableService.deleteOnlineToken(this.id);
+      } else if (this.type =='table'){
+        this.tableService.deleteTable(this.id);
+      } else if (this.type == 'token'){
+        this.tableService.deleteToken(this.id);
       }
     }
   }

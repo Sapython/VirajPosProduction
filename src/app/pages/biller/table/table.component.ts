@@ -84,7 +84,7 @@ export class TableComponent implements OnInit {
       });
     }, 500);
     this.dataProvider.tables.sort((a, b) => {
-      return a.tableNo - b.tableNo;
+      return Number(a.tableNo) - Number(b.tableNo);
     });
     this.tableService.reOrderTable();
   }
@@ -231,31 +231,12 @@ export class TableComponent implements OnInit {
   }
 
   async addToken() {
-    // add a table
-    // this.dataProvider.takeawayToken = this.dataProvider.takeawayToken + 1;
-    console.log(
-      'this.dataProvider.takeawayToken ',
-      this.dataProvider.takeawayToken,
-    );
-    let tableData = await this.tableService.getTablePromise(
-      this.dataProvider.takeawayToken.toString(),
-      'tokens',
-    );
-    console.log('Found old table', tableData.data());
-    if (
-      !tableData.data() ||
-      tableData.data()['status'] != 'available' ||
-      tableData.data()['completed'] == true
-    ) {
-      this.dataProvider.takeawayToken++;
-      this.analyticsService.addTakeawayToken();
-    }
     let table = new Table(
-      this.dataProvider.takeawayToken.toString(),
-      this.dataProvider.takeawayToken,
-      this.dataProvider.takeawayToken.toString(),
+      this.generateRandomId(),
+      'new',
+      'new',
       'token',
-      this.dataProvider.takeawayToken,
+      0,
       '1',
       'token',
       this.dataProvider,
@@ -277,9 +258,6 @@ export class TableComponent implements OnInit {
     this.dialogRef.close(table);
     this.dataProvider.currentApplicableCombo = undefined;
     this.dataProvider.currentPendingProduct = undefined;
-    if (!tableData.data() || tableData.data()['status'] != 'available') {
-      this.dataProvider.tokens.push(table);
-    }
   }
 
   async addOnlineToken() {
@@ -730,5 +708,18 @@ export class TableComponent implements OnInit {
       }
     });
     return total;
+  }
+
+  generateRandomId(){
+    // random id alnum
+    let length = 10;
+    let result = '';
+    let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let charactersLength = characters.length;
+    for ( let i = 0; i < length; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() *
+        charactersLength));
+      }
+    return result;
   }
 }

@@ -18,9 +18,11 @@ export class BillerComponent implements AfterViewInit {
       //  console.log("this.dataProvider.currentBill.allProducts()",this.dataProvider.currentBill?.allProducts());
       if (
         this.dataProvider.currentBill &&
-        this.dataProvider.currentBill.allProducts().length == 0
+        this.dataProvider.currentBill.allProducts().length == 0 && 
+        this.dataProvider.currentBill.mode =='takeaway' &&
+        this.dataProvider.currentBill.table.tableNo == 'new'
       ) {
-        this.dataProvider.currentTable?.clearTable();
+        this.dataProvider.currentBill.table.deleteTable();
       }
       this.dataProvider.currentBill = undefined;
       this.dataProvider.currentTable = undefined;

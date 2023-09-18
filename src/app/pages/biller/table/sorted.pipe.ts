@@ -8,7 +8,7 @@ export class SortedPipe implements PipeTransform {
 
   transform(value: Table[]): Table[] {
     // sort by table id
-    return value.sort((a, b) => b.tableNo - a.tableNo);
+    return value.sort((a, b) => Number(b.tableNo) - Number(a.tableNo));
   }
 
 }

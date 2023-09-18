@@ -55,7 +55,7 @@ export class TableWiseComponent {
                 tableWiseSales.findIndex(
                   (res) => {
                     console.log('res.table ', res.table,bill.table);
-                    return (res.table.id ? res.table.id : res.table) == (bill.table.id ? bill.table.id : bill.table)
+                    return (res.table?.id ? res.table?.id : res.table) == (bill.table.id ? bill.table.id : bill.table)
                   },
                 ) == -1
               ) {

@@ -682,6 +682,15 @@ export class OnboardingService {
             showCashier: true,
             showMode: true,
           };
+        this.dataProvider.tokensResetSetting =
+          res['tokensResetSetting'] || {
+            billNo: false,
+            takeawayTokenNo: false,
+            onlineTokenNo: false,
+            orderNo: false,
+            ncBillNo: false,
+            kotNo: false
+          };
         this.dataProvider.directSettle =
           res['directSettle'] || false;
         this.dataProvider.confirmBeforeSettlementPrint =
@@ -919,7 +928,7 @@ export class OnboardingService {
     });
     let formedTable = await Promise.all(tables);
     formedTable.sort((a, b) => {
-      return a.tableNo - b.tableNo;
+      return Number(a.tableNo) - Number(b.tableNo);;
     });
     if (this.dataProvider.tokens.length == 0) {
       this.dataProvider.tokens = formedTable;
@@ -928,7 +937,7 @@ export class OnboardingService {
         this.dataProvider.tokens.push(token);
       });
       this.dataProvider.tokens.sort((a, b) => {
-        return a.tableNo - b.tableNo;
+        return Number(a.tableNo) - Number(b.tableNo);;
       });
     }
     let changes = collectionChanges(
@@ -1008,7 +1017,7 @@ export class OnboardingService {
     });
     let formedTable = await Promise.all(tables);
     formedTable.sort((a, b) => {
-      return a.tableNo - b.tableNo;
+      return Number(a.tableNo) - Number(b.tableNo);;
     });
     this.dataProvider.onlineTokens = formedTable;
     let changes = collectionChanges(

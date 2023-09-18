@@ -322,6 +322,19 @@ export class customEncoder extends EscPosEncoder {
     if (dataProvider.printSettings.showBillDate){
       billInfos.push('Mode: ' + billdata.mode)
     }
+    // break billInfos into nested array with each item containing 2 childs
+    // like [[info,info],[info,info]]
+    let breakedInfos:any[] = [];
+    let temp = [];
+    billInfos.forEach((info, index) => {
+      if (index % 2 == 0) {
+        temp.push(info);
+      } else {
+        temp.push(info);
+        breakedInfos.push(temp);
+        temp = [];
+      }
+    });
     return this.table(
       [
         {
@@ -334,7 +347,7 @@ export class customEncoder extends EscPosEncoder {
           align: 'right',
         },
       ],
-      billInfos,
+      breakedInfos
     )
   }
 }

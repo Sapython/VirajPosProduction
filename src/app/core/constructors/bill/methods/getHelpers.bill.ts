@@ -126,7 +126,7 @@ function printableBillGenerator(
         name: product.name,
         quantity: product.quantity,
         untaxedValue: product.price,
-        total: product.untaxedValue,
+        total: roundOffPipe(product.untaxedValue),
       };
     }),
     totalQuantity: products.reduce((acc, product) => {

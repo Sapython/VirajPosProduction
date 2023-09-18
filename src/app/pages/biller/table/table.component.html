@@ -131,14 +131,14 @@
         {{ holdedItemsVisible ? "Hide" : "See" }} Holded Tokens
       </button>
       <button
-        *ngIf="this.dataProvider.getAccess('bulkSettle') && !bulkSettleEnabled"
+        *ngIf=" !bulkSettleEnabled"
         (click)="bulkSettleEnabled = true"
       >
         Bulk Settle
       </button>
       <button
         *ngIf="
-          this.dataProvider.getAccess('bulkSettle') &&
+          
           bulkSettleEnabled &&
           selectedTablesForBulkSettle.length > 0
         "
@@ -149,7 +149,7 @@
       <button
         class="filled"
         *ngIf="
-          this.dataProvider.getAccess('bulkSettle') &&
+          
           bulkSettleEnabled &&
           selectedTablesForBulkSettle.length > 0
         "
@@ -158,14 +158,14 @@
         Settle {{ selectedTablesForBulkSettle.length }} Tables
       </button>
       <button
-        *ngIf="this.dataProvider.getAccess('bulkSettle') && bulkSettleEnabled"
+        *ngIf=" bulkSettleEnabled"
         (click)="bulkSettleEnabled = false"
       >
         <i class="ri-arrow-left-line"></i> Back
       </button>
       <span
         *ngIf="
-          this.dataProvider.getAccess('bulkSettle') &&
+          
           bulkSettleEnabled &&
           selectedTablesForBulkSettle.length > 0
         "

@@ -654,8 +654,6 @@ export class TableComponent implements OnInit {
         this.dataProvider.loading = true;
         for (const tableId of this.selectedTablesForBulkSettle) {
           let table = this.dataProvider.tokens.find((t) => t.id == tableId);
-          this.dataProvider.takeawayToken++;
-          this.analyticsService.addTakeawayToken();
           if (table && table.bill) {
             let billNo = await table.bill.settle(
               [{
@@ -670,6 +668,45 @@ export class TableComponent implements OnInit {
               true
             );
             console.log("billNo",billNo);
+          }
+        }
+        this.dataProvider.loading = false;
+        this.bulkSettleEnabled = false;
+        this.selectedTablesForBulkSettle = [];
+      } else {
+        this.alertify.presentToast("Method is unavailable");
+        this.dataProvider.loading = false;
+      }
+    }
+  }
+
+  async bulkCancel(){
+    let bills = [];
+    let buttons = ['Cancel',...this.dataProvider.paymentMethods.map((method) => {
+      return method.name;
+    })];
+    console.log("buttons",buttons);
+    // this.dataProvider.confirm('Which method would you like to settle ?',[1],{buttons:['No','Yes']}).then((result)=>{
+    const dialog = this.dialog.open(DialogComponent, {
+      panelClass: 'customDialog',
+      data: {
+        title: 'Are you sure you want to cancel these bills ?',
+        description:
+          'All of the selected bills will be cancelled.',
+        buttons:['Back','Confirm'],
+        primary: [1],
+      },
+    });
+    let result:any = await firstValueFrom(dialog.closed);
+    console.log("Result",result);
+    if(result ==1){
+      let method = this.dataProvider.paymentMethods[result -1];
+      if (method){
+        this.dataProvider.loading = true;
+        for (const tableId of this.selectedTablesForBulkSettle) {
+          let table = this.dataProvider.tokens.find((t) => t.id == tableId);
+          if (table && table.bill) {
+            table.bill.cancel('Bulk Cancel','1234567890',table)
           }
         }
         this.dataProvider.loading = false;

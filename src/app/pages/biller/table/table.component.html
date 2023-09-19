@@ -158,6 +158,17 @@
         Settle {{ selectedTablesForBulkSettle.length }} Tables
       </button>
       <button
+        class="filled"
+        *ngIf="
+          
+          bulkSettleEnabled &&
+          selectedTablesForBulkSettle.length > 0
+        "
+        (click)="bulkCancel()"
+      >
+        Cancel {{ selectedTablesForBulkSettle.length }} Tables
+      </button>
+      <button
         *ngIf=" bulkSettleEnabled"
         (click)="bulkSettleEnabled = false"
       >
@@ -305,137 +316,139 @@
       <p style="padding: 0px 20px">Please add a group by adding section.</p>
     </div>
   </div>
-  <div class="tables" *ngIf="this.dataProvider.billingMode == 'takeaway' && !holdedItemsVisible">
-    <button
-      class="table empty"
-      (click)="addToken()"
-      *ngIf="
-        this.dataProvider.getAccess('addNewTakeawayToken') && !bulkSettleEnabled
-      "
-      [ngClass]="{
-        medium: this.dataProvider.currentTableSize == 'medium',
-        small: this.dataProvider.currentTableSize == 'small'
-      }"
-    >
-      <mat-icon>add</mat-icon>
-      <p>Add New Token</p>
-    </button>
-    <ng-container
-      *ngFor="let table of this.dataProvider.tokens | active | sorted"
-    >
+  <div class="tableWrapper">
+    <div class="tables" *ngIf="this.dataProvider.billingMode == 'takeaway' && !holdedItemsVisible">
       <button
-        class="table"
+        class="table empty"
+        (click)="addToken()"
+        *ngIf="
+          this.dataProvider.getAccess('addNewTakeawayToken') && !bulkSettleEnabled
+        "
         [ngClass]="{
-          active: table.status == 'occupied',
-          late: this.dataProvider.tableTimeOutTime <= table.minutes,
-          finalized: table.bill?.stage == 'finalized',
           medium: this.dataProvider.currentTableSize == 'medium',
-          small: this.dataProvider.currentTableSize == 'small',
-          inactive:
-            (moveKotMode && moveKotSelectedTable.id != table.id) ||
-            (bulkSettleEnabled &&
-              !selectedTablesForBulkSettle.includes(table.id)),
-          highlight:
-            (moveKotMode && moveKotSelectedTable.id == table.id) ||
-            (bulkSettleEnabled &&
-              selectedTablesForBulkSettle.includes(table.id))
+          small: this.dataProvider.currentTableSize == 'small'
         }"
-        matRipple
-        *ngIf="!table.completed"
-        (click)="selectToken(table, $event)"
       >
-        <p class="name">Token {{ table.name }}</p>
-        <p
-          class="cost"
-          *ngIf="
-            table.bill?.billing?.grandTotal != undefined &&
-            table.bill?.billing?.grandTotal != null &&
-            isNumber(table.bill?.billing?.grandTotal)
-          "
-        >
-          <strong>{{
-            table.bill?.billing?.grandTotal | currency: "INR"
-          }}</strong>
-        </p>
-        <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">
-          {{ table.timeSpent }}
-        </p>
-        <div
-          class="actions"
-          *ngIf="
-            table.status == 'occupied' &&
-            this.dataProvider.getAccess('settleFromTable')
-          "
-        >
-          <viraj-button
-            [noPropogation]="true"
-            *ngIf="table.bill?.stage == 'finalized' && !bulkSettleEnabled"
-            [minimalPadding]="true"
-            type="icon"
-            (vclick)="settleTable(table, $event)"
-            ><i class="ri-save-fill"></i
-          ></viraj-button>
-        </div>
+        <mat-icon>add</mat-icon>
+        <p>Add New Token</p>
       </button>
-    </ng-container>
-  </div>
-  <div class="tables" *ngIf="this.dataProvider.billingMode == 'takeaway' && holdedItemsVisible">
-    <ng-container *ngFor="let table of this.dataProvider.tokens | holded">
-      <button
-        class="table"
-        [ngClass]="{
-          active: table.status == 'occupied',
-          late: this.dataProvider.tableTimeOutTime <= table.minutes,
-          finalized: table.bill?.stage == 'hold',
-          medium: this.dataProvider.currentTableSize == 'medium',
-          small: this.dataProvider.currentTableSize == 'small',
-          inactive:
-            (moveKotMode && moveKotSelectedTable.id != table.id) ||
-            (bulkSettleEnabled &&
-              !selectedTablesForBulkSettle.includes(table.id)),
-          highlight:
-            (moveKotMode && moveKotSelectedTable.id == table.id) ||
-            (bulkSettleEnabled &&
-              selectedTablesForBulkSettle.includes(table.id))
-        }"
-        matRipple
-        *ngIf="!table.completed"
-        (click)="selectToken(table, $event)"
+      <ng-container
+        *ngFor="let table of this.dataProvider.tokens | active | sorted"
       >
-        <p class="name">Token {{ table.name }}</p>
-        <p
-          class="cost"
-          *ngIf="
-            table.bill?.billing?.grandTotal != undefined &&
-            table.bill?.billing?.grandTotal != null &&
-            isNumber(table.bill?.billing?.grandTotal)
-          "
+        <button
+          class="table"
+          [ngClass]="{
+            active: table.status == 'occupied',
+            late: this.dataProvider.tableTimeOutTime <= table.minutes,
+            finalized: table.bill?.stage == 'finalized',
+            medium: this.dataProvider.currentTableSize == 'medium',
+            small: this.dataProvider.currentTableSize == 'small',
+            inactive:
+              (moveKotMode && moveKotSelectedTable.id != table.id) ||
+              (bulkSettleEnabled &&
+                !selectedTablesForBulkSettle.includes(table.id)),
+            highlight:
+              (moveKotMode && moveKotSelectedTable.id == table.id) ||
+              (bulkSettleEnabled &&
+                selectedTablesForBulkSettle.includes(table.id))
+          }"
+          matRipple
+          *ngIf="!table.completed"
+          (click)="selectToken(table, $event)"
         >
-          <strong>{{
-            table.bill?.billing?.grandTotal | currency: "INR"
-          }}</strong>
-        </p>
-        <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">
-          {{ table.timeSpent }}
-        </p>
-        <div
-          class="actions"
-          *ngIf="
-            table.status == 'occupied' &&
-            this.dataProvider.getAccess('settleFromTable')
-          "
+          <p class="name">Token {{ table.name }}</p>
+          <p
+            class="cost"
+            *ngIf="
+              table.bill?.billing?.grandTotal != undefined &&
+              table.bill?.billing?.grandTotal != null &&
+              isNumber(table.bill?.billing?.grandTotal)
+            "
+          >
+            <strong>{{
+              table.bill?.billing?.grandTotal | currency: "INR"
+            }}</strong>
+          </p>
+          <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">
+            {{ table.timeSpent }}
+          </p>
+          <div
+            class="actions"
+            *ngIf="
+              table.status == 'occupied' &&
+              this.dataProvider.getAccess('settleFromTable')
+            "
+          >
+            <viraj-button
+              [noPropogation]="true"
+              *ngIf="table.bill?.stage == 'finalized' && !bulkSettleEnabled"
+              [minimalPadding]="true"
+              type="icon"
+              (vclick)="settleTable(table, $event)"
+              ><i class="ri-save-fill"></i
+            ></viraj-button>
+          </div>
+        </button>
+      </ng-container>
+    </div>
+    <div class="tables" *ngIf="this.dataProvider.billingMode == 'takeaway' && holdedItemsVisible">
+      <ng-container *ngFor="let table of this.dataProvider.tokens | holded">
+        <button
+          class="table"
+          [ngClass]="{
+            active: table.status == 'occupied',
+            late: this.dataProvider.tableTimeOutTime <= table.minutes,
+            finalized: table.bill?.stage == 'hold',
+            medium: this.dataProvider.currentTableSize == 'medium',
+            small: this.dataProvider.currentTableSize == 'small',
+            inactive:
+              (moveKotMode && moveKotSelectedTable.id != table.id) ||
+              (bulkSettleEnabled &&
+                !selectedTablesForBulkSettle.includes(table.id)),
+            highlight:
+              (moveKotMode && moveKotSelectedTable.id == table.id) ||
+              (bulkSettleEnabled &&
+                selectedTablesForBulkSettle.includes(table.id))
+          }"
+          matRipple
+          *ngIf="!table.completed"
+          (click)="selectToken(table, $event)"
         >
-          <viraj-button
-            [noPropogation]="true"
-            *ngIf="table.bill?.stage == 'hold' && !bulkSettleEnabled"
-            [minimalPadding]="true"
-            type="icon"
-            (vclick)="settleTable(table, $event)"
-            ><i class="ri-save-fill"></i
-          ></viraj-button>
-        </div>
-      </button>
-    </ng-container>
+          <p class="name">Token {{ table.name }}</p>
+          <p
+            class="cost"
+            *ngIf="
+              table.bill?.billing?.grandTotal != undefined &&
+              table.bill?.billing?.grandTotal != null &&
+              isNumber(table.bill?.billing?.grandTotal)
+            "
+          >
+            <strong>{{
+              table.bill?.billing?.grandTotal | currency: "INR"
+            }}</strong>
+          </p>
+          <p class="time" *ngIf="table.status == 'occupied' && table.timeSpent">
+            {{ table.timeSpent }}
+          </p>
+          <div
+            class="actions"
+            *ngIf="
+              table.status == 'occupied' &&
+              this.dataProvider.getAccess('settleFromTable')
+            "
+          >
+            <viraj-button
+              [noPropogation]="true"
+              *ngIf="table.bill?.stage == 'hold' && !bulkSettleEnabled"
+              [minimalPadding]="true"
+              type="icon"
+              (vclick)="settleTable(table, $event)"
+              ><i class="ri-save-fill"></i
+            ></viraj-button>
+          </div>
+        </button>
+      </ng-container>
+    </div>
   </div>
   <div class="tableWrapper" *ngIf="this.dataProvider.billingMode == 'online'">
     <div class="tables">

@@ -23,8 +23,10 @@ export function lineCancelled(this: Bill, item: Product, event: any, kot: Kot) {
   // kot.products = kot.products.filter((product) => product.id !== item.id);
   this.calculateBill();
 }
-export function cancel(this: Bill, reason: string, phone: string) {
-  if (this.dataProvider.deleteCancelledBill && this.stage == 'finalized'){
+export function cancel(this: Bill, reason: string, phone: string,table = this.dataProvider.currentTable) {
+  console.log("Checking for cancellation",this.dataProvider.deleteCancelledBill,this.stage);
+  if (this.dataProvider.deleteCancelledBill && (this.stage == 'finalized' || this.stage == 'hold')){
+    console.log('deleting bill');
     this.deleteBill();
     return;
   }
@@ -38,13 +40,13 @@ export function cancel(this: Bill, reason: string, phone: string) {
   // remove any active kot
   this.kots = this.kots.filter((kot) => kot.stage !== 'active');
   this.dataProvider.currentBill = undefined;
-  if (this.dataProvider.currentTable.type == 'table') {
-    this.dataProvider.currentTable!.status = 'available';
-    this.dataProvider.currentTable!.bill = null;
+  if (table.type == 'table') {
+    table!.status = 'available';
+    table!.bill = null;
   } else {
-    this.dataProvider.currentTable!.completed = true;
+    table!.completed = true;
   }
-  this.dataProvider.currentTable = undefined;
+  table = undefined;
   if (this.dataProvider.showTableOnBillAction) {
     this.dataProvider.openTableView.next(true);
   }

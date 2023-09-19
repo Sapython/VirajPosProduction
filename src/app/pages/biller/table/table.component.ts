@@ -650,30 +650,35 @@ export class TableComponent implements OnInit {
     console.log("Result",result);
     if((result -1 ) >= 0){
       let method = this.dataProvider.paymentMethods[result -1];
-      this.dataProvider.loading = true;
-      for (const tableId of this.selectedTablesForBulkSettle) {
-        let table = this.dataProvider.tokens.find((t) => t.id == tableId);
-        this.dataProvider.takeawayToken++;
-        this.analyticsService.addTakeawayToken();
-        if (table && table.bill) {
-          let billNo = await table.bill.settle(
-            [{
-              paymentMethod:method.name,
-              amount:table.bill.billing.grandTotal,
-            }],
-            'external',
-            null,
-            true,
-            null,
-            true,
-            true
-          );
-          console.log("billNo",billNo);
+      if (method){
+        this.dataProvider.loading = true;
+        for (const tableId of this.selectedTablesForBulkSettle) {
+          let table = this.dataProvider.tokens.find((t) => t.id == tableId);
+          this.dataProvider.takeawayToken++;
+          this.analyticsService.addTakeawayToken();
+          if (table && table.bill) {
+            let billNo = await table.bill.settle(
+              [{
+                paymentMethod:method.name,
+                amount:table.bill.billing.grandTotal,
+              }],
+              'external',
+              null,
+              true,
+              method,
+              true,
+              true
+            );
+            console.log("billNo",billNo);
+          }
         }
+        this.dataProvider.loading = false;
+        this.bulkSettleEnabled = false;
+        this.selectedTablesForBulkSettle = [];
+      } else {
+        this.alertify.presentToast("Method is unavailable");
+        this.dataProvider.loading = false;
       }
-      this.dataProvider.loading = false;
-      this.bulkSettleEnabled = false;
-      this.selectedTablesForBulkSettle = [];
     }
   }
 

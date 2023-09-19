@@ -64,7 +64,7 @@ export class SettledBillsComponent {
           )
           .then((bills) => {
             console.log('Bills ', bills);
-            bills = bills.filter((bill)=>bill.settlement?.payments?.length);
+            bills = bills.filter((bill)=>bill.billNo);
             bills.sort((a, b) => {
               return Number(a.billNo) - Number(b.billNo);
             })

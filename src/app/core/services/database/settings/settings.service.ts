@@ -275,10 +275,10 @@ export class SettingsService {
       ncBillToken:1,
       nonChargeableSales:0,
       onlineSales:0,
-      onlineTokenNo:0,
+      onlineTokenNo:1,
       orderTokenNo:1,
       takeawaySales:0,
-      takeawayTokenNo:0,
+      takeawayTokenNo:1,
     });
     // reset all payment method bill counters
     let paymentMethods = await getDocs(collection(this.firestore,'business',this.dataProvider.businessId,'paymentMethods'));

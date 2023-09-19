@@ -161,47 +161,8 @@ export async function settle(
     }
     await this.finalize(true);
   }
-  if (!this.billNo) {
-    if(quickSettle){
-      let methodIndex = this.dataProvider.paymentMethods.findIndex((method) => method.id == quickSettle.id);
-      console.log('quick settle',quickSettle,methodIndex);
-      if (methodIndex != -1){
-        if (!quickSettle.billNo){
-          quickSettle.billNo = 1;
-        }
-        this.billNo =  this.dataProvider.paymentMethods[methodIndex].shortCode+':'+quickSettle.billNo.toString();
-        this.dataProvider.paymentMethods[methodIndex].billNo++;
-        console.log("this.dataProvider.paymentMethods[methodIndex]",this.dataProvider.paymentMethods[methodIndex]);
-        await this.billService.updatePaymentMethod(this.dataProvider.paymentMethods[methodIndex]);
-      }
-    } else {
-      if (this.nonChargeableDetail) {
-        this.billNo = 'NC-' + this.dataProvider.ncBillToken.toString();
-        this.dataProvider.ncBillToken++;
-        this.analyticsService.addNcBillToken();
-      } else {
-        if (this.mode == 'dineIn') {
-          (this.billNo = this.dataProvider.billToken.toString()),
-            this.dataProvider.billToken++;
-          this.analyticsService.addBillToken();
-        } else if (this.mode == 'takeaway') {
-          this.billNo = this.dataProvider.takeawayToken.toString();
-          // this.dataProvider.takeawayToken++;
-          // this.analyticsService.addTakeawayToken();
-        } else if (this.mode == 'online') {
-          (this.billNo = this.dataProvider.onlineTokenNo.toString()),
-            this.dataProvider.onlineTokenNo++;
-          this.analyticsService.addOnlineToken();
-        } else {
-          (this.billNo = this.dataProvider.billToken.toString()),
-            this.dataProvider.billToken++;
-          this.analyticsService.addBillToken();
-        }
-      }
-    }
-  }
+  console.log("this.billNo 3",structuredClone(this.billNo));
   // update in database
-  // TODO to be refixed
   let productSales: {
     item: string;
     sales: number;
@@ -244,6 +205,7 @@ export async function settle(
     user: this.user,
     additionalInfo: additionalInfo,
   };
+  console.log("this.billNo 4",structuredClone(this.billNo));
   console.log(
     'this.dataProvider.printBillAfterFinalize',
     this.dataProvider.printBillAfterSettle,
@@ -265,6 +227,7 @@ export async function settle(
       }
     }
   }
+  console.log("this.billNo 5",structuredClone(this.billNo));
   this.billService.provideAnalytics().logBill(this);
   if (this.nonChargeableDetail) {
     this.analyticsService.addSales(this.billing.subTotal, 'nonChargeableSales',this.createdDate.toDate());
@@ -275,6 +238,7 @@ export async function settle(
   } else if (this.mode == 'online') {
     this.analyticsService.addSales(this.billing.grandTotal, 'onlineSales',this.createdDate.toDate());
   }
+  console.log("this.billNo 6",structuredClone(this.billNo));
   this.stage = 'settled';
   this.table?.clearTable();
   if (type == 'internal') {
@@ -282,7 +246,6 @@ export async function settle(
     this.dataProvider.currentTable = undefined;
   }
   this.dataProvider.totalSales += this.billing.grandTotal;
-  this.updated.next();
   if (this.customerInfo.phone) {
     console.log('Found customer phone');
     this.customerService.updateCustomer(
@@ -305,8 +268,55 @@ export async function settle(
   if (this.dataProvider.showTableOnBillAction && !noTable) {
     this.dataProvider.openTableView.next(true);
   }
+  console.log("this.billNo 7",structuredClone(this.billNo));
   // this.customerService.addLoyaltyPoint(this);
-  console.log('Bill settled',this.billNo);
+  console.log('Bill settled',structuredClone(this.billNo));
+  // this.updated.next();
+  if (!this.billNo) {
+    if(quickSettle){
+      var methodIndex = this.dataProvider.paymentMethods.findIndex((method) => method.id == quickSettle.id);
+      console.log('quick settle',quickSettle,methodIndex);
+      if (methodIndex != -1){
+        if (!quickSettle.billNo){
+          quickSettle.billNo = 1;
+        }
+        this.billNo =  this.dataProvider.paymentMethods[methodIndex].shortCode+':'+this.dataProvider.paymentMethods[methodIndex].billNo.toString();
+        console.log("this.billNo",structuredClone(this.billNo));
+        this.dataProvider.paymentMethods[methodIndex].billNo++;
+        console.log("this.dataProvider.paymentMethods[methodIndex]",this.dataProvider.paymentMethods[methodIndex]);
+        if (methodIndex!=-1){
+          await this.billService.updatePaymentMethod(this.dataProvider.paymentMethods[methodIndex]);
+        }
+        console.log("this.billNo 2",structuredClone(this.billNo));
+      }
+    } else {
+      if (this.nonChargeableDetail) {
+        this.billNo = 'NC-' + this.dataProvider.ncBillToken.toString();
+        this.dataProvider.ncBillToken++;
+        this.analyticsService.addNcBillToken();
+      } else {
+        if (this.mode == 'dineIn') {
+          (this.billNo = this.dataProvider.billToken.toString()),
+            this.dataProvider.billToken++;
+          this.analyticsService.addBillToken();
+        } else if (this.mode == 'takeaway') {
+          this.billNo = this.dataProvider.takeawayToken.toString();
+          // this.dataProvider.takeawayToken++;
+          // this.analyticsService.addTakeawayToken();
+        } else if (this.mode == 'online') {
+          (this.billNo = this.dataProvider.onlineTokenNo.toString()),
+            this.dataProvider.onlineTokenNo++;
+          this.analyticsService.addOnlineToken();
+        } else {
+          (this.billNo = this.dataProvider.billToken.toString()),
+            this.dataProvider.billToken++;
+          this.analyticsService.addBillToken();
+        }
+      }
+    }
+  }
+  await this.updateToFirebase();
+  console.log("this.billNo 2",structuredClone(this.billNo));
   return this.billNo;
 }
 

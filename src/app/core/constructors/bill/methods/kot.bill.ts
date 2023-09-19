@@ -184,8 +184,6 @@ export async function finalizeAndPrintKot(this: Bill, noTable?: boolean) {
       this.dataProvider.kotToken++;
       this.analyticsService.addKitchenToken();
       activeKot.stage = 'finalized';
-      //  console.log('Active kot', activeKot);
-      this.analyticsService.addKitchenToken();
       activeKot.createdDate = Timestamp.now();
       this.updated.next();
       if (this.kots.length > 1) {

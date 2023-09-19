@@ -305,12 +305,7 @@
       <p style="padding: 0px 20px">Please add a group by adding section.</p>
     </div>
   </div>
-  <cdk-virtual-scroll-viewport
-    appendOnly
-    *ngIf="this.dataProvider.billingMode == 'takeaway' && !holdedItemsVisible"
-    itemSize="1500"
-    class="example-viewport"
-  >
+  <div class="tables" *ngIf="this.dataProvider.billingMode == 'takeaway' && !holdedItemsVisible">
     <button
       class="table empty"
       (click)="addToken()"
@@ -383,13 +378,8 @@
         </div>
       </button>
     </ng-container>
-  </cdk-virtual-scroll-viewport>
-  <cdk-virtual-scroll-viewport
-    appendOnly
-    *ngIf="this.dataProvider.billingMode == 'takeaway' && holdedItemsVisible"
-    itemSize="1500"
-    class="example-viewport"
-  >
+  </div>
+  <div class="tables" *ngIf="this.dataProvider.billingMode == 'takeaway' && holdedItemsVisible">
     <ng-container *ngFor="let table of this.dataProvider.tokens | holded">
       <button
         class="table"
@@ -446,7 +436,7 @@
         </div>
       </button>
     </ng-container>
-  </cdk-virtual-scroll-viewport>
+  </div>
   <div class="tableWrapper" *ngIf="this.dataProvider.billingMode == 'online'">
     <div class="tables">
       <button

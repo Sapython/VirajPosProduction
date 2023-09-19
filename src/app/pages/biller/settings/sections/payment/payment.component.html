@@ -33,8 +33,8 @@
             {{ item.detail ? "Required" : "Not Required" }}
           </div>
         </span>
-        <span>{{ item.addDate.toDate() | date }}</span>
-        <span>{{ item.updateDate.toDate() | date }}</span>
+        <span>{{ item.addDate?.toDate() | date }}</span>
+        <span>{{ item.updateDate?.toDate() | date }}</span>
         <span class="tableActions">
           <viraj-button
             (vclick)="editMethod(item)"

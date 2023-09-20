@@ -706,7 +706,7 @@ export class TableComponent implements OnInit {
         for (const tableId of this.selectedTablesForBulkSettle) {
           let table = this.dataProvider.tokens.find((t) => t.id == tableId);
           if (table && table.bill) {
-            table.bill.cancel('Bulk Cancel','1234567890',table)
+            await table.bill.cancel('Bulk Cancel','1234567890',table,true);
           }
         }
         this.dataProvider.loading = false;

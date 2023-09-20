@@ -23,11 +23,11 @@ export function lineCancelled(this: Bill, item: Product, event: any, kot: Kot) {
   // kot.products = kot.products.filter((product) => product.id !== item.id);
   this.calculateBill();
 }
-export function cancel(this: Bill, reason: string, phone: string,table = this.dataProvider.currentTable) {
+export async function cancel(this: Bill, reason: string, phone: string,table = this.dataProvider.currentTable,noTable:boolean = false) {
   console.log("Checking for cancellation",this.dataProvider.deleteCancelledBill,this.stage);
   if (this.dataProvider.deleteCancelledBill && (this.stage == 'finalized' || this.stage == 'hold')){
     console.log('deleting bill');
-    this.deleteBill();
+    await this.deleteBill(noTable);
     return;
   }
   this.stage = 'cancelled';
@@ -47,10 +47,10 @@ export function cancel(this: Bill, reason: string, phone: string,table = this.da
     table!.completed = true;
   }
   table = undefined;
-  if (this.dataProvider.showTableOnBillAction) {
+  if (this.dataProvider.showTableOnBillAction && !noTable) {
     this.dataProvider.openTableView.next(true);
   }
-  this.billService.addActivity(this, {
+  await this.billService.addActivity(this, {
     type: 'billCancelled',
     message: 'Bill cancelled by ' + this.user.username,
     user: this.user.username,
@@ -59,10 +59,10 @@ export function cancel(this: Bill, reason: string, phone: string,table = this.da
   this.updated.next();
 }
 
-export function deleteBill(this:Bill) {
-  this.billService.deleteBill(this.id);
+export async function deleteBill(this:Bill,noTable = false) {
+  await this.billService.deleteBill(this.id);
   this.dataProvider.currentBill = undefined;
   this.table.clearTable();
   this.dataProvider.currentTable = undefined;
-  this.dataProvider.openTableView.next(true);
+  if (!noTable) this.dataProvider.openTableView.next(true);
 }

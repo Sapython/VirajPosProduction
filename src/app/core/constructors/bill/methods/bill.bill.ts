@@ -79,8 +79,6 @@ export async function finalize(this: Bill, noTable?: boolean,onHold?:boolean) {
   } else {
     this.stage = 'finalized';
   }
-  let data = this.toObject();
-  // this.databaseService.updateBill(data);
   if (this.dataProvider.printBillAfterFinalize) {
     this.printBill();
   } else if (

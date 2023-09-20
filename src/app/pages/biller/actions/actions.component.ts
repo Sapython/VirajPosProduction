@@ -165,6 +165,7 @@ export class ActionsComponent {
   }
 
   async quickSettle(paymentMethod: PaymentMethod) {
+    console.log("Quick Settling Bill");
     let elevateReq = await this.userManagementService.authenticateAction([
       'settleBill',
     ]);
@@ -183,6 +184,7 @@ export class ActionsComponent {
   }
 
   async holdBill(paymentMethod: PaymentMethod){
+    console.log("Holding Bill");
     let elevateReq = await this.userManagementService.authenticateAction([
       'settleBill',
     ]);

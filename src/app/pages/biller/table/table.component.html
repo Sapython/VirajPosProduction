@@ -316,7 +316,7 @@
       <p style="padding: 0px 20px">Please add a group by adding section.</p>
     </div>
   </div>
-  <div class="tableWrapper">
+  <div class="tableWrapper" *ngIf="this.dataProvider.billingMode == 'takeaway'">
     <div class="tables" *ngIf="this.dataProvider.billingMode == 'takeaway' && !holdedItemsVisible">
       <button
         class="table empty"

@@ -120,7 +120,7 @@ export class ElectronService {
     }
     if (!this.ipcRenderer) {
       const dialog = this.dialog.open(DialogComponent, {
-        data: { title: 'Error', description: 'No Printer Found' },
+        data: { title: 'Error', description: 'No Printer Found',buttons:['Ok'],primary:[0] },
       });
       let noPrinterFound = await firstValueFrom(dialog.closed);
       return;

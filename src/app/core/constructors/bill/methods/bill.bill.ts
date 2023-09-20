@@ -76,7 +76,9 @@ export async function finalize(this: Bill, noTable?: boolean,onHold?:boolean) {
   } else {
     this.stage = 'finalized';
   }
-  this.updateToFirebase();
+  this.dataProvider.loading = true;
+  await this.updateToFirebase();
+  this.dataProvider.loading = false;
   if (this.dataProvider.printBillAfterFinalize) {
     this.printBill();
   } else if (
@@ -210,7 +212,9 @@ export async function settle(
     user: this.user,
     additionalInfo: additionalInfo,
   };
-  this.updateToFirebase();
+  this.dataProvider.loading = true;
+  await this.updateToFirebase();
+  this.dataProvider.loading = false;
   // print the bill after saving it to database
   if (splitSave) {
     if (this.dataProvider.printBillAfterSettle) {

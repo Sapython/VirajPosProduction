@@ -491,6 +491,7 @@ export class DataProvider {
         ...params,
       },
     });
+    dialog.disableClose = true;
     let res = await firstValueFrom(dialog.closed);
     //  console.log("responded",res);
     if (typeof res == 'number') {

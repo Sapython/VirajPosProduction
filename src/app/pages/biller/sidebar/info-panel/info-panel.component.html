@@ -54,7 +54,7 @@
         (mouseenter)="isOpen = true"
       >
         <span>Orders</span>
-        <b>{{ (this.dataProvider.dailyTokens.billTokenNo-1) + (this.dataProvider.dailyTokens.onlineTokenNo-1) + (this.dataProvider.dailyTokens.takeawayTokenNo-1) + (this.dataProvider.dailyTokens.ncBillTokenNo-1)}}</b>
+        <b>{{ this.dataProvider.dailyTokens.billTokenNo + this.dataProvider.dailyTokens.onlineTokenNo + this.dataProvider.dailyTokens.takeawayTokenNo + this.dataProvider.dailyTokens.ncBillTokenNo}}</b>
       </span>
       <ng-template
         *ngIf="!this.dataProvider.touchMode"
@@ -72,10 +72,10 @@
         [cdkConnectedOverlayOpen]="isOpen"
       >
         <app-order-summary
-          [dine]="(this.dataProvider.dailyTokens.billTokenNo-1)"
-          [online]="(this.dataProvider.dailyTokens.onlineTokenNo-1)"
-          [takeAway]="(this.dataProvider.dailyTokens.takeawayTokenNo-1)"
-          [nonChargable]="(this.dataProvider.dailyTokens.ncBillTokenNo-1)"
+          [dine]="this.dataProvider.dailyTokens.billTokenNo"
+          [online]="this.dataProvider.dailyTokens.onlineTokenNo"
+          [takeAway]="this.dataProvider.dailyTokens.takeawayTokenNo"
+          [nonChargable]="this.dataProvider.dailyTokens.ncBillTokenNo"
           (close)="this.isOpen = false"
           (mouseleave)="this.closeOrdersPanelSubscription.next(false)"
           (mouseenter)="this.closeOrdersPanelSubscription.next(true)"

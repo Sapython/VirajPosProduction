@@ -42,6 +42,7 @@ import { CustomerService } from '../customer/customer.service';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 import { Router } from '@angular/router';
 import { PaymentMethod } from '../../../types/payment.structure';
+import * as LogRocket from 'logrocket';
 
 var debug: boolean = true;
 @Injectable({
@@ -858,7 +859,13 @@ export class OnboardingService {
       if (res) {
         this.dataProvider.paymentMethods = res as PaymentMethod[];
       }
-    })
+    });
+    LogRocket.identify(this.dataProvider.currentUser.username, {
+      name: this.dataProvider.currentUser.username,
+      email: this.dataProvider.currentUser.email,
+      business:business.hotelName,
+      address:business.address,
+    });
   }
 
   async getTables() {

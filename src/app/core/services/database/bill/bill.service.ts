@@ -12,6 +12,7 @@ import {
   getDocs,
   increment,
   query,
+  runTransaction,
   serverTimestamp,
   setDoc,
   updateDoc,
@@ -344,5 +345,31 @@ export class BillService {
       method,
       { merge: true },
     );
+  }
+
+
+  getKotTokenNumber(){
+    return runTransaction(this.firestore,async (transaction)=>{
+      let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['kitchenTokenNo'];
+      transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{kitchenTokenNo:increment(1)});
+      return kotTokenNumber;
+    });
+  }
+
+  getOrderNumber(){
+    return runTransaction(this.firestore,async (transaction)=>{
+      let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['orderTokenNo'];
+      transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{orderTokenNo:increment(1)});
+      return kotTokenNumber;
+    });
+  }
+
+  getOrderAndKotNumber(){
+    return runTransaction(this.firestore,async (transaction)=>{
+      let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['kitchenTokenNo'];
+      let orderTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['orderTokenNo'];
+      transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{kitchenTokenNo:increment(1),orderTokenNo:increment(1)});
+      return {kotTokenNumber,orderTokenNumber};
+    });
   }
 }

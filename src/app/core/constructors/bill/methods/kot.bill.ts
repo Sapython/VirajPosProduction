@@ -1,4 +1,4 @@
-import { Timestamp } from '@angular/fire/firestore';
+import { Timestamp, runTransaction } from '@angular/fire/firestore';
 import { Bill } from '..';
 import { Product } from '../../../../types/product.structure';
 import { Kot } from '../../kot/Kot';
@@ -180,9 +180,16 @@ export async function finalizeAndPrintKot(this: Bill, noTable?: boolean) {
         await alert('Please complete the combo before finalizing the kot');
         return;
       }
-      activeKot.id = this.dataProvider.kotToken.toString();
-      this.dataProvider.kotToken++;
-      this.analyticsService.addKitchenToken();
+      this.dataProvider.loading = true;
+      if (!this.orderNo) {
+        let res = await this.billService.getOrderAndKotNumber();
+        activeKot.id = res.kotTokenNumber;
+        this.orderNo = res.orderTokenNumber;
+      } else {
+        activeKot.id = await this.billService.getKotTokenNumber();
+      }
+      this.dataProvider.loading = false;
+      console.log('Kot id', activeKot.id);
       activeKot.stage = 'finalized';
       activeKot.createdDate = Timestamp.now();
       this.updated.next();
@@ -286,13 +293,6 @@ export async function printKot(
       time: Timestamp.now(),
       user: this.user,
     });
-  }
-  if (!this.orderNo) {
-    this.orderNo = this.dataProvider.orderTokenNo.toString();
-    console.log('Prev ', this.dataProvider.orderTokenNo);
-    this.dataProvider.orderTokenNo++;
-    console.log('After ', this.dataProvider.orderTokenNo);
-    this.analyticsService.addOrderToken();
   }
   //  console.log("kot.products",kot.products);
   let data: PrintableKot = {

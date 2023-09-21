@@ -11,6 +11,8 @@ import {
   Firestore,
   Timestamp,
   getDoc,
+  runTransaction,
+  increment,
 } from '@angular/fire/firestore';
 import { DataProvider } from '../../provider/data-provider.service';
 import { Table } from '../../../constructors/table/Table';
@@ -223,6 +225,14 @@ export class TableService {
       ),
       activity,
     );
+  }
+
+  getTableTokenNumber() {
+    return runTransaction(this.firestore,async (transaction)=>{
+      let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['orderTokenNo'];
+      transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{orderTokenNo:increment(1)});
+      return kotTokenNumber;
+    });
   }
 
 }

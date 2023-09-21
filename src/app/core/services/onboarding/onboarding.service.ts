@@ -956,7 +956,7 @@ export class OnboardingService {
       ),
     );
     changes.subscribe(async (res) => {
-      // console.log("TOKENCHANGE",res);
+      console.log("TOKENCHANGE",res);
       res.forEach(async (change) => {
         if (change.type == 'added') {
           let newTable = {

@@ -101,10 +101,20 @@ export class ActiveKotComponent implements OnChanges {
       // reset the kot view
       this.kots = [];
       this.allKot = [];
+      this.labels = [];
       this.dataProvider.kotViewVisible = true;
       this.dataProvider.manageKot = false;
       this.dataProvider.allProducts = false;
-    })
+    });
+    this.dataProvider.resetKotView.subscribe((state: boolean) => {
+      // reset the kot view
+      this.kots = [];
+      this.allKot = [];
+      this.labels = [];
+      this.dataProvider.kotViewVisible = true;
+      this.dataProvider.manageKot = false;
+      this.dataProvider.allProducts = false;
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {

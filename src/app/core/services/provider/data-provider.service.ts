@@ -308,6 +308,7 @@ export class DataProvider {
   public selectProduct: Subject<any> = new Subject<any>();
   public selectTable: Subject<Table> = new Subject<Table>();
   public openTableView: Subject<boolean> = new Subject<boolean>();
+  public resetKotView: Subject<boolean> = new Subject<boolean>();
   public billAssigned: Subject<void> = new Subject<void>();
   public searchResults: Subject<any[] | false> = new Subject<any[] | false>();
   public clearSearchField: Subject<void> = new Subject<void>();

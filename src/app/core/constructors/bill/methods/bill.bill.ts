@@ -77,7 +77,7 @@ export async function finalize(this: Bill, noTable?: boolean,onHold?:boolean) {
     this.stage = 'finalized';
   }
   this.dataProvider.loading = true;
-  await this.updateToFirebase();
+  this.updateToFirebase();
   this.dataProvider.loading = false;
   if (this.dataProvider.printBillAfterFinalize) {
     this.printBill();
@@ -213,7 +213,7 @@ export async function settle(
     additionalInfo: additionalInfo,
   };
   this.dataProvider.loading = true;
-  await this.updateToFirebase();
+  this.updateToFirebase();
   this.dataProvider.loading = false;
   // print the bill after saving it to database
   if (splitSave) {
@@ -318,6 +318,7 @@ export async function settle(
     this.dataProvider.currentBill = undefined;
     this.dataProvider.currentTable = undefined;
   }
+  this.dataProvider.resetKotView.next(true);
   return this.billNo;
 }
 

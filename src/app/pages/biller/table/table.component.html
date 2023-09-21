@@ -147,6 +147,16 @@
         Clear Selection
       </button>
       <button
+        *ngIf="
+          
+          bulkSettleEnabled &&
+          selectedTablesForBulkSettle.length > 0
+        "
+        (click)="selectAllTables()"
+      >
+        Select All
+      </button>
+      <button
         class="filled"
         *ngIf="
           

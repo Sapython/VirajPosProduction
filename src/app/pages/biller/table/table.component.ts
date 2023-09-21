@@ -764,4 +764,14 @@ export class TableComponent implements OnInit {
       }
     return result;
   }
+
+  selectAllTables(){
+    this.selectedTablesForBulkSettle = [];
+    console.log("this.dataProvider.tokens.filter((table)=>table.bill.stage == 'hold')",this.dataProvider.tokens.filter((table)=>table.bill?.stage == 'hold'));
+
+    this.dataProvider.tokens.filter((table)=>table.bill?.stage == 'hold').forEach((table)=>{
+      this.selectedTablesForBulkSettle.push(table.id);
+    });
+    this.tobeMergedTotal = this.calculateGrandTotal();
+  }
 }

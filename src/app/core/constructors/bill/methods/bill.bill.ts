@@ -161,43 +161,34 @@ export async function settle(
   let requiredBillNumber;
   if (!this.billNo) {
     if(quickSettle){
-      var methodIndex = this.dataProvider.paymentMethods.findIndex((method) => method.id == quickSettle.id);
-      console.log('SettleBillMethod: settlement type',quickSettle,methodIndex);
-      if (methodIndex != -1){
+      var method = this.dataProvider.paymentMethods.find((method) => method.id == quickSettle.id);
+      if (method){
         if (!quickSettle.billNo){
           quickSettle.billNo = 1;
         }
-        requiredBillNumber =  structuredClone(this.dataProvider.paymentMethods[methodIndex].shortCode+':'+this.dataProvider.paymentMethods[methodIndex].billNo.toString());
-        console.log("SettleBillNum: new bill number",requiredBillNumber);
-        this.dataProvider.paymentMethods[methodIndex].billNo++;
-        console.log("SettleBillMethod: method after increment",this.dataProvider.paymentMethods[methodIndex]);
-        if (methodIndex!=-1){
-          this.billService.updatePaymentMethod(this.dataProvider.paymentMethods[methodIndex]);
-        }
+        this.dataProvider.loading = true;
+        requiredBillNumber = await this.billService.getPaymentMethodBillNumber(method.id)
         console.log("SettleBillMethod: after increment bill number",requiredBillNumber);
+        this.dataProvider.loading = false;
       }
     } else {
       if (this.nonChargeableDetail) {
-        requiredBillNumber = 'NC-' + this.dataProvider.ncBillToken.toString();
-        this.dataProvider.ncBillToken++;
-        this.analyticsService.addNcBillToken();
+        this.dataProvider.loading = true;
+        requiredBillNumber = await this.billService.getNcBillNumber();
+        this.dataProvider.loading = false;
       } else {
         if (this.mode == 'dineIn') {
-          (requiredBillNumber = this.dataProvider.billToken.toString()),
-            this.dataProvider.billToken++;
-          this.analyticsService.addBillToken();
+          this.dataProvider.loading = true;
+          requiredBillNumber = await this.billService.getNormalBillNumber();
+          this.dataProvider.loading = false;
         } else if (this.mode == 'takeaway') {
-          requiredBillNumber = this.dataProvider.takeawayToken.toString();
-          // this.dataProvider.takeawayToken++;
-          // this.analyticsService.addTakeawayToken();
+          requiredBillNumber = this.table.tableNo.toString();
         } else if (this.mode == 'online') {
-          (requiredBillNumber = this.dataProvider.onlineTokenNo.toString()),
-            this.dataProvider.onlineTokenNo++;
-          this.analyticsService.addOnlineToken();
+          requiredBillNumber = this.table.tableNo.toString();
         } else {
-          (requiredBillNumber = this.dataProvider.billToken.toString()),
-            this.dataProvider.billToken++;
-          this.analyticsService.addBillToken();
+          this.dataProvider.loading = true;
+          requiredBillNumber = await this.billService.getNormalBillNumber();
+          this.dataProvider.loading = false;
         }
       }
     }

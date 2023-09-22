@@ -54,7 +54,8 @@ import { SelectPropertiesComponent } from './settings/sections/account/select-pr
 import { ChargesComponent } from './settings/sections/charges/charges.component';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { QuickReasonsComponent } from './settings/sections/quick-reasons/quick-reasons.component';
-import { ResetComponent } from './settings/sections/config/reset/reset.component'; 
+import { ResetComponent } from './settings/sections/config/reset/reset.component';
+import { CountersComponent } from './settings/sections/counters/counters.component'; 
 
 @NgModule({
   declarations: [
@@ -82,6 +83,7 @@ import { ResetComponent } from './settings/sections/config/reset/reset.component
     ChargesComponent,
     QuickReasonsComponent,
     ResetComponent,
+    CountersComponent,
   ],
   imports: [
     CommonModule,

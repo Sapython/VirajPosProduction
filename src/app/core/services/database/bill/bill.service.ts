@@ -393,6 +393,14 @@ export class BillService {
     });
   }
 
+  getPaymentMethodBillNumber(paymentMethodId:string){
+    return runTransaction(this.firestore,async (transaction)=>{
+      let paymentMethod = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/paymentMethods/'+paymentMethodId))).data();
+      transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/paymentMethods/'+paymentMethodId),{billNo:increment(1)});
+      return (paymentMethod.shortCode ? paymentMethod.shortCode+':' : '') + paymentMethod.billNo;
+    });
+  }
+
   getNcBillNumber(){
     return runTransaction(this.firestore,async (transaction)=>{
       let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['ncBillNo'];
@@ -409,11 +417,4 @@ export class BillService {
     });
   }
 
-  getTkeawaBillNumber(){
-    return runTransaction(this.firestore,async (transaction)=>{
-      let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['ncBillNo'];
-      transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{ncBillNo:increment(1)});
-      return kotTokenNumber;
-    });
-  }
 }

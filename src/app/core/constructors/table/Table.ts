@@ -468,18 +468,15 @@ export class Table implements TableConstructor {
     }
   }
 
-  attachBill(bill: Bill) {
+  attachBill(bill: Bill,tokenNumber: number) {
     this.bill = bill;
     this.occupiedStart = Timestamp.now();
     this.status = 'occupied';
     this.billPrice = bill.billing.grandTotal;
     if (this.type == 'token'){
-      this.tableNo = structuredClone(this.dataProvider.takeawayToken);
-      this.order = structuredClone(this.dataProvider.takeawayToken);
-      this.name = structuredClone(this.dataProvider.takeawayToken).toString();
-      console.log("Attaching token no",this.tableNo);
-      this.dataProvider.takeawayToken++;
-      this.analyticsService.addTakeawayToken();
+      this.tableNo = structuredClone(tokenNumber);
+      this.order = structuredClone(tokenNumber);
+      this.name = structuredClone(tokenNumber).toString();
     } else if (this.type == 'online') {
       this.tableNo = this.dataProvider.onlineTokenNo;
       this.dataProvider.onlineTokenNo++;

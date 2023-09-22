@@ -372,4 +372,48 @@ export class BillService {
       return {kotTokenNumber,orderTokenNumber};
     });
   }
+
+  getOrderKotTakeawayTokenNumber(){
+    return runTransaction(this.firestore,async (transaction)=>{
+      let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['kitchenTokenNo'];
+      let orderTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['orderTokenNo'];
+      let takeawayTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['takeawayTokenNo'];
+      transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{kitchenTokenNo:increment(1),orderTokenNo:increment(1), takeawayTokenNumber:increment(1)});
+      return {kotTokenNumber,orderTokenNumber,takeawayTokenNumber};
+    });
+  }
+
+  getOrderKotOnlineTokenNumber(){
+    return runTransaction(this.firestore,async (transaction)=>{
+      let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['kitchenTokenNo'];
+      let orderTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['orderTokenNo'];
+      let onlineTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['onlineTokenNo'];
+      transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{kitchenTokenNo:increment(1),orderTokenNo:increment(1), onlineTokenNo:increment(1)});
+      return {kotTokenNumber,orderTokenNumber,onlineTokenNumber};
+    });
+  }
+
+  getNcBillNumber(){
+    return runTransaction(this.firestore,async (transaction)=>{
+      let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['ncBillNo'];
+      transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{ncBillNo:increment(1)});
+      return kotTokenNumber;
+    });
+  }
+
+  getNormalBillNumber(){
+    return runTransaction(this.firestore,async (transaction)=>{
+      let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['ncBillNo'];
+      transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{ncBillNo:increment(1)});
+      return kotTokenNumber;
+    });
+  }
+
+  getTkeawaBillNumber(){
+    return runTransaction(this.firestore,async (transaction)=>{
+      let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['ncBillNo'];
+      transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{ncBillNo:increment(1)});
+      return kotTokenNumber;
+    });
+  }
 }

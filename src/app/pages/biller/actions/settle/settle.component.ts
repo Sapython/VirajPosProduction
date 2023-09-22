@@ -19,11 +19,8 @@ export class SettleComponent implements OnInit {
   methodsWithDetail: string[] = [];
   methods: any[] = [
     {
-      paymentMethod: 'Cash',
+      paymentMethod: '',
       paymentMethods: [
-        'Cash',
-        'Card',
-        'UPI',
         ...this.additionalMethods,
       ],
       amount: 0,
@@ -153,9 +150,6 @@ export class SettleComponent implements OnInit {
     //   return !usedMethods.includes(method)
     // })
     let unusedMethods = [
-      'Cash',
-      'Card',
-      'UPI',
       ...this.additionalMethods,
     ];
     if (unusedMethods.length === 0) {

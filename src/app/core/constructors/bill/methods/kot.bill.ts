@@ -121,9 +121,6 @@ export function editKot(this: Bill, kot: Kot, reason: string) {
 
 export async function finalizeAndPrintKot(this: Bill, noTable?: boolean) {
   console.log("Checking for first kot",this.table.status);
-  if (this.table.status == 'available') {
-    this.table.attachBill(this);
-  }
 
   if (this.editKotMode != null) {
     let kotIndex = this.kots.findIndex(
@@ -181,12 +178,28 @@ export async function finalizeAndPrintKot(this: Bill, noTable?: boolean) {
         return;
       }
       this.dataProvider.loading = true;
-      if (!this.orderNo) {
-        let res = await this.billService.getOrderAndKotNumber();
-        activeKot.id = res.kotTokenNumber;
-        this.orderNo = res.orderTokenNumber;
+      if (this.table.status == 'available') {
+        if (this.table.type == 'token'){
+          let res = await this.billService.getOrderKotTakeawayTokenNumber();
+          this.table.attachBill(this,res.takeawayTokenNumber);
+          activeKot.id = res.kotTokenNumber;
+          this.orderNo = res.orderTokenNumber;
+        } else if (this.table.type == 'online'){
+          let res = await this.billService.getOrderKotOnlineTokenNumber();
+          this.table.attachBill(this,res.onlineTokenNumber);
+          activeKot.id = res.kotTokenNumber;
+          this.orderNo = res.orderTokenNumber;
+        } else if (this.table.type == 'table' || this.table.type == 'room'){
+          this.table.attachBill(this,undefined);
+        }
       } else {
-        activeKot.id = await this.billService.getKotTokenNumber();
+        if (!this.orderNo) {
+          let res = await this.billService.getOrderAndKotNumber();
+          activeKot.id = res.kotTokenNumber;
+          this.orderNo = res.orderTokenNumber;
+        } else {
+          activeKot.id = await this.billService.getKotTokenNumber();
+        }
       }
       this.dataProvider.loading = false;
       console.log('Kot id', activeKot.id);

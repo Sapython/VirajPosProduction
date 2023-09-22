@@ -181,6 +181,7 @@ export async function finalizeAndPrintKot(this: Bill, noTable?: boolean) {
       if (this.table.status == 'available') {
         if (this.table.type == 'token'){
           let res = await this.billService.getOrderKotTakeawayTokenNumber();
+          console.log("Res",res);
           this.table.attachBill(this,res.takeawayTokenNumber);
           activeKot.id = res.kotTokenNumber;
           this.orderNo = res.orderTokenNumber;

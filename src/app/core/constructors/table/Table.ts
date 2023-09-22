@@ -478,9 +478,7 @@ export class Table implements TableConstructor {
       this.order = structuredClone(tokenNumber);
       this.name = structuredClone(tokenNumber).toString();
     } else if (this.type == 'online') {
-      this.tableNo = this.dataProvider.onlineTokenNo;
-      this.dataProvider.onlineTokenNo++;
-      this.analyticsService.addOnlineToken();
+      this.tableNo = tokenNumber
     }
     this.updated.next();
   }

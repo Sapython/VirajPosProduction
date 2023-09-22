@@ -72,7 +72,7 @@ export class MenuManagementService {
     this.menuUpdater.pipe(debounceTime(1000)).subscribe(() => {
       // console.log('Menus to update', menus);
       this.versionToBeUpdatedMenus.forEach((menuId) => {
-        if (this.dataProvider.currentBusiness.businessId){
+        if (this.dataProvider.currentBusiness?.businessId){
           this.updateMenuData(menuId);
         }
       });

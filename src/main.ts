@@ -3,8 +3,8 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
-import * as LogRocket from 'logrocket';
-LogRocket.init('c0yxma/vrajera');
+// import * as LogRocket from 'logrocket';
+// LogRocket.init('c0yxma/vrajera');
 // import 'hammerjs';
 // import * as Sentry from "@sentry/angular-ivy";
 // Sentry.init({

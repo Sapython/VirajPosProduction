@@ -321,7 +321,7 @@ export class OnboardingService {
   async startVrajera(business: BusinessRecord) {
     if (debug) console.log('Starting Vrajera', business);
     firstValueFrom(this.dataProvider.settingsChanged).then(async (setting) => {
-      // console.log(setting);
+      console.log('setting',setting);
       this.dataProvider.businessId = business.businessId;
       this.loadingSteps.next('Loading Settings');
       if (setting.modes.filter((mode: boolean) => mode).length >= 1) {
@@ -860,6 +860,7 @@ export class OnboardingService {
         this.dataProvider.paymentMethods = res as PaymentMethod[];
       }
     });
+    console.log("Loaded everything");
     LogRocket.identify(this.dataProvider.currentUser.username, {
       name: this.dataProvider.currentUser.username,
       email: this.dataProvider.currentUser.email,

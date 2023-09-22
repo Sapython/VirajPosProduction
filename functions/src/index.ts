@@ -393,7 +393,7 @@ function initApp() {
   const initApp = require('firebase-admin/app');
   app = initApp.initializeApp({
     credential: admin.credential.cert(
-      'fbms-shreeva-demo-firebase-adminsdk-8nk63-28663566a0.json',
+      'vrajera-d1e58-firebase-adminsdk-aqe5z-790c72feea.json',
     ),
   });
 }

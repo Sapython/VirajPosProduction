@@ -294,7 +294,7 @@ export class SettingsService {
     window.location.href = url.join('/');
   }
 
-  addDefaultPaymentMethods(){
+  addDefaultPaymentMethods(businessId:string){
     let paymentMethods:PaymentMethod[] = [
       {
         addDate: Timestamp.fromDate(new Date()),
@@ -319,7 +319,7 @@ export class SettingsService {
       },
     ];
     return Promise.all(paymentMethods.map(async (paymentMethod) => {
-      await addDoc(collection(this.firestore,'business',this.dataProvider.businessId,'paymentMethods'),paymentMethod);
+      await addDoc(collection(this.firestore,'business',businessId,'paymentMethods'),paymentMethod);
     }));
   }
 }

@@ -16,7 +16,7 @@ import {
   provideNoopAnimations,
 } from '@angular/platform-browser/animations';
 import { FirebaseApp, initializeApp, provideFirebaseApp } from '@angular/fire/app';
-import { APP_CONFIG } from '../environments/environment';
+import { environment } from '../environments/environment';
 import { DBConfig, NgxIndexedDBModule } from 'ngx-indexed-db';
 import {
   provideAnalytics,
@@ -88,6 +88,7 @@ import { TableService } from './core/services/database/table/table.service';
 import { ElectronService } from './core/services/electron/electron.service';
 import { PrinterService } from './core/services/printing/printer/printer.service';
 import { UpdaterService } from './core/services/updater/updater.service';
+import { provideMessaging,getMessaging } from '@angular/fire/messaging';
 export class MyHammerConfig extends HammerGestureConfig  {
   overrides = <any>{
       // override hammerjs default configuration
@@ -221,7 +222,7 @@ export const dbConfig: DBConfig = {
     BillerModule,
     BrowserAnimationsModule,
     provideFirebaseApp(() => {
-      FirebaseAppInstance = initializeApp(APP_CONFIG.firebase);
+      FirebaseAppInstance = initializeApp(environment.firebase);
       return FirebaseAppInstance;
     }),
     provideAnalytics(() => getAnalytics()),
@@ -251,6 +252,7 @@ export const dbConfig: DBConfig = {
     providePerformance(() => {
       return getPerformance();
     }),
+    provideMessaging(() => getMessaging()),
   ],
   providers: [
     PrinterService,

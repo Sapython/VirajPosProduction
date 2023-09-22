@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 // import { TranslateService } from '@ngx-translate/core';
-import { APP_CONFIG } from '../environments/environment';
+import { environment } from '../environments/environment';
 import {
   fadeInDownOnEnterAnimation,
   fadeOutUpOnLeaveAnimation,
@@ -34,7 +34,7 @@ export class AppComponent {
         // console.log('112 got config error',err);
       },
     );
-    indexedDbService.add('config', { id: 1, config: APP_CONFIG }).subscribe(
+    indexedDbService.add('config', { id: 1, config: environment }).subscribe(
       (res) => {
         // console.log('112 config success',res);
       },

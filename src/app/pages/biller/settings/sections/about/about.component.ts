@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { DataProvider } from '../../../../../core/services/provider/data-provider.service';
-import { APP_CONFIG } from '../../../../../../environments/environment';
+import { environment } from '../../../../../../environments/environment';
 import { Dialog } from '@angular/cdk/dialog';
 import { ResetPasswordComponent } from '../../../../auth/reset-password/reset-password.component';
 import { firstValueFrom } from 'rxjs';
@@ -12,7 +12,7 @@ import { ElectronService } from '../../../../../core/services/electron/electron.
   styleUrls: ['./about.component.scss'],
 })
 export class AboutComponent {
-  version: string = APP_CONFIG.appVersion;
+  version: string = environment.appVersion;
   serverVersion: string = '0.0.2';
   constructor(
     public dataProvider: DataProvider,

@@ -10,7 +10,7 @@ import { debounceTime, Subject, Subscription } from 'rxjs';
 import { SalesSummaryComponent } from './sales-summary/sales-summary.component';
 import { OrderSummaryComponent } from './order-summary/order-summary.component';
 import { UpgradeComponent } from './upgrade/upgrade.component';
-import { APP_CONFIG } from '../../../../../environments/environment';
+import { environment } from '../../../../../environments/environment';
 import { DataProvider } from '../../../../core/services/provider/data-provider.service';
 import { ElectronService } from '../../../../core/services/electron/electron.service';
 import { UpdaterComponent } from './updater/updater.component';
@@ -40,7 +40,7 @@ export class InfoPanelComponent implements OnInit, OnChanges, AfterViewInit {
       this.isOpen = false;
       this.isSalesOpen = false;
     });
-    this.version = APP_CONFIG.appVersion;
+    this.version = environment.appVersion;
     // console.log("this.el.nativeElement",this.el.nativeElement.offsetHeight);
     this.height = this.el.nativeElement.offsetHeight;
     this.dataProvider.softwareUpdateFilteredSubject.subscribe((data) => {

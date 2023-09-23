@@ -473,12 +473,10 @@ export class Table implements TableConstructor {
     this.occupiedStart = Timestamp.now();
     this.status = 'occupied';
     this.billPrice = bill.billing.grandTotal;
-    if (this.type == 'token'){
+    if (this.type == 'token' || this.type == 'online'){
       this.tableNo = structuredClone(tokenNumber);
       this.order = structuredClone(tokenNumber);
       this.name = structuredClone(tokenNumber).toString();
-    } else if (this.type == 'online') {
-      this.tableNo = tokenNumber
     }
     this.updated.next();
   }

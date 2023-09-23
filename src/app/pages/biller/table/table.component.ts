@@ -42,6 +42,10 @@ export class TableComponent implements OnInit {
   selectedTablesForBulkSettle: string[] = [];
   tobeMergedTotal: number = 0;
   holdedItemsVisible:boolean =false;
+  public bulkSettleEnabledOnline: boolean = false;
+  selectedTablesForBulkSettleOnline: string[] = [];
+  tobeMergedTotalOnline: number = 0;
+  holdedItemsVisibleOnline:boolean =false;
   constructor(
     public dialogRef: DialogRef,
     public dataProvider: DataProvider,
@@ -261,30 +265,12 @@ export class TableComponent implements OnInit {
   }
 
   async addOnlineToken() {
-    // console.log(
-    //   'this.dataProvider.takeawayToken ',
-    //   this.dataProvider.takeawayToken
-    // );
-    let tableData = await this.tableService.getTablePromise(
-      this.dataProvider.takeawayToken.toString(),
-      'onlineTokens',
-    );
-    console.log('Found old table', tableData);
-    if (
-      !tableData.data() ||
-      (tableData.data()['status'] != 'available' &&
-        tableData.data()['completed'] == true) ||
-      tableData.data()['completed'] == true
-    ) {
-      this.dataProvider.onlineTokenNo++;
-      this.analyticsService.addOnlineToken();
-    }
     let table = new Table(
-      this.dataProvider.onlineTokenNo.toString(),
-      this.dataProvider.onlineTokenNo,
-      this.dataProvider.onlineTokenNo.toString(),
+      this.generateRandomId(),
+      'new',
+      'new',
       'online',
-      this.dataProvider.onlineTokenNo,
+      0,
       '1',
       'online',
       this.dataProvider,
@@ -296,19 +282,16 @@ export class TableComponent implements OnInit {
       this.userManagementService,
     );
     this.dataProvider.currentBill = table.createNewBill();
-    this.dataProvider.currentTable = table;
     this.analyticsService.newTable(table, 'online');
+    this.dataProvider.currentTable = table;
     if (this.dataProvider.tempProduct && this.dataProvider.currentBill) {
       this.dataProvider.currentBill.addProduct(this.dataProvider.tempProduct);
       this.dataProvider.tempProduct = undefined;
     }
-    this.dialogRef.close(table);
     this.dataProvider.billAssigned.next();
+    this.dialogRef.close(table);
     this.dataProvider.currentApplicableCombo = undefined;
     this.dataProvider.currentPendingProduct = undefined;
-    if (!tableData.data() || tableData.data()['status'] != 'available') {
-      this.dataProvider.onlineTokens.push(table);
-    }
   }
 
   moveKot(table: Table, event: any) {
@@ -719,6 +702,98 @@ export class TableComponent implements OnInit {
     }
   }
 
+  async bulkSettleOnline() {
+    let bills = [];
+    let buttons = ['Cancel',...this.dataProvider.paymentMethods.map((method) => {
+      return method.name;
+    })];
+    console.log("buttons",buttons);
+    // this.dataProvider.confirm('Which method would you like to settle ?',[1],{buttons:['No','Yes']}).then((result)=>{
+    const dialog = this.dialog.open(DialogComponent, {
+      panelClass: 'customDialog',
+      data: {
+        title: 'Which method would you like to settle ?',
+        description:
+          'Please select a payment method for settling all the bills that you have selected.',
+        buttons,
+        primary: Array(buttons.length - 1)
+          .fill(0)
+          .map((_, i) => i + 1),
+      },
+    });
+    let result:any = await firstValueFrom(dialog.closed);
+    console.log("Result",result);
+    if((result -1 ) >= 0){
+      let method = this.dataProvider.paymentMethods[result -1];
+      if (method){
+        this.dataProvider.loading = true;
+        for (const tableId of this.selectedTablesForBulkSettleOnline) {
+          let table = this.dataProvider.onlineTokens.find((t) => t.id == tableId);
+          if (table && table.bill) {
+            let billNo = await table.bill.settle(
+              [{
+                paymentMethod:method.name,
+                amount:table.bill.billing.grandTotal,
+              }],
+              'external',
+              null,
+              true,
+              method,
+              true,
+              true
+            );
+            console.log("billNo",billNo);
+          }
+        }
+        this.dataProvider.loading = false;
+        this.bulkSettleEnabledOnline = false;
+        this.selectedTablesForBulkSettleOnline = [];
+      } else {
+        this.alertify.presentToast("Method is unavailable");
+        this.dataProvider.loading = false;
+      }
+    }
+  }
+
+  async bulkCancelOnline(){
+    let bills = [];
+    let buttons = ['Cancel',...this.dataProvider.paymentMethods.map((method) => {
+      return method.name;
+    })];
+    console.log("buttons",buttons);
+    // this.dataProvider.confirm('Which method would you like to settle ?',[1],{buttons:['No','Yes']}).then((result)=>{
+    const dialog = this.dialog.open(DialogComponent, {
+      panelClass: 'customDialog',
+      data: {
+        title: 'Are you sure you want to cancel these bills ?',
+        description:
+          'All of the selected bills will be cancelled.',
+        buttons:['Back','Confirm'],
+        primary: [1],
+      },
+    });
+    let result:any = await firstValueFrom(dialog.closed);
+    console.log("Result",result);
+    if(result ==1){
+      let method = this.dataProvider.paymentMethods[result -1];
+      if (method){
+        this.dataProvider.loading = true;
+        for (const tableId of this.selectedTablesForBulkSettle) {
+          let table = this.dataProvider.onlineTokens.find((t) => t.id == tableId);
+          if (table && table.bill) {
+            await table.bill.cancel('Bulk Cancel','1234567890',table,true);
+          }
+        }
+        this.dataProvider.loading = false;
+        this.bulkSettleEnabledOnline = false;
+        this.selectedTablesForBulkSettleOnline = [];
+      } else {
+        this.alertify.presentToast("Method is unavailable");
+        this.dataProvider.loading = false;
+      }
+    }
+  }
+
   selectToken(table, event) {
     if (this.moveKotMode) {
       this.moveKotItem(table);
@@ -734,6 +809,27 @@ export class TableComponent implements OnInit {
         console.log(
           'this.selectedTablesForBulkSettle',
           this.selectedTablesForBulkSettle,
+        );
+      } else {
+        this.openTable(table, event);
+      }
+    }
+  }
+  selectTokenOnline(table, event) {
+    if (this.moveKotMode) {
+      this.moveKotItem(table);
+    } else {
+      if (this.bulkSettleEnabledOnline) {
+        if (this.selectedTablesForBulkSettleOnline.includes(table.id)) {
+          this.selectedTablesForBulkSettleOnline =
+            this.selectedTablesForBulkSettleOnline.filter((t) => t != table.id);
+        } else {
+          this.selectedTablesForBulkSettleOnline.push(table.id);
+        }
+        this.tobeMergedTotalOnline = this.calculateGrandTotal();
+        console.log(
+          'this.selectedTablesForBulkSettle',
+          this.selectedTablesForBulkSettleOnline,
         );
       } else {
         this.openTable(table, event);
@@ -773,5 +869,14 @@ export class TableComponent implements OnInit {
       this.selectedTablesForBulkSettle.push(table.id);
     });
     this.tobeMergedTotal = this.calculateGrandTotal();
+  }
+  selectAllTablesOnline(){
+    this.selectedTablesForBulkSettleOnline = [];
+    console.log("this.dataProvider.tokens.filter((table)=>table.bill.stage == 'hold')",this.dataProvider.onlineTokens.filter((table)=>table.bill?.stage == 'hold'));
+
+    this.dataProvider.onlineTokens.filter((table)=>table.bill?.stage == 'hold').forEach((table)=>{
+      this.selectedTablesForBulkSettleOnline.push(table.id);
+    });
+    this.tobeMergedTotalOnline = this.calculateGrandTotal();
   }
 }

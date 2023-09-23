@@ -62,14 +62,6 @@ export class ViewComponent {
     this.dataProvider.touchMode = value;
     //  console.log(localStorage.getItem('viewSettings'));
   }
-  setLocalShowTable(event: any) {
-    localStorage.setItem(
-      'showTable',
-      JSON.stringify(this.dataProvider.showTableOnBillAction),
-    );
-    this.alertify.presentToast('Settings updated successfully');
-  }
-
   updateSettings(data: any) {
     if (debug) console.log('Updating settings Data', data);
 
@@ -81,6 +73,12 @@ export class ViewComponent {
       .catch((err) => {
         this.alertify.presentToast('Error while updating settings');
       });
+  }
+
+  updateLocalSettings(data: any) {
+    if (debug) console.log('Updating settings Data', data);
+    this.menuManagementService.updateLocalSettings(data);
+    this.alertify.presentToast('Settings updated successfully');
   }
 
   isValidNumber(number: any) {
@@ -99,15 +97,15 @@ export class ViewComponent {
 
   setNewTime() {
     if (
-      isNaN(Number(this.dataProvider.editKotTime)) ||
-      typeof this.dataProvider.editKotTime !== 'number' ||
-      this.dataProvider.editKotTime < 0
+      isNaN(Number(this.dataProvider.localSettings.editKotTime)) ||
+      typeof this.dataProvider.localSettings.editKotTime !== 'number' ||
+      this.dataProvider.localSettings.editKotTime < 0
     ) {
       alert('Please enter a valid number');
-      this.dataProvider.editKotTime = 0;
+      this.dataProvider.localSettings.editKotTime = 0;
       return;
     }
-    this.updateSettings({ editKotTime: this.dataProvider.editKotTime });
+    this.updateSettings({ editKotTime: this.dataProvider.localSettings.editKotTime });
   }
 
   async addNewQuickReason(){

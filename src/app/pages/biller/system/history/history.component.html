@@ -42,7 +42,9 @@
       <mat-menu #modesMenu="matMenu">
         <button mat-menu-item (click)="currentMode = 'all'">All</button>
         <button mat-menu-item (click)="currentMode = 'dineIn'">Dine In</button>
-        <button mat-menu-item (click)="currentMode = 'takeaway'">Takeaway</button>
+        <button mat-menu-item (click)="currentMode = 'takeaway'">
+          Takeaway
+        </button>
         <button mat-menu-item (click)="currentMode = 'online'">Online</button>
       </mat-menu>
       <div class="search">
@@ -67,8 +69,14 @@
           />
           <input matEndDate formControlName="endDate" placeholder="End date" />
         </mat-date-range-input>
-        <viraj-button style="white-space: nowrap;" type="outline" class="dateSelector" (vclick)="picker.open()"
-          >{{dateRangeFormGroup.value.startDate | date}} - {{dateRangeFormGroup.value.endDate | date}}<i class="ri-calendar-2-fill"></i
+        <viraj-button
+          style="white-space: nowrap"
+          type="outline"
+          class="dateSelector"
+          (vclick)="picker.open()"
+          >{{ dateRangeFormGroup.value.startDate | date }} -
+          {{ dateRangeFormGroup.value.endDate | date
+          }}<i class="ri-calendar-2-fill"></i
         ></viraj-button>
         <input
           (input)="this.numberSearchSubject.next(search.value)"
@@ -117,75 +125,92 @@
     </div>
   </div>
 
-  <div class="groups" *ngIf="groupByTable && !groupByDate">
-    <div
-      class="tableGroup primary"
-      *ngFor="
-        let table of this.filteredBills.length > 0
-          ? (this.filteredBills | mode: currentMode | tableGroups)
-          : (bills | mode: currentMode | tableGroups)
-      "
-    >
-      <div class="heading">
-        <h3>Table: {{ table.table }}</h3>
-      </div>
-      <div class="bills" >
-        <app-bill-card *ngFor="let bill of bills" [bill]="bill"></app-bill-card>
-      </div>
-    </div>
-  </div>
-  <div class="bills" *ngIf="!groupByTable && !groupByDate">
-    <app-bill-card *ngFor="let bill of (filteredBills.length ? (filteredBills | mode: currentMode) : (bills | mode: currentMode))" [bill]="bill"></app-bill-card>
-    <ng-container *ngIf="(filteredBills.length ? (filteredBills | mode: currentMode) : (bills | mode: currentMode)).length == 0">
-      <div class="skeleton"></div>
-      <div class="skeleton"></div>
-      <div class="skeleton"></div>
-    </ng-container>
-  </div>
-  <div class="groups" *ngIf="groupByDate && !groupByTable">
-    <div
-      class="tableGroup yellow"
-      *ngFor="
-        let table of this.filteredBills.length > 0
-          ? (this.filteredBills | mode: currentMode | dateGroup)
-          : (bills | mode: currentMode | dateGroup)
-      "
-    >
-      <div class="heading">
-        <h3>Date: {{ table.date | date }}</h3>
-      </div>
-      <div class="bills">
-        <app-bill-card *ngFor="let bill of table.bills" [bill]="bill"></app-bill-card>
+  <ng-container *ngIf="!loading">
+    <div class="groups" *ngIf="groupByTable && !groupByDate">
+      <div
+        class="tableGroup primary"
+        *ngFor="
+          let table of this.filteredBills.length > 0
+            ? (this.filteredBills | mode: currentMode | tableGroups)
+            : (bills | mode: currentMode | tableGroups)
+        "
+      >
+        <div class="heading">
+          <h3>Table: {{ table.table }}</h3>
+        </div>
+        <div class="bills">
+          <app-bill-card
+            *ngFor="let bill of bills"
+            [bill]="bill"
+          ></app-bill-card>
+        </div>
       </div>
     </div>
-
-  </div>
-  <div class="groups" *ngIf="groupByDate && groupByTable">
-    <div
-      class="tableGroup primary"
-      *ngFor="
-        let table of this.filteredBills.length > 0
-          ? (this.filteredBills | mode: currentMode | tableGroups)
-          : (bills | mode: currentMode | tableGroups)
-      "
-    >
-      <div class="heading">
-        <h3>Table: {{ table.table }}</h3>
+    <div class="bills" *ngIf="!groupByTable && !groupByDate">
+      <app-bill-card
+        *ngFor="
+          let bill of filteredBills.length
+            ? (filteredBills | mode: currentMode)
+            : (bills | mode: currentMode)
+        "
+        [bill]="bill"
+      ></app-bill-card>
+    </div>
+    <div class="groups" *ngIf="groupByDate && !groupByTable">
+      <div
+        class="tableGroup yellow"
+        *ngFor="
+          let table of this.filteredBills.length > 0
+            ? (this.filteredBills | mode: currentMode | dateGroup)
+            : (bills | mode: currentMode | dateGroup)
+        "
+      >
+        <div class="heading">
+          <h3>Date: {{ table.date | date }}</h3>
+        </div>
+        <div class="bills">
+          <app-bill-card
+            *ngFor="let bill of table.bills"
+            [bill]="bill"
+          ></app-bill-card>
+        </div>
       </div>
-      <div class="groups">
-        <div
-          class="tableGroup yellow"
-          *ngFor="let date of table.bills | dateGroup"
-        >
-          <div class="heading">
-            <h3>Date: {{ date.date | date }}</h3>
-          </div>
-          <div class="bills">
-            <app-bill-card *ngFor="let bill of date.bills" [bill]="bill"></app-bill-card>
+    </div>
+    <div class="groups" *ngIf="groupByDate && groupByTable">
+      <div
+        class="tableGroup primary"
+        *ngFor="
+          let table of this.filteredBills.length > 0
+            ? (this.filteredBills | mode: currentMode | tableGroups)
+            : (bills | mode: currentMode | tableGroups)
+        "
+      >
+        <div class="heading">
+          <h3>Table: {{ table.table }}</h3>
+        </div>
+        <div class="groups">
+          <div
+            class="tableGroup yellow"
+            *ngFor="let date of table.bills | dateGroup"
+          >
+            <div class="heading">
+              <h3>Date: {{ date.date | date }}</h3>
+            </div>
+            <div class="bills">
+              <app-bill-card
+                *ngFor="let bill of date.bills"
+                [bill]="bill"
+              ></app-bill-card>
+            </div>
           </div>
         </div>
       </div>
     </div>
+  </ng-container>
+  <div class="bills" *ngIf="loading">
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
   </div>
   <div class="spacer"></div>
 </section>

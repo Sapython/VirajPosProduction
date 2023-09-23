@@ -158,6 +158,13 @@ export class TableService {
 
   reOrderTable() {
     let groupedTables = [];
+    this.dataProvider.tables.sort((a, b) => {
+      if (a.order != undefined && b.order != undefined) {
+        return a.order - b.order;
+      } else {
+        return a.name.localeCompare(b.name);
+      }
+    })
     this.dataProvider.tables.forEach((r) => {
       let tableGroup = groupedTables.find((group) => group.name == r.group);
       if (tableGroup) {

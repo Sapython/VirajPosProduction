@@ -89,6 +89,7 @@ import { ElectronService } from './core/services/electron/electron.service';
 import { PrinterService } from './core/services/printing/printer/printer.service';
 import { UpdaterService } from './core/services/updater/updater.service';
 import { provideMessaging,getMessaging } from '@angular/fire/messaging';
+import { LockedComponent } from './shared/locked/locked.component';
 export class MyHammerConfig extends HammerGestureConfig  {
   overrides = <any>{
       // override hammerjs default configuration
@@ -198,6 +199,7 @@ export const dbConfig: DBConfig = {
     ResetPasswordComponent,
     CheckingPasswordComponent,
     RequiresPrivilegeComponent,
+    LockedComponent,
   ],
   imports: [
     BrowserModule,

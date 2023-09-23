@@ -75,6 +75,12 @@
                 | date: "short") || "N/A"
             }}
           </p>
+          <p>
+            Points:
+            {{
+              (this.dataProvider.currentBill?.customerInfo?.loyaltyPoints) || "N/A"
+            }}
+          </p>
         </div>
         <hr />
         <h4>Loyalty Settings</h4>

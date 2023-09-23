@@ -1223,6 +1223,14 @@ export class MenuManagementService {
     );
   }
 
+  updateLocalSettings(settings: any) {
+    this.dataProvider.localSettings = {
+      ...this.dataProvider.localSettings,
+      ...settings
+    };
+    localStorage.setItem("localSettings",JSON.stringify(this.dataProvider.localSettings));
+  }
+
   updateRootSettingsAtomic(settings: any, businessId: string) {
     return updateDoc(
       doc(this.firestore, 'business/' + businessId + '/settings/settings'),

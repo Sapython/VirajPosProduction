@@ -1,0 +1,20 @@
+<section>
+	<div class="heading">
+		<h1>Settings</h1>
+		<button mat-icon-button (click)="dialogRef.close()">
+			<mat-icon>close</mat-icon>
+		</button>
+	</div>
+	<form [formGroup]="counterForm" (ngSubmit)="this.data.mode == 'edit' ? updateCounter() : addCounter()">
+		<div class="body">
+			<mat-form-field appearance="outline">
+				<mat-label>Counter Name</mat-label>
+				<input matInput type="text" formControlName="counterName">
+			</mat-form-field>
+		</div>
+		<div class="actions">
+			<button mat-raised-button color="primary" type="submit">Save</button>
+			<button mat-raised-button type="button" (click)="dialogRef.close()">Cancel</button>
+		</div>
+	</form>
+</section>

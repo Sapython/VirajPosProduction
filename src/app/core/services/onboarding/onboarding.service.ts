@@ -43,6 +43,8 @@ import { Functions, httpsCallable } from '@angular/fire/functions';
 import { Router } from '@angular/router';
 import { PaymentMethod } from '../../../types/payment.structure';
 import * as LogRocket from 'logrocket';
+import { BillerCounter } from '../../../pages/biller/settings/sections/counters/counters.component';
+import { LockedComponent } from '../../../shared/locked/locked.component';
 
 var debug: boolean = true;
 @Injectable({
@@ -61,6 +63,7 @@ export class OnboardingService {
     | 'onboardingStep2'
     | 'onboardingStep3'
     | 'virajReady'
+    | 'chooseCounters'
     | 'virajGettingReady'
     | 'resetPasswordStage1'
     | 'resetPasswordStage2'
@@ -86,6 +89,8 @@ export class OnboardingService {
     email:'',
     username:''
   };
+
+  businessCounters: BillerCounter[] = [];
   private checkIfAccessTokenIsValidFunction = httpsCallable(
     this.functions,
     'checkIfAccessTokenIsValid',
@@ -566,9 +571,6 @@ export class OnboardingService {
             await this.getOnlineTokens();
             this.loadingSteps.next('All online tokens loaded');
           }
-          this.dataProvider.showTableOnBillAction = JSON.parse(
-            localStorage.getItem('showTable') || 'false',
-          );
           // console.log("Loading table size");
           let tempSize = localStorage.getItem('tableSize');
           if (
@@ -584,8 +586,21 @@ export class OnboardingService {
           this.loadingSteps.next('Setup Completed');
           this.message = 'Vrajera is ready to use.';
           this.dataProvider.loading = false;
-          this.stage = 'virajReady';
-          this.router.navigate(['biller']);
+          let countersSub = collectionData(collection(this.firestore,'business',business.businessId,'counters'),{idField:'id'});
+          countersSub.subscribe((res)=>{
+            this.dataProvider.billerCounters = res as BillerCounter[];
+            this.dataProvider.currentBillerCounter = this.dataProvider.billerCounters.find((counter)=>counter.id == this.dataProvider.currentBillerCounter?.id);
+            console.log("Biller counters",res);
+            this.checkForLock();
+          });
+          let initialCounters = await firstValueFrom(countersSub);
+          this.businessCounters = initialCounters as BillerCounter[];
+          if (this.businessCounters.length == 0){
+            this.stage = 'virajReady';
+            this.router.navigate(['biller']);
+          } else {
+            this.stage = 'chooseCounters';
+          }
         } else {
           this.stage = 'onboardingStep3';
         }
@@ -670,10 +685,6 @@ export class OnboardingService {
         this.dataProvider.tableTimeOutTime = res['tableTimeOutTime'] || 45;
         this.dataProvider.billNoSuffix = res['billNoSuffix'] || '';
         this.dataProvider.optionalTax = res['optionalTax'] || false;
-        this.dataProvider.printBillAfterSettle =
-          res['printBillAfterSettle'] || false;
-        this.dataProvider.printBillAfterFinalize =
-          res['printBillAfterFinalize'] || false;
         this.dataProvider.printSettings =
           res['printSettings'] || {
             showBillTime: true,
@@ -692,20 +703,15 @@ export class OnboardingService {
             ncBillNo: false,
             kotNo: false
           };
-        this.dataProvider.directSettle =
-          res['directSettle'] || false;
         this.dataProvider.confirmBeforeSettlementPrint =
           res['confirmBeforeSettlementPrint'] || false;
         this.dataProvider.confirmBeforeFinalizePrint =
           res['confirmBeforeFinalizePrint'] || false;
-        this.dataProvider.salesHidden =
-          res['salesHidden'] || false;
+        this.dataProvider.viewOnHoldTokens =
+          res['viewOnHoldTokens'] || false;
         this.dataProvider.takeawayToken = res['takeawayTokenNo'] || 0;
-        this.dataProvider.editKotTime = res['editKotTime'] || 0;
-        this.dataProvider.kotEditable = res['kotEditable'] || false;
         this.dataProvider.onlineTokenNo = res['onlineTokenNo'] || 0;
         this.dataProvider.orderTokenNo = res['orderTokenNo'] || 0;
-        this.dataProvider.kotRePrintable = res['kotRePrintable'] || false;
         // this.dataProvider.password = res['password'];
         this.dataProvider.multipleDiscount = res['multipleDiscount'] || false;
         this.dataProvider.charges = res['charges'] || {
@@ -867,6 +873,12 @@ export class OnboardingService {
       business:business.hotelName,
       address:business.address,
     });
+  }
+
+  selectCounter(counter:BillerCounter){
+    this.dataProvider.currentBillerCounter = counter;
+    this.checkForLock();
+    this.router.navigate(['biller']);
   }
 
   async getTables() {
@@ -1076,6 +1088,23 @@ export class OnboardingService {
       accessCode: accessCode,
       username: this.dataProvider.currentUser.username,
     });
+  }
+
+  checkForLock(){
+    if (this.dataProvider.currentBillerCounter){
+      let counter = this.dataProvider.currentBillerCounter;
+      console.log("counter.locked",counter.locked,this.dataProvider.billerLocked);
+      if (counter.locked && !this.dataProvider.billerLocked){
+        this.dataProvider.billerLocked = this.dialog.open(LockedComponent);
+        this.dataProvider.billerLocked.disableClose = true;
+      } else {
+        if (this.dataProvider.billerLocked){
+          this.dataProvider.billerLocked.close();
+          this.dataProvider.billerLocked = undefined;
+        }
+        
+      }
+    }
   }
 }
 

@@ -2,15 +2,15 @@ import { Timestamp } from 'firebase-admin/firestore';
 import { AnalyticsData } from '.';
 // import { Storage } from 'firebase-admin/lib/storage/storage';
 
-export async function generateAnalytics(firestore: any,storage:any, businessDoc: any) {
+export async function generateAnalytics(firestore: any,storage:any, businessDoc: any, fetchDate:Date) {
   let cachedTables: any[] = [];
   // /business/uqd9dm0its2v9xx6fey2q/analyticsData/2023/7
-  console.log('Fetching for date', new Date().toDateString());
+  console.log('Fetching for date', fetchDate.toDateString());
 
   let prevAnalyticsData = await firestore
     .collection(
-      `business/${businessDoc.id}/analyticsData/${new Date().getFullYear()}/${
-        new Date().getMonth() + 1
+      `business/${businessDoc.id}/analyticsData/${fetchDate.getFullYear()}/${
+        fetchDate.getMonth() + 1
       }`,
     )
     .get();
@@ -78,13 +78,13 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
     }
     // console.log("Final sales data",salesData,);
   }
-  let today = new Date();
+  let today = new Date(fetchDate);
   // set hours to 0
   today.setHours(0, 0, 0, 0);
-  let todayEnd = new Date();
+  let todayEnd = fetchDate;
   // set hours to 23
   todayEnd.setHours(23, 59, 59, 999);
-  // console.log("Added prev analytics",averageHourlySales);
+  console.log("Config date range: ",today.toLocaleString(),todayEnd.toLocaleString(),`business/${businessDoc.id}/bills`);
   let bills = firestore
     .collection(`business/${businessDoc.id}/bills`)
     .where('createdDate', '>=', today)
@@ -126,6 +126,7 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
               totalSales: 0,
             },
           },
+          maxBillsInRange:0,
           tableWise: [],
           time: [],
           maxTables: 0,
@@ -182,6 +183,7 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
               totalSales: 0,
             },
           },
+          maxBillsInRange:0,
           tableWise: [],
           time: [],
           maxTables: 0,
@@ -238,6 +240,7 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
               totalSales: 0,
             },
           },
+          maxBillsInRange:0,
           tableWise: [],
           time: [],
           maxTables: 0,
@@ -294,6 +297,7 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
               totalSales: 0,
             },
           },
+          maxBillsInRange:0,
           tableWise: [],
           time: [],
           maxTables: 0,
@@ -1519,6 +1523,14 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
   analyticsData.salesChannels.all.billWiseSales.rangeWise.highRange.bills.sort(
     (a, b) => a.time.toDate().getTime() - b.time.toDate().getTime(),
   );
+  analyticsData.salesChannels.all.billWiseSales.maxBillsInRange = Math.max(
+    analyticsData.salesChannels.all.billWiseSales.rangeWise.lowRange.bills
+      .length,
+    analyticsData.salesChannels.all.billWiseSales.rangeWise.mediumRange.bills
+      .length,
+    analyticsData.salesChannels.all.billWiseSales.rangeWise.highRange.bills
+      .length,
+  );
   // sort suspicious activities by time
   analyticsData.salesChannels.all.suspiciousActivities.sort(
     (a, b) =>
@@ -1554,6 +1566,14 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
   );
   analyticsData.salesChannels.dineIn.billWiseSales.rangeWise.highRange.bills.sort(
     (a, b) => a.time.toDate().getTime() - b.time.toDate().getTime(),
+  );
+  analyticsData.salesChannels.dineIn.billWiseSales.maxBillsInRange = Math.max(
+    analyticsData.salesChannels.dineIn.billWiseSales.rangeWise.lowRange.bills
+      .length,
+    analyticsData.salesChannels.dineIn.billWiseSales.rangeWise.mediumRange.bills
+      .length,
+    analyticsData.salesChannels.dineIn.billWiseSales.rangeWise.highRange.bills
+      .length,
   );
   // sort suspicious activities by time
   analyticsData.salesChannels.dineIn.suspiciousActivities.sort(
@@ -1591,6 +1611,14 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
   analyticsData.salesChannels.takeaway.billWiseSales.rangeWise.highRange.bills.sort(
     (a, b) => a.time.toDate().getTime() - b.time.toDate().getTime(),
   );
+  analyticsData.salesChannels.takeaway.billWiseSales.maxBillsInRange = Math.max(
+    analyticsData.salesChannels.takeaway.billWiseSales.rangeWise.lowRange.bills
+      .length,
+    analyticsData.salesChannels.takeaway.billWiseSales.rangeWise.mediumRange.bills
+      .length,
+    analyticsData.salesChannels.takeaway.billWiseSales.rangeWise.highRange.bills
+      .length,
+  );
   // sort suspicious activities by time
   analyticsData.salesChannels.takeaway.suspiciousActivities.sort(
     (a, b) =>
@@ -1626,6 +1654,14 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
   );
   analyticsData.salesChannels.online.billWiseSales.rangeWise.highRange.bills.sort(
     (a, b) => a.time.toDate().getTime() - b.time.toDate().getTime(),
+  );
+  analyticsData.salesChannels.online.billWiseSales.maxBillsInRange = Math.max(
+    analyticsData.salesChannels.online.billWiseSales.rangeWise.lowRange.bills
+      .length,
+    analyticsData.salesChannels.online.billWiseSales.rangeWise.mediumRange.bills
+      .length,
+    analyticsData.salesChannels.online.billWiseSales.rangeWise.highRange.bills
+      .length,
   );
   // sort suspicious activities by time
   analyticsData.salesChannels.online.suspiciousActivities.sort(
@@ -1746,7 +1782,7 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
   });
   analyticsData.salesChannels.online.userWiseActions = userActions;
   // add this analyticsData to business/id/analyticsData/2021/01/01
-  let date = new Date();
+  let date = fetchDate;
   let year = date.getFullYear();
   let month = date.getMonth() + 1;
   let day = date.getDate();

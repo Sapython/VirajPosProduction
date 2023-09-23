@@ -136,6 +136,7 @@ export class HistoryComponent {
   }
 
   getReport() {
+    this.loading = true;
     this.billService
       .getBillsByDay(
         this.dateRangeFormGroup.value.startDate,

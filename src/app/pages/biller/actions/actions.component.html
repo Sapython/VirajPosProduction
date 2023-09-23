@@ -69,7 +69,7 @@
         this.dataProvider.getAccess('settleBill') &&
         (
           (
-            this.dataProvider.directSettle && 
+            this.dataProvider.localSettings.directSettle && 
             (this.dataProvider.currentBill?.stage == 'finalized' || this.dataProvider.currentBill?.stage == 'active')
           ) 
           || this.dataProvider.currentBill?.stage == 'finalized'
@@ -142,15 +142,15 @@
           this.dataProvider.getAccess('settleBill') &&
           (
             (
-              this.dataProvider.directSettle && 
+              this.dataProvider.localSettings.directSettle && 
               (this.dataProvider.currentBill?.stage == 'finalized' || this.dataProvider.currentBill?.stage == 'active')
             ) 
-            || this.dataProvider.currentBill?.stage == 'finalized'
+            || this.dataProvider.currentBill?.stage == 'finalized' || this.dataProvider.currentBill?.stage == 'hold'
           )
         "
         >Settle Bill</viraj-button
       >
-      <ng-container *ngIf="this.dataProvider.currentBill?.stage == 'finalized'">
+      <ng-container *ngIf="this.dataProvider.currentBill?.stage == 'finalized' || this.dataProvider.currentBill?.stage == 'hold'">
         <viraj-button
           class="split"
           color="warning"
@@ -175,7 +175,7 @@
         >
       </ng-container>
     </div>
-    <div class="quickSettle" *ngIf="this.dataProvider.currentMenu.type != 'dineIn'">
+    <div class="quickSettle" *ngIf="this.dataProvider.currentBill.stage != 'hold' && this.dataProvider.currentBill.mode != 'dineIn'">
       <viraj-button color="info" (vclick)="item.holdBill ? holdBill(item) : quickSettle(item)" *ngFor="let item of this.dataProvider.paymentMethods | quickSettle">Settle By {{item.name | titlecase}}</viraj-button>
     </div>
     <viraj-button

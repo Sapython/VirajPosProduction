@@ -1,7 +1,7 @@
-import { Dialog } from '@angular/cdk/dialog';
+import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { Injectable } from '@angular/core';
 import { User } from '@angular/fire/auth';
-import { ReplaySubject, Subject, debounceTime, firstValueFrom } from 'rxjs';
+import { ReplaySubject, Subject, firstValueFrom } from 'rxjs';
 import { DialogComponent } from '../../../shared/base-components/dialog/dialog.component';
 import { PromptComponent } from '../../../shared/base-components/prompt/prompt.component';
 import {
@@ -9,8 +9,6 @@ import {
   ViewCategory,
   RootCategory,
 } from '../../../types/category.structure';
-import { CodeBaseDiscount } from '../../../types/discount.structure';
-import { Tax } from '../../../types/tax.structure';
 import {
   UserRecord,
   BusinessRecord,
@@ -35,6 +33,7 @@ import {
 import { ApplicableCombo } from '../../constructors/comboKot/comboKot';
 import { Charge } from '../../../types/charges.structure';
 import { PaymentMethod } from '../../../types/payment.structure';
+import { BillerCounter } from '../../../pages/biller/settings/sections/counters/counters.component';
 
 @Injectable({
   providedIn: 'root',
@@ -57,6 +56,17 @@ export class DataProvider {
           ? JSON.parse(localStorage.getItem('viewSettings')!)
           : { smartView: false }
       ).smartView;
+      this.localSettings = JSON.parse(localStorage.getItem('localSettings') || `{
+        kotRePrintable:false,
+        touchMode:false,
+        kotEditable:false,
+        editKotTime:false,
+        showTableOnBillAction:false,
+        printBillAfterFinalize:false,
+        printBillAfterSettle:false,
+        directSettle:false,
+        salesHidden:false,
+      }`);
     }, 2000);
     window.alert = async (message: string) => {
       await this.confirm('Alert', [0], {
@@ -116,8 +126,8 @@ export class DataProvider {
   lowCostConfig: { min: number; max: number } = { min: 0, max: 0 };
   highRangeConfig: { min: number; max: number } = { min: 0, max: 0 };
   lowRangeConfig: { min: number; max: number } = { min: 0, max: 0 };
-  mostSellingConfig: { min: number; max: number } = { min: 0, max: 0 };
-  newDishesConfig: { min: any; max: any } = { min: 0, max: 0 };
+  mostSellingConfig: { numberOfProducts: number; } = { numberOfProducts: 0 };
+  newDishesConfig: { numberOfProducts: number; } = { numberOfProducts: 0 };
 
   // counters
   public sale: number = 0;
@@ -134,23 +144,20 @@ export class DataProvider {
   public tableTimeOutTime: number = 45;
   public billNoSuffix: string = '';
   public optionalTax: boolean = false;
-  public printBillAfterSettle: boolean = false;
-  public printBillAfterFinalize: boolean = false;
   public confirmBeforeFinalizePrint: boolean = false;
   public confirmBeforeSettlementPrint: boolean = false;
-  public salesHidden: boolean = false;
-  public directSettle: boolean = false;
+  public viewOnHoldTokens: boolean = false;
   public currentSettings: any;
   public customBillNote: string = '';
   public todaySales: any = {};
   public multipleDiscount: boolean = false;
   public openItemEnabled: boolean = false;
-  public editKotTime: number = 1;
-  public kotEditable: boolean = false;
-  public kotRePrintable: boolean = false;
   public sweetsMode:boolean = false;
   public deleteCancelledBill:boolean = false;
   public quickReasons:string[] = [];
+  public billerCounters:BillerCounter[] = [];
+  public currentBillerCounter:BillerCounter|undefined;
+  public billerLocked:DialogRef|undefined;
   public billerPrinter:string = '';
   public charges:{
     dineIn:Charge,
@@ -240,6 +247,26 @@ export class DataProvider {
     showCashier: true,
     showMode: true,
   };
+
+  public localSettings:{
+    kotRePrintable:boolean;
+    kotEditable:boolean;
+    editKotTime:number;
+    showTableOnBillAction:boolean;
+    printBillAfterFinalize:boolean;
+    printBillAfterSettle:boolean;
+    directSettle:boolean;
+    salesHidden:boolean;
+  }={
+    kotRePrintable:false,
+    kotEditable:false,
+    editKotTime:0,
+    showTableOnBillAction:false,
+    printBillAfterFinalize:false,
+    printBillAfterSettle:false,
+    directSettle:false,
+    salesHidden:false,
+  };
   
   public loyaltyRates: {
     dineIn: number;
@@ -271,7 +298,6 @@ export class DataProvider {
   public currentTable: Table | undefined;
   public currentDevice: Device | undefined;
   public currentBill: Bill | undefined;
-  public showTableOnBillAction: boolean = false;
   public moreActions: boolean = false;
   public manageKot: boolean = false;
   public manageKotChanged: Subject<boolean> = new Subject<boolean>();

@@ -103,16 +103,10 @@ export class ModeConfig {
     max: new FormControl(this.dataProvider.lowRangeConfig.max),
   });
   mostSellingForm: FormGroup = new FormGroup({
-    min: new FormControl(this.dataProvider.mostSellingConfig.min, [
-      Validators.required,
-    ]),
-    max: new FormControl(this.dataProvider.mostSellingConfig.max),
+    numberOfProducts: new FormControl(this.dataProvider.mostSellingConfig.numberOfProducts, Validators.required)
   });
   newDishesForm: FormGroup = new FormGroup({
-    min: new FormControl(this.dataProvider.newDishesConfig.min, [
-      Validators.required,
-    ]),
-    max: new FormControl(this.dataProvider.newDishesConfig.max),
+    numberOfProducts: new FormControl(this.dataProvider.newDishesConfig.numberOfProducts, Validators.required)
   });
   taxSearchControl: string = '';
   taxes: Tax[] = [];
@@ -382,7 +376,7 @@ export class ModeConfig {
         } else if(cat.id == 'newDishes'){
           cat.productOrders = cat.products.sort((a, b) => {
             if (a.price && b.price) {
-              return b.createdDate.toDate().getTime() - a.createdDate.toDate().getTime();
+              return b.createdDate?.toDate().getTime() - a.createdDate?.toDate().getTime();
             } else {
               return 0;
             }
@@ -986,29 +980,19 @@ export class ModeConfig {
             }
           });
       } else if (id == 'mostSelling') {
-        // console.log('this.mostSellingForm.value', this.mostSellingForm.value);
-        // var filteredList = this.products.filter(product => (product.sales || 0) >= this.mostSellingForm.value.min && (product.sales || 0) <= this.mostSellingForm.value.max);
-        if (this.mostSellingForm.value.min && this.mostSellingForm.value.max) {
-          var filteredList = this.products.filter(
-            (product) =>
-              (product.sales || 0) >= this.mostSellingForm.value.min &&
-              (product.sales || 0) <= this.mostSellingForm.value.max,
-          );
-        } else if (this.mostSellingForm.value.min) {
-          var filteredList = this.products.filter(
-            (product) => {
-              console.log("(product.sales || 0) >= this.mostSellingForm.value.min,",product.sales,(product.sales || 0) >= this.mostSellingForm.value.min);
-              return (product.sales || 0) >= this.mostSellingForm.value.min;
-            }
-          );
-        } else if (this.mostSellingForm.value.max) {
-          var filteredList = this.products.filter(
-            (product) => (product.sales || 0) <= this.mostSellingForm.value.max,
-          );
-        } else {
-          var filteredList = this.products;
-        }
-        
+        // sort products by sales
+        let sortedProducts = this.products.sort((a, b) => {
+          if (a.sales && b.sales) {
+            return b.sales - a.sales;
+          } else {
+            return 0;
+          }
+        });
+        // slice first this.mostSellingForm.value.numberOfProducts products
+        let filteredList = sortedProducts.slice(
+          0,
+          this.mostSellingForm.value.numberOfProducts,
+        );
         let currSelectedCategory = this.selectedCategory;
         if (currSelectedCategory && this.selectedCategory) {
           this.selectedCategory.products = filteredList;
@@ -1038,29 +1022,19 @@ export class ModeConfig {
       } else if (id == 'newDishes') {
         // console.log('this.newDishesForm.value', this.newDishesForm.value);
         // var filteredList = this.products.filter(product => product.createdDate.toDate().getTime() >= this.newDishesForm.value.min.getTime() && product.createdDate.toDate().getTime() <= this.newDishesForm.value.max.getTime());
-        if (this.newDishesForm.value.min && this.newDishesForm.value.max) {
-          var filteredList = this.products.filter(
-            (product) =>
-              product.createdDate.toDate().getTime() >=
-                this.newDishesForm.value.min.getTime() &&
-              product.createdDate.toDate().getTime() <=
-                this.newDishesForm.value.max.getTime(),
-          );
-        } else if (this.newDishesForm.value.min) {
-          var filteredList = this.products.filter(
-            (product) =>
-              product.createdDate.toDate().getTime() >=
-              this.newDishesForm.value.min.getTime(),
-          );
-        } else if (this.newDishesForm.value.max) {
-          var filteredList = this.products.filter(
-            (product) =>
-              product.createdDate.toDate().getTime() <=
-              this.newDishesForm.value.max.getTime(),
-          );
-        } else {
-          var filteredList = this.products;
-        }
+        // sort products based upon their update or creation date
+        let sortedProducts = this.products.sort((a, b) => {
+          if (a.createdDate && b.createdDate) {
+            return b.createdDate?.toDate().getTime() - a.createdDate?.toDate().getTime();
+          } else {
+            return 0;
+          }
+        });
+        // slice first this.newDishesForm.value.numberOfProducts products
+        let filteredList = sortedProducts.slice(
+          0,
+          this.newDishesForm.value.numberOfProducts,
+        );
         let currSelectedCategory = this.selectedCategory;
         if (currSelectedCategory && this.selectedCategory) {
           this.selectedCategory.products = filteredList;

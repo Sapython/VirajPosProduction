@@ -1098,7 +1098,7 @@ export const analyzeAnalytics = functions.pubsub.schedule('every 3 hours').onRun
   let businessRef = firestore.collection('business');
   let businessDocs = await businessRef.get();
   let workers = businessDocs.docs.map(async (businessDoc)=>{
-    await generateAnalytics(firestore,storage,businessDoc)
+    await generateAnalytics(firestore,storage,businessDoc,new Date())
   });
   let loyaltyWorkers = businessDocs.docs.map(async (businessDoc)=>{
     
@@ -1117,8 +1117,10 @@ export const analyzeAnalyticsForBusiness = functions.https.onCall(
     let businessRef = firestore.doc(`business/${request.businessId}`);
     let businessDoc = await businessRef.get();
     console.log('businessDoc.exists', businessDoc.exists);
+    // request.date is in ISO format
+    let date = new Date(request.date);
     if (businessDoc.exists) {
-      let analyticsData = await generateAnalytics(firestore,storage, businessDoc);
+      let analyticsData = await generateAnalytics(firestore,storage, businessDoc, date);
       return { status: true, data: analyticsData };
     } else {
       throw new HttpsError(
@@ -1622,6 +1624,7 @@ export interface ChannelWiseAnalyticsData {
         totalSales: number;
       }
     },
+    maxBillsInRange:number;
     tableWise:{
       table:string;
       tableId:string;

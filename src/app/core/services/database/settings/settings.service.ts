@@ -20,6 +20,7 @@ import { BusinessRecord, Member } from '../../../../types/user.structure';
 import { OptionalBusinessRecord } from '../../../../types/business.structure';
 import { Tax } from '../../../../types/tax.structure';
 import { PaymentMethod } from '../../../../types/payment.structure';
+import { BillerCounter } from '../../../../pages/biller/settings/sections/counters/counters.component';
 
 @Injectable({
   providedIn: 'root',
@@ -321,5 +322,21 @@ export class SettingsService {
     return Promise.all(paymentMethods.map(async (paymentMethod) => {
       await addDoc(collection(this.firestore,'business',businessId,'paymentMethods'),paymentMethod);
     }));
+  }
+
+  addCounter(data:BillerCounter){
+    return addDoc(collection(this.firestore,'business',this.dataProvider.businessId,'counters'),{...data,creationDate:serverTimestamp(),updateDate:serverTimestamp(),locked:false});
+  }
+
+  getCounters(){
+    return getDocs(collection(this.firestore,'business',this.dataProvider.businessId,'counters'));
+  }
+
+  deleteCounter(id:string){
+    return deleteDoc(doc(this.firestore,'business',this.dataProvider.businessId,'counters',id));
+  }
+
+  updateCounter(id:string,data:any){
+    return setDoc(doc(this.firestore,'business',this.dataProvider.businessId,'counters',id),{...data,updateDate:serverTimestamp()},{merge:true});
   }
 }

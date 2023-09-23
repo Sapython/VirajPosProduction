@@ -79,10 +79,10 @@ export async function finalize(this: Bill, noTable?: boolean,onHold?:boolean) {
   this.dataProvider.loading = true;
   this.updateToFirebase();
   this.dataProvider.loading = false;
-  if (this.dataProvider.printBillAfterFinalize) {
+  if (this.dataProvider.localSettings.printBillAfterFinalize) {
     this.printBill();
   } else if (
-    !this.dataProvider.printBillAfterFinalize &&
+    !this.dataProvider.localSettings.printBillAfterFinalize &&
     this.dataProvider.confirmBeforeFinalizePrint
   ) {
     let res = await this.dataProvider.confirm(
@@ -99,7 +99,7 @@ export async function finalize(this: Bill, noTable?: boolean,onHold?:boolean) {
     type: 'billFinalized',
     user: this.user.username,
   });
-  if (this.dataProvider.showTableOnBillAction && !noTable) {
+  if (this.dataProvider.localSettings.showTableOnBillAction && !noTable) {
     this.dataProvider.openTableView.next(true);
   }
 }
@@ -149,10 +149,13 @@ export async function settle(
 ) {
   // ** RECHECKER starts here
   // check if previous stages are completed
-  if (this.dataProvider.directSettle && !noDialogs) {
+  if (!noDialogs) {
+    console.log("this.kots",this.kots);
     if (this.kots.find((kot) => kot.stage === 'active')) {
+      console.log("printing kot");
       await this.finalizeAndPrintKot(true);
     }
+    console.log("finalizing bill");
     await this.finalize(true);
   }
   // recalculate bill
@@ -208,10 +211,10 @@ export async function settle(
   this.dataProvider.loading = false;
   // print the bill after saving it to database
   if (splitSave) {
-    if (this.dataProvider.printBillAfterSettle) {
+    if (this.dataProvider.localSettings.printBillAfterSettle) {
       await this.printingService.printBill(this.printableBillData);
     } else if (
-      !this.dataProvider.printBillAfterSettle &&
+      !this.dataProvider.localSettings.printBillAfterSettle &&
       this.dataProvider.confirmBeforeSettlementPrint && !noDialogs
     ) {
       let res = await this.dataProvider.confirm(
@@ -224,7 +227,7 @@ export async function settle(
       }
     }
   }
-  if (this.dataProvider.showTableOnBillAction && !noTable) {
+  if (this.dataProvider.localSettings.showTableOnBillAction && !noTable) {
     this.dataProvider.openTableView.next(true);
   }
   // set the loyalty points for the customers

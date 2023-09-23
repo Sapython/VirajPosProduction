@@ -646,21 +646,9 @@
                       #inputElm
                       type="number"
                       placeholder="  "
-                      formControlName="min"
+                      formControlName="numberOfProducts"
                     />
-                    <label>Minimum Sales</label>
-                  </div>
-                  <div
-                    class="virajInput"
-                    [ngClass]="{ active: inputElm.value }"
-                  >
-                    <input
-                      #inputElm
-                      type="number"
-                      placeholder="  "
-                      formControlName="max"
-                    />
-                    <label>Maximum Sales</label>
+                    <label>Number Of Products</label>
                   </div>
                   <viraj-button
                     color="primary"
@@ -688,53 +676,18 @@
                   #currentForm
                   (ngSubmit)="mode.recommendationSave('newDishes')"
                 >
-                  <div class="customDatePicker">
-                    <input
-                      matInput
-                      tabindex="-1"
-                      [matDatepicker]="minPicker"
-                      required
-                      type="date"
-                      formControlName="min"
-                      #minPickerInput
-                    />
-                    <mat-datepicker #minPicker></mat-datepicker>
-                    <viraj-button
-                      type="outline"
-                      class="dateSelector"
-                      (vclick)="minPicker.open()"
-                    >
-                      {{
-                        mode.newDishesForm.value.min
-                          ? (mode.newDishesForm.value.min | date)
-                          : "Select Date"
-                      }}
-                      <i class="ri-calendar-2-fill"></i
-                    ></viraj-button>
-                  </div>
-                  <div class="customDatePicker">
-                    <input
-                      tabindex="-1"
-                      type="date"
-                      [matDatepicker]="picker"
-                      formControlName="max"
-                      #pickerInput
-                    />
-                    <mat-datepicker #picker></mat-datepicker>
-                    <p>{{ pickerInput.value }}</p>
-                    <viraj-button
-                      type="outline"
-                      class="dateSelector"
-                      (vclick)="picker.open()"
-                    >
-                      {{
-                        mode.newDishesForm.value.max
-                          ? (mode.newDishesForm.value.max | date)
-                          : "Select Date"
-                      }}
-                      <i class="ri-calendar-2-fill"></i
-                    ></viraj-button>
-                  </div>
+                <div
+                  class="virajInput"
+                  [ngClass]="{ active: inputElm.value }"
+                >
+                  <input
+                    #inputElm
+                    type="number"
+                    placeholder="  "
+                    formControlName="numberOfProducts"
+                  />
+                  <label>Number Of Products</label>
+                </div>
                   <viraj-button
                     color="primary"
                     (click)="mode.recommendationSave('newDishes')"

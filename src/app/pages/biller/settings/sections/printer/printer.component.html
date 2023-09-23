@@ -23,20 +23,20 @@
 </mat-form-field>
 <mat-slide-toggle
   matTooltip="Print Bill After Finalize"
-  [(ngModel)]="dataProvider.printBillAfterFinalize"
+  [(ngModel)]="dataProvider.localSettings.printBillAfterFinalize"
   (change)="
     updateSettings({
-      printBillAfterFinalize: dataProvider.printBillAfterFinalize
+      printBillAfterFinalize: dataProvider.localSettings.printBillAfterFinalize
     })
   "
   >Bill After Finalize</mat-slide-toggle
 >
 <mat-slide-toggle
   matTooltip="Print Bill After Settle"
-  [(ngModel)]="dataProvider.printBillAfterSettle"
+  [(ngModel)]="dataProvider.localSettings.printBillAfterSettle"
   (change)="
     updateSettings({
-      printBillAfterSettle: dataProvider.printBillAfterSettle
+      printBillAfterSettle: dataProvider.localSettings.printBillAfterSettle
     })
   "
   >Bill After Settlement</mat-slide-toggle

@@ -19,9 +19,10 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { BusinessCardComponent } from './business-card/business-card.component';
 import { NewBusinessCardComponent } from './new-business-card/new-business-card.component';
 import { AreaCardComponent } from './area-card/area-card.component';
+import { CounterCardComponent } from './counter-card/counter-card.component';
 
 @NgModule({
-  declarations: [LoadingComponent, BusinessCardComponent, NewBusinessCardComponent, AreaCardComponent],
+  declarations: [LoadingComponent, BusinessCardComponent, NewBusinessCardComponent, AreaCardComponent, CounterCardComponent],
   imports: [
     CommonModule,
     LoadingRoutingModule,

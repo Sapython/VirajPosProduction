@@ -47,7 +47,7 @@ export async function cancel(this: Bill, reason: string, phone: string,table = t
     table!.completed = true;
   }
   table = undefined;
-  if (this.dataProvider.showTableOnBillAction && !noTable) {
+  if (this.dataProvider.localSettings.showTableOnBillAction && !noTable) {
     this.dataProvider.openTableView.next(true);
   }
   await this.billService.addActivity(this, {

@@ -323,6 +323,26 @@
   <section
     [@zoomInOnEnter]
     class="multipleBusiness"
+    *ngIf="onboardingService.stage == 'chooseCounters'"
+  >
+    <h1>Choose a counter</h1>
+    <p>
+      These are all counters available on
+      <strong>{{ this.dataProvider.currentBusiness.hotelName }}</strong>
+    </p>
+    <div class="businessWrapper" >
+      <app-counter-card (click)="onboardingService.selectCounter(counter)" *ngFor="let counter of dataProvider.billerCounters" [counter]="counter">
+      </app-counter-card>
+    </div>
+    <div class="actions">
+      <viraj-button color="primary" type="outline" (click)="logout()"
+        >Logout</viraj-button
+      >
+    </div>
+  </section>
+  <section
+    [@zoomInOnEnter]
+    class="multipleBusiness"
     *ngIf="onboardingService.stage == 'multipleBusiness'"
   >
     <h1>Choose a business</h1>

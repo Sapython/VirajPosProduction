@@ -191,6 +191,10 @@ export async function finalizeAndPrintKot(this: Bill, noTable?: boolean) {
           activeKot.id = res.kotTokenNumber;
           this.orderNo = res.orderTokenNumber;
         } else if (this.table.type == 'table' || this.table.type == 'room'){
+          let res = await this.billService.getOrderAndKotNumber();
+          activeKot.id = res.kotTokenNumber;
+          this.orderNo = res.orderTokenNumber;
+          console.log("Assigned order in dine in mode",this.orderNo);
           this.table.attachBill(this,undefined);
         }
       } else {
@@ -235,7 +239,7 @@ export async function finalizeAndPrintKot(this: Bill, noTable?: boolean) {
       await alert('No active kot found');
     }
   }
-  if (this.dataProvider.showTableOnBillAction && !noTable) {
+  if (this.dataProvider.localSettings.showTableOnBillAction && !noTable) {
     this.dataProvider.openTableView.next(true);
   }
   this.calculateBill();

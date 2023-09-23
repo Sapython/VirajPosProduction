@@ -87,7 +87,7 @@ export class AuthService {
                 this.dataProvider.currentUser = userData.data() as UserRecord;
                 this.dataProvider.isAuthStateAvaliable = true;
               } else {
-                this.alertify.presentToast('User not found');
+                // this.alertify.presentToast('User not found');
                 this.dataProvider.userSubject.next({
                   status: false,
                   stage: 2,

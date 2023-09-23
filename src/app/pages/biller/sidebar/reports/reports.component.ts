@@ -315,7 +315,7 @@ export class ReportsComponent implements OnInit {
 
   refreshReport(){
     this.dataProvider.loading = true;
-    this.analyzeAnalyticsForBusiness({businessId:this.dataProvider.currentBusiness.businessId}).then((result:any)=>{
+    this.analyzeAnalyticsForBusiness({businessId:this.dataProvider.currentBusiness.businessId,date:(new Date()).toISOString()}).then((result:any)=>{
       console.log("Result",result);
       this.fetchChartPaymentData({value:this.paymentDate});
       this.fetchChartSalesData({value:this.salesDate});

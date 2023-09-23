@@ -55,7 +55,8 @@ import { ChargesComponent } from './settings/sections/charges/charges.component'
 import {MatExpansionModule} from '@angular/material/expansion';
 import { QuickReasonsComponent } from './settings/sections/quick-reasons/quick-reasons.component';
 import { ResetComponent } from './settings/sections/config/reset/reset.component';
-import { CountersComponent } from './settings/sections/counters/counters.component'; 
+import { CountersComponent } from './settings/sections/counters/counters.component';
+import { AddEditComponent } from './settings/sections/counters/add-edit/add-edit.component'; 
 
 @NgModule({
   declarations: [
@@ -84,6 +85,7 @@ import { CountersComponent } from './settings/sections/counters/counters.compone
     QuickReasonsComponent,
     ResetComponent,
     CountersComponent,
+    AddEditComponent,
   ],
   imports: [
     CommonModule,

@@ -318,46 +318,6 @@ export class LoadingComponent implements OnInit {
       });
   }
 
-  // signup(){
-  // //  console.log(this.loginForm.value);
-
-  //   if (this.loginForm.invalid) {
-  //     this.alertify.presentToast('Invalid form details.');
-  //     return;
-  //   }
-  //   // this.signUpWithUserAndPassword({
-
-  //   // }).then((result)=>{
-  //   // //  console.log(result.data);
-
-  //   // }).catch((error)=>{
-  //   // //  console.log(error);
-  //   // })
-  //   this.signUpService.signUpWithUserAndPassword(
-  //     this.loginForm.value.username,
-  //     this.loginForm.value.password,
-  //     {
-  //       business:{
-  //         access:{
-  //           accessLevel:'admin',
-  //           lastUpdated:Timestamp.now(),
-  //           updatedBy:'system'
-  //         },
-  //         address:'Sardar Patel Marg, beside JK Palace, Civil Lines, Prayagraj, Uttar Pradesh 211001',
-  //         businessId:'46r0a1zlta7hyb077scig9',
-  //         joiningDate:Timestamp.now(),
-  //         name:'Momos Castle',
-  //       },
-  //     }
-  //   ).then((data)=>{
-  //   //  console.log(data);
-  //     this.alertify.presentToast("Signed Up with "+this.loginForm.value.username)
-  //   }).catch((error)=>{
-  //   //  console.log(error);
-  //     this.alertify.presentToast("Some Error Occured")
-  //   })
-  // }
-
   async login() {
     // if (this.mode == 'signup') {
     //   this.signup();
@@ -799,26 +759,6 @@ export class LoadingComponent implements OnInit {
   setDefaultAccount(business: UserBusiness) {
     this.dataProvider.loading = true;
     this.onboardingService.loadBusiness(business.businessId)
-    // let dialog = this.dialog.open(DialogComponent, {
-    //   data: {
-    //     title: 'Set ' + business.name + ' as default account?',
-    //     description:
-    //       'This will be your default account and you will be logged in to this account by default. Account id #' +
-    //       business.businessId,
-    //     buttonText: 'Set as default',
-    //   },
-    // });
-    // dialog.closed.subscribe((res) => {
-    //   if (res) {
-    //     localStorage.setItem('businessId', business.businessId);
-    //     let url = window.location.href.split('/');
-    //     url.pop();
-    //     url.push('index.html');
-    //     window.location.href = url.join('/');
-    //   } else {
-    //     this.alertify.presentToast('Default account not set', 'error');
-    //   }
-    // });
   }
 
   get everythingDone() {

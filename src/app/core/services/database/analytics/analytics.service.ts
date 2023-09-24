@@ -31,7 +31,14 @@ export class AnalyticsService {
   async addSales(sale: number, type: string,billDate:Date) {
     // alert("Adding sales")
     // get date in format of 2021-08-01
-    let date = billDate.toISOString().split('T')[0];
+    // get daily counters
+    let newDate = new Date()
+    let month =(newDate.getMonth()+1).toString()
+    if ((newDate.getMonth()+1) < 10){
+      month = '0' + (newDate.getMonth()+1).toString();
+    }
+    let date = (newDate.getFullYear() + '-' + month + '-' + newDate.getDate());
+    console.log("Date ISF: ",date);
     logEvent(this.analytics, 'add_sales', { date, sale, type });
     return await setDoc(
       doc(

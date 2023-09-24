@@ -610,8 +610,13 @@ export class OnboardingService {
       }
     });
     // get daily counters
-    let date = new Date().toISOString().split('T')[0];
-    console.log('ISO date:', date);
+    let newDate = new Date()
+    let month =(newDate.getMonth()+1).toString()
+    if ((newDate.getMonth()+1) < 10){
+      month = '0' + (newDate.getMonth()+1).toString();
+    }
+    let date = (newDate.getFullYear() + '-' + month + '-' + newDate.getDate());
+    console.log("Date ISF: ",date);
     docData(
       doc(
         this.firestore,

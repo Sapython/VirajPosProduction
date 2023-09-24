@@ -17,16 +17,7 @@ export class SettleComponent implements OnInit {
   percentageValueError: boolean = false;
   additionalMethods: string[] = [];
   methodsWithDetail: string[] = [];
-  methods: any[] = [
-    {
-      paymentMethod: '',
-      paymentMethods: [
-        ...this.additionalMethods,
-      ],
-      amount: 0,
-      custom: false,
-    },
-  ];
+  methods: any[] = [];
   detailForm: FormGroup = new FormGroup({
     phone: new FormControl('', Validators.required),
   });
@@ -78,25 +69,42 @@ export class SettleComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.methods.forEach((method) => {
-      method.paymentMethods = [
-        ...this.dataProvider.cachedMethods,
-      ];
-    });
-    this.methods.forEach((method) => {
-      method.paymentMethods = [
-        ...this.dataProvider.paymentMethods.map((p)=>p.name),
-      ];
-    });
-    this.methodsWithDetail = this.dataProvider.paymentMethods
-      .filter((d) => {
-        return d.detail
-      })
-      .map((d) => {
-        return d.name;
-      });
-    // set first value of the first method to the difference of billSum and totalPaid
-    this.methods[0].amount = this.billSum;
+    console.log("this.additionalMethods[0]",this.dataProvider.paymentMethods);
+    this.methods = [
+      {
+        paymentMethod: this.dataProvider.paymentMethods[0].name,
+        paymentMethods: [
+          ...this.dataProvider.paymentMethods.map((p)=>p.name),
+        ],
+        amount: this.billSum,
+        custom: false,
+      }
+    ]
+    // this.methods = [
+    //   {
+    //     paymentMethod: this.additionalMethods[0],
+    //     paymentMethods: [
+    //       ...this.additionalMethods,
+    //     ],
+    //     amount: 0,
+    //     custom: false,
+    //   },
+    // ]
+    // this.methods.forEach((method) => {
+    //   method.paymentMethods = [
+    //     ...this.dataProvider.paymentMethods.map((p)=>p.name),
+    //   ];
+    // });
+    // this.methodsWithDetail = this.dataProvider.paymentMethods
+    //   .filter((d) => {
+    //     return d.detail
+    //   })
+    //   .map((d) => {
+    //     return d.name;
+    //   });
+    // // set first value of the first method to the difference of billSum and totalPaid
+    // this.methods[0].amount = this.billSum;
+    // this.methods
   }
 
   close() {

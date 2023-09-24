@@ -182,8 +182,8 @@ export async function finalizeAndPrintKot(this: Bill, noTable?: boolean) {
         if (this.table.type == 'token'){
           console.log("Going to run transaction");
           try {
-            let res = (await this.billService.getOrderKotTakeawayTokenNumber()).data as any;
-            console.log("Res",res);
+            let res = (await this.billService.getOrderKotTakeawayTokenNumber()) as any;
+            console.log("Res token",res);
             this.table.attachBill(this,res.takeawayTokenNumber);
             activeKot.id = res.kotTokenNumber;
             this.orderNo = res.orderTokenNumber;
@@ -198,18 +198,18 @@ export async function finalizeAndPrintKot(this: Bill, noTable?: boolean) {
           this.orderNo = res.orderTokenNumber;
         } else if (this.table.type == 'table' || this.table.type == 'room'){
           let res = (await this.billService.getOrderAndKotNumber()).data as any;
-          console.log("res",res.data);
-          activeKot.id = res.data['kotTokenNumber'];
-          this.orderNo = res.data['orderTokenNumber'];
+          console.log("res",res);
+          activeKot.id = res['kotTokenNumber'];
+          this.orderNo = res['orderTokenNumber'];
           console.log("Assigned order in dine in mode",this.orderNo);
           this.table.attachBill(this,undefined);
         }
       } else {
         if (!this.orderNo) {
           let res = (await this.billService.getOrderAndKotNumber()).data as any;
-          console.log("res",res.data);
-          activeKot.id = res.data['kotTokenNumber'];
-          this.orderNo = res.data['orderTokenNumber'];
+          console.log("res",res);
+          activeKot.id = res['kotTokenNumber'];
+          this.orderNo = res['orderTokenNumber'];
         } else {
           activeKot.id = (await this.billService.getKotTokenNumber()).data as any;
         }

@@ -76,6 +76,34 @@ export class BillService {
     //     }
     //   })
     // })
+    
+    // for(let i =0; i<100;i++){
+    //   console.log("FETCHING REQUEST");
+    //   fetch("http://43.231.127.137:5000/getOrderKotTakeawayTokenNumber?businessId=a99ak2983l5g7720wc1dv", requestOptions)
+    //     .then(response => response.text())
+    //     .then(result => console.log("FETCHING REQUEST",result))
+    //     .catch(error => console.log('FETCHING REQUEST error', error));
+    // }
+  }
+
+  requestHandler(url:string,method:string,body:any){
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var raw = JSON.stringify(body);
+    var requestOptions:any = {
+      method: method ? method : 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+    // return a promise resolved till json
+    return fetch(url, requestOptions)
+      .then(response => response.json())
+      .then(result => {
+        console.log("FETCHING REQUEST",result);
+        return result;
+      })
+      .catch(error => console.log('FETCHING REQUEST error', error));
   }
 
   deleteBill(billId:string){
@@ -387,7 +415,7 @@ export class BillService {
   }
 
   getOrderKotTakeawayTokenNumber(){
-    return this.getOrderKotTakeawayTokenNumberFunction({businessId:this.dataProvider.businessId});
+    return this.requestHandler("http://43.231.127.137:5000/getOrderKotTakeawayTokenNumber?businessId=a99ak2983l5g7720wc1dv",'POST',{});
     // return runTransaction(this.firestore,async (transaction)=>{
     //   let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['kitchenTokenNo'];
     //   let orderTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['orderTokenNo'];
@@ -408,8 +436,8 @@ export class BillService {
     // });
   }
 
-  getPaymentMethodBillNumber(paymentMethodId:string){
-    return this.getPaymentMethodBillNumberFunction({businessId:this.dataProvider.businessId,paymentMethodId:paymentMethodId});
+  getPaymentMethodBillNumber(paymentMethodId:string,mode:'dineIn'|'takeaway'|'online'){
+    return this.getPaymentMethodBillNumberFunction({businessId:this.dataProvider.businessId,paymentMethodId:paymentMethodId,mode});
     // return runTransaction(this.firestore,async (transaction)=>{
     //   let paymentMethod = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/paymentMethods/'+paymentMethodId))).data();
     //   transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/paymentMethods/'+paymentMethodId),{billNo:increment(1)});

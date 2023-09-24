@@ -1515,6 +1515,8 @@ export const getOrderKotTakeawayTokenNumber = functions.https.onCall(
       let orderTokenNumber = settingData!['orderTokenNo'];
       let takeawayTokenNumber = settingData!['takeawayTokenNo'];
       transaction.update(firestore.doc('business/'+request.businessId+'/settings/settings'),{kitchenTokenNo:FieldValue.increment(1),orderTokenNo:FieldValue.increment(1), takeawayTokenNo:FieldValue.increment(1)});
+      let date = new Date().toISOString().split('T')[0];
+      transaction.set(firestore.doc('business/'+request.businessId+'/dailyTokens/'+date),{takeawayTokenNo:FieldValue.increment(1)},{merge:true});
       return {kotTokenNumber,orderTokenNumber,takeawayTokenNumber};
     })
   }
@@ -1529,6 +1531,8 @@ export const getOrderKotOnlineTokenNumber = functions.https.onCall(
       let orderTokenNumber = settingData!['orderTokenNo'];
       let onlineTokenNumber = settingData!['onlineTokenNo'];
       transaction.update(firestore.doc('business/'+request.businessId+'/settings/settings'),{kitchenTokenNo:FieldValue.increment(1),orderTokenNo:FieldValue.increment(1), onlineTokenNo:FieldValue.increment(1)});
+      let date = new Date().toISOString().split('T')[0];
+      transaction.set(firestore.doc('business/'+request.businessId+'/dailyTokens/'+date),{onlineTokenNo:FieldValue.increment(1)},{merge:true});
       return {kotTokenNumber,orderTokenNumber,onlineTokenNumber};
     })
   }
@@ -1538,10 +1542,15 @@ export const getPaymentMethodBillNumber = functions.https.onCall(
   async (request, response) => {
     validateAny(request.businessId, 'string');
     validateAny(request.paymentMethodId, 'string');
+    validateAny(request.mode, 'string');
     initFirestore();
     return firestore.runTransaction(async (transaction)=>{
       let paymentMethod = (await transaction.get(firestore.doc('business/'+request.businessId+'/paymentMethods/'+request.paymentMethodId))).data();
       transaction.update(firestore.doc('business/'+request.businessId+'/paymentMethods/'+request.paymentMethodId),{billNo:FieldValue.increment(1)});
+      if(request.mode == 'dineIn'){
+        let date = new Date().toISOString().split('T')[0];
+        transaction.set(firestore.doc('business/'+request.businessId+'/dailyTokens/'+date),{billTokenNo:FieldValue.increment(1)},{merge:true});
+      }
       return (paymentMethod?.shortCode ? paymentMethod.shortCode+':' : '') + paymentMethod?.billNo;
     })
   }
@@ -1554,6 +1563,8 @@ export const getNcBillNumber = functions.https.onCall(
     return firestore.runTransaction(async (transaction)=>{
       let kotTokenNumber = (await transaction.get(firestore.doc('business/'+request.businessId+'/settings/settings'))).data()!['ncBillNo'];
       transaction.update(firestore.doc('business/'+request.businessId+'/settings/settings'),{ncBillNo:FieldValue.increment(1)});
+      let date = new Date().toISOString().split('T')[0];
+      transaction.set(firestore.doc('business/'+request.businessId+'/dailyTokens/'+date),{ncBillTokenNo:FieldValue.increment(1)},{merge:true});
       return kotTokenNumber;
     })
   }
@@ -1566,6 +1577,8 @@ export const getNormalBillNumber = functions.https.onCall(
     return firestore.runTransaction(async (transaction)=>{
       let kotTokenNumber = (await transaction.get(firestore.doc('business/'+request.businessId+'/settings/settings'))).data()!['billTokenNo'];
       transaction.update(firestore.doc('business/'+request.businessId+'/settings/settings'),{billTokenNo:FieldValue.increment(1)});
+      let date = new Date().toISOString().split('T')[0];
+      transaction.set(firestore.doc('business/'+request.businessId+'/dailyTokens/'+date),{billTokenNo:FieldValue.increment(1)},{merge:true});
       return kotTokenNumber;
     })
   }

@@ -170,7 +170,7 @@ export async function settle(
           quickSettle.billNo = 1;
         }
         this.dataProvider.loading = true;
-        requiredBillNumber = (await this.billService.getPaymentMethodBillNumber(method.id)).data as any
+        requiredBillNumber = (await this.billService.getPaymentMethodBillNumber(method.id,this.mode)).data as any
         console.log("SettleBillMethod: after increment bill number",requiredBillNumber);
         this.dataProvider.loading = false;
       }

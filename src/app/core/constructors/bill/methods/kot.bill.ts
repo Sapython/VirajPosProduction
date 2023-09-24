@@ -192,12 +192,12 @@ export async function finalizeAndPrintKot(this: Bill, noTable?: boolean) {
             console.log("Ran transaction");
           }
         } else if (this.table.type == 'online'){
-          let res = (await this.billService.getOrderKotOnlineTokenNumber()).data as any;
+          let res = (await this.billService.getOrderKotOnlineTokenNumber()) as any;
           this.table.attachBill(this,res.onlineTokenNumber);
           activeKot.id = res.kotTokenNumber;
           this.orderNo = res.orderTokenNumber;
         } else if (this.table.type == 'table' || this.table.type == 'room'){
-          let res = (await this.billService.getOrderAndKotNumber()).data as any;
+          let res = (await this.billService.getOrderAndKotNumber()) as any;
           console.log("res",res);
           activeKot.id = res['kotTokenNumber'];
           this.orderNo = res['orderTokenNumber'];
@@ -206,12 +206,12 @@ export async function finalizeAndPrintKot(this: Bill, noTable?: boolean) {
         }
       } else {
         if (!this.orderNo) {
-          let res = (await this.billService.getOrderAndKotNumber()).data as any;
+          let res = (await this.billService.getOrderAndKotNumber()) as any;
           console.log("res",res);
           activeKot.id = res['kotTokenNumber'];
           this.orderNo = res['orderTokenNumber'];
         } else {
-          activeKot.id = (await this.billService.getKotTokenNumber()).data as any;
+          activeKot.id = (await this.billService.getKotTokenNumber()) as any;
         }
       }
       this.dataProvider.loading = false;

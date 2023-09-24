@@ -170,19 +170,19 @@ export async function settle(
           quickSettle.billNo = 1;
         }
         this.dataProvider.loading = true;
-        requiredBillNumber = (await this.billService.getPaymentMethodBillNumber(method.id,this.mode)).data as any
+        requiredBillNumber = (await this.billService.getPaymentMethodBillNumber(method.id,this.mode)) as any
         console.log("SettleBillMethod: after increment bill number",requiredBillNumber);
         this.dataProvider.loading = false;
       }
     } else {
       if (this.nonChargeableDetail) {
         this.dataProvider.loading = true;
-        requiredBillNumber = (await this.billService.getNcBillNumber()).data as any;
+        requiredBillNumber = (await this.billService.getNcBillNumber()) as any;
         this.dataProvider.loading = false;
       } else {
         if (this.mode == 'dineIn') {
           this.dataProvider.loading = true;
-          requiredBillNumber = (await this.billService.getNormalBillNumber()).data as any;
+          requiredBillNumber = (await this.billService.getNormalBillNumber()) as any;
           this.dataProvider.loading = false;
         } else if (this.mode == 'takeaway') {
           requiredBillNumber = this.table.tableNo.toString();
@@ -190,7 +190,7 @@ export async function settle(
           requiredBillNumber = this.table.tableNo.toString();
         } else {
           this.dataProvider.loading = true;
-          requiredBillNumber = (await this.billService.getNormalBillNumber()).data as any;
+          requiredBillNumber = (await this.billService.getNormalBillNumber()) as any;
           this.dataProvider.loading = false;
         }
       }

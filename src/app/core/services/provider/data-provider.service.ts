@@ -57,15 +57,15 @@ export class DataProvider {
           : { smartView: false }
       ).smartView;
       this.localSettings = JSON.parse(localStorage.getItem('localSettings') || `{
-        kotRePrintable:false,
-        touchMode:false,
-        kotEditable:false,
-        editKotTime:false,
-        showTableOnBillAction:false,
-        printBillAfterFinalize:false,
-        printBillAfterSettle:false,
-        directSettle:false,
-        salesHidden:false,
+        "kotRePrintable":false,
+        "touchMode":false,
+        "kotEditable":false,
+        "editKotTime":false,
+        "showTableOnBillAction":false,
+        "printBillAfterFinalize":false,
+        "printBillAfterSettle":false,
+        "directSettle":false,
+        "salesHidden":false
       }`);
     }, 2000);
     window.alert = async (message: string) => {

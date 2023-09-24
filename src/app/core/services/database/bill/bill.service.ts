@@ -26,6 +26,7 @@ import { Bill } from '../../../constructors/bill';
 import { BillActivity } from '../../../../types/activity.structure';
 import { Subject } from 'rxjs';
 import { PaymentMethod } from '../../../../types/payment.structure';
+import { Functions, httpsCallable } from '@angular/fire/functions';
 
 @Injectable({
   providedIn: 'root',
@@ -33,8 +34,17 @@ import { PaymentMethod } from '../../../../types/payment.structure';
 export class BillService {
   updateHistory: any[] = [];
   recalculateBill:Subject<void> = new Subject<void>();
+  getOrderAndKotNumberFunction = httpsCallable(this.functions,'getOrderAndKotNumber');
+  getKotTokenNumberFunction = httpsCallable(this.functions,'getKotTokenNumber');
+  getOrderNumberFunction = httpsCallable(this.functions,'getOrderNumber');
+  getOrderKotTakeawayTokenNumberFunction = httpsCallable(this.functions,'getOrderKotTakeawayTokenNumber');
+  getOrderKotOnlineTokenNumberFunction = httpsCallable(this.functions,'getOrderKotOnlineTokenNumber');
+  getPaymentMethodBillNumberFunction = httpsCallable(this.functions,'getPaymentMethodBillNumber');
+  getNcBillNumberFunction = httpsCallable(this.functions,'getNcBillNumber');
+  getNormalBillNumberFunction = httpsCallable(this.functions,'getNormalBillNumber');
   constructor(
     private firestore: Firestore,
+    private functions:Functions,
     private dataProvider: DataProvider,
     public analyticsService: AnalyticsService,
   ) {
@@ -349,72 +359,80 @@ export class BillService {
 
 
   getKotTokenNumber(){
-    return runTransaction(this.firestore,async (transaction)=>{
-      let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['kitchenTokenNo'];
-      transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{kitchenTokenNo:increment(1)});
-      return kotTokenNumber;
-    });
+    return this.getKotTokenNumberFunction({businessId:this.dataProvider.businessId});
+    // return runTransaction(this.firestore,async (transaction)=>{
+    //   let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['kitchenTokenNo'];
+    //   transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{kitchenTokenNo:increment(1)});
+    //   return kotTokenNumber;
+    // });
   }
 
   getOrderNumber(){
-    return runTransaction(this.firestore,async (transaction)=>{
-      let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['orderTokenNo'];
-      transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{orderTokenNo:increment(1)});
-      return kotTokenNumber;
-    });
+    return this.getOrderNumberFunction({businessId:this.dataProvider.businessId});
+    // return runTransaction(this.firestore,async (transaction)=>{
+    //   let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['orderTokenNo'];
+    //   transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{orderTokenNo:increment(1)});
+    //   return kotTokenNumber;
+    // });
   }
 
-  getOrderAndKotNumber(){
-    return runTransaction(this.firestore,async (transaction)=>{
-      let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['kitchenTokenNo'];
-      let orderTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['orderTokenNo'];
-      transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{kitchenTokenNo:increment(1),orderTokenNo:increment(1)});
-      return {kotTokenNumber,orderTokenNumber};
-    });
+  async getOrderAndKotNumber(){
+    return this.getOrderAndKotNumberFunction({businessId:this.dataProvider.businessId});
+    // return runTransaction(this.firestore,async (transaction)=>{
+    //   let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['kitchenTokenNo'];
+    //   let orderTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['orderTokenNo'];
+    //   transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{kitchenTokenNo:increment(1),orderTokenNo:increment(1)});
+    //   return {kotTokenNumber,orderTokenNumber};
+    // });
   }
 
   getOrderKotTakeawayTokenNumber(){
-    return runTransaction(this.firestore,async (transaction)=>{
-      let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['kitchenTokenNo'];
-      let orderTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['orderTokenNo'];
-      let takeawayTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['takeawayTokenNo'];
-      transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{kitchenTokenNo:increment(1),orderTokenNo:increment(1), takeawayTokenNo:increment(1)});
-      return {kotTokenNumber,orderTokenNumber,takeawayTokenNumber};
-    });
+    return this.getOrderKotTakeawayTokenNumberFunction({businessId:this.dataProvider.businessId});
+    // return runTransaction(this.firestore,async (transaction)=>{
+    //   let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['kitchenTokenNo'];
+    //   let orderTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['orderTokenNo'];
+    //   let takeawayTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['takeawayTokenNo'];
+    //   transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{kitchenTokenNo:increment(1),orderTokenNo:increment(1), takeawayTokenNo:increment(1)});
+    //   return {kotTokenNumber,orderTokenNumber,takeawayTokenNumber};
+    // });
   }
 
   getOrderKotOnlineTokenNumber(){
-    return runTransaction(this.firestore,async (transaction)=>{
-      let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['kitchenTokenNo'];
-      let orderTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['orderTokenNo'];
-      let onlineTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['onlineTokenNo'];
-      transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{kitchenTokenNo:increment(1),orderTokenNo:increment(1), onlineTokenNo:increment(1)});
-      return {kotTokenNumber,orderTokenNumber,onlineTokenNumber};
-    });
+    return this.getOrderKotOnlineTokenNumberFunction({businessId:this.dataProvider.businessId});
+    // return runTransaction(this.firestore,async (transaction)=>{
+    //   let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['kitchenTokenNo'];
+    //   let orderTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['orderTokenNo'];
+    //   let onlineTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['onlineTokenNo'];
+    //   transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{kitchenTokenNo:increment(1),orderTokenNo:increment(1), onlineTokenNo:increment(1)});
+    //   return {kotTokenNumber,orderTokenNumber,onlineTokenNumber};
+    // });
   }
 
   getPaymentMethodBillNumber(paymentMethodId:string){
-    return runTransaction(this.firestore,async (transaction)=>{
-      let paymentMethod = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/paymentMethods/'+paymentMethodId))).data();
-      transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/paymentMethods/'+paymentMethodId),{billNo:increment(1)});
-      return (paymentMethod.shortCode ? paymentMethod.shortCode+':' : '') + paymentMethod.billNo;
-    });
+    return this.getPaymentMethodBillNumberFunction({businessId:this.dataProvider.businessId,paymentMethodId:paymentMethodId});
+    // return runTransaction(this.firestore,async (transaction)=>{
+    //   let paymentMethod = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/paymentMethods/'+paymentMethodId))).data();
+    //   transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/paymentMethods/'+paymentMethodId),{billNo:increment(1)});
+    //   return (paymentMethod.shortCode ? paymentMethod.shortCode+':' : '') + paymentMethod.billNo;
+    // });
   }
 
   getNcBillNumber(){
-    return runTransaction(this.firestore,async (transaction)=>{
-      let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['ncBillNo'];
-      transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{ncBillNo:increment(1)});
-      return kotTokenNumber;
-    });
+    return this.getNcBillNumberFunction({businessId:this.dataProvider.businessId});
+    // return runTransaction(this.firestore,async (transaction)=>{
+    //   let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['ncBillNo'];
+    //   transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{ncBillNo:increment(1)});
+    //   return kotTokenNumber;
+    // });
   }
 
   getNormalBillNumber(){
-    return runTransaction(this.firestore,async (transaction)=>{
-      let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['ncBillNo'];
-      transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{ncBillNo:increment(1)});
-      return kotTokenNumber;
-    });
+    return this.getNormalBillNumberFunction({businessId:this.dataProvider.businessId});
+    // return runTransaction(this.firestore,async (transaction)=>{
+    //   let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['ncBillNo'];
+    //   transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{ncBillNo:increment(1)});
+    //   return kotTokenNumber;
+    // });
   }
 
 }

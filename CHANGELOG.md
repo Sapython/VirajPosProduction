@@ -1,4 +1,4 @@
-## <small>0.1.139 (2023-09-22)</small>
+## <small>0.1.144 (2023-09-23)</small>
 
 * Access level was wrong ([382351d](https://github.com/swayambhu-innovations/Packages/commit/382351d))
 * Added active category option. Custom Printer, Custom ViewCat ([ce3fc6f](https://github.com/swayambhu-innovations/Packages/commit/ce3fc6f))
@@ -48,6 +48,7 @@
 * Fixed $event bug ([c5424c1](https://github.com/swayambhu-innovations/Packages/commit/c5424c1))
 * Fixed account bugs ([8ccd606](https://github.com/swayambhu-innovations/Packages/commit/8ccd606))
 * Fixed actions buttons and corrupted acocunt. ([3f9b22c](https://github.com/swayambhu-innovations/Packages/commit/3f9b22c))
+* Fixed all bugs. ([090d6f3](https://github.com/swayambhu-innovations/Packages/commit/090d6f3))
 * Fixed all bugs. ([e16fed9](https://github.com/swayambhu-innovations/Packages/commit/e16fed9))
 * Fixed analytics function ([a6cbb5e](https://github.com/swayambhu-innovations/Packages/commit/a6cbb5e))
 * Fixed and created new structure. ([8d7cf1f](https://github.com/swayambhu-innovations/Packages/commit/8d7cf1f))
@@ -163,6 +164,8 @@
 * Loading fixes. ([63d689c](https://github.com/swayambhu-innovations/Packages/commit/63d689c))
 * Menu changes and bug fixes. ([0ec23ec](https://github.com/swayambhu-innovations/Packages/commit/0ec23ec))
 * Menu Mgmt multi menu bug fix. ([65eb466](https://github.com/swayambhu-innovations/Packages/commit/65eb466))
+* Migrated functions ([76673eb](https://github.com/swayambhu-innovations/Packages/commit/76673eb))
+* Migrated to mumbai server ([9dab678](https://github.com/swayambhu-innovations/Packages/commit/9dab678))
 * Mode switcher changed ([cea7050](https://github.com/swayambhu-innovations/Packages/commit/cea7050))
 * Onboarding and image of combo issue resolved. ([3cd90e7](https://github.com/swayambhu-innovations/Packages/commit/3cd90e7))
 * Patched the menu reload issue. ([760a524](https://github.com/swayambhu-innovations/Packages/commit/760a524))

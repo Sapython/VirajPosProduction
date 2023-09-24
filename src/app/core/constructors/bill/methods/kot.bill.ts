@@ -180,30 +180,38 @@ export async function finalizeAndPrintKot(this: Bill, noTable?: boolean) {
       this.dataProvider.loading = true;
       if (this.table.status == 'available') {
         if (this.table.type == 'token'){
-          let res = await this.billService.getOrderKotTakeawayTokenNumber();
-          console.log("Res",res);
-          this.table.attachBill(this,res.takeawayTokenNumber);
-          activeKot.id = res.kotTokenNumber;
-          this.orderNo = res.orderTokenNumber;
+          console.log("Going to run transaction");
+          try {
+            let res = (await this.billService.getOrderKotTakeawayTokenNumber()).data as any;
+            console.log("Res",res);
+            this.table.attachBill(this,res.takeawayTokenNumber);
+            activeKot.id = res.kotTokenNumber;
+            this.orderNo = res.orderTokenNumber;
+          } catch (error) {
+            console.log("Error when running transaction",error);
+            console.log("Ran transaction");
+          }
         } else if (this.table.type == 'online'){
-          let res = await this.billService.getOrderKotOnlineTokenNumber();
+          let res = (await this.billService.getOrderKotOnlineTokenNumber()).data as any;
           this.table.attachBill(this,res.onlineTokenNumber);
           activeKot.id = res.kotTokenNumber;
           this.orderNo = res.orderTokenNumber;
         } else if (this.table.type == 'table' || this.table.type == 'room'){
-          let res = await this.billService.getOrderAndKotNumber();
-          activeKot.id = res.kotTokenNumber;
-          this.orderNo = res.orderTokenNumber;
+          let res = (await this.billService.getOrderAndKotNumber()).data as any;
+          console.log("res",res.data);
+          activeKot.id = res.data['kotTokenNumber'];
+          this.orderNo = res.data['orderTokenNumber'];
           console.log("Assigned order in dine in mode",this.orderNo);
           this.table.attachBill(this,undefined);
         }
       } else {
         if (!this.orderNo) {
-          let res = await this.billService.getOrderAndKotNumber();
-          activeKot.id = res.kotTokenNumber;
-          this.orderNo = res.orderTokenNumber;
+          let res = (await this.billService.getOrderAndKotNumber()).data as any;
+          console.log("res",res.data);
+          activeKot.id = res.data['kotTokenNumber'];
+          this.orderNo = res.data['orderTokenNumber'];
         } else {
-          activeKot.id = await this.billService.getKotTokenNumber();
+          activeKot.id = (await this.billService.getKotTokenNumber()).data as any;
         }
       }
       this.dataProvider.loading = false;

@@ -10,7 +10,7 @@ import {
   validateBusiness,
   validateAny,
 } from './helpers';
-import { Firestore, Timestamp } from 'firebase-admin/firestore';
+import { FieldValue, Firestore, Timestamp } from 'firebase-admin/firestore';
 var debug: boolean = true;
 var admin: any;
 var Mailjet:any;
@@ -1471,6 +1471,105 @@ export const checkIfAccessTokenIsValid = functions.https.onCall(
   }
 )
 
+export const getOrderAndKotNumber = functions.https.onCall(
+  async (request, response) => {
+    validateAny(request.businessId, 'string');
+    initFirestore();
+    return firestore.runTransaction(async (transaction)=>{
+      let kotTokenNumber = (await transaction.get(firestore.doc('business/'+request.businessId+'/settings/settings'))).data()!['kitchenTokenNo'];
+      let orderTokenNumber = (await transaction.get(firestore.doc('business/'+request.businessId+'/settings/settings'))).data()!['orderTokenNo'];
+      transaction.update(firestore.doc('business/'+request.businessId+'/settings/settings'),{kitchenTokenNo:FieldValue.increment(1),orderTokenNo:FieldValue.increment(1)});
+      return {kotTokenNumber,orderTokenNumber};
+    })
+  }
+)
+export const getKotTokenNumber = functions.https.onCall(
+  async (request, response) => {
+    validateAny(request.businessId, 'string');
+    initFirestore();
+    return firestore.runTransaction(async (transaction)=>{
+      let kotTokenNumber = (await transaction.get(firestore.doc('business/'+request.businessId+'/settings/settings'))).data()!['kitchenTokenNo'];
+      transaction.update(firestore.doc('business/'+request.businessId+'/settings/settings'),{kitchenTokenNo:FieldValue.increment(1)});
+      return kotTokenNumber;
+    })
+  }
+)
+export const getOrderNumber = functions.https.onCall(
+  async (request, response) => {
+    validateAny(request.businessId, 'string');
+    initFirestore();
+    return firestore.runTransaction(async (transaction)=>{
+      let kotTokenNumber = (await transaction.get(firestore.doc('business/'+request.businessId+'/settings/settings'))).data()!['orderTokenNo'];
+      transaction.update(firestore.doc('business/'+request.businessId+'/settings/settings'),{orderTokenNo:FieldValue.increment(1)});
+      return kotTokenNumber;
+    })
+  }
+)
+export const getOrderKotTakeawayTokenNumber = functions.https.onCall(
+  async (request, response) => {
+    validateAny(request.businessId, 'string');
+    initFirestore();
+    return firestore.runTransaction(async (transaction)=>{
+      let settingData = (await transaction.get(firestore.doc('business/'+request.businessId+'/settings/settings'))).data();
+      let kotTokenNumber = settingData!['kitchenTokenNo'];
+      let orderTokenNumber = settingData!['orderTokenNo'];
+      let takeawayTokenNumber = settingData!['takeawayTokenNo'];
+      transaction.update(firestore.doc('business/'+request.businessId+'/settings/settings'),{kitchenTokenNo:FieldValue.increment(1),orderTokenNo:FieldValue.increment(1), takeawayTokenNo:FieldValue.increment(1)});
+      return {kotTokenNumber,orderTokenNumber,takeawayTokenNumber};
+    })
+  }
+)
+export const getOrderKotOnlineTokenNumber = functions.https.onCall(
+  async (request, response) => {
+    validateAny(request.businessId, 'string');
+    initFirestore();
+    return firestore.runTransaction(async (transaction)=>{
+      let settingData = (await transaction.get(firestore.doc('business/'+request.businessId+'/settings/settings'))).data();
+      let kotTokenNumber = settingData!['kitchenTokenNo'];
+      let orderTokenNumber = settingData!['orderTokenNo'];
+      let onlineTokenNumber = settingData!['onlineTokenNo'];
+      transaction.update(firestore.doc('business/'+request.businessId+'/settings/settings'),{kitchenTokenNo:FieldValue.increment(1),orderTokenNo:FieldValue.increment(1), onlineTokenNo:FieldValue.increment(1)});
+      return {kotTokenNumber,orderTokenNumber,onlineTokenNumber};
+    })
+  }
+)
+
+export const getPaymentMethodBillNumber = functions.https.onCall(
+  async (request, response) => {
+    validateAny(request.businessId, 'string');
+    validateAny(request.paymentMethodId, 'string');
+    initFirestore();
+    return firestore.runTransaction(async (transaction)=>{
+      let paymentMethod = (await transaction.get(firestore.doc('business/'+request.businessId+'/paymentMethods/'+request.paymentMethodId))).data();
+      transaction.update(firestore.doc('business/'+request.businessId+'/paymentMethods/'+request.paymentMethodId),{billNo:FieldValue.increment(1)});
+      return (paymentMethod?.shortCode ? paymentMethod.shortCode+':' : '') + paymentMethod?.billNo;
+    })
+  }
+)
+
+export const getNcBillNumber = functions.https.onCall(
+  async (request, response) => {
+    validateAny(request.businessId, 'string');
+    initFirestore();
+    return firestore.runTransaction(async (transaction)=>{
+      let kotTokenNumber = (await transaction.get(firestore.doc('business/'+request.businessId+'/settings/settings'))).data()!['ncBillNo'];
+      transaction.update(firestore.doc('business/'+request.businessId+'/settings/settings'),{ncBillNo:FieldValue.increment(1)});
+      return kotTokenNumber;
+    })
+  }
+)
+
+export const getNormalBillNumber = functions.https.onCall(
+  async (request, response) => {
+    validateAny(request.businessId, 'string');
+    initFirestore();
+    return firestore.runTransaction(async (transaction)=>{
+      let kotTokenNumber = (await transaction.get(firestore.doc('business/'+request.businessId+'/settings/settings'))).data()!['billTokenNo'];
+      transaction.update(firestore.doc('business/'+request.businessId+'/settings/settings'),{billTokenNo:FieldValue.increment(1)});
+      return kotTokenNumber;
+    })
+  }
+)
 
 // firebase function run every day at 00:00 AM IST
 export const generateDailyReport = functions.pubsub.schedule('0 0 * * *').timeZone('Asia/Kolkata').onRun(

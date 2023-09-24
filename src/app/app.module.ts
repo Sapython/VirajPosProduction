@@ -57,9 +57,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { AlertsAndNotificationsService } from './core/services/alerts-and-notification/alerts-and-notifications.service';
-
-import * as Sentry from '@sentry/angular-ivy';
-import { Router } from '@angular/router';
 import {
   connectFunctionsEmulator,
   getFunctions,
@@ -93,7 +90,7 @@ import { LockedComponent } from './shared/locked/locked.component';
 export class MyHammerConfig extends HammerGestureConfig  {
   overrides = <any>{
       // override hammerjs default configuration
-      'swipe': { direction: Hammer.DIRECTION_ALL  }
+      // 'swipe': { direction: Hammer.DIRECTION_ALL  }
   }
 }
 

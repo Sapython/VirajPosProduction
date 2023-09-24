@@ -8,30 +8,30 @@
   <ng-container>
     <div class="charts">
       <div class="heading">
-        <h3>Graph & Summary</h3>
+        <h3>Graph & Summary
+          <viraj-button type="icon" (vclick)="refreshReport()">
+            <i class="ri-refresh-fill"></i>
+          </viraj-button>
+        </h3>
+        <div class="datePicker">
+          <mat-datepicker #salesPicker></mat-datepicker>
+          <input
+            matInput
+            tabindex="-1"
+            [matDatepickerFilter]="noFuture"
+            #salesPickerInput
+            (dateChange)="fetchChartData($event)"
+            [matDatepicker]="salesPicker"
+          />
+          <viraj-button type="outline" (vclick)="salesPicker.open()"
+            >{{salesDate | date}} <i class="ri-calendar-2-fill"></i
+          ></viraj-button>
+        </div>
       </div>
       <div class="graphs">
         <div class="chartCard">
           <div class="heading">
-            <h4>Average Vs Actual Sales
-              <viraj-button type="icon" (vclick)="refreshReport()">
-                <i class="ri-refresh-fill"></i>
-              </viraj-button>
-            </h4>
-            <div class="datePicker">
-              <mat-datepicker #salesPicker></mat-datepicker>
-              <input
-                matInput
-                tabindex="-1"
-                [matDatepickerFilter]="noFuture"
-                #salesPickerInput
-                (dateChange)="fetchChartSalesData($event)"
-                [matDatepicker]="salesPicker"
-              />
-              <viraj-button type="outline" (vclick)="salesPicker.open()"
-                >{{salesDate | date}} <i class="ri-calendar-2-fill"></i
-              ></viraj-button>
-            </div>
+            <h4>Average Vs Actual Sales</h4>
           </div>
           <div class="chartContainer">
             <canvas height="250px" #salesChart></canvas>
@@ -40,24 +40,7 @@
         <div class="chartCard">
           <div class="heading">
             <h4>Channel Wise Payment 
-              <viraj-button type="icon" (vclick)="refreshReport()">
-                <i class="ri-refresh-fill"></i>
-              </viraj-button>
             </h4>
-            <div class="datePicker">
-              <mat-datepicker #picker></mat-datepicker>
-              <input
-                matInput
-                tabindex="-1"
-                [matDatepickerFilter]="noFuture"
-                #channelWisePickerInput
-                (dateChange)="fetchChartPaymentData($event)"
-                [matDatepicker]="picker"
-              />
-              <viraj-button type="outline" (vclick)="picker.open()"
-                >{{paymentDate | date}} <i class="ri-calendar-2-fill"></i
-              ></viraj-button>
-            </div>
           </div>
           <div class="chartContainer">
             <canvas height="250px" #orderChart></canvas>

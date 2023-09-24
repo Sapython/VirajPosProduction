@@ -248,6 +248,11 @@ export class ReportsComponent implements OnInit {
     this.fetchChartPaymentData({ value: new Date() });
   }
 
+  fetchChartData(event: { value: Date }){
+    this.fetchChartSalesData({ value:event.value });
+    this.fetchChartPaymentData({ value:event.value });
+  }
+
   fetchChartSalesData(event: { value: Date }) {
     console.log('Event', event);
     this.salesDate = event.value;

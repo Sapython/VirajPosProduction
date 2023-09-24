@@ -185,9 +185,9 @@ export async function settle(
           requiredBillNumber = (await this.billService.getNormalBillNumber()) as any;
           this.dataProvider.loading = false;
         } else if (this.mode == 'takeaway') {
-          requiredBillNumber = this.table.tableNo.toString();
+          requiredBillNumber = (await this.billService.getNormalBillNumber()) as any;
         } else if (this.mode == 'online') {
-          requiredBillNumber = this.table.tableNo.toString();
+          requiredBillNumber = (await this.billService.getNormalBillNumber()) as any;
         } else {
           this.dataProvider.loading = true;
           requiredBillNumber = (await this.billService.getNormalBillNumber()) as any;

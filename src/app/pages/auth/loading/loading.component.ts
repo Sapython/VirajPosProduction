@@ -674,12 +674,12 @@ export class LoadingComponent implements OnInit {
       let paymentsRef = await this.settingsService.addDefaultPaymentMethods(id);
       let settingsRef = await this.menuManagementService.updateRootSettings(
         {
-          billTokenNo: 0,
-          kitchenTokenNo: 0,
-          onlineTokenNo: 0,
-          orderTokenNo: 0,
-          ncBillTokenNo: 0,
-          takeawayTokenNo: 0,
+          billTokenNo: 1,
+          kitchenTokenNo: 1,
+          onlineTokenNo: 1,
+          orderTokenNo: 1,
+          ncBillTokenNo: 1,
+          takeawayTokenNo: 1,
           nonChargeableSales: 0,
           takeawaySales: 0,
           dineInSales: 0,

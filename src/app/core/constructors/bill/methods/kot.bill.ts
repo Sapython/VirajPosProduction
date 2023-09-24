@@ -190,28 +190,55 @@ export async function finalizeAndPrintKot(this: Bill, noTable?: boolean) {
           } catch (error) {
             console.log("Error when running transaction",error);
             console.log("Ran transaction");
+            this.billService.presentToast("Error no internet found.","error");
+            this.dataProvider.loading = false;
+            return;
           }
         } else if (this.table.type == 'online'){
-          let res = (await this.billService.getOrderKotOnlineTokenNumber()) as any;
-          this.table.attachBill(this,res.onlineTokenNumber);
-          activeKot.id = res.kotTokenNumber;
-          this.orderNo = res.orderTokenNumber;
+          try {
+            let res = (await this.billService.getOrderKotOnlineTokenNumber()) as any;
+            this.table.attachBill(this,res.onlineTokenNumber);
+            activeKot.id = res.kotTokenNumber;
+            this.orderNo = res.orderTokenNumber;
+          } catch (error) {
+            this.billService.presentToast("Error no internet found.","error");
+            this.dataProvider.loading = false;
+            return;
+          }
         } else if (this.table.type == 'table' || this.table.type == 'room'){
-          let res = (await this.billService.getOrderAndKotNumber()) as any;
-          console.log("res",res);
-          activeKot.id = res['kotTokenNumber'];
-          this.orderNo = res['orderTokenNumber'];
-          console.log("Assigned order in dine in mode",this.orderNo);
-          this.table.attachBill(this,undefined);
+          try {
+            let res = (await this.billService.getOrderAndKotNumber()) as any;
+            console.log("res",res);
+            activeKot.id = res['kotTokenNumber'];
+            this.orderNo = res['orderTokenNumber'];
+            console.log("Assigned order in dine in mode",this.orderNo);
+            this.table.attachBill(this,undefined);
+          } catch (error) {
+            this.billService.presentToast("Error no internet found.","error");
+            this.dataProvider.loading = false;
+            return;
+          }
         }
       } else {
         if (!this.orderNo) {
-          let res = (await this.billService.getOrderAndKotNumber()) as any;
-          console.log("res",res);
-          activeKot.id = res['kotTokenNumber'];
-          this.orderNo = res['orderTokenNumber'];
+          try {
+            let res = (await this.billService.getOrderAndKotNumber()) as any;
+            console.log("res",res);
+            activeKot.id = res['kotTokenNumber'];
+            this.orderNo = res['orderTokenNumber'];
+          } catch (error) {
+            this.billService.presentToast("Error no internet found.","error");
+            this.dataProvider.loading = false;
+            return;
+          }
         } else {
-          activeKot.id = (await this.billService.getKotTokenNumber()) as any;
+          try {
+            activeKot.id = (await this.billService.getKotTokenNumber()) as any;
+          } catch (error) {
+            this.billService.presentToast("Error no internet found.","error");
+            this.dataProvider.loading = false;
+            return;
+          }
         }
       }
       this.dataProvider.loading = false;

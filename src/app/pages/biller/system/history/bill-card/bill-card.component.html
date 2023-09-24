@@ -24,11 +24,11 @@
         >
       </div>
       <div class="item">
-        <span>Token No</span>
+        <span>Order No</span>
         <span>{{ bill.orderNo }}</span>
       </div>
       <div class="item">
-        <span>Table No</span>
+        <span>{{bill.mode == 'dineIn' ? 'Table' : 'Token'}} No</span>
         <span>{{ bill.table.name }}</span>
       </div>
       <div class="item">

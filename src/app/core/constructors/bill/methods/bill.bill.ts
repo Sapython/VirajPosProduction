@@ -162,39 +162,45 @@ export async function settle(
   this.calculateBill();
   // update in database
   let requiredBillNumber;
-  if (!this.billNo) {
-    if(quickSettle){
-      var method = this.dataProvider.paymentMethods.find((method) => method.id == quickSettle.id);
-      if (method){
-        if (!quickSettle.billNo){
-          quickSettle.billNo = 1;
+  try {
+    if (!this.billNo) {
+      if(quickSettle){
+        var method = this.dataProvider.paymentMethods.find((method) => method.id == quickSettle.id);
+        if (method){
+          if (!quickSettle.billNo){
+            quickSettle.billNo = 1;
+          }
+          this.dataProvider.loading = true;
+          requiredBillNumber = (await this.billService.getPaymentMethodBillNumber(method.id,this.mode)) as any
+          console.log("SettleBillMethod: after increment bill number",requiredBillNumber);
+          this.dataProvider.loading = false;
         }
-        this.dataProvider.loading = true;
-        requiredBillNumber = (await this.billService.getPaymentMethodBillNumber(method.id,this.mode)) as any
-        console.log("SettleBillMethod: after increment bill number",requiredBillNumber);
-        this.dataProvider.loading = false;
-      }
-    } else {
-      if (this.nonChargeableDetail) {
-        this.dataProvider.loading = true;
-        requiredBillNumber = (await this.billService.getNcBillNumber()) as any;
-        this.dataProvider.loading = false;
       } else {
-        if (this.mode == 'dineIn') {
+        if (this.nonChargeableDetail) {
           this.dataProvider.loading = true;
-          requiredBillNumber = (await this.billService.getNormalBillNumber()) as any;
+          requiredBillNumber = (await this.billService.getNcBillNumber()) as any;
           this.dataProvider.loading = false;
-        } else if (this.mode == 'takeaway') {
-          requiredBillNumber = (await this.billService.getNormalBillNumber()) as any;
-        } else if (this.mode == 'online') {
-          requiredBillNumber = (await this.billService.getNormalBillNumber()) as any;
         } else {
-          this.dataProvider.loading = true;
-          requiredBillNumber = (await this.billService.getNormalBillNumber()) as any;
-          this.dataProvider.loading = false;
+          if (this.mode == 'dineIn') {
+            this.dataProvider.loading = true;
+            requiredBillNumber = (await this.billService.getNormalBillNumber()) as any;
+            this.dataProvider.loading = false;
+          } else if (this.mode == 'takeaway') {
+            requiredBillNumber = (await this.billService.getNormalBillNumber()) as any;
+          } else if (this.mode == 'online') {
+            requiredBillNumber = (await this.billService.getNormalBillNumber()) as any;
+          } else {
+            this.dataProvider.loading = true;
+            requiredBillNumber = (await this.billService.getNormalBillNumber()) as any;
+            this.dataProvider.loading = false;
+          }
         }
       }
     }
+  } catch (error) {
+    console.log('Error in getting bill number', error);
+    this.billService.presentToast('Error no internet found.');
+    return
   }
   console.log("SettleBillNum: Final number",requiredBillNumber);
   this.billNo = requiredBillNumber;

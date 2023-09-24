@@ -27,6 +27,7 @@ import { BillActivity } from '../../../../types/activity.structure';
 import { Subject } from 'rxjs';
 import { PaymentMethod } from '../../../../types/payment.structure';
 import { Functions, httpsCallable } from '@angular/fire/functions';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root',
@@ -47,6 +48,7 @@ export class BillService {
     private functions:Functions,
     private dataProvider: DataProvider,
     public analyticsService: AnalyticsService,
+    private snackbar: MatSnackBar
   ) {
     let yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
@@ -467,6 +469,15 @@ export class BillService {
     //   transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{ncBillNo:increment(1)});
     //   return kotTokenNumber;
     // });
+  }
+  presentToast(
+    message: string,
+    type: 'info' | 'error' = 'info',
+    duration: number = 5000,
+    action: string = '',
+    sound: boolean = true,
+  ) {
+    this.snackbar.open(message, action, { duration: duration });
   }
 
 }

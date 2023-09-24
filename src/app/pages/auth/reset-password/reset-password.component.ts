@@ -51,7 +51,7 @@ export class ResetPasswordComponent {
         .catch((err) => {
           //  console.log(err);
           this.alertify.presentToast(
-            err.message || err || 'Some error occured while resetting password',
+            err.message || err || 'Some error occurred while resetting password',
           );
         });
     }

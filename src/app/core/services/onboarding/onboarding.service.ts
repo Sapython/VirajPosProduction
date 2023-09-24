@@ -231,7 +231,7 @@ export class OnboardingService {
       } else {
         this.message = data.message;
         this.stage = 'noUser';
-        this.alertify.presentToast(this.message, 'error');
+        // this.alertify.presentToast(this.message, 'error');
       }
     });
   }

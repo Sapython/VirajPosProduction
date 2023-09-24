@@ -1,0 +1,121 @@
+section.reportViewSection {
+	width: 90vw;
+	height: 90vh;
+	background: white;
+	border-radius: 20px;
+	box-shadow: 2px 5px 20px rgba(0, 0, 0, 0.25);
+	border: 2px solid #e1e1e1;
+	overflow: hidden;
+	.heading {
+	  display: flex;
+	  justify-content: space-between;
+	  padding: 0px 20px;
+	  padding-top: 30px;
+	  border-bottom: 2px solid #e1e1e1;
+	  .actions {
+		display: flex;
+		align-items: center;
+		gap: 20px;
+		mat-date-range-input {
+		  width: 0px;
+		  height: 0px;
+		  opacity: 0;
+		}
+	  }
+	  span{
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: flex-start;
+		gap:15px;
+		h4{
+		  margin: 0px;
+		}
+		p{
+		  margin: 0px;
+		}
+	  }
+	}
+	.body {
+	  height: 100%;
+	  .tableContainer {
+		border: 1px solid #b3b3b3;
+		background: #fff;
+		box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.25);
+		height: 100%;
+		overflow-y: auto;
+		table {
+		  width: 100%;
+		  border-collapse: collapse;
+		  border-spacing: 0;
+		  font-size: 0.9em;
+		  font-family: sans-serif;
+		  min-width: 400px;
+		  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+		  border-collapse: collapse;
+		  border-radius: 1em;
+		}
+		table thead {
+		  position: sticky;
+		  top: 0px;
+		}
+		table thead tr {
+		  background-color: var(--Vrajera-primary-text);
+		  color: #ffffff;
+		  text-align: left;
+		  th {
+			font-size: var(--Vrajera-font-xlarge);
+		  }
+		}
+		table th,
+		table td {
+		  padding: 12px 10px;
+		}
+		table tbody tr {
+		  border-bottom: 1px solid #dddddd;
+		}
+  
+		table tbody tr:nth-of-type(even) {
+		  background-color: #f3f3f3;
+		}
+  
+		table tbody tr:last-of-type {
+		  border-bottom: 2px solid var(--Vrajera-primary-text);
+		}
+		table tbody tr.active-row {
+		  font-weight: bold;
+		  color: var(--Vrajera-primary-text);
+		}
+		table thead th{
+		  white-space: nowrap
+		}
+		table tbody td.noWrap{
+		  white-space: nowrap
+		}
+		table tbody tr.totals{
+		  background-color: var(--Vrajera-primary-shade);
+		  color: var(--Vrajera-primary-text);
+		  font-weight: bold;
+		  font-size: var(--Vrajera-font-large);
+		  white-space: nowrap;
+		  td{
+			white-space: nowrap;
+		  }
+		}
+		.spacer {
+		  height: 200px;
+		}
+	  }
+	}
+	.loader{
+	  display: flex;
+	  justify-content: center;
+	  align-items: center;
+	  height: 50vh;
+	  mat-spinner{
+		display: block;
+		margin:0 auto;
+	  }
+	}
+  }
+  

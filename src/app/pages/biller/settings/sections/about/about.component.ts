@@ -5,6 +5,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { ResetPasswordComponent } from '../../../../auth/reset-password/reset-password.component';
 import { firstValueFrom } from 'rxjs';
 import { ElectronService } from '../../../../../core/services/electron/electron.service';
+import { SettingsService } from '../../../../../core/services/database/settings/settings.service';
 
 @Component({
   selector: 'app-about',
@@ -18,6 +19,7 @@ export class AboutComponent {
     public dataProvider: DataProvider,
     private dialog: Dialog,
     public electronService: ElectronService,
+    public settingService:SettingsService
   ) {}
 
   async resetPassword() {
@@ -26,6 +28,10 @@ export class AboutComponent {
     firstValueFrom(res.closed).finally(() => {
       res.close();
     });
+  }
+
+  fetchEmail(){
+
   }
 
   setPrimaryOutlet(){

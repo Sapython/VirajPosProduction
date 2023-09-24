@@ -339,4 +339,5 @@ export class SettingsService {
   updateCounter(id:string,data:any){
     return setDoc(doc(this.firestore,'business',this.dataProvider.businessId,'counters',id),{...data,updateDate:serverTimestamp()},{merge:true});
   }
+
 }

@@ -14,9 +14,9 @@ export class TableGroupsPipe implements PipeTransform {
   }[] {
     let groups = bills.reduce(
       (acc, bill) => {
-        let index = acc.findIndex((group) => group.table == bill.table);
+        let index = acc.findIndex((group) => group.table.id == bill.table.id);
         if (index == -1) {
-          acc.push({ table: bill.table, bills: [bill] });
+          acc.push({ table: {name:bill.table.name,id:bill.table.id}, bills: [bill] });
         } else {
           acc[index].bills.push(bill);
         }

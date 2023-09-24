@@ -677,6 +677,7 @@ export class LoadingComponent implements OnInit {
           billTokenNo: 0,
           kitchenTokenNo: 0,
           onlineTokenNo: 0,
+          orderTokenNo: 0,
           ncBillTokenNo: 0,
           takeawayTokenNo: 0,
           nonChargeableSales: 0,

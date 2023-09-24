@@ -28,6 +28,7 @@ import { Product } from '../../../../types/product.structure';
 import { ApplicableCombo } from '../../../../core/constructors/comboKot/comboKot';
 import { TableService } from '../../../../core/services/database/table/table.service';
 import { TableConstructor } from '../../../../types/table.structure';
+import { ReportViewComponent } from './report-view/report-view.component';
 
 @Component({
   selector: 'app-history',
@@ -42,6 +43,7 @@ import { TableConstructor } from '../../../../types/table.structure';
 })
 export class HistoryComponent {
   totalSales: number = 0;
+  totalCancelledSales: number = 0;
   startKot: string = '';
   endKot: string = '';
   groupByTable: boolean = false;
@@ -123,7 +125,14 @@ export class HistoryComponent {
     });
     filteredBills.forEach((bill) => {
       // recalculate stats totalSales, startKot, endKot, totalKots, totalBills, startingKotNumber, endingKotNumber
-      this.totalSales += bill.billing.grandTotal;
+      if (bill.stage == 'hold'){
+        return
+      }
+      if (!bill.cancelledReason){
+        this.totalSales += bill.billing.grandTotal;
+      } else {
+        this.totalCancelledSales += bill.billing.grandTotal;
+      }
       this.totalKots += bill.kots.length;
       this.totalBills++;
       if (bill.kots.length > 0){
@@ -147,6 +156,7 @@ export class HistoryComponent {
         this.bills.sort((a,b)=>{
           return (a.createdDate?.toDate().getTime() || 0) - (b.createdDate?.toDate().getTime() || 0);
         });
+        this.bills = this.bills.filter((bill)=>bill.stage!='hold');
         this.bills = await Promise.all(bills.docs.map(async (doc) => {
           var foundTable;
           if (doc.data()['mode']=='takeaway'){
@@ -237,90 +247,8 @@ export class HistoryComponent {
     );
   }
 
-
-  exportToPdf() {
-    // do it by selected mode
-    let filteredBills = this.bills.filter(
-      (bill) => this.currentMode == 'all' || bill.mode == this.currentMode,
-    );
-    // create a jspdf doc with autotable
-    // heading should be Bill No, Order No, Table, Time, Total, Mode
-    // body should be the filtered bills
-    // export to excel
-
-    let doc = new jsPDF();
-    autoTable(doc, {
-      head: [
-        ['Total KOT', 'Total Bills', 'Starting KOT', 'End KOT', 'Total Sales'],
-      ],
-      body: [
-        [
-          this.totalKots,
-          this.totalBills,
-          this.startingKotNumber,
-          this.endingKotNumber,
-          this.totalSales,
-        ],
-      ],
-    });
-    autoTable(doc, {
-      head: [['Time', 'Mode', 'Table', 'Bill No', 'Order No', 'Total']],
-      body: [
-        ...filteredBills.map((bill: any) => {
-          return [
-            bill.createdDate.toDate().toLocaleString(),
-            bill.mode,
-            bill.table,
-            bill.billNo || 'Unsettled',
-            bill.orderNo,
-            bill.billing.grandTotal,
-          ];
-        }),
-      ],
-    });
-    doc.save('Bills Report.pdf');
-  }
-
-  exportToExcel() {
-    // generate a csv file exactly same as exportToPdf function
-    let filteredBills = this.bills.filter(
-      (bill) => this.currentMode == 'all' || bill.mode == this.currentMode,
-    );
-    let csvContent = 'data:text/csv;charset=utf-8,';
-    csvContent += 'Total KOT,Total Bills,Starting KOT,End KOT,Total Sales\n';
-    csvContent +=
-      this.totalKots +
-      ',' +
-      this.totalBills +
-      ',' +
-      this.startingKotNumber +
-      ',' +
-      this.endingKotNumber +
-      ',' +
-      this.totalSales +
-      '\n';
-    csvContent += 'Time,Mode,Table,Bill No,Order No,Total\n';
-    filteredBills.forEach((bill: any) => {
-      csvContent +=
-        bill.createdDate.toDate().toLocaleString().replace(',', ' ') +
-        ',' +
-        bill.mode +
-        ',' +
-        bill.table +
-        ',' +
-        (bill.billNo || 'Unsettled') +
-        ',' +
-        bill.orderNo +
-        ',' +
-        bill.billing.grandTotal +
-        '\n';
-    });
-    var encodedUri = encodeURI(csvContent);
-    var link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', 'Bills Report.csv');
-    document.body.appendChild(link); // Required for FF
-    link.click();
+  openReport(){
+    let dialog = this.dialog.open(ReportViewComponent);
   }
 
   

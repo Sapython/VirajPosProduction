@@ -115,13 +115,12 @@
       <p>
         Total Sales <span>{{ totalSales | currency: "INR" }}</span>
       </p>
-      <viraj-button type="outline" [matMenuTriggerFor]="menu"
+      <p>
+        Cancelled Sales <span>{{ totalCancelledSales | currency: "INR" }}</span>
+      </p>
+      <viraj-button type="outline" (vclick)="openReport()"
         >Export <i class="ri-download-2-fill"></i
       ></viraj-button>
-      <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="exportToPdf()">Download PDF</button>
-        <button mat-menu-item (click)="exportToExcel()">Download Excel</button>
-      </mat-menu>
     </div>
   </div>
 
@@ -136,11 +135,11 @@
         "
       >
         <div class="heading">
-          <h3>Table: {{ table.table }}</h3>
+          <h3>Table: {{ table.table.name }}</h3>
         </div>
         <div class="bills">
           <app-bill-card
-            *ngFor="let bill of bills"
+            *ngFor="let bill of table.bills"
             [bill]="bill"
           ></app-bill-card>
         </div>
@@ -186,7 +185,7 @@
         "
       >
         <div class="heading">
-          <h3>Table: {{ table.table }}</h3>
+          <h3>Table: {{ table.table.name }}</h3>
         </div>
         <div class="groups">
           <div

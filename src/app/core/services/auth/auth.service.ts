@@ -57,10 +57,11 @@ export class AuthService {
       this.dataProvider.isAuthStateAvaliable = false;
       // console.log('this.localUserId', this.localUserId);
       if (user) {
+        this.dataProvider.currentFirebaseUser = user;
         window.localStorage.setItem('signInToken', await user.getIdToken());
         if (user.uid == this.localUserId && this.localUserData) {
           this.dataProvider.loggedIn = true;
-          this.dataProvider.currentFirebaseUser = user;
+          console.log('User found from local storage', this.localUserData);
           this.dataProvider.userSubject.next({
             status: true,
             stage: 1,

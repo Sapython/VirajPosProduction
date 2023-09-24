@@ -17,6 +17,20 @@
   </div>
   <div class="item">
     <p>
+      <mat-icon>mail</mat-icon>
+      Email
+    </p>
+    <p>{{ this.dataProvider.currentFirebaseUser?.email }}</p>
+  </div>
+  <div class="item">
+    <p>
+      <mat-icon>call</mat-icon>
+      Phone
+    </p>
+    <p>{{ this.dataProvider.currentFirebaseUser?.phoneNumber }}</p>
+  </div>
+  <div class="item">
+    <p>
       <mat-icon>storefront</mat-icon>
       Business Id
     </p>

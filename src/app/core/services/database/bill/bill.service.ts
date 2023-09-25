@@ -52,11 +52,11 @@ export class BillService {
   ) {
     let yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
-    setTimeout(async () => {
-      let res = await getDocs(collection(this.firestore,'business',this.dataProvider.currentBusiness.businessId,'bills'))
-      console.log("TOTAL BILLS BITCH:",res.docs.length);
+    // setTimeout(async () => {
+    //   let res = await getDocs(collection(this.firestore,'business',this.dataProvider.currentBusiness.businessId,'bills'))
+    //   console.log("TOTAL BILLS BITCH:",res.docs.length);
       
-    }, 20000);
+    // }, 20000);
     // setTimeout(()=>{
     //   this.getBillsByDay(yesterday).then((bills) => {
     //     bills.docs.forEach((bill) => {

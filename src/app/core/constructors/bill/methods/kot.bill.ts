@@ -374,7 +374,7 @@ export async function printKot(
         specificPrinter: product.specificPrinter || null,
       };
     }),
-    table: this.table.id,
+    table: this.table.name,
   };
   this.dataProvider.currentApplicableCombo = undefined;
   this.billService.addActivity(this, {

@@ -272,13 +272,14 @@ export async function settle(
         });
       }
     } else if (product.itemType == 'combo') {
-      product.allProducts.forEach((product) => {
-        let find = productSales.find((p) => p.item == product.id);
+      console.log('Combo found',product);
+      product.allProductsSales.forEach((product) => {
+        let find = productSales.find((p) => p.item == product.item);
         if (find) {
           find.sales += product.quantity;
         } else {
           productSales.push({
-            item: product.id,
+            item: product.item,
             sales: product.quantity,
           });
         }

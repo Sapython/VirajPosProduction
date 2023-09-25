@@ -212,10 +212,11 @@ export class Bill implements BillConstructor {
     this.updated.next();
     this.firebaseUpdate();
     window.document.addEventListener('updateBill', (data)=>{
+      this.calculateBill();
       console.log("data",data['detail']['comboId']);
       if (this.allProducts().some(product=>product.id===data['detail']['comboId'])) {
         console.log("Updating bill");
-        this.updated.next()
+        this.updated.next();
       }
     });
   }

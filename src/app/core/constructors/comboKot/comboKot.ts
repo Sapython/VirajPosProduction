@@ -39,6 +39,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
   totalAppliedTax: number = 0;
   totalAppliedPercentage: number = 0;
   finalTaxes: Tax[] = [];
+  allProductsSales:{item:string,quantity:number}[] = [];
   days: string[] = [
     'sunday',
     'monday',
@@ -247,6 +248,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
   }
 
   calculatePrice() {
+    console.log("Calculating price under applicable combo");
     this.price = 0;
     this.incomplete = false;
     this.untaxedValue = 0;
@@ -447,6 +449,10 @@ export class ApplicableCombo implements ApplicableComboConstructor {
         }
       }
     });
+    this.allProductsSales = []
+    allProducts.forEach((product) => {
+      this.allProductsSales.push({item:product.id,quantity:product.quantity});
+    })
 
     // calculate price
     allProducts.forEach((product) => {

@@ -192,6 +192,18 @@
         *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
       ></mat-slide-toggle>
     </div>
+    <div class="item">
+      <p>Hide history from biller.</p>
+      <mat-slide-toggle
+        [(ngModel)]="this.dataProvider.localSettings.historyHidden"
+        (change)="
+          updateLocalSettings({
+            historyHidden: this.dataProvider.localSettings.historyHidden
+          })
+        "
+        *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+      ></mat-slide-toggle>
+    </div>
   </ng-container>
   <!-- <h3>Print Settings</h3>
   <div class="item">

@@ -4,8 +4,14 @@ import { Timestamp } from '@angular/fire/firestore';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { firstValueFrom } from 'rxjs';
-import { PrintableBill, BillConstructor } from '../../../../../types/bill.structure';
-import { KotConstructor, PrintableKot } from '../../../../../types/kot.structure';
+import {
+  PrintableBill,
+  BillConstructor,
+} from '../../../../../types/bill.structure';
+import {
+  KotConstructor,
+  PrintableKot,
+} from '../../../../../types/kot.structure';
 import { calculateBill } from '../../../actions/split-bill/split-bill.component';
 import { ReprintReasonComponent } from '../reprint-reason/reprint-reason.component';
 import { Dialog } from '@angular/cdk/dialog';
@@ -17,10 +23,10 @@ import { DataProvider } from '../../../../../core/services/provider/data-provide
 @Component({
   selector: 'app-bill-card',
   templateUrl: './bill-card.component.html',
-  styleUrls: ['./bill-card.component.scss']
+  styleUrls: ['./bill-card.component.scss'],
 })
 export class BillCardComponent {
-  @Input() bill:ExtendedBillConstructor|undefined;
+  @Input() bill: ExtendedBillConstructor | undefined;
   constructor(
     private historyService: HistoryService,
     private billService: BillService,
@@ -511,12 +517,14 @@ export class BillCardComponent {
         styles: { halign: 'center', fontSize: 14, fontStyle: 'bold' },
       };
     }
-    let heading:any = [
-      [{
-        content:'Reprint',
-        styles: { halign: 'center', fontSize: 14, fontStyle: 'bold' },
-      }],
-      [head]
+    let heading: any = [
+      [
+        {
+          content: 'Reprint',
+          styles: { halign: 'center', fontSize: 14, fontStyle: 'bold' },
+        },
+      ],
+      [head],
     ].filter((row) => {
       return row[0].content;
     });
@@ -624,45 +632,114 @@ export class BillCardComponent {
   }
 
   async reprintBill(bill: BillConstructor) {
-    const dialog = this.dialog.open(ReprintReasonComponent);
-    let res = await firstValueFrom(dialog.closed);
-    if (res && typeof res == 'string') {
-      let userRes = this.dataProvider.currentUser.business.find(
-        (business) =>
-          business.businessId == this.dataProvider.currentBusiness.businessId,
-      )!;
-      bill.billReprints.push({
-        reprintReason: res,
-        time: Timestamp.now(),
-        user: {
-          access: userRes.access.accessType == 'role' ? userRes.access.role : 'custom',
-          username: userRes.name,
-        },
-      });
-      // let products = bill.kots.reduce((acc,kot) => {
-      //   kot.products.forEach((product) => {
-      //     let index = acc.findIndex((accProduct) => accProduct.name == product.name);
-      //     if(index == -1){
-      //       acc.push({...product,quantity:1});
-      //     } else {
-      //       acc[index].quantity++;
-      //     }
-      //   })
-      //   return acc;
-      // },[] as any[])
-      // let printableBillData = getPrintableBillConstructor(bill,products,this.dataProvider)
-      calculateBill(bill, this.dataProvider);
-      this.printingService.reprintBill(bill.printableBillData,true);
+    if (this.dataProvider.allowUnverifiedRePrint) {
+      this.printingService.reprintBill(bill.printableBillData, true);
     } else {
-      alert('Reprint Cancelled');
-      return;
+      const dialog = this.dialog.open(ReprintReasonComponent);
+      let res = await firstValueFrom(dialog.closed);
+      if (res && typeof res == 'string') {
+        let userRes = this.dataProvider.currentUser.business.find(
+          (business) =>
+            business.businessId == this.dataProvider.currentBusiness.businessId,
+        )!;
+        bill.billReprints.push({
+          reprintReason: res,
+          time: Timestamp.now(),
+          user: {
+            access:
+              userRes.access.accessType == 'role'
+                ? userRes.access.role
+                : 'custom',
+            username: userRes.name,
+          },
+        });
+        // let products = bill.kots.reduce((acc,kot) => {
+        //   kot.products.forEach((product) => {
+        //     let index = acc.findIndex((accProduct) => accProduct.name == product.name);
+        //     if(index == -1){
+        //       acc.push({...product,quantity:1});
+        //     } else {
+        //       acc[index].quantity++;
+        //     }
+        //   })
+        //   return acc;
+        // },[] as any[])
+        // let printableBillData = getPrintableBillConstructor(bill,products,this.dataProvider)
+        calculateBill(bill, this.dataProvider);
+        this.printingService.reprintBill(bill.printableBillData, true);
+      } else {
+        alert('Reprint Cancelled');
+        return;
+      }
     }
   }
 
   async reprintKot(kot: KotConstructor, bill: BillConstructor) {
-    const dialog = this.dialog.open(ReprintReasonComponent);
-    let res = await firstValueFrom(dialog.closed);
-    if (res && typeof res == 'string') {
+    if (!this.dataProvider.allowUnverifiedRePrint) {
+      const dialog = this.dialog.open(ReprintReasonComponent);
+      let res = await firstValueFrom(dialog.closed);
+      if (res && typeof res == 'string') {
+        let products = [];
+        kot.products.forEach((product) => {
+          if (product.itemType == 'product') {
+            products.push(product);
+          } else if (product.itemType == 'combo') {
+            product.productSelection.forEach((item) => {
+              item.products.forEach((product) => {
+                products.push(product);
+              });
+            });
+          }
+        });
+        // remove duplicates by adding quantity
+        products = products.reduce((acc, current) => {
+          const x = acc.find((item) => item.id === current.id);
+          if (!x) {
+            return acc.concat([current]);
+          } else {
+            x.quantity += this.returnValidNumber(current.quantity);
+            return acc;
+          }
+        }, []);
+        let printableKot: PrintableKot = {
+          billingMode: bill.mode,
+          // date in dd/mm/yyyy format
+          date: kot.createdDate.toDate().toLocaleDateString('en-GB'),
+          // time in 12 hour format
+          time: kot.createdDate.toDate().toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true,
+          }),
+          note: kot.note || '',
+          mode: 'reprintKot',
+          user: kot.user.username,
+          orderNo: bill.orderNo,
+          products: products.map((product) => {
+            return {
+              id: product.id,
+              category: product.category,
+              instruction: product.instruction,
+              name: product.name,
+              quantity: product.quantity,
+              edited: product.cancelled,
+              specificPrinter: product.specificPrinter,
+            };
+          }),
+          table: bill.table as unknown as string,
+          token: kot.id,
+        };
+        this.printingService.printKot(
+          printableKot,
+          true,
+          this.dataProvider.billerPrinter,
+        );
+        // this.printingService.reprintKot(kot,bill.table.name,bill);
+      } else {
+        alert('Reprint Cancelled');
+        return;
+      }
+    } else {
       let products = [];
       kot.products.forEach((product) => {
         if (product.itemType == 'product') {
@@ -695,7 +772,7 @@ export class BillCardComponent {
           minute: 'numeric',
           hour12: true,
         }),
-        note:kot.note || '',
+        note: kot.note || '',
         mode: 'reprintKot',
         user: kot.user.username,
         orderNo: bill.orderNo,
@@ -713,15 +790,13 @@ export class BillCardComponent {
         table: bill.table as unknown as string,
         token: kot.id,
       };
-      this.printingService.printKot(printableKot,true,this.dataProvider.billerPrinter);
-      // this.printingService.reprintKot(kot,bill.table.name,bill);
-    } else {
-      alert('Reprint Cancelled');
-      return;
+      this.printingService.printKot(
+        printableKot,
+        true,
+        this.dataProvider.billerPrinter,
+      );
     }
   }
-
-
 
   getModeTitle(mode: 'dineIn' | 'takeaway' | 'online'): string {
     if (mode == 'dineIn') {
@@ -735,12 +810,11 @@ export class BillCardComponent {
     }
   }
 
-  returnValidNumber(num:number){
-    if(isNaN(num)){
+  returnValidNumber(num: number) {
+    if (isNaN(num)) {
       return 0;
     } else {
       return num;
     }
   }
-
 }

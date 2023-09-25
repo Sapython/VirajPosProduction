@@ -39,6 +39,7 @@ export class ViewComponent {
         localStorage.setItem('viewSettings', JSON.stringify(data));
       });
   }
+
   smartModeToggle(value: boolean) {
     localStorage.setItem(
       'viewSettings',
@@ -62,6 +63,7 @@ export class ViewComponent {
     this.dataProvider.touchMode = value;
     //  console.log(localStorage.getItem('viewSettings'));
   }
+  
   updateSettings(data: any) {
     if (debug) console.log('Updating settings Data', data);
 

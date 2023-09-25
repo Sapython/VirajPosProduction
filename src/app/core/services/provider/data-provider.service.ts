@@ -154,6 +154,7 @@ export class DataProvider {
   public openItemEnabled: boolean = false;
   public sweetsMode:boolean = false;
   public deleteCancelledBill:boolean = false;
+  public allowUnverifiedRePrint:boolean = false;
   public quickReasons:string[] = [];
   public billerCounters:BillerCounter[] = [];
   public currentBillerCounter:BillerCounter|undefined;
@@ -259,6 +260,7 @@ export class DataProvider {
     printBillAfterSettle:boolean;
     directSettle:boolean;
     salesHidden:boolean;
+    historyHidden:boolean;
   }={
     kotRePrintable:false,
     kotEditable:false,
@@ -268,6 +270,7 @@ export class DataProvider {
     printBillAfterSettle:false,
     directSettle:false,
     salesHidden:false,
+    historyHidden:false,
   };
   
   public loyaltyRates: {

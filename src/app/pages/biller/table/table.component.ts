@@ -104,7 +104,7 @@ export class TableComponent implements OnInit {
   instantiateTables(){
     this.activatedSortedTakeawayTokens = this.dataProvider.tokens.filter(
       (table) => {
-        return table.status == 'occupied';
+        return ['finalized','active'].includes(table.status);
       },
     ).sort((a, b) => {
       return Number(a.tableNo) - Number(b.tableNo);
@@ -119,7 +119,7 @@ export class TableComponent implements OnInit {
 
     this.activatedSortedOnlineTokens = this.dataProvider.onlineTokens.filter(
       (table) => {
-        return table.status == 'occupied';
+        return ['finalized','active'].includes(table.status);
       },
     ).sort((a, b) => {
       return Number(a.tableNo) - Number(b.tableNo);

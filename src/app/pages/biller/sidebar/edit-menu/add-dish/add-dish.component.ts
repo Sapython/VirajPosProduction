@@ -129,9 +129,10 @@ export class AddDishComponent {
       alert('Please select a main category');
       return;
     }
+    let tagData = this.tags.find((tag)=>tag.name == this.newDishForm.value.tag);
     this.dialogRef.close({
       ...this.newDishForm.value,
-      tags: this.newDishForm.value.tag ? [this.newDishForm.value.tag] : [],
+      tags: tagData ? [tagData]  : [],
       viewCategories: this.viewCategories ? this.viewCategories : [],
     });
   }

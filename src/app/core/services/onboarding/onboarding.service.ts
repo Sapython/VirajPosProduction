@@ -974,6 +974,7 @@ export class OnboardingService {
       ),
     );
     changes.subscribe(async (res) => {
+      this.dataProvider.tablesUpdated.next();
       console.log("TOKENCHANGE",res);
       res.forEach(async (change) => {
         if (change.type == 'added') {
@@ -1055,6 +1056,7 @@ export class OnboardingService {
       ),
     );
     changes.subscribe(async (res) => {
+      this.dataProvider.tablesUpdated.next();
       // console.log("TOKENCHANGE",res);
       res.forEach(async (change) => {
         if (change.type == 'added') {

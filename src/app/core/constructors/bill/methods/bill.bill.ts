@@ -183,15 +183,15 @@ export async function settle(
         } else {
           if (this.mode == 'dineIn') {
             this.dataProvider.loading = true;
-            requiredBillNumber = (await this.billService.getNormalBillNumber()) as any;
+            requiredBillNumber = (await this.billService.getNormalBillNumber(this.mode)) as any;
             this.dataProvider.loading = false;
           } else if (this.mode == 'takeaway') {
-            requiredBillNumber = (await this.billService.getNormalBillNumber()) as any;
+            requiredBillNumber = (await this.billService.getNormalBillNumber(this.mode)) as any;
           } else if (this.mode == 'online') {
-            requiredBillNumber = (await this.billService.getNormalBillNumber()) as any;
+            requiredBillNumber = (await this.billService.getNormalBillNumber(this.mode)) as any;
           } else {
             this.dataProvider.loading = true;
-            requiredBillNumber = (await this.billService.getNormalBillNumber()) as any;
+            requiredBillNumber = (await this.billService.getNormalBillNumber(this.mode)) as any;
             this.dataProvider.loading = false;
           }
         }

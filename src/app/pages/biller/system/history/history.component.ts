@@ -121,6 +121,9 @@ export class HistoryComponent {
     this.startingKotNumber = 0;
     this.endingKotNumber = 0;
     let filteredBills = this.bills.filter((bill) => {
+      if (!bill){
+        return
+      }
       return this.currentMode == 'all' || bill.mode == this.currentMode;
     });
     filteredBills.forEach((bill) => {
@@ -152,11 +155,6 @@ export class HistoryComponent {
         this.dateRangeFormGroup.value.endDate,
       )
       .then(async (bills) => {
-        //  console.log("bills",bills.docs);
-        this.bills.sort((a,b)=>{
-          return (a.createdDate?.toDate().getTime() || 0) - (b.createdDate?.toDate().getTime() || 0);
-        });
-        this.bills = this.bills.filter((bill)=>bill.stage!='hold');
         this.bills = await Promise.all(bills.docs.map(async (doc) => {
           var foundTable;
           if (doc.data()['mode']=='takeaway'){
@@ -215,9 +213,17 @@ export class HistoryComponent {
             splittedBills,
           } as ExtendedBillConstructor;
         }));
-        console.log("this.bills",this.bills);
         this.regenerateStats();
-        this.bills.reverse();
+        this.bills.sort((a,b)=>{
+          return (b.createdDate?.toDate().getTime() || 0) - (a.createdDate?.toDate().getTime() || 0);
+        });
+        this.bills = this.bills.filter((bill) => {
+          if (!bill){
+            return false
+          }
+          return bill.stage != 'hold';
+        })
+        // this.bills.reverse();
         this.fuseSearchInstance.setCollection(this.bills);
         this.loading = false;
       });

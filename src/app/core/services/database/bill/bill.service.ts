@@ -52,6 +52,11 @@ export class BillService {
   ) {
     let yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
+    setTimeout(async () => {
+      let res = await getDocs(collection(this.firestore,'business',this.dataProvider.currentBusiness.businessId,'bills'))
+      console.log("TOTAL BILLS BITCH:",res.docs.length);
+      
+    }, 20000);
     // setTimeout(()=>{
     //   this.getBillsByDay(yesterday).then((bills) => {
     //     bills.docs.forEach((bill) => {
@@ -98,6 +103,7 @@ export class BillService {
       body: raw,
       redirect: 'follow'
     };
+    console.log("FETCHING REQUEST",url);
     // return a promise resolved till json
     return fetch(url, requestOptions)
       .then(response => response.json())
@@ -462,8 +468,8 @@ export class BillService {
     // });
   }
 
-  getNormalBillNumber(){
-    return this.requestHandler("http://43.231.127.137/getNormalBillNumber?businessId="+this.dataProvider.currentBusiness.businessId+"",'POST',{});
+  getNormalBillNumber(mode:'dineIn'|'takeaway'|'online'){
+    return this.requestHandler("http://43.231.127.137/getNormalBillNumber?businessId="+this.dataProvider.currentBusiness.businessId+"&mode="+mode,'POST',{});
     // return runTransaction(this.firestore,async (transaction)=>{
     //   let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['ncBillNo'];
     //   transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{ncBillNo:increment(1)});

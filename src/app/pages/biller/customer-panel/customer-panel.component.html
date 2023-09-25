@@ -80,6 +80,9 @@
             {{
               (this.dataProvider.currentBill?.customerInfo?.loyaltyPoints) || "N/A"
             }}
+            <ng-container *ngIf="this.dataProvider.currentBill?.customerInfo?.loyaltyPoints">
+              <strong> = {{getPrimaryLoyaltyCost(this.dataProvider.currentBill?.customerInfo?.loyaltyPoints) | currency:'INR'}}</strong>
+            </ng-container>
           </p>
         </div>
         <hr />
@@ -118,7 +121,7 @@
                   'Max: ' +
                   this.dataProvider.currentBill?.customerInfo?.loyaltyPoints
                 "
-                (change)="setLoyaltyCost(toBeRedeemedPoints.value)"
+                (input)="setLoyaltyCost(toBeRedeemedPoints.value)"
                 formControlName="totalToBeRedeemedPoints"
                 #toBeRedeemedPoints
               />

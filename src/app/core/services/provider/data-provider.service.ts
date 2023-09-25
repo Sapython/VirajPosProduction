@@ -200,9 +200,9 @@ export class DataProvider {
   public dineInMenu: Menu | undefined;
   public takeawayMenu: Menu | undefined;
   public onlineMenu: Menu | undefined;
-  public tables: Table[] = [];
   public groupedTables: { tables: Table[]; name: string }[] = [];
   public validTill: Date = new Date();
+  public tables: Table[] = [];
   public tokens: Table[] = [];
   public onlineTokens: Table[] = [];
   public customers: CustomerInfo[] = [];
@@ -217,6 +217,7 @@ export class DataProvider {
   public tableOrders: any = undefined;
   public groupOrders: string[] = [];
   public paymentMethods: PaymentMethod[] = [];
+  public tablesUpdated:Subject<void> = new Subject<void>();
   public tokensResetSetting: {
     billNo: boolean;
     takeawayTokenNo: boolean;
@@ -232,6 +233,7 @@ export class DataProvider {
     ncBillNo: false,
     kotNo: false
   };
+
   public printSettings: {
     showBillTime: boolean;
     showBillDate: boolean;

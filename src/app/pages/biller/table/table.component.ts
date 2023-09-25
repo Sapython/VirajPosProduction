@@ -28,6 +28,10 @@ import { DialogComponent } from '../../../shared/base-components/dialog/dialog.c
 })
 export class TableComponent implements OnInit {
   tables: Table[] = [];
+  activatedSortedTakeawayTokens: Table[] = [];
+  onHoldSortedTakeawayTokens: Table[] = [];
+  activatedSortedOnlineTokens: Table[] = [];
+  onHoldSortedOnlineTokens: Table[] = [];
   selectedKotsForKotTransfer: Kot[] = [];
   interval: any;
   editMode: boolean = false;
@@ -91,6 +95,43 @@ export class TableComponent implements OnInit {
       return Number(a.tableNo) - Number(b.tableNo);
     });
     this.tableService.reOrderTable();
+    this.instantiateTables();
+    this.dataProvider.tablesUpdated.subscribe(() => {
+      this.instantiateTables();
+    })
+  }
+
+  instantiateTables(){
+    this.activatedSortedTakeawayTokens = this.dataProvider.tokens.filter(
+      (table) => {
+        return table.status == 'occupied';
+      },
+    ).sort((a, b) => {
+      return Number(a.tableNo) - Number(b.tableNo);
+    });
+    this.onHoldSortedTakeawayTokens = this.dataProvider.tokens.filter(
+      (table) => {
+        return table.bill?.stage == 'hold';
+      },
+    ).sort((a, b) => {
+      return Number(a.tableNo) - Number(b.tableNo);
+    });
+
+    this.activatedSortedOnlineTokens = this.dataProvider.onlineTokens.filter(
+      (table) => {
+        return table.status == 'occupied';
+      },
+    ).sort((a, b) => {
+      return Number(a.tableNo) - Number(b.tableNo);
+    });
+
+    this.onHoldSortedOnlineTokens = this.dataProvider.onlineTokens.filter(
+      (table) => {
+        return table.bill?.stage == 'hold';
+      },
+    ).sort((a, b) => {
+      return Number(a.tableNo) - Number(b.tableNo);
+    });
   }
 
   getTime(date: Timestamp) {

@@ -401,7 +401,7 @@
         <p>Add New Token</p>
       </button>
       <ng-container
-        *ngFor="let table of this.dataProvider.tokens | active | sorted"
+        *ngFor="let table of this.activatedSortedTakeawayTokens"
       >
         <button
           class="table"
@@ -460,7 +460,7 @@
       </ng-container>
     </div>
     <div class="tables" *ngIf="this.dataProvider.billingMode == 'takeaway' && this.dataProvider.viewOnHoldTokens">
-      <ng-container *ngFor="let table of this.dataProvider.tokens | holded">
+      <ng-container *ngFor="let table of this.onHoldSortedTakeawayTokens">
         <button
           class="table"
           [ngClass]="{
@@ -532,7 +532,7 @@
         <mat-icon>add</mat-icon>
         <p>Add New Token</p>
       </button>
-      <ng-container *ngFor="let table of this.dataProvider.onlineTokens | active | sorted">
+      <ng-container *ngFor="let table of this.activatedSortedOnlineTokens | active | sorted">
         <button
           class="table"
           [ngClass]="{
@@ -590,7 +590,7 @@
       </ng-container>
     </div>
     <div class="tables" *ngIf="this.dataProvider.billingMode == 'online' && this.dataProvider.viewOnHoldTokens">
-      <ng-container *ngFor="let table of this.dataProvider.onlineTokens | holded">
+      <ng-container *ngFor="let table of this.onHoldSortedOnlineTokens | holded">
         <button
           class="table"
           [ngClass]="{

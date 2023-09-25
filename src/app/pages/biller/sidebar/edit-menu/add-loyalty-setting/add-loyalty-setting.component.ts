@@ -1,5 +1,5 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CategoryLoyaltyRate, LoyaltySetting } from '../../../../../types/loyalty.structure';
 import { ModeConfig } from '../../../../../core/constructors/menu/menu';
@@ -12,7 +12,7 @@ import { AlertsAndNotificationsService } from '../../../../../core/services/aler
   templateUrl: './add-loyalty-setting.component.html',
   styleUrls: ['./add-loyalty-setting.component.scss'],
 })
-export class AddLoyaltySettingComponent {
+export class AddLoyaltySettingComponent implements OnInit {
   constructor(
     @Inject(DIALOG_DATA) private data: { menu: ModeConfig,loyaltySetting:LoyaltySetting,mode:'add'|'edit' },
     public dialogRef: DialogRef,
@@ -68,6 +68,12 @@ export class AddLoyaltySettingComponent {
 
   prevBaseRateValue: number = 0;
   usableMainCategories: CategoryLoyaltyRate[] = [];
+
+  ngOnInit(): void {
+    if(this.data.mode == 'edit'){
+      this.addNewLoyaltyForm.controls.baseRate.disable();
+    }
+  }
 
   submit() {
     if (this.addNewLoyaltyForm.invalid) {

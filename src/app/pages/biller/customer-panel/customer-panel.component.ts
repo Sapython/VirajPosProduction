@@ -347,22 +347,35 @@ export class CustomerPanelComponent implements OnInit {
     if (typeof value == 'string') {
       value = Number(value);
     }
-    if (value) {
-      if (value > this.dataProvider.currentBill?.customerInfo?.loyaltyPoints){
-        value = this.dataProvider.currentBill?.customerInfo?.loyaltyPoints;
-        // update form
-        this.loyaltySettingForm.patchValue({
-          totalToBeRedeemedPoints: value,
-        });
-        this.alertify.presentToast('Loyalty points exceeded');
-      }
-      console.log("REDEEM",this.dataProvider.currentBill.currentLoyalty.totalToBeRedeemedCost,this.dataProvider.currentBill.currentLoyalty.totalLoyaltyCost,this.dataProvider.currentBill.currentLoyalty.totalLoyaltyPoints,Number(value));
-      if(this.dataProvider.currentBill){
-        this.dataProvider.currentBill.currentLoyalty.totalToBeRedeemedCost =
-          (this.dataProvider.currentBill.currentLoyalty.totalLoyaltyCost /
-            this.dataProvider.currentBill.currentLoyalty.totalLoyaltyPoints) *
-          Number(value);
-      }
+    if (value > this.dataProvider.currentBill?.customerInfo?.loyaltyPoints){
+      value = this.dataProvider.currentBill?.customerInfo?.loyaltyPoints;
+      // update form
+      this.loyaltySettingForm.patchValue({
+        totalToBeRedeemedPoints: value,
+      });
+      this.alertify.presentToast('Loyalty points exceeded');
+    }
+    console.log("REDEEM",this.dataProvider.currentBill.currentLoyalty.totalToBeRedeemedCost,this.dataProvider.currentBill.currentLoyalty.totalLoyaltyCost,this.dataProvider.currentBill.currentLoyalty.totalLoyaltyPoints,Number(value));
+    if(this.dataProvider.currentBill){
+      this.dataProvider.currentBill.currentLoyalty.totalToBeRedeemedCost =
+        (this.dataProvider.currentBill.currentLoyalty.totalLoyaltyCost /
+          this.dataProvider.currentBill.currentLoyalty.totalLoyaltyPoints) *
+        Number(value);
+    }
+  }
+
+  getPrimaryLoyaltyCost(loyaltyPoints:number): number {
+    if (this.loyaltySettingForm.value.totalToBeRedeemedPoints) {
+      loyaltyPoints = (loyaltyPoints - Number(this.loyaltySettingForm.value.totalToBeRedeemedPoints));
+    }
+    if(this.dataProvider.currentBill){
+      return (
+        (this.dataProvider.currentBill.currentLoyalty.totalLoyaltyCost /
+          this.dataProvider.currentBill.currentLoyalty.totalLoyaltyPoints) *
+        loyaltyPoints
+      );
+    } else {
+      return 0;
     }
   }
 

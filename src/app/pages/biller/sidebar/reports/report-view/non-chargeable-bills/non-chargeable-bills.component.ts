@@ -144,7 +144,7 @@ export class NonChargeableBillsComponent {
 
 
   async downloadPdf() {
-    const doc = new jsPDF();
+    const doc = new jsPDF('l','mm', [500, 300]);
     doc.setFont('Roboto-Regular')
     let title = 'Non Chargeable Bill Wise';
     let logo = new Image();

@@ -53,7 +53,10 @@ export class OnlineBillsComponent {
     this.reportChangedSubscription = this.reportService.dataChanged.subscribe(
       () => {
         this.loading = true;
-        this.reportService.getBills(new Date(), new Date()).then((bills) => {
+        this.reportService.getBills(
+            this.reportService.dateRangeFormGroup.value.startDate,
+            this.reportService.dateRangeFormGroup.value.endDate,
+          ).then((bills) => {
           bills = bills.filter((bill) => bill.mode == 'online');
           console.log('Bills ', bills);
           bills = bills.filter((bill)=>bill.orderNo);
@@ -139,7 +142,7 @@ export class OnlineBillsComponent {
 
 
   async downloadPdf() {
-    const doc = new jsPDF('l');
+    const doc = new jsPDF('l','mm', [500, 300]);
     doc.setFont('Roboto-Regular')
     let title = 'Online Bill Wise';
     let logo = new Image();

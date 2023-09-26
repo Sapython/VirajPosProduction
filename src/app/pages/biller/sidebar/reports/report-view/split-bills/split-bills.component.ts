@@ -62,7 +62,7 @@ export class SplitBillsComponent {
   }
 
   async downloadPdf() {
-    const doc = new jsPDF();
+    const doc = new jsPDF('l','mm', [500, 300]);
     let title = 'Splitted Bills';
     let logo = new Image();
     logo.src = 'assets/images/viraj.png';

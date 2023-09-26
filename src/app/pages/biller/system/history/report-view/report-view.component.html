@@ -29,11 +29,6 @@
 		  (click)="reportService.downloadPdf.next()"
 		  >Download As PDF</viraj-button
 		>
-		<viraj-button
-		  *ngIf="!reportService.noData"
-		  (click)="reportService.dataChanged.next()"
-		  >Refresh Data <i class="ri-refresh-line"></i
-		></viraj-button>
 	  </div>
 	</div>
 	<div class="body">

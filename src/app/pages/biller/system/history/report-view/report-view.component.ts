@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { Subscription, ReplaySubject } from 'rxjs';
@@ -8,6 +8,7 @@ import { BillConstructor } from '../../../../../types/bill.structure';
 import { KotConstructor } from '../../../../../types/kot.structure';
 import { ReportService } from '../../../sidebar/reports/report.service';
 import { Product } from '../../../../../types/product.structure';
+import { DIALOG_DATA } from '@angular/cdk/dialog';
 
 @Component({
   selector: 'app-report-view',
@@ -51,99 +52,96 @@ export class ReportViewComponent {
   constructor(
     public reportService: ReportService,
     private dataProvider: DataProvider,
+    @Inject(DIALOG_DATA) private data:{startDate:Date,endDate:Date}
   ) {}
 
   ngOnInit(): void {
-    this.reportChangedSubscription = this.reportService.dataChanged.subscribe(
-      () => {
-        this.loading = true;
-        this.reportService
-          .getBills(
-            this.reportService.dateRangeFormGroup.value.startDate,
-            this.reportService.dateRangeFormGroup.value.endDate,
-          )
-          .then((bills) => {
-            console.log('Bills ', bills);
-            bills = bills.filter((bill)=>bill.orderNo);
-            let productBaseSales: timedBillConstructor[] = bills.map((bill) => {
-              let totalBillTime = '';
-              if (bill?.createdDate?.toDate() && bill.settlement?.time?.toDate()) {
-                let billTime = new Date(bill.createdDate?.toDate());
-                // time difference between bill.createdDate time and bill.settlement.time
-                let settlementTime = new Date(bill.settlement?.time.toDate());
-                let timeDifference = settlementTime.getTime() - billTime.getTime();
-                billTime = new Date(timeDifference);
-                let hours = billTime.getHours();
-                let minutes = billTime.getMinutes();
-                let seconds = billTime.getSeconds();
-                totalBillTime = `${hours}:${minutes}:${seconds}`;
-              };
-              let mergedProducts = [];
-              bill.kots.forEach((kot) =>{
-                if (kot.products) {
-                  kot.products.forEach((product) => {
-                    let index = mergedProducts.findIndex((res) => res.id === product.id);
-                    if (index === -1) {
-                      mergedProducts.push(product);
-                    } else {
-                      mergedProducts[index].quantity += product.quantity;
-                    }
-                  })
+    this.loading = true;
+    this.reportService
+      .getBills(
+        this.data.startDate,
+        this.data.endDate
+      )
+      .then((bills) => {
+        console.log('Bills ', bills);
+        bills = bills.filter((bill)=>bill.orderNo);
+        let productBaseSales: timedBillConstructor[] = bills.map((bill) => {
+          let totalBillTime = '';
+          if (bill?.createdDate?.toDate() && bill.settlement?.time?.toDate()) {
+            let billTime = new Date(bill.createdDate?.toDate());
+            // time difference between bill.createdDate time and bill.settlement.time
+            let settlementTime = new Date(bill.settlement?.time.toDate());
+            let timeDifference = settlementTime.getTime() - billTime.getTime();
+            billTime = new Date(timeDifference);
+            let hours = billTime.getHours();
+            let minutes = billTime.getMinutes();
+            let seconds = billTime.getSeconds();
+            totalBillTime = `${hours}:${minutes}:${seconds}`;
+          };
+          let mergedProducts = [];
+          bill.kots.forEach((kot) =>{
+            if (kot.products) {
+              kot.products.forEach((product) => {
+                let index = mergedProducts.findIndex((res) => res.id === product.id);
+                if (index === -1) {
+                  mergedProducts.push(product);
+                } else {
+                  mergedProducts[index].quantity += product.quantity;
                 }
-              });
-              return {
-                ...bill,
-                totalBillTime,
-                mergedProducts
-              };
-            });
-            this.billTotals ={
-              numberOfBills:bills.reduce((acc, curr) => curr.billNo ? acc + 1 : acc, 0),
-              numberOfOrders:bills.reduce((acc, curr) => curr.orderNo ? acc + 1 : acc, 0),
-              total:bills.reduce((acc, curr) => acc + (curr.cancelledReason ? 0 : curr.billing.grandTotal), 0),
-              numberOfKots:bills.reduce((acc, curr) => acc + curr.kots.length, 0),
-              numberOfUsers:bills.reduce((acc, curr) => acc + curr.kots.length, 0),
-              totalBillTime:productBaseSales.filter((bill)=>bill.totalBillTime).reduce((acc, curr) => {
-                let timeArray = curr.totalBillTime.split(':');
-                let hours = parseInt(timeArray[0]);
-                let minutes = parseInt(timeArray[1]);
-                let seconds = parseInt(timeArray[2]);
-                acc[0] += hours;
-                acc[1] += minutes;
-                acc[2] += seconds;
-                if (acc[2] > 60) {
-                  acc[1] += Math.floor(acc[2] / 60);
-                  acc[2] = acc[2] % 60;
-                }
-                if (acc[1] > 60) {
-                  acc[0] += Math.floor(acc[1] / 60);
-                  acc[1] = acc[1] % 60;
-                }
-                console.log("Time formatted",acc);
-                return acc;
-              }, [0, 0, 0]).join(':'),
-              totalAmount:bills.reduce((acc, curr) => acc + curr.billing.grandTotal, 0),
-              totalDiscount:bills.reduce((acc, curr) => acc + 
-                curr.billing.discount.reduce((acc, curr) => acc + curr.totalAppliedDiscount, 0)
-              , 0),
-              totalTax:bills.reduce((acc, curr) => acc + curr.billing.taxes.reduce((acc, curr) => acc + curr.amount, 0), 0),
-            };
-            console.log("Bill totals",this.billTotals);
-            this.bills.next(productBaseSales);
-            this.loading = false;
+              })
+            }
           });
-      },
-    );
-    this.downloadPDfSubscription = this.reportService.downloadPdf.subscribe(
-      () => {
-        this.downloadPdf();
-      },
-    );
-    this.downloadExcelSubscription = this.reportService.downloadExcel.subscribe(
-      () => {
-        this.downloadExcel();
-      },
-    );
+          return {
+            ...bill,
+            totalBillTime,
+            mergedProducts
+          };
+        });
+        this.billTotals ={
+          numberOfBills:bills.reduce((acc, curr) => curr.billNo ? acc + 1 : acc, 0),
+          numberOfOrders:bills.reduce((acc, curr) => curr.orderNo ? acc + 1 : acc, 0),
+          total:bills.reduce((acc, curr) => acc + (curr.cancelledReason ? 0 : curr.billing.grandTotal), 0),
+          numberOfKots:bills.reduce((acc, curr) => acc + curr.kots.length, 0),
+          numberOfUsers:bills.reduce((acc, curr) => acc + curr.kots.length, 0),
+          totalBillTime:productBaseSales.filter((bill)=>bill.totalBillTime).reduce((acc, curr) => {
+            let timeArray = curr.totalBillTime.split(':');
+            let hours = parseInt(timeArray[0]);
+            let minutes = parseInt(timeArray[1]);
+            let seconds = parseInt(timeArray[2]);
+            acc[0] += hours;
+            acc[1] += minutes;
+            acc[2] += seconds;
+            if (acc[2] > 60) {
+              acc[1] += Math.floor(acc[2] / 60);
+              acc[2] = acc[2] % 60;
+            }
+            if (acc[1] > 60) {
+              acc[0] += Math.floor(acc[1] / 60);
+              acc[1] = acc[1] % 60;
+            }
+            console.log("Time formatted",acc);
+            return acc;
+          }, [0, 0, 0]).join(':'),
+          totalAmount:bills.reduce((acc, curr) => acc + curr.billing.grandTotal, 0),
+          totalDiscount:bills.reduce((acc, curr) => acc + 
+            curr.billing.discount.reduce((acc, curr) => acc + curr.totalAppliedDiscount, 0)
+          , 0),
+          totalTax:bills.reduce((acc, curr) => acc + curr.billing.taxes.reduce((acc, curr) => acc + curr.amount, 0), 0),
+        };
+        console.log("Bill totals",this.billTotals);
+        this.bills.next(productBaseSales);
+        this.loading = false;
+      });
+      this.downloadPDfSubscription = this.reportService.downloadPdf.subscribe(
+        () => {
+          this.downloadPdf();
+        },
+      );
+      this.downloadExcelSubscription = this.reportService.downloadExcel.subscribe(
+        () => {
+          this.downloadExcel();
+        },
+      );
   }
 
   addTimes(time:string[]){
@@ -170,7 +168,7 @@ export class ReportViewComponent {
   }
 
   async downloadPdf() {
-    const doc = new jsPDF('l');
+    const doc = new jsPDF('l','mm', [500, 300]);
     let title = 'Bill Wise';
     let logo = new Image();
     logo.src = 'assets/images/viraj.png';
@@ -190,12 +188,12 @@ export class ReportViewComponent {
           },
           {
             content:
-              this.reportService.dateRangeFormGroup.value.startDate.toLocaleString(),
+            this.data.startDate.toLocaleString(),
             styles: { halign: 'right', fontSize: 17 },
           },
           {
             content:this.reportService.dateRangeFormGroup.value.endDate ? 
-              this.reportService.dateRangeFormGroup.value.endDate.toLocaleString() : '',
+            this.data.endDate.toLocaleString() : '',
             styles: { halign: 'right', fontSize: 17 },
           },
         ],

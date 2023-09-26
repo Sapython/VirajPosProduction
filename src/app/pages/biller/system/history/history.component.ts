@@ -254,7 +254,7 @@ export class HistoryComponent {
   }
 
   openReport(){
-    let dialog = this.dialog.open(ReportViewComponent);
+    let dialog = this.dialog.open(ReportViewComponent,{data:this.dateRangeFormGroup.value});
   }
 
   

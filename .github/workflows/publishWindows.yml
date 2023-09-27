@@ -1,0 +1,40 @@
+name: Publish To Windows
+on: push
+
+env:
+  GH_TOKEN: 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
+
+jobs:
+ test:
+   runs-on: [ windows-latest ]
+   steps:
+     - name: Run smoke tests
+       if: contains(github.event.head_commit.message, 'publish_to_prod')
+       run: |
+         steps:
+          - uses: actions/checkout@v3
+          - name: Cache node modules
+            uses: actions/cache@v3
+            env:
+              cache-name: cache-node-modules
+            with:
+              # npm cache files are stored in `~/.npm`
+              path: ~/.npm
+              key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+              restore-keys: |
+                ${{ runner.os }}-build-${{ env.cache-name }}-
+                ${{ runner.os }}-build-
+                ${{ runner.os }}-
+      
+          - name: Use Node.js ${{ matrix.node-version }}
+            uses: actions/setup-node@v3
+            with:
+              node-version: ${{ matrix.node-version }}
+      
+          - name: Install Dependencies
+            run: npm i
+
+          - name: "Build app"
+            run: npm run electron:build:publish
+      
+               

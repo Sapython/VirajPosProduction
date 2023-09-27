@@ -5,10 +5,10 @@ env:
   GH_TOKEN: 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
 
 jobs:
- test:
+ build:
    runs-on: [ windows-latest ]
    steps:
-     - name: Run smoke tests
+     - name: Publish Vrajera to public
        if: contains(github.event.head_commit.message, 'publish_to_prod')
        run: |
          steps:

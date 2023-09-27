@@ -1,0 +1,50 @@
+<main>
+    <mat-horizontal-stepper>
+        <mat-step label="Stock">
+            <section class="stock">
+                <h3>Sorted Items</h3>
+                <div class="items">
+                    <div class="item" *ngFor="let item of items">
+                        <p>{{item.name}}</p>
+                        <span>
+                            <input type="number">
+                            <p>{{item.unit}}</p>
+                        </span>
+                    </div>
+                </div>
+                <h3>Un-Sorted Items</h3>
+                <div class="items">
+                    <div class="item" *ngFor="let item of items">
+                        <p>{{item.name}}</p>
+                        <span>
+                            <input type="number">
+                            <p>{{item.unit}}</p>
+                        </span>
+                    </div>
+                </div>
+                <button mat-flat-button color="primary" matStepperNext>Next</button>
+            </section>
+        </mat-step>
+        <mat-step label="Counter">
+            <section class="counter">
+                <h2>Counter</h2>
+                <h4>Enter counter cash collection amount.</h4>
+                <div class="entries">
+                    <div class="cash">
+                        <p>Cash</p>
+                        <input type="number">
+                    </div>
+                    <div class="cash">
+                        <p>UPI</p>
+                        <input disabled type="number">
+                    </div>
+                    <div class="cash">
+                        <p>Card</p>
+                        <input disabled type="number">
+                    </div>
+                </div>
+                <button mat-flat-button color="primary" (click)="closeIn()">Close In</button>
+            </section>
+        </mat-step>
+    </mat-horizontal-stepper>
+</main>

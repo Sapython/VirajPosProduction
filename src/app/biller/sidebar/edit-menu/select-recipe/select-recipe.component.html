@@ -1,0 +1,36 @@
+<section>
+    <h3>Select Dishes</h3>
+    <mat-form-field appearance="outline">
+        <mat-label>Search Dishes</mat-label>
+        <input matInput placeholder="label" (input)="searchSubject.next(searchInput.value)" #searchInput>
+    </mat-form-field>
+    <div class="tableContainer">
+        <table class="uk-table uk-table-divider uk-table-striped uk-table-hover uk-table-middle uk-table-small">
+            <thead>
+                <tr>
+                    <th><mat-checkbox (change)="switchAll($event)">Name</mat-checkbox></th>
+                    <th>Price</th>
+                    <th>Category</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of filteredProducts.length > 0 ? filteredProducts : products">
+                    <td>
+                        <mat-checkbox [(ngModel)]="item.selected">{{item.name}}</mat-checkbox>
+                    </td>
+                    <td>
+                        <ng-container *ngIf="!editMode">
+                            {{item.price}}
+                        </ng-container>
+                        <input type="number" *ngIf="editMode" [(ngModel)]="item.price">
+                    </td>
+                    <td>{{item.category?.name || 'N/A'}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="actions">
+        <viraj-button (vclick)="save()">Save</viraj-button>
+        <viraj-button (vclick)="close()">Cancel</viraj-button>
+    </div>
+</section>

@@ -1,0 +1,26 @@
+<section>
+    <h2>Non Chargeable</h2>
+    <form [formGroup]="nonChargeableForm" (ngSubmit)="submit()">
+        <!-- TODO create nc for customer or concern based -->
+        <mat-form-field appearance="outline">
+            <mat-label>Name</mat-label>
+            <input matInput type="text" formControlName="name">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Phone</mat-label>
+            <input matInput type="tel" formControlName="phone">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Reason</mat-label>
+            <input matInput type="text" formControlName="reason">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" formControlName="password">
+        </mat-form-field>
+        <div class="actions">
+            <button mat-stroked-button color="primary" type="button">Back</button>
+            <button mat-flat-button [disabled]="!nonChargeableForm.valid" color="primary" type="submit">Non Chargeable Bill</button>
+        </div>
+    </form>
+</section>

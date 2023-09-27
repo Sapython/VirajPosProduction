@@ -1,0 +1,7 @@
+<section [@shakeOnEnter] [@zoomOutOnLeave]>
+    <h2>{{title}}</h2>
+    <p *ngIf="description">{{description}}</p>
+    <div class="actions">
+        <viraj-button *ngFor="let item of buttons;let i = index" (vclick)="dialogRef.close(i)" [type]="primary.includes(i) ? 'solid' : 'outline'">{{item}}</viraj-button>
+    </div>
+</section>

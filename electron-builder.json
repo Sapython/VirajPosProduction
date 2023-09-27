@@ -16,7 +16,7 @@
   ],
   "win": {
     "icon": "dist/assets/icons",
-    "target": ["msi", "nsis"],
+    "target": ["nsis"],
     "publish": ["github"]
   },
   "portable": {

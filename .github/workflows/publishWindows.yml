@@ -6,35 +6,31 @@ env:
 
 jobs:
  build:
+   if: contains(github.event.head_commit.message, 'publish_to_prod')
    runs-on: [ windows-latest ]
+   name: Publish Vrajera to public
    steps:
-     - name: Publish Vrajera to public
-       if: contains(github.event.head_commit.message, 'publish_to_prod')
-       run: |
-         steps:
-          - name: Cache node modules
-            uses: actions/cache@v3
-            env:
-              cache-name: cache-node-modules
-            with:
-              # npm cache files are stored in `~/.npm`
-              path: ~/.npm
-              key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-              restore-keys: |
-                ${{ runner.os }}-build-${{ env.cache-name }}-
-                ${{ runner.os }}-build-
-                ${{ runner.os }}-
-      
-          - name: Use Node.js ${{ matrix.node-version }}
-            uses: actions/setup-node@v3
-            with:
-              node-version: ${{ matrix.node-version }}
-      
-          - name: Install Dependencies
-            run: npm i
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        name: Cache node modules
+        env:
+          cache-name: cache-node-modules
+        with:
+          # npm cache files are stored in `~/.npm`
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
-          - name: Build app
-            uses: actions/checkout@v3
-            run: npm run electron:build:publish
-      
-               
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install Dependencies
+        run: npm i
+
+      - name: Build app
+        run: npm run electron:build:publish

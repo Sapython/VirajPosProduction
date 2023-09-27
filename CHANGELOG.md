@@ -1,4 +1,4 @@
-## <small>0.1.145 (2023-09-27)</small>
+## <small>0.1.148 (2023-09-27)</small>
 
 * Access level was wrong ([382351d](https://github.com/swayambhu-innovations/Vrajera/commit/382351d))
 * Added active category option. Custom Printer, Custom ViewCat ([ce3fc6f](https://github.com/swayambhu-innovations/Vrajera/commit/ce3fc6f))
@@ -23,6 +23,7 @@
 * Added option to hide sales metrics. ([f06c6f8](https://github.com/swayambhu-innovations/Vrajera/commit/f06c6f8))
 * Added quick reasons, and removed disabled stage from finalize and settle ([2404eb5](https://github.com/swayambhu-innovations/Vrajera/commit/2404eb5))
 * Added refresh button in reports. ([f338a06](https://github.com/swayambhu-innovations/Vrajera/commit/f338a06))
+* Added release file and no update condition ([e47a2ca](https://github.com/swayambhu-innovations/Vrajera/commit/e47a2ca))
 * Added search ([cef5056](https://github.com/swayambhu-innovations/Vrajera/commit/cef5056))
 * Added sentry tracking. ([937dd51](https://github.com/swayambhu-innovations/Vrajera/commit/937dd51))
 * Added service worker ([95bd6dc](https://github.com/swayambhu-innovations/Vrajera/commit/95bd6dc))
@@ -41,9 +42,13 @@
 * Changed bill counter to custom server based ([c2fd022](https://github.com/swayambhu-innovations/Vrajera/commit/c2fd022))
 * Changed bill wise reports to landscape mode. ([4c2f6ec](https://github.com/swayambhu-innovations/Vrajera/commit/4c2f6ec))
 * Changed gitignore for umd files ([274c5b3](https://github.com/swayambhu-innovations/Vrajera/commit/274c5b3))
+* Changed package repository ([c8a5511](https://github.com/swayambhu-innovations/Vrajera/commit/c8a5511))
 * Changed some bg images. ([ebb856e](https://github.com/swayambhu-innovations/Vrajera/commit/ebb856e))
 * Combo fixed ([c23bad7](https://github.com/swayambhu-innovations/Vrajera/commit/c23bad7))
 * Combo fixed color fixed,product card fixed. ([5f8008f](https://github.com/swayambhu-innovations/Vrajera/commit/5f8008f))
+* Config changes and bug fixes. ([42097d7](https://github.com/swayambhu-innovations/Vrajera/commit/42097d7))
+* Create installer.nsh ([00079d7](https://github.com/swayambhu-innovations/Vrajera/commit/00079d7))
+* Create publishWindows.yml ([7b7fb67](https://github.com/swayambhu-innovations/Vrajera/commit/7b7fb67))
 * Edit menu printer config removed. ([dbe7eca](https://github.com/swayambhu-innovations/Vrajera/commit/dbe7eca))
 * Everything done. ([595a3d6](https://github.com/swayambhu-innovations/Vrajera/commit/595a3d6))
 * Final fixes done except onboarding. ([e6cfeeb](https://github.com/swayambhu-innovations/Vrajera/commit/e6cfeeb))
@@ -174,6 +179,7 @@
 * Initial commit ([72a5882](https://github.com/swayambhu-innovations/Vrajera/commit/72a5882))
 * Initialized Viraj with no fs errors. ([7c15e3c](https://github.com/swayambhu-innovations/Vrajera/commit/7c15e3c))
 * Loading fixes. ([63d689c](https://github.com/swayambhu-innovations/Vrajera/commit/63d689c))
+* Main migration ([10875cf](https://github.com/swayambhu-innovations/Vrajera/commit/10875cf))
 * Menu changes and bug fixes. ([0ec23ec](https://github.com/swayambhu-innovations/Vrajera/commit/0ec23ec))
 * Menu Mgmt multi menu bug fix. ([65eb466](https://github.com/swayambhu-innovations/Vrajera/commit/65eb466))
 * Migrated functions ([76673eb](https://github.com/swayambhu-innovations/Vrajera/commit/76673eb))
@@ -267,6 +273,7 @@
 * Update product-card.component.ts ([ba90cf7](https://github.com/swayambhu-innovations/Vrajera/commit/ba90cf7))
 * Update products-panel.component.html ([c317f97](https://github.com/swayambhu-innovations/Vrajera/commit/c317f97))
 * Update products-panel.component.scss ([3c249ae](https://github.com/swayambhu-innovations/Vrajera/commit/3c249ae))
+* Update publishWindows.yml ([70394bf](https://github.com/swayambhu-innovations/Vrajera/commit/70394bf))
 * Update reports.component.html ([9cc32e8](https://github.com/swayambhu-innovations/Vrajera/commit/9cc32e8))
 * Update settings.component.html ([419c8e7](https://github.com/swayambhu-innovations/Vrajera/commit/419c8e7))
 * Update settings.component.ts ([9ae7232](https://github.com/swayambhu-innovations/Vrajera/commit/9ae7232))

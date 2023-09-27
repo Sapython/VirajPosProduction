@@ -1,0 +1,44 @@
+<h3>Counters Under this business</h3>
+<div class="gridTable">
+  <div class="heading">
+    <span>Method Name</span>
+    <span>Created On</span>
+    <span>Last Updated</span>
+    <span
+      >
+      <button
+        color="primary"
+        mat-raised-button
+        (click)="addCounter()"
+      >
+        Add Counter
+      </button>
+    </span>
+  </div>
+  <div class="items">
+    <ng-container *ngIf="!loading">
+      <div class="item" *ngFor="let item of this.dataProvider.billerCounters">
+        <span>{{ item.counterName }}</span>
+        <span>{{ item.creationDate?.toDate() | date }}</span>
+        <span>{{ item.updateDate?.toDate() | date }}</span>
+        <span class="tableActions">
+          <viraj-button
+            (vclick)="editCounter(item)"
+            *ngIf="this.dataProvider.getAccess('editMethod')"
+            type="icon"
+            ><i class="ri-pencil-line"></i
+          ></viraj-button>
+          <viraj-button
+            (vclick)="deleteCounter(item)"
+            *ngIf="this.dataProvider.getAccess('deleteMethod')"
+            type="icon"
+            ><i class="ri-delete-bin-line"></i
+          ></viraj-button>
+        </span>
+      </div>
+    </ng-container>
+    <div class="itemLoading" *ngIf="loading">
+      <mat-spinner diameter="30"></mat-spinner>
+    </div>
+  </div>
+</div>

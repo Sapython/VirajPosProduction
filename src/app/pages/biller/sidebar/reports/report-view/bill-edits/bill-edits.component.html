@@ -1,0 +1,42 @@
+<table class="styled-table" id="reportTable" *ngIf="!loading">
+  <thead>
+    <tr>
+      <th>Bill No</th>
+      <th>Order No</th>
+      <th>Bill Amount</th>
+      <th>Edit By</th>
+      <th>Edit At</th>
+      <th>Reason</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let bill of bills | async">
+      <td>
+        {{ bill.bill.billNo || "Unsettled" }}
+      </td>
+      <td>
+        {{ bill.bill.orderNo || 'N/A' }}
+      </td>
+      <td>
+        {{ bill.bill.billing.grandTotal || 'N/A' }}
+      </td>
+      <td>
+        {{ bill.user || 'N/A' }}
+      </td>
+      <td>
+        {{ bill.time.toDate() | date: "short" }}
+      </td>
+      <td>
+        {{ bill.reason || 'N/A' }}
+      </td>
+    </tr>
+    <tr *ngIf="(bills|async).length == 0">
+      <td
+        colspan="5"
+        style="text-align: center; font-weight: bold; font-size: 1.2rem;color:#aaa"
+      >
+        <p>No Data Available</p>
+      </td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,32 @@
+<form [formGroup]="promptForm" #form (ngSubmit)="submit()">
+  <h1>{{ config.title }}</h1>
+  <p *ngIf="config.description">{{ config.description }}</p>
+  <mat-form-field appearance="outline">
+    <mat-label>{{ config.placeholder }}</mat-label>
+    <input
+      *ngIf="!config.multiline"
+      formControlName="value"
+      matInput
+      [type]="config.type ? config.type : 'text'"
+    />
+    <textarea
+      *ngIf="config.multiline"
+      formControlName="value"
+      matInput
+      [type]="config.type ? config.type : 'text'"
+    ></textarea>
+  </mat-form-field>
+  <div class="actions">
+    <button color="primary" type="button" mat-stroked-button (click)="cancel()">
+      Cancel
+    </button>
+    <button
+      color="primary"
+      mat-flat-button
+      type="submit"
+      [disabled]="!promptForm.valid"
+    >
+      Submit
+    </button>
+  </div>
+</form>

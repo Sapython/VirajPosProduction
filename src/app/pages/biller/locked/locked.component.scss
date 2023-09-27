@@ -1,0 +1,26 @@
+section {
+  padding: 20px;
+  border-radius: 20px;
+  background: white;
+  .row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: center;
+    .col {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      .detail {
+        display: flex;
+        flex-direction: column;
+        gap: 0px;
+        align-items: flex-start;
+        p,
+        h4 {
+          margin: 3px;
+        }
+      }
+    }
+  }
+}

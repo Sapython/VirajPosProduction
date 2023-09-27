@@ -1,0 +1,82 @@
+<section>
+  <div class="heading">
+    <h1>Add Discount</h1>
+    <button (click)="dialogRef.close()" mat-icon-button mat-dialog-close>
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <form
+    [formGroup]="discountForm"
+    (ngSubmit)="dialogRef.close(this.discountForm.value)"
+  >
+    <mat-form-field appearance="outline">
+      <mat-label>Name</mat-label>
+      <input type="text" matInput formControlName="name" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Type</mat-label>
+      <mat-select placeholder="Type" name="type" formControlName="type">
+        <mat-option value="percentage">Percentage</mat-option>
+        <mat-option value="flat">Flat</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Value</mat-label>
+      <input type="number" matInput formControlName="value" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <app-helper matSuffix tooltip="The minimum amount of bill required where this discount can be applied."></app-helper>
+      <mat-label>Minimum Amount</mat-label>
+      <input type="number" matInput formControlName="minimumAmount" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <app-helper matSuffix tooltip="The minimum number of products required where this discount can be applied."></app-helper>
+      <mat-label>Minimum Products</mat-label>
+      <input type="number" matInput formControlName="minimumProducts" />
+    </mat-form-field>
+    <mat-form-field appearance="outline" *ngIf="discountForm.value.type == 'percentage'">
+      <app-helper matSuffix tooltip="The maximum discount that can be availed by this discount."></app-helper>
+      <mat-label>Maximum Discount</mat-label>
+      <input type="number" matInput formControlName="maximumDiscount" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <app-helper matSuffix tooltip="The access levels that can apply this discount upon a bill."></app-helper>
+      <mat-label>Access Levels</mat-label>
+      <mat-select
+        placeholder="Access Level"
+        multiple
+        formControlName="accessLevels"
+        name="access"
+      >
+        <mat-optgroup label="Access Levels">
+          <mat-option *ngFor="let access of accessLevels" [value]="access">
+            {{ access }}
+          </mat-option>
+        </mat-optgroup>
+        <mat-optgroup label="Users">
+          <mat-option *ngFor="let user of customUsers" [value]="user">
+            {{ user }}
+          </mat-option>
+        </mat-optgroup>
+      </mat-select>
+    </mat-form-field>
+    <div class="actions">
+      <button
+        color="primary"
+        type="button"
+        (click)="dialogRef.close()"
+        mat-stroked-button
+      >
+        Cancel
+      </button>
+      <button
+        color="primary"
+        [disabled]="!discountForm.valid"
+        type="submit"
+        mat-flat-button
+      >
+        Submit
+      </button>
+    </div>
+  </form>
+</section>

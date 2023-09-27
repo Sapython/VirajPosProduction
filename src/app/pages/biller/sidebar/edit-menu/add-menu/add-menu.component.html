@@ -1,0 +1,91 @@
+<section>
+  <div class="heading">
+    <h3>Add Menu</h3>
+    <viraj-button (click)="close()" type="icon"><i class="ri-close-fill"></i></viraj-button>
+  </div>
+  <form [formGroup]="addNewMenuForm" (ngSubmit)="addNewMenu()">
+    <mat-form-field appearance="outline">
+      <mat-label>Menu Name</mat-label>
+      <input type="text" matInput formControlName="name" />
+    </mat-form-field>
+    <div class="actions">
+      <input type="file" (change)="readFormat($event)" #menuUploader hidden>
+      <!-- show uploaded file name -->
+      <div class="upload">
+        <span *ngIf="menuUploader.files.length > 0">
+          <strong>{{ menuUploader.files[0].name }}</strong>
+          <viraj-button type="icon"></viraj-button>
+        </span>
+        <viraj-button type="outline" (click)="menuUploader.click()">Upload Excel</viraj-button>
+      </div>
+      <viraj-button [matMenuTriggerFor]="formatDownloadMenu" type="outline">Download Excel Format</viraj-button>
+      <mat-menu #formatDownloadMenu="matMenu">
+        <button mat-menu-item (click)="downloadFormat('excel')">Microsoft Excel</button>
+        <button mat-menu-item (click)="downloadFormat('csv')">Commonly Used CSV</button>
+      </mat-menu>
+      <viraj-button type="outline" (click)="addCategory()">Add Category</viraj-button>
+    </div>
+    <mat-accordion class="example-headers-align">
+      <mat-expansion-panel *ngFor="let category of rootCategories">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{category.name}}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="actions categoryAction">
+          <viraj-button type="outline" (click)="addProduct(category)">Add Product</viraj-button>
+          <viraj-button type="outline" (click)="deleteCategory(category)">Delete Category</viraj-button>
+        </div>
+        <div class="products">
+          <table>
+            <thead>
+              <tr>
+                <th><mat-checkbox [checked]="checkedAll(category)" (change)="switchAll($event,category)">Product Name</mat-checkbox></th>
+                <th>Price</th>
+                <th>Tag</th>
+                <th>Type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let product of category.products">
+                <td>
+                  <mat-checkbox [ngModelOptions]="{standalone: true}" [(ngModel)]="product.selected">{{product.name}}</mat-checkbox>
+                </td>
+                <td>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Price</mat-label>
+                    <input matInput type="number" [ngModelOptions]="{standalone: true}" [(ngModel)]="product.price" />
+                  </mat-form-field>
+                </td>
+                <td>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Select Tag</mat-label>
+                    <mat-select [ngModelOptions]="{standalone: true}" [(ngModel)]="product.tag" name="label">
+                      <mat-option *ngFor="let label of tags" [value]="label.name">
+                        {{ label.name | titlecase }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+                <td>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Select Type</mat-label>
+                    <mat-select placeholder="Tag" [ngModelOptions]="{standalone: true}" [(ngModel)]="product.type" name="tag">
+                      <mat-option *ngFor="let tag of type" [value]="tag">
+                        {{ tag }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </form>
+  <div class="formActions">
+    <viraj-button (click)="close()" type="outline">Cancel</viraj-button>
+    <viraj-button (click)="addNewMenu()">Submit</viraj-button>
+  </div>
+</section>

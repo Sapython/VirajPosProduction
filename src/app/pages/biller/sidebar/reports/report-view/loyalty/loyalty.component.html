@@ -1,0 +1,55 @@
+<table class="styled-table" id="reportTable" id="reportTable" *ngIf="!loading">
+	<thead>
+	  <tr>
+		<th>Bill No</th>
+		<th>Order No</th>
+		<th>Bill Amount</th>
+		<th>Loyalty Point</th>
+		<th>Loyalty Cost</th>
+		<th>Redeemed Point</th>
+		<th>Redeemed Cost</th>
+		<th>Bill Kots</th>
+		<th>Date-Time</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr *ngFor="let bill of bills | async">
+		<td>
+		  {{ bill.billNo || "Unsettled" }}
+		</td>
+		<td>
+		  {{ bill.orderNo  || 'N/A'}}
+		</td>
+		<td>
+		  {{ bill.billing.grandTotal  || 'N/A'}}
+		</td>
+		<td>
+		  {{ bill.currentLoyalty.totalLoyaltyPoints  || 'N/A'}}
+		</td>
+		<td>
+		  {{ bill.currentLoyalty.totalLoyaltyCost  || 'N/A'}}
+		</td>
+		<td>
+		  {{ bill.currentLoyalty.totalToBeRedeemedPoints  || 'N/A'}}
+		</td>
+		<td>
+		  {{ bill.currentLoyalty.totalToBeRedeemedCost  || 'N/A'}}
+		</td>
+		<td>
+		  {{ joinArray(bill.kots) }}
+		</td>
+		<td>
+		  {{ bill.createdDate.toDate() | date: "short" }}
+		</td>
+	  </tr>
+	  <tr *ngIf="(bills|async).length == 0">
+		<td
+		  colspan="5"
+		  style="text-align: center; font-weight: bold; font-size: 1.2rem;color:#aaa"
+		>
+		  <p>No Data Available</p>
+		</td>
+	  </tr>
+	</tbody>
+  </table>
+  

@@ -1,0 +1,101 @@
+section {
+  background: white;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap:20px;
+  max-height: 70vh;
+  .heading{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #c7c7c7;
+    padding: 0px 30px;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap:20px;
+    padding: 0px 30px;
+    overflow: scroll;
+    max-height: 100%;
+    mat-form-field{
+      width: 100%;
+    }
+    .actions{
+      display: flex;
+      gap:20px;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      .upload{
+        display: flex;
+        gap:10px;
+        align-items: center;
+      }
+    }
+    .categoryAction{
+      justify-content: flex-start;
+    }
+    .products{
+      table{
+        width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
+        font-size: 0.9em;
+        font-family: sans-serif;
+        min-width: 400px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        border-collapse: collapse;
+        border-radius: 1em;
+        border: 2px solid #c7c7c7;
+        thead {
+          position: sticky;
+          top: 0px;
+          tr {
+            background-color: #eee;
+            color: #444;
+            text-align: left;
+            th {
+              font-size: var(--Vrajera-font-xlarge);
+              font-weight: 600;
+              background: var(--Vrajera-danger);
+              color: white;
+              mat-checkbox{
+                --mdc-theme-text-primary-on-background:white;
+              }
+            }
+          }
+        }
+        th,td {
+          padding: 10px 15px;
+        }
+        tbody{
+          tr {
+            border-bottom: 1px solid #dddddd;
+            mat-checkbox{
+              margin-bottom: 10px;
+            }
+          }
+          tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+          }
+          tr:last-of-type {
+            border-bottom: 2px solid var(--Vrajera-primary-text);
+          }
+          tr.active-row {
+            font-weight: bold;
+            color: var(--Vrajera-primary-text);
+          }
+        }
+      }
+    }
+  }
+  .formActions{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    border-top: 2px solid #c7c7c7;
+    padding: 10px 30px;
+    gap:20px;
+  }
+}

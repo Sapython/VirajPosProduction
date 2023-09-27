@@ -1,0 +1,13 @@
+section {
+  padding: 20px;
+  border-radius: 20px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+  .actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+}

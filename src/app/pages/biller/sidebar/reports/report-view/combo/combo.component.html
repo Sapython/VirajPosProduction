@@ -1,0 +1,62 @@
+<table class="styled-table" id="reportTable">
+	<thead>
+	  <tr>
+		<th>Combo Name</th>
+		<th>Quantity</th>
+		<th>Price</th>
+		<th>Total</th>
+		<th>Selected Products</th>
+		<th>Bills</th>
+		<th>KOTs</th>
+		<th>Bill Total</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr *ngFor="let combo of combos | async">
+		<td>
+		  {{ combo.comboName || "N/A" }}
+		</td>
+		<td>
+		  {{ combo.quantity || 'N/A' }}
+		</td>
+		<td>
+		  {{ combo.price || 'N/A' }}
+		</td>
+		<td>
+		  {{ combo.total || 'N/A' }}
+		</td>
+		<td>
+		  <ol>
+			<li *ngFor="let item of combo.selectedProducts">
+				{{item.name}} - {{item.price}} - ({{item.quantity}})
+			</li>
+		  </ol>
+		  <ng-container *ngIf="combo.selectedProducts.length == 0">N/A</ng-container>
+		</td>
+		<td>
+		  <ol>
+			<li *ngFor="let bill of combo.bills">{{bill}}</li>
+		  </ol>
+		  <ng-container *ngIf="combo.bills.length == 0">N/A</ng-container>
+		</td>
+		<td>
+			<ol>
+				<li *ngFor="let bill of combo.kots">{{bill}}</li>
+			</ol>
+			<ng-container *ngIf="combo.kots.length == 0">N/A</ng-container>
+		</td>
+		<td>
+		  {{ combo.billTotal  || 'N/A'}}
+		</td>
+	  </tr>
+	  <tr *ngIf="(combos|async).length == 0">
+		<td
+		  colspan="8"
+		  style="text-align: center; font-weight: bold; font-size: 1.2rem;color:#aaa"
+		>
+		  <p>No Data Available</p>
+		</td>
+	  </tr>
+	</tbody>
+  </table>
+  

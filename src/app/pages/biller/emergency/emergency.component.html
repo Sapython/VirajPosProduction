@@ -1,0 +1,25 @@
+<h3>Alerts</h3>
+<section>
+  <table>
+    <tbody>
+      <tr *ngFor="let alert of alerts">
+        <td>
+          <img
+            *ngIf="alert.type == 'billPending'"
+            src="assets/images/ui/billPending.png"
+            alt=""
+          />
+        </td>
+        <td>{{ alert.title }}</td>
+        <td>{{ alert.elapsedTime }}</td>
+        <td>{{ alert.referDetail }}</td>
+        <td>
+          <button><i class="ri-eye-fill"></i></button>
+        </td>
+        <td>
+          <button><i class="ri-close-fill"></i></button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</section>

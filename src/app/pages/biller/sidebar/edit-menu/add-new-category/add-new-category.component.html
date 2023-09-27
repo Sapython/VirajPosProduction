@@ -1,0 +1,59 @@
+<section>
+  <div class="heading">
+    <h1>Add New Categories</h1>
+    <span *ngIf="this.dialogData.userId">
+      <img src="https://api.dicebear.com/6.x/initials/svg?seed={{this.dialogData.userId}}">
+      {{ this.dialogData.userId | titlecase }}
+    </span>
+    <viraj-button (click)="cancel()" type="icon"
+      ><i class="ri-close-fill"></i
+    ></viraj-button>
+  </div>
+  <form [formGroup]="newCategoryForm">
+    <mat-form-field appearance="outline">
+      <mat-label>Category Name</mat-label>
+      <input type="text" formControlName="name" matInput />
+    </mat-form-field>
+    <div class="filters">
+      <mat-form-field appearance="outline">
+        <mat-label>Search</mat-label>
+        <input type="text" formControlName="search" matInput />
+      </mat-form-field>
+    </div>
+    <div class="productList">
+      <div
+        class="product"
+        *ngFor="
+          let product of searchResults.length > 0 ? searchResults : products
+        "
+      >
+        <p>{{ product.name }}</p>
+        <div class="pricing">
+          <strong>{{ product.price | currency: "INR" }}</strong>
+          <mat-slide-toggle
+            [(ngModel)]="product.selected"
+            [ngModelOptions]="{ standalone: true }"
+          ></mat-slide-toggle>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <button
+      color="primary"
+      (click)="cancel()"
+      mat-stroked-button
+      class="button stroked"
+      >
+      Cancel
+    </button>
+    <button
+      color="primary"
+      (click)="addCategory()"
+      mat-flat-button
+      class="button stroked"
+    >
+      Save
+    </button>
+    </div>
+  </form>
+</section>

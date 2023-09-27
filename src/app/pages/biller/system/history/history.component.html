@@ -1,0 +1,218 @@
+<section>
+  <div class="sticky">
+    <div class="heading">
+      <h2>History</h2>
+      <div class="tabsToggle large">
+        <button
+          [ngClass]="{ active: currentMode == 'all' }"
+          (click)="currentMode = 'all'"
+        >
+          All
+        </button>
+        <button
+          [ngClass]="{ active: currentMode == 'dineIn' }"
+          (click)="currentMode = 'dineIn'"
+        >
+          Dine In
+        </button>
+        <button
+          [ngClass]="{ active: currentMode == 'takeaway' }"
+          (click)="currentMode = 'takeaway'"
+        >
+          Takeaway
+        </button>
+        <button
+          [ngClass]="{ active: currentMode == 'online' }"
+          (click)="currentMode = 'online'"
+        >
+          Online
+        </button>
+      </div>
+      <viraj-button class="hideOnBig" [matMenuTriggerFor]="modesMenu">{{
+        currentMode == "all"
+          ? "All"
+          : currentMode == "dineIn"
+          ? "Dine In"
+          : currentMode == "takeaway"
+          ? "Takeaway"
+          : currentMode == "online"
+          ? "Online"
+          : ""
+      }}</viraj-button>
+      <mat-menu #modesMenu="matMenu">
+        <button mat-menu-item (click)="currentMode = 'all'">All</button>
+        <button mat-menu-item (click)="currentMode = 'dineIn'">Dine In</button>
+        <button mat-menu-item (click)="currentMode = 'takeaway'">
+          Takeaway
+        </button>
+        <button mat-menu-item (click)="currentMode = 'online'">Online</button>
+      </mat-menu>
+      <div class="search">
+        <mat-slide-toggle [(ngModel)]="groupByTable"
+          >Group By Table</mat-slide-toggle
+        >
+        <mat-slide-toggle [(ngModel)]="groupByDate"
+          >Group By Date</mat-slide-toggle
+        >
+        <mat-date-range-picker #picker></mat-date-range-picker>
+        <mat-date-range-input
+          tabindex="-1"
+          hidden
+          [formGroup]="dateRangeFormGroup"
+          [rangePicker]="picker"
+          [dateFilter]="noFuture"
+        >
+          <input
+            matStartDate
+            formControlName="startDate"
+            placeholder="Start date"
+          />
+          <input matEndDate formControlName="endDate" placeholder="End date" />
+        </mat-date-range-input>
+        <viraj-button
+          style="white-space: nowrap"
+          type="outline"
+          class="dateSelector"
+          (vclick)="picker.open()"
+          >{{ dateRangeFormGroup.value.startDate | date }} -
+          {{ dateRangeFormGroup.value.endDate | date
+          }}<i class="ri-calendar-2-fill"></i
+        ></viraj-button>
+        <input
+          (input)="this.numberSearchSubject.next(search.value)"
+          placeholder="Search by order no"
+          class="searchByBill"
+          (input)="this.numberSearchSubject.next(search.value)"
+          #search
+          type="search"
+        />
+        <button (click)="dialogRef.close()" mat-icon-button color="primary">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+    <div class="stats">
+      <p class="date">
+        {{ dateRangeFormGroup.value.startDate | date }}
+        {{
+          dateRangeFormGroup.value.endDate
+            ? " - " + (dateRangeFormGroup.value.endDate | date)
+            : ""
+        }}
+      </p>
+      <p>
+        Total KOT <span>{{ totalKots }}</span>
+      </p>
+      <p>
+        Total Bills <span>{{ totalBills }}</span>
+      </p>
+      <p>
+        Starting KOT <span>{{ startingKotNumber }}</span>
+      </p>
+      <p>
+        End KOT <span>{{ endingKotNumber }}</span>
+      </p>
+      <p>
+        Total Sales <span>{{ totalSales | currency: "INR" }}</span>
+      </p>
+      <p>
+        Cancelled Sales <span>{{ totalCancelledSales | currency: "INR" }}</span>
+      </p>
+      <viraj-button type="outline" (vclick)="openReport()"
+        >Export <i class="ri-download-2-fill"></i
+      ></viraj-button>
+    </div>
+  </div>
+
+  <ng-container *ngIf="!loading">
+    <div class="groups" *ngIf="groupByTable && !groupByDate">
+      <div
+        class="tableGroup primary"
+        *ngFor="
+          let table of this.filteredBills.length > 0
+            ? (this.filteredBills | mode: currentMode | tableGroups)
+            : (bills | mode: currentMode | tableGroups)
+        "
+      >
+        <div class="heading">
+          <h3>Table: {{ table.table.name }}</h3>
+        </div>
+        <div class="bills">
+          <app-bill-card
+            *ngFor="let bill of table.bills"
+            [bill]="bill"
+          ></app-bill-card>
+        </div>
+      </div>
+    </div>
+    <div class="bills" *ngIf="!groupByTable && !groupByDate">
+      <app-bill-card
+        *ngFor="
+          let bill of filteredBills.length
+            ? (filteredBills | mode: currentMode)
+            : (bills | mode: currentMode)
+        "
+        [bill]="bill"
+      ></app-bill-card>
+    </div>
+    <div class="groups" *ngIf="groupByDate && !groupByTable">
+      <div
+        class="tableGroup yellow"
+        *ngFor="
+          let table of this.filteredBills.length > 0
+            ? (this.filteredBills | mode: currentMode | dateGroup)
+            : (bills | mode: currentMode | dateGroup)
+        "
+      >
+        <div class="heading">
+          <h3>Date: {{ table.date | date }}</h3>
+        </div>
+        <div class="bills">
+          <app-bill-card
+            *ngFor="let bill of table.bills"
+            [bill]="bill"
+          ></app-bill-card>
+        </div>
+      </div>
+    </div>
+    <div class="groups" *ngIf="groupByDate && groupByTable">
+      <div
+        class="tableGroup primary"
+        *ngFor="
+          let table of this.filteredBills.length > 0
+            ? (this.filteredBills | mode: currentMode | tableGroups)
+            : (bills | mode: currentMode | tableGroups)
+        "
+      >
+        <div class="heading">
+          <h3>Table: {{ table.table.name }}</h3>
+        </div>
+        <div class="groups">
+          <div
+            class="tableGroup yellow"
+            *ngFor="let date of table.bills | dateGroup"
+          >
+            <div class="heading">
+              <h3>Date: {{ date.date | date }}</h3>
+            </div>
+            <div class="bills">
+              <app-bill-card
+                *ngFor="let bill of date.bills"
+                [bill]="bill"
+              ></app-bill-card>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <div class="bills" *ngIf="loading">
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+    <div class="skeleton"></div>
+  </div>
+  <div class="spacer"></div>
+</section>
+
+<!-- table yellow -->
+<!-- date  cornflowerblue -->

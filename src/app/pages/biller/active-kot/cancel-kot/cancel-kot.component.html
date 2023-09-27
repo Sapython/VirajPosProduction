@@ -1,0 +1,55 @@
+<form [formGroup]="reasonForm" (ngSubmit)="submit()">
+  <mat-form-field appearance="outline">
+    <mat-label>Reason</mat-label>
+    <input matInput placeholder="Reason" formControlName="reason" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Password</mat-label>
+    <input
+      type="password"
+      matInput
+      placeholder="Password"
+      formControlName="password"
+      #passwordInput
+    />
+    <button
+      color="primary"
+      matSuffix
+      tabindex="-1"
+      type="button"
+      *ngIf="passwordInput.type == 'password'"
+      (click)="
+        passwordInput.type == 'password'
+          ? (passwordInput.type = 'text')
+          : (passwordInput.type = 'password')
+      "
+      mat-icon-button
+    >
+      <mat-icon>visibility</mat-icon>
+    </button>
+    <button
+      color="primary"
+      matSuffix
+      tabindex="-1"
+      type="button"
+      *ngIf="!(passwordInput.type == 'password')"
+      (click)="
+        passwordInput.type == 'password'
+          ? (passwordInput.type = 'text')
+          : (passwordInput.type = 'password')
+      "
+      mat-icon-button
+    >
+      <mat-icon>visibility_off</mat-icon>
+    </button>
+  </mat-form-field>
+  <div class="actions">
+    <button mat-stroked-button type="button" (click)="cancel()">Cancel</button>
+    <button mat-flat-button (click)="mode = 'made'" color="primary">
+      Cancel Made
+    </button>
+    <button mat-flat-button (click)="mode = 'unmade'" color="primary">
+      Cancel Un-Made
+    </button>
+  </div>
+</form>

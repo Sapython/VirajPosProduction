@@ -1,0 +1,676 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph Layout="Sugiyama" ZoomLevel="-1" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+    <Node Label="AboutComponent" Id="AboutComponent" Bounds="111,-470,140.193359375,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/settings/sections/about/about.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="DataProvider" Id="DataProvider" Bounds="85,-105,103.703125,36" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/core/services/provider/data-provider.service.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="Dialog" Id="Dialog" Bounds="86,230,61.689453125,36" UseManualLocation="True" Category="injectable">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="AccountComponent" Id="AccountComponent" Bounds="371,-1410,155.765625,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/settings/sections/account/account.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="Functions" Id="Functions" Bounds="942,-198,82.6962890625,36" UseManualLocation="True" Category="injectable">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="SettingsService" Id="SettingsService" Bounds="-764,629,119.2685546875,36" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/core/services/database/settings/settings.service.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="AlertsAndNotificationsService" Id="AlertsAndNotificationsService" Bounds="-507,65,205.6337890625,36" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/core/services/alerts-and-notification/alerts-and-notifications.service.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MenuManagementService" Id="MenuManagementService" Bounds="-237,-436,185.419921875,36" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/core/services/database/menuManagement/menu-management.service.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ActionsComponentInputs:..." Id="ActionsComponent" Bounds="-202,454,151.103515625,50" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/actions/actions.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="UserManagementService" Id="UserManagementService" Bounds="-97,-120,179.9580078125,36" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/core/services/auth/user/user-management.service.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ActiveKotComponent" Id="ActiveKotComponent" Bounds="1048,-422,165.1103515625,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/active-kot/active-kot.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="AddDiscountComponent" Id="AddDiscountComponent" Bounds="-1280,919,186.869140625,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/settings/add-discount/add-discount.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="DialogRef" Id="DialogRef" Bounds="400,172,83.4755859375,36" UseManualLocation="True" Category="injectable">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="AddDishComponent" Id="AddDishComponent" Bounds="1476,221,157.3173828125,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/edit-menu/add-dish/add-dish.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="AddMenuComponent" Id="AddMenuComponent" Bounds="-744,-862,163.53125,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/edit-menu/add-menu/add-menu.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="AddMethodComponent" Id="AddMethodComponent" Bounds="-1329,-905,176.7451171875,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/settings/add-method/add-method.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="AddNewCategoryComponent" Id="AddNewCategoryComponent" Bounds="-358,1297,216.4482421875,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/edit-menu/add-new-category/add-new-category.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="AddTaxComponent" Id="AddTaxComponent" Bounds="-1195,621,150.064453125,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/settings/add-tax/add-tax.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="AddComponent" Id="AddComponent" Bounds="-108,601,126.9794921875,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/settings/sections/account/add/add.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="SignupService" Id="SignupService" Bounds="714,362,112.275390625,36" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/core/services/auth/signup/signup.service.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="AppComponent" Id="AppComponent" Bounds="243,-178,126.97949218749997,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/app.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ElectronService" Id="ElectronService" Bounds="-360,-86,120.041015625,36" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/core/services/electron/electron.service.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="AuthService" Id="AuthService" Bounds="190,701,97.482421875,36" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/core/services/auth/auth.service.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="NgxIndexedDBService" Id="NgxIndexedDBService" Bounds="948,519,162.8476562499999,36" UseManualLocation="True" Category="injectable">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="BillPreviewComponentInputs:..." Id="BillPreviewComponent" Bounds="734,-777,174.46875,50" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/active-kot/sections/bill-preview/bill-preview.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="BillComponent" Id="BillComponent" Bounds="-991,-959,121.544921875,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/emergency/cards/bill/bill.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="BillerComponent" Id="BillerComponent" Bounds="627,-495,134.779296875,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/biller.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="BrandingComponentInputs:&lt;/b..." Id="BrandingComponent" Bounds="-1065,-438,161.20703125,50" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/info-panel/branding/branding.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ButtonComponentInputs:..." Id="ButtonComponent" Bounds="-992,464,144.85546875,50" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/shared/base-components/button/button.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="CancelKOtComponent" Id="CancelKOtComponent" Bounds="697,142,171.337890625,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/active-kot/cancel-kot/cancel-kot.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="CancelComponent" Id="CancelComponent" Bounds="-279,-918,145.67578125,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/actions/cancel/cancel.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="CashCounterComponentInputs:..." Id="CashCounterComponent" Bounds="-565,326,187.662109375,50" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/stock/cash-counter/cash-counter.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="CategoryCardComponentInputs:..." Id="CategoryCardComponent" Bounds="-1281,-611,192.3447265625,50" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/menu/category-card/category-card.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ChatComponentViewchilds:&lt;/b..." Id="ChatComponent" Bounds="3,1068,134.943359375,50" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/system/chat/chat.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="CheckPasswordComponent" Id="CheckPasswordComponent" Bounds="1122,1017,207.923828125,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/settings/check-password/check-password.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="CheckingPasswordComponent" Id="CheckingPasswordComponent" Bounds="77,-1623,228.9169921875,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/shared/checking-password/checking-password.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="CloseInComponent" Id="CloseInComponent" Bounds="814,1020,150.3310546875,35.999999999999886" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/stock/close-in/close-in.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ConfigComponent" Id="ConfigComponent" Bounds="52,-674,144.0830078125,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/settings/sections/config/config.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ProductsService" Id="ProductsService" Bounds="220,500,123.93066406249997,36.00000000000006" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/core/services/database/products/products.service.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ConfirmDialogComponent" Id="ConfirmDialogComponent" Bounds="-642,-1437,196.20703125,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/shared/helpers/confirm-dialog/confirm-dialog.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="CustomerPanelComponentInputs..." Id="CustomerPanelComponent" Bounds="181,-1190,202.46191406249997,50" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/customer-panel/customer-panel.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="Injector" Id="Injector" Bounds="884,236,67.91015625,36" UseManualLocation="True" Category="injectable">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="DialogComponent" Id="DialogComponent" Bounds="966,-952,142.5449218750001,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/shared/base-components/dialog/dialog.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="DiscountComponent" Id="DiscountComponent" Bounds="-642,-659,159.6552734375,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/settings/sections/discount/discount.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="DispenseSmallComponent" Id="DispenseSmallComponent" Bounds="412,-186,199.365234375,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/stock/dispense-small/dispense-small.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="DispenseComponent" Id="DispenseComponent" Bounds="-1370,394,162.013671875,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/stock/dispense/dispense.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="DisperseComponent" Id="DisperseComponent" Bounds="-167,940,158.91015625,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/emergency/cards/disperse/disperse.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="DispersionComponentInputs:&lt;..." Id="DispersionComponent" Bounds="-47,-1318,172.1171875,50" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/stock/dispersion/dispersion.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="EditKotComponent" Id="EditKotComponent" Bounds="1190,469,149.53125,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/active-kot/sections/edit-kot/edit-kot.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="EditMenuComponent" Id="EditMenuComponent" Bounds="848,-579,162.7587890625,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/edit-menu/edit-menu.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="EmergencyComponent" Id="EmergencyComponent" Bounds="-85,-830,175.248046875,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/emergency/emergency.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="HistoryComponent" Id="HistoryComponent" Bounds="-62,-464,148,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/system/history/history.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="HistoryService" Id="HistoryService" Bounds="-1094,-210,112.2412109375,36" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/core/services/database/history/history.service.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="BillService" Id="BillService" Bounds="-40,-256,87.3515625,36" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/core/services/database/bill/bill.service.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="PrinterService" Id="PrinterService" Bounds="259,328,109.9169921875,36" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/core/services/printing/printer/printer.service.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="IconButtonComponent" Id="IconButtonComponent" Bounds="275,922,173.634765625,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/shared/base-components/icon-button/icon-button.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="InfoPanelComponent" Id="InfoPanelComponent" Bounds="-624,-455,162.7724609375,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/info-panel/info-panel.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ElementRef" Id="ElementRef" Bounds="-33,322,95.14453125,36" UseManualLocation="True" Category="injectable">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="InventoryListComponent" Id="InventoryListComponent" Bounds="-395,189,187.6689453125,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/inventory-list/inventory-list.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="KotItemComponentInputs:..." Id="KotItemComponent" Bounds="618,558,151.8759765625,50" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/active-kot/kot-item/kot-item.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="KotComponent" Id="KotComponent" Bounds="-383,573,123.08984375,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/emergency/cards/kot/kot.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="LineCancelComponent" Id="LineCancelComponent" Bounds="-904,212,174.455078125,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/active-kot/kot-item/line-cancel/line-cancel.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="LineDiscountComponent" Id="LineDiscountComponent" Bounds="-992,-706,188.4345703125,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/active-kot/kot-item/line-discount/line-discount.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="LoadingComponent" Id="LoadingComponent" Bounds="403,-2,154.2001953125,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/auth/loading/loading.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="OnboardingService" Id="OnboardingService" Bounds="-236,112,141.84765625,36" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/core/services/onboarding/onboarding.service.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="LoginService" Id="LoginService" Bounds="788,691,102.9375,36" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/core/services/auth/login/login.service.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="FileStorageService" Id="FileStorageService" Bounds="1268,-923,140.275390625,36" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/core/services/database/fileStorage/file-storage.service.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="TableService" Id="TableService" Bounds="1157,209,102.1513671875,36" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/core/services/database/table/table.service.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="LockedComponent" Id="LockedComponent" Bounds="-629,-264,148.779296875,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/locked/locked.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="LoyaltyComponent" Id="LoyaltyComponent" Bounds="-1150,222,148.779296875,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/settings/sections/loyalty/loyalty.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ManageKotComponentInputs:&lt;/..." Id="ManageKotComponent" Bounds="1278,733,175.2138671875,50" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/active-kot/sections/manage-kot/manage-kot.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MenuItemComponent" Id="MenuItemComponent" Bounds="-1429,-350,165.103515625,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/menu/option/menu-item/menu-item.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MenuComponent" Id="MenuComponent" Bounds="1104,-681,136.3173828125,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/menu/menu.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ViewContainerRef" Id="ViewContainerRef" Bounds="244,161,134.5810546875,36" UseManualLocation="True" Category="injectable">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="NonChargeableComponent" Id="NonChargeableComponent" Bounds="-969,1142,203.2275390625,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/actions/non-chargeable/non-chargeable.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="NormalKotComponentInputs:&lt;/..." Id="NormalKotComponent" Bounds="-853,-263,171.32421875,50" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/active-kot/sections/normal-kot/normal-kot.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="OffersComponent" Id="OffersComponent" Bounds="-672,148,141,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/settings/sections/offers/offers.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="OptionComponentInputs:..." Id="OptionComponent" Bounds="-189,268,144.86230468750003,50" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/menu/option/option.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="OrderSummaryComponentInputs:..." Id="OrderSummaryComponent" Bounds="759,-1125,201.6962890625,50" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/info-panel/order-summary/order-summary.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="OrderComponent" Id="OrderComponent" Bounds="246,-609,137.88964843750003,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/emergency/cards/order/order.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="PaymentComponent" Id="PaymentComponent" Bounds="1020,17,158.1240234374999,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/settings/sections/payment/payment.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="PopoverContainerComponent" Id="PopoverContainerComponent" Bounds="-302,-1271,221.1171875,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/shared/popover/popover-container/popover-container.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="PrinterComponent" Id="PrinterComponent" Bounds="-421,-444,144.8896484375,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/settings/sections/printer/printer.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ProductCardComponentInputs:..." Id="ProductCardComponent" Bounds="-773,390,184.5517578125,50" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/products-panel/product-card/product-card.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ProductCostingComponent" Id="ProductCostingComponent" Bounds="242,-15,204.75878906250003,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/edit-menu/product-costing/product-costing.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ProductsPanelComponent" Id="ProductsPanelComponent" Bounds="-318,-1575,197.79296875,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/products-panel/products-panel.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="PromptComponent" Id="PromptComponent" Bounds="592,851,148.765625,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/shared/base-components/prompt/prompt.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="QuickKotViewComponentInputs:..." Id="QuickKotViewComponent" Bounds="-1069,-1275,193.6435546875,50" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/active-kot/sections/quick-kot-view/quick-kot-view.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ReactivateKotComponent" Id="ReactivateKotComponent" Bounds="693,-1400,193.130859375,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/reactivate-kot/reactivate-kot.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ReasonComponent" Id="ReasonComponent" Bounds="-946,-5,150.337890625,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/active-kot/reason/reason.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ReceiveStockComponent" Id="ReceiveStockComponent" Bounds="-1515,87,190.8203125,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/stock/receive-stock/receive-stock.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ReceiveComponent" Id="ReceiveComponent" Bounds="423,460,152.6962890625,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/emergency/cards/receive/receive.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ReceivingSmallComponent" Id="ReceivingSmallComponent" Bounds="-752,-57,203.2548828125,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/stock/receiving-small/receiving-small.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ReceivingComponentInputs:&lt;/..." Id="ReceivingComponent" Bounds="-1231,-17,165.9033203125,50" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/stock/receiving/receiving.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="RecommendedComponent" Id="RecommendedComponent" Bounds="-957,823,200.1240234375,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/recommended/recommended.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ReportsComponent" Id="ReportsComponent" Bounds="414,-1100,152.662109375,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/info-panel/sales-summary/reports/reports.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ReprintReasonComponent" Id="ReprintReasonComponent" Bounds="-46,-1056,199.337890625,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/system/history/reprint-reason/reprint-reason.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="RequiresPrivilegeComponent" Id="RequiresPrivilegeComponent" Bounds="1333,-86,218.041015625,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/shared/requires-privilege/requires-privilege.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ResetPasswordComponent" Id="ResetPasswordComponent" Bounds="-217,-36,204.0341796875,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/auth/reset-password/reset-password.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="SalesSummaryComponentInputs:..." Id="SalesSummaryComponent" Bounds="-424,-263,200.158203125,50" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/info-panel/sales-summary/sales-summary.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="SearchPanelComponent" Id="SearchPanelComponent" Bounds="364,-798,183.8134765625,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/search-panel/search-panel.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="SelectCategoryComponent" Id="SelectCategoryComponent" Bounds="-472,-1092,201.6962890625,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/edit-menu/select-category/select-category.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="SelectMenuComponent" Id="SelectMenuComponent" Bounds="-182,-645,177.5654296875,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/settings/select-menu/select-menu.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="SelectRecipeComponentInputs:..." Id="SelectRecipeComponent" Bounds="643,1318,186.923828125,50" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/edit-menu/select-recipe/select-recipe.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="SetTaxComponent" Id="SetTaxComponent" Bounds="-619,825,144.63671875,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/edit-menu/set-tax/set-tax.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="SettingsComponent" Id="SettingsComponent" Bounds="-551,-100,154.9931640625,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/settings/settings.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="SettleComponentViewchilds:&lt;..." Id="SettleComponent" Bounds="111,81,137.8896484375,50" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/actions/settle/settle.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="SidebarComponent" Id="SidebarComponent" Bounds="1309,-382,151.1171875,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/sidebar.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="PopoverService" Id="PopoverService" Bounds="267,-372,120.8271484375,36" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/shared/popover/popover.service.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="SplitBillComponent" Id="SplitBillComponent" Bounds="530,297,151.8759765625,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/actions/split-bill/split-bill.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="StockListComponentInputs:&lt;/..." Id="StockListComponent" Bounds="185,1233,162.779296875,50" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/menu/stock-list/stock-list.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="StockValuationComponentInput..." Id="StockValuationComponent" Bounds="-843,-513,200.1240234375,50" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/stock/stock-valuation/stock-valuation.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="StockComponent" Id="StockComponent" Bounds="-272,738,137.8896484375,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/stock/stock.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="SystemComponentInputs:..." Id="SystemComponent" Bounds="770,-330,149.572265625,50" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/system/system.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="TableComponent" Id="TableComponent" Bounds="444,-584,135.2919921875,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/table/table.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="AnalyticsService" Id="AnalyticsService" Bounds="-569,534,124.703125,36" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/core/services/database/analytics/analytics.service.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="CustomerService" Id="CustomerService" Bounds="165,-887,129.365234375,36" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/core/services/customer/customer.service.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="TaxesComponent" Id="TaxesComponent" Bounds="113,-284,138.4228515625,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/settings/sections/taxes/taxes.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="UpgradeComponent" Id="UpgradeComponent" Bounds="-228,-249,156.5517578125,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/sidebar/info-panel/upgrade/upgrade.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="SystemService" Id="SystemService" Bounds="547,-895,115.3583984375,36" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/core/services/database/system/system.service.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ViewComponent" Id="ViewComponent" Bounds="-639,1101,131.416015625,36" UseManualLocation="True" Category="component" TypescriptFilepath="./src/app/pages/biller/settings/sections/view/view.component.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MatSnackBar" Id="MatSnackBar" Bounds="-66,126,106.0341796875,36" UseManualLocation="True" Category="injectable">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="Firestore" Id="Firestore" Bounds="-353,353,77.234375,36" UseManualLocation="True" Category="injectable">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="AuthGuard" Id="AuthGuard" Bounds="567,-8,95.103515625,36" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/shared/guards/auth-guard.guard.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="Router" Id="Router" Bounds="-1,0,64.0205078125,36" UseManualLocation="True" Category="injectable">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="Auth" Id="Auth" Bounds="400,657,50.7998046875,36" UseManualLocation="True" Category="injectable">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="CategoryService" Id="CategoryService" Bounds="0,770,132.5029296875,36" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/core/services/database/category/category.service.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="EncoderService" Id="EncoderService" Bounds="-481,-822,127.833984375,36" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/core/services/printing/encoder/encoder.service.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="LoginGuard" Id="LoginGuard" Bounds="-714,-1112,101.32421875,36" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/shared/guards/login.guard.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="ReportsService" Id="ReportsService" Bounds="450,1082,124.716796875,36" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/core/services/database/reports/reports.service.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="SearchService" Id="SearchService" Bounds="443,-375,118.5166015625,36" UseManualLocation="True" Category="injectable" TypescriptFilepath="./src/app/core/services/database/search/search.service.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="PopoverDirective" Id="PopoverDirective" Bounds="770,-67,137.158203125,36" UseManualLocation="True" Category="directive" TypescriptFilepath="./src/app/shared/popover/popover.directive.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="Overlay" Id="Overlay" Bounds="576,-222,70.234375,36" UseManualLocation="True" Category="injectable">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="EnabledPipe" Id="EnabledPipe" Bounds="-384,-627,106.0205078125,36" UseManualLocation="True" Category="pipe" TypescriptFilepath="./src/app/pages/biller/sidebar/menu/enabled.pipe.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="MergedProductsPipe" Id="MergedProductsPipe" Bounds="44,495,162.02734375,35.99999999999994" UseManualLocation="True" Category="pipe" TypescriptFilepath="./src/app/pages/biller/active-kot/merged-products.pipe.ts">
+      <Category Ref="File"/>
+    </Node>
+    <Node Label="RoundOffPipe" Id="RoundOffPipe" Bounds="-398,932,116.0966796875,36" UseManualLocation="True" Category="pipe" TypescriptFilepath="./src/app/shared/base-components/round-off.pipe.ts">
+      <Category Ref="File"/>
+    </Node>
+  </Nodes>
+  <Links>
+    <Link Source="DataProvider" Target="AboutComponent" Category="injectable" Label="DataProvider injected into AboutComponent"/>
+    <Link Source="Dialog" Target="AboutComponent" Category="injectable" Label="Dialog injected into AboutComponent"/>
+    <Link Source="DataProvider" Target="AccountComponent" Category="injectable" Label="DataProvider injected into AccountComponent"/>
+    <Link Source="Functions" Target="AccountComponent" Category="injectable" Label="Functions injected into AccountComponent"/>
+    <Link Source="Dialog" Target="AccountComponent" Category="injectable" Label="Dialog injected into AccountComponent"/>
+    <Link Source="SettingsService" Target="AccountComponent" Category="injectable" Label="SettingsService injected into AccountComponent"/>
+    <Link Source="AlertsAndNotificationsService" Target="AccountComponent" Category="injectable" Label="AlertsAndNotificationsService injected into AccountComponent"/>
+    <Link Source="MenuManagementService" Target="AccountComponent" Category="injectable" Label="MenuManagementService injected into AccountComponent"/>
+    <Link Source="DataProvider" Target="ActionsComponent" Category="injectable" Label="DataProvider injected into ActionsComponent"/>
+    <Link Source="Dialog" Target="ActionsComponent" Category="injectable" Label="Dialog injected into ActionsComponent"/>
+    <Link Source="UserManagementService" Target="ActionsComponent" Category="injectable" Label="UserManagementService injected into ActionsComponent"/>
+    <Link Source="DataProvider" Target="ActiveKotComponent" Category="injectable" Label="DataProvider injected into ActiveKotComponent"/>
+    <Link Source="Dialog" Target="ActiveKotComponent" Category="injectable" Label="Dialog injected into ActiveKotComponent"/>
+    <Link Source="UserManagementService" Target="ActiveKotComponent" Category="injectable" Label="UserManagementService injected into ActiveKotComponent"/>
+    <Link Source="DataProvider" Target="AddDiscountComponent" Category="injectable" Label="DataProvider injected into AddDiscountComponent"/>
+    <Link Source="DialogRef" Target="AddDiscountComponent" Category="injectable" Label="DialogRef injected into AddDiscountComponent"/>
+    <Link Source="DialogRef" Target="AddDishComponent" Category="injectable" Label="DialogRef injected into AddDishComponent"/>
+    <Link Source="Dialog" Target="AddMenuComponent" Category="injectable" Label="Dialog injected into AddMenuComponent"/>
+    <Link Source="MenuManagementService" Target="AddMenuComponent" Category="injectable" Label="MenuManagementService injected into AddMenuComponent"/>
+    <Link Source="DataProvider" Target="AddMenuComponent" Category="injectable" Label="DataProvider injected into AddMenuComponent"/>
+    <Link Source="DialogRef" Target="AddMenuComponent" Category="injectable" Label="DialogRef injected into AddMenuComponent"/>
+    <Link Source="AlertsAndNotificationsService" Target="AddMenuComponent" Category="injectable" Label="AlertsAndNotificationsService injected into AddMenuComponent"/>
+    <Link Source="DialogRef" Target="AddMethodComponent" Category="injectable" Label="DialogRef injected into AddMethodComponent"/>
+    <Link Source="DialogRef" Target="AddNewCategoryComponent" Category="injectable" Label="DialogRef injected into AddNewCategoryComponent"/>
+    <Link Source="DialogRef" Target="AddTaxComponent" Category="injectable" Label="DialogRef injected into AddTaxComponent"/>
+    <Link Source="Functions" Target="AddComponent" Category="injectable" Label="Functions injected into AddComponent"/>
+    <Link Source="DialogRef" Target="AddComponent" Category="injectable" Label="DialogRef injected into AddComponent"/>
+    <Link Source="AlertsAndNotificationsService" Target="AddComponent" Category="injectable" Label="AlertsAndNotificationsService injected into AddComponent"/>
+    <Link Source="DataProvider" Target="AddComponent" Category="injectable" Label="DataProvider injected into AddComponent"/>
+    <Link Source="SignupService" Target="AddComponent" Category="injectable" Label="SignupService injected into AddComponent"/>
+    <Link Source="UserManagementService" Target="AddComponent" Category="injectable" Label="UserManagementService injected into AddComponent"/>
+    <Link Source="ElectronService" Target="AppComponent" Category="injectable" Label="ElectronService injected into AppComponent"/>
+    <Link Source="DataProvider" Target="AppComponent" Category="injectable" Label="DataProvider injected into AppComponent"/>
+    <Link Source="AuthService" Target="AppComponent" Category="injectable" Label="AuthService injected into AppComponent"/>
+    <Link Source="NgxIndexedDBService" Target="AppComponent" Category="injectable" Label="NgxIndexedDBService injected into AppComponent"/>
+    <Link Source="Dialog" Target="BillerComponent" Category="injectable" Label="Dialog injected into BillerComponent"/>
+    <Link Source="DataProvider" Target="BillerComponent" Category="injectable" Label="DataProvider injected into BillerComponent"/>
+    <Link Source="DataProvider" Target="BrandingComponent" Category="injectable" Label="DataProvider injected into BrandingComponent"/>
+    <Link Source="DataProvider" Target="CancelKOtComponent" Category="injectable" Label="DataProvider injected into CancelKOtComponent"/>
+    <Link Source="DialogRef" Target="CancelKOtComponent" Category="injectable" Label="DialogRef injected into CancelKOtComponent"/>
+    <Link Source="DialogRef" Target="CancelComponent" Category="injectable" Label="DialogRef injected into CancelComponent"/>
+    <Link Source="DataProvider" Target="CancelComponent" Category="injectable" Label="DataProvider injected into CancelComponent"/>
+    <Link Source="Dialog" Target="CancelComponent" Category="injectable" Label="Dialog injected into CancelComponent"/>
+    <Link Source="DataProvider" Target="CategoryCardComponent" Category="injectable" Label="DataProvider injected into CategoryCardComponent"/>
+    <Link Source="DataProvider" Target="ChatComponent" Category="injectable" Label="DataProvider injected into ChatComponent"/>
+    <Link Source="DialogRef" Target="CheckPasswordComponent" Category="injectable" Label="DialogRef injected into CheckPasswordComponent"/>
+    <Link Source="Dialog" Target="CloseInComponent" Category="injectable" Label="Dialog injected into CloseInComponent"/>
+    <Link Source="DataProvider" Target="ConfigComponent" Category="injectable" Label="DataProvider injected into ConfigComponent"/>
+    <Link Source="MenuManagementService" Target="ConfigComponent" Category="injectable" Label="MenuManagementService injected into ConfigComponent"/>
+    <Link Source="ProductsService" Target="ConfigComponent" Category="injectable" Label="ProductsService injected into ConfigComponent"/>
+    <Link Source="AlertsAndNotificationsService" Target="ConfigComponent" Category="injectable" Label="AlertsAndNotificationsService injected into ConfigComponent"/>
+    <Link Source="Dialog" Target="ConfigComponent" Category="injectable" Label="Dialog injected into ConfigComponent"/>
+    <Link Source="SettingsService" Target="ConfigComponent" Category="injectable" Label="SettingsService injected into ConfigComponent"/>
+    <Link Source="ElectronService" Target="ConfigComponent" Category="injectable" Label="ElectronService injected into ConfigComponent"/>
+    <Link Source="DataProvider" Target="CustomerPanelComponent" Category="injectable" Label="DataProvider injected into CustomerPanelComponent"/>
+    <Link Source="Injector" Target="CustomerPanelComponent" Category="injectable" Label="Injector injected into CustomerPanelComponent"/>
+    <Link Source="Dialog" Target="DiscountComponent" Category="injectable" Label="Dialog injected into DiscountComponent"/>
+    <Link Source="SettingsService" Target="DiscountComponent" Category="injectable" Label="SettingsService injected into DiscountComponent"/>
+    <Link Source="MenuManagementService" Target="DiscountComponent" Category="injectable" Label="MenuManagementService injected into DiscountComponent"/>
+    <Link Source="AlertsAndNotificationsService" Target="DiscountComponent" Category="injectable" Label="AlertsAndNotificationsService injected into DiscountComponent"/>
+    <Link Source="DataProvider" Target="DiscountComponent" Category="injectable" Label="DataProvider injected into DiscountComponent"/>
+    <Link Source="Dialog" Target="DispenseComponent" Category="injectable" Label="Dialog injected into DispenseComponent"/>
+    <Link Source="DataProvider" Target="DispersionComponent" Category="injectable" Label="DataProvider injected into DispersionComponent"/>
+    <Link Source="DataProvider" Target="EditKotComponent" Category="injectable" Label="DataProvider injected into EditKotComponent"/>
+    <Link Source="Dialog" Target="EditMenuComponent" Category="injectable" Label="Dialog injected into EditMenuComponent"/>
+    <Link Source="DataProvider" Target="EditMenuComponent" Category="injectable" Label="DataProvider injected into EditMenuComponent"/>
+    <Link Source="MenuManagementService" Target="EditMenuComponent" Category="injectable" Label="MenuManagementService injected into EditMenuComponent"/>
+    <Link Source="AlertsAndNotificationsService" Target="EditMenuComponent" Category="injectable" Label="AlertsAndNotificationsService injected into EditMenuComponent"/>
+    <Link Source="DialogRef" Target="EditMenuComponent" Category="injectable" Label="DialogRef injected into EditMenuComponent"/>
+    <Link Source="ElectronService" Target="EditMenuComponent" Category="injectable" Label="ElectronService injected into EditMenuComponent"/>
+    <Link Source="HistoryService" Target="HistoryComponent" Category="injectable" Label="HistoryService injected into HistoryComponent"/>
+    <Link Source="BillService" Target="HistoryComponent" Category="injectable" Label="BillService injected into HistoryComponent"/>
+    <Link Source="PrinterService" Target="HistoryComponent" Category="injectable" Label="PrinterService injected into HistoryComponent"/>
+    <Link Source="Dialog" Target="HistoryComponent" Category="injectable" Label="Dialog injected into HistoryComponent"/>
+    <Link Source="DataProvider" Target="HistoryComponent" Category="injectable" Label="DataProvider injected into HistoryComponent"/>
+    <Link Source="DataProvider" Target="InfoPanelComponent" Category="injectable" Label="DataProvider injected into InfoPanelComponent"/>
+    <Link Source="ElementRef" Target="InfoPanelComponent" Category="injectable" Label="ElementRef injected into InfoPanelComponent"/>
+    <Link Source="Dialog" Target="InfoPanelComponent" Category="injectable" Label="Dialog injected into InfoPanelComponent"/>
+    <Link Source="ElectronService" Target="InfoPanelComponent" Category="injectable" Label="ElectronService injected into InfoPanelComponent"/>
+    <Link Source="DataProvider" Target="KotItemComponent" Category="injectable" Label="DataProvider injected into KotItemComponent"/>
+    <Link Source="Dialog" Target="KotItemComponent" Category="injectable" Label="Dialog injected into KotItemComponent"/>
+    <Link Source="DataProvider" Target="LoadingComponent" Category="injectable" Label="DataProvider injected into LoadingComponent"/>
+    <Link Source="AlertsAndNotificationsService" Target="LoadingComponent" Category="injectable" Label="AlertsAndNotificationsService injected into LoadingComponent"/>
+    <Link Source="OnboardingService" Target="LoadingComponent" Category="injectable" Label="OnboardingService injected into LoadingComponent"/>
+    <Link Source="Dialog" Target="LoadingComponent" Category="injectable" Label="Dialog injected into LoadingComponent"/>
+    <Link Source="Functions" Target="LoadingComponent" Category="injectable" Label="Functions injected into LoadingComponent"/>
+    <Link Source="MenuManagementService" Target="LoadingComponent" Category="injectable" Label="MenuManagementService injected into LoadingComponent"/>
+    <Link Source="UserManagementService" Target="LoadingComponent" Category="injectable" Label="UserManagementService injected into LoadingComponent"/>
+    <Link Source="SignupService" Target="LoadingComponent" Category="injectable" Label="SignupService injected into LoadingComponent"/>
+    <Link Source="LoginService" Target="LoadingComponent" Category="injectable" Label="LoginService injected into LoadingComponent"/>
+    <Link Source="FileStorageService" Target="LoadingComponent" Category="injectable" Label="FileStorageService injected into LoadingComponent"/>
+    <Link Source="SettingsService" Target="LoadingComponent" Category="injectable" Label="SettingsService injected into LoadingComponent"/>
+    <Link Source="TableService" Target="LoadingComponent" Category="injectable" Label="TableService injected into LoadingComponent"/>
+    <Link Source="DataProvider" Target="ManageKotComponent" Category="injectable" Label="DataProvider injected into ManageKotComponent"/>
+    <Link Source="ViewContainerRef" Target="MenuComponent" Category="injectable" Label="ViewContainerRef injected into MenuComponent"/>
+    <Link Source="Dialog" Target="MenuComponent" Category="injectable" Label="Dialog injected into MenuComponent"/>
+    <Link Source="DataProvider" Target="MenuComponent" Category="injectable" Label="DataProvider injected into MenuComponent"/>
+    <Link Source="NgxIndexedDBService" Target="MenuComponent" Category="injectable" Label="NgxIndexedDBService injected into MenuComponent"/>
+    <Link Source="DialogRef" Target="NonChargeableComponent" Category="injectable" Label="DialogRef injected into NonChargeableComponent"/>
+    <Link Source="DataProvider" Target="NonChargeableComponent" Category="injectable" Label="DataProvider injected into NonChargeableComponent"/>
+    <Link Source="Dialog" Target="NonChargeableComponent" Category="injectable" Label="Dialog injected into NonChargeableComponent"/>
+    <Link Source="DataProvider" Target="PaymentComponent" Category="injectable" Label="DataProvider injected into PaymentComponent"/>
+    <Link Source="Dialog" Target="PaymentComponent" Category="injectable" Label="Dialog injected into PaymentComponent"/>
+    <Link Source="AlertsAndNotificationsService" Target="PaymentComponent" Category="injectable" Label="AlertsAndNotificationsService injected into PaymentComponent"/>
+    <Link Source="SettingsService" Target="PaymentComponent" Category="injectable" Label="SettingsService injected into PaymentComponent"/>
+    <Link Source="DataProvider" Target="PrinterComponent" Category="injectable" Label="DataProvider injected into PrinterComponent"/>
+    <Link Source="MenuManagementService" Target="PrinterComponent" Category="injectable" Label="MenuManagementService injected into PrinterComponent"/>
+    <Link Source="SettingsService" Target="PrinterComponent" Category="injectable" Label="SettingsService injected into PrinterComponent"/>
+    <Link Source="AlertsAndNotificationsService" Target="PrinterComponent" Category="injectable" Label="AlertsAndNotificationsService injected into PrinterComponent"/>
+    <Link Source="DataProvider" Target="ProductsPanelComponent" Category="injectable" Label="DataProvider injected into ProductsPanelComponent"/>
+    <Link Source="DataProvider" Target="QuickKotViewComponent" Category="injectable" Label="DataProvider injected into QuickKotViewComponent"/>
+    <Link Source="DataProvider" Target="ReasonComponent" Category="injectable" Label="DataProvider injected into ReasonComponent"/>
+    <Link Source="DialogRef" Target="ReasonComponent" Category="injectable" Label="DialogRef injected into ReasonComponent"/>
+    <Link Source="Dialog" Target="ReceiveStockComponent" Category="injectable" Label="Dialog injected into ReceiveStockComponent"/>
+    <Link Source="DataProvider" Target="ReceivingComponent" Category="injectable" Label="DataProvider injected into ReceivingComponent"/>
+    <Link Source="BillService" Target="ReportsComponent" Category="injectable" Label="BillService injected into ReportsComponent"/>
+    <Link Source="DataProvider" Target="ReportsComponent" Category="injectable" Label="DataProvider injected into ReportsComponent"/>
+    <Link Source="DialogRef" Target="ReprintReasonComponent" Category="injectable" Label="DialogRef injected into ReprintReasonComponent"/>
+    <Link Source="DataProvider" Target="ReprintReasonComponent" Category="injectable" Label="DataProvider injected into ReprintReasonComponent"/>
+    <Link Source="DialogRef" Target="RequiresPrivilegeComponent" Category="injectable" Label="DialogRef injected into RequiresPrivilegeComponent"/>
+    <Link Source="AlertsAndNotificationsService" Target="RequiresPrivilegeComponent" Category="injectable" Label="AlertsAndNotificationsService injected into RequiresPrivilegeComponent"/>
+    <Link Source="UserManagementService" Target="ResetPasswordComponent" Category="injectable" Label="UserManagementService injected into ResetPasswordComponent"/>
+    <Link Source="AlertsAndNotificationsService" Target="ResetPasswordComponent" Category="injectable" Label="AlertsAndNotificationsService injected into ResetPasswordComponent"/>
+    <Link Source="DialogRef" Target="ResetPasswordComponent" Category="injectable" Label="DialogRef injected into ResetPasswordComponent"/>
+    <Link Source="DataProvider" Target="ResetPasswordComponent" Category="injectable" Label="DataProvider injected into ResetPasswordComponent"/>
+    <Link Source="Dialog" Target="SalesSummaryComponent" Category="injectable" Label="Dialog injected into SalesSummaryComponent"/>
+    <Link Source="DataProvider" Target="SalesSummaryComponent" Category="injectable" Label="DataProvider injected into SalesSummaryComponent"/>
+    <Link Source="DataProvider" Target="SearchPanelComponent" Category="injectable" Label="DataProvider injected into SearchPanelComponent"/>
+    <Link Source="BillService" Target="SearchPanelComponent" Category="injectable" Label="BillService injected into SearchPanelComponent"/>
+    <Link Source="DialogRef" Target="SelectCategoryComponent" Category="injectable" Label="DialogRef injected into SelectCategoryComponent"/>
+    <Link Source="DataProvider" Target="SetTaxComponent" Category="injectable" Label="DataProvider injected into SetTaxComponent"/>
+    <Link Source="DialogRef" Target="SetTaxComponent" Category="injectable" Label="DialogRef injected into SetTaxComponent"/>
+    <Link Source="DialogRef" Target="SettingsComponent" Category="injectable" Label="DialogRef injected into SettingsComponent"/>
+    <Link Source="DataProvider" Target="SettingsComponent" Category="injectable" Label="DataProvider injected into SettingsComponent"/>
+    <Link Source="DialogRef" Target="SettleComponent" Category="injectable" Label="DialogRef injected into SettleComponent"/>
+    <Link Source="DataProvider" Target="SettleComponent" Category="injectable" Label="DataProvider injected into SettleComponent"/>
+    <Link Source="SettingsService" Target="SettleComponent" Category="injectable" Label="SettingsService injected into SettleComponent"/>
+    <Link Source="AlertsAndNotificationsService" Target="SettleComponent" Category="injectable" Label="AlertsAndNotificationsService injected into SettleComponent"/>
+    <Link Source="PopoverService" Target="SidebarComponent" Category="injectable" Label="PopoverService injected into SidebarComponent"/>
+    <Link Source="DataProvider" Target="SidebarComponent" Category="injectable" Label="DataProvider injected into SidebarComponent"/>
+    <Link Source="Dialog" Target="SidebarComponent" Category="injectable" Label="Dialog injected into SidebarComponent"/>
+    <Link Source="Dialog" Target="StockComponent" Category="injectable" Label="Dialog injected into StockComponent"/>
+    <Link Source="DataProvider" Target="StockComponent" Category="injectable" Label="DataProvider injected into StockComponent"/>
+    <Link Source="Dialog" Target="SystemComponent" Category="injectable" Label="Dialog injected into SystemComponent"/>
+    <Link Source="DataProvider" Target="SystemComponent" Category="injectable" Label="DataProvider injected into SystemComponent"/>
+    <Link Source="UserManagementService" Target="SystemComponent" Category="injectable" Label="UserManagementService injected into SystemComponent"/>
+    <Link Source="DialogRef" Target="TableComponent" Category="injectable" Label="DialogRef injected into TableComponent"/>
+    <Link Source="DataProvider" Target="TableComponent" Category="injectable" Label="DataProvider injected into TableComponent"/>
+    <Link Source="TableService" Target="TableComponent" Category="injectable" Label="TableService injected into TableComponent"/>
+    <Link Source="AlertsAndNotificationsService" Target="TableComponent" Category="injectable" Label="AlertsAndNotificationsService injected into TableComponent"/>
+    <Link Source="PrinterService" Target="TableComponent" Category="injectable" Label="PrinterService injected into TableComponent"/>
+    <Link Source="Dialog" Target="TableComponent" Category="injectable" Label="Dialog injected into TableComponent"/>
+    <Link Source="AnalyticsService" Target="TableComponent" Category="injectable" Label="AnalyticsService injected into TableComponent"/>
+    <Link Source="BillService" Target="TableComponent" Category="injectable" Label="BillService injected into TableComponent"/>
+    <Link Source="CustomerService" Target="TableComponent" Category="injectable" Label="CustomerService injected into TableComponent"/>
+    <Link Source="AlertsAndNotificationsService" Target="TaxesComponent" Category="injectable" Label="AlertsAndNotificationsService injected into TaxesComponent"/>
+    <Link Source="Dialog" Target="TaxesComponent" Category="injectable" Label="Dialog injected into TaxesComponent"/>
+    <Link Source="SettingsService" Target="TaxesComponent" Category="injectable" Label="SettingsService injected into TaxesComponent"/>
+    <Link Source="DataProvider" Target="TaxesComponent" Category="injectable" Label="DataProvider injected into TaxesComponent"/>
+    <Link Source="SystemService" Target="UpgradeComponent" Category="injectable" Label="SystemService injected into UpgradeComponent"/>
+    <Link Source="DialogRef" Target="UpgradeComponent" Category="injectable" Label="DialogRef injected into UpgradeComponent"/>
+    <Link Source="AlertsAndNotificationsService" Target="UpgradeComponent" Category="injectable" Label="AlertsAndNotificationsService injected into UpgradeComponent"/>
+    <Link Source="DataProvider" Target="UpgradeComponent" Category="injectable" Label="DataProvider injected into UpgradeComponent"/>
+    <Link Source="DataProvider" Target="ViewComponent" Category="injectable" Label="DataProvider injected into ViewComponent"/>
+    <Link Source="AlertsAndNotificationsService" Target="ViewComponent" Category="injectable" Label="AlertsAndNotificationsService injected into ViewComponent"/>
+    <Link Source="MenuManagementService" Target="ViewComponent" Category="injectable" Label="MenuManagementService injected into ViewComponent"/>
+    <Link Source="MatSnackBar" Target="AlertsAndNotificationsService" Category="injectable" Label="MatSnackBar injected into AlertsAndNotificationsService"/>
+    <Link Source="Firestore" Target="AnalyticsService" Category="injectable" Label="Firestore injected into AnalyticsService"/>
+    <Link Source="DataProvider" Target="AnalyticsService" Category="injectable" Label="DataProvider injected into AnalyticsService"/>
+    <Link Source="DataProvider" Target="AuthGuard" Category="injectable" Label="DataProvider injected into AuthGuard"/>
+    <Link Source="Router" Target="AuthGuard" Category="injectable" Label="Router injected into AuthGuard"/>
+    <Link Source="Auth" Target="AuthService" Category="injectable" Label="Auth injected into AuthService"/>
+    <Link Source="DataProvider" Target="AuthService" Category="injectable" Label="DataProvider injected into AuthService"/>
+    <Link Source="NgxIndexedDBService" Target="AuthService" Category="injectable" Label="NgxIndexedDBService injected into AuthService"/>
+    <Link Source="AlertsAndNotificationsService" Target="AuthService" Category="injectable" Label="AlertsAndNotificationsService injected into AuthService"/>
+    <Link Source="ElectronService" Target="AuthService" Category="injectable" Label="ElectronService injected into AuthService"/>
+    <Link Source="Functions" Target="AuthService" Category="injectable" Label="Functions injected into AuthService"/>
+    <Link Source="UserManagementService" Target="AuthService" Category="injectable" Label="UserManagementService injected into AuthService"/>
+    <Link Source="LoginService" Target="AuthService" Category="injectable" Label="LoginService injected into AuthService"/>
+    <Link Source="Firestore" Target="BillService" Category="injectable" Label="Firestore injected into BillService"/>
+    <Link Source="DataProvider" Target="BillService" Category="injectable" Label="DataProvider injected into BillService"/>
+    <Link Source="NgxIndexedDBService" Target="CustomerService" Category="injectable" Label="NgxIndexedDBService injected into CustomerService"/>
+    <Link Source="Firestore" Target="CustomerService" Category="injectable" Label="Firestore injected into CustomerService"/>
+    <Link Source="DataProvider" Target="CustomerService" Category="injectable" Label="DataProvider injected into CustomerService"/>
+    <Link Source="Functions" Target="CustomerService" Category="injectable" Label="Functions injected into CustomerService"/>
+    <Link Source="AlertsAndNotificationsService" Target="CustomerService" Category="injectable" Label="AlertsAndNotificationsService injected into CustomerService"/>
+    <Link Source="Dialog" Target="DataProvider" Category="injectable" Label="Dialog injected into DataProvider"/>
+    <Link Source="Functions" Target="DataProvider" Category="injectable" Label="Functions injected into DataProvider"/>
+    <Link Source="Dialog" Target="ElectronService" Category="injectable" Label="Dialog injected into ElectronService"/>
+    <Link Source="DataProvider" Target="LoginGuard" Category="injectable" Label="DataProvider injected into LoginGuard"/>
+    <Link Source="Functions" Target="LoginService" Category="injectable" Label="Functions injected into LoginService"/>
+    <Link Source="Auth" Target="LoginService" Category="injectable" Label="Auth injected into LoginService"/>
+    <Link Source="ElectronService" Target="LoginService" Category="injectable" Label="ElectronService injected into LoginService"/>
+    <Link Source="DataProvider" Target="MenuManagementService" Category="injectable" Label="DataProvider injected into MenuManagementService"/>
+    <Link Source="Firestore" Target="MenuManagementService" Category="injectable" Label="Firestore injected into MenuManagementService"/>
+    <Link Source="AnalyticsService" Target="MenuManagementService" Category="injectable" Label="AnalyticsService injected into MenuManagementService"/>
+    <Link Source="PrinterService" Target="MenuManagementService" Category="injectable" Label="PrinterService injected into MenuManagementService"/>
+    <Link Source="TableService" Target="MenuManagementService" Category="injectable" Label="TableService injected into MenuManagementService"/>
+    <Link Source="BillService" Target="MenuManagementService" Category="injectable" Label="BillService injected into MenuManagementService"/>
+    <Link Source="AlertsAndNotificationsService" Target="MenuManagementService" Category="injectable" Label="AlertsAndNotificationsService injected into MenuManagementService"/>
+    <Link Source="NgxIndexedDBService" Target="MenuManagementService" Category="injectable" Label="NgxIndexedDBService injected into MenuManagementService"/>
+    <Link Source="CustomerService" Target="MenuManagementService" Category="injectable" Label="CustomerService injected into MenuManagementService"/>
+    <Link Source="DataProvider" Target="OnboardingService" Category="injectable" Label="DataProvider injected into OnboardingService"/>
+    <Link Source="Firestore" Target="OnboardingService" Category="injectable" Label="Firestore injected into OnboardingService"/>
+    <Link Source="AlertsAndNotificationsService" Target="OnboardingService" Category="injectable" Label="AlertsAndNotificationsService injected into OnboardingService"/>
+    <Link Source="MenuManagementService" Target="OnboardingService" Category="injectable" Label="MenuManagementService injected into OnboardingService"/>
+    <Link Source="Dialog" Target="OnboardingService" Category="injectable" Label="Dialog injected into OnboardingService"/>
+    <Link Source="CustomerService" Target="OnboardingService" Category="injectable" Label="CustomerService injected into OnboardingService"/>
+    <Link Source="PrinterService" Target="OnboardingService" Category="injectable" Label="PrinterService injected into OnboardingService"/>
+    <Link Source="ProductsService" Target="OnboardingService" Category="injectable" Label="ProductsService injected into OnboardingService"/>
+    <Link Source="UserManagementService" Target="OnboardingService" Category="injectable" Label="UserManagementService injected into OnboardingService"/>
+    <Link Source="SettingsService" Target="OnboardingService" Category="injectable" Label="SettingsService injected into OnboardingService"/>
+    <Link Source="AnalyticsService" Target="OnboardingService" Category="injectable" Label="AnalyticsService injected into OnboardingService"/>
+    <Link Source="TableService" Target="OnboardingService" Category="injectable" Label="TableService injected into OnboardingService"/>
+    <Link Source="BillService" Target="OnboardingService" Category="injectable" Label="BillService injected into OnboardingService"/>
+    <Link Source="DataProvider" Target="PrinterService" Category="injectable" Label="DataProvider injected into PrinterService"/>
+    <Link Source="Dialog" Target="PrinterService" Category="injectable" Label="Dialog injected into PrinterService"/>
+    <Link Source="ElectronService" Target="PrinterService" Category="injectable" Label="ElectronService injected into PrinterService"/>
+    <Link Source="EncoderService" Target="PrinterService" Category="injectable" Label="EncoderService injected into PrinterService"/>
+    <Link Source="DataProvider" Target="ProductsService" Category="injectable" Label="DataProvider injected into ProductsService"/>
+    <Link Source="Firestore" Target="ProductsService" Category="injectable" Label="Firestore injected into ProductsService"/>
+    <Link Source="Firestore" Target="SettingsService" Category="injectable" Label="Firestore injected into SettingsService"/>
+    <Link Source="DataProvider" Target="SettingsService" Category="injectable" Label="DataProvider injected into SettingsService"/>
+    <Link Source="Functions" Target="SignupService" Category="injectable" Label="Functions injected into SignupService"/>
+    <Link Source="Auth" Target="SignupService" Category="injectable" Label="Auth injected into SignupService"/>
+    <Link Source="Firestore" Target="SignupService" Category="injectable" Label="Firestore injected into SignupService"/>
+    <Link Source="DataProvider" Target="SignupService" Category="injectable" Label="DataProvider injected into SignupService"/>
+    <Link Source="LoginService" Target="SignupService" Category="injectable" Label="LoginService injected into SignupService"/>
+    <Link Source="Firestore" Target="SystemService" Category="injectable" Label="Firestore injected into SystemService"/>
+    <Link Source="Firestore" Target="TableService" Category="injectable" Label="Firestore injected into TableService"/>
+    <Link Source="DataProvider" Target="TableService" Category="injectable" Label="DataProvider injected into TableService"/>
+    <Link Source="Firestore" Target="UserManagementService" Category="injectable" Label="Firestore injected into UserManagementService"/>
+    <Link Source="NgxIndexedDBService" Target="UserManagementService" Category="injectable" Label="NgxIndexedDBService injected into UserManagementService"/>
+    <Link Source="Auth" Target="UserManagementService" Category="injectable" Label="Auth injected into UserManagementService"/>
+    <Link Source="Router" Target="UserManagementService" Category="injectable" Label="Router injected into UserManagementService"/>
+    <Link Source="Functions" Target="UserManagementService" Category="injectable" Label="Functions injected into UserManagementService"/>
+    <Link Source="AlertsAndNotificationsService" Target="UserManagementService" Category="injectable" Label="AlertsAndNotificationsService injected into UserManagementService"/>
+    <Link Source="DataProvider" Target="UserManagementService" Category="injectable" Label="DataProvider injected into UserManagementService"/>
+    <Link Source="Dialog" Target="UserManagementService" Category="injectable" Label="Dialog injected into UserManagementService"/>
+    <Link Source="ElectronService" Target="UserManagementService" Category="injectable" Label="ElectronService injected into UserManagementService"/>
+    <Link Source="ElementRef" Target="PopoverDirective" Category="injectable" Label="ElementRef injected into PopoverDirective"/>
+    <Link Source="Overlay" Target="PopoverDirective" Category="injectable" Label="Overlay injected into PopoverDirective"/>
+    <Link Source="ViewContainerRef" Target="PopoverDirective" Category="injectable" Label="ViewContainerRef injected into PopoverDirective"/>
+    <Link Source="PopoverService" Target="PopoverDirective" Category="injectable" Label="PopoverService injected into PopoverDirective"/>
+  </Links>
+  <Categories>
+    <Category Id="component" Label="Component" Background="#0288d1" IsTag="True"/>
+    <Category Id="File" Icon="File" IsTag="True"/>
+    <Category Id="injectable" Label="Service" Background="#97c2fc" IsTag="True"/>
+    <Category Id="directive" Label="Directive" Background="#ffc107" IsTag="True"/>
+    <Category Id="pipe" Label="Pipe" Background="#00897b" IsTag="True"/>
+  </Categories>
+  <Properties>
+    <Property Id="TypescriptFilepath" DataType="System.String" Label="Typescript filepath" IsReference="true"/>
+    <Property Id="Background" DataType="System.Windows.Media.Brush"/>
+    <Property Id="GraphDirection" DataType="Microsoft.VisualStudio.Diagrams.Layout.LayoutOrientation"/>
+    <Property Id="UseManualLocation" DataType="System.Boolean"/>
+    <Property Id="Label" DataType="System.String"/>
+    <Property Id="Layout" DataType="System.String"/>
+    <Property Id="ZoomLevel" DataType="System.String"/>
+    <Property Id="Bounds" DataType="System.Windows.Rect"/>
+  </Properties>
+</DirectedGraph>

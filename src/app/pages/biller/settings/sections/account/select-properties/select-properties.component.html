@@ -1,0 +1,33 @@
+<section>
+	<div class="heading">
+		<h3>Select Properties</h3>
+		<viraj-button [noPropogation]="true" (vclick)="this.dialogRef.close()" type="icon"><i class="ri-close-fill"></i></viraj-button>
+	</div>
+	<div class="list">
+		<div class="searchBar">
+			<mat-form-field appearance="outline">
+				<mat-label>Search Property</mat-label>
+				<input matInput [formControl]="searchControl" type="text" placeholder="Search Property">
+			</mat-form-field>
+		</div>
+		<div class="group" *ngFor="let group of filteredAccessCodes.length ? filteredAccessCodes : accessCodes">
+			<div class="heading">
+				<p>{{group.name}}</p>
+			</div>
+			<div class="code" *ngFor="let property of group.accessCodes">
+				<div class="detail">
+					<span>
+						<p>{{property.name}}</p>
+						<p>#{{property.accessCode}}</p>
+					</span>
+					<p class="desc">{{property.description}}</p>
+				</div>
+				<mat-slide-toggle (change)="switchAccess($event,property.accessCode)" [(ngModel)]="property.allowed" [checked]="property.allowed"></mat-slide-toggle>
+			</div>
+		</div>
+	</div>
+	<div class="actions">
+		<viraj-button [noPropogation]="true" type="outline" (vclick)="this.dialogRef.close()">Cancel</viraj-button>
+		<viraj-button [noPropogation]="true" (vclick)="this.dialogRef.close(this.allowedAccessCodes)">Submit</viraj-button>
+	</div>
+</section>

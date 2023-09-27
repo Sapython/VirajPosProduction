@@ -1,0 +1,16 @@
+{
+  "projects": {
+    "default": "fbms-shreeva-demo",
+    "production": "vrajera-d1e58"
+  },
+  "targets": {
+    "fbms-shreeva-demo": {
+      "hosting": {
+        "virajpos": [
+          "fbms-shreeva-demo"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

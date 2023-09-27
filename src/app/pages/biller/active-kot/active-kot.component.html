@@ -1,0 +1,78 @@
+<div class="title" #title>
+  <h3 #heading>
+    {{
+      dataProvider.manageKot
+        ? "Manage KOTs"
+        : dataProvider.kotViewVisible
+        ? "All KOTs"
+        : "KOT"
+    }}
+  </h3>
+  <div class="labels">
+    <div class="label" *ngFor="let item of labels">
+      <span [ngStyle]="{ background: item.color?.color }"></span>
+      <p [ngStyle]="{ color: '#000' }">
+        {{ item.name }}
+      </p>
+    </div>
+  </div>
+</div>
+<section #kotListElement class="kotSection" [ngClass]="{noItems:showImage}">
+  <div
+    class="normalKotView"
+    *ngIf="!dataProvider.kotViewVisible && !dataProvider.allProducts"
+    [@zoomInOnEnter]
+    [@zoomOutOnLeave]
+  >
+    <app-manage-kot
+      *ngIf="allKot.length > 0 && dataProvider.manageKot"
+      [allKot]="allKot"
+      [kotNoColors]="kotNoColors"
+      (editKot)="editKot($event)"
+      (deleteKot)="deleteKot($event)"
+      (printKot)="printKot($event)"
+      (saveEditedKot)="saveEditedKot($event)"
+    ></app-manage-kot>
+    <ng-container *ngIf="kots.length > 0 &&
+      !dataProvider.manageKot &&
+      this.dataProvider.currentBill?.editKotMode == null">
+      <app-kot-note [Kot]="allKot[activeKotIndex]"></app-kot-note>
+      <app-normal-kot
+        [kots]="kots"
+        [activeKotIndex]="activeKotIndex"
+        (delete)="delete($event)"
+      ></app-normal-kot>
+    </ng-container>
+    <app-edit-kot
+      (delete)="delete($event)"
+      *ngIf="
+        !dataProvider.manageKot &&
+        this.dataProvider.currentBill?.editKotMode != null
+      "
+    >
+    </app-edit-kot>
+    <!-- <p *ngIf="showImage" class="noItemText">Select item to add kot. KOTs will appear here.</p> -->
+    <img
+      class="noItem"
+      src="assets/images/Viraj-mascot.png"
+      alt="No Items"
+      *ngIf="showImage"
+    />
+  </div>
+  <app-quick-kot-view
+    *ngIf="dataProvider.kotViewVisible"
+    [kotNoColors]="kotNoColors"
+  ></app-quick-kot-view>
+  <app-bill-preview
+    [@zoomInOnEnter]
+    [@zoomOutOnLeave]
+    [printableBillData]="this.dataProvider.currentBill.printableBillData"
+    *ngIf="dataProvider.allProducts && this.dataProvider.currentBill"
+  ></app-bill-preview>
+  <ng-container *ngIf="!showImage">
+    <br>
+    <br>
+    <br>
+    <br>
+  </ng-container>
+</section>

@@ -1,0 +1,104 @@
+<section>
+  <div class="header">
+    <h3>Your Account</h3>
+    <div class="actions">
+      <strong>Access:</strong>
+      <span>{{
+        this.dataProvider.currentBusinessUser.accessType == 'role' ? this.dataProvider.currentBusinessUser.role : 'custom'
+      }}</span>
+    </div>
+  </div>
+  <div class="item">
+    <p>
+      <mat-icon>person</mat-icon>
+      Username
+    </p>
+    <p>{{ this.dataProvider.currentBusinessUser?.username }}</p>
+  </div>
+  <div class="item">
+    <p>
+      <mat-icon>mail</mat-icon>
+      Email
+    </p>
+    <p>{{ this.dataProvider.currentFirebaseUser?.email }}</p>
+  </div>
+  <div class="item">
+    <p>
+      <mat-icon>call</mat-icon>
+      Phone
+    </p>
+    <p>{{ this.dataProvider.currentFirebaseUser?.phoneNumber }}</p>
+  </div>
+  <div class="item">
+    <p>
+      <mat-icon>storefront</mat-icon>
+      Business Id
+    </p>
+    <p>{{ this.dataProvider.currentBusiness.businessId }}</p>
+  </div>
+  <div class="item">
+    <p>
+      <mat-icon>title</mat-icon>
+      Name
+    </p>
+    <p>{{ this.dataProvider.currentBusiness.hotelName }}</p>
+  </div>
+  <!-- <div class="item">
+    <p>
+      <mat-icon>login</mat-icon>
+      Primary Outlet
+    </p>
+    <mat-select (openedChange)="setPrimaryOutlet()" class="primarySelector" placeholder="Select Primary Outlet" [(ngModel)]="this.dataProvider.primaryOutletId">
+      <mat-option *ngFor="let item of this.dataProvider.currentUser.business" [value]="item.businessId">
+        {{item.name}}
+      </mat-option>
+    </mat-select>
+  </div> -->
+  <div class="item">
+    <p>
+      <mat-icon>date_range</mat-icon>
+      Last Updated
+    </p>
+    <p>
+      {{ this.dataProvider.currentBusinessUser?.lastUpdated.toDate() | date }}
+    </p>
+  </div>
+  <div class="item">
+    <p>
+      <mat-icon>date_range</mat-icon>
+      Expiry For Vrajera
+    </p>
+    <p>
+      {{ this.dataProvider.validTill | date:'dd/MM/YYYY' }}
+    </p>
+  </div>
+  <button mat-stroked-button color="primary" (click)="resetPassword()">
+    Reset Password
+  </button>
+</section>
+<section>
+  <div class="header">
+    <h3>Server Info</h3>
+  </div>
+  <div class="item">
+    <p>
+      <mat-icon>person</mat-icon>
+      Biller Version
+    </p>
+    <p>{{ version }}</p>
+  </div>
+  <div class="item">
+    <p>
+      <mat-icon>storefront</mat-icon>
+      Server Version
+    </p>
+    <p>1.0.0</p>
+  </div>
+  <button
+    mat-stroked-button
+    color="primary"
+    (click)="electronService.checkForUpdate()"
+  >
+    Check For Updates
+  </button>
+</section>

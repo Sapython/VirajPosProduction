@@ -1,0 +1,1194 @@
+<section>
+  <div class="heading">
+    <span>
+      <span class="back">
+        <button (click)="close()">
+          <i class="ri-arrow-left-line"></i>
+          <p>Back</p>
+        </button>
+        <h3>Menu Management</h3>
+      </span>
+      <div class="tabsToggle large">
+        <button
+          *ngIf="
+            this.dataProvider.getAccess('editDineInMenu') &&
+            this.dataProvider.activeModes[0]
+          "
+          [ngClass]="{
+            active:
+              this.dataProvider.currentMenu &&
+              this.dataProvider.currentMenu.type == 'dineIn'
+          }"
+          (click)="switchMode({ value: 'dineIn' })"
+        >
+          Dine In
+        </button>
+        <button
+          *ngIf="
+            this.dataProvider.getAccess('editTakeawayMenu') &&
+            this.dataProvider.activeModes[1]
+          "
+          [ngClass]="{
+            active:
+              this.dataProvider.currentMenu &&
+              this.dataProvider.currentMenu.type == 'takeaway'
+          }"
+          (click)="switchMode({ value: 'takeaway' })"
+        >
+          Takeaway
+        </button>
+        <button
+          *ngIf="
+            this.dataProvider.getAccess('editOnlineMenu') &&
+            this.dataProvider.activeModes[2]
+          "
+          [ngClass]="{
+            active:
+              this.dataProvider.currentMenu &&
+              this.dataProvider.currentMenu.type == 'online'
+          }"
+          (click)="switchMode({ value: 'online' })"
+        >
+          Online
+        </button>
+      </div>
+      <div
+        matTooltip="Select the menu for this associated mode. If you change it it will apply to all billers under this restaurant"
+        class="selectMenu"
+        *ngIf="
+          this.dataProvider.currentMenu &&
+          this.dataProvider.getAccess('switchMenu')
+        "
+      >
+        <span>Selected Menu: </span>
+        <select
+          [(ngModel)]="this.dataProvider.currentMenu.selectedMenuId"
+          (change)="this.dataProvider.currentMenu.updateMenu()"
+          placeholder="Menu"
+        >
+          <option
+            *ngFor="let menu of this.dataProvider.allMenus | async"
+            [value]="menu.id"
+          >
+            {{ menu.name }}
+          </option>
+        </select>
+      </div>
+    </span>
+    <span>
+      <viraj-button
+        type="outline"
+        matTooltip="Allows you to set custom printer settings specific to product wise."
+        (click)="this.dataProvider.currentMenu.setPrinterSettings()"
+        *ngIf="this.dataProvider.getAccess('setPrinterSettings')"
+        [ngClass]="{ active: activeTab == 'Loyalty' }"
+      >
+        Printer Setting
+      </viraj-button>
+      <viraj-button
+        matTooltip="Click to create a new menu."
+        (click)="addNewMenu()"
+        *ngIf="this.dataProvider.getAccess('addNewMenu')"
+        [large]="true"
+        [animated]="true"
+        >New Menu</viraj-button
+      >
+    </span>
+  </div>
+  <ng-container *ngFor="let mode of this.dataProvider.menus">
+    <div class="mode" *ngIf="this.dataProvider.currentMenu == mode">
+      <!-- <p>{{mode.type}}</p> -->
+      <div class="tabs">
+        <div class="tabList">
+          <button
+            (click)="activeTab = 'Products'"
+            [ngClass]="{ active: activeTab == 'Products' }"
+          >
+            Products
+          </button>
+          <button
+            (click)="activeTab = 'Taxes'"
+            *ngIf="this.dataProvider.getAccess('seeTaxes')"
+            [ngClass]="{ active: activeTab == 'Taxes' }"
+          >
+            Taxes
+          </button>
+          <button
+            (click)="activeTab = 'Discounts'"
+            *ngIf="this.dataProvider.getAccess('seeDiscount')"
+            [ngClass]="{ active: activeTab == 'Discounts' }"
+          >
+            Discounts
+          </button>
+          <button
+            (click)="activeTab = 'Combos'"
+            *ngIf="this.dataProvider.getAccess('seeCombos')"
+            [ngClass]="{ active: activeTab == 'Combos' }"
+          >
+            Combos
+          </button>
+          <button
+            (click)="activeTab = 'Loyalty'"
+            *ngIf="this.dataProvider.getAccess('seeLoyalty')"
+            [ngClass]="{ active: activeTab == 'Loyalty' }"
+          >
+            Loyalty
+          </button>
+          <!-- <button
+            (click)="mode.setPrinterSettings()"
+            *ngIf="this.dataProvider.getAccess('setPrinterSettings')"
+            [ngClass]="{ active: activeTab == 'Loyalty' }"
+          >
+            Printer Setting
+          </button> -->
+        </div>
+        <viraj-button type="outline" (click)="mode.deleteMenu()"
+          ><i class="ri-delete-bin-line"></i> Delete
+          {{ mode.selectedMenu.name }}
+          {{
+            !(
+              mode.selectedMenu.name.endsWith("menu") ||
+              mode.selectedMenu.name.endsWith("Menu")
+            )
+              ? "Menu"
+              : ""
+          }}
+        </viraj-button>
+      </div>
+      <div class="productsView" *ngIf="activeTab == 'Products'">
+        <ng-container *ngIf="activeTab == 'Products'">
+          <div class="sidebar">
+            <div class="categories">
+              <span *ngIf="this.dataProvider.getAccess('seeAllProducts')"
+                >Product List</span
+              >
+              <app-category-card
+                [full]="true"
+                *ngIf="this.dataProvider.getAccess('seeAllProducts')"
+                [customLength]="mode.products.length"
+                (vclick)="
+                  mode.selectCategory(mode.allProductsCategory);
+                  mode.currentType = 'all'
+                "
+                [category]="mode.allProductsCategory"
+              ></app-category-card>
+              <span
+                matTooltip="These are vrajera's special category that works on recommendation basis."
+                *ngIf="this.dataProvider.getAccess('recommendedCategories')"
+                >Recommended <mat-slide-toggle [(ngModel)]="mode.reorderRecommendedCategories">Reorder </mat-slide-toggle></span
+              >
+              <div
+                cdkDropList
+                [cdkDropListDisabled]="!mode.reorderRecommendedCategories"
+                *ngIf="this.dataProvider.getAccess('recommendedCategories')"
+                class="example-list"
+                (cdkDropListDropped)="mode.reorderRecommendedCategory($event)"
+              >
+                <app-category-card
+                  cdkDrag
+                  [full]="true"
+                  [hiddenIconVisible]="true"
+                  [hidden]="category.enabled"
+                  *ngFor="let category of mode.recommendedCategories"
+                  (vclick)="
+                    mode.selectCategory(category);
+                    mode.currentType = 'recommended'
+                  "
+                  [category]="category"
+                ></app-category-card>
+              </div>
+              <ng-container
+                *ngIf="
+                  this.dataProvider.currentBusinessUser.accessType ==
+                    'custom' ||
+                  (this.dataProvider.currentBusinessUser.accessType == 'role' &&
+                    this.dataProvider.currentBusinessUser.role != 'admin' &&
+                    this.dataProvider.currentBusinessUser.role != 'manager' &&
+                    this.dataProvider.getAccess('viewCategories'))
+                "
+              >
+                <span
+                  matTooltip="These categories are user specific, you can have products from multiple main categories"
+                  *ngIf="this.dataProvider.getAccess('viewCategories')"
+                  >View Categories 
+                  <div class="actions">
+                    <mat-slide-toggle [(ngModel)]="mode.reorderViewCategories">Reorder </mat-slide-toggle><viraj-button
+                        *ngIf="this.dataProvider.getAccess('addViewCategory')"
+                        type="icon"
+                        (vclick)="
+                          mode.addViewCategory(
+                            this.dataProvider.currentUser.username
+                          )
+                        "
+                        ><i class="ri-add-box-fill"></i></viraj-button
+                    >
+                  </div>
+                </span>
+                <div
+                  *ngIf="this.dataProvider.getAccess('viewCategories')"
+                  cdkDropList
+                  [cdkDropListDisabled]="!mode.reorderViewCategories"
+                  class="example-list"
+                  (cdkDropListDropped)="mode.reorderViewCategory($event)"
+                >
+                  <app-category-card
+                    [full]="true"
+                    [hiddenIconVisible]="true"
+                    [hidden]="category.enabled"
+                    cdkDrag
+                    *ngFor="let category of mode.viewCategories"
+                    (vclick)="
+                      mode.selectCategory(category); mode.currentType = 'view'
+                    "
+                    [category]="category"
+                  ></app-category-card>
+                </div>
+              </ng-container>
+              <ng-container
+                *ngIf="
+                  this.dataProvider.currentBusinessUser.accessType == 'role' &&
+                  (this.dataProvider.currentBusinessUser.role == 'admin' ||
+                    this.dataProvider.currentBusinessUser.role == 'manager') &&
+                  this.dataProvider.getAccess('viewCategories')
+                "
+              >
+              <span> My View Category 
+                <div class="actins">
+                  <mat-slide-toogle [(ngModel)]="mode.reorderMainCategories">Reorder</mat-slide-toogle><viraj-button
+                    *ngIf="this.dataProvider.getAccess('addViewCategory')"
+                    [noPropogation]="true"
+                    type="icon"
+                    (vclick)="mode.addViewCategory(this.dataProvider.currentUser.username)"
+                    ><i class="ri-add-box-fill"></i
+                  ></viraj-button>
+                </div>
+              </span>
+                <div
+                  cdkDropList
+                  [cdkDropListDisabled]="!mode.reorderMainCategories"
+                  class="example-list"
+                  (cdkDropListDropped)="mode.reorderViewCategory($event)"
+                >
+                  <app-category-card
+                    cdkDrag
+                    [full]="true"
+                    [hiddenIconVisible]="true"
+                    [hidden]="category.enabled"
+                    *ngFor="let category of mode.viewCategories"
+                    (vclick)="
+                      mode.selectCategory(category,this.dataProvider.currentUser.username);
+                      mode.currentType = 'view'
+                    "
+                    [category]="category"
+                  ></app-category-card>
+                </div>
+                <span> User View Categories </span>
+                <div class="userWiseCategories">
+                  <ng-container *ngFor="let user of mode.userWiseViewCategories">
+                    <div class="accordion" [ngClass]="{ open: user.open }" *ngIf="user.user != this.dataProvider.currentUser.username">
+                      <span class="userSpan" (click)="user.open = !user.open">
+                        <div class="usr">
+                          <img
+                            class="avatar"
+                            src="https://api.dicebear.com/6.x/initials/svg?seed={{
+                              user.user
+                            }}"
+                          />
+                          {{ user.user | titlecase }}
+                        </div>
+                        <div class="usr">
+                          <div class="counter">{{ user.categories.length }}</div>
+                          <viraj-button
+                            *ngIf="this.dataProvider.getAccess('addViewCategory')"
+                            [noPropogation]="true"
+                            type="icon"
+                            (vclick)="mode.addViewCategory(user.user)"
+                            ><i class="ri-add-box-fill"></i
+                          ></viraj-button>
+                          <i *ngIf="!user.open" class="ri-arrow-down-s-fill"></i>
+                          <i *ngIf="user.open" class="ri-arrow-up-s-fill"></i>
+                        </div>
+                      </span>
+                      <div
+                        *ngIf="this.dataProvider.getAccess('viewCategories')"
+                        cdkDropList
+                        [cdkDropListDisabled]="!mode.reorderViewCategories"
+                        class="example-list"
+                        (cdkDropListDropped)="mode.reorderViewCategory($event)"
+                      >
+                        <app-category-card
+                          [full]="true"
+                          [hiddenIconVisible]="true"
+                          [hidden]="category.enabled"
+                          cdkDrag
+                          *ngFor="let category of user.categories"
+                          (vclick)="
+                            mode.selectCategory(category,user.user);
+                            mode.currentType = 'view'
+                          "
+                          [category]="category"
+                        ></app-category-card>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </ng-container>
+              <span
+                matTooltip="Main categories are categories that have products in them, if you affect these then products also get affected, these are unique in itself."
+                *ngIf="this.dataProvider.getAccess('mainCategories')"
+                >Main Categories
+                <div class="actions">
+                  <mat-slide-toggle [(ngModel)]="mode.reorderMainCategories">Reorder </mat-slide-toggle><viraj-button
+                      *ngIf="this.dataProvider.getAccess('addMainCategory')"
+                      type="icon"
+                      (vclick)="mode.addMainCategory()"
+                      ><i class="ri-add-box-fill"></i></viraj-button
+                  >
+                </div>
+              </span>
+              <div
+                cdkDropList
+                [cdkDropListDisabled]="!mode.reorderMainCategories"
+                *ngIf="this.dataProvider.getAccess('mainCategories')"
+                class="example-list"
+                (cdkDropListDropped)="mode.reorderMainCategory($event)"
+              >
+                <app-category-card
+                  [full]="true"
+                  [hiddenIconVisible]="true"
+                  [hidden]="category.enabled"
+                  cdkDrag
+                  *ngFor="let category of mode.mainCategories"
+                  (click)="
+                    mode.selectCategory(category); mode.currentType = 'root'
+                  "
+                  [category]="category"
+                ></app-category-card>
+              </div>
+            </div>
+          </div>
+          <div class="main" *ngIf="mode.selectedCategory">
+            <div class="title">
+              <div class="actions">
+                <h2>{{ mode.selectedCategory.name }}</h2>
+              </div>
+              <input
+                type="text"
+                placeholder="Search Item"
+                matInput
+                class="customSearchBox"
+                [formControl]="mode.searchFormControl"
+                #text
+              />
+            </div>
+            <div class="filters">
+              <ng-container class="actions">
+                <ng-container
+                  *ngIf="
+                    (mode.currentType == 'all' &&
+                      this.dataProvider.getAccess('enableDisableProducts')) ||
+                    (mode.currentType == 'recommended' &&
+                      this.dataProvider.getAccess(
+                        'enableDisableRecommendedProducts'
+                      )) ||
+                    (mode.currentType == 'view' &&
+                      this.dataProvider.getAccess(
+                        'enableDisableViewProducts'
+                      )) ||
+                    (mode.currentType == 'root' &&
+                      this.dataProvider.getAccess('enableDisableMainProducts'))
+                  "
+                >
+                  <viraj-button
+                    type="outline"
+                    color="primary"
+                    matTooltip="This will disable all the products in this category."
+                    (click)="mode.disableAll()"
+                  >
+                    Disable All
+                  </viraj-button>
+                  <viraj-button
+                    type="outline"
+                    color="primary"
+                    matTooltip="This will enable all the products in this category."
+                    (click)="mode.enableAll()"
+                  >
+                    Enable All
+                  </viraj-button>
+                </ng-container>
+                <viraj-button
+                  *ngIf="
+                    ['all'].includes(mode.currentType) &&
+                    this.dataProvider.getAccess('addNewProduct')
+                  "
+                  matTooltip="This will add a new product to this menu. Then you can select in which category they appear."
+                  (click)="mode.addRecipe(mode.selectedMenuId)"
+                  color="primary"
+                >
+                  Add Product
+                </viraj-button>
+                <viraj-button
+                  *ngIf="this.dataProvider.getAccess('addNewProduct')"
+                  (click)="mode.downloadProducts(mode.products)"
+                  matTooltip="This will download all the products in this category."
+                  color="primary"
+                >
+                  Download Products
+                </viraj-button>
+                <viraj-button
+                  *ngIf="
+                    ['all'].includes(mode.currentType) &&
+                    this.dataProvider.getAccess('addNewProduct')
+                  "
+                  (click)="mode.setBulkTaxes(mode.products)"
+                  color="primary"
+                  matTooltip="This will set taxes on all the products in this category."
+                >
+                  Set Bulk Taxes
+                </viraj-button>
+                <viraj-button
+                  *ngIf="
+                    ['view'].includes(mode.currentType) &&
+                    dataProvider.getAccess('editViewCategory')
+                  "
+                  (click)="mode.addUploadedRecipe()"
+                  color="primary"
+                >
+                  Edit
+                </viraj-button>
+                <viraj-button
+                  *ngIf="
+                    ['view'].includes(mode.currentType) &&
+                    dataProvider.getAccess('deleteViewCategory')
+                  "
+                  (click)="mode.deleteViewCategory()"
+                  color="primary"
+                >
+                  Delete Category
+                </viraj-button>
+                <viraj-button
+                  *ngIf="
+                    ['root'].includes(mode.currentType) &&
+                    dataProvider.getAccess('deleteMainCategory')
+                  "
+                  (click)="mode.deleteMainCategory()"
+                  color="primary"
+                >
+                  Delete Category
+                </viraj-button>
+                <!-- <viraj-button (click)="mode.reorderProducts=!mode.reorderProducts" [type]="mode.reorderProducts ? 'solid' : 'outline'">Enable Re-Ordering</viraj-button> -->
+                <mat-menu #menu="matMenu">
+                  <button
+                    mat-menu-item
+                    (click)="mode.addRecipe(mode.selectedMenuId)"
+                  >
+                    New Dish
+                  </button>
+                  <button mat-menu-item (click)="mode.selectRecipe()">
+                    Old Dish
+                  </button>
+                  <button mat-menu-item>Upload From Excel</button>
+                  <button mat-menu-item (click)="mode.getExcelFormat()">
+                    Get Excel Format
+                  </button>
+                </mat-menu>
+                <span
+                  *ngIf="mode.currentType != 'all'"
+                  class="visibilityToggle"
+                  matTooltip="By enabling or disabling this you can hide or view this category in biller."
+                >
+                  <p>Visibility :</p>
+                  <mat-slide-toggle
+                    color="primary"
+                    [(ngModel)]="mode.selectedCategory.enabled"
+                    (change)="mode.selectedCategory.updated = true"
+                  ></mat-slide-toggle>
+                </span>
+                <span
+                  class="visibilityToggle"
+                >
+                  <p>Reorder :</p>
+                  <mat-slide-toggle
+                    color="primary"
+                    [(ngModel)]="mode.reorderProducts"
+                  ></mat-slide-toggle>
+                </span>
+              </ng-container>
+            </div>
+            <div
+              class="filters recommended"
+              *ngIf="
+                this.dataProvider.getAccess('editRecommendedCategorySettings')
+              "
+            >
+              <ng-container
+                *ngIf="
+                  ['recommended'].includes(mode.currentType) &&
+                  mode.selectedCategory.id == 'highRange'
+                "
+              >
+                <h4>
+                  Recommendation Setting
+                  <app-helper
+                    tooltip="This allows you to set the minimum and maximum prices of product that has to be included in this settings."
+                  ></app-helper>
+                </h4>
+                <form
+                  [formGroup]="mode.highRangeForm"
+                  #currentForm
+                  (ngSubmit)="mode.recommendationSave('highRange')"
+                >
+                  <div
+                    class="virajInput"
+                    [ngClass]="{ active: inputElm.value }"
+                  >
+                    <input
+                      type="number"
+                      placeholder=" "
+                      #inputElm
+                      formControlName="min"
+                    />
+                    <label class="label">Minimum Amount</label>
+                  </div>
+                  <div
+                    class="virajInput"
+                    [ngClass]="{ active: inputElm.value }"
+                  >
+                    <input
+                      type="number"
+                      placeholder=" "
+                      formControlName="max"
+                      matInput
+                    />
+                    <label>Maximum Amount</label>
+                  </div>
+                  <viraj-button
+                    (click)="mode.recommendationSave('highRange')"
+                    color="primary"
+                    *ngIf="mode.highRangeForm.touched"
+                  >
+                    Save
+                  </viraj-button>
+                </form>
+              </ng-container>
+              <ng-container
+                *ngIf="
+                  ['recommended'].includes(mode.currentType) &&
+                  mode.selectedCategory.id == 'lowRange'
+                "
+              >
+                <h4>
+                  Recommendation Setting
+                  <app-helper
+                    tooltip="This allows you to set the minimum and maximum prices of product that has to be included in this settings."
+                  ></app-helper>
+                </h4>
+                <form
+                  [formGroup]="mode.lowRangeForm"
+                  #currentForm
+                  (ngSubmit)="mode.recommendationSave('lowRange')"
+                >
+                  <div
+                    class="virajInput"
+                    [ngClass]="{ active: inputElm.value }"
+                  >
+                    <input
+                      type="number"
+                      #inputElm
+                      placeholder=" "
+                      formControlName="min"
+                    />
+                    <label>Minimum Amount</label>
+                  </div>
+                  <div
+                    class="virajInput"
+                    [ngClass]="{ active: inputElm.value }"
+                  >
+                    <input
+                      type="number"
+                      placeholder=" "
+                      formControlName="max"
+                    />
+                    <label>Maximum Amount</label>
+                  </div>
+                  <viraj-button
+                    color="primary"
+                    (click)="mode.recommendationSave('lowRange')"
+                    mat-flat-button
+                    *ngIf="mode.lowRangeForm.touched"
+                  >
+                    Save
+                  </viraj-button>
+                </form>
+              </ng-container>
+              <ng-container
+                *ngIf="
+                  ['recommended'].includes(mode.currentType) &&
+                  mode.selectedCategory.id == 'mostSelling'
+                "
+              >
+                <h4>
+                  Recommendation Setting
+                  <app-helper
+                    tooltip="This allows you to set the minimum and maximum sales of products that has to be included in this category."
+                  ></app-helper>
+                </h4>
+                <form
+                  [formGroup]="mode.mostSellingForm"
+                  #currentForm
+                  (ngSubmit)="mode.recommendationSave('mostSelling')"
+                >
+                  <div
+                    class="virajInput"
+                    [ngClass]="{ active: inputElm.value }"
+                  >
+                    <input
+                      #inputElm
+                      type="number"
+                      placeholder="  "
+                      formControlName="numberOfProducts"
+                    />
+                    <label>Number Of Products</label>
+                  </div>
+                  <viraj-button
+                    color="primary"
+                    (click)="mode.recommendationSave('mostSelling')"
+                    *ngIf="mode.mostSellingForm.touched"
+                  >
+                    Save
+                  </viraj-button>
+                </form>
+              </ng-container>
+              <ng-container
+                *ngIf="
+                  ['recommended'].includes(mode.currentType) &&
+                  mode.selectedCategory.id == 'newDishes'
+                "
+              >
+                <h4>
+                  Recommendation Setting
+                  <app-helper
+                    tooltip="This allows you to set the minimum and maximum date on which the product was added to menu, and then automatically add it to this category."
+                  ></app-helper>
+                </h4>
+                <form
+                  [formGroup]="mode.newDishesForm"
+                  #currentForm
+                  (ngSubmit)="mode.recommendationSave('newDishes')"
+                >
+                <div
+                  class="virajInput"
+                  [ngClass]="{ active: inputElm.value }"
+                >
+                  <input
+                    #inputElm
+                    type="number"
+                    placeholder="  "
+                    formControlName="numberOfProducts"
+                  />
+                  <label>Number Of Products</label>
+                </div>
+                  <viraj-button
+                    color="primary"
+                    (click)="mode.recommendationSave('newDishes')"
+                    *ngIf="mode.newDishesForm.touched"
+                  >
+                    Save
+                  </viraj-button>
+                </form>
+              </ng-container>
+            </div>
+            <div class="productList">
+              <mat-spinner
+                mode="indeterminate"
+                *ngIf="mode.selectedCategory.loading"
+              ></mat-spinner>
+              <div
+                cdkDropList
+                class="productList"
+                [cdkDropListDisabled]="!mode.reorderProducts"
+                (cdkDropListDropped)="mode.reorderProduct($event)"
+              >
+                <mat-paginator
+                  *ngIf="
+                    mode.filteredProducts.length == 0 &&
+                    mode.currentType == 'all'
+                  "
+                  [length]="mode.products.length"
+                  [pageSize]="10"
+                  [pageSizeOptions]="[5, 10, 25, 100]"
+                  (page)="mode.pageChanged($event)"
+                  aria-label="Select page"
+                >
+                </mat-paginator>
+                <div
+                  cdkDrag
+                  class="product"
+                  *ngFor="
+                    let product of mode.filteredProducts.length > 0
+                      ? mode.filteredProducts
+                      : mode.selectedCategory.products
+                  "
+                >
+                  <p>{{ product.name }}</p>
+                  <div class="pricing">
+                    <strong>{{ product.price | currency: "INR" }}</strong>
+                    <span
+                      *ngIf="
+                        !(
+                          product.taxes &&
+                          product.taxes.length > 0 &&
+                          mode.hasValidTaxes(product.taxes)
+                        )
+                      "
+                      class="danger"
+                      >No Taxes</span
+                    >
+                    <viraj-button
+                      *ngIf="
+                        (mode.currentType == 'all' &&
+                          this.dataProvider.getAccess('setTaxesOnProducts')) ||
+                        (mode.currentType == 'recommended' &&
+                          this.dataProvider.getAccess(
+                            'setTaxesOnRecommendedProducts'
+                          )) ||
+                        (mode.currentType == 'view' &&
+                          this.dataProvider.getAccess(
+                            'setTaxesOnViewProducts'
+                          )) ||
+                        (mode.currentType == 'root' &&
+                          this.dataProvider.getAccess('setTaxesOnMainProducts'))
+                      "
+                      (click)="mode.setTaxes(product)"
+                      matTooltip="This will set taxes on this product."
+                      >Set Taxes</viraj-button
+                    >
+                    <mat-slide-toggle
+                      checked
+                      matTooltip="This will enable or disable this product."
+                      *ngIf="
+                        (mode.currentType == 'all' &&
+                          this.dataProvider.getAccess(
+                            'enableDisableProducts'
+                          )) ||
+                        (mode.currentType == 'recommended' &&
+                          this.dataProvider.getAccess(
+                            'enableDisableRecommendedProducts'
+                          )) ||
+                        (mode.currentType == 'view' &&
+                          this.dataProvider.getAccess(
+                            'enableDisableViewProducts'
+                          )) ||
+                        (mode.currentType == 'root' &&
+                          this.dataProvider.getAccess(
+                            'enableDisableMainProducts'
+                          ))
+                      "
+                      [(ngModel)]="product.visible"
+                      (toggleChange)="
+                        mode.productVisibilityChanged = true;
+                        product.updated = true;
+                        mode.selectedCategory.updated = true
+                      "
+                    ></mat-slide-toggle>
+                    <viraj-button
+                      matTooltip="This will edit this product globally."
+                      *ngIf="
+                        (mode.currentType == 'all' &&
+                          this.dataProvider.getAccess('editProduct')) ||
+                        (mode.currentType == 'recommended' &&
+                          this.dataProvider.getAccess(
+                            'editRecommendedProduct'
+                          )) ||
+                        (mode.currentType == 'view' &&
+                          this.dataProvider.getAccess('editViewProduct')) ||
+                        (mode.currentType == 'root' &&
+                          this.dataProvider.getAccess('editMainProduct'))
+                      "
+                      (click)="mode.editRecipe(product, mode.selectedMenuId)"
+                    >
+                      <i class="ri-pencil-fill"></i>
+                    </viraj-button>
+                    <viraj-button
+                      matTooltip=" This will delete this product."
+                      *ngIf="
+                        (mode.currentType == 'all' &&
+                          this.dataProvider.getAccess('deleteProduct')) ||
+                        (mode.currentType == 'recommended' &&
+                          this.dataProvider.getAccess(
+                            'deleteRecommendedProduct'
+                          )) ||
+                        (mode.currentType == 'view' &&
+                          this.dataProvider.getAccess('deleteViewProduct')) ||
+                        (mode.currentType == 'root' &&
+                          this.dataProvider.getAccess('deleteMainProduct'))
+                      "
+                      (click)="mode.deleteRecipe(product, mode.selectedMenuId)"
+                    >
+                      <i class="ri-delete-bin-6-fill"></i>
+                    </viraj-button>
+                  </div>
+                </div>
+                <p
+                  class="danger"
+                  *ngIf="
+                    mode.filteredProducts.length == 0 &&
+                    mode.currentType == 'all'
+                  "
+                >
+                  Why am I not seeing full list of products? Because paginator
+                  is active select a range to see all products.
+                </p>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <div
+        class="tableView"
+        *ngIf="
+          activeTab == 'Taxes' ||
+          activeTab == 'Discounts' ||
+          activeTab == 'Combos' ||
+          activeTab == 'Loyalty'
+        "
+      >
+        <ng-container *ngIf="activeTab == 'Taxes'">
+          <div class="rowHeading">
+            <h3>Taxes</h3>
+            <span>
+              <input
+                matInput
+                placeholder="Search"
+                (input)="mode.taxesSearchSubject.next(search.value)"
+                #search
+              />
+              <viraj-button
+                (vclick)="mode.addTax()"
+                *ngIf="this.dataProvider.getAccess('addNewTaxes')"
+                >Add Tax</viraj-button
+              >
+            </span>
+          </div>
+          <p>Total {{ mode.taxes.length }} taxes</p>
+          <div class="gridTable">
+            <div class="heading">
+              <span>Tax Name</span>
+              <span>Amount</span>
+              <span>Mode</span>
+              <span>Type</span>
+              <span>Created On</span>
+              <span>Last Updated</span>
+              <span>Actions</span>
+            </div>
+            <div class="items">
+              <ng-container *ngIf="!mode.loadingTax">
+                <div
+                  class="item"
+                  *ngFor="
+                    let tax of mode.filteredTaxes.length
+                      ? mode.filteredTaxes
+                      : mode.taxes
+                  "
+                >
+                  <span>{{ tax.name }}</span>
+                  <span>{{ tax.cost }}</span>
+                  <span>
+                    <div
+                      class="badge"
+                      [ngClass]="{
+                        percentage: tax.type == 'percentage',
+                        flat: tax.type == 'amount'
+                      }"
+                    >
+                      {{ tax.type | titlecase }}
+                    </div>
+                  </span>
+                  <span>
+                    <div
+                      class="badge"
+                      [ngClass]="{
+                        product: tax.mode == 'product',
+                        bill: tax.mode == 'bill'
+                      }"
+                    >
+                      {{ tax.mode | titlecase }}
+                    </div>
+                  </span>
+                  <span>{{ tax.creationDate.toDate() | date }}</span>
+                  <span>{{ tax.updateDate.toDate() | date }}</span>
+                  <span class="tableActions">
+                    <viraj-button
+                      *ngIf="this.dataProvider.getAccess('editTaxes')"
+                      (vclick)="mode.editTax(tax)"
+                      ><i class="ri-pencil-line"></i
+                    ></viraj-button>
+                    <viraj-button
+                      *ngIf="this.dataProvider.getAccess('deleteTaxes')"
+                      (vclick)="mode.deleteTax(tax.id)"
+                      ><i class="ri-delete-bin-line"></i
+                    ></viraj-button>
+                  </span>
+                </div>
+              </ng-container>
+              <div class="itemLoading" *ngIf="mode.loadingTax">
+                <mat-spinner diameter="30"></mat-spinner>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="activeTab == 'Discounts'">
+          <div class="rowHeading">
+            <h3>Discounts</h3>
+            <span>
+              <input
+                matInput
+                placeholder="Search"
+                (input)="mode.discountsSearchSubject.next(search.value)"
+                #search
+              />
+              <viraj-button
+                (vclick)="mode.addDiscount()"
+                *ngIf="this.dataProvider.getAccess('addNewDiscounts')"
+                >Add Discount</viraj-button
+              >
+            </span>
+          </div>
+          <p>Total {{ mode.discounts.length }} discounts</p>
+          <div class="gridTable discounts">
+            <div class="heading">
+              <span>Name</span>
+              <span>Value</span>
+              <span>Type</span>
+              <span>Min Amount</span>
+              <span>Max Products</span>
+              <span>Max Discount</span>
+              <span>Created On</span>
+              <span>Access</span>
+              <span>Action</span>
+            </div>
+            <div class="items">
+              <ng-container *ngIf="!mode.loadingDiscount">
+                <div
+                  class="item"
+                  *ngFor="
+                    let discount of mode.filteredDiscounts.length
+                      ? mode.filteredDiscounts
+                      : mode.discounts
+                  "
+                >
+                  <span>{{ discount.name }}</span>
+                  <span>
+                    <div class="badge product">
+                      {{ discount.value }}
+                    </div>
+                  </span>
+                  <span>
+                    <div
+                      class="badge"
+                      [ngClass]="{
+                        percentage: discount.type == 'percentage',
+                        flat: discount.type == 'flat'
+                      }"
+                    >
+                      {{ discount.type | titlecase }}
+                    </div>
+                  </span>
+                  <span>{{ discount.minimumAmount }}</span>
+                  <span>{{ discount.minimumProducts }}</span>
+                  <span>{{ discount.maximumDiscount }}</span>
+                  <span>
+                    {{
+                      discount.creationDate
+                        ? (discount.creationDate.toDate() | date)
+                        : "N/A"
+                    }}
+                  </span>
+                  <span>
+                    <li *ngFor="let item of discount.accessLevels">
+                      {{ item }}
+                    </li>
+                  </span>
+                  <span class="tableActions">
+                    <viraj-button
+                      *ngIf="this.dataProvider.getAccess('editDiscount')"
+                      (vclick)="mode.editDiscount(discount)"
+                      ><i class="ri-pencil-fill"></i
+                    ></viraj-button>
+                    <viraj-button
+                      *ngIf="this.dataProvider.getAccess('deleteDiscounts')"
+                      (vclick)="mode.deleteDiscount(discount.id)"
+                      ><i class="ri-delete-bin-2-fill"></i
+                    ></viraj-button>
+                  </span>
+                </div>
+              </ng-container>
+              <div class="itemLoading" *ngIf="mode.loadingDiscount">
+                <mat-spinner diameter="30"></mat-spinner>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="activeTab == 'Combos'">
+          <h3>All Combos</h3>
+          <div class="comboCards">
+            <ng-container *ngIf="!mode.loadingCombos">
+              <div
+                class="card new"
+                *ngIf="this.dataProvider.getAccess('addNewCombos')"
+                (click)="mode.addCombo()"
+              >
+                <p><i class="ri-add-fill"></i>Add New Combo</p>
+              </div>
+              <div
+                class="card combo"
+                *ngFor="let combo of mode.combos"
+                (click)="
+                  this.dataProvider.getAccess('editCombo')
+                    ? mode.editCombo(combo)
+                    : {}
+                "
+              >
+                <div class="image">
+                  <img
+                    [src]="combo.offerImage || 'assets/images/defaultCombo.jpg'"
+                  />
+                </div>
+                <div class="content">
+                  <mat-slide-toggle
+                    *ngIf="
+                      !combo.visibilityEnabled &&
+                      this.dataProvider.getAccess('editCombo')
+                    "
+                    [(ngModel)]="combo.enabled"
+                    (change)="
+                      mode.updateComboVisibility(combo, toggleElm.checked)
+                    "
+                    #toggleElm
+                  ></mat-slide-toggle>
+                  <viraj-button
+                    *ngIf="this.dataProvider.getAccess('deleteCombos')"
+                    type="icon"
+                    (click)="mode.deleteCombo($event, combo)"
+                    ><i class="ri-delete-bin-5-fill"></i
+                  ></viraj-button>
+                  <p>{{ combo.name }}</p>
+                </div>
+              </div>
+              <div
+                class="card new"
+                *ngIf="
+                  mode.combos.length > 10 &&
+                  this.dataProvider.getAccess('addNewCombos')
+                "
+              >
+                <p><i class="ri-add-fill"></i>Add New Combo</p>
+              </div>
+            </ng-container>
+            <div class="itemLoading" *ngIf="mode.loadingCombos">
+              <mat-spinner diameter="30"></mat-spinner>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="activeTab == 'Loyalty'">
+          <mat-radio-group
+            aria-label="Select an option"
+            (change)="mode.selectLoyaltySetting($event)"
+            [value]="mode.selectedLoyaltyId"
+            #loyaltySelector
+          >
+            <div class="rowHeading">
+              <h3>Loyalty</h3>
+              <span>
+                <input
+                  matInput
+                  placeholder="Search"
+                  (input)="mode.loyaltySearchSubject.next(search.value)"
+                  #search
+                />
+                <p>
+                  <mat-radio-button
+                    color="primary"
+                    matTooltip="This will disable loyalty for this menu."
+                    value=""
+                    >Disable Loyalty</mat-radio-button
+                  >
+                </p>
+                <viraj-button
+                  (vclick)="mode.addLoyaltySettings()"
+                  *ngIf="this.dataProvider.getAccess('addNewLoyaltySettings')"
+                  >Add Loyalty Setting</viraj-button
+                >
+              </span>
+            </div>
+            <p>Total {{ mode.loyaltySettings.length }} Configurations</p>
+            <div class="gridTable loyalty">
+              <div class="heading">
+                <span>Loyalty Setting Name</span>
+                <span>Base rate</span>
+                <span>Expiry Days</span>
+                <span>Added Date</span>
+                <span>Added By</span>
+                <span>Actions</span>
+              </div>
+              <div class="items">
+                <ng-container *ngIf="!mode.loadingLoyaltySettings">
+                  <div
+                    class="item"
+                    *ngFor="
+                      let loyaltySetting of mode.filteredLoyaltySettings.length
+                        ? mode.filteredLoyaltySettings
+                        : mode.loyaltySettings
+                    "
+                  >
+                    <span>
+                      <mat-radio-button
+                        color="primary"
+                        [value]="loyaltySetting.id"
+                        >{{ loyaltySetting.name }}</mat-radio-button
+                      >
+                    </span>
+                    <span>{{ loyaltySetting.baseRate }}</span>
+                    <span>{{ loyaltySetting.expiryDays }}</span>
+                    <span>{{
+                      loyaltySetting.creationDate.toDate() | date
+                    }}</span>
+                    <span>
+                      <div class="badge percentage">
+                        {{ loyaltySetting.addedBy }}
+                      </div>
+                    </span>
+                    <span class="tableActions">
+                      <viraj-button
+                        *ngIf="
+                          this.dataProvider.getAccess('editLoyaltySetting')
+                        "
+                        (vclick)="mode.editLoyaltySetting(loyaltySetting)"
+                        ><i class="ri-pencil-line"></i
+                      ></viraj-button>
+                      <viraj-button
+                        *ngIf="
+                          this.dataProvider.getAccess('deleteLoyaltySetting')
+                        "
+                        (vclick)="mode.deleteLoyaltySetting(loyaltySetting)"
+                        ><i class="ri-delete-bin-line"></i
+                      ></viraj-button>
+                    </span>
+                  </div>
+                </ng-container>
+                <div class="itemLoading" *ngIf="mode.loadingLoyaltySettings">
+                  <mat-spinner diameter="30"></mat-spinner>
+                </div>
+              </div>
+            </div>
+          </mat-radio-group>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
+  <!-- <div class="actions">
+    <button color="primary" mat-flat-button (click)="this.dialogRef.close()">
+      Save
+    </button>
+  </div> -->
+</section>

@@ -1,0 +1,582 @@
+<section>
+  <div class="heading">
+    <h1>{{this.dialogData.mode =='add' ? 'Add' : 'Edit'}} Combo</h1>
+    <viraj-button type="icon" (click)="dialogRef.close()"><i class="ri-close-fill"></i></viraj-button>
+  </div>
+  <div class="body">
+    <div class="dragArea" *ngIf="imagePreviewData">
+      <img [src]="imagePreviewData">
+      <viraj-button (click)="offerImageFile=null;imagePreviewData=null">Remove</viraj-button>
+    </div>
+    <form [formGroup]="comboFormGroup">
+      <input matInput placeholder="Combo Name" formControlName="name" type="text" />
+      <input matInput placeholder="Maximum No. Of Purchase" type="number" formControlName="maximumNoOfPurchases" />
+      <!-- <div class="select" matTooltip="Combo is general combo where the price get's automatically calculated. Offer is a fixed price group for products.">
+        <mat-select
+          placeholder="Type"
+          formControlName="type"
+          placeholder="Select Type"
+          name="type"
+          #offerType
+        >
+          <mat-option value="combo">Combo</mat-option>
+          <mat-option value="offer">Offer</mat-option>
+        </mat-select>
+      </div> -->
+      <input type="file" #fileUploader (change)="setImage($event)" hidden />
+      <!-- <viraj-button type="outline" (click)="fileUploader.click()" matTooltip="You can select optional image for this combo/offer.">Upload Image</viraj-button> -->
+      <!-- <input matInput placeholder="Offer Cost" type="text" *ngIf="offerType.value == 'offer'" formControlName="offerPrice" /> -->
+      <div class="toggle">
+        <mat-slide-toggle matTooltip="If you switch this on then discount can be applied to the bill that has this item in it. If not than no one can apply discount on the bill if the bill has this item in it." formControlName="discounted"
+          >Can Be Discounted</mat-slide-toggle
+        >
+      </div>
+      <div class="toggle">
+        <mat-slide-toggle matTooltip="This will make you set automatic settings like visible only on certain day, date, time, month etc. If not then you will have manual control"
+          [ngModelOptions]="{ standalone: true }"
+          [(ngModel)]="visibilityEnabled"
+          >Enable Visibility</mat-slide-toggle
+        >
+      </div>
+    </form>
+    <div class="config">
+      <mat-form-field class="selectCategory" appearance="outline">
+        <mat-label>Select Category</mat-label>
+        <app-helper matPrefix tooltip="Select categories from your main categories list under this menu. You can select multiple and also same one multiple times."></app-helper>
+        <mat-chip-grid matSuffix #categoryChipGrid aria-label="Category selection">
+          <mat-chip-row color="primary"
+            *ngFor="let category of selectedCategories"
+            (removed)="removeCategory(category.category)"
+          >
+            {{ category.category.name }}
+            <button
+              matChipRemove
+              [attr.aria-label]="'remove ' + category.category.name"
+            >
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip-row>
+        </mat-chip-grid>
+        <input
+          placeholder="Select Category..."
+          #fruitInput
+          [formControl]="categorySearchControl"
+          [matChipInputFor]="categoryChipGrid"
+          [matAutocomplete]="auto"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        />
+        <mat-autocomplete
+          #auto="matAutocomplete"
+          (optionSelected)="selected($event)"
+        >
+          <mat-option
+            *ngFor="let category of filteredCategories | async"
+            [value]="category"
+          >
+            {{ category.name }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+    <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+      <mat-tab
+        [label]="selectedCategory.category.name"
+        *ngFor="let selectedCategory of selectedCategories"
+      >
+        <div class="configBody">
+          <div class="fields">
+            <mat-form-field appearance="outline">
+              <app-helper matPrefix tooltip="Select offer type, then set on how many products someone can buy a minimum amount is required"></app-helper>
+              <mat-label>Offer Type</mat-label>
+              <mat-select
+              placeholder="Offer Type"
+                [(ngModel)]="selectedCategory.offerType"
+                #offerType
+                name="type"
+                >
+                <mat-option value="fixed">Fixed Price</mat-option>
+                <mat-option value="free">Free</mat-option>
+                <mat-option value="discount">Discount</mat-option>
+                <mat-option value="loyalty">Loyalty Point</mat-option>
+                <mat-option value="mustBuy">Must Buy (No Offer)</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" *ngIf="offerType.value == 'fixed'">
+              <app-helper matPrefix tooltip="Is the offer applied on all products or only on selected product."></app-helper>
+              <mat-label>Applied On</mat-label>
+              <mat-select
+              placeholder="Applied On"
+              [(ngModel)]="selectedCategory.appliedOn"
+                name="type"
+                >
+                <mat-option value="item">Item</mat-option>
+                <mat-option value="group">Group</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field
+              appearance="outline"
+              *ngIf="offerType.value == 'discount' || offerType.value == 'fixed' || offerType.value == 'loyalty'"
+            >
+              <app-helper matPrefix tooltip="The total cost of this offer."></app-helper>
+              <mat-label>Amount</mat-label>
+              <input type="number" matInput [(ngModel)]="selectedCategory.amount" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <app-helper matPrefix tooltip="Minimum number of products required."></app-helper>
+              <mat-label>Minimum Quantity</mat-label>
+              <input
+                type="number"
+                matInput
+                required
+                [(ngModel)]="selectedCategory.minimumProducts"
+              />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Maximum Quantity</mat-label>
+              <input
+                type="number"
+                matInput
+                [(ngModel)]="selectedCategory.maximumProducts"
+              />
+            </mat-form-field>
+          </div>
+          <div class="products">
+            <div class="selectProducts">
+              <div class="heading">
+                <mat-checkbox
+                  (change)="
+                    selectProducts(
+                      selectedCategory.category.products,
+                      allProductsSelect.checked
+                    )
+                  "
+                  [checked]="allSelected( selectedCategory.category)"
+                  #allProductsSelect
+                  >Product Name</mat-checkbox
+                >
+                <input type="search" placeholder="Search Products" [(ngModel)]="selectedCategory.searchQuery" (ngModelChange)="searchProducts(selectedCategory)">
+              </div>
+              <div
+                class="product"
+                *ngFor="let product of selectedCategory.searchQuery ? selectedCategory.filteredProducts : selectedCategory.category.products"
+              >
+                <mat-checkbox [(ngModel)]="product.selected">{{
+                  product.name
+                }} - {{product.tags[0]?.name}}</mat-checkbox>
+                <strong>{{ product.price | currency:'INR' }}</strong>
+              </div>
+            </div>
+            <div class="selectedProducts">
+              <div class="heading">
+                <p>Product Name</p>
+                <p>Price</p>
+              </div>
+              <div class="list" cdkDropList (cdkDropListDropped)="drop($event,selectedCategory)">
+                <ng-container
+                  *ngFor="let product of selectedCategory.category.products"
+                >
+                  <div class="product" cdkDrag *ngIf="product.selected">
+                    <p>{{ product.name }} - {{product.tags[0]?.name}}</p>
+                    <strong>{{ product.price | currency:'INR' }}</strong>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+    <div class="visibilitySettings" *ngIf="visibilityEnabled">
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title> Visibility Settings </mat-panel-title>
+          </mat-expansion-panel-header>
+          <div class="settings">
+            <div class="actions">
+              <mat-form-field appearance="outline">
+                <app-helper matPrefix>Weekly will allow you to set something that repeats every month, while monthly will allow you to set something that repeats every year.</app-helper>
+                <mat-label>Monthly / Weekly</mat-label>
+                <mat-select
+                  placeholder="Select Mode"
+                  [(ngModel)]="visibilitySettings.mode"
+                  name="type"
+                  #monthlyWeeklyMode
+                >
+                  <mat-option value="monthly">Monthly</mat-option>
+                  <mat-option value="weekly">Weekly</mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-radio-group
+                aria-label="Select repeat mode"
+                [matTooltip]="monthlyWeeklyMode.value == 'monthly' ? 'If you select repeating then this setting will repeat every year' : 'If you select repeating then this setting will repeat every month'"
+                [(ngModel)]="visibilitySettings.repeating"
+              >
+                <mat-radio-button [value]="false">Not Repeating</mat-radio-button>
+                <mat-radio-button [value]="true"
+                  >Repeating Yearly</mat-radio-button
+                >
+              </mat-radio-group>
+              <ng-container *ngIf="monthlyWeeklyMode.value == 'monthly'">
+                <mat-date-range-picker #picker></mat-date-range-picker>
+                <mat-date-range-input
+                  tabindex="-1"
+                  hidden
+                  [formGroup]="visibilityDateRangeForm"
+                  [rangePicker]="picker"
+                >
+                  <input
+                    matStartDate
+                    formControlName="startDate"
+                    placeholder="Start date"
+                  />
+                  <input
+                    matEndDate
+                    formControlName="endDate"
+                    placeholder="End date"
+                  />
+                </mat-date-range-input>
+                <viraj-button type="outline" (vclick)="picker.open()"
+                  >Select Date Range <i class="ri-calendar-2-fill"></i
+                ><app-helper tooltip="Select the range on which you want to apply this setting"></app-helper> </viraj-button>
+              </ng-container>
+              <ng-container *ngIf="monthlyWeeklyMode.value == 'weekly'">
+                <mat-form-field appearance="outline">
+                  <mat-label>Select Month</mat-label>
+                  <mat-select
+                    placeholder="Select Month"
+                    [multiple]="true"
+                    [(ngModel)]="selectedMonths"
+                    (selectionChange)="generateMonthsData()"
+                    name="month"
+                  >
+                    <mat-option *ngFor="let month of allMonths" [value]="month">
+                      {{ month }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </ng-container>
+            </div>
+            <div class="weeks" *ngIf="monthlyWeeklyMode.value == 'weekly'">
+              <div class="selectWeeks">
+                <p>Select Weeks <app-helper tooltip="This allows you to select all the days of that week from every month."></app-helper></p>
+                <mat-checkbox
+                  (change)="generateMonthsData()"
+                  [(ngModel)]="visibilitySettings.selectedWeeks.week1"
+                  #week1st
+                  >1st Week</mat-checkbox
+                >
+                <mat-checkbox
+                  (change)="generateMonthsData()"
+                  [(ngModel)]="visibilitySettings.selectedWeeks.week2"
+                  #week2nd
+                  >2nd Week</mat-checkbox
+                >
+                <mat-checkbox
+                  (change)="generateMonthsData()"
+                  [(ngModel)]="visibilitySettings.selectedWeeks.week3"
+                  #week3rd
+                  >3rd Week</mat-checkbox
+                >
+                <mat-checkbox
+                  (change)="generateMonthsData()"
+                  [(ngModel)]="visibilitySettings.selectedWeeks.week4"
+                  #week4th
+                  >4th Week</mat-checkbox
+                >
+                <mat-checkbox
+                  (change)="generateMonthsData()"
+                  [(ngModel)]="visibilitySettings.selectedWeeks.week5"
+                  #week5th
+                  >5th Week</mat-checkbox
+                >
+                <mat-checkbox
+                  (change)="generateMonthsData()"
+                  [(ngModel)]="visibilitySettings.selectedWeeks.week6"
+                  #week6th
+                  >6th Week</mat-checkbox
+                >
+                <mat-checkbox
+                  (change)="
+                    visibilitySettings.selectedWeeks.week1 = allWeeks.checked;
+                    visibilitySettings.selectedWeeks.week2 = allWeeks.checked;
+                    visibilitySettings.selectedWeeks.week3 = allWeeks.checked;
+                    visibilitySettings.selectedWeeks.week4 = allWeeks.checked;
+                    visibilitySettings.selectedWeeks.week5 = allWeeks.checked;
+                    generateMonthsData()
+                  "
+                  #allWeeks
+                  ><app-helper tooltip="This will allows you to select all weeks and days of every month."></app-helper> All Weeks</mat-checkbox
+                >
+              </div>
+              <div class="tableContainer">
+                <table>
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>
+                        <mat-checkbox
+                          [checked]="allSelected.checked"
+                          (click)="checkAllWeekDays(0, allSunday.checked)"
+                          [(ngModel)]="visibilitySettings.daysSelected.allSunday"
+                          #allSunday
+                          >All Sun</mat-checkbox
+                        >
+                      </th>
+                      <th>
+                        <mat-checkbox
+                          [checked]="allSelected.checked"
+                          (click)="checkAllWeekDays(1, allMonday.checked)"
+                          [(ngModel)]="visibilitySettings.daysSelected.allMonday"
+                          #allMonday
+                          >All Mon</mat-checkbox
+                        >
+                      </th>
+                      <th>
+                        <mat-checkbox
+                          [checked]="allSelected.checked"
+                          (click)="checkAllWeekDays(2, allTuesday.checked)"
+                          [(ngModel)]="visibilitySettings.daysSelected.allTuesday"
+                          #allTuesday
+                          >All Tue</mat-checkbox
+                        >
+                      </th>
+                      <th>
+                        <mat-checkbox
+                          [checked]="allSelected.checked"
+                          (click)="checkAllWeekDays(3, allWednesday.checked)"
+                          [(ngModel)]="
+                            visibilitySettings.daysSelected.allWednesday
+                          "
+                          #allWednesday
+                          >All Wed</mat-checkbox
+                        >
+                      </th>
+                      <th>
+                        <mat-checkbox
+                          [checked]="allSelected.checked"
+                          (click)="checkAllWeekDays(4, allThursday.checked)"
+                          [(ngModel)]="
+                            visibilitySettings.daysSelected.allThursday
+                          "
+                          #allThursday
+                          >All Thr</mat-checkbox
+                        >
+                      </th>
+                      <th>
+                        <mat-checkbox
+                          [checked]="allSelected.checked"
+                          (click)="checkAllWeekDays(5, allFriday.checked)"
+                          [(ngModel)]="visibilitySettings.daysSelected.allFriday"
+                          #allFriday
+                          >All Fri</mat-checkbox
+                        >
+                      </th>
+                      <th>
+                        <mat-checkbox
+                          [checked]="allSelected.checked"
+                          (click)="checkAllWeekDays(6, allSaturday.checked)"
+                          [(ngModel)]="
+                            visibilitySettings.daysSelected.allSaturday
+                          "
+                          #allSaturday
+                          >All Sat</mat-checkbox
+                        >
+                      </th>
+                      <th>
+                        <mat-checkbox
+                          (change)="
+                            checkAllWeekDays(0, allSelected.checked);
+                            checkAllWeekDays(1, allSelected.checked);
+                            checkAllWeekDays(2, allSelected.checked);
+                            checkAllWeekDays(3, allSelected.checked);
+                            checkAllWeekDays(4, allSelected.checked);
+                            checkAllWeekDays(5, allSelected.checked);
+                            checkAllWeekDays(6, allSelected.checked);
+                            visibilitySettings.daysSelected.allSunday =
+                              allSelected.checked;
+                            visibilitySettings.daysSelected.allMonday =
+                              allSelected.checked;
+                            visibilitySettings.daysSelected.allTuesday =
+                              allSelected.checked;
+                            visibilitySettings.daysSelected.allWednesday =
+                              allSelected.checked;
+                            visibilitySettings.daysSelected.allThursday =
+                              allSelected.checked;
+                            visibilitySettings.daysSelected.allFriday =
+                              allSelected.checked;
+                            visibilitySettings.daysSelected.allSaturday =
+                              allSelected.checked
+                          "
+                          #allSelected
+                          >Select All</mat-checkbox
+                        >
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container
+                      *ngFor="
+                        let month of this.visibilitySettings.daysSetting;
+                        let first = first
+                      "
+                    >
+                      <tr *ngFor="let week of month.days; let first = first">
+                        <td [attr.rowspan]="month.days.length" *ngIf="first">
+                          <ng-container>
+                            {{ month.month | titlecase }}
+                          </ng-container>
+                        </td>
+                        <td *ngFor="let day of week.week; let i = index">
+                          <ng-container>
+                            <div
+                              class="day"
+                              (click)="
+                                day.possible || visibilitySettings.repeating
+                                  ? (day.selected = !day.selected)
+                                  : {}
+                              "
+                              [ngClass]="{
+                                impossible:
+                                  !day.possible && !visibilitySettings.repeating,
+                                active: day.selected
+                              }"
+                            >
+                              {{ day.day }}
+                            </div>
+                          </ng-container>
+                        </td>
+                        <td>
+                          <mat-checkbox
+                            [checked]="allSelected.checked"
+                            (change)="
+                              selectAllWeekDays(week.week, selectDays.checked)
+                            "
+                            #selectDays
+                            >{{ week.weekName }}</mat-checkbox
+                          >
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="9">
+                          <hr />
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <table class="timeSlots">
+              <thead>
+                <tr>
+                  <th>
+                    <app-helper tooltip="This will allows you to set certain timings for this offer to visible upon."></app-helper>
+                    <mat-checkbox [checked]="allTimeSlotsSelected" (change)="checkAllTimeSlots(allSlotChecker.checked)" #allSlotChecker>Time Slot Name</mat-checkbox>
+                  </th>
+                  <th>Start Time</th>
+                  <th>End Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <mat-checkbox
+                      [(ngModel)]="
+                        visibilitySettings.timeSlotSelected.breakfast.selected
+                      "
+                      >Breakfast</mat-checkbox
+                    >
+                  </td>
+                  <td>6:00 AM</td>
+                  <td>1:00 PM</td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-checkbox
+                      [(ngModel)]="
+                        visibilitySettings.timeSlotSelected.lunch.selected
+                      "
+                      >Lunch</mat-checkbox
+                    >
+                  </td>
+                  <td>1:00 AM</td>
+                  <td>6:00 PM</td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-checkbox
+                      [(ngModel)]="
+                        visibilitySettings.timeSlotSelected.dinner.selected
+                      "
+                      >Dinner</mat-checkbox
+                    >
+                  </td>
+                  <td>6:00 PM</td>
+                  <td>1:00 AM</td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-checkbox
+                      [(ngModel)]="
+                        visibilitySettings.timeSlotSelected.night.selected
+                      "
+                      >Night</mat-checkbox
+                    >
+                  </td>
+                  <td>1:00 AM</td>
+                  <td>6:00 AM</td>
+                </tr>
+                <tr>
+                  <td>
+                    <mat-checkbox
+                      [(ngModel)]="
+                        visibilitySettings.timeSlotSelected.custom.selected
+                      "
+                      >Custom</mat-checkbox
+                    >
+                  </td>
+                  <td>
+                    <select
+                      [(ngModel)]="
+                        visibilitySettings.timeSlotSelected.custom.timeStart
+                      "
+                    >
+                      <option
+                        [value]="item.value"
+                        *ngFor="let item of availableTimes"
+                      >
+                        {{ item.time }}
+                      </option>
+                    </select>
+                  </td>
+                  <td>
+                    <select
+                      [(ngModel)]="
+                        visibilitySettings.timeSlotSelected.custom.timeEnd
+                      "
+                    >
+                      <option
+                        [value]="item.value"
+                        *ngFor="let item of availableTimes"
+                      >
+                        {{ item.time }}
+                      </option>
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+    <div class="bottomMargin"></div>
+  </div>
+  <div class="actions">
+    <div class="mainActions">
+      <viraj-button (vclick)="save()">Save</viraj-button>
+      <viraj-button type="outline" (vclick)="cancel()">Cancel</viraj-button>
+    </div>
+  </div>
+</section>

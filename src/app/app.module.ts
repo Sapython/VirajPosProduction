@@ -1,61 +1,105 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { BrowserModule, HAMMER_GESTURE_CONFIG, HammerGestureConfig } from '@angular/platform-browser';
+import {
+  APP_INITIALIZER,
+  ErrorHandler,
+  NgModule,
+  isDevMode,
+} from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { CoreModule } from './core/core.module';
-import { SharedModule } from './shared/shared.module';
 
 import { AppRoutingModule } from './app-routing.module';
 
-// NG Translate
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-
-import { HomeModule } from './home/home.module';
-import { DetailModule } from './detail/detail.module';
-
 import { AppComponent } from './app.component';
-import { DialogModule } from '@angular/cdk/dialog';
-import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
-import { provideAuth, getAuth } from '@angular/fire/auth';
-import { provideFirestore, getFirestore } from '@angular/fire/firestore';
-import { provideStorage, getStorage } from '@angular/fire/storage';
-import { provideFunctions, getFunctions } from '@angular/fire/functions';
-import { provideMessaging, getMessaging } from '@angular/fire/messaging';
-import { providePerformance, getPerformance } from '@angular/fire/performance';
 import {
-  provideRemoteConfig,
-  getRemoteConfig,
-} from '@angular/fire/remote-config';
-import { MatButtonModule } from '@angular/material/button';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSliderModule } from '@angular/material/slider';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+  BrowserAnimationsModule,
+  provideNoopAnimations,
+} from '@angular/platform-browser/animations';
+import { FirebaseApp, initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { environment } from '../environments/environment';
 import { DBConfig, NgxIndexedDBModule } from 'ngx-indexed-db';
-import { BaseComponentsModule } from './base-components/base-components.module';
-import { DataProvider } from './provider/data-provider.service';
-import { AlertsAndNotificationsService } from './services/alerts-and-notification/alerts-and-notifications.service';
-import { AuthService } from './services/auth.service';
-import { DatabaseService } from './services/database.service';
-import { GetDataService } from './services/get-data.service';
 import {
   provideAnalytics,
   getAnalytics,
   ScreenTrackingService,
   UserTrackingService,
 } from '@angular/fire/analytics';
-import { APP_CONFIG } from '../environments/environment';
-// AoT requires an exported function for factories
-const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new TranslateHttpLoader(http, './assets/i18n/', '.json');
+import {
+  provideAuth,
+  getAuth,
+  indexedDBLocalPersistence,
+  browserLocalPersistence,
+  connectAuthEmulator,
+} from '@angular/fire/auth';
+import {
+  provideFirestore,
+  getFirestore,
+  enableMultiTabIndexedDbPersistence,
+  enableIndexedDbPersistence,
+  connectFirestoreEmulator,
+  initializeFirestore,
+} from '@angular/fire/firestore';
+import { providePerformance, getPerformance } from '@angular/fire/performance';
+import {
+  provideStorage,
+  getStorage,
+  connectStorageEmulator,
+} from '@angular/fire/storage';
+import { DialogModule } from '@angular/cdk/dialog';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { BaseComponentsModule } from './shared/base-components/base-components.module';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSliderModule } from '@angular/material/slider';
+import { AlertsAndNotificationsService } from './core/services/alerts-and-notification/alerts-and-notifications.service';
+import {
+  connectFunctionsEmulator,
+  getFunctions,
+  provideFunctions,
+} from '@angular/fire/functions';
+import { ResetPasswordComponent } from './pages/auth/reset-password/reset-password.component';
+import { MatIconModule } from '@angular/material/icon';
+import { CheckingPasswordComponent } from './shared/checking-password/checking-password.component';
+import { RequiresPrivilegeComponent } from './shared/requires-privilege/requires-privilege.component';
+import { BillerModule } from './pages/biller/biller.module';
+import { LoadingModule } from './pages/auth/loading/loading.module';
+import { AuthService } from './core/services/auth/auth.service';
+import { CustomerService } from './core/services/customer/customer.service';
+import { MenuManagementService } from './core/services/database/menuManagement/menu-management.service';
+import { AnalyticsService } from './core/services/database/analytics/analytics.service';
+import { BillService } from './core/services/database/bill/bill.service';
+import { CategoryService } from './core/services/database/category/category.service';
+import { FileStorageService } from './core/services/database/fileStorage/file-storage.service';
+import { HistoryService } from './core/services/database/history/history.service';
+import { ProductsService } from './core/services/database/products/products.service';
+import { ReportsService } from './core/services/database/reports/reports.service';
+import { SearchService } from './core/services/database/search/search.service';
+import { SettingsService } from './core/services/database/settings/settings.service';
+import { SystemService } from './core/services/database/system/system.service';
+import { TableService } from './core/services/database/table/table.service';
+import { ElectronService } from './core/services/electron/electron.service';
+import { PrinterService } from './core/services/printing/printer/printer.service';
+import { UpdaterService } from './core/services/updater/updater.service';
+import { provideMessaging,getMessaging } from '@angular/fire/messaging';
+import { LockedComponent } from './shared/locked/locked.component';
+export class MyHammerConfig extends HammerGestureConfig  {
+  overrides = <any>{
+      // override hammerjs default configuration
+      // 'swipe': { direction: Hammer.DIRECTION_ALL  }
+  }
+}
 
-const dbConfig: DBConfig = {
-  name: 'Viraj',
-  version: 2,
+var FirebaseAppInstance:FirebaseApp|undefined;
+
+// AoT requires an exported function for factories
+export const dbConfig: DBConfig = {
+  name: 'Vrajera',
+  version: 23,
   objectStoresMeta: [
     {
       store: 'business',
@@ -72,98 +116,170 @@ const dbConfig: DBConfig = {
       ],
     },
     {
-      store:'device',
+      store: 'device',
       storeConfig: { keyPath: 'id', autoIncrement: true },
       storeSchema: [
         { name: 'deviceId', keypath: 'deviceId', options: { unique: true } },
-      ]
+      ],
     },
     {
-      // for TableConstructor
-      store: 'tables',
-      storeConfig: { keyPath: 'id', autoIncrement: true },
+      store: 'menu',
+      storeConfig: { keyPath: 'menuId', autoIncrement: false },
       storeSchema: [
-        { name: 'id', keypath: 'id', options: { unique: false } },
-        { name: 'tableNo', keypath: 'tableNo', options: { unique: false } },
-        { name: 'bill', keypath: 'bill', options: { unique: false } },
-        { name: 'maxOccupancy', keypath: 'maxOccupancy', options: { unique: false } },
-        { name: 'name', keypath: 'name', options: { unique: false } },
-        { name: 'occupiedStart', keypath: 'occupiedStart', options: { unique: false } },
-        { name: 'billPrice', keypath: 'billPrice', options: { unique: false } },
-        { name: 'status', keypath: 'status', options: { unique: false } },
-        { name: 'type', keypath: 'type', options: { unique: false } },
-      ]
+        { name: 'menuId', keypath: 'menuId', options: { unique: false } },
+        { name: 'menu', keypath: 'menu', options: { unique: false } },
+        { name: 'products', keypath: 'products', options: { unique: false } },
+        {name: 'rootCategories',keypath: 'rootCategories',options: { unique: false }},
+        {name: 'viewCategories',keypath: 'viewCategories',options: { unique: false }},
+        {name: 'recommendedCategories',keypath: 'recommendedCategories',options: { unique: false }},
+        {name:'printerSettings',keypath:'printerSettings',options:{unique:false}},
+        {name:'defaultPrinters',keypath:'defaultPrinters',options:{unique:false}}
+      ],
     },
     {
-      store: 'categories',
+      store: 'config',
       storeConfig: { keyPath: 'id', autoIncrement: true },
       storeSchema: [
         { name: 'id', keypath: 'id', options: { unique: true } },
-        { name: 'name', keypath: 'name', options: { unique: false } },
-        { name: 'products', keypath: 'products', options: { unique: false } },
-        { name: 'averagePrice', keypath: 'averagePrice', options: { unique: false } },
-      ]
+        { name: 'config', keypath: 'config', options: { unique: false } },
+        {
+          name: 'customerDbVersion',
+          keypath: 'customerDbVersion',
+          options: { unique: true },
+        },
+      ],
     },
     {
-      store: 'recommendedCategories',
+      store: 'customers',
       storeConfig: { keyPath: 'id', autoIncrement: true },
       storeSchema: [
-        { name: 'id', keypath: 'id', options: { unique: true } },
-        { name: 'name', keypath: 'name', options: { unique: false } },
-        { name: 'products', keypath: 'products', options: { unique: false } },
-        { name: 'averagePrice', keypath: 'averagePrice', options: { unique: false } },
-      ]
+        { name: 'id', keypath: 'customerId', options: { unique: true } },
+        { name: 'name', keypath: 'customer', options: { unique: false } },
+        { name: 'phone', keypath: 'phone', options: { unique: false } },
+        { name: 'address', keypath: 'address', options: { unique: false } },
+        { name: 'gst', keypath: 'gst', options: { unique: false } },
+        {
+          name: 'loyaltyPoints',
+          keypath: 'loyaltyPoints',
+          options: { unique: false },
+        },
+        { name: 'lastOrder', keypath: 'lastOrder', options: { unique: false } },
+        {
+          name: 'lastOrderDate',
+          keypath: 'lastOrderDate',
+          options: { unique: false },
+        },
+        {
+          name: 'lastOrderDish',
+          keypath: 'lastOrderDish',
+          options: { unique: false },
+        },
+        {
+          name: 'orderFrequency',
+          keypath: 'orderFrequency',
+          options: { unique: false },
+        },
+        {
+          name: 'averageOrderPrice',
+          keypath: 'averageOrderPrice',
+          options: { unique: false },
+        },
+        { name: 'lastMonth', keypath: 'lastMonth', options: { unique: false } },
+      ],
     },
   ],
 };
+
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [
+    AppComponent,
+    ResetPasswordComponent,
+    CheckingPasswordComponent,
+    RequiresPrivilegeComponent,
+    LockedComponent,
+  ],
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
-    CoreModule,
     AppRoutingModule,
-    AppRoutingModule,
-    SharedModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatInputModule,
-    MatSliderModule,
-    MatButtonModule,
-    provideFirebaseApp(() => initializeApp(APP_CONFIG.firebase)),
-    provideAnalytics(() => getAnalytics()),
-    provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore()),
-    provideFunctions(() => getFunctions()),
-    provideMessaging(() => getMessaging()),
-    providePerformance(() => getPerformance()),
-    provideRemoteConfig(() => getRemoteConfig()),
-    provideStorage(() => getStorage()),
-    NgxIndexedDBModule.forRoot(dbConfig),
     MatSnackBarModule,
     BaseComponentsModule,
     MatButtonToggleModule,
     MatProgressSpinnerModule,
     MatNativeDateModule,
     DialogModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: httpLoaderFactory,
-        deps: [HttpClient]
-      }
-    })
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule,
+    MatSliderModule,
+    MatButtonModule,
+    MatIconModule,
+    NgxIndexedDBModule.forRoot(dbConfig),
+    LoadingModule,
+    BillerModule,
+    BrowserAnimationsModule,
+    provideFirebaseApp(() => {
+      FirebaseAppInstance = initializeApp(environment.firebase);
+      return FirebaseAppInstance;
+    }),
+    provideAnalytics(() => getAnalytics()),
+    provideAuth(() => {
+      let auth = getAuth();
+      // connectAuthEmulator(auth, 'http://127.0.0.1:9099');
+      // auth.setPersistence(browserLocalPersistence);
+      return auth;
+    }),
+    provideFirestore(() => {
+      // let fsApp = getFirestore();
+      let fs = initializeFirestore(FirebaseAppInstance,{ignoreUndefinedProperties:true});
+      // connectFirestoreEmulator(fs, '127.0.0.1', 8080);
+      return fs;
+    }),
+    providePerformance(() => getPerformance()),
+    provideStorage(() => {
+      let storageRef = getStorage();
+      // connectStorageEmulator(storageRef, 'localhost', 9199);
+      return storageRef;
+    }),
+    provideFunctions(() => {
+      let functions = getFunctions();
+      // connectFunctionsEmulator(functions, 'localhost', 5001);
+      return functions;
+    }),
+    providePerformance(() => {
+      return getPerformance();
+    }),
+    provideMessaging(() => getMessaging()),
   ],
   providers: [
-    DataProvider,
-    AuthService,
+    PrinterService,
     ScreenTrackingService,
     UserTrackingService,
-    DatabaseService,
     AlertsAndNotificationsService,
-    GetDataService
+    ElectronService,
+    AuthService,
+    CustomerService,
+    MenuManagementService,
+    AnalyticsService,
+    BillService,
+    CategoryService,
+    FileStorageService,
+    HistoryService,
+    MenuManagementService,
+    ProductsService,
+    ReportsService,
+    SearchService,
+    SettingsService,
+    SystemService,
+    TableService,
+    UpdaterService,
+    { 
+      provide: HAMMER_GESTURE_CONFIG, 
+      useClass: MyHammerConfig 
+    }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

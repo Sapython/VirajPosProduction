@@ -1,0 +1,195 @@
+<div
+  class="bill"
+  [ngClass]="{ flipped: bill.flipped, normal: !bill.flipped }"
+>
+  <div class="summary" *ngIf="!bill.flipped">
+    <div class="items">
+      <div class="item">
+        <span>Time</span>
+        <span>{{ bill.createdDate.toDate() | date: "short" }}</span>
+      </div>
+      <div class="item">
+        <span>Bill No</span>
+        <span
+          >{{
+            bill?.settlement?.additionalInfo?.splitBill ? "Splitted Bill" : ""
+          }}
+          {{
+            bill?.cancelledReason?.reason
+              ? "Cancelled"
+              : bill.billNo
+              ? bill.billNo
+              : "Un-Settled"
+          }}</span
+        >
+      </div>
+      <!-- <div class="item">
+        <span>Bill Id</span>
+        <span>{{ bill.id }}</span>
+      </div> -->
+      <div class="item">
+        <span>Order No</span>
+        <span>{{ bill.orderNo }}</span>
+      </div>
+      <div class="item">
+        <span>{{bill.mode == 'dineIn' ? 'Table' : 'Token'}} No</span>
+        <span>{{ bill.table.name }}</span>
+      </div>
+      <div class="item">
+        <span>Total</span>
+        <span>{{ bill.billing.grandTotal }}</span>
+      </div>
+      <div class="item" *ngIf="bill?.splittedBills?.length">
+        <span>Splitted</span>
+        <span>{{ bill.splittedBills.length }}</span>
+      </div>
+      <div class="item">
+        <span>Mode</span>
+        <span>{{
+          bill.mode == "online"
+            ? "Online"
+            : bill.mode == "dineIn"
+            ? "Dine In"
+            : bill.mode == "takeaway"
+            ? "Takeaway"
+            : bill.mode
+        }}</span>
+      </div>
+    </div>
+    <viraj-button (click)="bill.flipped = true; bill.kotOrBillVisible = 'kot'"
+      >See KOTs</viraj-button
+    >
+    <viraj-button (click)="bill.flipped = true; bill.kotOrBillVisible = 'bill'"
+      >See Bill</viraj-button
+    >
+  </div>
+  <div class="detail" *ngIf="bill.flipped">
+    <ng-container *ngIf="bill?.settlement?.additionalInfo?.splitBill">
+      <mat-tab-group *ngIf="bill.kotOrBillVisible == 'kot'">
+        <mat-tab
+          [label]="'Bill ' + i + 1"
+          *ngFor="
+            let splitBill of bill.settlement?.additionalInfo?.splittedBills;
+            let i = index
+          "
+        >
+          <div class="items">
+            <div class="heading">
+              <h3>KOTs</h3>
+              <strong
+                >Total Kots: <span>{{ splitBill.kots.length }}</span></strong
+              >
+            </div>
+            <table>
+              <tr>
+                <th>Token No</th>
+                <th>Products</th>
+                <th>Time</th>
+                <th>Actions</th>
+              </tr>
+              <tr *ngFor="let kot of splitBill.kots">
+                <td>{{ kot.id }}</td>
+                <td>{{ kot.products.length }}</td>
+                <td>{{ kot.createdDate.toDate() | date: "shortTime" }}</td>
+                <td>
+                  <viraj-button type="icon" (click)="reprintKot(kot, splitBill)"
+                    ><i class="ri-printer-fill"></i
+                  ></viraj-button>
+                  <viraj-button
+                    type="icon"
+                    (click)="downloadKotInvoice(kot, splitBill)"
+                    ><i class="ri-download-2-fill"></i
+                  ></viraj-button>
+                </td>
+              </tr>
+            </table>
+            <viraj-button
+              type="outline"
+              (click)="bill.flipped = false; bill.kotOrBillVisible = false"
+              >Back</viraj-button
+            >
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+      <mat-tab-group *ngIf="bill.kotOrBillVisible == 'bill'">
+        <mat-tab
+          [label]="'Bill ' + (i + 1)"
+          *ngFor="
+            let splitBill of bill.splittedBills;
+            let i = index
+          "
+        >
+          <app-bill-preview
+            [printableBillData]="splitBill.printableBillData"
+          ></app-bill-preview>
+          <div class="actions">
+            <viraj-button
+              type="outline"
+              (click)="bill.flipped = false; bill.kotOrBillVisible = false"
+              >Back</viraj-button
+            >
+            <viraj-button (click)="reprintBill(splitBill)"
+              >Re-Print</viraj-button
+            >
+            <viraj-button
+              (click)="downloadBillInvoice(splitBill.printableBillData)"
+              >Download</viraj-button
+            >
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </ng-container>
+    <ng-container *ngIf="!bill?.settlement?.additionalInfo?.splitBill">
+      <div class="items" *ngIf="bill.kotOrBillVisible == 'kot'">
+        <div class="heading">
+          <h3>KOTs</h3>
+          <strong
+            >Total Kots: <span>{{ bill.kots.length }}</span></strong
+          >
+        </div>
+        <table>
+          <tr>
+            <th>Token No</th>
+            <th>Products</th>
+            <th>Time</th>
+            <th>Actions</th>
+          </tr>
+          <tr *ngFor="let kot of bill.kots">
+            <td>{{ kot.id }}</td>
+            <td>{{ kot.products.length }}</td>
+            <td>{{ kot.createdDate.toDate() | date: "shortTime" }}</td>
+            <td>
+              <viraj-button type="icon" (click)="reprintKot(kot, bill)"
+                ><i class="ri-printer-fill"></i
+              ></viraj-button>
+              <viraj-button type="icon" (click)="downloadKotInvoice(kot, bill)"
+                ><i class="ri-download-2-fill"></i
+              ></viraj-button>
+            </td>
+          </tr>
+        </table>
+        <viraj-button
+          type="outline"
+          (click)="bill.flipped = false; bill.kotOrBillVisible = false"
+          >Back</viraj-button
+        >
+      </div>
+      <ng-container *ngIf="bill.kotOrBillVisible == 'bill'">
+        <app-bill-preview
+          [printableBillData]="bill.printableBillData"
+        ></app-bill-preview>
+        <div class="actions">
+          <viraj-button
+            type="outline"
+            (click)="bill.flipped = false; bill.kotOrBillVisible = false"
+            >Back</viraj-button
+          >
+          <viraj-button (click)="reprintBill(bill)">Re-Print</viraj-button>
+          <viraj-button (click)="downloadBillInvoice(bill.printableBillData)"
+            >Download</viraj-button
+          >
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>

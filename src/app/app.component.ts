@@ -1,39 +1,47 @@
 import { Component } from '@angular/core';
-import { ElectronService } from './core/services';
 // import { TranslateService } from '@ngx-translate/core';
-import { APP_CONFIG } from '../environments/environment';
-import { fadeInDownOnEnterAnimation, fadeOutUpOnLeaveAnimation } from 'angular-animations';
-import { DataProvider } from './provider/data-provider.service';
-import { GetDataService } from './services/get-data.service';
-import { PrintingService } from './services/printing.service';
-
+import { environment } from '../environments/environment';
+import {
+  fadeInDownOnEnterAnimation,
+  fadeOutUpOnLeaveAnimation,
+} from 'angular-animations';
+import { DataProvider } from './core/services/provider/data-provider.service';
+import { AuthService } from './core/services/auth/auth.service';
+import { NgxIndexedDBService } from 'ngx-indexed-db';
+import { ElectronService } from './core/services/electron/electron.service';
+import { PrinterService } from './core/services/printing/printer/printer.service';
+import {loadFont} from './fontLoader'
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  animations: [
-    fadeInDownOnEnterAnimation(),
-    fadeOutUpOnLeaveAnimation(),
-  ],
+  animations: [fadeInDownOnEnterAnimation(), fadeOutUpOnLeaveAnimation()],
 })
 export class AppComponent {
   constructor(
     private electronService: ElectronService,
-    // private translate: TranslateService,
     public dataProvider: DataProvider,
-    private dataService: GetDataService,
-    private printingService: PrintingService
+    private authService: AuthService,
+    private indexedDbService: NgxIndexedDBService,
+    private printingService:PrinterService
   ) {
-    // this.translate.setDefaultLang('en');
-    console.log('APP_CONFIG', APP_CONFIG);
-
-    if (electronService.isElectron) {
-      console.log(process.env);
-      console.log('Run in electron');
-      console.log('Electron ipcRenderer', this.electronService.ipcRenderer);
-      console.log('NodeJS childProcess', this.electronService.childProcess);
-    } else {
-      console.log('Run in browser');
-    }
+    loadFont();
+    indexedDbService.getAll('config').subscribe(
+      (res) => {
+        // console.log('112 got config',res);
+      },
+      (err) => {
+        // console.log('112 got config error',err);
+      },
+    );
+    indexedDbService.add('config', { id: 1, config: environment }).subscribe(
+      (res) => {
+        // console.log('112 config success',res);
+      },
+      (err) => {
+        // console.log('112 config error',err);
+      },
+    );
+    // console.log('EscPosEncoder', EscPosEncoder);
   }
 }

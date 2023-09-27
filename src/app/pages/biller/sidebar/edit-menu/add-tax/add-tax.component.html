@@ -1,0 +1,38 @@
+<form [formGroup]="taxForm" (ngSubmit)="submit()">
+  <h3>{{ this.data.mode == "edit" ? "Edit" : "Add" }} New Tax</h3>
+  <mat-form-field appearance="outline">
+    <mat-label>Name</mat-label>
+    <input type="text" formControlName="name" matInput />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Type</mat-label>
+    <mat-select placeholder="Type" formControlName="type" name="item">
+      <mat-option value="percentage"> Percentage </mat-option>
+      <mat-option value="flat"> Flat </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <app-helper matSuffix tooltip="When mode is bill, this charge is automatically applied to the bill. When mode is product, it works like common taxes, you can select on what product to apply."></app-helper>
+    <mat-label>Mode</mat-label>
+    <mat-select placeholder="Mode" formControlName="mode">
+      <mat-option value="bill"> Bill Type </mat-option>
+      <mat-option value="product"> Product </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Cost</mat-label>
+    <input type="number" formControlName="cost" matInput />
+  </mat-form-field>
+  <div class="actions">
+    <button mat-stroked-button type="button" (click)="cancel()" color="primary">
+      Cancel
+    </button>
+    <button mat-flat-button type="submit" color="primary">Submit</button>
+  </div>
+  <span>
+    Bill type will be applied to the discounted subtotal of bill.
+    <br />
+    Product type will be applied to the cost of the product either inclusive or
+    exclusive.
+  </span>
+</form>

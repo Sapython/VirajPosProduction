@@ -1,0 +1,205 @@
+<div class="row">
+  <h3>Active Modes</h3>
+  <div class="modes" *ngIf="this.dataProvider.getAccess('switchModes')">
+    <mat-slide-toggle
+      [(ngModel)]="modes[0]"
+      (change)="updateMode()"
+      [disabled]="twoModeDeactived && modes[0]"
+      >Dine In</mat-slide-toggle
+    >
+    <mat-slide-toggle
+      [(ngModel)]="modes[1]"
+      (change)="updateMode()"
+      [disabled]="twoModeDeactived && modes[1]"
+      >Takeaway</mat-slide-toggle
+    >
+    <mat-slide-toggle
+      [(ngModel)]="modes[2]"
+      (change)="updateMode()"
+      [disabled]="twoModeDeactived && modes[2]"
+      >Online</mat-slide-toggle
+    >
+  </div>
+</div>
+<hr />
+<mat-form-field
+  style="width: 100%"
+  appearance="outline"
+  *ngIf="
+    this.dataProvider.currentBusiness &&
+    this.dataProvider.getAccess('changePrinter')
+  "
+>
+  <mat-label>Bill Printer</mat-label>
+  <mat-select
+    #billerPrinter
+    [ngModelOptions]="{ standalone: true }"
+    [(ngModel)]="this.dataProvider.billerPrinter"
+    (selectionChange)="updateBillPrinter(billerPrinter.value)"
+    name="printer"
+  >
+    <mat-option> Select </mat-option>
+    <mat-option [value]="printer" *ngFor="let printer of printers">
+      {{ printer }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+<section>
+  <h3>More Config</h3>
+  <ng-container *ngIf="this.dataProvider.getAccess('readBusinessSettings')">
+    <ng-container *ngIf="editMode">
+      <form
+        class="form"
+        [formGroup]="settingsForm"
+        (ngSubmit)="saveSettings()"
+        *ngIf="this.dataProvider.getAccess('readBusinessSettings')"
+      >
+        <mat-form-field class="example-form-field" appearance="outline">
+          <mat-label>Project Name:</mat-label>
+          <input matInput type="text" formControlName="hotelName" />
+        </mat-form-field>
+        <mat-form-field class="example-form-field" appearance="outline">
+          <mat-label>Phone Number:</mat-label>
+          <input matInput type="text" formControlName="phone" />
+        </mat-form-field>
+        <div class="addressLine">
+          <mat-form-field class="example-form-field fullWidth" appearance="outline">
+            <mat-label>Address:</mat-label>
+            <input matInput type="text" formControlName="address" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>States</mat-label>
+            <mat-select formControlName="state">
+              <mat-option
+                [value]="state"
+                *ngFor="let state of statesAndCities"
+                >{{ state.state }}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>City</mat-label>
+            <mat-select
+              formControlName="city"
+            >
+              <mat-option
+                [value]="city"
+                *ngFor="
+                  let city of (this.settingsForm.value.state?.districts || [])
+                "
+                >{{ city }}</mat-option
+              >
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <mat-form-field class="example-form-field" appearance="outline">
+          <mat-label>GST No:</mat-label>
+          <input matInput type="text" formControlName="gst" />
+        </mat-form-field>
+        <mat-form-field class="example-form-field" appearance="outline">
+          <mat-label>FSSAI No:</mat-label>
+          <input matInput type="text" formControlName="fssai" />
+        </mat-form-field>
+        <div class="actions">
+          <button
+            color="primary"
+            style="margin-right: 20px"
+            mat-stroked-button
+            type="button"
+            (click)="editMode = false"
+          >
+            Cancel
+          </button>
+          <button
+            color="primary"
+            style="margin-right: 20px"
+            mat-flat-button
+            type="submit"
+          >
+            Submit
+          </button>
+        </div>
+      </form>
+    </ng-container>
+    <div *ngIf="!editMode">
+      <div class="item">
+        <p>
+          <mat-icon>storefront</mat-icon>
+          Business Name
+        </p>
+        <p>
+          {{ this.dataProvider.currentBusiness?.hotelName }}
+        </p>
+      </div>
+      <div class="item">
+        <p>
+          <mat-icon>call</mat-icon>
+          Phone Number
+        </p>
+        <p>
+          {{ this.dataProvider.currentBusiness?.phone }}
+        </p>
+      </div>
+      <div class="item">
+        <p>
+          <mat-icon>home</mat-icon>
+          Address
+        </p>
+        <p>
+          {{ this.dataProvider.currentBusiness?.address }}
+        </p>
+      </div>
+      <div class="item">
+        <p>
+          <mat-icon>location_on</mat-icon>
+          State
+        </p>
+        <p>
+          {{ this.dataProvider.currentBusiness?.state?.state ? this.dataProvider.currentBusiness?.state?.state : this.dataProvider.currentBusiness?.state }}
+        </p>
+      </div>
+      <div class="item">
+        <p>
+          <mat-icon>map</mat-icon>
+          City
+        </p>
+        <p>
+          {{ this.dataProvider.currentBusiness?.city }}
+        </p>
+      </div>
+      <div class="item">
+        <p>
+          <mat-icon>payment</mat-icon>
+          GST No
+        </p>
+        <p>
+          {{ this.dataProvider.currentBusiness?.gst }}
+        </p>
+      </div>
+      <div class="item">
+        <p>
+          <mat-icon>account_balance_wallet</mat-icon>
+          FSSAI No
+        </p>
+        <p>
+          {{ this.dataProvider.currentBusiness?.fssai }}
+        </p>
+      </div>
+      <button style="margin:20px; box-sizing:border-box;width:calc(100% - 40px);" mat-flat-button color="primary" (click)="editMode = true;">Edit Config</button>
+    </div>
+  </ng-container>
+</section>
+<section>
+  <h3>Reset Account</h3>
+  <div class="actions">
+    <button
+      color="primary"
+      style="margin-right: 20px;width:100%"
+      mat-stroked-button
+      type="button"
+      (click)="resetAccount()"
+    >
+      Reset Account
+    </button>
+  </div>
+</section>

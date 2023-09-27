@@ -1,0 +1,15 @@
+<section>
+  <h2>Group Editor</h2>
+  <mat-form-field appearance="outline">
+    <mat-label>Group Name</mat-label>
+    <input
+      matInput
+      (keydown.enter)="submit($event)"
+      [(ngModel)]="data.groupName"
+    />
+  </mat-form-field>
+  <div class="actions">
+    <viraj-button (click)="dialogRef.close()">Cancel</viraj-button>
+    <viraj-button (click)="dialogRef.close(data)">Submit</viraj-button>
+  </div>
+</section>

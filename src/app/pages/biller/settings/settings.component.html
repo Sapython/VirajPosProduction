@@ -1,0 +1,34 @@
+<section>
+  <div class="header">
+    <h1>Settings</h1>
+    <button mat-icon-button (click)="dialogRef.close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <mat-tab-group>
+    <mat-tab label="About">
+      <app-about></app-about>
+    </mat-tab>
+    <mat-tab label="Business">
+      <app-config></app-config>
+    </mat-tab>
+    <mat-tab label="Account">
+      <app-account></app-account>
+    </mat-tab>
+    <mat-tab label="Pay Methods">
+      <app-payment></app-payment>
+    </mat-tab>
+    <mat-tab label="Charges">
+      <app-charges></app-charges>
+    </mat-tab>
+    <mat-tab label="Counters">
+      <app-counters></app-counters>
+    </mat-tab>
+    <!-- <mat-tab label="Quick Reasons">
+      <app-quick-reasons></app-quick-reasons>
+    </mat-tab> -->
+    <mat-tab label="Advanced">
+      <app-view></app-view>
+    </mat-tab>
+  </mat-tab-group>
+</section>

@@ -1,0 +1,74 @@
+<section>
+	<div class="heading">
+		<h2>Add New Main Category</h2>
+		<span>
+			<viraj-button type="outline" (click)="addProduct(category)">Add Product</viraj-button>
+			<viraj-button type="icon" (click)="close()"><i class="ri-close-fill"></i></viraj-button>
+		</span>
+	</div>
+	<div class="body">
+		<div class="actions categoryAction">
+			<mat-form-field appearance="outline" style="width:100%">
+				<mat-label>Category Name</mat-label>
+				<input type="text" matInput [(ngModel)]="category.name">
+			</mat-form-field>
+		  </div>
+		  <div class="products">
+			<table>
+			  <thead>
+				<tr>
+				  <th>Product Name</th>
+				  <th>Price</th>
+				  <th>Tag</th>
+				  <th>Type</th>
+				</tr>
+			  </thead>
+			  <tbody>
+				<tr *ngFor="let product of category.products">
+				  <td>
+					{{product.name}}
+				  </td>
+				  <td>
+					<mat-form-field appearance="outline">
+					  <mat-label>Price</mat-label>
+					  <input matInput type="number" [ngModelOptions]="{standalone: true}" [(ngModel)]="product.price" />
+					</mat-form-field>
+				  </td>
+				  <td>
+					<mat-form-field appearance="outline">
+					  <mat-label>Select Tag</mat-label>
+					  <mat-select [ngModelOptions]="{standalone: true}" [(ngModel)]="product.tag" name="label">
+						<mat-option *ngFor="let label of tags" [value]="label">
+						  {{ label.name | titlecase }}
+						</mat-option>
+					  </mat-select>
+					</mat-form-field>
+				  </td>
+				  <td>
+					<mat-form-field appearance="outline">
+					  <mat-label>Select Type</mat-label>
+					  <mat-select placeholder="Tag" [ngModelOptions]="{standalone: true}" [(ngModel)]="product.type" name="tag">
+						<mat-option *ngFor="let tag of type" [value]="tag">
+						  {{ tag }}
+						</mat-option>
+					  </mat-select>
+					</mat-form-field>
+				  </td>
+				</tr>
+				<tr
+				  *ngIf="category.products.length == 0"
+				  style="text-align: center"
+				>
+					<td colspan="4" style="text-align: center">
+						No Products Added
+					</td>
+				</tr>
+			  </tbody>
+			</table>
+		  </div>
+		</div>
+		<div class="actions">
+		  <viraj-button type="outline" (click)="close()">Cancel</viraj-button>
+		  <viraj-button (click)="submit()">Submit</viraj-button>
+		</div>
+</section>

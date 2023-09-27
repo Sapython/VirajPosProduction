@@ -1,0 +1,30 @@
+<form [formGroup]="newTypeForm" (ngSubmit)="submit()">
+  <h3>{{ data.mode == "add" ? "Add" : "Update" }} a Type</h3>
+  <img [src]="output" *ngIf="output" />
+  <input
+    hidden
+    type="file"
+    required
+    name="typeImage"
+    (change)="setFileObject($event)"
+    formControlName="image"
+    #typeImage
+  />
+  <viraj-button type="outline" color="primary" (vclick)="typeImage.click()"
+    >Select Image</viraj-button
+  >
+  <mat-form-field appearance="outline">
+    <mat-label>Name</mat-label>
+    <input matInput type="text" formControlName="name" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Description</mat-label>
+    <input matInput type="text" formControlName="description" />
+  </mat-form-field>
+  <div class="row">
+    <button mat-stroked-button color="primary" type="button" (click)="close()">
+      Cancel
+    </button>
+    <button mat-flat-button color="primary" type="submit">Submit</button>
+  </div>
+</form>

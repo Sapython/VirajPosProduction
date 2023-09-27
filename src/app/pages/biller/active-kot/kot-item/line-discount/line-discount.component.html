@@ -1,0 +1,67 @@
+<section [@shakeOnEnter] [@zoomOutOnLeave]>
+  <h2>Apply discount</h2>
+  <p>
+    Applying to item <strong>{{ product?.name }}</strong>
+  </p>
+  <mat-button-toggle-group name="mode" [(ngModel)]="mode" #modeInput>
+    <mat-button-toggle value="directPercent">Percent</mat-button-toggle>
+    <mat-button-toggle value="directFlat">Flat</mat-button-toggle>
+  </mat-button-toggle-group>
+  <mat-form-field appearance="outline" *ngIf="mode == 'directPercent'">
+    <mat-label>Percentage</mat-label>
+    <input
+      type="number"
+      matInput
+      (keydown.enter)="reasonInput.focus()"
+      [(ngModel)]="value"
+    />
+  </mat-form-field>
+  <mat-form-field appearance="outline" *ngIf="mode == 'directFlat'">
+    <mat-label>Flat</mat-label>
+    <input
+      type="number"
+      matInput
+      (keydown.enter)="reasonInput.focus()"
+      [(ngModel)]="value"
+    />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Reason</mat-label>
+    <input
+      type="text"
+      matInput
+      #reasonInput
+      (keydown.enter)="pwdInput.focus()"
+      [(ngModel)]="reason"
+    />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Password</mat-label>
+    <input
+      type="password"
+      matInput
+      (keydown.enter)="submitBtn.focus()"
+      [(ngModel)]="password"
+      #pwdInput
+    />
+    <button
+      color="primary"
+      mat-icon-button
+      matSuffix
+      (click)="
+        pwdInput.type == 'password'
+          ? (pwdInput.type = 'text')
+          : (pwdInput.type = 'password')
+      "
+    >
+      <mat-icon *ngIf="pwdInput.type == 'password'">visibility_off</mat-icon>
+      <mat-icon *ngIf="pwdInput.type == 'text'">visibility</mat-icon>
+    </button>
+  </mat-form-field>
+  <div class="actions">
+    <button mat-stroked-button (click)="dialogRef.close()">Cancel</button>
+    <button mat-raised-button #submitBtn color="primary" (click)="submit()">
+      Apply
+    </button>
+  </div>
+</section>

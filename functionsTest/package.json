@@ -1,0 +1,20 @@
+{
+  "name": "functionstest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "compile":"tsc main.ts",
+    "run":"node main.js",
+    "start": "npm run compile && npm run run"
+  },
+  "type": "commonjs",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^10.3.0",
+    "tsc": "^2.0.4",
+    "typescript": "^5.1.6"
+  }
+}

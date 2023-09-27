@@ -1,0 +1,30 @@
+<table class="styled-table" id="reportTable" *ngIf="!loading">
+  <thead>
+    <tr>
+      <th>Method</th>
+      <th>Settlement</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let bill of paymentMethods | async | keyvalue">
+      <td>
+        {{ bill.key }}
+      </td>
+      <td>
+        {{ bill.value  || 'N/A'}}
+      </td>
+    </tr>
+    <tr class="totals">
+      <td>Methods: {{totalMethods}}</td>
+      <td>Total: {{totalAmount}}</td>
+    </tr>
+    <tr *ngIf="(paymentMethods|async|keyvalue).length == 0">
+      <td
+        colspan="5"
+        style="text-align: center; font-weight: bold; font-size: 1.2rem;color:#aaa"
+      >
+        <p>No Data Available</p>
+      </td>
+    </tr>
+  </tbody>
+</table>

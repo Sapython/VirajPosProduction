@@ -1,0 +1,360 @@
+<section>
+  <div class="heading">
+    <h3>Add Discount</h3>
+  </div>
+  <!-- multiple -->
+  <div class="body">
+    <ng-container *ngIf="this.dataProvider.multipleDiscount">
+      <div class="container">
+        <aside>
+          <button
+            *ngFor="let discount of appliedDiscounts; let i = index"
+            (click)="currentDiscount = discount; currentIndex = i"
+            [ngClass]="{ selected: currentIndex == i }"
+          >
+            <ng-container *ngIf="discount.mode == 'codeBased'">
+              {{ discount.name || "Not Choosen" }}
+            </ng-container>
+            <ng-container *ngIf="discount.mode == 'directPercent'">
+              -{{ discount.value }}%
+            </ng-container>
+            <ng-container *ngIf="discount.mode == 'directFlat'">
+              -{{ discount.value }}
+            </ng-container>
+          </button>
+          <button (click)="addDiscount()">
+            <i class="ri-add-fill"></i> Add Discount
+          </button>
+        </aside>
+        <div class="main">
+          <ng-container *ngIf="currentDiscount">
+            <mat-form-field
+              appearance="outline"
+              *ngIf="currentDiscount.mode == 'directPercent'"
+            >
+              <mat-label>Direct Percent</mat-label>
+              <input
+                type="text"
+                (keydown.enter)="reasonInput.focus()"
+                matInput
+                [(ngModel)]="currentDiscount.value"
+              />
+            </mat-form-field>
+            <mat-form-field
+              appearance="outline"
+              *ngIf="currentDiscount.mode == 'directFlat'"
+            >
+              <mat-label>Direct Flat</mat-label>
+              <input
+                type="text"
+                (keydown.enter)="reasonInput.focus()"
+                matInput
+                [(ngModel)]="currentDiscount.value"
+              />
+            </mat-form-field>
+            <mat-form-field
+              appearance="outline"
+              *ngIf="currentDiscount.mode == 'codeBased'"
+            >
+              <mat-label>Select Discount</mat-label>
+              <mat-select
+                placeholder="Discount"
+                (keydown.enter)="reasonInput.focus()"
+                [(ngModel)]="currentDiscount.id"
+                (valueChange)="switchDiscount($event, currentIndex)"
+                name="discount"
+              >
+                <mat-option
+                  *ngFor="let discount of this.availableDiscounts"
+                  [value]="discount.id"
+                >
+                  <ng-container *ngIf="discount.name">
+                    {{ discount.name }}
+                  </ng-container>
+                  <ng-container *ngIf="!discount.name">
+                    {{ discount.value }}
+                    {{ discount.type == "percentage" ? "%" : "Rs" }}
+                  </ng-container>
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Reason</mat-label>
+              <input
+                type="text"
+                matInput
+                #reasonInput
+                (keydown.enter)="phoneInput.focus()"
+                [(ngModel)]="reason"
+              />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Customer Phone</mat-label>
+              <input
+                type="text"
+                matInput
+                #phoneInput
+                (keydown.enter)="passwordInput.focus()"
+                [(ngModel)]="this.dataProvider.currentBill.customerInfo.phone"
+              />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Password</mat-label>
+              <input
+                type="password"
+                matInput
+                (keydown.enter)="submitBtn.focus()"
+                [(ngModel)]="password"
+                #passwordInput
+              />
+              <button
+                color="primary"
+                matSuffix
+                tabindex="-1"
+                type="button"
+                *ngIf="passwordInput.type == 'password'"
+                (click)="
+                  passwordInput.type == 'password'
+                    ? (passwordInput.type = 'text')
+                    : (passwordInput.type = 'password')
+                "
+                mat-icon-button
+              >
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button
+                color="primary"
+                matSuffix
+                tabindex="-1"
+                type="button"
+                *ngIf="!(passwordInput.type == 'password')"
+                (click)="
+                  passwordInput.type == 'password'
+                    ? (passwordInput.type = 'text')
+                    : (passwordInput.type = 'password')
+                "
+                mat-icon-button
+              >
+                <mat-icon>visibility_off</mat-icon>
+              </button>
+            </mat-form-field>
+          </ng-container>
+          <ng-container *ngIf="!currentDiscount">
+            <img
+              class="notFound"
+              src="assets/images/notFound.svg"
+              alt="Not notFound"
+            />
+            <p>
+              No discounts found on this bill. Press add new to add a discount.
+            </p>
+          </ng-container>
+        </div>
+      </div>
+      <div class="actions">
+        <button
+          mat-stroked-button
+          color="primary"
+          (click)="cancel()"
+          type="button"
+        >
+          Cancel
+        </button>
+        <button
+          mat-stroked-button
+          color="primary"
+          (click)="removeDiscount(currentIndex)"
+          type="button"
+        >
+          Remove
+        </button>
+        <button
+          mat-raised-button
+          color="primary"
+          #submitBtn
+          [disabled]="!discountsValid"
+          (click)="submit()"
+        >
+          Add Discount
+        </button>
+      </div>
+    </ng-container>
+    <!-- single -->
+    <ng-container *ngIf="!this.dataProvider.multipleDiscount">
+      <div class="main">
+        <ng-container *ngIf="currentDiscount">
+          <div class="mode">
+            <mat-button-toggle-group
+              name="mode"
+              value="Coupon Code"
+              (change)="changeMode($event)"
+              [(ngModel)]="currentDiscount.mode"
+              aria-label="Font Style"
+              #mode
+            >
+              <mat-button-toggle value="directPercent"
+                >Direct Percent</mat-button-toggle
+              >
+              <mat-button-toggle value="directFlat"
+                >Direct Flat</mat-button-toggle
+              >
+              <mat-button-toggle value="codeBased">Uploaded</mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
+          <div class="fields">
+            <mat-form-field
+              appearance="outline"
+              *ngIf="currentDiscount.mode == 'directPercent'"
+            >
+              <mat-label>Direct Percent</mat-label>
+              <input
+                type="number"
+                (keydown.enter)="reasonInput.focus()"
+                matInput
+                [(ngModel)]="currentDiscount.value"
+              />
+            </mat-form-field>
+            <mat-form-field
+              appearance="outline"
+              *ngIf="currentDiscount.mode == 'directFlat'"
+            >
+              <mat-label>Direct Flat</mat-label>
+              <input
+                type="number"
+                (keydown.enter)="reasonInput.focus()"
+                matInput
+                [(ngModel)]="currentDiscount.value"
+              />
+            </mat-form-field>
+            <mat-form-field
+              appearance="outline"
+              *ngIf="currentDiscount.mode == 'codeBased'"
+            >
+              <mat-label>Select Discount</mat-label>
+              <mat-select
+                placeholder="Discount"
+                (keydown.enter)="reasonInput.focus()"
+                [(ngModel)]="currentDiscount.id"
+                (valueChange)="switchDiscount($event, currentIndex)"
+                name="discount"
+              >
+                <mat-option
+                  *ngFor="let discount of this.availableDiscounts"
+                  [value]="discount.id"
+                >
+                  <ng-container *ngIf="discount.name">
+                    {{ discount.name }}
+                  </ng-container>
+                  <ng-container *ngIf="!discount.name">
+                    {{ discount.value }}
+                    {{ discount.type == "percentage" ? "%" : "Rs" }}
+                  </ng-container>
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Reason</mat-label>
+              <input
+                type="text"
+                matInput
+                #reasonInput
+                (keydown.enter)="phoneInput.focus()"
+                [(ngModel)]="reason"
+              />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Customer Phone</mat-label>
+              <input
+                type="number"
+                matInput
+                #phoneInput
+                (keydown.enter)="passwordInput.focus()"
+                [(ngModel)]="this.bill.customerInfo.phone"
+                />
+                <mat-error *ngIf="this.bill?.customerInfo?.phone?.toString()?.length != 10">Enter a valid 10 digit phone.</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Password</mat-label>
+              <input
+                type="password"
+                matInput
+                (keydown.enter)="submitBtn.focus()"
+                [(ngModel)]="password"
+                #passwordInput
+              />
+              <button
+                color="primary"
+                matSuffix
+                tabindex="-1"
+                type="button"
+                *ngIf="passwordInput.type == 'password'"
+                (click)="
+                  passwordInput.type == 'password'
+                    ? (passwordInput.type = 'text')
+                    : (passwordInput.type = 'password')
+                "
+                mat-icon-button
+              >
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button
+                color="primary"
+                matSuffix
+                tabindex="-1"
+                type="button"
+                *ngIf="!(passwordInput.type == 'password')"
+                (click)="
+                  passwordInput.type == 'password'
+                    ? (passwordInput.type = 'text')
+                    : (passwordInput.type = 'password')
+                "
+                mat-icon-button
+              >
+                <mat-icon>visibility_off</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+          <div class="actions">
+            <button
+              mat-stroked-button
+              color="primary"
+              (click)="cancel()"
+              type="button"
+            >
+              Cancel
+            </button>
+            <button
+              mat-stroked-button
+              color="primary"
+              *ngIf="appliedDiscounts.length"
+              (click)="cancel(true)"
+              type="button"
+            >
+              Remove
+            </button>
+            <button
+              mat-raised-button
+              color="primary"
+              #submitBtn
+              [disabled]="!discountsValid"
+              (click)="submit()"
+            >
+              Add Discount
+            </button>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!currentDiscount">
+          <img
+            class="notFound"
+            src="assets/images/notFound.svg"
+            alt="Not Found"
+          />
+          <p>No discounts found on this bill. Press add new to add a discount.</p>
+          <button mat-flat-button color="primary" (click)="addDiscount()">
+            Add Discount
+          </button>
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+</section>

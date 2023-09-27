@@ -1,0 +1,42 @@
+<table id="reportTable">
+  <thead>
+    <tr>
+      <th>Table Name</th>
+      <th>Sales</th>
+      <th>Number Of Orders</th>
+      <th>Average Sales</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngIf="(tableWiseSales | async)?.length > 0">
+      <tr *ngFor="let table of tableWiseSales | async">
+        <td>
+          {{ table.table.id ? table.table.name : table.table }}
+        </td>
+        <td>
+          {{ table.sales | currency: "INR" }}
+        </td>
+        <td>
+          {{ table.numberOfOrders || 'N/A'}}
+        </td>
+        <td>
+          {{ table.averageSales | currency: "INR" }}
+        </td>
+      </tr>
+      <tr *ngIf="this.tableWiseTotals" class="totals">
+        <td>Totals:</td>
+        <td>{{this.tableWiseTotals.sales | currency:'INR'}}</td>
+        <td>{{this.tableWiseTotals.numberOfOrders}}</td>
+        <td>{{this.tableWiseTotals.averageSales | currency:'INR'}}</td>
+      </tr>
+    </ng-container>
+    <tr *ngIf="(tableWiseSales|async)?.length == 0">
+      <td
+        colspan="5"
+        style="text-align: center; font-weight: bold; font-size: 1.2rem;color:#aaa"
+      >
+        <p>No Data Available</p>
+      </td>
+    </tr>
+  </tbody>
+</table>

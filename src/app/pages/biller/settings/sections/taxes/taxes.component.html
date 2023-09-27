@@ -1,0 +1,34 @@
+<h3>Taxes</h3>
+<button color="primary" mat-raised-button (click)="addTax()">Add Tax</button>
+<div class="tableContainer">
+  <table>
+    <thead>
+      <tr>
+        <th>Tax Name</th>
+        <th>Tax Cost</th>
+        <th>Type</th>
+        <th>Add Date</th>
+        <th>Update Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let tax of taxes">
+        <td>{{ tax.name }}</td>
+        <td>{{ tax.cost }}</td>
+        <td>{{ tax.type | titlecase }}</td>
+        <td>{{ tax.mode | titlecase }}</td>
+        <td>{{ tax.creationDate.toDate() | date }}</td>
+        <td>{{ tax.updateDate.toDate() | date }}</td>
+        <td>
+          <viraj-button (vclick)="editTax(tax)" type="icon"
+            ><i class="ri-pencil-line"></i
+          ></viraj-button>
+          <viraj-button (vclick)="deleteTax(tax.id)" type="icon"
+            ><i class="ri-delete-bin-line"></i
+          ></viraj-button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

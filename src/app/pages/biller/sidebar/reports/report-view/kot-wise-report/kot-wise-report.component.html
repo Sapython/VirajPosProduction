@@ -1,0 +1,65 @@
+<table id="reportTable" *ngIf="!loading">
+  <thead>
+    <tr>
+      <th>Kot No</th>
+      <th>Kot Amount</th>
+      <th>Products</th>
+      <th>Bill No</th>
+      <th>User</th>
+      <th>Date-Time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngIf="(kots | async).length > 0">
+      <tr *ngFor="let kot of kots | async">
+        <td>
+          {{ kot.id }}
+        </td>
+        <td>
+          {{ (kot.grandTotal | currency:'INR')  || 'N/A'}}
+        </td>
+        <td>
+          Total Products: {{ kot.products.length }}
+          <ol>
+            <li *ngFor="let item of kot.products">{{item.name}} x {{item.quantity}}</li>
+          </ol>
+        </td>
+        <td>
+          {{ kot.billNo || "Unsettled" }}
+        </td>
+        <td>
+          {{ kot.user?.username || "N/A" }}
+        </td>
+        <td>
+          {{ kot.createdDate.toDate() | date: "short" }}
+        </td>
+      </tr>
+      <tr class="totals">
+        <td>
+          No. of KOTs: {{kotTotals.numberOfKot}}
+        </td>
+        <td>
+          Total KOTs Amount: {{kotTotals.totalKotAmount | currency:'INR'}}
+        </td>
+        <td>
+          No. Of Products: {{kotTotals.totalProducts}}
+        </td>
+        <td>
+          No Of Bills: {{kotTotals.bills}}
+        </td>
+        <td>
+          No Of Users: {{kotTotals.users}}
+        </td>
+        <td></td>
+      </tr>
+    </ng-container>
+    <tr *ngIf="(kots|async).length == 0">
+      <td
+        colspan="6"
+        style="text-align: center; font-weight: bold; font-size: 1.2rem;color:#aaa"
+      >
+        <p>No Data Available</p>
+      </td>
+    </tr>
+  </tbody>
+</table>

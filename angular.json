@@ -1,12 +1,13 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "cli": {
-    "defaultCollection": "@angular-eslint/schematics"
+    "defaultCollection": "@angular-eslint/schematics",
+    "analytics": false
   },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "angular-electron": {
+    "virajpos": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -40,7 +41,9 @@
             "customWebpackConfig": {
               "path": "./angular.webpack.js",
               "replaceDuplicatePlugins": true
-            }
+            },
+            "serviceWorker": true,
+            "ngswConfigPath": "ngsw-config.json"
           },
           "configurations": {
             "dev": {
@@ -112,27 +115,27 @@
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "browserTarget": "angular-electron:build"
+            "browserTarget": "virajpos:build"
           },
           "configurations": {
             "dev": {
-              "browserTarget": "angular-electron:build:dev"
+              "browserTarget": "virajpos:build:dev"
             },
             "production": {
-              "browserTarget": "angular-electron:build:production"
+              "browserTarget": "virajpos:build:production"
             },
             "web": {
-              "browserTarget": "angular-electron:build:web"
+              "browserTarget": "virajpos:build:web"
             },
             "web-production": {
-              "browserTarget": "angular-electron:build:web-production"
+              "browserTarget": "virajpos:build:web-production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "angular-electron:build"
+            "browserTarget": "virajpos:build"
           }
         },
         "test": {
@@ -165,10 +168,20 @@
               "src/**/*.html"
             ]
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "prerender": false,
+            "ssr": false,
+            "browserTarget": "virajpos:build:production",
+            "firebaseProject": "vrajera-d1e58",
+            "firebaseHostingSite": "vrajera-d1e58"
+          }
         }
       }
     },
-    "angular-electron-e2e": {
+    "virajpos-e2e": {
       "root": "e2e",
       "projectType": "application",
       "architect": {
@@ -183,7 +196,7 @@
       }
     }
   },
-  "defaultProject": "angular-electron",
+  "defaultProject": "virajpos",
   "schematics": {
     "@angular-eslint/schematics:application": {
       "setParserOptionsProject": true

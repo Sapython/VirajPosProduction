@@ -1,0 +1,16 @@
+section {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 3px 5px 10px 0px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  hr {
+    border: 1px solid #dfdfdf;
+    width: 100%;
+  }
+  span {
+    max-height: 100px;
+    overflow: auto;
+  }
+}

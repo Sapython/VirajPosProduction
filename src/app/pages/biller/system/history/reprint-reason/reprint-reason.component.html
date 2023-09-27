@@ -1,0 +1,33 @@
+<section [@shakeOnEnter] [@zoomOutOnLeave]>
+  <h2>Reprint</h2>
+  <form [formGroup]="reprintForm" (ngSubmit)="submit()">
+    <mat-form-field appearance="outline">
+      <mat-label>Reason</mat-label>
+      <input matInput type="text" formControlName="reason" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Password</mat-label>
+      <input matInput type="password" formControlName="password" #pwdInput />
+      <button
+        type="button"
+        color="primary"
+        mat-icon-button
+        matSuffix
+        (click)="
+          pwdInput.type == 'password'
+            ? (pwdInput.type = 'text')
+            : (pwdInput.type = 'password')
+        "
+      >
+        <mat-icon *ngIf="pwdInput.type == 'password'">visibility_off</mat-icon>
+        <mat-icon *ngIf="pwdInput.type == 'text'">visibility</mat-icon>
+      </button>
+    </mat-form-field>
+    <div class="actions">
+      <button mat-stroked-button type="button" (click)="dialogRef.close()">
+        Back
+      </button>
+      <button mat-raised-button color="primary">Reprint</button>
+    </div>
+  </form>
+</section>

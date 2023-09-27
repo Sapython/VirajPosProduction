@@ -1,0 +1,27 @@
+section {
+	background: white;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+	border-radius: 15px;
+	.body{
+	  padding: 20px;
+	  display: flex;
+	  flex-direction: column;
+	}
+	.heading{
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		border-bottom: 2px solid #c7c7c7;
+		padding: 0px 30px;
+	  }
+	.actions {
+	  padding: 20px;
+	  display: flex;
+	  justify-content: flex-end;
+	  gap:20px;
+	  border-top: 2px solid #c7c7c7;
+	}
+  }
+  

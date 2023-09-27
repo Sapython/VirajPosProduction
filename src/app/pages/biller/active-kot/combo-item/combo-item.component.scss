@@ -1,0 +1,47 @@
+.main {
+  background: white;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid var(--Vrajera-primary-color);
+  margin: 10px;
+  box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
+  border: 2px solid #ff652d;
+  padding: 10px;
+  border-radius: 7px;
+  p {
+    margin: 0px;
+  }
+  .title {
+    padding: 10px;
+    display: flex;
+    gap: 10px;
+    border-bottom: 2px solid #ccc;
+    align-items: center;
+    justify-content: space-between;
+    .quantity {
+      display: flex;
+      gap: 10px;
+      input {
+        border: 1px solid #e0e0e0;
+        font-size: var(--Vrajera-font-large);
+        box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.07);
+        width: 40px;
+      }
+    }
+  }
+  .types {
+    .type {
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      .header {
+        background: white;
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        box-shadow: 3px 0px 10px rgba(0, 0, 0, 0.2);
+        border-radius: 14px 14px 0px 0px;
+      }
+    }
+  }
+}

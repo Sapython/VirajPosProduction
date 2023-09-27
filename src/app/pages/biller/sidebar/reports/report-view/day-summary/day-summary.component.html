@@ -1,0 +1,247 @@
+<table id="reportTable">
+  <tbody>
+    <tr>
+      <td
+        colspan="2"
+        style="text-align: center; font-size: 20px; font-weight: bold"
+      >All</td>
+    </tr>
+    <tr>
+      <td><strong>All - </strong>Total bills</td>
+      <td>{{ channelWiseDaySummary.all.totalBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>All - </strong>Total Sales</td>
+      <td>{{ channelWiseDaySummary.all.totalAmount |currency:'INR' }}</td>
+    </tr>
+    <tr>
+      <td><strong>All - </strong>Net Sales</td>
+      <td>{{ channelWiseDaySummary.all.netSales |currency:'INR' }}</td>
+    </tr>
+    <tr>
+      <td><strong>All - </strong>Discount</td>
+      <td>{{ channelWiseDaySummary.all.totalDiscount |currency:'INR' }}</td>
+    </tr>
+    <tr>
+      <td><strong>All - </strong>Total Tax</td>
+      <td>{{ channelWiseDaySummary.all.totalTax |currency:'INR' }}</td>
+    </tr>
+    <tr>
+      <td><strong>All - </strong>Total Kots</td>
+      <td>{{ channelWiseDaySummary.all.totalKots }}</td>
+    </tr>
+    <tr>
+      <td><strong>All - </strong>Total Products</td>
+      <td>{{ channelWiseDaySummary.all.totalProducts }}</td>
+    </tr>
+    <tr>
+      <td><strong>All - </strong>Discounted Bills</td>
+      <td>{{ channelWiseDaySummary.all.totalDiscountedBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>All - </strong>Cancelled Bills</td>
+      <td>{{ channelWiseDaySummary.all.totalCancelledBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>All - </strong>Cancelled Amount</td>
+      <td>{{ channelWiseDaySummary.all.totalCancelledAmount | currency:'INR' }}</td>
+    </tr>
+    <tr>
+      <td><strong>All - </strong>Non Chargeable Bills</td>
+      <td>{{ channelWiseDaySummary.all.totalNcBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>All - </strong>Non Chargeable Sales</td>
+      <td>{{ channelWiseDaySummary.all.totalNcAmount  | currency:'INR'}}</td>
+    </tr>
+    <tr>
+      <td><strong>All - </strong>Payment Channels</td>
+      <td *ngIf="channelWiseDaySummary.all.paymentChannels">
+        <tr *ngFor="let item of channelWiseDaySummary.all.paymentChannels | keyvalue">
+          <td>{{item.key}}</td>
+          <td>{{item.value | currency:'INR'}}</td>
+        </tr>
+      </td>
+    </tr>
+    <!-- dine In -->
+    <tr>
+      <td
+        colspan="2"
+        style="text-align: center; font-size: 20px; font-weight: bold"
+      >Dine In</td>
+    </tr>
+    <tr>
+      <td><strong>Dine In - </strong>Sales</td>
+      <td>{{ channelWiseDaySummary.dineIn.totalBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>Dine In - </strong>Amount</td>
+      <td>{{ channelWiseDaySummary.dineIn.totalAmount |currency:'INR' }}</td>
+    </tr>
+    <tr>
+      <td><strong>Dine In - </strong>Discount</td>
+      <td>{{ channelWiseDaySummary.dineIn.totalDiscount |currency:'INR' }}</td>
+    </tr>
+    <tr>
+      <td><strong>Dine In - </strong>Total Tax</td>
+      <td>{{ channelWiseDaySummary.dineIn.totalTax |currency:'INR' }}</td>
+    </tr>
+    <tr>
+      <td><strong>Dine In - </strong>Total Kots</td>
+      <td>{{ channelWiseDaySummary.dineIn.totalKots }}</td>
+    </tr>
+    <tr>
+      <td><strong>Dine In - </strong>Total Products</td>
+      <td>{{ channelWiseDaySummary.dineIn.totalProducts }}</td>
+    </tr>
+    <tr>
+      <td><strong>Dine In - </strong>Discounted Bills</td>
+      <td>{{ channelWiseDaySummary.dineIn.totalDiscountedBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>Dine In - </strong>Cancelled Bills</td>
+      <td>{{ channelWiseDaySummary.dineIn.totalCancelledBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>Dine In - </strong>Cancelled Amount</td>
+      <td>{{ channelWiseDaySummary.dineIn.totalCancelledAmount | currency:'INR' }}</td>
+    </tr>
+    <tr>
+      <td><strong>Dine In - </strong>Non Chargeable Bills</td>
+      <td>{{ channelWiseDaySummary.dineIn.totalNcBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>Dine In - </strong>Non Chargeable Sales</td>
+      <td>{{ channelWiseDaySummary.dineIn.totalNcAmount |currency:'INR' }}</td>
+    </tr>
+    <tr>
+      <td><strong>Dine In - </strong>Payment Channels</td>
+      <td *ngIf="channelWiseDaySummary.dineIn.paymentChannels">
+        <tr *ngFor="let item of channelWiseDaySummary.dineIn.paymentChannels | keyvalue">
+          <td>{{item.key}}</td>
+          <td>{{item.value | currency:'INR'}}</td>
+        </tr>
+      </td>
+    </tr>
+    <!-- takeaway -->
+    <tr>
+      <td
+        colspan="2"
+        style="text-align: center; font-size: 20px; font-weight: bold"
+      >Takeaway</td>
+    </tr>
+    <tr>
+      <td><strong>Takeaway - </strong>Sales</td>
+      <td>{{ channelWiseDaySummary.takeaway.totalBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>Takeaway - </strong>Amount</td>
+      <td>{{ channelWiseDaySummary.takeaway.totalAmount |currency:'INR' }}</td>
+    </tr>
+    <tr>
+      <td><strong>Takeaway - </strong>Discount</td>
+      <td>{{ channelWiseDaySummary.takeaway.totalDiscount |currency:'INR' }}</td>
+    </tr>
+    <tr>
+      <td><strong>Takeaway - </strong>Total Tax</td>
+      <td>{{ channelWiseDaySummary.takeaway.totalTax |currency:'INR' }}</td>
+    </tr>
+    <tr>
+      <td><strong>Takeaway - </strong>Total Kots</td>
+      <td>{{ channelWiseDaySummary.takeaway.totalKots }}</td>
+    </tr>
+    <tr>
+      <td><strong>Takeaway - </strong>Total Products</td>
+      <td>{{ channelWiseDaySummary.takeaway.totalProducts }}</td>
+    </tr>
+    <tr>
+      <td><strong>Takeaway - </strong>Discounted Bills</td>
+      <td>{{ channelWiseDaySummary.takeaway.totalDiscountedBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>Takeaway - </strong>Cancelled Bills</td>
+      <td>{{ channelWiseDaySummary.takeaway.totalCancelledBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>Takeaway - </strong>Cancelled Amount</td>
+      <td>{{ channelWiseDaySummary.takeaway.totalCancelledAmount | currency:'INR' }}</td>
+    </tr>
+    <tr>
+      <td><strong>Takeaway - </strong>Non Chargeable Bills</td>
+      <td>{{ channelWiseDaySummary.takeaway.totalNcBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>Takeaway - </strong>Non Chargeable Sales</td>
+      <td>{{ channelWiseDaySummary.takeaway.totalNcAmount |currency:'INR' }}</td>
+    </tr>
+    <tr>
+      <td><strong>Takeaway - </strong>Payment Channels</td>
+      <td *ngIf="channelWiseDaySummary.takeaway.paymentChannels">
+        <tr *ngFor="let item of channelWiseDaySummary.takeaway.paymentChannels | keyvalue">
+          <td>{{item.key}}</td>
+          <td>{{item.value | currency:'INR'}}</td>
+        </tr>
+      </td>
+    </tr>
+    <!-- online -->
+    <tr>
+      <td
+        colspan="2"
+        style="text-align: center; font-size: 20px; font-weight: bold"
+      >Online</td>
+    </tr>
+    <tr>
+      <td><strong>Online - </strong>Sales</td>
+      <td>{{ channelWiseDaySummary.online.totalBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>Online - </strong>Amount</td>
+      <td>{{ channelWiseDaySummary.online.totalAmount |currency:'INR' }}</td>
+    </tr>
+    <tr>
+      <td><strong>Online - </strong>Discount</td>
+      <td>{{ channelWiseDaySummary.online.totalDiscount |currency:'INR' }}</td>
+    </tr>
+    <tr>
+      <td><strong>Online - </strong>Total Tax</td>
+      <td>{{ channelWiseDaySummary.online.totalTax |currency:'INR' }}</td>
+    </tr>
+    <tr>
+      <td><strong>Online - </strong>Total Kots</td>
+      <td>{{ channelWiseDaySummary.online.totalKots }}</td>
+    </tr>
+    <tr>
+      <td><strong>Online - </strong>Total Products</td>
+      <td>{{ channelWiseDaySummary.online.totalProducts }}</td>
+    </tr>
+    <tr>
+      <td><strong>Online - </strong>Discounted Bills</td>
+      <td>{{ channelWiseDaySummary.online.totalDiscountedBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>Online - </strong>Cancelled Bills</td>
+      <td>{{ channelWiseDaySummary.online.totalCancelledBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>Online - </strong>Cancelled Amount</td>
+      <td>{{ channelWiseDaySummary.online.totalCancelledAmount | currency:'INR' }}</td>
+    </tr>
+    <tr>
+      <td><strong>Online - </strong>Non Chargeable Bills</td>
+      <td>{{ channelWiseDaySummary.online.totalNcBills }}</td>
+    </tr>
+    <tr>
+      <td><strong>Online - </strong>Non Chargeable Sales</td>
+      <td>{{ channelWiseDaySummary.online.totalNcAmount }}</td>
+    </tr>
+    <tr>
+      <td><strong>Online - </strong>Payment Channels</td>
+      <td *ngIf="channelWiseDaySummary.online.paymentChannels">
+        <tr *ngFor="let item of channelWiseDaySummary.online.paymentChannels | keyvalue">
+          <td>{{item.key}}</td>
+          <td>{{item.value | currency:'INR'}}</td>
+        </tr>
+      </td>
+    </tr>
+  </tbody>
+</table>

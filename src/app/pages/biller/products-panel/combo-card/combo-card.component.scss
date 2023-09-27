@@ -1,0 +1,36 @@
+main {
+  width: 200px;
+  height: 150px;
+  border-radius: 10px;
+  background: white;
+  box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  transition: all 0.2s ease-in-out;
+  img {
+    width: 100%;
+    height: calc(100% - 40px);
+    border-radius: 10px;
+    object-fit: cover;
+  }
+  &:hover {
+    scale: 1.05;
+  }
+  &.disabled {
+    pointer-events: none;
+    cursor: not-allowed;
+    img,
+    p {
+      filter: saturate(0);
+      opacity: 0.5;
+    }
+    span {
+      opacity: 1;
+      filter: saturate(1);
+    }
+  }
+  span.danger {
+    color: tomato;
+  }
+}

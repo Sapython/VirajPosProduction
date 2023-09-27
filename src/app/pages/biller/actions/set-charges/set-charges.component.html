@@ -1,0 +1,172 @@
+<section>
+  <div class="heading">
+    <h3>Set Charges</h3>
+    <button
+      mat-icon-button
+      (click)="
+        dialogRef.close({
+          tip: 0,
+          serviceCharge: 0,
+          deliveryCharge: 0,
+          containerCharge: 0
+        })
+      "
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <form [formGroup]="chargesForm" class="chargesForm">
+    <div
+      class="charge"
+      *ngIf="
+        this.dataProvider.charges[this.bill?.mode].service
+          .allowed
+      "
+    >
+      <mat-checkbox
+        formControlName="serviceSelected"
+        [checked]="
+          this.dataProvider.charges[this.bill.mode].service
+            .byDefault
+        "
+        *ngIf="
+          this.dataProvider.charges[this.bill?.mode].service
+            .fixed
+        "
+        >Service Charge
+        {{
+          this.dataProvider.charges[this.bill?.mode].service
+            .charges
+        }}</mat-checkbox
+      >
+      <div
+        class="chargeInput"
+        *ngIf="
+          !this.dataProvider.charges[this.bill?.mode]
+            .service.fixed
+        "
+      >
+        <p>Service Charge</p>
+        <input
+          type="number"
+          formControlName="serviceCharge"
+          placeholder="Service Charge"
+        />
+      </div>
+    </div>
+    <div
+      class="charge"
+      *ngIf="
+        this.dataProvider.charges[this.bill?.mode].delivery
+          .allowed
+      "
+    >
+      <mat-checkbox
+        formControlName="deliverySelected"
+        [checked]="
+          this.dataProvider.charges[this.bill.mode].delivery
+            .byDefault
+        "
+        *ngIf="
+          this.dataProvider.charges[this.bill?.mode]
+            .delivery.fixed
+        "
+        >Delivery Charge
+        {{
+          this.dataProvider.charges[this.bill?.mode]
+            .delivery.charges
+        }}</mat-checkbox
+      >
+      <div
+        class="chargeInput"
+        *ngIf="
+          !this.dataProvider.charges[this.bill?.mode]
+            .delivery.fixed
+        "
+      >
+        <p>Delivery Charge</p>
+        <input
+          type="number"
+          formControlName="deliveryCharge"
+          placeholder="Delivery Charge"
+        />
+      </div>
+    </div>
+    <div
+      class="charge"
+      *ngIf="
+        this.dataProvider.charges[this.bill?.mode].container
+          .allowed
+      "
+    >
+      <mat-checkbox
+        [checked]="
+          this.dataProvider.charges[this.bill.mode]
+            .container.byDefault
+        "
+        formControlName="containerSelected"
+        *ngIf="
+          this.dataProvider.charges[this.bill?.mode]
+            .container.fixed
+        "
+        >Container Charge
+        {{
+          this.dataProvider.charges[this.bill?.mode]
+            .container.charges
+        }}</mat-checkbox
+      >
+      <div
+        class="chargeInput"
+        *ngIf="
+          !this.dataProvider.charges[this.bill?.mode]
+            .container.fixed
+        "
+      >
+        <p>Container Charge</p>
+        <input
+          type="number"
+          formControlName="containerCharge"
+          placeholder="Container Charge"
+        />
+      </div>
+    </div>
+    <div
+      class="charge"
+      *ngIf="
+        this.dataProvider.charges[this.bill?.mode].tip
+          .allowed
+      "
+    >
+      <mat-checkbox
+        [checked]="
+          this.dataProvider.charges[this.bill.mode].tip
+            .byDefault
+        "
+        formControlName="tipSelected"
+        *ngIf="
+          this.dataProvider.charges[this.bill?.mode].tip
+            .fixed
+        "
+        >Tip Charge
+        {{
+          this.dataProvider.charges[this.bill?.mode].tip
+            .charges
+        }}</mat-checkbox
+      >
+      <div
+        class="chargeInput"
+        *ngIf="
+          !this.dataProvider.charges[this.bill?.mode].tip
+            .fixed
+        "
+      >
+        <p>Tip</p>
+        <input type="number" formControlName="tip" placeholder="Tip" />
+      </div>
+    </div>
+  </form>
+  <div class="actions">
+    <button mat-stroked-button color="primary" (click)="dialogRef.close()">Cancel</button>
+    <button mat-stroked-button color="primary" (click)="setCharges(this.chargesForm.value);dialogRef.close(this.bill)">Submit</button>
+  </div>
+</section>

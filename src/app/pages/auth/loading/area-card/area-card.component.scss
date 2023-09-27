@@ -1,0 +1,20 @@
+.newAccount {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 215px;
+	height: 140px;
+  padding: 20px;
+  border: 2px solid var(--Vrajera-primary);
+  border-radius: 20px;
+  box-shadow: 2px 0px 20px rgba(0, 0, 0, 0.1);
+  color: var(--Vrajera-primary);
+  h3 {
+    margin: 0px;
+  }
+  i {
+    font-size: 50px;
+    text-shadow: 2px 0px 10px rgba(0, 0, 0, 0.2);
+  }
+}

@@ -1,42 +1,34 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { PageNotFoundComponent } from './shared/components';
 
-import { HomeRoutingModule } from './home/home-routing.module';
-import { DetailRoutingModule } from './detail/detail-routing.module';
-import { AuthGuard } from './guards/auth-guard.guard';
+import { AuthGuard } from './shared/guards/auth-guard.guard';
+import { BillerComponent } from './pages/biller/biller.component';
+import { LoadingComponent } from './pages/auth/loading/loading.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  {
+    path: '',
+    redirectTo: 'login',
+    pathMatch: 'full',
+  },
   {
     path: 'login',
-    loadChildren: () =>
-      import('./loading/loading.module').then((m) => m.LoadingModule),
-    data: {
-      animation: 'isLeft',
-    },
+    component: LoadingComponent,
   },
   {
     path: 'biller',
+    component: BillerComponent,
     canActivate: [AuthGuard],
-    loadChildren: () =>
-      import('./biller/biller.module').then((m) => m.BillerModule),
-    data: {
-      animation: 'isRight',
-    },
   },
   {
     path: '**',
-    component: PageNotFoundComponent,
+    redirectTo: 'login',
+    pathMatch: 'full',
   },
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forRoot(routes, {}),
-    HomeRoutingModule,
-    DetailRoutingModule,
-  ],
+  imports: [RouterModule.forRoot(routes, {})],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

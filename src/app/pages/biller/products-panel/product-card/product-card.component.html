@@ -1,0 +1,31 @@
+<div
+  matRipple
+  class="main"
+  #button
+  (click)="vclick.emit($event)"
+  [ngClass]="{ small: smaller, veg: veg, nonveg: !veg }"
+>
+  <div class="openItem" *ngIf="openItem">
+    <i class="ri-add-fill"></i>
+    <p>Open Item</p>
+  </div>
+  <ng-container *ngIf="!openItem">
+    <div class="container">
+      <p>{{ productName | titlecase }}</p>
+      <strong *ngIf="!openItem">{{ price | currency: "INR" }}</strong>
+    </div>
+    <ng-container *ngIf="taxes && taxes.length > 0 && !openItem">
+      <div class="tags">
+        <span
+          class="tag"
+          [ngStyle]="{ background: tag?.color, color: tag?.contrast }"
+          *ngFor="let tag of tags"
+        >
+          {{ tag.name }}
+        </span>
+      </div>
+      <span *ngIf="!openItem"> {{ category }}</span>
+    </ng-container>
+    <p class="danger" *ngIf="!(taxes && taxes.length > 0) && !openItem">No taxes</p>
+  </ng-container>
+</div>

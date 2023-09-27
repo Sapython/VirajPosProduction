@@ -1,0 +1,120 @@
+<section>
+  <div class="heading">
+    <h1>Reports</h1>
+    <viraj-button type="icon" (click)="dialogRef.close()">
+      <i class="ri-close-fill"></i>
+    </viraj-button>
+  </div>
+  <ng-container>
+    <div class="charts">
+      <div class="heading">
+        <h3>Graph & Summary
+          <viraj-button type="icon" (vclick)="refreshReport()">
+            <i class="ri-refresh-fill"></i>
+          </viraj-button>
+        </h3>
+        <div class="datePicker">
+          <mat-datepicker #salesPicker></mat-datepicker>
+          <input
+            matInput
+            tabindex="-1"
+            [matDatepickerFilter]="noFuture"
+            #salesPickerInput
+            (dateChange)="fetchChartData($event)"
+            [matDatepicker]="salesPicker"
+          />
+          <viraj-button type="outline" (vclick)="salesPicker.open()"
+            >{{salesDate | date}} <i class="ri-calendar-2-fill"></i
+          ></viraj-button>
+        </div>
+      </div>
+      <div class="graphs">
+        <div class="chartCard">
+          <div class="heading">
+            <h4>Average Vs Actual Sales</h4>
+          </div>
+          <div class="chartContainer">
+            <canvas height="250px" #salesChart></canvas>
+          </div>
+        </div>
+        <div class="chartCard">
+          <div class="heading">
+            <h4>Channel Wise Payment 
+            </h4>
+          </div>
+          <div class="chartContainer">
+            <canvas height="250px" #orderChart></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="reportsGroup">
+      <div class="heading">
+        <h3>Common Reports</h3>
+      </div>
+      <div class="grid">
+        <div class="reportCard">
+          <h4>Day Summary</h4>
+          <p>Full day summary with all bills, kots, sales, settlements, etc.</p>
+          <button (click)="openReport('daySummary')">
+            View Report <i class="ri-file-chart-line"></i>
+          </button>
+        </div>
+        <div class="reportCard">
+          <h4>Item Wise Sales</h4>
+          <p>List of items and their sales, with bills and kots.</p>
+          <button (click)="openReport('itemWise')">
+            View Report <i class="ri-file-chart-line"></i>
+          </button>
+        </div>
+        <div class="reportCard">
+          <h4>Dine In Bills</h4>
+          <p>
+            List of bills from dine in channel, with their sales and
+            settlements.
+          </p>
+          <button (click)="openReport('dineInBills')">
+            View Report <i class="ri-file-chart-line"></i>
+          </button>
+        </div>
+        <div class="reportCard">
+          <h4>Takeaway Bills</h4>
+          <p>
+            List of bills from takeaway channel, with their sales and
+            settlements.
+          </p>
+          <button (click)="openReport('takeawayBills')">
+            View Report <i class="ri-file-chart-line"></i>
+          </button>
+        </div>
+        <div class="reportCard">
+          <h4>Online Bills</h4>
+          <p>
+            List of bills from online channel, with their sales and settlements.
+          </p>
+          <button (click)="openReport('onlineBills')">
+            View Report <i class="ri-file-chart-line"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="reportsGroup">
+      <div class="heading">
+        <h3>All Reports</h3>
+        <div class="searchBar">
+          <input type="search" placeholder="Search Report" (input)="reportSearchSubject.next(searchInput.value)" #searchInput />
+          <i class="ri-search-line"></i>
+        </div>
+      </div>
+      <div class="grid">
+        <div class="reportCard" *ngFor="let format of filteredReportFormats">
+          <h4>{{format.title}}</h4>
+          <p>{{format.description}}</p>
+          <button (click)="openReport(format.code)">
+            View Report <i class="ri-file-chart-line"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</section>

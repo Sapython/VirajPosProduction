@@ -1,0 +1,103 @@
+.bill {
+  border-radius: 8px;
+  border: 3px solid var(--Vrajera-success);
+  background: #fff;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  width: 200px;
+  height: min-content;
+  perspective: 500px;
+  .summary {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: var(--Vrajera-font-medium);
+    .items {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      .item {
+        border-bottom: 3px solid var(--Vrajera-success);
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 4px;
+      }
+      .actions {
+        flex-direction: column;
+        gap: 5px;
+      }
+    }
+  }
+  .detail {
+    transform: rotateY(-180deg);
+    .items {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      border-bottom: 2px solid #c7c7c7;
+      .heading {
+        border-bottom: 1px solid #aeaeae;
+        padding: 0px;
+        display: flex;
+        justify-content: space-between;
+        strong {
+          span {
+            padding: 5px 10px;
+            border: 1px solid var(--Vrajera-primary);
+            background: #fff6f3;
+            color: var(--Vrajera-primary);
+            border-radius: 6px;
+          }
+        }
+      }
+      table {
+        width: 100%;
+        th {
+          font-weight: 600;
+        }
+        th,
+        td {
+          text-align: center;
+        }
+        th:nth-child(1),
+        td:nth-child(1) {
+          text-align: left;
+        }
+        th:last-child,
+        td:last-child {
+          text-align: end;
+        }
+        tr {
+          width: 100%;
+          td:nth-child(1) {
+            color: var(--Vrajera-success);
+          }
+          td:nth-child(2) {
+            color: #aaa;
+          }
+        }
+      }
+    }
+    .actions {
+      border-top: 1px solid #c7c7c7;
+      padding-top: 10px;
+      display: flex;
+      gap: 10px;
+      justify-content: space-evenly;
+    }
+  }
+  .normal {
+    transform: rotateY(0deg);
+    transition: transform 0.5s;
+  }
+}
+.flipped {
+  transform: rotateY(180deg);
+  transition: transform 0.5s;
+  width: 300px;
+}
+.normal {
+  transform: rotateY(0deg);
+  transition: transform 0.5s;
+}

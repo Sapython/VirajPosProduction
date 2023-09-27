@@ -1,0 +1,37 @@
+<table class="styled-table" id="reportTable" *ngIf="!loading">
+  <thead>
+    <tr>
+      <th>Product Name</th>
+      <th *ngFor="let user of (waiterWiseSales | async).users">
+        {{ user }}
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let product of (waiterWiseSales | async).productSales">
+      <td>
+        {{ product.product.name  || 'N/A'}}
+      </td>
+      <td *ngFor="let item of product.users">
+        {{ item.sales  || 'N/A'}}
+      </td>
+    </tr>
+    <tr class="totals noWrap">
+      <td class="noWrap">Totals: {{totalProducts}}</td>
+      <td *ngFor="let userTotal of userTotals" class="=noWrap">
+        <li class="noWrap">User: {{userTotal.user}}</li>
+        <li class="noWrap">Sales: {{userTotal.sales}}</li>
+        <li class="noWrap">Orders: {{userTotal.numberOfOrders}}</li>
+        <li class="noWrap">Avg. Sales: {{userTotal.averageSales}}</li>
+      </td>
+    </tr>
+    <tr *ngIf="(waiterWiseSales|async).productSales.length == 0">
+      <td
+        colspan="5"
+        style="text-align: center; font-weight: bold; font-size: 1.2rem;color:#aaa"
+      >
+        <p>No Data Available</p>
+      </td>
+    </tr>
+  </tbody>
+</table>

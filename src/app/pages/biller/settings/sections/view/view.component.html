@@ -1,0 +1,362 @@
+<div class="items">
+  <ng-container *ngIf="this.dataProvider.getAccess('generalSettings')">
+    <div class="item">
+      <p>Total time to mark a table as late <strong>(in minutes)</strong></p>
+      <input
+        type="number"
+        placeholder="45 Min"
+        [(ngModel)]="this.dataProvider.tableTimeOutTime"
+        (change)="
+          isValidNumber(this.dataProvider.tableTimeOutTime)
+            ? updateSettings({
+                tableTimeOutTime: this.dataProvider.tableTimeOutTime
+              })
+            : (this.dataProvider.tableTimeOutTime = 0)
+        "
+      />
+    </div>
+    <div class="item">
+      <p>This text will be added as a note on printed bill</p>
+      <input
+        type="text"
+        placeholder="Thank you for visiting us"
+        [(ngModel)]="this.dataProvider.customBillNote"
+        (change)="
+          updateSettings({ customBillNote: this.dataProvider.customBillNote })
+        "
+      />
+    </div>
+    <div class="item">
+      <p>Prefix will be added to printed bill no</p>
+      <input
+        type="text"
+        placeholder="2023-"
+        [(ngModel)]="this.dataProvider.billNoSuffix"
+        (change)="
+          updateSettings({ billNoSuffix: this.dataProvider.billNoSuffix })
+        "
+      />
+    </div>
+    <div class="item">
+      <p>Enable <strong>re-print</strong> kot option in manage kot panel.</p>
+      <mat-slide-toggle
+        [(ngModel)]="dataProvider.localSettings.kotRePrintable"
+        (change)="
+          updateLocalSettings({ kotRePrintable: dataProvider.localSettings.kotRePrintable })
+        "
+      ></mat-slide-toggle>
+    </div>
+    <!-- <div class="item">
+      <p>Enable <strong>smart mode</strong> to make your work efficient</p>
+      <mat-slide-toggle
+        [(ngModel)]="dataProvider.smartMode"
+        [disabled]="true"
+        matTooltip="Smart mode is currently disabled for this account"
+        (change)="setLocalShowTable($event)"
+      ></mat-slide-toggle>
+    </div>
+    <div class="item">
+      <p>Enable <strong>touch mode</strong> if you have touch screen POS</p>
+      <mat-slide-toggle
+        [(ngModel)]="dataProvider.touchMode"
+        (change)="setLocalShowTable($event)"
+      ></mat-slide-toggle>
+    </div> -->
+    <div class="item">
+      <p>Allow kot edit</p>
+      <mat-slide-toggle
+        [(ngModel)]="dataProvider.localSettings.kotEditable"
+        (change)="
+          updateLocalSettings({ kotEditable: dataProvider.localSettings.kotEditable })
+        "
+      ></mat-slide-toggle>
+    </div>
+    <div
+      class="item"
+      *ngIf="dataProvider.localSettings.kotEditable"
+    >
+      <p>Total time till you can edit KOT <strong>(in seconds)</strong></p>
+      <input
+        type="number"
+        placeholder="60"
+        [(ngModel)]="this.dataProvider.localSettings.editKotTime"
+        (change)="
+          isValidNumber(this.dataProvider.localSettings.editKotTime)
+            ? this.updateLocalSettings({
+                editKotTime: this.dataProvider.localSettings.editKotTime
+              })
+            : (this.dataProvider.localSettings.editKotTime = 0)
+        "
+      />
+    </div>
+    <div class="item">
+      <p>Show table view after kot, bill, nc, settle and discount</p>
+      <mat-slide-toggle
+        [(ngModel)]="dataProvider.localSettings.showTableOnBillAction"
+        (change)="updateLocalSettings({ showTableOnBillAction: dataProvider.localSettings.showTableOnBillAction })"
+      ></mat-slide-toggle>
+    </div>
+    <div class="item">
+      <p>Directly print a bill when finalized</p>
+      <mat-slide-toggle
+        matTooltip="Print Bill After Finalize"
+        [(ngModel)]="dataProvider.localSettings.printBillAfterFinalize"
+        (change)="
+          updateLocalSettings({
+            printBillAfterFinalize: dataProvider.localSettings.printBillAfterFinalize
+          })
+        "
+      ></mat-slide-toggle>
+    </div>
+    <div class="item">
+      <p>Directly print a bill when settled</p>
+      <mat-slide-toggle
+        matTooltip="Print Bill After Settle"
+        [(ngModel)]="dataProvider.localSettings.printBillAfterSettle"
+        (change)="
+          updateLocalSettings({
+            printBillAfterSettle: dataProvider.localSettings.printBillAfterSettle
+          })
+        "
+      ></mat-slide-toggle>
+    </div>
+    <div class="item">
+      <p>Ask for optional bill printing before finalize print</p>
+      <mat-slide-toggle
+        matTooltip="Print Bill After Settle"
+        [(ngModel)]="dataProvider.confirmBeforeFinalizePrint"
+        (change)="
+          updateSettings({
+            confirmBeforeFinalizePrint: dataProvider.confirmBeforeFinalizePrint
+          })
+        "
+      ></mat-slide-toggle>
+    </div>
+    <div class="item">
+      <p>Ask for optional bill printing before settlement print</p>
+      <mat-slide-toggle
+        matTooltip="Print Bill After Settle"
+        [(ngModel)]="dataProvider.confirmBeforeSettlementPrint"
+        (change)="
+          updateSettings({
+            confirmBeforeSettlementPrint: dataProvider.confirmBeforeSettlementPrint
+          })
+        "
+      ></mat-slide-toggle>
+    </div>
+    <div class="item">
+      <p>Show direct settle button instead of finalize</p>
+      <mat-slide-toggle
+        matTooltip="Print Bill After Settle"
+        [(ngModel)]="dataProvider.localSettings.directSettle"
+        (change)="
+          updateLocalSettings({
+            directSettle: dataProvider.localSettings.directSettle
+          })
+        "
+      ></mat-slide-toggle>
+    </div>
+    <!-- <div class="item">
+      <p>Allow to add multiple discounts to a bill</p>
+      <mat-slide-toggle
+        [(ngModel)]="this.dataProvider.multipleDiscount"
+        (change)="
+          updateSettings({
+            multipleDiscount: this.dataProvider.multipleDiscount
+          })
+        "
+        *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+      ></mat-slide-toggle>
+    </div> -->
+    <div class="item">
+      <p>Enable open item option in products section.</p>
+      <mat-slide-toggle
+        [(ngModel)]="this.dataProvider.openItemEnabled"
+        (change)="
+          updateSettings({
+            openItemEnabled: this.dataProvider.openItemEnabled
+          })
+        "
+        *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+      ></mat-slide-toggle>
+    </div>
+    <div class="item">
+      <p>Hide all sales metrics from biller.</p>
+      <mat-slide-toggle
+        [(ngModel)]="this.dataProvider.localSettings.salesHidden"
+        (change)="
+          updateLocalSettings({
+            salesHidden: this.dataProvider.localSettings.salesHidden
+          })
+        "
+        *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+      ></mat-slide-toggle>
+    </div>
+    <div class="item">
+      <p>Hide history from biller.</p>
+      <mat-slide-toggle
+        [(ngModel)]="this.dataProvider.localSettings.historyHidden"
+        (change)="
+          updateLocalSettings({
+            historyHidden: this.dataProvider.localSettings.historyHidden
+          })
+        "
+        *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+      ></mat-slide-toggle>
+    </div>
+  </ng-container>
+  <!-- <h3>Print Settings</h3>
+  <div class="item">
+    <p>Show Time On Bill</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.printSettings.showBillTime"
+      (change)="
+        updateSettings({
+          printSettings: this.dataProvider.printSettings
+        })
+      "
+      *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
+    <p>Show Date On Bill</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.printSettings.showBillDate"
+      (change)="
+        updateSettings({
+          printSettings: this.dataProvider.printSettings
+        })
+      "
+      *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
+    <p>Show Bill No On Bill</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.printSettings.showBillNo"
+      (change)="
+        updateSettings({
+          printSettings: this.dataProvider.printSettings
+        })
+      "
+      *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
+    <p>Show Cashier On Bill</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.printSettings.showCashier"
+      (change)="
+        updateSettings({
+          printSettings: this.dataProvider.printSettings
+        })
+      "
+      *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
+    <p>Show Order Id Bill</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.printSettings.showOrderId"
+      (change)="
+        updateSettings({
+          printSettings: this.dataProvider.printSettings
+        })
+      "
+      *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
+    <p>Show Mode on Bill</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.printSettings.showMode"
+      (change)="
+        updateSettings({
+          printSettings: this.dataProvider.printSettings
+        })
+      "
+      *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+    ></mat-slide-toggle>
+  </div> -->
+  <h3>Reset Tokens</h3>
+  <div class="item">
+    <p>Reset Bill No Every Day</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.tokensResetSetting.billNo"
+      (change)="
+        updateSettings({
+          tokensResetSetting: this.dataProvider.tokensResetSetting
+        })
+      "
+      *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
+    <p>Reset Takeaway Token No Every Day</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.tokensResetSetting.takeawayTokenNo"
+      (change)="
+        updateSettings({
+          tokensResetSetting: this.dataProvider.tokensResetSetting
+        })
+      "
+      *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
+    <p>Reset Online Token No Every Day</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.tokensResetSetting.onlineTokenNo"
+      (change)="
+        updateSettings({
+          tokensResetSetting: this.dataProvider.tokensResetSetting
+        })
+      "
+      *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
+    <p>Reset Order No Every Day</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.tokensResetSetting.orderNo"
+      (change)="
+        updateSettings({
+          tokensResetSetting: this.dataProvider.tokensResetSetting
+        })
+      "
+      *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
+    <p>Reset NC Bill No Every Day</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.tokensResetSetting.ncBillNo"
+      (change)="
+        updateSettings({
+          tokensResetSetting: this.dataProvider.tokensResetSetting
+        })
+      "
+      *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+    ></mat-slide-toggle>
+  </div>
+  <div class="item">
+    <p>Reset Kot No Every Day</p>
+    <mat-slide-toggle
+      [(ngModel)]="this.dataProvider.tokensResetSetting.kotNo"
+      (change)="
+        updateSettings({
+          tokensResetSetting: this.dataProvider.tokensResetSetting
+        })
+      "
+      *ngIf="this.dataProvider.getAccess('multipleDiscounts')"
+    ></mat-slide-toggle>
+  </div>
+  <h3>Quick Reasons</h3>
+  <div class="item">
+    Add New Quick Reason
+    <viraj-button (click)="addNewQuickReason()">Add New</viraj-button>
+  </div>
+  <div class="item" *ngFor="let item of dataProvider.quickReasons; let i = index">
+    <viraj-button type="icon" (vclick)="dataProvider.quickReasons.splice(i,1);this.updateSettings({quickReasons:this.dataProvider.quickReasons});"><i class="ri-close-fill"></i></viraj-button> Added Reason: {{item}}
+  </div>
+</div>

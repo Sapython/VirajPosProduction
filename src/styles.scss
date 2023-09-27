@@ -1,100 +1,256 @@
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 // Plus imports for other components in your app.
+/* material-icons-regular - latin */
+/* material-icons-regular - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Material Icons";
+  font-style: normal;
+  font-weight: 400;
+  src: url("^assets/fonts/material-icons-v140-latin-regular.woff2")
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* roboto-100 - cyrillic_cyrillic-ext_latin_latin-ext */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 100;
+  src: url("^assets/fonts/roboto-v30-cyrillic_cyrillic-ext_latin_latin-ext-100.woff2")
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* roboto-100italic - cyrillic_cyrillic-ext_latin_latin-ext */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Roboto";
+  font-style: italic;
+  font-weight: 100;
+  src: url("^assets/fonts/roboto-v30-cyrillic_cyrillic-ext_latin_latin-ext-100italic.woff2")
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* roboto-300 - cyrillic_cyrillic-ext_latin_latin-ext */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 300;
+  src: url("^assets/fonts/roboto-v30-cyrillic_cyrillic-ext_latin_latin-ext-300.woff2")
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* roboto-300italic - cyrillic_cyrillic-ext_latin_latin-ext */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Roboto";
+  font-style: italic;
+  font-weight: 300;
+  src: url("^assets/fonts/roboto-v30-cyrillic_cyrillic-ext_latin_latin-ext-300italic.woff2")
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* roboto-regular - cyrillic_cyrillic-ext_latin_latin-ext */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 400;
+  src: url("^assets/fonts/roboto-v30-cyrillic_cyrillic-ext_latin_latin-ext-regular.woff2")
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* roboto-italic - cyrillic_cyrillic-ext_latin_latin-ext */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Roboto";
+  font-style: italic;
+  font-weight: 400;
+  src: url("^assets/fonts/roboto-v30-cyrillic_cyrillic-ext_latin_latin-ext-italic.woff2")
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* roboto-500 - cyrillic_cyrillic-ext_latin_latin-ext */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  src: url("^assets/fonts/roboto-v30-cyrillic_cyrillic-ext_latin_latin-ext-500.woff2")
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* roboto-500italic - cyrillic_cyrillic-ext_latin_latin-ext */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Roboto";
+  font-style: italic;
+  font-weight: 500;
+  src: url("^assets/fonts/roboto-v30-cyrillic_cyrillic-ext_latin_latin-ext-500italic.woff2")
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* roboto-700 - cyrillic_cyrillic-ext_latin_latin-ext */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 700;
+  src: url("^assets/fonts/roboto-v30-cyrillic_cyrillic-ext_latin_latin-ext-700.woff2")
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* roboto-700italic - cyrillic_cyrillic-ext_latin_latin-ext */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Roboto";
+  font-style: italic;
+  font-weight: 700;
+  src: url("^assets/fonts/roboto-v30-cyrillic_cyrillic-ext_latin_latin-ext-700italic.woff2")
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* roboto-900 - cyrillic_cyrillic-ext_latin_latin-ext */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 900;
+  src: url("^assets/fonts/roboto-v30-cyrillic_cyrillic-ext_latin_latin-ext-900.woff2")
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* roboto-900italic - cyrillic_cyrillic-ext_latin_latin-ext */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: "Roboto";
+  font-style: italic;
+  font-weight: 900;
+  src: url("^assets/fonts/roboto-v30-cyrillic_cyrillic-ext_latin_latin-ext-900italic.woff2")
+    format("woff2"); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+.material-icons {
+  font-family: "Material Icons";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -moz-font-feature-settings: "liga";
+  -moz-osx-font-smoothing: grayscale;
+}
 
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 // Be sure that you only ever include this mixin once!
 @include mat.core();
-@import url('remixicon/fonts/remixicon.css');
+@import url("remixicon/fonts/remixicon.css");
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 
 // The warn palette is optional (defaults to red).
-// $Viraj-warn: mat.define-palette(mat.$red-palette);
+// $Vrajera-warn: mat.define-palette(mat.$red-palette);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
 $viraj-palette: (
   50: #fadbd3,
   100: #fbcabd,
-  200: #fdb19e,
-  300: #fe997f,
-  400: #f87554,
-  500: #fb7250,
-  600: #FF5E35,
-  700: #f85228,
-  800: #fb4619,
+  200: #fcbeaf,
+  300: #fcaf9c,
+  400: #fd8e73,
+  500: #f97a5a,
+  600: #fd6d48,
+  700: #f85a32,
+  800: #f84f25,
   900: #ff4112,
   contrast: (
-   50: rgba(black, 0.87),
-   100: rgba(black, 0.87),
-   200: rgba(black, 0.87),
-   300: white,
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: white,
     400: white,
     500: white,
     600: white,
     700: white,
     800: white,
     900: white,
- )
-  );
-$Viraj-primary: mat.define-palette($viraj-palette);
-$Viraj-accent: mat.define-palette($viraj-palette, 200, 100, 400);
-$Viraj-theme: mat.define-light-theme(
-  (color: (primary: $Viraj-primary,
-    accent: $Viraj-accent,
-    foreground: $viraj-palette,
-  ))
+  ),
+);
+$Vrajera-primary: mat.define-palette($viraj-palette);
+$Vrajera-accent: mat.define-palette($viraj-palette, 200, 100, 400);
+$Vrajera-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $Vrajera-primary,
+      accent: $Vrajera-accent,
+      foreground: $viraj-palette,
+    ),
+  )
 );
 
-  // Include theme styles for core and each component used in your app.
-  // Alternatively, you can import and @include the theme mixins for each component
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
-@include mat.all-component-themes($Viraj-theme);
-
+@include mat.all-component-themes($Vrajera-theme);
 /* You can add global styles to this file, and also import other style files */
 :root {
-  --Viraj-primary: #FF5E35;
-  --Viraj-primary-hover: #dc5331;
-  --Viraj-primary-hover-rgb: 255, 154, 129;
-  --Viraj-primary-rgb: 255, 94, 53;
-  --Viraj-primary: #FF5E35;
-  --Viraj-accent: #FFC220;
-  --Viraj-accent-hover: #FFB20F;
-  --Viraj-primary-tint: #FF5E35;
-  --Viraj-primary-shade: #FFE1C2;
-  --Viraj-primary-text: #962E40;
-  --Viraj-success: #038943;
-  --Viraj-background: white;
-  --Viraj-font: 'Lato', sans-serif;
-  --Viraj-font-bold: 'Lato', sans-serif;
-  --Viraj-font-regular: 'Lato', sans-serif;
-  --Viraj-font-light: 'Lato', sans-serif;
-  --Viraj-font-small: 12px;
-  --Viraj-font-medium: 14px;
-  --Viraj-font-large: 16px;
-  --Viraj-font-xlarge: 18px;
-  --Viraj-font-xxlarge: 20px;
-  --Viraj-font-xxxlarge: 22px;
-  --Viraj-font-xxxxlarge: 24px;
-  --Viraj-icon-small: 28px;
-  --Viraj-icon-medium: 24px;
-  --Viraj-icon-large: 26px;
-  --Viraj-icon-xlarge: 30px;
-  --Viraj-button-small: 14px;
-  --Viraj-button-medium: 18px;
-  --Viraj-button-medium: 18px;
-  --Viraj-button-medium: 24px;
-  --Viraj-border-default: 2px solid #ccc;
-  --Viraj-border-radius: 4px;
-  --Viraj-border-radius-large: 7px;
-  --Viraj-border-radius-xlarge: 14px;
-  --Viraj-shadow-light: 4px 1px 16px rgba(22, 22, 22, 0.1);
-  --Viraj-shadow-medium: 0px 4px 8px rgba(0, 0, 0, 0.25);
-  --Viraj-shadow-heavy: 0px 8px 16px rgba(0, 0, 0, 0.25);
+  --Vrajera-primary: #ff5e35;
+  --Vrajera-primary-hover: #dc5331;
+  --Vrajera-primary-hover-rgb: 255, 154, 129;
+  --Vrajera-primary-rgb: 255, 94, 53;
+  --Vrajera-primary: #ff5e35;
+  --Vrajera-accent: #ffc220;
+  --Vrajera-accent-hover: #ffb20f;
+  --Vrajera-primary-tint: #ff5e35;
+  --Vrajera-primary-shade: #ffe1c2;
+  --Vrajera-primary-text: #962e40;
+  --Vrajera-success: #038943;
+  --Vrajera-success-hover: #027d3d;
+  --Vrajera-success-hover-rgb: 2, 125, 61;
+  --Vrajera-danger: #962e40;
+  --Vrajera-danger-hover: #7f2636;
+  --Vrajera-danger-hover-rgb: 127, 38, 54;
+  --Vrajera-info: #4080c4;
+  --Vrajera-info-hover: #2e6ab0;
+  --Vrajera-info-hover-rgb: 46, 106, 176;
+  --Vrajera-background: white;
+  --Vrajera-font: "Roboto", sans-serif;
+  --Vrajera-font-bold: "Roboto", sans-serif;
+  --Vrajera-font-regular: "Roboto", sans-serif;
+  --Vrajera-font-light: "Roboto", sans-serif;
+  --Vrajera-font-small: 12px;
+  --Vrajera-font-medium: 14px;
+  --Vrajera-font-large: 16px;
+  --Vrajera-font-xlarge: 18px;
+  --Vrajera-font-xxlarge: 20px;
+  --Vrajera-font-xxxlarge: 22px;
+  --Vrajera-font-xxxxlarge: 24px;
+  --Vrajera-icon-small: 28px;
+  --Vrajera-icon-medium: 24px;
+  --Vrajera-icon-large: 26px;
+  --Vrajera-icon-xlarge: 30px;
+  --Vrajera-button-small: 14px;
+  --Vrajera-button-medium: 18px;
+  --Vrajera-button-medium: 18px;
+  --Vrajera-button-medium: 24px;
+  --Vrajera-border-default: 2px solid #ccc;
+  --Vrajera-border-radius: 4px;
+  --Vrajera-border-radius-large: 7px;
+  --Vrajera-border-radius-xlarge: 14px;
+  --Vrajera-shadow-light: 4px 1px 16px rgba(22, 22, 22, 0.1);
+  --Vrajera-shadow-medium: 0px 4px 8px rgba(0, 0, 0, 0.25);
+  --Vrajera-shadow-heavy: 0px 8px 16px rgba(0, 0, 0, 0.25);
 }
 
 html,
@@ -104,175 +260,218 @@ body {
 
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  font-family: var(--Viraj-font);
+  font-family: var(--Vrajera-font);
 }
 .button {
   border: none;
   padding: 15px;
   background: white;
-  font-size: var(--Viraj-font-large);
+  font-size: var(--Vrajera-font-large);
   font-weight: 600;
   cursor: pointer;
 }
-button[mat-flat-button],button[mat-raised-button]{
-  color:white !important;
+button[mat-flat-button][color="primary"],
+button[mat-raised-button][color="primary"] {
+  color: white !important;
 }
 
-.stroked{
-  border: 2px solid var(--Viraj-primary);
+.stroked {
+  border: 2px solid var(--Vrajera-primary);
   border-radius: 8px;
   padding: 8px 15px;
-  color:var(--Viraj-primary);
+  color: var(--Vrajera-primary);
   background: white;
-  font-size: var(--Viraj-font-large);
+  font-size: var(--Vrajera-font-large);
   font-weight: 600;
 }
 
-
 .mat-button-toggle-checked {
-  background-color: var(--Viraj-primary);
+  background-color: var(--Vrajera-primary);
   color: #ffffff !important;
 }
-.mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background .mdc-checkbox__checkmark,.mat-mdc-checkbox .mdc-checkbox .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background .mdc-checkbox__mixedmark{
-  color:white !important;
-  border-color:white !important;
+.mat-mdc-checkbox
+  .mdc-checkbox
+  .mdc-checkbox__native-control:enabled
+  ~ .mdc-checkbox__background
+  .mdc-checkbox__checkmark,
+.mat-mdc-checkbox
+  .mdc-checkbox
+  .mdc-checkbox__native-control:enabled
+  ~ .mdc-checkbox__background
+  .mdc-checkbox__mixedmark {
+  color: white !important;
+  border-color: white !important;
 }
 @media screen and (max-width: 1366px) {
-  :root{
-    --Viraj-font-small: 8px;
-    --Viraj-font-medium: 10.5px;
-    --Viraj-font-large: 12px;
-    --Viraj-font-xlarge: 14px;
-    --Viraj-font-xxlarge: 16px;
-    --Viraj-font-xxxlarge: 18px;
-    --Viraj-font-xxxxlarge: 20px;
-    --Viraj-icon-small: 10px;
-    --Viraj-icon-medium: 18px;
-    --Viraj-icon-large: 24px;
-    --Viraj-button-small: 6px;
-    h1{
-      font-size: var(--Viraj-font-xxxlarge);
+  :root {
+    --Vrajera-font-small: 8px;
+    --Vrajera-font-medium: 10.5px;
+    --Vrajera-font-large: 12px;
+    --Vrajera-font-xlarge: 14px;
+    --Vrajera-font-xxlarge: 16px;
+    --Vrajera-font-xxxlarge: 18px;
+    --Vrajera-font-xxxxlarge: 20px;
+    --Vrajera-icon-small: 10px;
+    --Vrajera-icon-medium: 18px;
+    --Vrajera-icon-large: 24px;
+    --Vrajera-button-small: 6px;
+    h1 {
+      font-size: var(--Vrajera-font-xxxlarge);
     }
-    h2{
-      font-size: var(--Viraj-font-xxlarge);
+    h2 {
+      font-size: var(--Vrajera-font-xxlarge);
     }
-    h3{
-      font-size: var(--Viraj-font-xlarge);
+    h3 {
+      font-size: var(--Vrajera-font-xlarge);
     }
-    h4{
-      font-size: var(--Viraj-font-large);
+    h4 {
+      font-size: var(--Vrajera-font-large);
     }
-    h5{
-      font-size: var(--Viraj-font-medium);
+    h5 {
+      font-size: var(--Vrajera-font-medium);
     }
-    h6{
-      font-size: var(--Viraj-font-small);
+    h6 {
+      font-size: var(--Vrajera-font-small);
     }
-    p{
-      font-size: var(--Viraj-font-medium);
+    p {
+      font-size: var(--Vrajera-font-medium);
     }
-    td{
-      font-size: var(--Viraj-font-medium);
-      img{
+    td {
+      font-size: var(--Vrajera-font-medium);
+      img {
         width: 20px;
       }
     }
-    label{
-      font-size: var(--Viraj-font-medium);
+    label {
+      font-size: var(--Vrajera-font-medium);
     }
     // i[class^="ri-"]{
     //   font-size: 12px;
     // }
-    .mat-button-toggle-button{
+    .mat-button-toggle-button {
       display: flex;
       align-items: center;
       justify-content: center;
-      .mat-button-toggle-label-content{
+      .mat-button-toggle-label-content {
         line-height: 35px !important;
         padding: 0px 4px;
-        font-size: var(--Viraj-font-medium);
+        font-size: var(--Vrajera-font-medium);
       }
     }
     --mdc-switch-handle-width: 12px;
     --mdc-switch-handle-height: 12px;
-    --mdc-switch-track-width:25px;
-    --mdc-switch-track-height:9px;
-    --mdc-switch-unselected-icon-size:10px;
-    --mdc-switch-selected-icon-size:10px;
-    .mat-mdc-tab.mdc-tab{
-      font-size: var(--Viraj-font-medium);
+    --mdc-switch-track-width: 25px;
+    --mdc-switch-track-height: 9px;
+    --mdc-switch-unselected-icon-size: 10px;
+    --mdc-switch-selected-icon-size: 10px;
+    .mat-mdc-tab.mdc-tab {
+      font-size: var(--Vrajera-font-medium);
       height: 30px !important;
     }
-    mat-tab-header{
-      font-size: var(--Viraj-font-xlarge);
+    mat-tab-header {
+      font-size: var(--Vrajera-font-xlarge);
     }
   }
 }
-i[class^="ri-"]{
+i[class^="ri-"] {
   text-align: center;
   display: flex;
   flex-direction: column;
   align-content: center;
   justify-content: center;
 }
-// jdiv#jvlabelWrap{
-//   display: none;
-// }
-// jdiv[class*=copy_],jdiv[class*=chatCopyright_]{
-//   display: none;
-// }
-/* hide the original widget - that there were no two labels on the screen*/
-#jvlabelWrap{
-	display: none;
-}
 
-// /* the default style - for offline messages if no one is online */
-// #jivo_custom_widget{
-// 	position: fixed;
-// 	left: -3px;
-// 	top: 30%;
-// 	width: 35px;
-// 	z-index: 300000;
-// 	cursor: pointer;
-
-// 	height: 170px;
-// 	background-image: url(/jivosite/images/jivo_widget_offline.png);
-// }
-
-// /* when you hover the label should be shifted to the right by 3px */
-// #jivo_custom_widget:hover{
-// 	left:0;
-// }
-
-// /* if there are operators online - show other label*/
-// #jivo_custom_widget.jivo_online{
-// 	height: 215px;
-// 	background-image: url(/jivosite/images/jivo_widget_online.png);
-// }
-.table{
+.table {
   width: 100%;
   border-collapse: collapse;
-  thead{
-      position: sticky;
-      top: 0;
+  thead {
+    position: sticky;
+    top: 0;
+    background: white;
+    tr {
+      padding: 15px;
+      border: 1px solid #ddd;
       background: white;
-      tr{
-          padding: 15px;
-          border: 1px solid #ddd;
-          background: white;
-          th{
-              padding: 10px;
-              border: 1px solid #ddd;
-          }
+      th {
+        padding: 10px;
+        border: 1px solid #ddd;
       }
+    }
   }
-  tbody{
-      tr{
-          td{
-              padding: 10px;
-              border: 1px solid #ddd;
-          }
+  tbody {
+    tr {
+      td {
+        padding: 10px;
+        border: 1px solid #ddd;
       }
+    }
   }
+}
+
+.customDialog {
+  z-index: 99999999;
+}
+.passwordAlert {
+  z-index: 99999999999;
+}
+.virajInput {
+  label {
+    position: absolute;
+    transform: translate(-150%, 10px);
+    font-size: var(--Vrajera-font-medium);
+    color: var(--Vrajera-primary);
+    transition: all 0.3s ease-in-out;
+    pointer-events: none;
+  }
+  input {
+    border: 2px solid var(--Vrajera-primary);
+    border-radius: 4px;
+    height: 35px;
+    padding: 0px 10px;
+    color: var(--Vrajera-primary);
+    font-size: var(--Vrajera-font-medium);
+    transition: all 0.3s ease-in-out;
+    input::placeholder {
+      opacity: 0;
+    }
+    &:focus {
+      outline: none;
+      border-bottom: 4px solid var(--Vrajera-primary);
+      & + label,
+      &:not(:placeholder-shown) + label {
+        transform: translate(-180%, -20px);
+      }
+    }
+  }
+  &:focus-within,
+  &.active {
+    input {
+      border-bottom: 4px solid var(--Vrajera-primary);
+      & + label,
+      &:not(:placeholder-shown) + label {
+        transform: translate(-180%, -20px);
+      }
+    }
+  }
+}
+
+.mat-mdc-tab-body-content {
+  overflow: hidden !important;
+}
+
+button {
+  cursor: pointer;
+}
+@keyframes shine {
+  to {
+    background-position-x: -200%;
+  }
+}
+
+.skeleton {
+  background: #eee;
+  background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+  border-radius: 5px;
+  background-size: 200% 100%;
+  animation: 1.5s shine linear infinite;
 }

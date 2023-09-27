@@ -1,0 +1,198 @@
+section {
+  display: flex;
+  &.cancelled {
+    * {
+      text-decoration: line-through !important;
+    }
+  }
+  .border {
+    background: white;
+    overflow: hidden;
+    min-width: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+  .main {
+    display: grid;
+    align-items: center;
+    grid-template-columns: 0.5fr 4fr 3.4fr;
+    padding: 10px;
+    padding-top: 15px;
+    border-left: 5px solid white;
+    border-bottom: 1px solid #ccc;
+    gap: 10px;
+    width: 100%;
+    .veg {
+      // vegetarian sign
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 2px solid #2ba063;
+      border-radius: 4px;
+      width: 20px;
+      height: 20px;
+
+      span {
+        width: 10px;
+        height: 10px;
+        border-radius: 10px;
+        background: #2ba063;
+      }
+      &.non {
+        border: 2px solid rgba(115, 17, 17, 0.688);
+        span {
+          background: rgba(115, 17, 17, 0.688);
+        }
+      }
+    }
+
+    .info {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-top: 5px;
+      p {
+        margin: 0px;
+      }
+
+      p.name {
+        font-size: var(--Vrajera-font-large);
+        overflow: hidden;
+        // word-break: break-all;
+      }
+
+      p.price {
+        color: rgb(131, 131, 131);
+      }
+      span{
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        white-space: nowrap;
+      }
+      .sellBy{
+        border: 1px solid var(--Vrajera-primary);
+        padding: 2px 5px;
+        background: white;
+        border-radius: 4px;
+        font-size: var(--Vrajera-font-small);
+        color:var(--Vrajera-font-small);
+      }
+    }
+
+    .more {
+      display: flex;
+      flex-direction: column;
+
+      .actions {
+        display: grid;
+        gap: 10px;
+        margin-bottom: 5px;
+        align-items: center;
+        grid-template-columns: 1fr 1fr 0.7fr 0.7fr;
+        select {
+          width: 80px;
+          border: 1px solid #bebebe;
+          padding: 5px;
+          text-align: center;
+          background: white;
+          border-radius: 4px;
+          font-size: var(--Vrajera-font-large);
+          box-shadow: var(--Vrajera-shadow-light);
+        }
+
+        .quantity {
+          display: grid;
+          grid-template-columns: 1fr 1.5fr 1fr;
+          gap: 5px;
+          input {
+            width: 60px;
+            border: none;
+            text-align: center;
+            font-size: var(--Vrajera-font-large);
+            border: 2px solid #bebebe;
+            border-radius: 4px;
+          }
+        }
+
+        .price{
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: var(--Vrajera-font-large);
+          font-weight: 600;
+        }
+
+        .iconButton {
+          border: none;
+          width: 28px;
+          height: 28px;
+          color: var(--Vrajera-primary);
+          background: white;
+          border-radius: 4px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      }
+
+      .infoStatement {
+        display: flex;
+        gap: 20px;
+        font-size: var(--Vrajera-font-medium);
+        strong {
+          color: var(--Vrajera-success);
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1650px) {
+  .main {
+    grid-template-areas: "veg info info" "veg more more";
+    .veg {
+      grid-area: veg;
+    }
+    .info {
+      grid-area: info;
+      display: grid !important;
+      grid-template-columns: 3fr 1fr;
+    }
+    .more {
+      grid-area: more;
+    }
+  }
+}
+@media screen and (max-width: 1366px) {
+  .main {
+    padding: 2px !important;
+  }
+  .actions {
+    select {
+      padding: 3px !important;
+      width: 50px !important;
+    }
+  }
+  .veg {
+    width: 15px !important;
+    height: 15px !important;
+    span {
+      width: 7px !important;
+      height: 7px !important;
+    }
+  }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}

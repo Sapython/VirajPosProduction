@@ -1,0 +1,68 @@
+<section>
+  <h2>Settle Bill</h2>
+  <div class="breakdown">
+    <div class="total">
+      <p>Bill Amount</p>
+      <span>
+        {{ billSum | currency: "INR" }}
+      </span>
+    </div>
+    <div class="total">
+      <p>Total Paid</p>
+      <span class="paid">
+        {{ totalPaid | currency: "INR" }}
+      </span>
+    </div>
+    <div class="total">
+      <p>Difference</p>
+      <span [ngClass]="{ red: billSum - totalPaid != 0 }">
+        {{ totalPaid - billSum | currency: "INR" }}
+      </span>
+    </div>
+  </div>
+  <hr />
+  <div class="methods">
+    <div class="method" *ngFor="let method of methods; let i = index">
+      <select [tabindex]="i + 1" #method [(ngModel)]="method.paymentMethod">
+        <option *ngFor="let item of method.paymentMethods" [value]="item">
+          {{ item }}
+        </option>
+      </select>
+      <input
+        type="number"
+        #numberInput
+        (focus)="numberInput.select()"
+        (keydown)="addOnReturn($event)"
+        [tabindex]="i + 2"
+        [(ngModel)]="method.amount"
+      />
+    </div>
+    <div class="addMethod" (click)="addMethod()">
+      <i class="ri-add-fill"></i> Add Method
+    </div>
+  </div>
+  <form [formGroup]="detailForm" *ngIf="customDetailRequired">
+    <mat-form-field appearance="outline">
+      <mat-label>Phone</mat-label>
+      <input type="tel" name="phone" matInput formControlName="phone" />
+    </mat-form-field>
+  </form>
+  <div class="actions">
+    <button
+      [tabindex]="methods.length + 4"
+      (click)="close()"
+      mat-stroked-button
+      color="primary"
+    >
+      Cancel
+    </button>
+    <button
+      [tabindex]="methods.length + 3"
+      (click)="settleBill()"
+      mat-flat-button
+      color="primary"
+    >
+      Submit
+    </button>
+  </div>
+</section>

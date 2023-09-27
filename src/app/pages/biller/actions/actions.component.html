@@ -1,0 +1,191 @@
+<section>
+  <div class="main" *ngIf="this.dataProvider.currentBill">
+    <div class="details">
+      <span>
+        <p>Order No.</p>
+        <strong>{{ dataProvider.currentBill?.orderNo }}</strong>
+      </span>
+      <span>
+        <p>Token No.</p>
+        <strong>{{
+          dataProvider.currentBill?.currentKot?.id ||
+            (dataProvider.currentBill?.kots || [])[
+              (dataProvider.currentBill?.kots || []).length - 1
+            ]?.id
+        }}</strong>
+      </span>
+      <span>
+        <p>Bill Total</p>
+        <strong>{{
+          dataProvider.currentBill?.billing?.grandTotal | currency: "INR"
+        }}</strong>
+      </span>
+      <span>
+        <p>Table No.</p>
+        <strong>{{ dataProvider.currentBill?.table?.name }}</strong>
+      </span>
+      <span *ngIf="this.dataProvider.currentBill?.stage == 'active'">
+        <mat-slide-toggle
+          [matTooltip]="
+            this.dataProvider.currentBill?.billing.discount.length > 0
+              ? 'Cannot apply NC to discounted bill'
+              : 'Click to apply'
+          "
+          [disabled]="
+            this.dataProvider.currentBill?.stage != 'active' ||
+            this.dataProvider.currentBill?.billing.discount.length > 0
+            || this.dataProvider.currentBill.totalProducts == 0
+          "
+          [(ngModel)]="isNonChargeable"
+          (change)="nonChargeable($event)"
+          >Non Chargable</mat-slide-toggle
+        >
+      </span>
+      <viraj-button
+        [noPropogation]="true"
+        *ngIf="
+          this.dataProvider.currentBill?.stage == 'active' &&
+          this.dataProvider.getAccess('manageKot')
+        "
+        [small]="true"
+        [minimalPadding]="true"
+        type="outline"
+        [disabled]="!this.dataProvider.currentBill || this.dataProvider.currentBill.totalProducts == 0"
+        (vclick)="
+          dataProvider.manageKot = !dataProvider.manageKot;
+          dataProvider.kotViewVisible = false;
+          dataProvider.manageKotChanged.next(dataProvider.manageKot);
+          toggleManageKot()
+        "
+        >{{
+          dataProvider.manageKot == true ? "Back" : "Manage KOT"
+        }}</viraj-button
+      >
+    </div>
+    <div
+      class="actions"
+      [ngClass]="{
+        withSettle:
+        this.dataProvider.getAccess('settleBill') &&
+        (
+          (
+            this.dataProvider.localSettings.directSettle && 
+            (this.dataProvider.currentBill?.stage == 'finalized' || this.dataProvider.currentBill?.stage == 'active')
+          ) 
+          || this.dataProvider.currentBill?.stage == 'finalized'
+        )
+      }"
+    >
+      <ng-container *ngIf="this.dataProvider.getAccess('applyDiscount')">
+        <viraj-button
+          [noPropogation]="true"
+          class="discount"
+          type="outline"
+          [disabled]="
+            !!this.dataProvider.currentBill?.nonChargeableDetail ||
+            !this.dataProvider.currentBill?.canBeDiscounted ||
+            this.dataProvider.currentBill.totalProducts == 0
+          "
+          [matTooltip]="
+            !!this.dataProvider.currentBill?.nonChargeableDetail
+              ? 'Cannot apply discount to NC bill'
+              : 'Click to apply'
+          "
+          (vclick)="addDiscount()"
+          >Discount</viraj-button
+        >
+      </ng-container>
+      <viraj-button
+        [noPropogation]="true"
+        type="outline"
+        matTooltip="Add a bill note on the printed bill."
+        *ngIf="this.dataProvider.getAccess('billNote')"
+        [disabled]="!this.dataProvider.getAccess('billNote') || this.dataProvider.currentBill.totalProducts == 0"
+        class="billNote"
+        (vclick)="
+          dataProvider.currentBill
+            ? dataProvider.currentBill.setInstruction()
+            : {}
+        "
+        >Bill Note</viraj-button
+      >
+      <viraj-button
+        type="outline"
+        class="preview"
+        [noPropogation]="true"
+        (vclick)="showPreview()"
+        *ngIf="this.dataProvider.getAccess('seePreview')"
+        >Preview</viraj-button
+      >
+      <!-- section one done -->
+      <ng-container *ngIf="this.dataProvider.currentBill?.stage == 'active'">
+        <viraj-button
+          class="printKot"
+          [noPropogation]="true"
+          *ngIf="
+            dataProvider.currentBill && this.dataProvider.getAccess('punchKot')
+          "
+          (vclick)="dataProvider.currentBill.finalizeAndPrintKot()"
+          [disabled]="this.dataProvider.currentBill.canPrintKot"
+          >Print KOT</viraj-button
+        >
+        <viraj-button color="success" class="finalize" (vclick)="finalizeBill()"
+          >Finalize Bill</viraj-button
+        >
+      </ng-container>
+      <viraj-button
+        color="success"
+        class="settle"
+        [noPropogation]="true"
+        (vclick)="settleBill()"
+        *ngIf="
+          this.dataProvider.getAccess('settleBill') &&
+          (
+            (
+              this.dataProvider.localSettings.directSettle && 
+              (this.dataProvider.currentBill?.stage == 'finalized' || this.dataProvider.currentBill?.stage == 'active')
+            ) 
+            || this.dataProvider.currentBill?.stage == 'finalized' || this.dataProvider.currentBill?.stage == 'hold'
+          )
+        "
+        >Settle Bill</viraj-button
+      >
+      <ng-container *ngIf="this.dataProvider.currentBill?.stage == 'finalized' || this.dataProvider.currentBill?.stage == 'hold'">
+        <viraj-button
+          class="split"
+          color="warning"
+          [noPropogation]="true"
+          *ngIf="this.dataProvider.getAccess('splitBill')"
+          [matTooltip]="
+            !!this.dataProvider.currentBill?.nonChargeableDetail
+              ? 'Cannot split an NC bill'
+              : 'Click to apply'
+          "
+          [disabled]="!!this.dataProvider.currentBill?.nonChargeableDetail"
+          (vclick)="splitAndSettle()"
+          >Split Bill</viraj-button
+        >
+        <viraj-button
+          class="cancel"
+          color="danger"
+          [noPropogation]="true"
+          *ngIf="this.dataProvider.getAccess('cancelBill')"
+          (vclick)="cancelBill()"
+          >Cancel</viraj-button
+        >
+      </ng-container>
+    </div>
+    <div class="quickSettle" *ngIf="this.dataProvider.currentBill.stage != 'hold' && this.dataProvider.currentBill.mode != 'dineIn'">
+      <viraj-button color="info" (vclick)="item.holdBill ? holdBill(item) : quickSettle(item)" *ngFor="let item of this.dataProvider.paymentMethods | quickSettle">Settle By {{item.name | titlecase}}</viraj-button>
+    </div>
+    <viraj-button
+      type="outline"
+      [noPropogation]="true"
+      [disabled]="!this.dataProvider.currentBill || dataProvider.currentBill.totalProducts == 0"
+      (vclick)="addCustomerInfo()"
+      *ngIf="(dataProvider.clientHeight | async) < 1500"
+      >Add Customer Info</viraj-button
+    >
+  </div>
+  <h3 *ngIf="!this.dataProvider.currentBill">Select a table to start a bill and details will appear</h3>
+</section>

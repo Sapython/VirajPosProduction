@@ -1,0 +1,31 @@
+<section>
+  <!-- <img src="assets/images/logo.png" alt="Vrajera"> -->
+  <div class="col main" (click)="clicked()">
+    <h1>Vrajera</h1>
+    <div class="row">
+      <div class="col">
+        <strong
+          ><p>
+            Stage &nbsp;&nbsp;<i>{{ stageNumber }}</i>
+          </p></strong
+        >
+        <p class="version">Version &nbsp;{{ version }}</p>
+      </div>
+      <viraj-button
+        [minimalPadding]="true"
+        [noPropogation]="true"
+        (vclick)="upgrade.emit()"
+        *ngIf="this.dataProvider.getAccess('updateBiller')"
+      >
+        <ng-container *ngIf="(dataProvider.clientWidth | async) >= 1366"
+          >Update</ng-container
+        >
+        <!-- <mat-icon>upgrade</mat-icon>/ -->
+        <i
+          *ngIf="(dataProvider.clientWidth | async) < 1366"
+          class="ri-upload-cloud-line"
+        ></i>
+      </viraj-button>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,883 @@
+<main>
+  <section
+    [@zoomInOnEnter]
+    [@zoomOutOnLeave]
+    *ngIf="onboardingService.stage == 'noUser'"
+  >
+    <img src="assets/images/viraj.png" alt="Vrajera" />
+    <h1>Welcome to <strong>Vrajera</strong></h1>
+    <form
+      [formGroup]="loginForm"
+      (ngSubmit)="login()"
+      *ngIf="dataProvider.isAuthStateAvaliable"
+    >
+      <mat-form-field appearance="outline">
+        <mat-label>Username</mat-label>
+        <input
+          matInput
+          formControlName="username"
+          type="text"
+          placeholder="Username"
+          required
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input
+          matInput
+          formControlName="password"
+          type="password"
+          placeholder="Password"
+          required
+          #password
+        />
+        <button
+          color="primary"
+          matSuffix
+          tabindex="-1"
+          type="button"
+          *ngIf="password.type == 'password'"
+          (click)="
+            password.type == 'password'
+              ? (password.type = 'text')
+              : (password.type = 'password')
+          "
+          mat-icon-button
+        >
+          <mat-icon>visibility</mat-icon>
+        </button>
+        <button
+          color="primary"
+          matSuffix
+          tabindex="-1"
+          type="button"
+          *ngIf="!(password.type == 'password')"
+          (click)="
+            password.type == 'password'
+              ? (password.type = 'text')
+              : (password.type = 'password')
+          "
+          mat-icon-button
+        >
+          <mat-icon>visibility_off</mat-icon>
+        </button>
+      </mat-form-field>
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="mode = 'login'"
+        [disabled]="!loginForm.valid"
+      >
+        Login
+      </button>
+      <button
+        type="button"
+        mat-stroked-button
+        color="primary"
+        (click)="onboardingService.startResetPassword()"
+      >
+        Forgot Password
+      </button>
+      <!-- <button
+        mat-flat-button
+        color="primary"
+        (click)="mode = 'signup'"
+        [disabled]="!loginForm.valid"
+      >
+        Signup
+      </button> -->
+      <viraj-button
+        color="primary"
+        (click)="onboardingService.stage = 'onboardingStep1'"
+        >Create an account</viraj-button
+      >
+    </form>
+    <div *ngIf="!dataProvider.isAuthStateAvaliable" class="center">
+      <mat-spinner></mat-spinner>
+    </div>
+  </section>
+  <section
+    [@zoomInOnEnter]
+    [@zoomOutOnLeave]
+    *ngIf="
+      onboardingService.stage == 'resetPasswordStage1' ||
+      onboardingService.stage == 'resetPasswordStage2' ||
+      onboardingService.stage == 'resetPasswordStage3'
+    "
+  >
+    <img src="assets/images/viraj.png" alt="Vrajera" />
+    <h1>Reset Password</h1>
+    <ng-container *ngIf="onboardingService.stage == 'resetPasswordStage1'">
+      <form
+        [formGroup]="resetPasswordFormVerification"
+        (ngSubmit)="checkRestMail()"
+      >
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input
+            matInput
+            formControlName="email"
+            type="email"
+            placeholder="Email"
+            required
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Username</mat-label>
+          <input
+            matInput
+            formControlName="username"
+            type="text"
+            placeholder="Username"
+            required
+          />
+        </mat-form-field>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="!resetPasswordFormVerification.valid"
+        >
+          Send Reset OTP
+        </button>
+
+      </form>
+    </ng-container>
+    <ng-container *ngIf="onboardingService.stage == 'resetPasswordStage2'">
+      <form [formGroup]="resetPasswordForm" (ngSubmit)="resetPassword()">
+        <mat-form-field appearance="outline">
+          <mat-label>OTP</mat-label>
+          <input
+            matInput
+            formControlName="otp"
+            type="text"
+            placeholder="OTP"
+            required
+          />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>New Password</mat-label>
+          <input
+            matInput
+            formControlName="password"
+            type="password"
+            placeholder="Password"
+            required
+            #password
+          />
+          <button
+            color="primary"
+            matSuffix
+            tabindex="-1"
+            type="button"
+            *ngIf="password.type == 'password'"
+            (click)="
+              password.type == 'password'
+                ? (password.type = 'text')
+                : (password.type = 'password')
+            "
+            mat-icon-button
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button
+            color="primary"
+            matSuffix
+            tabindex="-1"
+            type="button"
+            *ngIf="!(password.type == 'password')"
+            (click)="
+              password.type == 'password'
+                ? (password.type = 'text')
+                : (password.type = 'password')
+            "
+            mat-icon-button
+          >
+            <mat-icon>visibility_off</mat-icon>
+          </button>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Confirm Password</mat-label>
+          <input
+            matInput
+            formControlName="confirmPassword"
+            type="password"
+            placeholder="Confirm Password"
+            required
+            #confirmPassword
+          />
+          <button
+            color="primary"
+            matSuffix
+            tabindex="-1"
+            type="button"
+            *ngIf="confirmPassword.type == 'password'"
+            (click)="
+              confirmPassword.type == 'password'
+                ? (confirmPassword.type = 'text')
+                : (confirmPassword.type = 'password')
+            "
+            mat-icon-button
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button
+            color="primary"
+            matSuffix
+            tabindex="-1"
+            type="button"
+            *ngIf="!(confirmPassword.type == 'password')"
+            (click)="
+              confirmPassword.type == 'password'
+                ? (confirmPassword.type = 'text')
+                : (confirmPassword.type = 'password')
+            "
+            mat-icon-button
+          >
+            <mat-icon>visibility_off</mat-icon>
+          </button>
+        </mat-form-field>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="!resetPasswordForm.valid"
+        >
+          Reset Password
+        </button>
+        <button
+              color="primary"
+              mat-stroked-button
+              (click)="
+                this.dataProvider.currentUser?.business.length > 1
+                  ? (onboardingService.stage = 'multipleBusiness')
+                  : this.dataProvider.currentUser?.business.length == 1
+                  ? (onboardingService.stage = 'virajReady')
+                  : (onboardingService.stage = 'noUser')
+              "
+            >
+              Cancel
+            </button>
+      </form>
+    </ng-container>
+  </section>
+  <section
+    [@zoomInOnEnter]
+    [@zoomOutOnLeave]
+    *ngIf="onboardingService.stage == 'validityExpired'"
+  >
+    <h3>Your validity is expired</h3>
+    <p>Please contact +919621062111 to renew your validity.</p>
+    <viraj-button color="primary" type="outline" (click)="logout()"
+      >Logout</viraj-button
+    >
+  </section>
+  <section
+    [@zoomInOnEnter]
+    [@zoomOutOnLeave]
+    *ngIf="onboardingService.stage == 'businessError'"
+  >
+    <h3>Logged in with {{ this.dataProvider.currentUser?.username }}</h3>
+    <p>
+      There is some serious issue with your business account. Please call our
+      support to get your account fixed.
+    </p>
+    <viraj-button color="primary" type="outline" (click)="logout()"
+      >Logout</viraj-button
+    >
+  </section>
+  <section
+    style="z-index: 9"
+    class="flexList"
+    [@zoomInOnEnter]
+    [@zoomOutOnLeave]
+    *ngIf="
+      onboardingService.stage == 'userExists' ||
+      onboardingService.stage == 'virajReady'
+    "
+  >
+    <h3>Logged in with {{ this.dataProvider.currentUser?.username }}</h3>
+    <ng-container *ngIf="onboardingService.stage == 'userExists'">
+      <p>Please wait we are preparing <strong>Vrajera</strong></p>
+      <div class="center">
+        <mat-spinner [diameter]="30"></mat-spinner>
+      </div>
+      <p class="textCenter">{{ onboardingService.loadingSteps | async }}</p>
+      <viraj-button color="primary" type="outline" (click)="logout()"
+        >Logout</viraj-button
+      >
+    </ng-container>
+    <ng-container *ngIf="onboardingService.stage == 'virajReady'">
+      <p>Vrajera is ready to use</p>
+      <viraj-button
+        style="margin-bottom: 10px"
+        color="primary"
+        routerLink="../biller"
+        >Continue To Vrajera</viraj-button
+      >
+      <viraj-button color="primary" type="outline" (click)="logout()"
+        >Logout</viraj-button
+      >
+    </ng-container>
+  </section>
+  <section
+    [@zoomInOnEnter]
+    class="multipleBusiness"
+    *ngIf="onboardingService.stage == 'chooseCounters'"
+  >
+    <h1>Choose a counter</h1>
+    <p>
+      These are all counters available on
+      <strong>{{ this.dataProvider.currentBusiness.hotelName }}</strong>
+    </p>
+    <div class="businessWrapper" >
+      <app-counter-card (click)="onboardingService.selectCounter(counter)" *ngFor="let counter of dataProvider.billerCounters" [counter]="counter">
+      </app-counter-card>
+    </div>
+    <div class="actions">
+      <viraj-button color="primary" type="outline" (click)="logout()"
+        >Logout</viraj-button
+      >
+    </div>
+  </section>
+  <section
+    [@zoomInOnEnter]
+    class="multipleBusiness"
+    *ngIf="onboardingService.stage == 'multipleBusiness'"
+  >
+    <h1>Choose a business</h1>
+    <p>
+      These are all accounts available on
+      <strong>{{ this.dataProvider.currentUser?.username }}</strong>
+    </p>
+    <ng-container *ngIf="!this.onboardingService.currentAreaState">
+      <p>Select State</p>
+      <div class="businessWrapper">
+        <app-area-card
+          [@zoomInOnEnter]
+          [areaName]="state.state"
+          *ngFor="let state of this.onboardingService.groupedBusiness"
+          (click)="this.onboardingService.currentAreaState = state"
+        ></app-area-card>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!this.onboardingService.currentAreaCity && this.onboardingService.currentAreaState">
+      <p>Select City</p>
+      <div class="businessWrapper">
+        <app-area-card
+          [@zoomInOnEnter]
+          [areaName]="city.city"
+          *ngFor="let city of this.onboardingService.currentAreaState.cities"
+          (click)="this.onboardingService.currentAreaCity = city"
+        ></app-area-card>
+      </div>
+    </ng-container>
+    <ng-container
+      *ngIf="
+        this.onboardingService.currentAreaCity &&
+        this.onboardingService.currentAreaState &&
+        this.dataProvider.currentUser
+      "
+    >
+      <p>Select Outlet</p>
+      <div class="businessWrapper">
+        <app-business-card
+          (click)="setDefaultAccount(business)"
+          [@zoomInOnEnter]
+          [userId]="this.dataProvider.currentUser.username"
+          *ngFor="let business of this.onboardingService.currentAreaCity.businesses"
+          [business]="business"
+        ></app-business-card>
+        <app-new-business-card *ngIf="onboardingService.atLeastOneAdmin"
+          (click)="autoOnboard()"
+          [@zoomInOnEnter]
+        ></app-new-business-card>
+      </div>
+    </ng-container>
+    <div class="actions">
+      <viraj-button color="primary" type="outline" (click)="logout()"
+        >Logout</viraj-button
+      >
+    </div>
+  </section>
+  <section
+    class="onboardingForm"
+    [@zoomInOnEnter]
+    [@zoomOutOnLeave]
+    *ngIf="
+      onboardingService.stage == 'onboardingStep1' ||
+      onboardingService.stage == 'onboardingStep2' ||
+      onboardingService.stage == 'onboardingStep3'
+    "
+    class="onboarding"
+  >
+    <!-- <p>onboarding</p> -->
+    <mat-stepper #onboardingStepper [linear]="false">
+      <mat-step label="Welcome" state="flag">
+        <div>
+          <h1>Welcome to <strong>Vrajera</strong></h1>
+          <p>The restaurant <strong>standard</strong> for modern age.</p>
+          <h3>Let's get started</h3>
+          <h3></h3>
+          <div class="actions">
+            <button
+              color="primary"
+              mat-stroked-button
+              (click)="
+                this.dataProvider.currentUser?.business.length > 1
+                  ? (onboardingService.stage = 'multipleBusiness')
+                  : this.dataProvider.currentUser?.business.length == 1
+                  ? (onboardingService.stage = 'virajReady')
+                  : (onboardingService.stage = 'noUser')
+              "
+            >
+              Cancel
+            </button>
+            <button color="primary" mat-flat-button matStepperNext>
+              Become a part
+            </button>
+          </div>
+        </div>
+      </mat-step>
+      <mat-step
+        label="Register"
+        [stepControl]="onboardingBusinessForm"
+        errorMessage="Missing basic details"
+        state="edit_note"
+      >
+        <div>
+          <h1>Let's get started</h1>
+          <form
+            [formGroup]="onboardingBusinessForm"
+            class="onboarding"
+            (ngSubmit)="saveBusinessDetails()"
+          >
+            <mat-form-field appearance="outline">
+              <mat-label>Business Name</mat-label>
+              <input type="text" matInput formControlName="name" #business />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Phone</mat-label>
+              <input type="tel" matInput formControlName="phone" />
+            </mat-form-field>
+            <div class="addressLine">
+              <mat-form-field appearance="outline">
+                <mat-label>Address</mat-label>
+                <input type="text" matInput formControlName="address" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>States</mat-label>
+                <mat-select formControlName="state">
+                  <mat-option
+                    [value]="state"
+                    *ngFor="let state of statesAndCities"
+                    >{{ state.state }}</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>City</mat-label>
+                <mat-select
+                  formControlName="city"
+                  [disabled]="
+                    !this.onboardingBusinessForm.value.state.districts
+                  "
+                >
+                  <mat-option
+                    [value]="city"
+                    *ngFor="
+                      let city of this.onboardingBusinessForm.value.state
+                        .districts
+                    "
+                    >{{ city }}</mat-option
+                  >
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <mat-form-field appearance="outline">
+              <app-helper *ngIf="this.onboardingService.autoOutletFromEmail" matSuffix tooltip="This email is prefilled so that the new outlet you register is under the same id. If you change this it will not appear as an outlet under this account."></app-helper>
+              <mat-label>Email</mat-label>
+              <input type="email" matInput formControlName="email" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>FSSAI</mat-label>
+              <input type="text" matInput formControlName="fssai" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>GST</mat-label>
+              <input type="text" matInput formControlName="gst" />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Username</mat-label>
+              <input
+                type="text"
+                matInput
+                formControlName="username"
+                (input)="checkUsername.next(username.value)"
+                #username
+              />
+              <mat-hint
+                *ngIf="
+                  userNameAvailable == 'unavailable' &&
+                  username.value &&
+                  !checkingUsername
+                "
+                >Username already exists</mat-hint
+              >
+              <mat-hint
+                *ngIf="
+                  userNameAvailable == 'available' &&
+                  username.value &&
+                  !checkingUsername
+                "
+                class="success"
+                ><strong>Great</strong> you can use this username</mat-hint
+              >
+              <mat-hint
+                *ngIf="
+                  userNameAvailable == 'invalid' &&
+                  username.value &&
+                  !checkingUsername
+                "
+                class="error"
+                ><strong>Invalid</strong> you cannot use this username</mat-hint
+              >
+              <mat-spinner
+                *ngIf="checkingUsername"
+                matSuffix
+                [diameter]="18"
+                style="float: right; margin-left: 8px"
+              ></mat-spinner>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Account Password</mat-label>
+              <input
+                type="password"
+                formControlName="password"
+                matInput
+                #accPassword
+              />
+              <mat-error
+                *ngIf="
+                  onboardingBusinessForm.controls['password'].errors &&
+                  onboardingBusinessForm.controls['password'].errors['required']
+                "
+              >
+                Please enter a password
+              </mat-error>
+              <mat-error
+                *ngIf="
+                  onboardingBusinessForm.controls['password'].errors &&
+                  onboardingBusinessForm.controls['password'].errors[
+                    'minlength'
+                  ]
+                "
+              >
+                Password must be at least 8 characters long.
+              </mat-error>
+              <mat-error
+                *ngIf="!(accConfirmPassword.value == accPassword.value)"
+              >
+                Password don't match.
+              </mat-error>
+              <button
+                color="primary"
+                matSuffix
+                tabindex="-1"
+                type="button"
+                *ngIf="accPassword.type == 'password'"
+                (click)="
+                  accPassword.type == 'password'
+                    ? (accPassword.type = 'text')
+                    : (accPassword.type = 'password')
+                "
+                mat-icon-button
+              >
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button
+                color="primary"
+                matSuffix
+                tabindex="-1"
+                type="button"
+                *ngIf="!(accPassword.type == 'password')"
+                (click)="
+                  accPassword.type == 'password'
+                    ? (accPassword.type = 'text')
+                    : (accPassword.type = 'password')
+                "
+                mat-icon-button
+              >
+                <mat-icon>visibility_off</mat-icon>
+              </button>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Confirm Account Password</mat-label>
+              <input
+                type="password"
+                formControlName="confirmPassword"
+                matInput
+                #accConfirmPassword
+              />
+              <mat-error
+                *ngIf="
+                  onboardingBusinessForm.controls['confirmPassword'].errors &&
+                  onboardingBusinessForm.controls['confirmPassword'].errors[
+                    'required'
+                  ]
+                "
+              >
+                Please enter a password
+              </mat-error>
+              <mat-error
+                *ngIf="
+                  onboardingBusinessForm.controls['confirmPassword'].errors &&
+                  onboardingBusinessForm.controls['confirmPassword'].errors[
+                    'minlength'
+                  ]
+                "
+              >
+                Password must be at least 8 characters long.
+              </mat-error>
+              <mat-error
+                *ngIf="!(accConfirmPassword.value == accPassword.value)"
+              >
+                Password don't match.
+              </mat-error>
+              <button
+                color="primary"
+                matSuffix
+                tabindex="-1"
+                type="button"
+                *ngIf="accConfirmPassword.type == 'password'"
+                (click)="
+                  accConfirmPassword.type == 'password'
+                    ? (accConfirmPassword.type = 'text')
+                    : (accConfirmPassword.type = 'password')
+                "
+                mat-icon-button
+              >
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button
+                color="primary"
+                matSuffix
+                tabindex="-1"
+                type="button"
+                *ngIf="!(accConfirmPassword.type == 'password')"
+                (click)="
+                  accConfirmPassword.type == 'password'
+                    ? (accConfirmPassword.type = 'text')
+                    : (accConfirmPassword.type = 'password')
+                "
+                mat-icon-button
+              >
+                <mat-icon>visibility_off</mat-icon>
+              </button>
+            </mat-form-field>
+            <button
+              color="primary"
+              (click)="checkPassword(onboardingStepper)"
+              [disabled]="!onboardingBusinessForm.valid"
+              mat-flat-button
+            >
+              Continue
+            </button>
+          </form>
+        </div>
+      </mat-step>
+      <mat-step label="Menu" state="menu_book">
+        <form [formGroup]="addNewMenuForm">
+          <div class="modes">
+            <mat-slide-toggle
+              [(ngModel)]="this.dataProvider.activeModes[0]"
+              [ngModelOptions]="{ standalone: true }"
+              [checked]="true"
+              [disabled]="twoModeDeactived && this.dataProvider.activeModes[0]"
+              >Dine In</mat-slide-toggle
+            >
+            <mat-slide-toggle
+              [(ngModel)]="this.dataProvider.activeModes[1]"
+              [ngModelOptions]="{ standalone: true }"
+              [checked]="true"
+              [disabled]="twoModeDeactived && this.dataProvider.activeModes[1]"
+              >Takeaway</mat-slide-toggle
+            >
+            <mat-slide-toggle
+              [(ngModel)]="this.dataProvider.activeModes[2]"
+              [ngModelOptions]="{ standalone: true }"
+              [checked]="true"
+              [disabled]="twoModeDeactived && this.dataProvider.activeModes[2]"
+              >Online</mat-slide-toggle
+            >
+          </div>
+          <mat-form-field appearance="outline">
+            <mat-label>Menu Name</mat-label>
+            <input type="text" matInput formControlName="name" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Menu Description</mat-label>
+            <textarea
+              type="text"
+              matInput
+              formControlName="description"
+            ></textarea>
+          </mat-form-field>
+          <div class="actions">
+            <input
+              type="file"
+              (change)="readFormat($event)"
+              #menuUploader
+              hidden
+            />
+            <!-- show uploaded file name -->
+            <div class="upload">
+              <span *ngIf="menuUploader.files.length > 0">
+                <strong>{{ menuUploader.files[0].name }}</strong>
+                <viraj-button type="icon"></viraj-button>
+              </span>
+            </div>
+            <viraj-button type="outline" (click)="menuUploader.click()"
+              >Upload Excel</viraj-button
+            >
+            <viraj-button type="outline" (click)="downloadFormat()"
+              >Download Excel Format</viraj-button
+            >
+            <viraj-button type="outline" (click)="addCategory()"
+              >Add Category</viraj-button
+            >
+          </div>
+          <div class="loadedCategories">
+            <mat-accordion class="example-headers-align">
+              <mat-expansion-panel *ngFor="let category of rootCategories">
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    {{ category.name }}
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="actions categoryAction">
+                  <viraj-button type="outline" (click)="addProduct(category)"
+                    >Add Product</viraj-button
+                  >
+                  <viraj-button
+                    type="outline"
+                    (click)="deleteCategory(category)"
+                    >Delete Category</viraj-button
+                  >
+                </div>
+                <div class="products">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>
+                          <mat-checkbox
+                            [checked]="checkedAll(category)"
+                            (change)="switchAll($event, category)"
+                            >Product Name</mat-checkbox
+                          >
+                        </th>
+                        <th>Price</th>
+                        <th>Tag</th>
+                        <th>Type</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let product of category.products">
+                        <td>
+                          <mat-checkbox
+                            [ngModelOptions]="{ standalone: true }"
+                            [(ngModel)]="product.selected"
+                            >{{ product.name }}</mat-checkbox
+                          >
+                        </td>
+                        <td>
+                          <mat-form-field appearance="outline">
+                            <mat-label>Price</mat-label>
+                            <input
+                              matInput
+                              type="number"
+                              [ngModelOptions]="{ standalone: true }"
+                              [(ngModel)]="product.price"
+                            />
+                          </mat-form-field>
+                        </td>
+                        <td>
+                          <mat-form-field appearance="outline">
+                            <mat-label>Select Tag</mat-label>
+                            <mat-select
+                              [ngModelOptions]="{ standalone: true }"
+                              [(ngModel)]="product.tag"
+                              name="label"
+                            >
+                              <mat-option
+                                *ngFor="let label of tags"
+                                [value]="label"
+                              >
+                                {{ label.name | titlecase }}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </td>
+                        <td>
+                          <mat-form-field appearance="outline">
+                            <mat-label>Select Type</mat-label>
+                            <mat-select
+                              placeholder="Tag"
+                              [ngModelOptions]="{ standalone: true }"
+                              [(ngModel)]="product.type"
+                              name="tag"
+                            >
+                              <mat-option
+                                *ngFor="let tag of type"
+                                [value]="tag"
+                              >
+                                {{ tag }}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+          <button
+            color="primary"
+            [disabled]="!addNewMenuForm.valid"
+            mat-flat-button
+            matStepperNext
+          >
+            Continue
+          </button>
+        </form>
+      </mat-step>
+      <mat-step label="Complete" state="done_all">
+        <h1>Completed</h1>
+        <p>
+          All the steps are done now. Press <strong>onboard me</strong> to
+          register yourself.
+        </p>
+        <p>You can go back to steps to check the details.</p>
+        <hr />
+        <viraj-button
+          *ngIf="!this.onboardingStarted"
+          type="solid"
+          [animated]="true"
+          [disabled]="!everythingDone"
+          (vclick)="completeOnboarding()"
+          [extraLarge]="true"
+          >Onboard Me</viraj-button
+        >
+        <ng-container *ngIf="this.onboardingStarted">
+          <h3><strong>Please wait</strong></h3>
+          <p class="textCenter">{{ loginStage | async }}</p>
+          <div class="center">
+            <mat-spinner mode="indeterminate"> </mat-spinner>
+          </div>
+        </ng-container>
+      </mat-step>
+    </mat-stepper>
+  </section>
+</main>

@@ -1,0 +1,60 @@
+<table id="reportTable">
+	<thead>
+	  <tr>
+		<th>Bill No</th>
+		<th>Token No</th>
+		<th>Date-Time</th>
+		<th>Bill Kots</th>
+		<th>Subtotal</th>
+		<th>Taxes</th>
+		<th>Bill Amount</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr *ngFor="let bill of consolidatedSummary.bills">
+		<td>
+		  {{ bill.billNo || "Unsettled" }}
+		</td>
+		<td>
+		  {{ bill.orderNo || 'N/A' }}
+		</td>
+		<td>
+		  {{ bill.createdDate.toDate() | date : "short" }}
+		</td>
+		<td>
+		  {{ joinArray(bill.kots)  || 'N/A'}}
+		</td>
+		<td>
+		  {{ bill.billing.subTotal | currency:'INR'}}
+		</td>
+		<td>
+		  <li *ngFor="let tax of bill.billing.taxes">
+			{{ tax.name }} - {{ tax.amount | currency:'INR'}}
+		  </li>
+		</td>
+		<td>
+		  {{ bill.billing.grandTotal | currency:'INR'}}
+		</td>
+	  </tr>
+	</tbody>
+  </table>
+  <table id="reportTable">
+	<tbody>
+	  <tr>
+		<td>Bills</td>
+		<td>{{ consolidatedSummary.bills.length }}</td>
+	  </tr>
+	  <tr>
+		<td>Total Taxable Value</td>
+		<td>{{ consolidatedSummary.totalSubtotal | currency:'INR'}}</td>
+	  </tr>
+	  <tr *ngFor="let tax of consolidatedSummary.totalTaxes">
+		<td>{{ tax.name }}</td>
+		<td>{{ tax.amount | currency:'INR'}}</td>
+	  </tr>
+	  <tr>
+		<td>Grand Total</td>
+		<td>{{ consolidatedSummary.totalGrandTotal | currency:'INR'}}</td>
+	  </tr>
+	</tbody>
+  </table>

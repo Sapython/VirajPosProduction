@@ -1,0 +1,71 @@
+<table id="reportTable" *ngIf="!loading">
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th>Bills</th>
+      <th>Kots</th>
+      <th>Quantity</th>
+      <th>Price</th>
+      <th>Amount</th>
+    </tr>
+  </thead>
+  <tbody>
+    <ng-container *ngIf="(products | async).length > 0">
+      <tr *ngFor="let product of products | async">
+        <td>
+          {{ product.name  || 'N/A'}}
+        </td>
+        <td>
+          {{ (product.bills.length > 0 ? product.bills : "Unsettled") || 'N/A' }}
+        </td>
+        <td>
+          {{ product.kots  || 'N/A'}}
+        </td>
+        <td>
+          {{ product.quantity || 'N/A' }}
+        </td>
+        <td>
+          {{ product.price || 'N/A' }}
+        </td>
+        <td>
+          {{ product.quantity * product.price  || 'N/A'}}
+        </td>
+      </tr>
+      <tr class="totals noWrap">
+        <!-- total -->
+        <td style="font-weight: bold">
+          TOTALS:
+          {{ totals.totalNumberOfProducts }}
+        </td>
+        <td style="font-weight: bold">
+          {{ totals.totalNumberOfBills }}
+        </td>
+        <td style="font-weight: bold">
+          {{ totals.totalNumberOfKots }}
+        </td>
+        <td style="font-weight: bold">
+          {{ totals.totalQuantity }}
+        </td>
+        <td style="font-weight: bold">
+          {{ totals.totalPrice }}
+        </td>
+        <td style="font-weight: bold">
+          {{ totals.totalAmount }}
+        </td>
+      </tr>
+    </ng-container>
+    <tr *ngIf="(products | async).length == 0">
+      <td
+        colspan="5"
+        style="
+          text-align: center;
+          font-weight: bold;
+          font-size: 1.2rem;
+          color: #aaa;
+        "
+      >
+        <p>No Data Available</p>
+      </td>
+    </tr>
+  </tbody>
+</table>

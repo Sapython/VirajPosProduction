@@ -1,0 +1,52 @@
+<main [ngClass]="{ withBar: this.dataProvider.offline }">
+  <app-sidebar></app-sidebar>
+  <section class="mainPanel" [ngClass]="{ smartMode: dataProvider.smartMode }">
+    <app-search-panel></app-search-panel>
+    <app-products-panel
+      [ngClass]="{ smartMode: dataProvider.smartMode }"
+    ></app-products-panel>
+    <section
+      class="smartSection"
+      *ngIf="
+        dataProvider.smartMode && (this.dataProvider.clientWidth | async) > 1150
+      "
+    >
+      <app-recommended></app-recommended>
+      <app-emergency></app-emergency>
+    </section>
+    <section
+      class="smartSection"
+      *ngIf="
+        dataProvider.smartMode && (this.dataProvider.clientWidth | async) < 1150
+      "
+    >
+      <mat-tab-group>
+        <mat-tab label="Recommendations">
+          <app-recommended></app-recommended>
+        </mat-tab>
+        <mat-tab label="Alerts">
+          <app-emergency></app-emergency>
+        </mat-tab>
+      </mat-tab-group>
+    </section>
+  </section>
+  <section class="action">
+    <app-system></app-system>
+    <app-active-kot
+      [ngClass]="{
+        active: dataProvider.moreActions,
+        smartMode: !dataProvider.smartMode,
+        expanded: (dataProvider.clientHeight | async) < 890,
+        noSmartExpanded: (dataProvider.clientHeight | async) < 890
+      }"
+    ></app-active-kot>
+    <app-actions></app-actions>
+    <ng-container *ngIf="(dataProvider.clientHeight | async) >= 1500">
+      <app-customer-panel
+        [isDialog]="false"
+        [padding]="false"
+        [ngClass]="{ smartMode: !dataProvider.smartMode }"
+      ></app-customer-panel>
+    </ng-container>
+  </section>
+</main>

@@ -1,0 +1,170 @@
+<section
+  *ngIf="product"
+  [ngClass]="{ cancelled: product.cancelled }"
+  [matMenuTriggerFor]="
+    manageKot &&
+    (this.dataProvider.getAccess('lineDiscount') ||
+      this.dataProvider.getAccess('lineCancel')) &&
+    !cancelled &&
+    !disabled &&
+    product.itemType == 'product'
+      ? menu
+      : null
+  "
+>
+  <div
+    class="border"
+    (mouseenter)="showKotNo = true"
+    (mouseleave)="showKotNo = false"
+    [ngStyle]="{
+      background: this.kotNoColors[kotNo % this.kotNoColors.length]?.color,
+      padding: showKotNo ? '10px' : '0px'
+    }"
+  >
+    <p
+      *ngIf="showKotNo"
+      [ngStyle]="{
+        color: this.kotNoColors[kotNo % this.kotNoColors.length]?.contrast
+      }"
+    >
+      {{ kotId }}
+    </p>
+  </div>
+  <div class="main">
+    <span class="veg" *ngIf="!showKotNo" [ngClass]="{ non: nonVeg }">
+      <span></span>
+    </span>
+    <div *ngIf="showKotNo"></div>
+    <div class="info">
+      <p class="name">{{ productName | titlecase }}</p>
+      <span>
+        <p class="price" *ngIf="(product.sellByAvailable && product.sellBy == 'quantity') || !product.sellByAvailable">{{ (price * quantity) | currency: "INR" }}</p>
+        <p class="price" *ngIf="(product.sellByAvailable && product.sellBy == 'price')">Qty: {{quantity }}</p>
+        <select (change)="setAmountInput()" [disabled]="(dataProvider.manageKot == true && !editMode) || disabled" class="sellBy" [(ngModel)]="product.sellBy" *ngIf="product.sellByAvailable">
+          <option value="quantity">By Quantity</option>
+          <option value="price">By Price</option>
+        </select>
+      </span>
+    </div>
+    <div class="more">
+      <div class="actions">
+        <select
+          [disabled]="dataProvider.manageKot == true || disabled"
+          *ngIf="variations.length > 0"
+        >
+          <option [value]="config.price" *ngFor="let config of variations">
+            {{ config.name }}
+          </option>
+        </select>
+        <div class="quantity price" *ngIf="product.sellByAvailable && product.sellBy == 'price'">
+          <span>&#8377;</span>
+          <input
+            [disabled]="
+              (dataProvider.manageKot == true && !editMode) || disabled
+            "
+            type="number"
+            #amountInput
+            (click)="amountInput.select()"
+            (input)="setAmount(amountInput.value)"
+            (change)="
+              finalCheck(amountInput.value);
+              this.dataProvider.currentBill
+                ? this.dataProvider.currentBill.calculateBill()
+                : {}
+            "
+          />
+        </div>
+        <div class="quantity" *ngIf="(product.sellByAvailable && product.sellBy == 'quantity') || !product.sellByAvailable">
+          <viraj-button
+            [noPropogation]="true"
+            [minimalPadding]="true"
+            iconSize="small"
+            (vclick)="decrease()"
+            [disabled]="
+              quantity <= 1 ||
+              (dataProvider.manageKot == true && !editMode) ||
+              disabled
+            "
+          >
+            <i class="ri-subtract-fill"></i>
+          </viraj-button>
+          <input
+            [disabled]="
+              (dataProvider.manageKot == true && !editMode) || disabled
+            "
+            type="number"
+            #quantityInput
+            [value]="product.quantity"
+            (input)="setQuantity(quantityInput.value)"
+            (change)="
+              this.dataProvider.currentBill
+                ? this.dataProvider.currentBill.calculateBill()
+                : {}
+            "
+          />
+          <viraj-button
+            [noPropogation]="true"
+            [minimalPadding]="true"
+            iconSize="small"
+            [disabled]="
+              (dataProvider.manageKot == true && !editMode) || disabled
+            "
+            (vclick)="increase()"
+          >
+            <i class="ri-add-fill"></i>
+          </viraj-button>
+        </div>
+        <ng-container>
+          <viraj-button
+            [noPropogation]="true"
+            iconSize="medium"
+            type="icon"
+            matTooltip="Add Item Note"
+            [disabled]="
+              (dataProvider.manageKot == true && !editMode) || disabled
+            "
+            class="iconButton"
+            (vclick)="setInfo()"
+          >
+            <i class="ri-sticky-note-fill"></i>
+          </viraj-button>
+          <viraj-button
+            [noPropogation]="true"
+            iconSize="medium"
+            type="icon"
+            matTooltip="Delete Item"
+            [disabled]="
+              (dataProvider.manageKot == true && !editMode) || disabled
+            "
+            class="iconButton"
+            (vclick)="delete.emit()"
+          >
+            <i class="ri-delete-bin-2-line"></i>
+          </viraj-button>
+        </ng-container>
+      </div>
+      <div class="infoStatement" *ngIf="info">
+        <strong>INFO:</strong><span>{{ info }}</span>
+      </div>
+    </div>
+  </div>
+</section>
+<mat-menu #menu="matMenu">
+  <p mat-menu-item>{{ productName }}</p>
+  <button
+    mat-menu-item
+    (click)="lineDiscount()"
+    *ngIf="this.dataProvider.getAccess('lineDiscount')"
+  >
+    <mat-icon>percent</mat-icon>
+    <span>Line Discount</span>
+  </button>
+  <button
+    mat-menu-item
+    (click)="lineCancel()"
+    *ngIf="this.dataProvider.getAccess('lineCancel')"
+  >
+    <mat-icon>cancel</mat-icon>
+    <span>Line Cancel</span>
+  </button>
+</mat-menu>

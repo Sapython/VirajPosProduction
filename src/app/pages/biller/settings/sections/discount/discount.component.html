@@ -1,0 +1,58 @@
+<h3>Discount</h3>
+<div class="actions">
+  <button color="primary" mat-raised-button (click)="addDiscount()">
+    Add Discount
+  </button>
+</div>
+<div class="tableContainer">
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Value</th>
+        <th>Type</th>
+        <th>Min Amount</th>
+        <th>Min Products</th>
+        <th>Max Discount</th>
+        <th>Created On</th>
+        <th>Access</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let discount of discounts">
+        <td>{{ discount.name }}</td>
+        <td>{{ discount.value }}</td>
+        <td>{{ discount.type }}</td>
+        <td>{{ discount.minimumAmount }}</td>
+        <td>{{ discount.minimumProducts }}</td>
+        <td>{{ discount.maximumDiscount }}</td>
+        <td>
+          {{
+            discount.creationDate
+              ? (discount.creationDate.toDate() | date)
+              : "N/A"
+          }}
+        </td>
+        <td>
+          <li *ngFor="let item of discount.accessLevels">
+            {{ item }}
+          </li>
+        </td>
+        <td>
+          <viraj-button (vclick)="editDiscount(discount)" type="icon"
+            ><i class="ri-pencil-fill"></i
+          ></viraj-button>
+          <viraj-button (vclick)="deleteDiscount(discount.id)" type="icon"
+            ><i class="ri-delete-bin-2-fill"></i
+          ></viraj-button>
+        </td>
+      </tr>
+      <tr *ngIf="loadingDiscount">
+        <td colspan="8">
+          <mat-spinner mode="indeterminate"> </mat-spinner>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

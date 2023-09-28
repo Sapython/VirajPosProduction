@@ -33,7 +33,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   providedIn: 'root',
 })
 export class BillService {
-  updateHistory: any[] = [];
+  updateHistory: any[ ] = [ ];
   recalculateBill:Subject<void> = new Subject<void>();
   getOrderAndKotNumberFunction = httpsCallable(this.functions,'getOrderAndKotNumber');
   getKotTokenNumberFunction = httpsCallable(this.functions,'getKotTokenNumber');

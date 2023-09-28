@@ -121,7 +121,20 @@ export function editKot(this: Bill, kot: Kot, reason: string) {
 
 export async function finalizeAndPrintKot(this: Bill, noTable?: boolean) {
   console.log("Checking for first kot",this.table.status);
-
+  if (this.dataProvider.currentBill){
+    if (this.dataProvider.charges[this.dataProvider.currentBill.mode].service.byDefault){
+      this.appliedCharges.serviceCharge = this.dataProvider.charges[this.dataProvider.currentBill.mode].service.charges;
+    }
+    if (this.dataProvider.charges[this.dataProvider.currentBill.mode].container.byDefault){
+      this.appliedCharges.serviceCharge = this.dataProvider.charges[this.dataProvider.currentBill.mode].container.charges;
+    }
+    if (this.dataProvider.charges[this.dataProvider.currentBill.mode].delivery.byDefault){
+      this.appliedCharges.serviceCharge = this.dataProvider.charges[this.dataProvider.currentBill.mode].delivery.charges;
+    }
+    if (this.dataProvider.charges[this.dataProvider.currentBill.mode].tip.byDefault){
+      this.appliedCharges.serviceCharge = this.dataProvider.charges[this.dataProvider.currentBill.mode].tip.charges;
+    }
+  }
   if (this.editKotMode != null) {
     let kotIndex = this.kots.findIndex(
       (kot) => this.editKotMode && kot.id === this.editKotMode.kot.id,

@@ -61,6 +61,7 @@ export class ItemWiseReportComponent {
                       ...product,
                       bills: [bill.billNo],
                       kots: [kot.id],
+                      quantity: Number(product.quantity),
                     };
                     products.push(newProduct);
                   } else {

@@ -215,6 +215,7 @@ export class DataProvider {
   public loyaltyOnTakeaway: boolean = false;
   public loyaltyOnOnline: boolean = false;
   public differentLoyaltyRate: boolean = false;
+  public availLoyaltyDefault: boolean = false;
   public tableOrders: any = undefined;
   public groupOrders: string[] = [];
   public paymentMethods: PaymentMethod[] = [];

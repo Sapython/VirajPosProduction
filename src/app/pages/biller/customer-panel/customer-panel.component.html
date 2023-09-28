@@ -148,10 +148,9 @@
         >
           <mat-checkbox
             formControlName="serviceSelected"
-            [checked]="this.dataProvider.charges[this.dataProvider.currentBill.mode].service.byDefault"
             *ngIf="
               this.dataProvider.charges[this.dataProvider.currentBill?.mode]
-                .service.fixed
+                .service.fixed && (!this.dataProvider.charges[this.dataProvider.currentBill.mode].service.byDefault)
             "
             >Service Charge
             {{
@@ -183,10 +182,9 @@
         >
           <mat-checkbox
             formControlName="deliverySelected"
-            [checked]="this.dataProvider.charges[this.dataProvider.currentBill.mode].delivery.byDefault"
             *ngIf="
               this.dataProvider.charges[this.dataProvider.currentBill?.mode]
-                .delivery.fixed
+                .delivery.fixed && (!this.dataProvider.charges[this.dataProvider.currentBill.mode].delivery.byDefault)
             "
             >Delivery Charge
             {{
@@ -217,11 +215,10 @@
           "
         >
           <mat-checkbox
-            [checked]="this.dataProvider.charges[this.dataProvider.currentBill.mode].container.byDefault"
             formControlName="containerSelected"
             *ngIf="
               this.dataProvider.charges[this.dataProvider.currentBill?.mode]
-                .container.fixed
+                .container.fixed && (!this.dataProvider.charges[this.dataProvider.currentBill.mode].container.byDefault)
             "
             >Container Charge
             {{
@@ -252,11 +249,10 @@
           "
         >
           <mat-checkbox
-            [checked]="this.dataProvider.charges[this.dataProvider.currentBill.mode].tip.byDefault"
             formControlName="tipSelected"
             *ngIf="
               this.dataProvider.charges[this.dataProvider.currentBill?.mode].tip
-                .fixed
+                .fixed && (!this.dataProvider.charges[this.dataProvider.currentBill.mode].tip.byDefault)
             "
             >Tip Charge
             {{

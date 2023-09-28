@@ -68,7 +68,7 @@ export class WaiterWiseItemsComponent {
                           users: [
                             {
                               user: kot.user.username,
-                              sales: product.quantity,
+                              sales: Number(product.quantity),
                             },
                           ],
                         });
@@ -81,11 +81,11 @@ export class WaiterWiseItemsComponent {
                         if (findUserIndex == -1) {
                           products[findIndex].users.push({
                             user: kot.user.username,
-                            sales: product.quantity,
+                            sales: Number(product.quantity),
                           });
                         } else {
                           products[findIndex].users[findUserIndex].sales +=
-                            product.quantity;
+                            Number(product.quantity);
                         }
                       }
                     }

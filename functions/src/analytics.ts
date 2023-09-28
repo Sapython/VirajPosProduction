@@ -564,31 +564,31 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
         if (itemIndex === -1) {
           analyticsData.salesChannels.all.itemWiseSales.byPrice.push({
             name: item.name,
-            quantity: item.quantity,
-            price: item.price,
+            quantity: Number(item.quantity),
+            price: Number(item.price),
             category: item.category || '',
             id: item.id || '',
           });
           analyticsData.salesChannels.all.itemWiseSales.byQuantity.push({
             name: item.name,
-            quantity: item.quantity,
-            price: item.price,
+            quantity: Number(item.quantity),
+            price: Number(item.price),
             category: item.category || '',
             id: item.id || '',
           });
         } else {
           analyticsData.salesChannels.all.itemWiseSales.byPrice[
             itemIndex
-          ].quantity += item.quantity;
+          ].quantity += Number(item.quantity);
           analyticsData.salesChannels.all.itemWiseSales.byPrice[
             itemIndex
-          ].price += item.quantity * item.price;
+          ].price += Number(item.quantity * item.price);
           analyticsData.salesChannels.all.itemWiseSales.byQuantity[
             itemIndex
-          ].quantity += item.quantity;
+          ].quantity += Number(item.quantity);
           analyticsData.salesChannels.all.itemWiseSales.byQuantity[
             itemIndex
-          ].price += item.quantity * item.price;
+          ].price += Number(item.quantity * item.price);
         }
         if (currentBill.mode == 'dineIn') {
           let itemIndex =
@@ -598,31 +598,31 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
           if (itemIndex === -1) {
             analyticsData.salesChannels.dineIn.itemWiseSales.byPrice.push({
               name: item.name,
-              quantity: item.quantity,
-              price: item.price,
+              quantity: Number(item.quantity),
+              price: Number(item.price),
               category: item.category || '',
               id: item.id || '',
             });
             analyticsData.salesChannels.dineIn.itemWiseSales.byQuantity.push({
               name: item.name,
-              quantity: item.quantity,
-              price: item.price,
+              quantity: Number(item.quantity),
+              price: Number(item.price),
               category: item.category || '',
               id: item.id || '',
             });
           } else {
             analyticsData.salesChannels.dineIn.itemWiseSales.byPrice[
               itemIndex
-            ].quantity += item.quantity;
+            ].quantity += Number(item.quantity);
             analyticsData.salesChannels.dineIn.itemWiseSales.byPrice[
               itemIndex
-            ].price += item.quantity * item.price;
+            ].price += Number(item.quantity * item.price);
             analyticsData.salesChannels.dineIn.itemWiseSales.byQuantity[
               itemIndex
-            ].quantity += item.quantity;
+            ].quantity += Number(item.quantity);
             analyticsData.salesChannels.dineIn.itemWiseSales.byQuantity[
               itemIndex
-            ].price += item.quantity * item.price;
+            ].price += Number(item.quantity * item.price);
           }
         } else if (currentBill.mode == 'takeaway') {
           let itemIndex =
@@ -696,11 +696,11 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
       });
       // sort itemWiseSales by price
       analyticsData.salesChannels.all.itemWiseSales.byPrice.sort(
-        (a, b) => b.price - a.price,
+        (a, b) => Number(b.price) - Number(a.price),
       );
       // sort itemWiseSales by quantity
       analyticsData.salesChannels.all.itemWiseSales.byQuantity.sort(
-        (a, b) => b.quantity - a.quantity,
+        (a, b) => Number(b.quantity) - Number(a.quantity),
       );
       if (analyticsData.salesChannels.all.itemWiseSales.byPrice[0]) {
         analyticsData.salesChannels.all.itemWiseSales.priceTopCategory =
@@ -711,7 +711,7 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
           analyticsData.salesChannels.all.itemWiseSales.byQuantity[0].category;
       }
     }
-    console.log("Itemwise analytics done for all");
+    console.log("Item wise analytics done for all");
     // suspicious activities
     let activitiesList: {
       createdDate: Timestamp;

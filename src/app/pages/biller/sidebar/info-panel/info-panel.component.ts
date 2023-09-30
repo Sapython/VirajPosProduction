@@ -43,13 +43,14 @@ export class InfoPanelComponent implements OnInit, OnChanges, AfterViewInit {
     this.version = environment.appVersion;
     // console.log("this.el.nativeElement",this.el.nativeElement.offsetHeight);
     this.height = this.el.nativeElement.offsetHeight;
-    this.dataProvider.softwareUpdateFilteredSubject.subscribe((data) => {
+    this.dataProvider.softwareUpdateFilteredSubject.subscribe(async (data) => {
       console.log('softwareUpdateSubject', data);
-      alert('New update available');
       if (data.stage && data.stage == 'update-available') {
+        await alert('New update available');
         const dialog = this.dialog.open(UpdaterComponent, { data: data.info });
       }
       if (data.stage && data.stage == 'update-downloaded') {
+        await alert('New update Downloaded');
         const dialog = this.dialog.open(UpdaterComponent, { data: data.info });
       }
     });

@@ -1,4 +1,4 @@
-## <small>0.1.148 (2023-09-27)</small>
+## <small>0.1.151 (2023-09-30)</small>
 
 * Access level was wrong ([382351d](https://github.com/swayambhu-innovations/Vrajera/commit/382351d))
 * Added active category option. Custom Printer, Custom ViewCat ([ce3fc6f](https://github.com/swayambhu-innovations/Vrajera/commit/ce3fc6f))
@@ -47,6 +47,7 @@
 * Combo fixed ([c23bad7](https://github.com/swayambhu-innovations/Vrajera/commit/c23bad7))
 * Combo fixed color fixed,product card fixed. ([5f8008f](https://github.com/swayambhu-innovations/Vrajera/commit/5f8008f))
 * Config changes and bug fixes. ([42097d7](https://github.com/swayambhu-innovations/Vrajera/commit/42097d7))
+* Connected to new analytics function. ([5fd1c38](https://github.com/swayambhu-innovations/Vrajera/commit/5fd1c38))
 * Create installer.nsh ([00079d7](https://github.com/swayambhu-innovations/Vrajera/commit/00079d7))
 * Create publishWindows.yml ([7b7fb67](https://github.com/swayambhu-innovations/Vrajera/commit/7b7fb67))
 * Edit menu printer config removed. ([dbe7eca](https://github.com/swayambhu-innovations/Vrajera/commit/dbe7eca))
@@ -192,7 +193,10 @@
 * Preview kot fixed ([7d30c4a](https://github.com/swayambhu-innovations/Vrajera/commit/7d30c4a))
 * Printing fixed for optional taxes ([2933a32](https://github.com/swayambhu-innovations/Vrajera/commit/2933a32))
 * Printing fixed. ([3d581f3](https://github.com/swayambhu-innovations/Vrajera/commit/3d581f3))
+* publish_to_prod ([264f6e8](https://github.com/swayambhu-innovations/Vrajera/commit/264f6e8))
+* publish_to_prod ([37886b4](https://github.com/swayambhu-innovations/Vrajera/commit/37886b4))
 * Re named application. ([83b725e](https://github.com/swayambhu-innovations/Vrajera/commit/83b725e))
+* Removed conflicted dir structure. ([867192c](https://github.com/swayambhu-innovations/Vrajera/commit/867192c))
 * Removed image uploader ([89913da](https://github.com/swayambhu-innovations/Vrajera/commit/89913da))
 * Removed product portion and tag ([3846148](https://github.com/swayambhu-innovations/Vrajera/commit/3846148))
 * Removed requirement of half full. ([2b7b4d5](https://github.com/swayambhu-innovations/Vrajera/commit/2b7b4d5))
@@ -222,6 +226,7 @@
 * Update app.module.ts ([5a6a2f8](https://github.com/swayambhu-innovations/Vrajera/commit/5a6a2f8))
 * Update app.module.ts ([39703b6](https://github.com/swayambhu-innovations/Vrajera/commit/39703b6))
 * Update bill-wise.component.ts ([fbab1e8](https://github.com/swayambhu-innovations/Vrajera/commit/fbab1e8))
+* Update bill.service.ts ([49e2e8f](https://github.com/swayambhu-innovations/Vrajera/commit/49e2e8f))
 * Update bill.service.ts ([13ee66e](https://github.com/swayambhu-innovations/Vrajera/commit/13ee66e))
 * Update Bill.ts ([31c46f4](https://github.com/swayambhu-innovations/Vrajera/commit/31c46f4))
 * Update Bill.ts ([7a4bd1d](https://github.com/swayambhu-innovations/Vrajera/commit/7a4bd1d))
@@ -273,6 +278,9 @@
 * Update product-card.component.ts ([ba90cf7](https://github.com/swayambhu-innovations/Vrajera/commit/ba90cf7))
 * Update products-panel.component.html ([c317f97](https://github.com/swayambhu-innovations/Vrajera/commit/c317f97))
 * Update products-panel.component.scss ([3c249ae](https://github.com/swayambhu-innovations/Vrajera/commit/3c249ae))
+* Update publishWindows.yml ([13f621c](https://github.com/swayambhu-innovations/Vrajera/commit/13f621c))
+* Update publishWindows.yml ([6efc8c9](https://github.com/swayambhu-innovations/Vrajera/commit/6efc8c9))
+* Update publishWindows.yml ([b6c7eef](https://github.com/swayambhu-innovations/Vrajera/commit/b6c7eef))
 * Update publishWindows.yml ([70394bf](https://github.com/swayambhu-innovations/Vrajera/commit/70394bf))
 * Update reports.component.html ([9cc32e8](https://github.com/swayambhu-innovations/Vrajera/commit/9cc32e8))
 * Update settings.component.html ([419c8e7](https://github.com/swayambhu-innovations/Vrajera/commit/419c8e7))

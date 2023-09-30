@@ -148,10 +148,6 @@ export class ReportsComponent implements OnInit {
       description: 'List of bills that are cancelled.',
     },
   ];
-  private analyzeAnalyticsForBusiness = httpsCallable(
-    this.functions,
-    'analyzeAnalyticsForBusiness'
-  );
   fuseSearchInstance:Fuse<ReportFormat> = new Fuse(this.reportFormats,{keys:['title','description']});
   filteredReportFormats:ReportFormat[] = [];
   reportSearchSubject:Subject<string> = new Subject<string>();
@@ -290,6 +286,32 @@ export class ReportsComponent implements OnInit {
       }
     });
   }
+  
+  analyzeAnalyticsForBusiness(data:{businessId:string,date:string}){
+    return this.requestHandler(`http://43.231.127.137/generateAnalytics?businessId=${data.businessId}&date=${data.date}`,'POST',{});
+  }
+  requestHandler(url:string,method:string,body:any){
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    var raw = JSON.stringify(body);
+    var requestOptions:any = {
+      method: method ? method : 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+    console.log("FETCHING REQUEST",url);
+    // return a promise resolved till json
+    return fetch(url, requestOptions)
+      .then(response => response.json())
+      .then(result => {
+        console.log("FETCHING REQUEST",result);
+        return result.data;
+      })
+      .catch(error => {
+        console.log('FETCHING REQUEST error', error);
+      });
+  }
 
   fetchChartPaymentData(event: { value: Date }) {
     console.log('Event', event);
@@ -320,7 +342,9 @@ export class ReportsComponent implements OnInit {
 
   refreshReport(){
     this.dataProvider.loading = true;
-    this.analyzeAnalyticsForBusiness({businessId:this.dataProvider.currentBusiness.businessId,date:(new Date()).toISOString()}).then((result:any)=>{
+    let date = (new Date()).toISOString();
+    console.log("Refreshing Date",date);
+    this.analyzeAnalyticsForBusiness({businessId:this.dataProvider.currentBusiness.businessId,date:date}).then((result:any)=>{
       console.log("Result",result);
       this.fetchChartPaymentData({value:this.paymentDate});
       this.fetchChartSalesData({value:this.salesDate});

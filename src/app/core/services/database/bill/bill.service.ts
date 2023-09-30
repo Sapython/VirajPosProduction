@@ -350,11 +350,7 @@ export class BillService {
       'business/' +
         this.dataProvider.businessId +
         '/analyticsData/' +
-        date.getFullYear() +
-        '/' +
-        (date.getMonth() + 1) +
-        '/' +
-        date.getDate(),
+        (date.getFullYear().toString() + '-' + (date.getMonth()+1).toString().padStart(2,'0') + '-' + date.getDate().toString().padStart(2,'0'))
     );
     return getDoc(
       doc(
@@ -362,11 +358,7 @@ export class BillService {
         'business/' +
           this.dataProvider.businessId +
           '/analyticsData/' +
-          date.getFullYear() +
-          '/' +
-          (date.getMonth() + 1) +
-          '/' +
-          date.getDate(),
+          (date.getFullYear().toString() + '-' + (date.getMonth()+1).toString().padStart(2,'0') + '-' + date.getDate().toString().padStart(2,'0'))
       ),
     );
   }

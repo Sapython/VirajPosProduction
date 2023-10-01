@@ -1,4 +1,4 @@
-## <small>0.1.152 (2023-09-30)</small>
+## <small>0.1.153 (2023-10-01)</small>
 
 * Access level was wrong ([382351d](https://github.com/swayambhu-innovations/Vrajera/commit/382351d))
 * Added active category option. Custom Printer, Custom ViewCat ([ce3fc6f](https://github.com/swayambhu-innovations/Vrajera/commit/ce3fc6f))
@@ -59,6 +59,7 @@
 * Fixed ([7bc5d74](https://github.com/swayambhu-innovations/Vrajera/commit/7bc5d74))
 * Fixed $event bug ([c5424c1](https://github.com/swayambhu-innovations/Vrajera/commit/c5424c1))
 * Fixed account bugs ([8ccd606](https://github.com/swayambhu-innovations/Vrajera/commit/8ccd606))
+* Fixed account modal ([8bebfcc](https://github.com/swayambhu-innovations/Vrajera/commit/8bebfcc))
 * Fixed actions buttons and corrupted acocunt. ([3f9b22c](https://github.com/swayambhu-innovations/Vrajera/commit/3f9b22c))
 * Fixed all bugs. ([090d6f3](https://github.com/swayambhu-innovations/Vrajera/commit/090d6f3))
 * Fixed all bugs. ([e16fed9](https://github.com/swayambhu-innovations/Vrajera/commit/e16fed9))
@@ -227,6 +228,7 @@
 * Update app.module.ts ([5a6a2f8](https://github.com/swayambhu-innovations/Vrajera/commit/5a6a2f8))
 * Update app.module.ts ([39703b6](https://github.com/swayambhu-innovations/Vrajera/commit/39703b6))
 * Update bill-wise.component.ts ([fbab1e8](https://github.com/swayambhu-innovations/Vrajera/commit/fbab1e8))
+* Update bill.service.ts ([3bde7b2](https://github.com/swayambhu-innovations/Vrajera/commit/3bde7b2))
 * Update bill.service.ts ([49e2e8f](https://github.com/swayambhu-innovations/Vrajera/commit/49e2e8f))
 * Update bill.service.ts ([13ee66e](https://github.com/swayambhu-innovations/Vrajera/commit/13ee66e))
 * Update Bill.ts ([31c46f4](https://github.com/swayambhu-innovations/Vrajera/commit/31c46f4))
@@ -268,6 +270,7 @@
 * Update menu.ts ([4bd4216](https://github.com/swayambhu-innovations/Vrajera/commit/4bd4216))
 * Update onboarding.service.ts ([e5281f0](https://github.com/swayambhu-innovations/Vrajera/commit/e5281f0))
 * Update onboarding.service.ts ([d49dff8](https://github.com/swayambhu-innovations/Vrajera/commit/d49dff8))
+* Update package.json ([430fa31](https://github.com/swayambhu-innovations/Vrajera/commit/430fa31))
 * Update package.json ([1361dca](https://github.com/swayambhu-innovations/Vrajera/commit/1361dca))
 * Update printing.service.ts ([b98eaca](https://github.com/swayambhu-innovations/Vrajera/commit/b98eaca))
 * Update printing.service.ts ([8eef32f](https://github.com/swayambhu-innovations/Vrajera/commit/8eef32f))

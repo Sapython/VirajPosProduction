@@ -12,10 +12,10 @@
         >Username already exists</mat-hint
       >
       <mat-hint *ngIf="stage == 'available' && username.value" class="success"
-        ><strong>Great</strong> you can use this username</mat-hint
+        >Great you can use this username</mat-hint
       >
       <mat-hint *ngIf="stage == 'invalid' && username.value" class="error"
-        ><strong>Invalid</strong> you cannot use this username</mat-hint
+        >Invalid you cannot use this username</mat-hint
       >
       <mat-spinner
         *ngIf="stage == 'checking'"

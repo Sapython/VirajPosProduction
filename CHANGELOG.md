@@ -1,4 +1,4 @@
-## <small>0.1.151 (2023-09-30)</small>
+## <small>0.1.152 (2023-09-30)</small>
 
 * Access level was wrong ([382351d](https://github.com/swayambhu-innovations/Vrajera/commit/382351d))
 * Added active category option. Custom Printer, Custom ViewCat ([ce3fc6f](https://github.com/swayambhu-innovations/Vrajera/commit/ce3fc6f))
@@ -43,6 +43,7 @@
 * Changed bill wise reports to landscape mode. ([4c2f6ec](https://github.com/swayambhu-innovations/Vrajera/commit/4c2f6ec))
 * Changed gitignore for umd files ([274c5b3](https://github.com/swayambhu-innovations/Vrajera/commit/274c5b3))
 * Changed package repository ([c8a5511](https://github.com/swayambhu-innovations/Vrajera/commit/c8a5511))
+* Changed server ([233f152](https://github.com/swayambhu-innovations/Vrajera/commit/233f152))
 * Changed some bg images. ([ebb856e](https://github.com/swayambhu-innovations/Vrajera/commit/ebb856e))
 * Combo fixed ([c23bad7](https://github.com/swayambhu-innovations/Vrajera/commit/c23bad7))
 * Combo fixed color fixed,product card fixed. ([5f8008f](https://github.com/swayambhu-innovations/Vrajera/commit/5f8008f))
@@ -292,6 +293,7 @@
 * Update table.component.ts ([b70e4a3](https://github.com/swayambhu-innovations/Vrajera/commit/b70e4a3))
 * Update Table.ts ([f92d31d](https://github.com/swayambhu-innovations/Vrajera/commit/f92d31d))
 * Updated node package name. ([6d43d95](https://github.com/swayambhu-innovations/Vrajera/commit/6d43d95))
+* Upgraded version ([2e4679d](https://github.com/swayambhu-innovations/Vrajera/commit/2e4679d))
 
 
 

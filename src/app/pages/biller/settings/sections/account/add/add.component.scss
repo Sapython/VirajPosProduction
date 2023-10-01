@@ -12,11 +12,17 @@ section {
   }
 
   form {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 10px;
-
+    mat-form-field{
+      min-width:300px;
+      mat-hint{
+        font-size:12px;
+      }
+    }
     .actions {
+      grid-column: 1/3;
       display: flex;
       justify-content: flex-end;
       gap: 15px;

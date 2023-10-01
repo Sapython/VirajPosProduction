@@ -1,0 +1,7 @@
+{
+  "name": "virajpos",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "custom"
+}

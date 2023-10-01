@@ -9,7 +9,7 @@
   "scripts": {
     "prebuild": "npm --no-git-tag-version version patch"
   },
-  "version": "1.0.15",
+  "version": "1.0.17",
   "main": "main.js",
   "private": true,
   "dependencies": {

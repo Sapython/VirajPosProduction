@@ -37,6 +37,7 @@ export class Kot implements KotConstructor {
     kotObject?: KotConstructor,
   ) {
     this.createdDate = Timestamp.now();
+    // this.createdDate = Timestamp.fromDate(new Date("2023-10-01T12:07:50.735Z"));
     this.stage = 'active';
     this.id = 'new';
     if (kotObject) {

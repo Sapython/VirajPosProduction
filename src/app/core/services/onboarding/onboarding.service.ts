@@ -610,7 +610,9 @@ export class OnboardingService {
       }
     });
     // get daily counters
-    let newDate = new Date()
+    var d = new Date();
+    var utc = d.getTime() + (d.getTimezoneOffset() * 60000);
+    var newDate = new Date(utc + (3600000*5.5));
     let month =(newDate.getMonth()+1).toString()
     if ((newDate.getMonth()+1) < 10){
       month = '0' + (newDate.getMonth()+1).toString();

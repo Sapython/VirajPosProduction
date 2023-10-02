@@ -32,7 +32,7 @@ export class AnalyticsService {
     // alert("Adding sales")
     // get date in format of 2021-08-01
     // get daily counters
-    let newDate = new Date()
+    let newDate = billDate
     let month =(newDate.getMonth()+1).toString()
     if ((newDate.getMonth()+1) < 10){
       month = '0' + (newDate.getMonth()+1).toString();

@@ -1,4 +1,4 @@
-## <small>0.1.153 (2023-10-01)</small>
+## <small>0.1.155 (2023-10-01)</small>
 
 * Access level was wrong ([382351d](https://github.com/swayambhu-innovations/Vrajera/commit/382351d))
 * Added active category option. Custom Printer, Custom ViewCat ([ce3fc6f](https://github.com/swayambhu-innovations/Vrajera/commit/ce3fc6f))
@@ -195,6 +195,8 @@
 * Preview kot fixed ([7d30c4a](https://github.com/swayambhu-innovations/Vrajera/commit/7d30c4a))
 * Printing fixed for optional taxes ([2933a32](https://github.com/swayambhu-innovations/Vrajera/commit/2933a32))
 * Printing fixed. ([3d581f3](https://github.com/swayambhu-innovations/Vrajera/commit/3d581f3))
+* publish_to_prod ([ca33664](https://github.com/swayambhu-innovations/Vrajera/commit/ca33664))
+* publish_to_prod ([64e01ca](https://github.com/swayambhu-innovations/Vrajera/commit/64e01ca))
 * publish_to_prod ([264f6e8](https://github.com/swayambhu-innovations/Vrajera/commit/264f6e8))
 * publish_to_prod ([37886b4](https://github.com/swayambhu-innovations/Vrajera/commit/37886b4))
 * Re named application. ([83b725e](https://github.com/swayambhu-innovations/Vrajera/commit/83b725e))

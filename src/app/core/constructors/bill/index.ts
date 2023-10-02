@@ -183,7 +183,9 @@ export class Bill implements BillConstructor {
       redeemLoyalty: false,
     }
     this.instruction = '';
-    this.createdDate = Timestamp.now();
+    // this.createdDate = Timestamp.fromDate(new Date("2023-10-01T12:07:50.735Z"));
+    this.createdDate = Timestamp.fromDate(new Date());
+    console.log("CREATED DATE",this.createdDate.toDate());
     this.stage = 'active';
     this.mode = mode;
     this.customerInfo = {};

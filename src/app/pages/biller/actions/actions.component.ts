@@ -144,7 +144,7 @@ export class ActionsComponent {
           data: this.dataProvider.currentBill.billing.grandTotal
         });
         dialog.closed.subscribe((result: any) => {
-          console.log('Settle Result', result);
+          // console.log('Settle Result', result);
           if (
             result &&
             this.dataProvider.currentBill &&
@@ -165,7 +165,7 @@ export class ActionsComponent {
   }
 
   async quickSettle(paymentMethod: PaymentMethod) {
-    console.log("QuickMethod: Quick Settling Bill");
+    // console.log("QuickMethod: Quick Settling Bill");
     let elevateReq = await this.userManagementService.authenticateAction([
       'settleBill',
     ]);
@@ -184,7 +184,7 @@ export class ActionsComponent {
   }
 
   async holdBill(paymentMethod: PaymentMethod){
-    console.log("QuickMethod: Holding Bill");
+    // console.log("QuickMethod: Holding Bill");
     let elevateReq = await this.userManagementService.authenticateAction([
       'settleBill',
     ]);

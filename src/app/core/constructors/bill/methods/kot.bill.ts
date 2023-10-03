@@ -193,16 +193,16 @@ export async function finalizeAndPrintKot(this: Bill, noTable?: boolean) {
       this.dataProvider.loading = true;
       if (this.table.status == 'available') {
         if (this.table.type == 'token'){
-          console.log("Going to run transaction");
+          // console.log("Going to run transaction");
           try {
             let res = (await this.billService.getOrderKotTakeawayTokenNumber()) as any;
-            console.log("Res token",res);
+            // console.log("Res token",res);
             this.table.attachBill(this,res.takeawayTokenNumber);
             activeKot.id = res.kotTokenNumber;
             this.orderNo = res.orderTokenNumber;
           } catch (error) {
-            console.log("Error when running transaction",error);
-            console.log("Ran transaction");
+            // console.log("Error when running transaction",error);
+            // console.log("Ran transaction");
             this.billService.presentToast("Error no internet found.","error");
             this.dataProvider.loading = false;
             return;
@@ -221,10 +221,10 @@ export async function finalizeAndPrintKot(this: Bill, noTable?: boolean) {
         } else if (this.table.type == 'table' || this.table.type == 'room'){
           try {
             let res = (await this.billService.getOrderAndKotNumber()) as any;
-            console.log("res",res);
+            // console.log("res",res);
             activeKot.id = res['kotTokenNumber'];
             this.orderNo = res['orderTokenNumber'];
-            console.log("Assigned order in dine in mode",this.orderNo);
+            // console.log("Assigned order in dine in mode",this.orderNo);
             this.table.attachBill(this,undefined);
           } catch (error) {
             this.billService.presentToast("Error no internet found.","error");
@@ -236,7 +236,7 @@ export async function finalizeAndPrintKot(this: Bill, noTable?: boolean) {
         if (!this.orderNo) {
           try {
             let res = (await this.billService.getOrderAndKotNumber()) as any;
-            console.log("res",res);
+            // console.log("res",res);
             activeKot.id = res['kotTokenNumber'];
             this.orderNo = res['orderTokenNumber'];
           } catch (error) {
@@ -255,7 +255,7 @@ export async function finalizeAndPrintKot(this: Bill, noTable?: boolean) {
         }
       }
       this.dataProvider.loading = false;
-      console.log('Kot id', activeKot.id);
+      // console.log('Kot id', activeKot.id);
       activeKot.stage = 'finalized';
       activeKot.createdDate = Timestamp.now();
       this.updated.next();
@@ -396,7 +396,7 @@ export async function printKot(
     user: this.user.username,
     data: data,
   });
-  if (debug) console.log('Kot data', data);
+  // if (debug) console.log('Kot data', data);
   await this.printingService.printKot(data);
   //  console.log('Send to service');
 }

@@ -32,7 +32,7 @@ import { TableConstructor } from '../../../types/table.structure';
 import { SettingsService } from '../../../core/services/database/settings/settings.service';
 import { TableService } from '../../../core/services/database/table/table.service';
 import { read, utils, writeFile } from 'xlsx';
-var debug = true;
+var debug = false;
 
 @Component({
   selector: 'app-loading',
@@ -183,10 +183,10 @@ export class LoadingComponent implements OnInit {
   ngOnInit(){
     fetch('assets/states-and-districts.json').then(async (res) => {
       let states = await res.json()
-      console.log('res',states.states);
+      // console.log('res',states.states);
       this.statesAndCities = states.states;
     }).catch((error) => {
-      console.log('error', error);
+      // console.log('error', error);
     })
   }
 
@@ -295,7 +295,7 @@ export class LoadingComponent implements OnInit {
               this.dataProvider.loading = false;
             })
             .catch((error) => {
-              console.log('error', error);
+              // console.log('error', error);
               this.loginStage.next('Error Logging In');
               this.alertify.presentToast(error, 'error');
               this.onboardingService.stage = 'onboardingStep2'
@@ -309,7 +309,7 @@ export class LoadingComponent implements OnInit {
         }
       })
       .catch((error) => {
-        console.log('error', error);
+        // console.log('error', error);
         this.loginStage.next('Error Fetching Account');
         this.alertify.presentToast(error.message, 'error');
         // this.onboardingService.stage = 'onboardingStep3'
@@ -474,7 +474,7 @@ export class LoadingComponent implements OnInit {
       .then((doc) => {
         if (doc.exists()) {
           this.loginStage.next('Account Exists');
-          if (debug) console.log('signing in', username, password);
+          // if (debug) console.log('signing in', username, password);
           this.loginService
             .signInWithUserAndPassword(username, password)
             .then((data) => {
@@ -482,7 +482,7 @@ export class LoadingComponent implements OnInit {
               this.onboard(data, id, logo);
             })
             .catch((error) => {
-              console.log('error', error);
+              // console.log('error', error);
               this.loginStage.next('Error Logging In');
               this.alertify.presentToast(error, 'error');
               this.onboardingService.stage = 'onboardingStep2'
@@ -547,7 +547,7 @@ export class LoadingComponent implements OnInit {
               }
             })
             .catch((error) => {
-              console.log('error', error);
+              // console.log('error', error);
               this.loginStage.next('Error Creating Account');
               this.alertify.presentToast(error.message, 'error');
               // this.onboardingService.stage = 'onboardingStep3'
@@ -556,7 +556,7 @@ export class LoadingComponent implements OnInit {
         }
       })
       .catch((error) => {
-        console.log('error', error);
+        // console.log('error', error);
         this.loginStage.next('Error Fetching Account');
         this.alertify.presentToast(error.message, 'error');
         // this.onboardingService.stage = 'onboardingStep3'

@@ -34,11 +34,15 @@ export class AnalyticsService {
     // get daily counters
     let newDate = billDate
     let month =(newDate.getMonth()+1).toString()
+    let day = (newDate.getDate()).toString()
     if ((newDate.getMonth()+1) < 10){
       month = '0' + (newDate.getMonth()+1).toString();
     }
-    let date = (newDate.getFullYear() + '-' + month + '-' + newDate.getDate());
-    console.log("Date ISF: ",date);
+    if ((newDate.getDate()) < 10){
+      day = '0' + (newDate.getDate()).toString();
+    }
+    let date = (newDate.getFullYear() + '-' + month + '-' + day);
+    // console.log("Date ISF: ",date);
     logEvent(this.analytics, 'add_sales', { date, sale, type });
     return await setDoc(
       doc(

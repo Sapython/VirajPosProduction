@@ -27,7 +27,7 @@ export class PrinterService {
   ) {}
 
   async printKot(printableKotData: PrintableKot,reprint:boolean = false,customPrinter?:string) {
-    if (debugMode) console.log('Printing kot', printableKotData);
+    // if (debugMode) console.log('Printing kot', printableKotData);
     let filteredProducts = printableKotData.products.filter(
       (product: any) => product.specificPrinter,
     );
@@ -48,7 +48,7 @@ export class PrinterService {
     let printerConfig = printableKotData.products.map((product: any) => {
       return { product: product.id, printer: product.specificPrinter };
     });
-    console.log('printerConfig', printerConfig);
+    // console.log('printerConfig', printerConfig);
     //  console.log("printableKotData.products",printableKotData.products);
     // group products by printer
     if (!customPrinter){
@@ -71,13 +71,13 @@ export class PrinterService {
           }
         }
       });
-      console.log('grouped products', groupedProducts);
+      // console.log('grouped products', groupedProducts);
       let index= 0;
       for (const printer of Object.keys(groupedProducts)) {
         //  console.log('printing', printer, groupedProducts[printer]);
         printableKotData.products = groupedProducts[printer];
         let result = this.encoderService.getKotCode(printableKotData,reprint);
-        console.log('got kot code', result, printer);
+        // console.log('got kot code', result, printer);
         if (!printer) {
           const dialog = this.dialog.open(DialogComponent, {
             data: {
@@ -100,7 +100,7 @@ export class PrinterService {
       }
     } else {
       let result = this.encoderService.getKotCode(printableKotData,reprint);
-      console.log('got kot code', result, customPrinter);
+      // console.log('got kot code', result, customPrinter);
       if (!customPrinter) {
         const dialog = this.dialog.open(DialogComponent, {
           data: {
@@ -122,7 +122,7 @@ export class PrinterService {
   }
 
   async printBill(billData: PrintableBill) {
-    console.log('Printing bill', billData);
+    // console.log('Printing bill', billData);
     let data = this.encoderService.getBillCode(billData);
     if (!this.dataProvider.billerPrinter) {
       const dialog = this.dialog.open(DialogComponent, {
@@ -136,7 +136,7 @@ export class PrinterService {
       await firstValueFrom(dialog.closed);
       return;
     }
-    console.log('printing bill', data);
+    // console.log('printing bill', data);
     return this.printing.printData(
       data,
       this.dataProvider.billerPrinter,
@@ -158,7 +158,7 @@ export class PrinterService {
       await firstValueFrom(dialog.closed);
       return;
     }
-    console.log('printing bill', data);
+    // console.log('printing bill', data);
     return this.printing.printData(
       data,
       this.dataProvider.billerPrinter,

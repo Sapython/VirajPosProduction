@@ -154,7 +154,7 @@ export class ActiveKotComponent implements OnChanges {
       this.activeKotIndex = this.dataProvider.currentBill.kots.findIndex(
         (kot: Kot) => kot.stage === 'active' || kot.stage === 'edit',
       );
-      console.log("Removing this.activeKotIndex",this.activeKotIndex);
+      // console.log("Removing this.activeKotIndex",this.activeKotIndex);
       this.dataProvider.currentBill?.removeProduct(
         product,
         this.activeKotIndex,
@@ -202,7 +202,7 @@ export class ActiveKotComponent implements OnChanges {
             username: this.dataProvider.currentBusinessUser.username,
           },
         };
-        console.log('Cancel reason kot: ', kot.cancelReason);
+        // console.log('Cancel reason kot: ', kot.cancelReason);
 
         this.dataProvider.currentBill?.deleteKot(kot);
       }
@@ -220,7 +220,7 @@ export class ActiveKotComponent implements OnChanges {
       if (kot.totalTimeTakenNumber < 60){
         passwordRequired = false;
       }
-      console.log("Password required",passwordRequired);
+      // console.log("Password required",passwordRequired);
       let dialog = this.dialog.open(ReasonComponent,{data:{passwordRequired}});
       firstValueFrom(dialog.closed).then((reason: string) => {
         if(reason){

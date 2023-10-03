@@ -236,12 +236,12 @@ export class UserManagementService {
   }
 
   async authenticateAction(requiredProperties: string[]):Promise<{status:boolean,username:string}> {
-    console.log("Required props",requiredProperties);
+    // console.log("Required props",requiredProperties);
     async function elevateAccess(){
       const dialog = this.dialog.open(RequiresPrivilegeComponent);
       dialog.disableClose = true;
       let userCredentials: any = await firstValueFrom(dialog.closed);
-      console.log('userCredentials', userCredentials);
+      // console.log('userCredentials', userCredentials);
       if (
         userCredentials &&
         userCredentials.username &&
@@ -291,37 +291,37 @@ export class UserManagementService {
     }
 
     if (this.dataProvider.currentBusinessUser.accessType == 'role'){
-      console.log("Local available props",this.dataProvider.defaultAccess[this.dataProvider.currentBusinessUser.role]);
+      // console.log("Local available props",this.dataProvider.defaultAccess[this.dataProvider.currentBusinessUser.role]);
       let allAllowed = requiredProperties.every((access)=>{
         if (this.dataProvider.currentBusinessUser.accessType == 'role' && this.dataProvider.defaultAccess[this.dataProvider.currentBusinessUser.role].includes(access)){
           return true;
         }
       })
       if(allAllowed){
-        console.log("Access granted.");
+        // console.log("Access granted.");
         return {
           status:true,
           username:this.dataProvider.currentUser.username
         };
       } else {
-        console.log("Elevation required");
+        // console.log("Elevation required");
         await elevateAccess.call(this);
       }
     } else if(this.dataProvider.currentBusinessUser.accessType=='custom') {
-      console.log("Local available props",this.dataProvider.currentBusinessUser.propertiesAllowed);
+      // console.log("Local available props",this.dataProvider.currentBusinessUser.propertiesAllowed);
       let allAllowed = requiredProperties.every((access)=>{
         if (this.dataProvider.currentBusinessUser.accessType == 'custom' && this.dataProvider.currentBusinessUser.propertiesAllowed?.includes(access)){
           return true;
         }
       });
       if(allAllowed){
-        console.log("Access granted.");
+        // console.log("Access granted.");
         return {
           status:true,
           username:this.dataProvider.currentUser.username
         };
       } else {
-        console.log("Elevation required");
+        // console.log("Elevation required");
         await elevateAccess.call(this);
       }
     }

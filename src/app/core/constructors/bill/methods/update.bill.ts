@@ -204,7 +204,7 @@ export function fromObject(
 export async function updateToFirebase(this: Bill, data: boolean | void) {
   if (!data) {
     let data = this.toObject();
-    console.log('updating bill', data);
+    // console.log('updating bill', data);
     await this.billService.updateBill(data);
     // console.log('Bill updated', data);
     this.table.updated.next();

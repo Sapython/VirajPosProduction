@@ -905,19 +905,28 @@ export class TableComponent implements OnInit {
   selectAllTables(){
     this.selectedTablesForBulkSettle = [];
     console.log("this.dataProvider.tokens.filter((table)=>table.bill.stage == 'hold')",this.dataProvider.tokens.filter((table)=>table.bill?.stage == 'hold'));
-
-    this.dataProvider.tokens.filter((table)=>table.bill?.stage == 'hold').forEach((table)=>{
-      this.selectedTablesForBulkSettle.push(table.id);
-    });
+    if (this.dataProvider.viewOnHoldTokens){
+      this.dataProvider.tokens.filter((table)=>table.bill?.stage == 'hold').forEach((table)=>{
+        this.selectedTablesForBulkSettle.push(table.id);
+      });
+    } else {
+      this.dataProvider.tokens.filter((table)=>['finalized','active'].includes(table.bill?.stage)).forEach((table)=>{
+        this.selectedTablesForBulkSettle.push(table.id);
+      });
+    }
     this.tobeMergedTotal = this.calculateGrandTotal();
   }
   selectAllTablesOnline(){
     this.selectedTablesForBulkSettleOnline = [];
     console.log("this.dataProvider.tokens.filter((table)=>table.bill.stage == 'hold')",this.dataProvider.onlineTokens.filter((table)=>table.bill?.stage == 'hold'));
 
-    this.dataProvider.onlineTokens.filter((table)=>table.bill?.stage == 'hold').forEach((table)=>{
-      this.selectedTablesForBulkSettleOnline.push(table.id);
-    });
+    if (this.dataProvider.viewOnHoldTokens){
+      this.dataProvider.onlineTokens.filter((table)=>table.bill?.stage == 'hold').forEach((table)=>{
+        this.selectedTablesForBulkSettleOnline.push(table.id);
+      });
+    } else {
+      
+    }
     this.tobeMergedTotalOnline = this.calculateGrandTotal();
   }
 }

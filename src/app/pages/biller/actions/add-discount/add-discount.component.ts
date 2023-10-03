@@ -41,22 +41,22 @@ export class AddDiscountComponent implements OnInit {
     private dialog: Dialog,
     @Inject(DIALOG_DATA) public bill: Bill | BillConstructor,
   ) {
-    console.log('Discount Bill', bill);
+    // console.log('Discount Bill', bill);
     if (this.bill) {
       this.currentDiscount = this.appliedDiscounts[0];
       let billMenu = this.dataProvider.menus.find(
         (menu) => menu.selectedMenuId == this.bill.menu.id,
       );
-      console.log('THis menu', billMenu);
+      // console.log('THis menu', billMenu);
       if (billMenu) {
         this.availableDiscounts = billMenu.discounts;
       } else {
         this.availableDiscounts = [];
       }
-      console.log(
-        'this.availableDiscounts disc modal',
-        this.availableDiscounts.map((discount) => discount.accessLevels),
-      );
+      // console.log(
+      //   'this.availableDiscounts disc modal',
+      //   this.availableDiscounts.map((discount) => discount.accessLevels),
+      // );
       if (this.dataProvider.currentBusinessUser.accessType == 'role') {
         this.availableDiscounts = this.availableDiscounts.filter((discount) =>
           discount.accessLevels.includes(
@@ -72,10 +72,10 @@ export class AddDiscountComponent implements OnInit {
           ),
         );
       }
-      console.log(
-        'filtered this.availableDiscounts disc modal',
-        this.availableDiscounts,
-      );
+      // console.log(
+      //   'filtered this.availableDiscounts disc modal',
+      //   this.availableDiscounts,
+      // );
     }
     if (this.bill) {
       this.appliedDiscounts = bill.billing.discount.map((discount) => {
@@ -189,7 +189,7 @@ export class AddDiscountComponent implements OnInit {
     this.appliedDiscounts.forEach((discount) => {
       discount.reason = this.reason;
     });
-    console.log("applying",this.appliedDiscounts);
+    // console.log("applying",this.appliedDiscounts);
     this.dialogRef.close(this.appliedDiscounts);
     // if (this.discountForm.value.mode == 'codeBased'){
     //   this.dialogRef.close({discount:this.discountForm.value.selectDiscount,discounted:true})
@@ -233,7 +233,7 @@ export class AddDiscountComponent implements OnInit {
   }
 
   changeMode(event:any){
-    console.log("event",event,this.currentDiscount,this.appliedDiscounts[this.currentIndex]);
+    // console.log("event",event,this.currentDiscount,this.appliedDiscounts[this.currentIndex]);
     // reset
     this.currentDiscount.value = 0;
     this.currentDiscount.totalAppliedDiscount = 0;

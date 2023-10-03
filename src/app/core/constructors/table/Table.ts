@@ -394,10 +394,10 @@ export class Table implements TableConstructor {
         return this.bill;
       } else {
         if (!this.dataProvider.currentUser) {
-          console.log(
-            'this.dataProvider.currentUser ',
-            this.dataProvider.currentUser,
-          );
+          // console.log(
+          //   'this.dataProvider.currentUser ',
+          //   this.dataProvider.currentUser,
+          // );
           throw new Error('No user is found');
         } else {
           throw new Error('Some error occurred');
@@ -455,10 +455,10 @@ export class Table implements TableConstructor {
           return this.bill;
         } else {
           if (!this.dataProvider.currentUser) {
-            console.log(
-              'this.dataProvider.currentUser ',
-              this.dataProvider.currentUser,
-            );
+            // console.log(
+            //   'this.dataProvider.currentUser ',
+            //   this.dataProvider.currentUser,
+            // );
             throw new Error('No user is found');
           } else {
             throw new Error('Some error occurred');

@@ -24,9 +24,9 @@ export function lineCancelled(this: Bill, item: Product, event: any, kot: Kot) {
   this.calculateBill();
 }
 export async function cancel(this: Bill, reason: string, phone: string,table = this.dataProvider.currentTable,noTable:boolean = false) {
-  console.log("Checking for cancellation",this.dataProvider.deleteCancelledBill,this.stage);
+  // console.log("Checking for cancellation",this.dataProvider.deleteCancelledBill,this.stage);
   if (this.dataProvider.deleteCancelledBill && (this.stage == 'finalized' || this.stage == 'hold')){
-    console.log('deleting bill');
+    // console.log('deleting bill');
     await this.deleteBill(noTable);
     return;
   }

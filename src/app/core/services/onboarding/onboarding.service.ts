@@ -127,7 +127,7 @@ export class OnboardingService {
     //     }
     //   });
     // })
-    console.log('Onboarding Service Initialized');
+    // console.log('Onboarding Service Initialized');
     this.loadingSteps.next('Checking User');
     // fetchTimeout('https://firestore.googleapis.com/',{method:'GET'},2000).then((res)=>{
     //   console.log("IP",res);
@@ -136,7 +136,7 @@ export class OnboardingService {
     //   this.dataProvider.
     // })
     if (this.dataProvider.offline) {
-      console.log('Offline Mode');
+      // console.log('Offline Mode');
     }
     this.dataProvider.userSubject.subscribe((data) => {
       if (debug) console.log('Checked user', data);
@@ -161,7 +161,7 @@ export class OnboardingService {
           data.user.business.forEach((business) => {
             let state = business.state;
             let city = business.city;
-            console.log('state', state, 'city', city);
+            // console.log('state', state, 'city', city);
             let stateIndex = this.groupedBusiness.findIndex((stateObj) => {
               return stateObj.state == state;
             });
@@ -192,10 +192,10 @@ export class OnboardingService {
                 ].businesses.push(business);
               }
             }
-            console.log('groupedBusiness', business,business.access.accessType,business.access.accessType == 'role' ? business.access.role : 'NA',business.access.accessType == 'role' && business.access.role == 'admin');
+            // console.log('groupedBusiness', business,business.access.accessType,business.access.accessType == 'role' ? business.access.role : 'NA',business.access.accessType == 'role' && business.access.role == 'admin');
             if (business.access.accessType == 'role' && business.access.role == 'admin'){
               this.atLeastOneAdmin = true;
-              console.log("data.user",data.user);
+              // console.log("data.user",data.user);
               this.autoOutletFromEmail = {
                 email:data.user.email,
                 username:data.user.username
@@ -213,7 +213,7 @@ export class OnboardingService {
           if (data.user.business.length == 1 && !this.atLeastOneAdmin) {
             this.loadBusiness(data.user.business[0].businessId);
           }
-          console.log('groupedBusiness', this.groupedBusiness);
+          // console.log('groupedBusiness', this.groupedBusiness);
           this.stage = 'multipleBusiness';
         } else {
           this.loadingSteps.next('User Found with no business');
@@ -237,7 +237,7 @@ export class OnboardingService {
   }
 
   loadBusiness(businessId: string) {
-    if (debug) console.log('Loading business', businessId);
+    // if (debug) console.log('Loading business', businessId);
     docData(doc(this.firestore, 'business', businessId), {
       idField: 'id',
     }).subscribe(async (business) => {
@@ -260,13 +260,13 @@ export class OnboardingService {
               business.id,
               business['accessCode'],
             );
-            console.log("Validity",res.data['validTill']);
+            // console.log("Validity",res.data['validTill']);
             this.dataProvider.validTill = new Date(res.data['validTill']);
             if (!res || !res.data || !res.data['status']) {
-              console.log(
-                'this.dataProvider.validTill',
-                this.dataProvider.validTill,
-              );
+              // console.log(
+              //   'this.dataProvider.validTill',
+              //   this.dataProvider.validTill,
+              // );
               this.stage = 'validityExpired';
               this.message = 'Validity Has Expired';
               this.alertify.presentToast(this.message, 'error');
@@ -324,9 +324,9 @@ export class OnboardingService {
   }
 
   async startVrajera(business: BusinessRecord) {
-    if (debug) console.log('Starting Vrajera', business);
+    // if (debug) console.log('Starting Vrajera', business);
     firstValueFrom(this.dataProvider.settingsChanged).then(async (setting) => {
-      console.log('setting',setting);
+      // console.log('setting',setting);
       this.dataProvider.businessId = business.businessId;
       this.loadingSteps.next('Loading Settings');
       if (setting.modes.filter((mode: boolean) => mode).length >= 1) {
@@ -334,13 +334,13 @@ export class OnboardingService {
         if (setting.dineInMenu || setting.takeawayMenu || setting.onlineMenu) {
           this.menuManagementService.getAllMenus();
           let menus = await firstValueFrom(this.dataProvider.allMenus);
-          console.log("Available menus",menus);
+          // console.log("Available menus",menus);
           
           // get whatever menu is available in currentMenu and set it to currentMenu
           let toBeLoadedMenus = [];
-          console.log("setting.dineInMenu",setting.dineInMenu);
-          console.log("setting.takeawayMenu",setting.takeawayMenu);
-          console.log("setting.onlineMenu",setting.onlineMenu);
+          // console.log("setting.dineInMenu",setting.dineInMenu);
+          // console.log("setting.takeawayMenu",setting.takeawayMenu);
+          // console.log("setting.onlineMenu",setting.onlineMenu);
           if (setting.dineInMenu){
             let menu = menus.find((m)=>m.id == setting.dineInMenu?.id);
             if (!menu){
@@ -366,7 +366,7 @@ export class OnboardingService {
             toBeLoadedMenus.push({mode: ['online'],menu: menu})
           }
           let filteredToBeLoadedMenus = [];
-          console.log("mode",setting.modes,toBeLoadedMenus);
+          // console.log("mode",setting.modes,toBeLoadedMenus);
           toBeLoadedMenus.forEach((toBeLoadedMenu) => {
             if (toBeLoadedMenu) {
               let matchingMenuModesIndexes = toBeLoadedMenus
@@ -379,7 +379,7 @@ export class OnboardingService {
                   }
                 })
                 .filter((mode) => mode);
-              console.log('matchingMenuModesIndexes len', matchingMenuModesIndexes,matchingMenuModesIndexes.length);
+              // console.log('matchingMenuModesIndexes len', matchingMenuModesIndexes,matchingMenuModesIndexes.length);
               // merge the modes of matching menus
               if (matchingMenuModesIndexes.length > 1) {
                 let mergedModes = [];
@@ -390,7 +390,7 @@ export class OnboardingService {
                   mode: mergedModes,
                   menu: toBeLoadedMenu.menu,
                 });
-                console.log('adding new menu to be loaded',filteredToBeLoadedMenus);
+                // console.log('adding new menu to be loaded',filteredToBeLoadedMenus);
                 // remove the matching menus from toBeLoadedMenus
                 matchingMenuModesIndexes.forEach((matchingMenuModeIndex) => {
                   toBeLoadedMenus[matchingMenuModeIndex.index] = null;
@@ -401,11 +401,11 @@ export class OnboardingService {
             }
             return toBeLoadedMenu;
           });
-          console.log('filteredToBeLoadedMenus', filteredToBeLoadedMenus);
+          // console.log('filteredToBeLoadedMenus', filteredToBeLoadedMenus);
           let loadingMenus = await Promise.all(
             filteredToBeLoadedMenus.map(async (toBeLoadedMenu) => {
               for (const toBeLoadedMode of toBeLoadedMenu.mode) {
-                console.log('toBeLoadedMode', toBeLoadedMenu);
+                // console.log('toBeLoadedMode', toBeLoadedMenu);
                 if (toBeLoadedMode == 'dineIn') {
                   let inst = new ModeConfig(
                     'Dine In',
@@ -534,7 +534,7 @@ export class OnboardingService {
             );
           }
           if (!currentMenu) {
-            console.log("No menus",this.dataProvider.menus);
+            // console.log("No menus",this.dataProvider.menus);
             currentMenu = this.dataProvider.menus.find(
               (menu) =>
                 (menu.type == 'dineIn' && setting.modes[0]) ||
@@ -548,7 +548,7 @@ export class OnboardingService {
                   setting.modes[2]),
             );
           }
-          console.log('currentMenu', currentMenu, this.dataProvider.menus);
+          // console.log('currentMenu', currentMenu, this.dataProvider.menus);
           if (currentMenu) {
             this.dataProvider.menuLoadSubject.next(currentMenu);
           } else {
@@ -590,7 +590,7 @@ export class OnboardingService {
           countersSub.subscribe((res)=>{
             this.dataProvider.billerCounters = res as BillerCounter[];
             this.dataProvider.currentBillerCounter = this.dataProvider.billerCounters.find((counter)=>counter.id == this.dataProvider.currentBillerCounter?.id);
-            console.log("Biller counters",res);
+            // console.log("Biller counters",res);
             this.checkForLock();
           });
           let initialCounters = await firstValueFrom(countersSub);
@@ -617,8 +617,12 @@ export class OnboardingService {
     if ((newDate.getMonth()+1) < 10){
       month = '0' + (newDate.getMonth()+1).toString();
     }
-    let date = (newDate.getFullYear() + '-' + month + '-' + newDate.getDate());
-    console.log("Date ISF: ",date);
+    var day = (newDate.getDate()).toString();
+    if ((newDate.getDate()) < 10){
+      day = '0' + (newDate.getDate()).toString();
+    }
+    let date = (newDate.getFullYear() + '-' + month + '-' + day);
+    // console.log("Date ISF: ",date);
     docData(
       doc(
         this.firestore,
@@ -875,7 +879,7 @@ export class OnboardingService {
         this.dataProvider.paymentMethods = res as PaymentMethod[];
       }
     });
-    console.log("Loaded everything");
+    // console.log("Loaded everything");
     LogRocket.identify(this.dataProvider.currentUser.username, {
       name: this.dataProvider.currentUser.username,
       email: this.dataProvider.currentUser.email,
@@ -979,7 +983,7 @@ export class OnboardingService {
     );
     changes.subscribe(async (res) => {
       this.dataProvider.tablesUpdated.next();
-      console.log("TOKENCHANGE",res);
+      // console.log("TOKENCHANGE",res);
       res.forEach(async (change) => {
         if (change.type == 'added') {
           let newTable = {
@@ -1104,7 +1108,7 @@ export class OnboardingService {
   checkForLock(){
     if (this.dataProvider.currentBillerCounter){
       let counter = this.dataProvider.currentBillerCounter;
-      console.log("counter.locked",counter.locked,this.dataProvider.billerLocked);
+      // console.log("counter.locked",counter.locked,this.dataProvider.billerLocked);
       if (counter.locked && !this.dataProvider.billerLocked){
         this.dataProvider.billerLocked = this.dialog.open(LockedComponent);
         this.dataProvider.billerLocked.disableClose = true;

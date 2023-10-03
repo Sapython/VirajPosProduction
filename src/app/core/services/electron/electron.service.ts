@@ -65,7 +65,7 @@ export class ElectronService {
       });
 
       this.ipcRenderer.on('updateAvailable', (event, args) => {
-        console.log('Update Service: ', args);
+        // console.log('Update Service: ', args);
         this.softwareUpdateSubject.next(args);
         // send filtered args to this.dataProvider.softwareUpdateFilteredSubject
         // filtering is done in increasing order of priority taken from updateStages
@@ -109,7 +109,7 @@ export class ElectronService {
   }
 
   async printData(data: any, printer: string) {
-    console.log("Printing data",data,"to printer:",printer);
+    // console.log("Printing data",data,"to printer:",printer);
     
     if (!data || !printer) {
       const dialog = this.dialog.open(DialogComponent, {

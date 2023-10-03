@@ -185,7 +185,7 @@ export class Bill implements BillConstructor {
     this.instruction = '';
     // this.createdDate = Timestamp.fromDate(new Date("2023-10-01T12:07:50.735Z"));
     this.createdDate = Timestamp.fromDate(new Date());
-    console.log("CREATED DATE",this.createdDate.toDate());
+    // console.log("CREATED DATE",this.createdDate.toDate());
     this.stage = 'active';
     this.mode = mode;
     this.customerInfo = {};
@@ -215,9 +215,9 @@ export class Bill implements BillConstructor {
     this.firebaseUpdate();
     window.document.addEventListener('updateBill', (data)=>{
       this.calculateBill();
-      console.log("data",data['detail']['comboId']);
+      // console.log("data",data['detail']['comboId']);
       if (this.allProducts().some(product=>product.id===data['detail']['comboId'])) {
-        console.log("Updating bill");
+        // console.log("Updating bill");
         this.updated.next();
       }
     });

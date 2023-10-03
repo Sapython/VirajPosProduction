@@ -134,7 +134,7 @@ function printableBillGenerator(
     }, 0),
     subTotal: roundOffPipe(bill.billing.subTotal),
     discounts: bill.billing.discount.map((discount) => {
-      console.log("Discount value in printable data",discount.value);
+      // console.log("Discount value in printable data",discount.value);
       if (discount.mode == 'codeBased') {
         return {
           name: discount.name,

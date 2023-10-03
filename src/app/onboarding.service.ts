@@ -57,7 +57,7 @@ export class OnboardingService {
   loadBusiness(businessId:string){
     getDoc(doc(this.firestore,'business',businessId)).then((business)=>{
       if (business.exists()){
-        console.log("business.data()",business.data());
+        // console.log("business.data()",business.data());
         this.dataProvider.currentBusiness = {...business.data(),businessId:business.id} as BusinessRecord;
         this.dataProvider.businessId = business.id;
         this.stage = 'userExists';
@@ -72,8 +72,8 @@ export class OnboardingService {
   }
 
   startViraj(business:BusinessRecord){
-    firstValueFrom(this.dataProvider.settingsChanged).then(async (setting)=>{
-      console.log(setting);
+    firstValueFrom(this.dataProvider.settingsChanged).then(async (setting:any)=>{
+      // console.log(setting);
       this.dataProvider.businessId = business.businessId;
       this.loadingSteps.next('Loading Settings');
       if(setting.modes.filter((mode:boolean)=>mode).length >= 1){
@@ -142,14 +142,14 @@ export class OnboardingService {
                 this.loadingSteps.next('All online tokens loaded');
               }
               this.dataProvider.showTableOnBillAction = JSON.parse(localStorage.getItem('showTable') || 'false');
-              console.log("Loading table size");
+              // console.log("Loading table size");
               let tempSize = localStorage.getItem('tableSize')
               if (tempSize == 'large' || tempSize == 'medium' || tempSize == 'small'){
                 this.dataProvider.currentTableSize = tempSize;
               } else {
                 this.dataProvider.currentTableSize = 'large';
               }
-              console.log("Loaded table size");
+              // console.log("Loaded table size");
               menuSubscription.unsubscribe();
               this.loadingSteps.next('Setup Completed');
               this.message = "Viraj is ready to use."
@@ -164,7 +164,7 @@ export class OnboardingService {
         this.alertify.presentToast('Please enable atleast one mode','error')
       }
     })
-    console.log('business/'+business.businessId,'/settings/settings');
+    // console.log('business/'+business.businessId,'/settings/settings');
     docData(doc(this.firestore,'business',business.businessId),{idField:'businessId'}).subscribe((res)=>{
       this.dataProvider.currentBusiness = res as BusinessRecord;
       // console.log("Business Changed",res);
@@ -235,7 +235,7 @@ export class OnboardingService {
         r[a.name.split(' ')[0]] = [...r[a.name.split(' ')[0]] || [], a];
         return r;
       }, {});
-      console.log("groupedTables",groupedTables);
+      // console.log("groupedTables",groupedTables);
       this.dataProvider.tables = formedTable;
       this.dataProvider.groupedTables = groupedTables;
     } else {

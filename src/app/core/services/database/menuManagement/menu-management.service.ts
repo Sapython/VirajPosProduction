@@ -121,14 +121,14 @@ export class MenuManagementService {
     // });
     this.updateMenuVersionRequest.subscribe((menuId) => {
       if (!this.versionToBeUpdatedMenus.includes(menuId)){
-        console.log("versionToBeUpdatedMenus",this.versionToBeUpdatedMenus);
+        // console.log("versionToBeUpdatedMenus",this.versionToBeUpdatedMenus);
         this.versionToBeUpdatedMenus.push(menuId);
         this.menuUpdater.next();
       }
     });
     this.requestMenuDownload.pipe(debounceTime(1000)).subscribe((menuId) => {
       if (!this.toBeDownloadedMenus.includes(menuId)){
-        console.log("toBeDownloadedMenus",this.toBeDownloadedMenus);
+        // console.log("toBeDownloadedMenus",this.toBeDownloadedMenus);
         this.toBeDownloadedMenus.push(menuId);
         this.downloadMenus();
       }
@@ -136,7 +136,7 @@ export class MenuManagementService {
   }
 
   downloadMenus(){
-    console.log("this.toBeDownloadedMenus");
+    // console.log("this.toBeDownloadedMenus");
     this.toBeDownloadedMenus.forEach(async (menuId) => {
       await this.getMenu(menuId);
       this.downloadedMenus.next(menuId);
@@ -152,7 +152,7 @@ export class MenuManagementService {
       let localMenus = await firstValueFrom(
         this.indexedDbService.getAll('menu'),
       );
-      console.log("Pre-Loaded Local Menus",localMenus);
+      // console.log("Pre-Loaded Local Menus",localMenus);
       localMenus.forEach(async (localMenu:any) => {
         let onlineMenu = menus.find((menu) => menu.id == localMenu.menuId);
         if (onlineMenu) {
@@ -196,13 +196,13 @@ export class MenuManagementService {
         (m) => m.id == localMenu.menuId,
       );
       if (localMenu.menu.menuVersion < onlineMenu.menuVersion) {
-        console.log(
-          'Local menu is older than online menu',
-          'Local:',
-          localMenu.menu.menuVersion,
-          '  Online:',
-          onlineMenu.menuVersion,
-        );
+        // console.log(
+        //   'Local menu is older than online menu',
+        //   'Local:',
+        //   localMenu.menu.menuVersion,
+        //   '  Online:',
+        //   onlineMenu.menuVersion,
+        // );
 
         return undefined;
       }
@@ -370,7 +370,7 @@ export class MenuManagementService {
     if (localMenu?.recommendedCategories) {
       return localMenu?.recommendedCategories;
     }
-    console.log('recommended: Not available on local fetching from online');
+    // console.log('recommended: Not available on local fetching from online');
 
     let res = await getDocs(
       collection(
@@ -398,7 +398,7 @@ export class MenuManagementService {
     if (localMenu?.viewCategories[userId]) {
       return localMenu?.viewCategories[userId];
     }
-    console.log('view: Not available on local fetching from online');
+    // console.log('view: Not available on local fetching from online');
     let res = await getDocs(
       collection(
         this.firestore,
@@ -426,7 +426,7 @@ export class MenuManagementService {
     if (localMenu?.rootCategories) {
       return localMenu?.rootCategories;
     }
-    console.log('main: Not available on local fetching from online');
+    // console.log('main: Not available on local fetching from online');
     let res = await getDocs(
       collection(
         this.firestore,
@@ -452,7 +452,7 @@ export class MenuManagementService {
       return localMenu.products;
     }
     this.requestMenuDownload.next(menu.id);
-    console.log('products: Not available on local fetching from online');
+    // console.log('products: Not available on local fetching from online');
     let res = await getDocs(
       collection(
         this.firestore,
@@ -491,7 +491,7 @@ export class MenuManagementService {
 
   async getMenu(menuId: string) {
     try {
-      console.log("Downloading menu from server",menuId);
+      // console.log("Downloading menu from server",menuId);
       // get products
       let productsFetchRequest = getDocs(
         collection(
@@ -575,7 +575,7 @@ export class MenuManagementService {
           // console.log('menu112 menu does not exist');
         }
       } catch (error) {
-        console.log(`menu ${menuId} does not exist`);
+        // console.log(`menu ${menuId} does not exist`);
       }
       let menuData = {
         menuId: menuId,
@@ -708,7 +708,7 @@ export class MenuManagementService {
 
   async addViewCategory(category: any, userId: string, id?: string) {
     if (!id) {
-      console.log('Adding new view category', userId, category);
+      // console.log('Adding new view category', userId, category);
       let categoryRes = await addDoc(
         collection(
           this.firestore,
@@ -725,7 +725,7 @@ export class MenuManagementService {
       this.updateMenuVersionRequest.next(this.dataProvider.currentMenu?.selectedMenu?.id);
       return categoryRes;
     }
-    console.log('Updating view category', userId, category);
+    // console.log('Updating view category', userId, category);
     let categoryRes = await setDoc(
       doc(
         this.firestore,
@@ -1669,7 +1669,7 @@ export class MenuManagementService {
           });
         },
         (err) => {
-          console.log(err);
+          // console.log(err);
         },
       );
     }
@@ -1688,14 +1688,6 @@ export class MenuManagementService {
     let localMenu = await this.getLocalMenu(menu.id);
     if (localMenu) {
       localMenu.defaultPrinter = printer;
-      this.indexedDbService.update('menu', localMenu).subscribe(
-        (res) => {
-          // console.log("success",res);
-        },
-        (err) => {
-          console.log(err);
-        },
-      );
     }
   }
 

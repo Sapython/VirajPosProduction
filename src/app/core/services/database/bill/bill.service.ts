@@ -103,16 +103,16 @@ export class BillService {
       body: raw,
       redirect: 'follow'
     };
-    console.log("FETCHING REQUEST",url);
+    // console.log("FETCHING REQUEST",url);
     // return a promise resolved till json
     return fetch(url, requestOptions)
       .then(response => response.json())
       .then(result => {
-        console.log("FETCHING REQUEST",result);
+        // console.log("FETCHING REQUEST",result);
         return result.data;
       })
       .catch(error => {
-        console.log('FETCHING REQUEST error', error);
+        // console.log('FETCHING REQUEST error', error);
       });
   }
 
@@ -140,11 +140,11 @@ export class BillService {
 
   getBill(id: string) {
     if (!this.dataProvider.businessId) {
-      console.log(
-        'NO BUSINESS ID:  ',
-        'business/' + this.dataProvider.businessId + '/bills',
-        id,
-      );
+      // console.log(
+      //   'NO BUSINESS ID:  ',
+      //   'business/' + this.dataProvider.businessId + '/bills',
+      //   id,
+      // );
       alert('NO BUSINESS ID');
       return;
     }
@@ -345,13 +345,13 @@ export class BillService {
 
   getAnalyticsReport(date: Date) {
     // fetch this path /business/uqd9dm0its2v9xx6fey2q/analyticsData/2023/7/21
-    console.log(
-      'Fetching analytics data for ',
-      'business/' +
-        this.dataProvider.businessId +
-        '/analyticsData/' +
-        (date.getFullYear().toString() + '-' + (date.getMonth()+1).toString().padStart(2,'0') + '-' + date.getDate().toString().padStart(2,'0'))
-    );
+    // console.log(
+    //   'Fetching analytics data for ',
+    //   'business/' +
+    //     this.dataProvider.businessId +
+    //     '/analyticsData/' +
+    //     (date.getFullYear().toString() + '-' + (date.getMonth()+1).toString().padStart(2,'0') + '-' + date.getDate().toString().padStart(2,'0'))
+    // );
     return getDoc(
       doc(
         this.firestore,

@@ -69,7 +69,7 @@ export class SettleComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("this.additionalMethods[0]",this.dataProvider.paymentMethods);
+    // console.log("this.additionalMethods[0]",this.dataProvider.paymentMethods);
     this.methods = [
       {
         paymentMethod: this.dataProvider.paymentMethods[0].name,
@@ -175,7 +175,7 @@ export class SettleComponent implements OnInit {
   }
 
   addOnReturn(event) {
-    console.log(event);
+    // console.log(event);
     event.stopPropagation();
     if (event.key === 'Enter') {
       if (this.billSum > this.totalPaid) {

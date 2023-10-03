@@ -70,7 +70,7 @@ export async function finalize(this: Bill, noTable?: boolean,onHold?:boolean) {
     await alert('No products to finalize');
     return;
   }
-  console.log("QuickMethod: Finalize",onHold);
+  // console.log("QuickMethod: Finalize",onHold);
   if (onHold) {
     this.stage = 'hold';
   } else {
@@ -150,12 +150,12 @@ export async function settle(
   // ** RECHECKER starts here
   // check if previous stages are completed
   if (!noDialogs) {
-    console.log("this.kots",this.kots);
+    // console.log("this.kots",this.kots);
     if (this.kots.find((kot) => kot.stage === 'active')) {
-      console.log("printing kot");
+      // console.log("printing kot");
       await this.finalizeAndPrintKot(true);
     }
-    console.log("finalizing bill");
+    // console.log("finalizing bill");
     await this.finalize(true);
   }
   // recalculate bill
@@ -172,7 +172,7 @@ export async function settle(
           }
           this.dataProvider.loading = true;
           requiredBillNumber = (await this.billService.getPaymentMethodBillNumber(method.id,this.mode)) as any
-          console.log("SettleBillMethod: after increment bill number",requiredBillNumber);
+          // console.log("SettleBillMethod: after increment bill number",requiredBillNumber);
           this.dataProvider.loading = false;
         }
       } else {
@@ -198,11 +198,11 @@ export async function settle(
       }
     }
   } catch (error) {
-    console.log('Error in getting bill number', error);
+    // console.log('Error in getting bill number', error);
     this.billService.presentToast('Error no internet found.');
     return
   }
-  console.log("SettleBillNum: Final number",requiredBillNumber);
+  // console.log("SettleBillNum: Final number",requiredBillNumber);
   this.billNo = requiredBillNumber;
   this.stage = 'settled';
   this.settlement = {
@@ -238,7 +238,7 @@ export async function settle(
   }
   // set the loyalty points for the customers
   if (this.customerInfo.phone) {
-    console.log('Found customer phone');
+    // console.log('Found customer phone');
     this.customerService.updateCustomer(
       {
         address: this.customerInfo.address,
@@ -248,7 +248,7 @@ export async function settle(
       },
       this,
     );
-    console.log('Customer info', this.customerInfo);
+    // console.log('Customer info', this.customerInfo);
   }
 
 
@@ -272,7 +272,7 @@ export async function settle(
         });
       }
     } else if (product.itemType == 'combo') {
-      console.log('Combo found',product);
+      // console.log('Combo found',product);
       product.allProductsSales.forEach((product) => {
         let find = productSales.find((p) => p.item == product.item);
         if (find) {

@@ -31,7 +31,7 @@ export function calculateBill(this: Bill, noUpdate: boolean = false) {
   if (billMenu){
     billMenu.taxes.forEach((tax: Tax) => {
       if (tax.mode === 'bill') {
-        console.log("Calculating additional tax",tax.name,tax.cost);
+        // console.log("Calculating additional tax",tax.name,tax.cost);
         if (tax.type === 'percentage') {
           let taxAmount = (this.billing.subTotal * tax.cost) / 100;
           additionalTax += taxAmount;

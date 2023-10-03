@@ -285,7 +285,7 @@ function createWindow(): BrowserWindow {
         win.webContents
           .executeJavaScript(`document.body.innerHTML`)
           .then((result) => {
-            console.log(result);
+            // console.log(result);
             if (!result) {
               // alert("Result is null")
               win.webContents.executeJavaScript(`window.location.reload()`);
@@ -335,11 +335,11 @@ try {
   // custom IPC triggers 
   ipcMain.on("getPrinters", async (event, arg) => {
     let res = win.webContents.getPrintersAsync();
-    console.log("Main printers", res);
+    // console.log("Main printers", res);
     event.returnValue = await res;
   });
   ipcMain.on("printData", async (event, arg) => {
-    console.log("GOT", arg, arg.data, arg.printer);
+    // console.log("GOT", arg, arg.data, arg.printer);
     let res = printData(event, arg.data, arg.printer);
   });
   // This method will be called when Electron has finished

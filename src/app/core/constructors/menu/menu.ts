@@ -526,12 +526,12 @@ export class ModeConfig {
             }
           });
         });
-        if (debug)
-          console.log(
-            'this.viewCategories',
-            this.viewCategories,
-            this.activateCategory,
-          );
+        // if (debug)
+          // console.log(
+          //   'this.viewCategories',
+          //   this.viewCategories,
+          //   this.activateCategory,
+          // );
       }
     }
   }
@@ -711,7 +711,7 @@ export class ModeConfig {
     this.selectedMenu = menus.find(
       (menu) => menu.id == this.selectedMenuId,
     );
-    console.log('this.selectedMenu', this.selectedMenu);
+    // console.log('this.selectedMenu', this.selectedMenu);
     // console.log('updating menu', this.selectedMenu, this.type);
     if (this.selectedMenu && this.type) {
       this.menuManagementService
@@ -731,7 +731,7 @@ export class ModeConfig {
   selectCategory(cat: Category,userId?:string) {
     this.selectedCategory = cat;
     this.selectedUserViewCategory = userId;
-    console.log('this.selectedCategory', this.selectedCategory);
+    // console.log('this.selectedCategory', this.selectedCategory);
     if (this.selectedCategory.id == 'allProducts') {
       // sort products by name
       this.selectedCategory.products.sort((a, b) => {
@@ -754,7 +754,7 @@ export class ModeConfig {
     let unusedProducts = this.products.filter(
       (product) => !product?.category?.id,
     );
-    console.log('unusedProducts', unusedProducts);
+    // console.log('unusedProducts', unusedProducts);
     const dialog = this.dialog.open(AddMainCategoryComponent);
   }
 
@@ -763,7 +763,7 @@ export class ModeConfig {
       await this.dataProvider.confirm('Are you sure you want to delete', [1])
     ) {
       this.dataProvider.loading = true;
-      console.log("deleteing view category of user",this.selectedUserViewCategory);
+      // console.log("deleteing view category of user",this.selectedUserViewCategory);
       this.menuManagementService
         .deleteViewCategory(this.selectedMenuId, this.selectedCategory.id,this.selectedUserViewCategory)
         .then((data) => {
@@ -817,7 +817,7 @@ export class ModeConfig {
     });
     dialog.closed.subscribe((data: any) => {
       if (data) {
-        if (debug) console.log('data', data);
+        // if (debug) console.log('data', data);
         this.activateCategory = data;
         this.viewCategories.push(data);
       }
@@ -891,7 +891,7 @@ export class ModeConfig {
     if (this.selectedMenu) {
       // console.log('this.products', this.products);
       if (id == 'highRange') {
-        console.log('this.highRangeForm.value', this.highRangeForm.value);
+        // console.log('this.highRangeForm.value', this.highRangeForm.value);
         if (this.highRangeForm.value.min && this.highRangeForm.value.max) {
           var filteredList = this.products.filter(
             (product) =>
@@ -999,7 +999,7 @@ export class ModeConfig {
           // console.log('this.selectedCategory', this.selectedCategory.products);
           currSelectedCategory.loading = true;
         }
-        console.log('filteredList', filteredList);
+        // console.log('filteredList', filteredList);
         this.menuManagementService
           .setSettingsMenu(
             this.mostSellingForm.value,
@@ -1139,7 +1139,7 @@ export class ModeConfig {
         }
       })
       .catch((err) => {
-        console.log('Recipe add error', err);
+        // console.log('Recipe add error', err);
         this.alertify.presentToast('Recipe Added Failed');
       })
       .finally(() => {
@@ -1164,16 +1164,16 @@ export class ModeConfig {
           });
         this.dataProvider.loading = true;
         // product = { ...product, ...data };
-        console.log("New Product Data",data);
+        // console.log("New Product Data",data);
         product.taxes = filteredTax;
-        console.log('Updating product with tax', product);
+        // console.log('Updating product with tax', product);
         this.productService
           .updateRecipe(structuredClone(product), this.selectedMenuId)
           .then((data: any) => {
             this.alertify.presentToast('Taxes Updated Successfully');
           })
           .catch((err) => {
-            console.log('err', err);
+            // console.log('err', err);
             this.alertify.presentToast('Taxes Update Failed');
           })
           .finally(() => {
@@ -1224,7 +1224,7 @@ export class ModeConfig {
           { ...product, ...data },
           menuId,
         );
-        console.log("Updated recipe with new data",data);
+        // console.log("Updated recipe with new data",data);
         
         let printer = printerConfigs.find(
           (printer) => printer.printerName == data['specificPrinter'],
@@ -1263,7 +1263,7 @@ export class ModeConfig {
         this.alertify.presentToast('Recipe Updated Successfully');
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       this.alertify.presentToast('Recipe Updated Failed');
     } finally {
       this.dataProvider.loading = false;
@@ -1350,13 +1350,13 @@ export class ModeConfig {
       event.currentIndex,
     );
     let previousOrder = structuredClone(this.selectedCategory.productOrders);
-    console.log("this.selectedCategory.productOrders",previousOrder);
+    // console.log("this.selectedCategory.productOrders",previousOrder);
     this.selectedCategory.productOrders = this.selectedCategory.products.map(
       (product: Product) => {
         return product.id;
       },
     );
-    console.log("this.selectedCategory.productOrders",previousOrder,this.selectedCategory.productOrders);
+    // console.log("this.selectedCategory.productOrders",previousOrder,this.selectedCategory.productOrders);
     this.selectedCategory.updated = true;
   }
 
@@ -1381,7 +1381,7 @@ export class ModeConfig {
       let updatablemainCategories = this.mainCategories.filter(
         (category: Category) => category.updated,
       );
-      console.log("updatable main categories",updatablemainCategories);
+      // console.log("updatable main categories",updatablemainCategories);
       let updateRequestProducts = updatableProducts.map((product: Product) =>
         this.menuManagementService.updateProductMenu(
           { ...product, updated: false },
@@ -1437,7 +1437,7 @@ export class ModeConfig {
           updateRequestviewCategories,
         ].flat(),
       );
-      console.log("Updates",updates);
+      // console.log("Updates",updates);
       if (updates.length > 0){
         this.menuManagementService.updateMenuVersionRequest.next(this.selectedMenuId)
       }
@@ -1645,14 +1645,14 @@ export class ModeConfig {
   }
 
   editDiscount(discount: CodeBaseDiscount) {
-     console.log('discount', discount);
+    //  console.log('discount', discount);
     const dialog = this.dialog.open(AddDiscountComponent, {
       data: { mode: 'edit', discount: discount },
     });
     dialog.closed.subscribe((data: any) => {
-       console.log('data', data);
+      //  console.log('data', data);
       if (data) {
-         console.log('adding', data);
+        //  console.log('adding', data);
         this.menuManagementService
           .updateDiscount(
             discount.id,
@@ -1660,7 +1660,7 @@ export class ModeConfig {
             this.selectedMenu.id,
           )
           .then((res) => {
-             console.log('res', res);
+            //  console.log('res', res);
             this.getDiscounts();
             this.alertify.presentToast('Discount update successfully');
           })
@@ -1701,7 +1701,7 @@ export class ModeConfig {
       data: { mode: 'add', menu: this },
     });
     dialog.closed.subscribe((data: any) => {
-      console.log('data', data);
+      // console.log('data', data);
       if (data) {
         this.menuManagementService
           .addCombo(
@@ -1867,7 +1867,7 @@ export class ModeConfig {
       data: { menu: this,mode:'add' },
     });
     firstValueFrom(comp.closed).then((data: any) => {
-      console.log('Data', data);
+      // console.log('Data', data);
       if (data && typeof data == 'object') {
         this.menuManagementService
           .addLoyaltySetting(data, this.selectedMenuId)
@@ -1876,7 +1876,7 @@ export class ModeConfig {
             this.getLoyaltySettings();
           })
           .catch((error) => {
-            console.log(error);
+            // console.log(error);
             this.alertify.presentToast(
               'Unable to add loyalty setting',
               'error',
@@ -1897,7 +1897,7 @@ export class ModeConfig {
       data: { menu: this,loyaltySetting,mode:'edit' },
     });
     firstValueFrom(comp.closed).then((data: any) => {
-      console.log('Data', data);
+      // console.log('Data', data);
       if (data && typeof data == 'object') {
         this.menuManagementService
           .editLoyalSetting({...loyaltySetting,...data}, this.selectedMenuId)
@@ -1906,7 +1906,7 @@ export class ModeConfig {
             this.getLoyaltySettings();
           })
           .catch((error) => {
-            console.log(error);
+            // console.log(error);
             this.alertify.presentToast(
               'Unable to add loyalty setting',
               'error',
@@ -1925,7 +1925,7 @@ export class ModeConfig {
   }
 
   selectLoyaltySetting(value: any) {
-    console.log('Log', value);
+    // console.log('Log', value);
     this.menuManagementService
       .selectLoyalty(value.value, this.selectedMenuId)
       .then(() => {
@@ -1962,7 +1962,7 @@ export class ModeConfig {
   }
 
   updateComboVisibility(combo: Combo, value: boolean) {
-    console.log('Updating combo', combo.enabled, value);
+    // console.log('Updating combo', combo.enabled, value);
     combo.enabled = value;
 
     return this.menuManagementService.updateCombo(combo, this.selectedMenu);
@@ -1994,7 +1994,7 @@ export class ModeConfig {
         products.forEach((p) => {
           p.taxes = filteredTax;
         });
-        console.log('Updating product with tax', products);
+        // console.log('Updating product with tax', products);
         this.productService
           .updateBulkProducts(products, this.selectedMenuId)
           .then((data: any) => {

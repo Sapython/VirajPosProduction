@@ -55,7 +55,7 @@ export class CustomerService {
         });
       },
       (error) => {
-        console.log('error', error);
+        // console.log('error', error);
       },
     );
     // console.log('Started customer version fetch');
@@ -106,7 +106,7 @@ export class CustomerService {
       name: customer.name,
       phone: customer.phone,
     };
-    console.log('ADDING CUSTOMER', customerData);
+    // console.log('ADDING CUSTOMER', customerData);
     let res = await addDoc(
       collection(
         this.firestore,
@@ -129,10 +129,10 @@ export class CustomerService {
     let localCustomer = this.dataProvider.customers.find(
       (onlineCustomer) => onlineCustomer.phone == customer.phone,
     );
-    console.log("Local customer found",localCustomer);
+    // console.log("Local customer found",localCustomer);
     
     if (localCustomer) {
-      console.log('Updating CUSTOMER', localCustomer);
+      // console.log('Updating CUSTOMER', localCustomer);
       // update local customers
       this.dataProvider.customers = this.dataProvider.customers.map(
         (customer) => {
@@ -171,15 +171,15 @@ export class CustomerService {
       await this.addBillToCustomer(localCustomer.id, bill);
       return updatedCustomerDoc;
     } else {
-      console.log("Adding new customer",customer.phone,customer.phone.toString().length == 10);
+      // console.log("Adding new customer",customer.phone,customer.phone.toString().length == 10);
       if (customer.phone && customer.phone.toString().length == 10){
-        console.log("Trying to add a new customer");
+        // console.log("Trying to add a new customer");
         try {
           let newCustomerDoc = await this.addCustomer(customer, bill);
           await this.addBillToCustomer(newCustomerDoc.id, bill);
-          console.log("Success: Adding new customer");
+          // console.log("Success: Adding new customer");
         } catch (error) {
-          console.log("Error: Adding new customer",error);
+          // console.log("Error: Adding new customer",error);
         }
       }
     }
@@ -193,21 +193,21 @@ export class CustomerService {
     })
       .then((res) => {
         if (res) {
-          console.log(res);
+          // console.log(res);
         }
       })
       .catch((error) => {
-        console.log('error', error);
+        // console.log('error', error);
         this.alertify.presentToast(error.message, 'error');
       });
   }
 
   addBillToCustomer(customerID: string, bill: Bill) {
-    console.log(":::Adding bill under customer.",'business',
-    this.dataProvider.currentBusiness.businessId,
-    'customers',
-    customerID,
-    'bills',);
+    // console.log(":::Adding bill under customer.",'business',
+    // this.dataProvider.currentBusiness.businessId,
+    // 'customers',
+    // customerID,
+    // 'bills',);
     return addDoc(
       collection(
         this.firestore,

@@ -53,7 +53,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
     combo: Combo
   ) {
     this.generateId();
-    console.log('combo.from jadoo', combo);
+    // console.log('combo.from jadoo', combo);
     // convert combo.updateDate.seconds and combo.updateDate.nanoseconds to Date
     let date = new Date(combo.updateDate.seconds * 1000 + combo.updateDate.nanoseconds);
 
@@ -198,7 +198,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
     product: Product,
     quantity: number,
   ) {
-    console.log('this.combo', this.combo);
+    // console.log('this.combo', this.combo);
     const comboCategory = this.combo.selectedCategories?.find(
       (c) => c.id == category.id,
     );
@@ -248,7 +248,7 @@ export class ApplicableCombo implements ApplicableComboConstructor {
   }
 
   calculatePrice() {
-    console.log("Calculating price under applicable combo");
+    // console.log("Calculating price under applicable combo");
     this.price = 0;
     this.incomplete = false;
     this.untaxedValue = 0;

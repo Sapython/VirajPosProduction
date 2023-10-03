@@ -131,9 +131,9 @@ export class ProductsService {
       );
     });
     await batch.commit().then(()=>{
-      console.log("Bulk tax update success");
+      // console.log("Bulk tax update success");
     }).catch((err)=>{
-      console.log("Bulk tax update failed",err);
+      // console.log("Bulk tax update failed",err);
     }).finally(()=>{
       this.dataProvider.loading = false;
     })

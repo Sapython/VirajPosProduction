@@ -25,7 +25,7 @@ export class SetChargesComponent {
   });
   
   constructor(public dialogRef:DialogRef,public dataProvider:DataProvider, @Inject(DIALOG_DATA) public bill:Bill|BillConstructor) {
-    console.log("this.dataProvider.charges",this.dataProvider.charges);
+    // console.log("this.dataProvider.charges",this.dataProvider.charges);
     let chargesSettings = this.dataProvider.charges[this.bill.mode];
     let appliedCharges = this.bill.appliedCharges;
     this.patchCharges(chargesSettings,appliedCharges);
@@ -81,7 +81,7 @@ export class SetChargesComponent {
           }
         }
       }
-      console.log("Applied: ",this.bill.appliedCharges);
+      // console.log("Applied: ",this.bill.appliedCharges);
     }
   }
   patchCharges(chargesSettings:Charge,appliedCharges:{containerCharge:number,deliveryCharge:number,tip:number,serviceCharge:number}) {
@@ -98,7 +98,7 @@ export class SetChargesComponent {
     }
     if (chargesSettings.delivery.allowed){
       if(!chargesSettings.delivery.fixed){
-        console.log("setting delivery charge",appliedCharges.deliveryCharge);
+        // console.log("setting delivery charge",appliedCharges.deliveryCharge);
         this.chargesForm.controls.deliveryCharge.setValue(appliedCharges.deliveryCharge);
       } else {
         if(appliedCharges.deliveryCharge == chargesSettings.delivery.charges){

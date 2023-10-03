@@ -225,13 +225,13 @@ export class SettingsService {
             ...business,
             ...data
           }
-          console.log("Updating business",newData);
+          // console.log("Updating business",newData);
           return newData;
         } else {
           return business;
         }
       });
-      console.log("Updating user",user);
+      // console.log("Updating user",user);
       return updateDoc(doc(this.firestore,'users',userId),user);
     }
   }

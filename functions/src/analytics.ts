@@ -5,7 +5,7 @@ import { AnalyticsData } from '.';
 export async function generateAnalytics(firestore: any,storage:any, businessDoc: any, fetchDate:Date) {
   let cachedTables: any[] = [];
   // /business/uqd9dm0its2v9xx6fey2q/analyticsData/2023/7
-  console.log('Fetching for date', fetchDate.toDateString());
+  // console.log('Fetching for date', fetchDate.toDateString());
 
   let prevAnalyticsData = await firestore
     .collection(
@@ -84,13 +84,13 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
   let todayEnd = fetchDate;
   // set hours to 23
   todayEnd.setHours(23, 59, 59, 999);
-  console.log("Config date range: ",today.toLocaleString(),todayEnd.toLocaleString(),`business/${businessDoc.id}/bills`);
+  // console.log("Config date range: ",today.toLocaleString(),todayEnd.toLocaleString(),`business/${businessDoc.id}/bills`);
   let bills = firestore
     .collection(`business/${businessDoc.id}/bills`)
     .where('createdDate', '>=', today)
     .where('createdDate', '<=', todayEnd);
   let billsDocs = await bills.get();
-  console.log('Total bills', billsDocs.docs.length);
+  // console.log('Total bills', billsDocs.docs.length);
 
   let analyticsData: AnalyticsData = {
     createdAt: Timestamp.fromDate(new Date()),
@@ -359,7 +359,7 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
       },
     };
   });
-  console.log("User actions predefined",usersActionsPreDefined);
+  // console.log("User actions predefined",usersActionsPreDefined);
   
   analyticsData.salesChannels.all.userWiseActions = JSON.parse(JSON.stringify(usersActionsPreDefined));
   analyticsData.salesChannels.dineIn.userWiseActions = JSON.parse(JSON.stringify(usersActionsPreDefined));
@@ -367,7 +367,7 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
   analyticsData.salesChannels.online.userWiseActions = JSON.parse(JSON.stringify(usersActionsPreDefined));
   await Promise.all(billsDocs.docs.map(async (billDoc:any)=>{
     //   let data:BillConstructor = billDoc.data() as any;
-    console.log("Checking for ",billDoc.id);
+    // console.log("Checking for ",billDoc.id);
     let currentBill = billDoc.data() as any;
     // console.log("BILL DATA:",data);
     // business/businessId/bills/billId/activities
@@ -435,7 +435,7 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
         time: currentBill.createdDate,
         totalSales: isValidNumber(currentBill.billing.grandTotal),
       });
-      console.log("Basic analytics done for all");
+      // console.log("Basic analytics done for all");
       
       // payment methods
       if (currentBill.settlement?.payments) {
@@ -454,14 +454,14 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
           ] += isValidNumber(payment.amount);
         });
       }
-      console.log("Payment analytics done for all");
+      // console.log("Payment analytics done for all");
       // analyticsData.salesChannels.all.billWiseSales.tableWise
       // find if existing entry for a table exists in tableWise if yes then add the sales and increase the bill number
       let tableIndex =
         analyticsData.salesChannels.all.billWiseSales.tableWise.findIndex(
           (t: any) => t.tableId == currentBill.table,
         );
-      console.log("Table index",tableIndex);
+      // console.log("Table index",tableIndex);
       if (tableIndex === -1) {
         if (currentBill.mode === 'dineIn'){
           var tablePath = `business/${businessDoc.id}/tables/${currentBill.table}`;
@@ -470,7 +470,7 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
         } else {
           var tablePath = `business/${businessDoc.id}/tokens/${currentBill.table}`;
         }
-        console.log("Table path",tablePath);
+        // console.log("Table path",tablePath);
         // console.log('Table path', tablePath);
         // find tablePath in cachedTables if not found then fetch from firestore
         if (cachedTables.findIndex((t: any) => t.path === tablePath) === -1) {
@@ -515,7 +515,7 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
           tableIndex
         ].totalBills += 1;
       }
-      console.log("Table wise analytics done for all");
+      // console.log("Table wise analytics done for all");
       // analyticsData.salesChannels.all.billWiseSales.time
       // find if existing entry for a time exists in timeWise if yes then add the sales and increase the bill number
       let timeIndex =
@@ -711,7 +711,7 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
           analyticsData.salesChannels.all.itemWiseSales.byQuantity[0].category;
       }
     }
-    console.log("Item wise analytics done for all");
+    // console.log("Item wise analytics done for all");
     // suspicious activities
     let activitiesList: {
       createdDate: Timestamp;
@@ -845,12 +845,12 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
         activity.activity.type === 'billNC' ||
         activity.activity.type === 'billSplit'
       ) {
-        console.log(
-          'Adding activity',
-          activity.activity.type,
-          'to suspicious activities',
-          currentBill.mode,
-        );
+        // console.log(
+        //   'Adding activity',
+        //   activity.activity.type,
+        //   'to suspicious activities',
+        //   currentBill.mode,
+        // );
 
         analyticsData.salesChannels.all.suspiciousActivities.push(activity);
         if (currentBill.mode === 'dineIn') {
@@ -871,9 +871,9 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
     // generate suspicious activities by categorizing them into bills, kots, discounts
     // analyticsData.salesChannels.all.userWiseActions
     // for dineIn
-    console.log('currentBill.mode', currentBill.mode);
+    // console.log('currentBill.mode', currentBill.mode);
     if (currentBill.mode === 'dineIn') {
-      console.log('Adding dineIn bill',currentBill?.billing?.grandTotal);
+      // console.log('Adding dineIn bill',currentBill?.billing?.grandTotal);
       
       if (currentBill?.stage === 'settled') {
         analyticsData.salesChannels.dineIn.totalSettledBills += 1;
@@ -1041,7 +1041,7 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
         );
       }
     } else if (currentBill.mode === 'takeaway') {
-      console.log('Mode takeaway found', currentBill?.billing?.grandTotal);
+      // console.log('Mode takeaway found', currentBill?.billing?.grandTotal);
       if (currentBill?.stage === 'settled') {
         analyticsData.salesChannels.takeaway.totalSettledBills += 1;
       } else if (currentBill?.stage === 'finalized' || currentBill?.stage === 'active') {
@@ -1215,7 +1215,7 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
       }
     } else if (currentBill.mode === 'online') {
       try {
-        console.log('Mode online found', currentBill?.billing?.grandTotal);
+        // console.log('Mode online found', currentBill?.billing?.grandTotal);
         if (currentBill?.stage === 'settled') {
           analyticsData.salesChannels.takeaway.totalSettledBills += 1;
         } else if (currentBill?.stage === 'finalized' || currentBill?.stage === 'active') {
@@ -1285,7 +1285,7 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
               ] += isValidNumber(payment.amount);
             });
           }
-          console.log("Stage 1");
+          // console.log("Stage 1");
           // analyticsData.salesChannels.online.billWiseSales.tableWise
           // find if existing entry for a table exists in tableWise if yes then add the sales and increase the bill number
           let tableIndex =
@@ -1348,7 +1348,7 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
               tableIndex
             ].totalBills += 1;
           }
-          console.log("Stage 2");
+          // console.log("Stage 2");
           
           // analyticsData.salesChannels.online.billWiseSales.time
           // find if existing entry for a time exists in timeWise if yes then add the sales and increase the bill number
@@ -1391,12 +1391,12 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
             currentBill.billing.grandTotal,
           );
         }
-        console.log("Stage 3");
+        // console.log("Stage 3");
       } catch (error) {
-        console.log("Error in online",error);
+        // console.log("Error in online",error);
       }
     }
-    console.log("Ran for ",billDoc.id);
+    // console.log("Ran for ",billDoc.id);
   }))
   let filteredTables: any[] = [];
   analyticsData.salesChannels.all.billWiseSales.tableWise.forEach((table) => {
@@ -1787,10 +1787,10 @@ export async function generateAnalytics(firestore: any,storage:any, businessDoc:
   let month = date.getMonth() + 1;
   let day = date.getDate();
   // console.log('Analytics data', analyticsData);
-  console.log(
-    'Size of analytics data in mb',
-    JSON.stringify(analyticsData).length / 1000000,
-  );
+  // console.log(
+  //   'Size of analytics data in mb',
+  //   JSON.stringify(analyticsData).length / 1000000,
+  // );
 
   await firestore
     .doc(`business/${businessDoc.id}/analyticsData/${year}/${month}/${day}`)

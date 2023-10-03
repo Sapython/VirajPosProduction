@@ -86,7 +86,7 @@ export class SplitBillComponent {
       return {
         ...kot,
         items:kot.products.map((product)=>{
-          console.log('product',product.sellByAvailable);
+          // console.log('product',product.sellByAvailable);
           return {
             ...product,
             maxQuantity:product.quantity,
@@ -137,7 +137,7 @@ export class SplitBillComponent {
       postDiscountSubTotal:0,
       postChargesSubTotal:0,
     };
-    console.log('kots', kots);
+    // console.log('kots', kots);
     // convert extendedKotConstructor to KotConstructor
     let kotsConstructed:any[] = kots.map((kot)=>{
       return {
@@ -150,7 +150,7 @@ export class SplitBillComponent {
         })
       }
     })
-    console.log('constructed kots: ', kots);
+    // console.log('constructed kots: ', kots);
     let billConstructor: BillConstructor = {
       billing: billing,
       id: this.bill.bill.id,
@@ -375,7 +375,7 @@ export function calculateBill(
   });
   billMenu.taxes.forEach((tax: Tax) => {
     if (tax.mode === 'bill') {
-      console.log("Calculating additional tax",tax.name,tax.cost);
+      // console.log("Calculating additional tax",tax.name,tax.cost);
       if (tax.type === 'percentage') {
         let taxAmount = (bill.billing.subTotal * tax.cost) / 100;
         additionalTax += taxAmount;

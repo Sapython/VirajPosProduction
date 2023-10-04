@@ -12,7 +12,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { HelperComponent } from './helper/helper.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import * as Hammer from 'hammerjs';
 import { BrowserModule, HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 
 @NgModule({

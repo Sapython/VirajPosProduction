@@ -27,7 +27,8 @@ export class ReportService {
   consolidatedMaxAmount: number = 0;
   downloadPdf: Subject<void> = new Subject<void>();
   downloadExcel: Subject<void> = new Subject<void>();
-
+  availableHeads: Subject<string[]> = new Subject<string[]>();
+  setViewWithAvailableHeads: string[]=[]
   dateRangeFormGroup: FormGroup = new FormGroup({
     startDate: new FormControl('', [Validators.required]),
     endDate: new FormControl('', [Validators.required]),

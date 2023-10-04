@@ -59,6 +59,11 @@
         />
         <input matEndDate formControlName="endDate" placeholder="End date" />
       </mat-date-range-input>
+      <mat-form-field appearance="outline" *ngIf="['billWise','cancelledBills','dineInBills','onlineBills','takeawayBills','ncBills','settledBills','discounted'].includes(dialogData.stage)">
+        <mat-select multiple [value]="reportService.setViewWithAvailableHeads" (selectionChange)="reportService.setViewWithAvailableHeads = headSelector.value" #headSelector>
+          <mat-option *ngFor="let item of reportService.availableHeads | async" [value]="item">{{item}}</mat-option>
+        </mat-select>
+      </mat-form-field>
       <viraj-button
         *ngIf="!reportService.noData"
         (click)="reportService.downloadExcel.next()"

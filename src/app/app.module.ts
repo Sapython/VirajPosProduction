@@ -1,4 +1,4 @@
-import { BrowserModule, HAMMER_GESTURE_CONFIG, HammerGestureConfig } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 import {
   APP_INITIALIZER,
   ErrorHandler,
@@ -87,12 +87,6 @@ import { PrinterService } from './core/services/printing/printer/printer.service
 import { UpdaterService } from './core/services/updater/updater.service';
 import { provideMessaging,getMessaging } from '@angular/fire/messaging';
 import { LockedComponent } from './shared/locked/locked.component';
-export class MyHammerConfig extends HammerGestureConfig  {
-  overrides = <any>{
-      // override hammerjs default configuration
-      // 'swipe': { direction: Hammer.DIRECTION_ALL  }
-  }
-}
 
 var FirebaseAppInstance:FirebaseApp|undefined;
 
@@ -274,11 +268,7 @@ export const dbConfig: DBConfig = {
     SettingsService,
     SystemService,
     TableService,
-    UpdaterService,
-    { 
-      provide: HAMMER_GESTURE_CONFIG, 
-      useClass: MyHammerConfig 
-    }
+    UpdaterService
   ],
   bootstrap: [AppComponent],
 })

@@ -47,9 +47,32 @@ export class DiscountedBillsComponent {
     return bill.map((res) => res.id).join(', ');
   }
 
-  constructor(private reportService: ReportService,private dataProvider: DataProvider,) {}
+  constructor(public reportService: ReportService,private dataProvider: DataProvider,) {}
 
   ngOnInit(): void {
+    let availableHeads = [
+      "Bill No",
+      "Order No",
+      "Bill Amount",
+      "Bill Kots",
+      "Punched By",
+      "Mode",
+      "Date-Time",
+      "Settle Date/Time",
+      "Settle By",
+      "Settle Approved By",
+      "Total Bill Time",
+      "Items",
+      "Discounts",
+      "Discount Approved By",
+      "NC Detail",
+      "NC Approved By",
+      "Taxes"
+    ]
+    this.reportService.availableHeads.next(availableHeads);
+    setTimeout(()=>{
+      this.reportService.setViewWithAvailableHeads = availableHeads;
+    },300)
     this.reportChangedSubscription = this.reportService.dataChanged.subscribe(
       () => {
         this.loading = true;

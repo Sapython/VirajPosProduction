@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { Subscription, ReplaySubject } from 'rxjs';
@@ -14,7 +14,7 @@ import { Product } from '../../../../../../types/product.structure';
   templateUrl: './settled-bills.component.html',
   styleUrls: ['./settled-bills.component.scss']
 })
-export class SettledBillsComponent {
+export class SettledBillsComponent implements OnInit {
   downloadPDfSubscription: Subscription = Subscription.EMPTY;
   downloadExcelSubscription: Subscription = Subscription.EMPTY;
   reportChangedSubscription: Subscription = Subscription.EMPTY;
@@ -49,11 +49,34 @@ export class SettledBillsComponent {
   }
 
   constructor(
-    private reportService: ReportService,
+    public reportService: ReportService,
     private dataProvider: DataProvider,
   ) {}
 
   ngOnInit(): void {
+    let availableHeads = [
+      "Bill No",
+      "Order No",
+      "Bill Amount",
+      "Bill Kots",
+      "Punched By",
+      "Mode",
+      "Date-Time",
+      "Settle Date/Time",
+      "Settle By",
+      "Settle Approved By",
+      "Total Bill Time",
+      "Items",
+      "Discounts",
+      "Discount Approved By",
+      "NC Detail",
+      "NC Approved By",
+      "Taxes"
+    ]
+    this.reportService.availableHeads.next(availableHeads);
+    setTimeout(()=>{
+      this.reportService.setViewWithAvailableHeads = availableHeads;
+    },300)
     this.reportChangedSubscription = this.reportService.dataChanged.subscribe(
       () => {
         this.loading = true;

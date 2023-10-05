@@ -1,151 +1,152 @@
 <table class="styled-table" id="reportTable" *ngIf="!loading">
-  <thead>
-    <tr>
-      <th>Bill No</th>
-      <th>Order No</th>
-      <th>Bill Amount</th>
-      <th>Bill Kots</th>
-      <th>Punched By</th>
-      <th>Mode</th>
-      <th>Date-Time</th>
-      <th>Settle Date/Time</th>
-      <th>Settle By</th>
-      <th>Settle Approved By</th>
-      <th>Total Bill Time</th>
-      <th>Items</th>
-      <th>Discounts</th>
-      <th>Discount Approved By</th>
-      <th>NC Detail</th>
-      <th>NC Approved By</th>
-      <th>Taxes</th>
-    </tr>
-  </thead>
-  <tbody>
-    <ng-container *ngIf="(bills | async).length > 0">
-      <tr *ngFor="let bill of bills | async">
-        <td>
-          {{ bill.billNo || "Unsettled" }}
-        </td>
-        <td>
-          {{ bill.orderNo || 'N/A' }}
-        </td>
-        <td>
-          {{ (bill.billing.grandTotal | currency:'INR') || 'N/A' }}
-        </td>
-        <td>
-          <ol>
-            <li *ngFor="let kot of bill.kots" class="noWrap">
-              KOT no:{{kot.id}} - Date:{{kot.createdDate.toDate() | date:'short'}}
-            </li>
-          </ol>
-        </td>
-        <td>
-          <ng-container *ngIf="bill.kots.length > 0">
-            {{bill.kots[0].user.username || 'N/A'}}
-          </ng-container>
-          <ng-container *ngIf="bill.kots.length == 0">
-            N/A
-          </ng-container>
-        </td>
-        <td>
-          <p *ngIf="bill.mode == 'dineIn'">Dine In</p>
-          <p *ngIf="bill.mode == 'takeaway'">Takeaway</p>
-          <p *ngIf="bill.mode == 'online'">Online</p>
-        </td>
-        <td>
-          {{ bill.createdDate ? (bill.createdDate?.toDate() | date: "short") : 'No Date' }}
-        </td>
-        <td>
-          {{ bill.settlement?.time ? (bill.settlement?.time?.toDate() | date: "short") : 'No Date' }}
-        </td>
-        <td class="noWrap">
-          User: {{ bill.settlement?.user ? bill.settlement?.user?.username : 'N/A' }}
-        </td>
-        <td class="noWrap">
-          Approved By: {{ bill.settlement?.elevatedUser ? bill.settlement?.elevatedUser : 'N/A' }} 
-        </td>
-        <td>
-          {{ bill.totalBillTime ? bill.totalBillTime : 'N/A' }}
-        </td>
-        <td class="noWrap">
-          <ol *ngIf="bill.mergedProducts.length > 0">
-            <li *ngFor="let item of bill.mergedProducts">
-              {{ item.name }} ({{ item.price | currency:'INR' }} X {{ item.quantity }}),
-            </li>
-          </ol>
-          <p *ngIf="bill.mergedProducts.length == 0">No Products</p>
-        </td>
-        <td class="noWrap">
-          <ol *ngIf="bill.billing.discount.length > 0">
-            <li *ngFor="let discount of bill.billing.discount" class="noWrap">
-              Value:{{ discount.value }} (Cost: {{ discount.totalAppliedDiscount | currency:'INR' }}), <strong>Reason: {{discount.reason}}</strong>
-            </li>
-          </ol>
-          <p *ngIf="bill.billing.discount.length == 0">No Discounts</p>
-        </td>
-        <td>
-          <ng-container *ngIf="bill.billing.discount.length > 0">
-            {{bill.billing.discount[0].appliedBy.elevatedUser || 'N/A'}}
-          </ng-container>
-          <ng-container *ngIf="bill.billing.discount.length == 0">
-            N/A
-          </ng-container>
-        </td>
-        <td class="noWrap">
-          <ng-container *ngIf="!bill.nonChargeableDetail">N/A</ng-container>
-          <ol *ngIf="bill.nonChargeableDetail">
-            <li>Name: {{ bill.nonChargeableDetail.name }}</li>
-            <li>Phone: {{ bill.nonChargeableDetail.phone }}</li>
-            <li>
-              Date/Time:
-              {{ bill.nonChargeableDetail.time.toDate() | date: "short" }}
-            </li>
-            <li>User: {{ bill.nonChargeableDetail.user.username }}</li>
-          </ol>
-        </td>
-        <td>{{bill.nonChargeableDetail?.elevatedUser || 'N/A'}}</td>
-        <td class="noWrap">
-          <ol *ngIf="bill.billing.taxes.length >0">
-            <li *ngFor="let tax of bill.billing.taxes">
-              {{ tax.name }} - ({{ tax.cost }}) - ({{ tax.amount | currency:'INR' }}),
-            </li>
-          </ol>
-          <p *ngIf="bill.billing.taxes.length == 0">No Taxes</p>
-        </td>
-      </tr>
-      <tr class="totals">
-        <!-- totals -->
-        <td>Bills: {{billTotals.numberOfBills}}</td>
-        <td>Orders: {{billTotals.numberOfOrders}}</td>
-        <td>Total: {{ billTotals.total | currency:'INR'}}</td>
-        <td>Number Of KOTS: {{ billTotals.numberOfKots }}</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Total Bill Time: {{ billTotals.totalBillTime }}</td>
-        <td></td>
-        <td>Total Discount: {{ billTotals.totalDiscount | currency:'INR' }}</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Total Tax: {{ billTotals.totalTax | currency:'INR' }}</td>
-      </tr>
-      <tr *ngIf="(bills | async).length == 0">
-        <td
-          colspan="12"
-          style="
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.2rem;
-            color: #aaa;
-          "
-        >
-          <p>No Data Available</p>
-        </td>
-      </tr>
-    </ng-container>
-  </tbody>
-</table>
+	<thead>
+	  <tr>
+		<th *ngIf="this.reportService.setViewWithAvailableHeads.includes('Bill No')">Bill No</th>
+		<th *ngIf="this.reportService.setViewWithAvailableHeads.includes('Order No')">Order No</th>
+		<th *ngIf="this.reportService.setViewWithAvailableHeads.includes('Bill Amount')">Bill Amount</th>
+		<th *ngIf="this.reportService.setViewWithAvailableHeads.includes('Bill Kots')">Bill Kots</th>
+		<th *ngIf="this.reportService.setViewWithAvailableHeads.includes('Punched By')">Punched By</th>
+		<th *ngIf="this.reportService.setViewWithAvailableHeads.includes('Mode')">Mode</th>
+		<th *ngIf="this.reportService.setViewWithAvailableHeads.includes('Date-Time')">Date-Time</th>
+		<th *ngIf="this.reportService.setViewWithAvailableHeads.includes('Settle Date/Time')">Settle Date/Time</th>
+		<th *ngIf="this.reportService.setViewWithAvailableHeads.includes('Settle By')">Settle By</th>
+		<th *ngIf="this.reportService.setViewWithAvailableHeads.includes('Settle Approved By')">Settle Approved By</th>
+		<th *ngIf="this.reportService.setViewWithAvailableHeads.includes('Total Bill Time')">Total Bill Time</th>
+		<th *ngIf="this.reportService.setViewWithAvailableHeads.includes('Items')">Items</th>
+		<th *ngIf="this.reportService.setViewWithAvailableHeads.includes('Discounts')">Discounts</th>
+		<th *ngIf="this.reportService.setViewWithAvailableHeads.includes('Discount Approved By')">Discount Approved By</th>
+		<th *ngIf="this.reportService.setViewWithAvailableHeads.includes('NC Detail')">NC Detail</th>
+		<th *ngIf="this.reportService.setViewWithAvailableHeads.includes('NC Approved By')">NC Approved By</th>
+		<th *ngIf="this.reportService.setViewWithAvailableHeads.includes('Taxes')">Taxes</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <ng-container *ngIf="(bills | async).length > 0">
+		<tr *ngFor="let bill of bills | async">
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Bill No')">
+			{{ bill.billNo || "Unsettled" }}
+		  </td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Order No')">
+			{{ bill.orderNo || 'N/A' }}
+		  </td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Bill Amount')">
+			{{ (bill.billing.grandTotal | currency:'INR') || 'N/A' }}
+		  </td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Bill Kots')">
+			<ol>
+			  <li *ngFor="let kot of bill.kots" class="noWrap">
+				KOT no:{{kot.id}} - Date:{{kot.createdDate.toDate() | date:'short'}}
+			  </li>
+			</ol>
+		  </td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Punched By')">
+			<ng-container *ngIf="bill.kots.length > 0">
+			  {{bill.kots[0].user.username || 'N/A'}}
+			</ng-container>
+			<ng-container *ngIf="bill.kots.length == 0">
+			  N/A
+			</ng-container>
+		  </td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Mode')">
+			<p *ngIf="bill.mode == 'dineIn'">Dine In</p>
+			<p *ngIf="bill.mode == 'takeaway'">Takeaway</p>
+			<p *ngIf="bill.mode == 'online'">Online</p>
+		  </td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Date-Time')">
+			{{ bill.createdDate ? (bill.createdDate?.toDate() | date: "short") : 'No Date' }}
+		  </td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Settle Date/Time')">
+			{{ bill.settlement?.time ? (bill.settlement?.time?.toDate() | date: "short") : 'No Date' }}
+		  </td>
+		  <td class="noWrap" *ngIf="this.reportService.setViewWithAvailableHeads.includes('Settle By')">
+			User: {{ bill.settlement?.user ? bill.settlement?.user?.username : 'N/A' }}
+		  </td>
+		  <td class="noWrap" *ngIf="this.reportService.setViewWithAvailableHeads.includes('Settle Approved By')">
+			Approved By: {{ bill.settlement?.elevatedUser ? bill.settlement?.elevatedUser : 'N/A' }} 
+		  </td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Total Bill Time')">
+			{{ bill.totalBillTime ? bill.totalBillTime : 'N/A' }}
+		  </td>
+		  <td class="noWrap" *ngIf="this.reportService.setViewWithAvailableHeads.includes('Items')">
+			<ol *ngIf="bill.mergedProducts.length > 0">
+			  <li *ngFor="let item of bill.mergedProducts">
+				{{ item.name }} ({{ item.price | currency:'INR' }} X {{ item.quantity }}),
+			  </li>
+			</ol>
+			<p *ngIf="bill.mergedProducts.length == 0">No Products</p>
+		  </td>
+		  <td class="noWrap" *ngIf="this.reportService.setViewWithAvailableHeads.includes('Discounts')">
+			<ol *ngIf="bill.billing.discount.length > 0">
+			  <li *ngFor="let discount of bill.billing.discount" class="noWrap">
+				Value:{{ discount.value }} (Cost: {{ discount.totalAppliedDiscount | currency:'INR' }}), <strong>Reason: {{discount.reason}}</strong>
+			  </li>
+			</ol>
+			<p *ngIf="bill.billing.discount.length == 0">No Discounts</p>
+		  </td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Discount Approved By')">
+			<ng-container *ngIf="bill.billing.discount.length > 0">
+			  {{bill.billing.discount[0].appliedBy.elevatedUser || 'N/A'}}
+			</ng-container>
+			<ng-container *ngIf="bill.billing.discount.length == 0">
+			  N/A
+			</ng-container>
+		  </td>
+		  <td class="noWrap" *ngIf="this.reportService.setViewWithAvailableHeads.includes('NC Detail')">
+			<ng-container *ngIf="!bill.nonChargeableDetail">N/A</ng-container>
+			<ol *ngIf="bill.nonChargeableDetail">
+			  <li>Name: {{ bill.nonChargeableDetail.name }}</li>
+			  <li>Phone: {{ bill.nonChargeableDetail.phone }}</li>
+			  <li>
+				Date/Time:
+				{{ bill.nonChargeableDetail.time.toDate() | date: "short" }}
+			  </li>
+			  <li>User: {{ bill.nonChargeableDetail.user.username }}</li>
+			</ol>
+		  </td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('NC Approved By')">{{bill.nonChargeableDetail?.elevatedUser || 'N/A'}}</td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Taxes')" class="noWrap">
+			<ol *ngIf="bill.billing.taxes.length >0">
+			  <li *ngFor="let tax of bill.billing.taxes">
+				{{ tax.name }} - ({{ tax.cost }}) - ({{ tax.amount | currency:'INR' }}),
+			  </li>
+			</ol>
+			<p *ngIf="bill.billing.taxes.length == 0">No Taxes</p>
+		  </td>
+		</tr>
+		<tr class="totals">
+		  <!-- totals -->
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Bill No')">Bills: {{billTotals.numberOfBills}}</td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Order No')">Orders: {{billTotals.numberOfOrders}}</td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Bill Amount')">Total: {{ billTotals.total | currency:'INR'}}</td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Bill Kots')">Number Of KOTS: {{ billTotals.numberOfKots }}</td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Punched By')"></td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Mode')"></td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Date-Time')"></td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Settle Date/Time')"></td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Settle By')"></td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Settle Approved By')"></td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Total Bill Time')">Total Bill Time: {{ billTotals.totalBillTime }}</td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Items')"></td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Discounts')">Total Discount: {{ billTotals.totalDiscount | currency:'INR' }}</td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Discount Approved By')"></td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('NC Detail')"></td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('NC Approved By')"></td>
+		  <td *ngIf="this.reportService.setViewWithAvailableHeads.includes('Taxes')">Total Tax: {{ billTotals.totalTax | currency:'INR' }}</td>
+		</tr>
+	</ng-container>
+	<tr *ngIf="(bills | async).length == 0">
+	  <td
+		[attr.colspan]="this.reportService.setViewWithAvailableHeads.length"
+		style="
+		  text-align: center;
+		  font-weight: bold;
+		  font-size: 1.2rem;
+		  color: #aaa;
+		"
+	  >
+		<p>No Data Available</p>
+	  </td>
+	</tr>
+	</tbody>
+  </table>
+  

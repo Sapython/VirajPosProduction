@@ -2,10 +2,10 @@
     RequestExecutionLevel admin
 !macroend
 !macro customInstall
+	CreateDirectory $INSTDIR\utilities
+	File /oname=$PLUGINSDIR\rawprint.exe "${BUILD_RESOURCES_DIR}\rawprint.exe"
+	CopyFiles $PLUGINSDIR\rawprint.exe $INSTDIR\utilities\rawprint.exe
 	${ifNot} ${isUpdated}
-		CreateDirectory $INSTDIR\utilities
-		File /oname=$PLUGINSDIR\rawprint.exe "${BUILD_RESOURCES_DIR}\rawprint.exe"
-		CopyFiles $PLUGINSDIR\rawprint.exe $INSTDIR\utilities\rawprint.exe
 		EnVar::SetHKLM
 		EnVar::AddValue "path" $INSTDIR\utilities
 		Pop $0

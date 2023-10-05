@@ -165,7 +165,7 @@ export class Bill implements BillConstructor {
       this.dataProvider.queueUpdate.next(1000);
       //  console.log("this.printableBillData",this.printableBillData);
     });
-    this.updated.pipe(debounceTime(1000)).subscribe(async (data) => {
+    this.updated.pipe(debounceTime(300)).subscribe(async (data) => {
       if (!data && this.eligibleForUpdate()) {
         this.updateToFirebase();
         this.updateTableData()

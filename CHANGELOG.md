@@ -1,4 +1,4 @@
-## <small>0.1.155 (2023-10-01)</small>
+## <small>1.0.25 (2023-10-05)</small>
 
 * Access level was wrong ([382351d](https://github.com/swayambhu-innovations/Vrajera/commit/382351d))
 * Added active category option. Custom Printer, Custom ViewCat ([ce3fc6f](https://github.com/swayambhu-innovations/Vrajera/commit/ce3fc6f))
@@ -111,6 +111,7 @@
 * Fixed combo bugs. ([9c8c103](https://github.com/swayambhu-innovations/Vrajera/commit/9c8c103))
 * Fixed combo form. ([fca880f](https://github.com/swayambhu-innovations/Vrajera/commit/fca880f))
 * FIxed combo. ([ce00120](https://github.com/swayambhu-innovations/Vrajera/commit/ce00120))
+* Fixed counters, and table view. publish_to_prod ([ccebafb](https://github.com/swayambhu-innovations/Vrajera/commit/ccebafb))
 * Fixed critical issues related to bill printing. ([9a0021d](https://github.com/swayambhu-innovations/Vrajera/commit/9a0021d))
 * Fixed customer info modal and disc modal bug. ([17568f6](https://github.com/swayambhu-innovations/Vrajera/commit/17568f6))
 * Fixed date time zone issue for sales and tokens. ([542e4c4](https://github.com/swayambhu-innovations/Vrajera/commit/542e4c4))
@@ -195,6 +196,8 @@
 * Preview kot fixed ([7d30c4a](https://github.com/swayambhu-innovations/Vrajera/commit/7d30c4a))
 * Printing fixed for optional taxes ([2933a32](https://github.com/swayambhu-innovations/Vrajera/commit/2933a32))
 * Printing fixed. ([3d581f3](https://github.com/swayambhu-innovations/Vrajera/commit/3d581f3))
+* publish_to_prod ([31a9fe2](https://github.com/swayambhu-innovations/Vrajera/commit/31a9fe2))
+* publish_to_prod ([0a1ca05](https://github.com/swayambhu-innovations/Vrajera/commit/0a1ca05))
 * publish_to_prod ([ca33664](https://github.com/swayambhu-innovations/Vrajera/commit/ca33664))
 * publish_to_prod ([64e01ca](https://github.com/swayambhu-innovations/Vrajera/commit/64e01ca))
 * publish_to_prod ([264f6e8](https://github.com/swayambhu-innovations/Vrajera/commit/264f6e8))

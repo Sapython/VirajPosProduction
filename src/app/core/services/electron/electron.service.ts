@@ -109,8 +109,7 @@ export class ElectronService {
   }
 
   async printData(data: any, printer: string) {
-    // console.log("Printing data",data,"to printer:",printer);
-    
+    console.log("Printing data",data,"to printer:",printer);
     if (!data || !printer) {
       const dialog = this.dialog.open(DialogComponent, {
         data: { title: 'Error', description: 'No Data or Printer Selected' },
@@ -126,17 +125,18 @@ export class ElectronService {
       return;
     }
     //  console.log("STAGE 3 => Will Print: ", data, printer);
-    this.ipcRenderer.send('printData', { data, printer });
-    var promiseResolve, promiseReject;
-    var promise = new Promise(function (resolve, reject) {
-      promiseResolve = resolve;
-      promiseReject = reject;
-    });
-    this.ipcRenderer.on('printDataComplete', (event, data) => {
-      //  console.log("Done Printing", data);
-      promiseResolve(data);
-    });
-    return promise;
+    // alert("Sent for printing")
+    await this.ipcRenderer.invoke('printData', { data, printer });
+    // var promiseResolve, promiseReject;
+    // var promise = new Promise(function (resolve, reject) {
+    //   promiseResolve = resolve;
+    //   promiseReject = reject;
+    // });
+    // this.ipcRenderer.on('printDataComplete', (event, data) => {
+    //   //  console.log("Done Printing", data);
+    //   promiseResolve(data);
+    // });
+    // return promise;
   }
 
   setAuth(token: string) {

@@ -6,6 +6,7 @@ import {
   screen,
   ipcMain,
   Menu
+  dialog,
 } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -135,9 +136,9 @@ function createWindow(): BrowserWindow {
     //  console.log("Main printers", res);
     event.returnValue = await res;
   });
-  ipcMain.on('printData', async (event, arg) => {
+  ipcMain.handle('printData', async (event, arg) => {
     //  console.log("GOT", arg, arg.data, arg.printer);
-    let res = printData(event, arg.data, arg.printer);
+    return printData(event, arg.data, arg.printer);
   });
   ipcMain.on('saveAuth', async (event, arg) => {
     try {

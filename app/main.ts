@@ -99,8 +99,8 @@ function printData(event, data, printer) {
       'RawPrint.exe',
       ['"' + printer + '"', '"' + dataPath + 'printableData.txt' + '"'],
       event,
-      function () {
-        //  console.log('Done Printing (main)');
+      function (test) {
+         console.log('Output: ',test);
       },
     );
   });

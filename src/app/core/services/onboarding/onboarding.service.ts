@@ -135,9 +135,6 @@ export class OnboardingService {
     //   console.log("IP error",err);
     //   this.dataProvider.
     // })
-    if (this.dataProvider.offline) {
-      // console.log('Offline Mode');
-    }
     this.dataProvider.userSubject.subscribe((data) => {
       if (debug) console.log('Checked user', data);
       this.stage = 'virajGettingReady';

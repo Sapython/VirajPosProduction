@@ -55,13 +55,13 @@ export class AuthService {
       });
     onAuthStateChanged(this.auth, async (user) => {
       this.dataProvider.isAuthStateAvaliable = false;
-      // console.log('this.localUserId', this.localUserId);
+      console.log('this.localUserId', this.localUserId,user);
       if (user) {
         this.dataProvider.currentFirebaseUser = user;
         window.localStorage.setItem('signInToken', await user.getIdToken());
         if (user.uid == this.localUserId && this.localUserData) {
           this.dataProvider.loggedIn = true;
-          // console.log('User found from local storage', this.localUserData);
+          console.log('User found from local storage', this.localUserData);
           this.dataProvider.userSubject.next({
             status: true,
             stage: 1,
@@ -76,7 +76,7 @@ export class AuthService {
             .then((userData) => {
               // this.dataProvider.currentUser = user.data() as UserRecord;
               this.dataProvider.loggedIn = true;
-              // console.log('User found', userData.data());
+              console.log('User found', userData.data());
               if (userData.exists() && userData.data()) {
                 this.dataProvider.userSubject.next({
                   status: true,
@@ -103,10 +103,10 @@ export class AuthService {
             });
         }
       } else {
-        // console.log(
-        //   'No auth state found, 9452',
-        //   this.electronService.getAuth(),
-        // );
+        console.log(
+          'No auth state found, 9452',
+          this.electronService.getAuth(),
+        );
         let token = this.electronService.getAuth();
         if (token) {
           this.dataProvider.loading = true;

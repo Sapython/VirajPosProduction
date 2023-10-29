@@ -3,6 +3,7 @@ import {
   Auth,
   createUserWithEmailAndPassword,
   getAuth,
+  User,
   UserCredential,
 } from '@angular/fire/auth';
 import {
@@ -15,7 +16,6 @@ import {
   Firestore,
 } from '@angular/fire/firestore';
 import { Functions, httpsCallable } from '@angular/fire/functions';
-import { User } from '@sentry/angular-ivy';
 import {
   BusinessRecord,
   UserBusiness,

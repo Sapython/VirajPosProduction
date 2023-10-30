@@ -972,11 +972,14 @@ export class OnboardingService {
           this.firestore,
           'business/' + this.dataProvider.businessId + '/tokens',
         ),
+        where('completed', '==', false),
+        where('id', 'not-in', [
+          this.dataProvider.tokens.map((token) => token.id),
+        ]),
       ),
     );
     changes.subscribe(async (res) => {
       this.dataProvider.tablesUpdated.next();
-      console.log("TOKENCHANGE",res);
       res.forEach(async (change) => {
         if (change.type == 'added') {
           let newTable = {
@@ -1004,21 +1007,14 @@ export class OnboardingService {
         //   let tableId = change.doc.id;
         //   let newTable = change.doc.data();
         //   let table = this.dataProvider.tokens.find((token)=>token.id==tableId);
-        //   console.log("TABLE CHANGED",table,JSON.stringify(table.bill.stage),newTable);
-        //   console.log("CONDITION CHECKED",!(!table),!(!table.id),(table.bill == null || table.bill.stage == 'settled' || table.bill.stage == 'cancelled'));
         //   if(table && table.id && (table.bill == null || table.bill.stage == 'settled' || table.bill.stage == 'cancelled')){
-        //     console.log("PASSED TO CLEAR TABLE",table);
         //     if(newTable.bill == null){
-        //       console.log("CLEARING TABLE",table);
         //       table.clearTable();
         //     }
         //   }
         // }
       });
     });
-    // res.then(async (res)=>{
-
-    // })
   }
 
   async getOnlineTokens() {

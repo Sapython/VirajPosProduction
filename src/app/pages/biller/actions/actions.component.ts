@@ -1,5 +1,5 @@
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { AddDiscountComponent } from './add-discount/add-discount.component';
 import { CancelComponent } from './cancel/cancel.component';
 import { NonChargeableComponent } from './non-chargeable/non-chargeable.component';
@@ -20,6 +20,7 @@ import { BillConstructor } from '../../../types/bill.structure';
 import { UserManagementService } from '../../../core/services/auth/user/user-management.service';
 import { BillService } from '../../../core/services/database/bill/bill.service';
 import { PaymentMethod } from '../../../types/payment.structure';
+import { Subscription, firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-actions',
@@ -30,7 +31,7 @@ import { PaymentMethod } from '../../../types/payment.structure';
     zoomOutOnLeaveAnimation({ duration: 300 }),
   ],
 })
-export class ActionsComponent {
+export class ActionsComponent implements OnDestroy {
   @Input() billNo: number = 0;
   @Input() billTokenNo: number = 0;
   @Input() billAmount: number = 0;
@@ -43,13 +44,16 @@ export class ActionsComponent {
   activeKotIndex: number = 0;
   kots: Kot[] = [];
   allKot: Kot[] = [];
+  billAssignedSubscription:Subscription = Subscription.EMPTY;
+  currentBillUpdatedSubscription:Subscription = Subscription.EMPTY;
+
   constructor(
     public dataProvider: DataProvider,
     private dialog: Dialog,
     private userManagementService: UserManagementService,
     private billService:BillService
   ) {
-    this.dataProvider.billAssigned.subscribe(() => {
+    this.billAssignedSubscription = this.dataProvider.billAssigned.subscribe(() => {
       if (this.dataProvider.currentBill) {
         this.isNonChargeable =
           !!this.dataProvider.currentBill.nonChargeableDetail;
@@ -72,7 +76,8 @@ export class ActionsComponent {
             this.dataProvider.kotViewVisible = true;
           }
         }
-        this.dataProvider.currentBill.updated.subscribe(() => {
+        this.currentBillUpdatedSubscription.unsubscribe();
+        this.currentBillUpdatedSubscription = this.dataProvider.currentBill.updated.subscribe(() => {
           if (this.dataProvider.currentBill) {
             this.isNonChargeable =
               !!this.dataProvider.currentBill.nonChargeableDetail;
@@ -101,6 +106,11 @@ export class ActionsComponent {
     });
   }
 
+  ngOnDestroy(): void {
+    this.billAssignedSubscription.unsubscribe();
+    this.currentBillUpdatedSubscription.unsubscribe();
+  }
+
   async cancelBill() {
     if (
       await this.userManagementService.authenticateAction([
@@ -109,7 +119,7 @@ export class ActionsComponent {
     ) {
       if (this.dataProvider.currentBill) {
         let dialog = this.dialog.open(CancelComponent);
-        dialog.closed.subscribe((result: any) => {
+        firstValueFrom(dialog.closed).then((result: any) => {
           if (result.reason && result.phone) {
             this.dataProvider.currentBill?.cancel(result.reason, result.phone);
           }
@@ -143,7 +153,7 @@ export class ActionsComponent {
         let dialog = this.dialog.open(SettleComponent, {
           data: this.dataProvider.currentBill.billing.grandTotal
         });
-        dialog.closed.subscribe((result: any) => {
+        firstValueFrom(dialog.closed).then((result: any) => {
           // console.log('Settle Result', result);
           if (
             result &&
@@ -225,7 +235,7 @@ export class ActionsComponent {
       const dialog = this.dialog.open(AddDiscountComponent, {
         data: this.dataProvider.currentBill,
       });
-      dialog.closed.subscribe((result: any) => {
+      firstValueFrom(dialog.closed).then((result: any) => {
         //  console.log("Result",result);
         if (typeof result == 'object' && this.dataProvider.currentBill) {
           //  console.log(result);
@@ -250,11 +260,6 @@ export class ActionsComponent {
         }
       });
     }
-    // dialog.closed.subscribe((result: any) => {
-    //   if (this.dataProvider.currentBill && result?.discounted) {
-    //     this.dataProvider.currentBill.addDiscount(result.discount);
-    //   }
-    // });
   }
 
   async nonChargeable(event: any) {
@@ -265,7 +270,7 @@ export class ActionsComponent {
     if (elevateReq.status === true) {
       if (this.dataProvider.currentBill && event.checked) {
         const dialog = this.dialog.open(NonChargeableComponent);
-        dialog.closed.subscribe((result: any) => {
+        firstValueFrom(dialog.closed).then((result: any) => {
           if (!result || !result.nonChargeable) {
             this.isNonChargeable = false;
             return;
@@ -293,7 +298,6 @@ export class ActionsComponent {
     const dialog = this.dialog.open(CustomerPanelComponent, {
       data: { dialog: true },
     });
-    // dialog.closed.subscribe((result)=>{})
   }
 
   toggleManageKot() {

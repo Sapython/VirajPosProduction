@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -18,7 +18,7 @@ import {
 import { Chart } from 'chart.js';
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { ReportViewComponent } from './report-view/report-view.component';
-import { Subject, debounceTime } from 'rxjs';
+import { Subject, Subscription, debounceTime, firstValueFrom } from 'rxjs';
 import Fuse from 'fuse.js';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 @Component({
@@ -26,7 +26,7 @@ import { Functions, httpsCallable } from '@angular/fire/functions';
   templateUrl: './reports.component.html',
   styleUrls: ['./reports.component.scss'],
 })
-export class ReportsComponent implements OnInit {
+export class ReportsComponent implements OnInit, OnDestroy {
   reportFormats:ReportFormat[] = [
     {
       title: 'Consolidated Report',
@@ -159,6 +159,7 @@ export class ReportsComponent implements OnInit {
   @ViewChild('orderChart') orderChart:
     | { nativeElement: HTMLCanvasElement }
     | undefined;
+  reportSearchSubjectSubscriptionHandler:Subscription = Subscription.EMPTY;
   constructor(
     private billService: BillService,
     private dataProvider: DataProvider,
@@ -167,13 +168,17 @@ export class ReportsComponent implements OnInit {
     private functions:Functions
   ) {
     this.filteredReportFormats = this.reportFormats.slice();
-    this.reportSearchSubject.pipe(debounceTime(600)).subscribe((res) => {
+    this.reportSearchSubjectSubscriptionHandler = this.reportSearchSubject.pipe(debounceTime(600)).subscribe((res) => {
       if (res.trim().length > 0) {
         this.filteredReportFormats = this.fuseSearchInstance.search(res.trim()).map(res=>res.item);
       } else {
         this.filteredReportFormats = this.reportFormats.slice();
       }
     })
+  }
+
+  ngOnDestroy(): void {
+    this.reportSearchSubjectSubscriptionHandler.unsubscribe();
   }
   noFuture = (d: Date | null): boolean => {
     const today = new Date();
@@ -1222,7 +1227,7 @@ export class ReportsComponent implements OnInit {
     const dialog = this.dialog.open(ReportViewComponent, {
       data: { stage: stage, data: {} },
     });
-    dialog.closed.subscribe((res) => {
+    firstValueFrom(dialog.closed).then((res) => {
       console.log('Closed', res);
     });
   }

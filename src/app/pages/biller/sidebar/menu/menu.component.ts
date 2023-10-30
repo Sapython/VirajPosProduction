@@ -1,10 +1,11 @@
 import {
   AfterViewInit,
   Component,
+  OnDestroy,
   OnInit,
   ViewContainerRef,
 } from '@angular/core';
-import { debounceTime, firstValueFrom, Subject } from 'rxjs';
+import { debounceTime, firstValueFrom, Subject, Subscription } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { StockListComponent } from './stock-list/stock-list.component';
@@ -18,7 +19,7 @@ declare var Hammer: any;
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.scss'],
 })
-export class MenuComponent implements OnInit, AfterViewInit {
+export class MenuComponent implements OnInit, AfterViewInit, OnDestroy {
   closeStockListPanelSubscription: Subject<boolean> = new Subject<boolean>();
   isStockListOpen = false;
 
@@ -32,32 +33,47 @@ export class MenuComponent implements OnInit, AfterViewInit {
   stockConsumption: number = 0;
   currentMenu: undefined | ModeConfig;
   activeIndex: string = '';
+  closeStockListSubscriptionHandler: Subscription = Subscription.EMPTY;
+  menuLoadSubscriptionHandler: Subscription = Subscription.EMPTY;
+  modeChangedSubscriptionHandler: Subscription = Subscription.EMPTY;
+  searchResultsSubscriptionHandler: Subscription = Subscription.EMPTY;
+  componentComponentCloseSubscriptionHandler: Subscription = Subscription.EMPTY;
+  productsLoadedSubscriptionHandler: Subscription = Subscription.EMPTY;
   constructor(
     public viewContainerRef: ViewContainerRef,
     private dialog: Dialog,
     public dataProvider: DataProvider,
     private indexedDb: NgxIndexedDBService,
   ) {
-    this.closeStockListPanelSubscription
+    this.closeStockListSubscriptionHandler = this.closeStockListPanelSubscription
       .pipe(debounceTime(600))
       .subscribe((data) => {
         this.isStockListOpen = data;
       });
-    this.dataProvider.menuLoadSubject.subscribe((data) => {
+    this.menuLoadSubscriptionHandler = this.dataProvider.menuLoadSubject.subscribe((data) => {
       // console.log("LOADED MENU",this.dataProvider.currentMenu);
       this.currentMenu = this.dataProvider.currentMenu;
       this.activeIndex = '';
     });
-    this.dataProvider.modeChanged.subscribe(() => {
+    this.modeChangedSubscriptionHandler = this.dataProvider.modeChanged.subscribe(() => {
       // console.log("MODE CHANGED",data);
       this.currentMenu = this.dataProvider.currentMenu;
       this.activeIndex = '';
     });
-    this.dataProvider.searchResults.subscribe((data) => {
+    this.searchResultsSubscriptionHandler = this.dataProvider.searchResults.subscribe((data) => {
       // reset selected category
       this.currentCategory = undefined;
       this.activeIndex = '';
     })
+  }
+
+  ngOnDestroy(): void {
+    this.closeStockListSubscriptionHandler.unsubscribe();
+    this.menuLoadSubscriptionHandler.unsubscribe();
+    this.modeChangedSubscriptionHandler.unsubscribe();
+    this.searchResultsSubscriptionHandler.unsubscribe();
+    this.componentComponentCloseSubscriptionHandler.unsubscribe();
+    this.productsLoadedSubscriptionHandler.unsubscribe();
   }
 
   ngOnInit(): void {
@@ -101,7 +117,7 @@ export class MenuComponent implements OnInit, AfterViewInit {
       mc.on('press', (ev: any) => {
         // console.log("press",ev);
         const dialog = this.dialog.open(StockListComponent);
-        dialog.componentInstance?.close.subscribe((data) => {
+        this.componentComponentCloseSubscriptionHandler = dialog.componentInstance?.close.subscribe((data) => {
           dialog.close();
         });
       });
@@ -111,7 +127,7 @@ export class MenuComponent implements OnInit, AfterViewInit {
   getDineInProducts() {
     this.products = [];
     this.dataProvider.categories = [];
-    this.dataProvider.productsLoaded.subscribe((data) => {
+    this.productsLoadedSubscriptionHandler = this.dataProvider.productsLoaded.subscribe((data) => {
       // console.log("Loaded",data);
       if (data) {
         this.dataProvider.categories = [];
@@ -135,7 +151,7 @@ export class MenuComponent implements OnInit, AfterViewInit {
   }
 
   storeCategoriesIndexedDb() {
-    this.indexedDb.getAll('categories').subscribe((data) => {
+    firstValueFrom(this.indexedDb.getAll('categories')).then((data) => {
       if (data.length == 0) {
         this.dataProvider.categories.forEach((category) => {
           this.indexedDb.add('categories', category);
@@ -148,7 +164,7 @@ export class MenuComponent implements OnInit, AfterViewInit {
         }
       }
     });
-    this.indexedDb.getAll('recommendedCategories').subscribe((data) => {
+    firstValueFrom(this.indexedDb.getAll('recommendedCategories')).then((data) => {
       if (data.length == 0) {
         this.dataProvider.recommendedCategories.forEach((category) => {
           this.indexedDb.add('recommendedCategories', category);

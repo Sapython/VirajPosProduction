@@ -50,7 +50,7 @@ export class DiscountComponent implements OnInit {
     const dialog = this.dialog.open(AddDiscountComponent, {
       data: { mode: 'add' },
     });
-    dialog.closed.subscribe((data: any) => {
+    firstValueFrom(dialog.closed).then((data: any) => {
       //  console.log('data', data);
       if (data) {
         if (data.menus.length === 0) {
@@ -112,7 +112,7 @@ export class DiscountComponent implements OnInit {
     const dialog = this.dialog.open(AddDiscountComponent, {
       data: { mode: 'edit', discount: discount },
     });
-    dialog.closed.subscribe((data: any) => {
+    firstValueFrom(dialog.closed).then((data: any) => {
       //  console.log('data', data);
       if (data) {
         if (data.menus.length === 0) {

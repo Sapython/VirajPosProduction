@@ -1,21 +1,22 @@
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { debounceTime } from 'rxjs';
+import { Subscription, debounceTime } from 'rxjs';
 import { AlertsAndNotificationsService } from '../../../../../../core/services/alerts-and-notification/alerts-and-notifications.service';
 import { DataProvider } from '../../../../../../core/services/provider/data-provider.service';
 import { SignupService } from '../../../../../../core/services/auth/signup/signup.service';
 import { Timestamp } from '@angular/fire/firestore';
 import { UserManagementService } from '../../../../../../core/services/auth/user/user-management.service';
 import { AccessGroup, SelectPropertiesComponent } from '../select-properties/select-properties.component';
+import {firstValueFrom} from 'rxjs';
 
 @Component({
   selector: 'app-add',
   templateUrl: './add.component.html',
   styleUrls: ['./add.component.scss'],
 })
-export class AddComponent {
+export class AddComponent implements OnDestroy {
   stage: 'available' | 'checking' | 'unavailable' | 'invalid' | undefined;
   onboardingStage: 'registration' | 'otp' = 'registration';
   previousUsername: string | undefined;
@@ -31,6 +32,7 @@ export class AddComponent {
   otpForm: FormGroup = new FormGroup({
     otp: new FormControl('', [Validators.required]),
   });
+  loginFormChangesSubscription:Subscription = Subscription.EMPTY;
   constructor(
     private functions: Functions,
     private dialogRef: DialogRef,
@@ -40,7 +42,7 @@ export class AddComponent {
     private userManagement: UserManagementService,
     private dialog:Dialog
   ) {
-    this.loginForm.valueChanges.pipe(debounceTime(600)).subscribe((res) => {
+    this.loginFormChangesSubscription = this.loginForm.valueChanges.pipe(debounceTime(600)).subscribe((res) => {
       if (this.previousUsername == res.username) {
         return;
       }
@@ -67,6 +69,10 @@ export class AddComponent {
           this.stage = 'invalid';
         });
     });
+  }
+
+  ngOnDestroy(): void {
+    this.loginFormChangesSubscription.unsubscribe();
   }
 
   addPasswordControl() {
@@ -243,7 +249,7 @@ export class AddComponent {
 
   selectProperties(){
     const dialog = this.dialog.open(SelectPropertiesComponent,{data:this.loginForm.value.propertiesAllowed});
-    dialog.closed.subscribe((data)=>{
+    firstValueFrom(dialog.closed).then((data)=>{
       console.log("Received data from prop selector",data);
       if (data) this.loginForm.patchValue({propertiesAllowed:data});
     });

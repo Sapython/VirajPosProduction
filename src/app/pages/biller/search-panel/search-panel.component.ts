@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { debounce, debounceTime, Subject, Subscription } from 'rxjs';
 import Fuse from 'fuse.js';
 import { Dialog } from '@angular/cdk/dialog';
@@ -11,7 +11,7 @@ import { Product } from '../../../types/product.structure';
   templateUrl: './search-panel.component.html',
   styleUrls: ['./search-panel.component.scss'],
 })
-export class SearchPanelComponent implements OnInit {
+export class SearchPanelComponent implements OnInit, OnDestroy {
   placeholders: string[] = [
     'Search any dish...',
     'Search any bill...',
@@ -36,15 +36,17 @@ export class SearchPanelComponent implements OnInit {
     keys: ['name'],
   });
   searchVisible: boolean = false;
+  searchSubscriptionDebounced: Subscription = Subscription.EMPTY;
+  menuLoadSubscription: Subscription = Subscription.EMPTY;
+  clearSearchFieldSubscription: Subscription = Subscription.EMPTY;
+  modeChangedSubscription: Subscription = Subscription.EMPTY;
+  productsPanelStateSubscription: Subscription = Subscription.EMPTY;
   @ViewChild('search') searchInput: ElementRef;
   constructor(
     public dataProvider: DataProvider,
     private billsService: BillService,
   ) {
-    this.searchSubscription.pipe(debounceTime(400)).subscribe((value) => {
-      this.basicSearch(value);
-    });
-    this.dataProvider.menuLoadSubject.subscribe((value) => {
+    this.menuLoadSubscription = this.dataProvider.menuLoadSubject.subscribe((value) => {
       if (value) {
         // console.log("SETTING COLLECTION",this.dataProvider.currentMenu?.products);
         this.searchInstance.setCollection(
@@ -53,10 +55,10 @@ export class SearchPanelComponent implements OnInit {
       }
     });
 
-    this.dataProvider.clearSearchField.subscribe((value) => {
+    this.clearSearchFieldSubscription = this.dataProvider.clearSearchField.subscribe((value) => {
       this.searchInput.nativeElement.value = '';
     });
-    this.dataProvider.modeChanged.subscribe(() => {
+    this.modeChangedSubscription = this.dataProvider.modeChanged.subscribe(() => {
       // console.log("this.dataProvider.modeChanged",mode,this.dataProvider.currentMenu?.products);
       this.searchResults = [];
       this.billResults = [];
@@ -66,32 +68,25 @@ export class SearchPanelComponent implements OnInit {
         );
       }
     });
-    this.searchSubscription.pipe(debounceTime(200)).subscribe((value) => {
+    this.searchSubscriptionDebounced = this.searchSubscription.pipe(debounceTime(200)).subscribe((value) => {
       // console.log(value);
       this.currentSearchTerm = value;
       this.basicSearch(value);
     });
 
-    this.dataProvider.productPanelState.subscribe((value) => {
+    this.productsPanelStateSubscription = this.dataProvider.productPanelState.subscribe((value) => {
       this.searchInstance.setCollection(
         this.dataProvider.currentMenu?.products,
       );
-      // if (value == 'combos') {
-      //   this.searchInstance.setCollection(
-      //     this.dataProvider.currentMenu?.combos,
-      //   );
-      // } else {
-      // }
     });
   }
 
-  getBills() {
-    // this.billListenerActive = true;
-    // this.billListener = this.billsService
-    //   .getBillsSubscription()
-    //   .subscribe((bills) => {
-    //     this.allBills = bills;
-    //   });
+  ngOnDestroy(): void {
+    this.menuLoadSubscription.unsubscribe();
+    this.clearSearchFieldSubscription.unsubscribe();
+    this.modeChangedSubscription.unsubscribe();
+    this.searchSubscriptionDebounced.unsubscribe();
+    this.productsPanelStateSubscription.unsubscribe();
   }
 
   ngOnInit(): void {
@@ -117,9 +112,6 @@ export class SearchPanelComponent implements OnInit {
 
   fetchAdvancedResults(value: string) {
     if (value.startsWith('#')) {
-      if (!this.billListenerActive) {
-        this.getBills();
-      }
       if (this.allBills.length > 0) {
         this.billResults.push({
           type: 'bill',

@@ -1,17 +1,18 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AlertsAndNotificationsService } from '../../../../core/services/alerts-and-notification/alerts-and-notifications.service';
 import { DataProvider } from '../../../../core/services/provider/data-provider.service';
 import { SettingsService } from '../../../../core/services/database/settings/settings.service';
 import { ModeConfig } from '../../../../core/constructors/menu/menu';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-settle',
   templateUrl: './settle.component.html',
   styleUrls: ['./settle.component.scss'],
 })
-export class SettleComponent implements OnInit {
+export class SettleComponent implements OnInit, OnDestroy {
   percentageSplitForm: FormGroup = new FormGroup({});
   percentageSplits: FormControl[] = [];
   percentageValueError: boolean = false;
@@ -33,7 +34,8 @@ export class SettleComponent implements OnInit {
   });
   currentModeConfig: ModeConfig | undefined;
   // @ViewChild('method') method:QueryList<any>;
-
+  settleBillFormValueChangeSubscription: Subscription = Subscription.EMPTY;
+  percentageSplitFormValueChangeSubscription: Subscription = Subscription.EMPTY;
   constructor(
     private dialogRef: DialogRef,
     public dataProvider: DataProvider,
@@ -41,7 +43,7 @@ export class SettleComponent implements OnInit {
     private alertify: AlertsAndNotificationsService,
     @Inject(DIALOG_DATA) public billSum: number,
   ) {
-    this.settleBillForm.valueChanges.subscribe((value) => {
+    this.settleBillFormValueChangeSubscription= this.settleBillForm.valueChanges.subscribe((value) => {
       this.percentageSplits = [];
       //  console.log(value);
       if (Number(value.recipents) > 0) {
@@ -53,7 +55,7 @@ export class SettleComponent implements OnInit {
         }
       }
     });
-    this.percentageSplitForm.valueChanges.subscribe((value) => {
+    this.percentageSplitFormValueChangeSubscription = this.percentageSplitForm.valueChanges.subscribe((value) => {
       let total = 0;
       for (let key in value) {
         total += Number(value[key]);
@@ -66,6 +68,11 @@ export class SettleComponent implements OnInit {
         this.percentageValueError = true;
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.settleBillFormValueChangeSubscription.unsubscribe();
+    this.percentageSplitFormValueChangeSubscription.unsubscribe();
   }
 
   ngOnInit(): void {

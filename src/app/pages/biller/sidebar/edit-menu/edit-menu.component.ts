@@ -8,6 +8,7 @@ import { MenuManagementService } from '../../../../core/services/database/menuMa
 import { Menu } from '../../../../types/menu.structure';
 import { ElectronService } from '../../../../core/services/electron/electron.service';
 import { ModeConfig } from '../../../../core/constructors/menu/menu';
+import { firstValueFrom } from 'rxjs';
 @Component({
   selector: 'app-edit-menu',
   templateUrl: './edit-menu.component.html',
@@ -32,7 +33,7 @@ export class EditMenuComponent implements OnInit {
     public dialogRef: DialogRef,
     private electronService: ElectronService,
   ) {
-    this.dialogRef.closed.subscribe(() => {
+    firstValueFrom(this.dialogRef.closed).then(() => {
       this.dataProvider.loading = true;
       let uniqueMenus = this.dataProvider.menus.filter((menu, index, self) => {
         return (
@@ -88,7 +89,7 @@ export class EditMenuComponent implements OnInit {
 
   addNewMenu() {
     const dialog = this.dialog.open(AddMenuComponent);
-    dialog.closed.subscribe((data: any) => {
+    firstValueFrom(dialog.closed).then((data: any) => {
       //  console.log("data",data);
       if (data) {
       }

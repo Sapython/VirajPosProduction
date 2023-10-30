@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { BillService } from '../../../../core/services/database/bill/bill.service';
 import { BillConstructor } from '../../../../types/bill.structure';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ReplaySubject, Subject } from 'rxjs';
+import { ReplaySubject, Subject, Subscription } from 'rxjs';
 import {
   Firestore,
   collection,
@@ -17,7 +17,7 @@ import { DataProvider } from '../../../../core/services/provider/data-provider.s
 @Injectable({
   providedIn: 'root',
 })
-export class ReportService {
+export class ReportService implements OnDestroy {
   // bills: ActivityBillConstructor[] = [];
   reportLoadTime:Date = new Date();
   noData: boolean = false;
@@ -35,12 +35,13 @@ export class ReportService {
   });
   dataChanged: ReplaySubject<void> = new ReplaySubject<void>(1);
   refetchConsolidated:Subject<void> = new Subject<void>();
+  dateRangeSubscriptionHandler: Subscription = Subscription.EMPTY;
   constructor(
     private billService: BillService,
     private firestore: Firestore,
     private dataProvider: DataProvider,
   ) {
-    this.dateRangeFormGroup.valueChanges.subscribe(async (value) => {
+    this.dateRangeSubscriptionHandler = this.dateRangeFormGroup.valueChanges.subscribe(async (value) => {
       if (this.dateRangeFormGroup.valid) {
         this.dataChanged.next();
       }
@@ -49,6 +50,10 @@ export class ReportService {
       startDate: new Date(),
       endDate: new Date(),
     });
+  }
+
+  ngOnDestroy(): void {
+    this.dateRangeSubscriptionHandler.unsubscribe();
   }
 
   async getBills(startDate: Date, endDate?: Date) {

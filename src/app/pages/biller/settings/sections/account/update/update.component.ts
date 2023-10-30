@@ -4,7 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DataProvider } from '../../../../../../core/services/provider/data-provider.service';
 import { DIALOG_DATA, Dialog, DialogRef } from '@angular/cdk/dialog';
 import { AccessGroup, SelectPropertiesComponent } from '../select-properties/select-properties.component';
-
+import {firstValueFrom} from 'rxjs';
 
 @Component({
   selector: 'app-update',
@@ -34,7 +34,7 @@ export class UpdateComponent implements OnInit {
 
   selectProperties(){
     const dialog = this.dialog.open(SelectPropertiesComponent,{data:this.user.accessType=='custom' ? this.accessForm.value.propertiesAllowed:[]});
-    dialog.closed.subscribe((data)=>{
+    firstValueFrom(dialog.closed).then((data)=>{
       console.log("Received data from prop selector",data);
       if (data) this.accessForm.patchValue({propertiesAllowed:data});
     })

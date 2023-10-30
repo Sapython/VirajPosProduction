@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 // import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../environments/environment';
 import {
@@ -26,22 +26,5 @@ export class AppComponent {
     private printingService:PrinterService
   ) {
     loadFont();
-    indexedDbService.getAll('config').subscribe(
-      (res) => {
-        // console.log('112 got config',res);
-      },
-      (err) => {
-        // console.log('112 got config error',err);
-      },
-    );
-    indexedDbService.add('config', { id: 1, config: environment }).subscribe(
-      (res) => {
-        // console.log('112 config success',res);
-      },
-      (err) => {
-        // console.log('112 config error',err);
-      },
-    );
-    // console.log('EscPosEncoder', EscPosEncoder);
   }
 }

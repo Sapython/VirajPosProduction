@@ -1,6 +1,6 @@
-import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import Fuse from 'fuse.js';
-import { Subject, debounceTime, firstValueFrom } from 'rxjs';
+import { Subject, Subscription, debounceTime, firstValueFrom } from 'rxjs';
 import { Product } from '../../../types/product.structure';
 import { DataProvider } from '../../../core/services/provider/data-provider.service';
 import { Category } from '../../../types/category.structure';
@@ -18,7 +18,7 @@ var debug: boolean = true;
   templateUrl: './products-panel.component.html',
   styleUrls: ['./products-panel.component.scss'],
 })
-export class ProductsPanelComponent implements OnInit {
+export class ProductsPanelComponent implements OnInit, OnDestroy {
   searcher: Fuse<any> = new Fuse([], {});
   products: Product[] = [];
   searchVisible: boolean = false;
@@ -40,8 +40,16 @@ export class ProductsPanelComponent implements OnInit {
     name:'Open',
     products:[],
   }
+  menuProductsSubscription:Subscription = Subscription.EMPTY;
+  comboSelectedSubscription:Subscription = Subscription.EMPTY;
+  searchResultsSubscription:Subscription = Subscription.EMPTY;
+  modeChangedSubscription:Subscription = Subscription.EMPTY;
+  selectTableSubscription:Subscription = Subscription.EMPTY;
+  menuLoadedSubscription:Subscription = Subscription.EMPTY;
+  categoryWiseSearchSubjectSubscription:Subscription = Subscription.EMPTY;
+  categoryWiseSearchSubjectDebouncedSubscription:Subscription = Subscription.EMPTY;
   constructor(public dataProvider: DataProvider, private dialog:Dialog) {
-    this.dataProvider.menuProducts.subscribe((menu: Category) => {
+    this.menuProductsSubscription = this.dataProvider.menuProducts.subscribe((menu: Category) => {
       if (menu){
         this.mode = 'products';
         this.products = menu.products;
@@ -50,7 +58,7 @@ export class ProductsPanelComponent implements OnInit {
         this.customSearcher.setCollection(this.products);
       }
     });
-    this.dataProvider.comboSelected.subscribe((combo: any) => {
+    this.comboSelectedSubscription = this.dataProvider.comboSelected.subscribe((combo: any) => {
       console.log('Combo Selected: ', combo);
       this.mode = 'combos';
       this.searchVisible = false;
@@ -72,7 +80,7 @@ export class ProductsPanelComponent implements OnInit {
       this.products = [];
       this.customSearcher.setCollection(combo);
     });
-    this.dataProvider.searchResults.subscribe((results: Product[] | false) => {
+    this.searchResultsSubscription = this.dataProvider.searchResults.subscribe((results: Product[] | false) => {
       if (results) {
         this.searchResults = results;
         this.searchVisible = true;
@@ -81,7 +89,7 @@ export class ProductsPanelComponent implements OnInit {
         this.searchVisible = false;
       }
     });
-    this.dataProvider.modeChanged.subscribe(() => {
+    this.modeChangedSubscription = this.dataProvider.modeChanged.subscribe(() => {
       this.searchResults = [];
       this.categoryProductSearchResults = [];
       this.products = [];
@@ -90,7 +98,7 @@ export class ProductsPanelComponent implements OnInit {
       this.selectedCombo = undefined;
       this.combos = [];
     });
-    this.dataProvider.selectTable.subscribe((value) => {
+    this.selectTableSubscription = this.dataProvider.selectTable.subscribe((value) => {
       this.searchResults = [];
       this.categoryProductSearchResults = [];
       this.products = [];
@@ -99,13 +107,13 @@ export class ProductsPanelComponent implements OnInit {
       this.selectedCombo = undefined;
       this.combos = [];
     });
-    this.dataProvider.menuLoadSubject.subscribe((value) => {
+    this.menuLoadedSubscription = this.dataProvider.menuLoadSubject.subscribe((value) => {
       if (value) {
         this.searcher.setCollection(this.products);
       }
     });
-    this.categoryWiseSearchSubject.subscribe(() => {this.currentlyWaitingForSearchResults=true});
-    this.categoryWiseSearchSubject
+    this.categoryWiseSearchSubjectSubscription = this.categoryWiseSearchSubject.subscribe(() => {this.currentlyWaitingForSearchResults=true});
+    this.categoryWiseSearchSubjectDebouncedSubscription = this.categoryWiseSearchSubject
       .pipe(debounceTime(600))
       .subscribe((value) => {
         this.currentlyWaitingForSearchResults=false;
@@ -127,15 +135,17 @@ export class ProductsPanelComponent implements OnInit {
             });
         }
       });
-    this.dataProvider.selectTable.subscribe((value) => {
-      this.searchResults = [];
-      this.categoryProductSearchResults = [];
-      this.products = [];
-      this.searchVisible = false;
-      this.currentCategory = undefined;
-      this.selectedCombo = undefined;
-      this.combos = [];
-    });
+  }
+
+  ngOnDestroy(): void {
+    this.menuProductsSubscription.unsubscribe();
+    this.comboSelectedSubscription.unsubscribe();
+    this.searchResultsSubscription.unsubscribe();
+    this.modeChangedSubscription.unsubscribe();
+    this.selectTableSubscription.unsubscribe();
+    this.menuLoadedSubscription.unsubscribe();
+    this.categoryWiseSearchSubjectSubscription.unsubscribe();
+    this.categoryWiseSearchSubjectDebouncedSubscription.unsubscribe();
   }
 
   ngOnInit(): void {

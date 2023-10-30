@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { DataProvider } from '../../../../../core/services/provider/data-provider.service';
 import { AlertsAndNotificationsService } from '../../../../../core/services/alerts-and-notification/alerts-and-notifications.service';
 import { MenuManagementService } from '../../../../../core/services/database/menuManagement/menu-management.service';
 import { FormControl, FormGroup } from '@angular/forms';
-import { debounceTime, firstValueFrom } from 'rxjs';
+import { Subscription, debounceTime, firstValueFrom } from 'rxjs';
 import {
   zoomInOnEnterAnimation,
   zoomOutOnLeaveAnimation,
@@ -17,11 +17,12 @@ var debug: boolean = true;
   styleUrls: ['./view.component.scss'],
   animations: [zoomInOnEnterAnimation(), zoomOutOnLeaveAnimation()],
 })
-export class ViewComponent {
+export class ViewComponent implements OnDestroy {
   viewSettings: FormGroup = new FormGroup({
     smartView: new FormControl(false),
     touchMode: new FormControl(false),
   });
+  valueChangesSubscription: Subscription = Subscription.EMPTY;
   constructor(
     public dataProvider: DataProvider,
     private alertify: AlertsAndNotificationsService,
@@ -33,11 +34,15 @@ export class ViewComponent {
         ? JSON.parse(localStorage.getItem('viewSettings')!)
         : {},
     );
-    this.viewSettings.valueChanges
+    this.valueChangesSubscription = this.viewSettings.valueChanges
       .pipe(debounceTime(1000))
       .subscribe((data) => {
         localStorage.setItem('viewSettings', JSON.stringify(data));
       });
+  }
+
+  ngOnDestroy(): void {
+    this.valueChangesSubscription.unsubscribe();
   }
 
   smartModeToggle(value: boolean) {

@@ -4,6 +4,7 @@ import {
   Component,
   ElementRef,
   OnChanges,
+  OnDestroy,
   OnInit,
 } from '@angular/core';
 import { debounceTime, Subject, Subscription } from 'rxjs';
@@ -21,7 +22,7 @@ declare var Hammer: any;
   templateUrl: './info-panel.component.html',
   styleUrls: ['./info-panel.component.scss'],
 })
-export class InfoPanelComponent implements OnInit, OnChanges, AfterViewInit {
+export class InfoPanelComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
   limitedSale: string = '0';
   isOpen = false;
   isSalesOpen = false;
@@ -29,6 +30,12 @@ export class InfoPanelComponent implements OnInit, OnChanges, AfterViewInit {
   height: number = 0;
   closeOrdersPanelSubscription: Subject<boolean> = new Subject<boolean>();
   closeSalesPanelSubscription: Subject<boolean> = new Subject<boolean>();
+  closeAllPanelSubscription:Subscription = Subscription.EMPTY;
+  softwareUpdateSubscription:Subscription = Subscription.EMPTY;
+  salesSummaryComponentCloseSubscription:Subscription = Subscription.EMPTY;
+  orderSummaryComponentCloseSubscription:Subscription = Subscription.EMPTY;
+  closeOrderSubjectSubscription:Subscription = Subscription.EMPTY;
+  closeSalesSubjectSubscription:Subscription = Subscription.EMPTY;
   downloadPercentage: number = 0;
   constructor(
     public dataProvider: DataProvider,
@@ -36,14 +43,14 @@ export class InfoPanelComponent implements OnInit, OnChanges, AfterViewInit {
     private dialog: Dialog,
     private electronService: ElectronService,
   ) {
-    this.dataProvider.closeAllPanel.subscribe((data) => {
+    this.closeAllPanelSubscription = this.closeAllPanelSubscription = this.dataProvider.closeAllPanel.subscribe((data) => {
       this.isOpen = false;
       this.isSalesOpen = false;
     });
     this.version = environment.appVersion;
     // console.log("this.el.nativeElement",this.el.nativeElement.offsetHeight);
     this.height = this.el.nativeElement.offsetHeight;
-    this.dataProvider.softwareUpdateFilteredSubject.subscribe(async (data) => {
+    this.softwareUpdateSubscription = this.dataProvider.softwareUpdateFilteredSubject.subscribe(async (data) => {
       console.log('softwareUpdateSubject', data);
       if (data.stage && data.stage == 'update-available') {
         await alert('New update available');
@@ -56,6 +63,15 @@ export class InfoPanelComponent implements OnInit, OnChanges, AfterViewInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.closeAllPanelSubscription.unsubscribe();
+    this.softwareUpdateSubscription.unsubscribe();
+    this.salesSummaryComponentCloseSubscription.unsubscribe();
+    this.orderSummaryComponentCloseSubscription.unsubscribe();
+    this.closeOrderSubjectSubscription.unsubscribe();
+    this.closeSalesSubjectSubscription.unsubscribe();
+  }
+
   ngAfterViewInit(): void {
     // console.log("this.el.nativeElement",this.el.nativeElement.offsetHeight);
     this.height = this.el.nativeElement.offsetHeight;
@@ -66,7 +82,7 @@ export class InfoPanelComponent implements OnInit, OnChanges, AfterViewInit {
       mc.on('press', (ev: any) => {
         //  console.log("press",ev);
         const dialog = this.dialog.open(SalesSummaryComponent);
-        dialog.componentInstance?.close.subscribe((data) => {
+        this.salesSummaryComponentCloseSubscription = dialog.componentInstance?.close.subscribe((data) => {
           dialog.close();
         });
       });
@@ -75,7 +91,7 @@ export class InfoPanelComponent implements OnInit, OnChanges, AfterViewInit {
       mc.on('press', (ev: any) => {
         //  console.log("press",ev);
         const dialog = this.dialog.open(OrderSummaryComponent);
-        dialog.componentInstance?.close.subscribe((data) => {
+        this.orderSummaryComponentCloseSubscription = dialog.componentInstance?.close.subscribe((data) => {
           dialog.close();
         });
       });
@@ -96,13 +112,13 @@ export class InfoPanelComponent implements OnInit, OnChanges, AfterViewInit {
       this.limitedSale = '₹' + this.dataProvider.sale.toString() + '.00';
     }
 
-    this.closeOrdersPanelSubscription
+    this.closeOrderSubjectSubscription = this.closeOrdersPanelSubscription
       .pipe(debounceTime(600))
       .subscribe((data) => {
         //  console.log("closePanelSubscription",data);
         this.isOpen = data;
       });
-    this.closeSalesPanelSubscription
+    this.closeSalesSubjectSubscription = this.closeSalesPanelSubscription
       .pipe(debounceTime(600))
       .subscribe((data) => {
         //  console.log("closePanelSubscription",data);

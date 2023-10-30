@@ -976,6 +976,10 @@ export class OnboardingService {
           this.firestore,
           'business/' + this.dataProvider.businessId + '/tokens',
         ),
+        where('completed', '==', false),
+        where('id', 'not-in', [
+          this.dataProvider.tokens.map((token) => token.id),
+        ]),
       ),
     );
     changes.subscribe(async (res) => {
@@ -1020,9 +1024,6 @@ export class OnboardingService {
         // }
       });
     });
-    // res.then(async (res)=>{
-
-    // })
   }
 
   async getOnlineTokens() {

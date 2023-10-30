@@ -103,7 +103,7 @@ export class AccountComponent {
 
   updateUser(user:Member){
     const dialog = this.dialog.open(UpdateComponent,{data:user});
-    dialog.closed.subscribe(async (res: any) => {
+    firstValueFrom(dialog.closed).then(async (res: any) => {
       if (res){
         console.log("res",res);
         let foundUserIndex = this.dataProvider.currentBusiness.users.findIndex((usr)=>user.username==usr.username);

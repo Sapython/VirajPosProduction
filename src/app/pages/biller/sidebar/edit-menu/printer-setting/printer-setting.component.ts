@@ -1,7 +1,7 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnDestroy } from '@angular/core';
 import { PrinterSetting, PrinterSettingProductWise } from '../../../../../types/printing.structure';
-import { ReplaySubject, Subject, debounceTime } from 'rxjs';
+import { ReplaySubject, Subject, Subscription, debounceTime } from 'rxjs';
 import { Product } from '../../../../../types/product.structure';
 import { ModeConfig } from '../../../../../core/constructors/menu/menu';
 import { ElectronService } from '../../../../../core/services/electron/electron.service';
@@ -13,11 +13,12 @@ import { DataProvider } from '../../../../../core/services/provider/data-provide
   templateUrl: './printer-setting.component.html',
   styleUrls: ['./printer-setting.component.scss']
 })
-export class PrinterSettingComponent {
+export class PrinterSettingComponent implements OnDestroy {
   printerSettings:extendedPrinterSetting[] = [];
   printers:string[] = [];
   billPrinter:string;
   kotPrinter:string;
+  searchSubjectSubscription:Subscription = Subscription.EMPTY;
   constructor(@Inject(DIALOG_DATA) public data:{menu:ModeConfig},private electronService: ElectronService,private alertify:AlertsAndNotificationsService,private dialogRef:DialogRef,private dataProvider:DataProvider){
     this.data.menu.getPrinterSettings().then(async (printerSettings:PrinterSetting[])=>{
       let defaults = await this.data.menu.getDefaultPrinters();
@@ -32,7 +33,8 @@ export class PrinterSettingComponent {
           let filteredProducts:ReplaySubject<Product[]> = new ReplaySubject<Product[]>(1);
           filteredProducts.next(this.data.menu.products);
           let searchSubject:Subject<string> = new Subject<string>();
-          searchSubject.pipe(debounceTime(700)).subscribe((searchString)=>{
+          this.searchSubjectSubscription.unsubscribe();
+          this.searchSubjectSubscription = searchSubject.pipe(debounceTime(700)).subscribe((searchString)=>{
             // let alreadyUsedProducts = this.printerSettings.map((setting)=>setting.products).flat();
             let alreadyUsedProducts = [];
             // remove already used products
@@ -78,7 +80,8 @@ export class PrinterSettingComponent {
         this.printerSettings = printers.map((printer)=>{
           let filteredProducts:Subject<Product[]> = new Subject<Product[]>();
           let searchSubject:Subject<string> = new Subject<string>();
-          searchSubject.pipe(debounceTime(700)).subscribe((searchString)=>{
+          this.searchSubjectSubscription.unsubscribe();
+          this.searchSubjectSubscription = searchSubject.pipe(debounceTime(700)).subscribe((searchString)=>{
             let alreadyUsedProducts = this.printerSettings.map((setting)=>setting.products).flat();
             // remove already used products
             let allUsableProducts = this.data.menu.products.filter((product)=>{
@@ -111,6 +114,10 @@ export class PrinterSettingComponent {
         });
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.searchSubjectSubscription.unsubscribe();
   }
 
   spliceProduct(i:number,setting:PrinterSettingProductWise){

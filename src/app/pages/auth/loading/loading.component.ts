@@ -1,11 +1,11 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AlertsAndNotificationsService } from '../../../core/services/alerts-and-notification/alerts-and-notifications.service';
 import { Dialog } from '@angular/cdk/dialog';
 import { AddDishComponent } from '../../biller/sidebar/edit-menu/add-dish/add-dish.component';
 import { SelectRecipeComponent } from '../../biller/sidebar/edit-menu/select-recipe/select-recipe.component';
 import { AddNewCategoryComponent } from '../../biller/sidebar/edit-menu/add-new-category/add-new-category.component';
-import { Subject, debounceTime, firstValueFrom } from 'rxjs';
+import { Subject, Subscription, debounceTime, firstValueFrom } from 'rxjs';
 import {
   UserCredential,
   signInWithCustomToken,
@@ -40,7 +40,7 @@ var debug = false;
   styleUrls: ['./loading.component.scss'],
   animations: [zoomInOnEnterAnimation(), zoomOutOnLeaveAnimation()],
 })
-export class LoadingComponent implements OnInit {
+export class LoadingComponent implements OnInit, OnDestroy {
   products: ExcelProduct[] = [];
   loginForm: FormGroup = new FormGroup({
     username: new FormControl(''),
@@ -146,7 +146,8 @@ export class LoadingComponent implements OnInit {
   resetPasswordRequestAuthId: string = '';
   logoFile: File | undefined;
   logoString: string = '';
-
+  checkUsernameSubscription: Subscription = Subscription.EMPTY;
+  checkUsernameDebouncedSubscription: Subscription = Subscription.EMPTY;
   constructor(
     public dataProvider: DataProvider,
     private alertify: AlertsAndNotificationsService,
@@ -161,10 +162,10 @@ export class LoadingComponent implements OnInit {
     private settingsService: SettingsService,
     private tableService: TableService,
   ) {
-    this.checkUsername.subscribe((value) => {
+    this.checkUsernameSubscription = this.checkUsername.subscribe((value) => {
       this.checkingUsername = true;
     });
-    this.checkUsername.pipe(debounceTime(1000)).subscribe((value) => {
+    this.checkUsernameDebouncedSubscription = this.checkUsername.pipe(debounceTime(1000)).subscribe((value) => {
       this.checkingUsername = true;
       this.checkUsernameFunction({ username: value })
         .then((result) => {
@@ -188,6 +189,11 @@ export class LoadingComponent implements OnInit {
     }).catch((error) => {
       // console.log('error', error);
     })
+  }
+
+  ngOnDestroy(): void {
+    this.checkUsernameSubscription.unsubscribe();
+    this.checkUsernameDebouncedSubscription.unsubscribe();
   }
 
   customLogin() {}
@@ -254,7 +260,7 @@ export class LoadingComponent implements OnInit {
     const confirmDialog = this.dialog.open(DialogComponent, {
       data: { title: 'Logout', message: 'Are you sure you want to logout?' },
     });
-    confirmDialog.closed.subscribe((result) => {
+    firstValueFrom(confirmDialog.closed).then((result) => {
       //  console.log(result);
       if (result) {
         this.userManagementService.logout();
@@ -444,7 +450,7 @@ export class LoadingComponent implements OnInit {
         rootProducts: finalProducts,
       },
     });
-    dialog.closed.subscribe((value: any) => {
+    firstValueFrom(dialog.closed).then((value: any) => {
       //  console.log('value', value);
       if (value) {
         this.rootCategories.push(value);
@@ -741,7 +747,7 @@ export class LoadingComponent implements OnInit {
           buttonText: 'Login',
         },
       });
-      dialog.closed.subscribe(() => {
+      firstValueFrom(dialog.closed).then(() => {
         let url = window.location.href.split('/');
         url.pop();
         url.push('index.html');

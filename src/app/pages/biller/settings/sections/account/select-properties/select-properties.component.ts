@@ -1,14 +1,14 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import Fuse from 'fuse.js';
-import { debounceTime } from 'rxjs';
+import { Subscription, debounceTime } from 'rxjs';
 @Component({
   selector: 'app-select-properties',
   templateUrl: './select-properties.component.html',
   styleUrls: ['./select-properties.component.scss']
 })
-export class SelectPropertiesComponent {
+export class SelectPropertiesComponent implements OnDestroy {
   accessCodes:AccessGroup[] = [
     { name: 'Menu Management Section', type:'divider',accessCodes:
       [
@@ -387,6 +387,7 @@ export class SelectPropertiesComponent {
   fuseAccessGroupSearchInstance:Fuse<AccessGroup> = new Fuse(structuredClone(this.accessCodes),{keys:['accessCodes.name','accessCodes.description']});
   fuseAccessCodeSearchInstance:Fuse<AccessCode> = new Fuse([],{keys:['name','description']});
   allowedAccessCodes:string[] = [];
+  searchControlSubscription:Subscription = Subscription.EMPTY;
   constructor(public dialogRef:DialogRef, @Inject(DIALOG_DATA) public data:string[]){
     this.allowedAccessCodes = data;
     this.accessCodes.forEach((accessGroup)=>{
@@ -394,7 +395,7 @@ export class SelectPropertiesComponent {
         accessCode.allowed = this.allowedAccessCodes.includes(accessCode.accessCode);
       });
     });
-    this.searchControl.valueChanges.pipe(debounceTime(400)).subscribe((data)=>{
+    this.searchControlSubscription = this.searchControl.valueChanges.pipe(debounceTime(400)).subscribe((data)=>{
       console.log("Search value changed",data);
       if (data == '') {
         this.filteredAccessCodes=[];
@@ -417,6 +418,9 @@ export class SelectPropertiesComponent {
         return item.accessCodes.length
       });
     });
+  }
+  ngOnDestroy(): void {
+    this.searchControlSubscription.unsubscribe();
   }
 
   switchAccess(event:any,accessCode:string){

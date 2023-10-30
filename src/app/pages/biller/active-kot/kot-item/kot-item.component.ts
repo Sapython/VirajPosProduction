@@ -114,7 +114,7 @@ export class KotItemComponent implements OnChanges {
     const dialog = this.dialog.open(LineCancelComponent, {
       data: this.product,
     });
-    dialog.closed.subscribe((data) => {
+    firstValueFrom(dialog.closed).then((data) => {
       if (data) {
         this.lineCancelled.emit(data);
       }
@@ -124,7 +124,7 @@ export class KotItemComponent implements OnChanges {
     const dialog = this.dialog.open(LineDiscountComponent, {
       data: this.product,
     });
-    dialog.closed.subscribe((data: any) => {
+    firstValueFrom(dialog.closed).then((data: any) => {
       //  console.log('Discount', data);
       if (data && this.product) {
         let formData: {

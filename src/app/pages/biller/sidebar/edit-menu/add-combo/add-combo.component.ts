@@ -193,15 +193,6 @@ export class AddComboComponent {
       this.visibilityEnabled = this.dialogData.combo.visibilityEnabled;
       this.visibilitySettings = this.dialogData.combo.visibilitySettings;
     }
-    // this.comboFormGroup.get('type').valueChanges.subscribe((value) => {
-    //   if (value == 'combo') {
-    //     // disable
-    //     this.comboFormGroup.get('offerPrice').disable();
-    //   } else {
-    //     // enable
-    //     this.comboFormGroup.get('offerPrice').enable();
-    //   }
-    // });
     this.filteredCategories = this.categorySearchControl.valueChanges.pipe(
       startWith(null),
       map((searchQuery: string | null) => {

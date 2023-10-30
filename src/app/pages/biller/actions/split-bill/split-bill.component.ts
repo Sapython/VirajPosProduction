@@ -27,7 +27,7 @@ import { AnalyticsService } from '../../../../core/services/database/analytics/a
 import { ApplicableCombo } from '../../../../core/constructors/comboKot/comboKot';
 import { Product } from '../../../../types/product.structure';
 import { SetChargesComponent } from '../set-charges/set-charges.component';
-
+import { firstValueFrom } from 'rxjs';
 @Component({
   selector: 'app-split-bill',
   templateUrl: './split-bill.component.html',
@@ -235,7 +235,7 @@ export class SplitBillComponent {
     let dialog = this.dialog.open(SettleComponent, {
       data: billConstructor.billing.grandTotal,
     });
-    dialog.closed.subscribe((result: any) => {
+    firstValueFrom(dialog.closed).then((result: any) => {
       //  console.log('Result', result);
       if (
         result &&
@@ -264,7 +264,7 @@ export class SplitBillComponent {
     const dialog = this.dialog.open(AddDiscountComponent, {
       data: billConstructor,
     });
-    dialog.closed.subscribe((result: any) => {
+    firstValueFrom(dialog.closed).then((result: any) => {
       //  console.log("Result",result);
       if (typeof result == 'object' && this.dataProvider.currentBill) {
         //  console.log(result);
@@ -342,7 +342,7 @@ export class SplitBillComponent {
 
   addCharges(bill:BillConstructor|Bill){
     const dialog = this.dialog.open(SetChargesComponent,{data:bill});
-    dialog.closed.subscribe((result: any) => {
+    firstValueFrom(dialog.closed).then((result: any) => {
       if (result && result.appliedCharges){
         bill.appliedCharges = result.appliedCharges;
         calculateBill(bill,this.dataProvider);

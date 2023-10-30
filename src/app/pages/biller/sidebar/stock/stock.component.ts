@@ -1,6 +1,6 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { AfterViewInit, Component, EventEmitter, Output } from '@angular/core';
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, Subject, Subscription } from 'rxjs';
 import { CloseInComponent } from './close-in/close-in.component';
 import { DispenseComponent } from './dispense/dispense.component';
 import { ReceiveStockComponent } from './receive-stock/receive-stock.component';
@@ -22,6 +22,8 @@ export class StockComponent implements AfterViewInit {
   closeStockValuePanelSubscription: Subject<boolean> = new Subject<boolean>();
   cashCounterPanelSubscription: Subject<boolean> = new Subject<boolean>();
   @Output() close: EventEmitter<boolean> = new EventEmitter<boolean>();
+  closeStockSubscriptionHandler: Subscription = Subscription.EMPTY;
+  cashCounterSubscriptionHandler: Subscription = Subscription.EMPTY;
   constructor(
     private dialog: Dialog,
     public dataProvider: DataProvider,

@@ -1,6 +1,6 @@
 import { DIALOG_DATA } from '@angular/cdk/dialog';
-import { Component, Inject, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Subject, Subscription } from 'rxjs';
 import { AlertsAndNotificationsService } from '../../../../../core/services/alerts-and-notification/alerts-and-notifications.service';
 import { Ingredient, Product } from '../../../../../types/product.structure';
 import { ProductsService } from '../../../../../core/services/database/products/products.service';
@@ -10,7 +10,7 @@ import { MenuManagementService } from '../../../../../core/services/database/men
   templateUrl: './product-costing.component.html',
   styleUrls: ['./product-costing.component.scss'],
 })
-export class ProductCostingComponent implements OnInit {
+export class ProductCostingComponent implements OnInit, OnDestroy {
   mode: string = 'recipe';
   cost: number = 0;
   loading: boolean = true;
@@ -25,13 +25,14 @@ export class ProductCostingComponent implements OnInit {
   ingredients: Ingredient[] = [];
   filteredIngredients: Ingredient[] = [];
   search: Subject<string> = new Subject();
+  searchSubscription:Subscription = Subscription.EMPTY;
   constructor(
     @Inject(DIALOG_DATA) public data: Product,
     private alertify: AlertsAndNotificationsService,
     private menuManagementService: MenuManagementService,
   ) {
     this.getIngredients();
-    this.search.subscribe((res) => {
+    this.searchSubscription = this.search.subscribe((res) => {
       if (res == '' || res == null) {
         return;
       }
@@ -39,6 +40,10 @@ export class ProductCostingComponent implements OnInit {
         return ingredient.name.toLowerCase().includes(res.toLowerCase());
       });
     });
+  }
+
+  ngOnDestroy(): void {
+    this.searchSubscription.unsubscribe();
   }
 
   ngOnInit(): void {

@@ -1,4 +1,4 @@
-import { Component, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { Subscription, firstValueFrom, merge } from 'rxjs';
 import {
   zoomInOnEnterAnimation,
@@ -22,7 +22,7 @@ import { ApplicableCombo } from '../../../core/constructors/comboKot/comboKot';
     zoomOutOnLeaveAnimation({ duration: 300 }),
   ],
 })
-export class ActiveKotComponent implements OnChanges {
+export class ActiveKotComponent implements OnChanges, OnDestroy {
   kots: Kot[] = [];
   allKot: Kot[] = [];
   labels: { color: { color: string; contrast: string }; name: string }[] = [];
@@ -40,12 +40,16 @@ export class ActiveKotComponent implements OnChanges {
     { color: '#8549ba', contrast: '#fff' },
   ];
   actionSheetExpanded: boolean = false;
+  billAssignedSubscription: Subscription = Subscription.EMPTY;
+  manageKotSubscription: Subscription = Subscription.EMPTY;
+  openTableViewSubscription: Subscription = Subscription.EMPTY;
+  resetKotViewSubscription: Subscription = Subscription.EMPTY;
   constructor(
     public dataProvider: DataProvider,
     private dialog: Dialog,
     private userManagementService: UserManagementService,
   ) {
-    this.dataProvider.billAssigned.subscribe(() => {
+    this.billAssignedSubscription = this.dataProvider.billAssigned.subscribe(() => {
       this.kots = [];
       this.allKot = [];
       this.dataProvider.kotViewVisible = true;
@@ -94,10 +98,10 @@ export class ActiveKotComponent implements OnChanges {
         });
       }
     });
-    this.dataProvider.manageKotChanged.subscribe((state: boolean) => {
+    this.manageKotSubscription = this.dataProvider.manageKotChanged.subscribe((state: boolean) => {
       this.allKot = this.dataProvider.currentBill?.kots || [];
     });
-    this.dataProvider.openTableView.subscribe((state: boolean) => {
+    this.openTableViewSubscription = this.dataProvider.openTableView.subscribe((state: boolean) => {
       // reset the kot view
       this.kots = [];
       this.allKot = [];
@@ -106,7 +110,7 @@ export class ActiveKotComponent implements OnChanges {
       this.dataProvider.manageKot = false;
       this.dataProvider.allProducts = false;
     });
-    this.dataProvider.resetKotView.subscribe((state: boolean) => {
+    this.resetKotViewSubscription = this.dataProvider.resetKotView.subscribe((state: boolean) => {
       // reset the kot view
       this.kots = [];
       this.allKot = [];
@@ -115,6 +119,13 @@ export class ActiveKotComponent implements OnChanges {
       this.dataProvider.manageKot = false;
       this.dataProvider.allProducts = false;
     });
+  }
+
+  ngOnDestroy(): void {
+    this.billAssignedSubscription.unsubscribe();
+    this.manageKotSubscription.unsubscribe();
+    this.openTableViewSubscription.unsubscribe();
+    this.resetKotViewSubscription.unsubscribe();
   }
 
   ngOnChanges(changes: SimpleChanges): void {

@@ -1,9 +1,9 @@
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 // import fuse
 import Fuse from 'fuse.js';
-import { debounceTime } from 'rxjs';
+import { Subscription, debounceTime } from 'rxjs';
 import { Category } from '../../../../../types/category.structure';
 import { DataProvider } from '../../../../../core/services/provider/data-provider.service';
 import { AlertsAndNotificationsService } from '../../../../../core/services/alerts-and-notification/alerts-and-notifications.service';
@@ -13,7 +13,7 @@ import { MenuManagementService } from '../../../../../core/services/database/men
   templateUrl: './add-new-category.component.html',
   styleUrls: ['./add-new-category.component.scss'],
 })
-export class AddNewCategoryComponent implements OnInit {
+export class AddNewCategoryComponent implements OnInit, OnDestroy {
   maxPrice: number = 100;
   products: any[] = [];
   searchResults: any[] = [];
@@ -21,6 +21,7 @@ export class AddNewCategoryComponent implements OnInit {
     name: new FormControl('', Validators.required),
     search: new FormControl(''),
   });
+  formValueChangesSubscription:Subscription = Subscription.EMPTY;
   constructor(
     private dialogRef: DialogRef,
     @Inject(DIALOG_DATA)
@@ -38,7 +39,7 @@ export class AddNewCategoryComponent implements OnInit {
   ) {
     this.products = dialogData.products || [];
     this.products.sort((a, b) => a.name.localeCompare(b.name));
-    this.newCategoryForm.valueChanges
+    this.formValueChangesSubscription = this.newCategoryForm.valueChanges
       .pipe(debounceTime(600))
       .subscribe((value) => {
         // use fuse
@@ -47,6 +48,11 @@ export class AddNewCategoryComponent implements OnInit {
         });
         this.searchResults = fuse.search(value.search).map((item) => item.item);
       });
+  }
+
+  ngOnDestroy(): void {
+    this.dataProvider.loading = false;
+    this.formValueChangesSubscription.unsubscribe();
   }
 
   ngOnInit(): void {

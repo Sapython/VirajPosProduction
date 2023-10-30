@@ -5,7 +5,7 @@ import {
   contextBridge,
   screen,
   ipcMain,
-  Menu
+  Menu,
   dialog,
 } from 'electron';
 import * as path from 'path';

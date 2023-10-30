@@ -87,7 +87,7 @@ export class ConfigComponent implements OnInit {
         const dialog = this.dialog.open(SelectMenuComponent, {
           data: { type: 'dineIn', menus: allMenus },
         });
-        dialog.closed.subscribe(async (data: any) => {
+        firstValueFrom(dialog.closed).then(async (data: any) => {
           //  console.log('data', data);
           if (data) {
             let currentMenu = allMenus.find(
@@ -122,7 +122,7 @@ export class ConfigComponent implements OnInit {
         const dialog = this.dialog.open(SelectMenuComponent, {
           data: { type: 'takeaway', menus: allMenus },
         });
-        dialog.closed.subscribe(async (data: any) => {
+        firstValueFrom(dialog.closed).then(async (data: any) => {
           //  console.log('data', data);
           if (data) {
             let currentMenu = allMenus.find(
@@ -157,7 +157,7 @@ export class ConfigComponent implements OnInit {
         const dialog = this.dialog.open(SelectMenuComponent, {
           data: { type: 'online', menus: allMenus },
         });
-        dialog.closed.subscribe(async (data: any) => {
+        firstValueFrom(dialog.closed).then(async (data: any) => {
           //  console.log('data', data);
           if (data) {
             let currentMenu = allMenus.find(

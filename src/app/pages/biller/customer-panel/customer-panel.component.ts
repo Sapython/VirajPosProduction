@@ -1,7 +1,7 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { Component, Inject, Injector, Input, OnInit } from '@angular/core';
+import { Component, Inject, Injector, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Subject, debounceTime } from 'rxjs';
+import { Subject, Subscription, debounceTime } from 'rxjs';
 import { DataProvider } from '../../../core/services/provider/data-provider.service';
 import Fuse from 'fuse.js';
 import { CustomerInfo } from '../../../types/user.structure';
@@ -13,7 +13,7 @@ import { Charge } from '../../../types/charges.structure';
   templateUrl: './customer-panel.component.html',
   styleUrls: ['./customer-panel.component.scss'],
 })
-export class CustomerPanelComponent implements OnInit {
+export class CustomerPanelComponent implements OnInit, OnDestroy {
   customerInfoForm: FormGroup = new FormGroup({
     name: new FormControl(
       {
@@ -81,6 +81,13 @@ export class CustomerPanelComponent implements OnInit {
   );
   foundCustomers: CustomerInfo[] = [];
   searchString: Subject<string> = new Subject<string>();
+  billAssignedSubscription:Subscription = Subscription.EMPTY;
+  customerInfoFormSubscription:Subscription = Subscription.EMPTY;
+  modeChangedSubscription:Subscription = Subscription.EMPTY;
+  customersUpdatedSubscription:Subscription = Subscription.EMPTY;
+  searchStringDebouncedSubscription:Subscription = Subscription.EMPTY;
+  loyaltyFormSubscription:Subscription = Subscription.EMPTY;
+  chargesFormSubscription:Subscription = Subscription.EMPTY;
   constructor(
     public dataProvider: DataProvider,
     private injector: Injector,
@@ -98,7 +105,7 @@ export class CustomerPanelComponent implements OnInit {
       this.customerInfoForm.disable();
       this.loyaltySettingForm.disable();
     }
-    this.customerInfoForm.valueChanges
+    this.billAssignedSubscription = this.customerInfoForm.valueChanges
       .pipe(debounceTime(1000))
       .subscribe((value) => {
         if (value.name || value.phone || value.address) {
@@ -109,8 +116,9 @@ export class CustomerPanelComponent implements OnInit {
            console.log('value', this.customerInfoForm);
         }
       });
-    this.dataProvider.billAssigned.subscribe(() => {
-      this.dataProvider.modeChanged.subscribe(() => {
+    this.customerInfoFormSubscription = this.dataProvider.billAssigned.subscribe(() => {
+      this.modeChangedSubscription.unsubscribe();
+      this.modeChangedSubscription = this.dataProvider.modeChanged.subscribe(() => {
         if (this.dataProvider.currentBill) {
           if (this.dataProvider.currentBill.mode == 'online') {
             // update controls instead of adding them
@@ -140,15 +148,13 @@ export class CustomerPanelComponent implements OnInit {
         } else {
           this.customerInfoForm.disable();
         }
-        this.setChargesControl();
       });
-      this.setChargesControl();
     });
-    this.dataProvider.customersUpdated.subscribe(() => {
+    this.customersUpdatedSubscription = this.dataProvider.customersUpdated.subscribe(() => {
       this.numberFuseInstance.setCollection(this.dataProvider.customers);
     });
 
-    this.searchString.pipe(debounceTime(700)).subscribe((value) => {
+    this.searchStringDebouncedSubscription = this.searchString.pipe(debounceTime(700)).subscribe((value) => {
       console.log('searching', value, this.dataProvider.customers);
       if (value) {
         const results = this.numberFuseInstance
@@ -161,7 +167,7 @@ export class CustomerPanelComponent implements OnInit {
       }
     });
 
-    this.loyaltySettingForm.valueChanges.subscribe((value) => {
+    this.loyaltyFormSubscription = this.loyaltySettingForm.valueChanges.subscribe((value) => {
       console.log('value', value);
       this.dataProvider.currentBill.currentLoyalty = {
         ...this.dataProvider.currentBill.currentLoyalty,
@@ -170,10 +176,20 @@ export class CustomerPanelComponent implements OnInit {
       this.dataProvider.currentBill.updated.next();
     });
 
-    this.chargesForm.valueChanges.pipe(debounceTime(1000)).subscribe((value)=>{
+    this.chargesFormSubscription = this.chargesForm.valueChanges.pipe(debounceTime(1000)).subscribe((value)=>{
       this.setCharges(value);
     })
 
+  }
+
+  ngOnDestroy(): void {
+    this.billAssignedSubscription.unsubscribe();
+    this.customerInfoFormSubscription.unsubscribe();
+    this.modeChangedSubscription.unsubscribe();
+    this.customersUpdatedSubscription.unsubscribe();
+    this.searchStringDebouncedSubscription.unsubscribe();
+    this.loyaltyFormSubscription.unsubscribe();
+    this.chargesFormSubscription.unsubscribe();
   }
 
   setCharges(value:any){
@@ -379,22 +395,4 @@ export class CustomerPanelComponent implements OnInit {
     }
   }
 
-  setChargesControl(){
-    if(this.dataProvider.currentBill.mode == 'dineIn'){
-      // if (this.dataProvider.customCharges.dineIn.includes('delivery')) this.chargesForm.controls.deliveryCharge.setValidators();
-      // if (this.dataProvider.customCharges.dineIn.includes('tip')) this.chargesForm.controls.tip.setValidators();
-      // if (this.dataProvider.customCharges.dineIn.includes('service')) this.chargesForm.controls.serviceCharge.setValidators();
-      // if (this.dataProvider.customCharges.dineIn.includes('container')) this.chargesForm.controls.containerCharge.setValidators();
-    } else if(this.dataProvider.currentBill.mode == 'takeaway'){
-      // if (this.dataProvider.customCharges.takeaway.includes('delivery')) this.chargesForm.controls.deliveryCharge.setValidators();
-      // if (this.dataProvider.customCharges.takeaway.includes('tip')) this.chargesForm.controls.tip.setValidators();
-      // if (this.dataProvider.customCharges.takeaway.includes('service')) this.chargesForm.controls.serviceCharge.setValidators();
-      // if (this.dataProvider.customCharges.takeaway.includes('container')) this.chargesForm.controls.containerCharge.setValidators();
-    } else if(this.dataProvider.currentBill.mode == 'online'){
-      // if (this.dataProvider.customCharges.online.includes('delivery')) this.chargesForm.controls.deliveryCharge.setValidators();
-      // if (this.dataProvider.customCharges.online.includes('tip')) this.chargesForm.controls.tip.setValidators();
-      // if (this.dataProvider.customCharges.online.includes('service')) this.chargesForm.controls.serviceCharge.setValidators();
-      // if (this.dataProvider.customCharges.online.includes('container')) this.chargesForm.controls.containerCharge.setValidators();
-    }
-  }
 }

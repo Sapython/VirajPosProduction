@@ -1,8 +1,8 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { DataProvider } from '../../../../core/services/provider/data-provider.service';
-import { debounceTime } from 'rxjs';
+import { Subscription, debounceTime } from 'rxjs';
 import { Charge } from '../../../../types/charges.structure';
 import { Bill } from '../../../../core/constructors/bill';
 import { BillConstructor } from '../../../../types/bill.structure';
@@ -12,7 +12,7 @@ import { BillConstructor } from '../../../../types/bill.structure';
   templateUrl: './set-charges.component.html',
   styleUrls: ['./set-charges.component.scss']
 })
-export class SetChargesComponent {
+export class SetChargesComponent implements OnDestroy {
   chargesForm:FormGroup = new FormGroup({
     deliverySelected:new FormControl(false),
     deliveryCharge:new FormControl(0),
@@ -23,15 +23,20 @@ export class SetChargesComponent {
     containerSelected:new FormControl(false),
     containerCharge:new FormControl(0),
   });
+  chargesFormSubscription:Subscription = Subscription.EMPTY;
   
   constructor(public dialogRef:DialogRef,public dataProvider:DataProvider, @Inject(DIALOG_DATA) public bill:Bill|BillConstructor) {
     // console.log("this.dataProvider.charges",this.dataProvider.charges);
     let chargesSettings = this.dataProvider.charges[this.bill.mode];
     let appliedCharges = this.bill.appliedCharges;
     this.patchCharges(chargesSettings,appliedCharges);
-    this.chargesForm.valueChanges.pipe(debounceTime(1000)).subscribe((value)=>{
+    this.chargesFormSubscription = this.chargesForm.valueChanges.pipe(debounceTime(1000)).subscribe((value)=>{
       this.setCharges(value);
     })
+  }
+
+  ngOnDestroy(): void {
+    this.chargesFormSubscription.unsubscribe();
   }
   setCharges(value:any){
     if(this.bill){

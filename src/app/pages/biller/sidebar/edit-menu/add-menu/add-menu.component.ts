@@ -203,9 +203,21 @@ export class AddMenuComponent {
       this.rootCategories = [];
       let notValidProducts = 0;
       data.forEach((line)=>{
-        line.tag = line['half/full'] == 'full' ? 'Full' : 'Half';
-        line.type = line['veg/nonveg'] == 'veg' ? 'veg' : 'non-veg';
-        if (line.name && line.category && (!isNaN(Number(line.price))) && (line.type == 'veg' || line.type == 'non-veg') && (line.tag ? (line.tag == 'Half' || line.tag == 'Full') : true)){
+        // line.tag = line['half/full'] == 'full' ? 'Full' : 'Half';
+        if (line['half/full'] == 'full'){
+          line.tag = 'Full';
+        } else if (line['half/full'] == 'half'){
+          line.tag = 'Half';
+        }
+        // line.type = line['veg/nonveg'] == 'veg' ? 'veg' : 'non-veg';
+        if (line['veg/nonveg'] == 'veg'){
+          line.type = 'veg';
+        } else if (line['veg/nonveg'] == 'nonveg'){
+          line.type = 'non-veg';
+        } else {
+          line.type = 'veg';
+        }
+        if (line.name && line.category && (!isNaN(Number(line.price)))){
           let product = {
             name:line.name,
             category:line.category,

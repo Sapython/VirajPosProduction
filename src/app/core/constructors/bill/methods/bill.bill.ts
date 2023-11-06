@@ -52,6 +52,10 @@ export function setAsNormal(this: Bill) {
 }
 
 export async function finalize(this: Bill, noTable?: boolean,onHold?:boolean) {
+  if (this.totalProducts == 0) {
+    await alert('No products to finalize');
+    return;
+  }
   this.dataProvider.manageKot = false;
   this.dataProvider.kotViewVisible = false;
   this.dataProvider.allProducts = true;
@@ -65,10 +69,6 @@ export async function finalize(this: Bill, noTable?: boolean,onHold?:boolean) {
     ) {
       await this.finalizeAndPrintKot(true);
     }
-  }
-  if (this.totalProducts == 0) {
-    await alert('No products to finalize');
-    return;
   }
   // console.log("QuickMethod: Finalize",onHold);
   if (onHold) {

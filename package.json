@@ -1,6 +1,6 @@
 {
   "name": "virajpos",
-  "version": "1.0.25",
+  "version": "1.0.34",
   "description": "Vrajera POS system.",
   "homepage": "https://virajworld.in/",
   "author": {
@@ -30,6 +30,7 @@
     "electron:build": "npm run build:prod && electron-builder build --publish=never",
     "electron:build:only": "electron-builder build --publish=never",
     "electron:build:publish": "npm run build:prod && electron-builder build --publish=always",
+    "electron:publish:only": "electron-builder build --publish=always",
     "test": "ng test --watch=false",
     "test:watch": "ng test",
     "e2e": "npm run build:prod && playwright test -c e2e/playwright.config.ts e2e/",

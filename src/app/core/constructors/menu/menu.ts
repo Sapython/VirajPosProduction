@@ -1955,6 +1955,7 @@ export class ModeConfig {
   }
 
   updateDefaultPrinters(printer: { billPrinter: string; kotPrinter: string }) {
+    console.log('Updating default printer', printer);
     return this.menuManagementService.updateDefaultPrinter(
       this.selectedMenu,
       printer,
@@ -2011,12 +2012,17 @@ export class ModeConfig {
   }
 
   downloadProducts(products: Product[]) {
+    function filter(textWithCommas:string):string{
+      // should return text without commas
+      return textWithCommas.split(',').join(' ');
+    }
     // create a csv file with this format
     // name, category, price,veg/nonveg , half/full (half/full is optional),
     let csvContent = 'data:text/csv;charset=utf-8,';
     csvContent += 'name,category,price,veg/nonveg,half/full\n';
+    
     products.forEach((product) => {
-      csvContent += `${product.name},${product.category?.name},${product.price},${product.type}\n`;
+      csvContent += `${filter(product.name)},${filter(product.category?.name)},${product.price},${filter(product.type)},${product.tags.length ? (product.tags[0]?.name ? filter(product.tags[0].name) : '') : ''}\n`;
     });
     // download the file
     var encodedUri = encodeURI(csvContent);

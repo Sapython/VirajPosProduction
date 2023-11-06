@@ -16,7 +16,7 @@
         id="stockConsumptionTrigger"
         cdkOverlayOrigin
         #stockConsumptionTrigger="cdkOverlayOrigin"
-        (mouseleave)="this.closeStockListPanelSubscription.next(false)"
+        (mouseleave)="this.closeStockListPanelSubject.next(false)"
         (mouseenter)="isStockListOpen = true"
       >
         <p>Stock Cons.</p>
@@ -31,8 +31,8 @@
       >
         <app-stock-list
           (close)="this.isStockListOpen = false"
-          (mouseleave)="this.closeStockListPanelSubscription.next(false)"
-          (mouseenter)="this.closeStockListPanelSubscription.next(true)"
+          (mouseleave)="this.closeStockListPanelSubject.next(false)"
+          (mouseenter)="this.closeStockListPanelSubject.next(true)"
         ></app-stock-list>
       </ng-template>
     </ng-container>

@@ -348,7 +348,7 @@ try {
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
   // Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
-  Menu.setApplicationMenu(null)
+  // Menu.setApplicationMenu(null)
   app.on('ready', () => setTimeout(createWindow, 400));
 
   // Quit when all windows are closed.

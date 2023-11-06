@@ -21,7 +21,7 @@
           [ngStyle]="{ background: tag?.color, color: tag?.contrast }"
           *ngFor="let tag of tags"
         >
-          {{ tag.name }}
+          {{ tag?.name }}
         </span>
       </div>
       <span *ngIf="!openItem"> {{ category }}</span>

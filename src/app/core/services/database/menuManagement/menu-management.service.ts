@@ -1689,6 +1689,17 @@ export class MenuManagementService {
     if (localMenu) {
       localMenu.defaultPrinter = printer;
     }
+    this.indexedDbService.update('menu', localMenu).subscribe(
+      (res) => {
+        // console.log("updated the menu",res);
+        this.indexedDbService.getByKey('menu', menu.id).subscribe((res) => {
+          // console.log("updated menu",res);
+        });
+      },
+      (err) => {
+        // console.log(err);
+      },
+    );
   }
 
   deleteMenu(menuId: string) {

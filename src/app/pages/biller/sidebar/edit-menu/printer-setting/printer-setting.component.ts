@@ -143,6 +143,7 @@ export class PrinterSettingComponent implements OnDestroy {
   }
 
   setDefaultPrinter(printer:string,type:'bill'|'kot'){
+    console.log("Setting default printer",printer,type);
     if (type === 'bill'){
       this.billPrinter = printer;
       this.data.menu.updateDefaultPrinters({billPrinter:printer,kotPrinter:this.kotPrinter});

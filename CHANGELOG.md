@@ -1,4 +1,4 @@
-## <small>1.0.34 (2023-11-06)</small>
+## <small>1.0.39 (2023-11-28)</small>
 
 * Access level was wrong ([382351d](https://github.com/swayambhu-innovations/Vrajera/commit/382351d))
 * Added active category option. Custom Printer, Custom ViewCat ([ce3fc6f](https://github.com/swayambhu-innovations/Vrajera/commit/ce3fc6f))
@@ -162,6 +162,7 @@
 * Fixed quantity bug ([21eef9c](https://github.com/swayambhu-innovations/Vrajera/commit/21eef9c))
 * Fixed quantity bug and account bug. ([f522963](https://github.com/swayambhu-innovations/Vrajera/commit/f522963))
 * Fixed recipe update. ([af9075f](https://github.com/swayambhu-innovations/Vrajera/commit/af9075f))
+* Fixed refresh issues and finalize bill issue. ([7b465f5](https://github.com/swayambhu-innovations/Vrajera/commit/7b465f5))
 * Fixed reports ([cba6825](https://github.com/swayambhu-innovations/Vrajera/commit/cba6825))
 * Fixed reports button. ([66f1fbc](https://github.com/swayambhu-innovations/Vrajera/commit/66f1fbc))
 * Fixed reports NA field ([b3e5208](https://github.com/swayambhu-innovations/Vrajera/commit/b3e5208))

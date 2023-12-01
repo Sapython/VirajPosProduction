@@ -60,7 +60,7 @@
           this.dataProvider.getAccess('switchMenu')
         "
       >
-        <span>Selected Menu: {{this.dataProvider.currentMenu.selectedMenuId}} </span>
+        <span>Selected Menu: </span>
         <select
           [(ngModel)]="this.dataProvider.currentMenu.selectedMenuId"
           (change)="this.dataProvider.currentMenu.updateMenu()"

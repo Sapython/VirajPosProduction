@@ -193,7 +193,7 @@ export function calculateProducts(kots: (Kot | KotConstructor)[],availableTaxes:
     }
   });
 
-  // console.log("FINAL allProducts",allProducts,kots);
+  console.log("FINAL allProducts",allProducts,kots);
 
   // check individual product for tax and if the tax.mode is inclusive then add the applicable tax to totalTaxValue or if the tax.mode is exclusive then decrease the price of product by tax rate and add the applicableValue to totalTaxValue
   let finalAdditionalTax: number = 0;

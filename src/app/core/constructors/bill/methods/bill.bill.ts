@@ -52,7 +52,8 @@ export function setAsNormal(this: Bill) {
 }
 
 export async function finalize(this: Bill, noTable?: boolean,onHold?:boolean) {
-  if (this.totalProducts == 0) {
+  let activeKot = this.kots.find((kot) => kot.stage == 'active');
+  if (this.kots.length == 0 || (this.kots.length > 0 && this.kots[0].products.length == 0)) {
     await alert('No products to finalize');
     return;
   }
@@ -60,7 +61,7 @@ export async function finalize(this: Bill, noTable?: boolean,onHold?:boolean) {
   this.dataProvider.kotViewVisible = false;
   this.dataProvider.allProducts = true;
   // check if any kot is active
-  if (this.kots.find((kot) => kot.stage === 'active')) {
+  if (activeKot) {
     if (
       await this.dataProvider.confirm(
         'There are active KOTs. Do you want to finalize them?',
@@ -147,6 +148,10 @@ export async function settle(
   noTable?: boolean,
   noDialogs?: boolean,
 ) {
+  if (this.kots.length == 0 || (this.kots.length > 0 && this.kots[0].products.length == 0)) {
+    await alert('No products to settle');
+    return;
+  }
   // ** RECHECKER starts here
   // check if previous stages are completed
   if (!noDialogs) {
@@ -233,7 +238,9 @@ export async function settle(
       }
     }
   }
+  console.log(this.dataProvider.localSettings.showTableOnBillAction,!noTable);
   if (this.dataProvider.localSettings.showTableOnBillAction && !noTable) {
+    console.log('Opening table view');
     this.dataProvider.openTableView.next(true);
   }
   // set the loyalty points for the customers

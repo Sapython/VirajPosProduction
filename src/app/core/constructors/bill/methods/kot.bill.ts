@@ -120,6 +120,10 @@ export function editKot(this: Bill, kot: Kot, reason: string) {
 }
 
 export async function finalizeAndPrintKot(this: Bill, noTable?: boolean) {
+  if (this.kots.length == 0 || (this.kots.length > 0 && this.kots[0].products.length == 0)) {
+    await alert('No products for kot');
+    return;
+  }
   console.log("Checking for first kot",this.table.status);
   if (this.dataProvider.currentBill){
     if (this.dataProvider.charges[this.dataProvider.currentBill.mode].service.byDefault){
@@ -360,6 +364,7 @@ export async function printKot(
       user: this.user,
     });
   }
+  console.log("Kot",kot);
   //  console.log("kot.products",kot.products);
   let data: PrintableKot = {
     // date in dd/mm/yyyy format

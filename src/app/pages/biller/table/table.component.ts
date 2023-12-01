@@ -107,14 +107,14 @@ export class TableComponent implements OnInit {
         return ['finalized','active'].includes(table.bill?.stage);
       },
     ).sort((a, b) => {
-      return Number(a.tableNo) - Number(b.tableNo);
+      return Number(b.tableNo) - Number(a.tableNo);
     });
     this.onHoldSortedTakeawayTokens = this.dataProvider.tokens.filter(
       (table) => {
         return table.bill?.stage == 'hold';
       },
     ).sort((a, b) => {
-      return Number(a.tableNo) - Number(b.tableNo);
+      return Number(b.tableNo) - Number(a.tableNo);
     });
 
     this.activatedSortedOnlineTokens = this.dataProvider.onlineTokens.filter(
@@ -122,7 +122,7 @@ export class TableComponent implements OnInit {
         return ['finalized','active'].includes(table.bill?.stage);
       },
     ).sort((a, b) => {
-      return Number(a.tableNo) - Number(b.tableNo);
+      return Number(b.tableNo) - Number(a.tableNo);
     });
 
     this.onHoldSortedOnlineTokens = this.dataProvider.onlineTokens.filter(
@@ -130,7 +130,7 @@ export class TableComponent implements OnInit {
         return table.bill?.stage == 'hold';
       },
     ).sort((a, b) => {
-      return Number(a.tableNo) - Number(b.tableNo);
+      return Number(b.tableNo) - Number(a.tableNo);
     });
   }
 
@@ -891,7 +891,7 @@ export class TableComponent implements OnInit {
 
   generateRandomId(){
     // random id alnum
-    let length = 10;
+    let length = 25;
     let result = '';
     let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let charactersLength = characters.length;

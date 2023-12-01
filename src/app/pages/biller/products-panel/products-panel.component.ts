@@ -232,12 +232,14 @@ export class ProductsPanelComponent implements OnInit, OnDestroy {
   openItem(category:{id:string,name:string}){
     console.log("category",category);
     let dialog = this.dialog.open(OpenProductComponent);
-    firstValueFrom(dialog.closed).then((value:any)=>{
+    firstValueFrom(dialog.closed).then(async (value:any)=>{
       console.log("Value",value);
       if (!value?.name || !value?.price) return;
+      let printer = await this.dataProvider.currentMenu.getDefaultPrinters();
       let product:Product = {
         name:value.name,
         price:value.price,
+        specificPrinter:printer.kotPrinter,
         id:`CUSTOM-${Math.random().toString()}`,
         category:category,
         createdDate:Timestamp.fromDate(new Date()),

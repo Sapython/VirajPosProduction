@@ -933,7 +933,7 @@ export class OnboardingService {
         ),
         where('completed', '==', false),
         where('id', 'not-in', [
-          this.dataProvider.tokens.map((token) => token.id),
+          this.dataProvider.tokens.map((token) => token.id).slice(0, 10),
         ]),
       ),
     );
@@ -978,13 +978,13 @@ export class OnboardingService {
         ),
         where('completed', '==', false),
         where('id', 'not-in', [
-          this.dataProvider.tokens.map((token) => token.id),
+          this.dataProvider.tokens.map((token) => token.id).slice(0, 10),
         ]),
       ),
     );
     changes.subscribe(async (res) => {
       this.dataProvider.tablesUpdated.next();
-      // console.log("TOKENCHANGE",res);
+      console.log("TOKENCHANGE",res);
       res.forEach(async (change) => {
         if (change.type == 'added') {
           let newTable = {

@@ -134,7 +134,7 @@ export class ActionsComponent implements OnDestroy {
   async finalizeBill() {
     let elevateReq = await this.userManagementService.authenticateAction([
       'finalizeBill'
-    ])
+    ]);
     if (
       elevateReq.status === true
     ) {

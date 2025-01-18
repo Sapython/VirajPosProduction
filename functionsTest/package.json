@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "firebase": "^10.3.0",
+    "firebase": "^10.9.0",
     "tsc": "^2.0.4",
     "typescript": "^5.1.6"
   }

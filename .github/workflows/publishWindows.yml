@@ -2,7 +2,7 @@ name: Publish To Windows
 on: push
 
 env:
-  GH_TOKEN: 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
+  GH_TOKEN: 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
 
 jobs:
  build:

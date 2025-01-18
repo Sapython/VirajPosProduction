@@ -10,7 +10,7 @@ jobs:
    runs-on: [ windows-latest ]
    name: Publish Vrajera to public
    steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/cache@v3
         name: Cache node modules
         env:

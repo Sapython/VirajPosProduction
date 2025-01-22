@@ -389,7 +389,7 @@ export class BillService {
 
 
   getKotTokenNumber(){
-    return this.requestHandler("http://43.231.127.94/getKotTokenNumber?businessId="+this.dataProvider.currentBusiness.businessId+"",'POST',{});
+    return this.requestHandler("http://195.250.30.83/getKotTokenNumber?businessId="+this.dataProvider.currentBusiness.businessId+"",'POST',{});
     // return this.getKotTokenNumberFunction({businessId:this.dataProvider.businessId});
     // return runTransaction(this.firestore,async (transaction)=>{
     //   let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['kitchenTokenNo'];
@@ -399,7 +399,7 @@ export class BillService {
   }
 
   getOrderNumber(){
-    return this.requestHandler("http://43.231.127.94/getOrderNumber?businessId="+this.dataProvider.currentBusiness.businessId+"",'POST',{});
+    return this.requestHandler("http://195.250.30.83/getOrderNumber?businessId="+this.dataProvider.currentBusiness.businessId+"",'POST',{});
     // return this.getOrderNumberFunction({businessId:this.dataProvider.businessId});
     // return runTransaction(this.firestore,async (transaction)=>{
     //   let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['orderTokenNo'];
@@ -409,7 +409,7 @@ export class BillService {
   }
 
   async getOrderAndKotNumber(){
-    return this.requestHandler("http://43.231.127.94/getOrderAndKotNumber?businessId="+this.dataProvider.currentBusiness.businessId+"",'POST',{});
+    return this.requestHandler("http://195.250.30.83/getOrderAndKotNumber?businessId="+this.dataProvider.currentBusiness.businessId+"",'POST',{});
     // return runTransaction(this.firestore,async (transaction)=>{
     //   let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['kitchenTokenNo'];
     //   let orderTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['orderTokenNo'];
@@ -419,7 +419,7 @@ export class BillService {
   }
 
   getOrderKotTakeawayTokenNumber(){
-    return this.requestHandler("http://43.231.127.94/getOrderKotTakeawayTokenNumber?businessId="+this.dataProvider.currentBusiness.businessId+"",'POST',{});
+    return this.requestHandler("http://195.250.30.83/getOrderKotTakeawayTokenNumber?businessId="+this.dataProvider.currentBusiness.businessId+"",'POST',{});
     // return runTransaction(this.firestore,async (transaction)=>{
     //   let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['kitchenTokenNo'];
     //   let orderTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['orderTokenNo'];
@@ -430,7 +430,7 @@ export class BillService {
   }
 
   getOrderKotOnlineTokenNumber(){
-    return this.requestHandler("http://43.231.127.94/getOrderKotOnlineTokenNumber?businessId="+this.dataProvider.currentBusiness.businessId+"",'POST',{});
+    return this.requestHandler("http://195.250.30.83/getOrderKotOnlineTokenNumber?businessId="+this.dataProvider.currentBusiness.businessId+"",'POST',{});
     // return this.getOrderKotOnlineTokenNumberFunction({businessId:this.dataProvider.businessId});
     // return runTransaction(this.firestore,async (transaction)=>{
     //   let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['kitchenTokenNo'];
@@ -442,7 +442,7 @@ export class BillService {
   }
 
   getPaymentMethodBillNumber(paymentMethodId:string,mode:'dineIn'|'takeaway'|'online'){
-    return this.requestHandler("http://43.231.127.94/getPaymentMethodBillNumber?businessId="+this.dataProvider.currentBusiness.businessId+"&paymentMethodId="+paymentMethodId+"&mode="+mode,'POST',{});
+    return this.requestHandler("http://195.250.30.83/getPaymentMethodBillNumber?businessId="+this.dataProvider.currentBusiness.businessId+"&paymentMethodId="+paymentMethodId+"&mode="+mode,'POST',{});
     // return this.getPaymentMethodBillNumberFunction({businessId:this.dataProvider.businessId,paymentMethodId:paymentMethodId,mode});
     // return runTransaction(this.firestore,async (transaction)=>{
     //   let paymentMethod = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/paymentMethods/'+paymentMethodId))).data();
@@ -452,7 +452,7 @@ export class BillService {
   }
 
   getNcBillNumber(){
-    return this.requestHandler("http://43.231.127.94/getNcBillNumber?businessId="+this.dataProvider.currentBusiness.businessId+"",'POST',{});
+    return this.requestHandler("http://195.250.30.83/getNcBillNumber?businessId="+this.dataProvider.currentBusiness.businessId+"",'POST',{});
     // return runTransaction(this.firestore,async (transaction)=>{
     //   let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['ncBillNo'];
     //   transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{ncBillNo:increment(1)});
@@ -461,7 +461,7 @@ export class BillService {
   }
 
   getNormalBillNumber(mode:'dineIn'|'takeaway'|'online'){
-    return this.requestHandler("http://43.231.127.94/getNormalBillNumber?businessId="+this.dataProvider.currentBusiness.businessId+"&mode="+mode,'POST',{});
+    return this.requestHandler("http://195.250.30.83/getNormalBillNumber?businessId="+this.dataProvider.currentBusiness.businessId+"&mode="+mode,'POST',{});
     // return runTransaction(this.firestore,async (transaction)=>{
     //   let kotTokenNumber = (await transaction.get(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'))).data()['ncBillNo'];
     //   transaction.update(doc(this.firestore,'business/'+this.dataProvider.businessId+'/settings/settings'),{ncBillNo:increment(1)});

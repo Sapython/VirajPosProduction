@@ -1,4 +1,4 @@
-## <small>1.0.39 (2023-11-28)</small>
+## <small>1.0.40 (2025-01-24)</small>
 
 * Access level was wrong ([382351d](https://github.com/swayambhu-innovations/Vrajera/commit/382351d))
 * Added active category option. Custom Printer, Custom ViewCat ([ce3fc6f](https://github.com/swayambhu-innovations/Vrajera/commit/ce3fc6f))
@@ -75,6 +75,7 @@
 * Fixed bill skip, and missing settlement infos. ([075b0ef](https://github.com/swayambhu-innovations/Vrajera/commit/075b0ef))
 * Fixed biller bugs. ([98010b4](https://github.com/swayambhu-innovations/Vrajera/commit/98010b4))
 * Fixed bug related to optional price. ([96f1a31](https://github.com/swayambhu-innovations/Vrajera/commit/96f1a31))
+* Fixed bugs ([4430bee](https://github.com/swayambhu-innovations/Vrajera/commit/4430bee))
 * Fixed bugs ([bb287f7](https://github.com/swayambhu-innovations/Vrajera/commit/bb287f7))
 * Fixed bugs ([03788f4](https://github.com/swayambhu-innovations/Vrajera/commit/03788f4))
 * Fixed bugs ([8ad788e](https://github.com/swayambhu-innovations/Vrajera/commit/8ad788e))
@@ -202,6 +203,10 @@
 * Preview kot fixed ([7d30c4a](https://github.com/swayambhu-innovations/Vrajera/commit/7d30c4a))
 * Printing fixed for optional taxes ([2933a32](https://github.com/swayambhu-innovations/Vrajera/commit/2933a32))
 * Printing fixed. ([3d581f3](https://github.com/swayambhu-innovations/Vrajera/commit/3d581f3))
+* publish_to_prod ([a2ce756](https://github.com/swayambhu-innovations/Vrajera/commit/a2ce756))
+* publish_to_prod ([3cbdde5](https://github.com/swayambhu-innovations/Vrajera/commit/3cbdde5))
+* publish_to_prod ([af09828](https://github.com/swayambhu-innovations/Vrajera/commit/af09828))
+* publish_to_prod ([b177efa](https://github.com/swayambhu-innovations/Vrajera/commit/b177efa))
 * publish_to_prod ([ecd8b22](https://github.com/swayambhu-innovations/Vrajera/commit/ecd8b22))
 * publish_to_prod ([31a9fe2](https://github.com/swayambhu-innovations/Vrajera/commit/31a9fe2))
 * publish_to_prod ([0a1ca05](https://github.com/swayambhu-innovations/Vrajera/commit/0a1ca05))
@@ -220,6 +225,7 @@
 * Report fixes ([ce9a511](https://github.com/swayambhu-innovations/Vrajera/commit/ce9a511))
 * Reports fixed. ([32e3677](https://github.com/swayambhu-innovations/Vrajera/commit/32e3677))
 * Reversed order of bills in history ([c76485d](https://github.com/swayambhu-innovations/Vrajera/commit/c76485d))
+* reverted back experimental changes. fixed github action token ([ae146f2](https://github.com/swayambhu-innovations/Vrajera/commit/ae146f2))
 * Rewrote settlement ([f80458d](https://github.com/swayambhu-innovations/Vrajera/commit/f80458d))
 * Round off value in split settle ([a50f1f0](https://github.com/swayambhu-innovations/Vrajera/commit/a50f1f0))
 * Secret manager configured ([762053f](https://github.com/swayambhu-innovations/Vrajera/commit/762053f))
@@ -311,6 +317,7 @@
 * Update Table.ts ([f92d31d](https://github.com/swayambhu-innovations/Vrajera/commit/f92d31d))
 * Updated node package name. ([6d43d95](https://github.com/swayambhu-innovations/Vrajera/commit/6d43d95))
 * Upgraded version ([2e4679d](https://github.com/swayambhu-innovations/Vrajera/commit/2e4679d))
+* vps IP changed ([0f988fb](https://github.com/swayambhu-innovations/Vrajera/commit/0f988fb))
 
 
 

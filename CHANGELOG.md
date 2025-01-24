@@ -1,4 +1,4 @@
-## <small>1.0.40 (2025-01-24)</small>
+## <small>1.0.41 (2025-01-24)</small>
 
 * Access level was wrong ([382351d](https://github.com/swayambhu-innovations/Vrajera/commit/382351d))
 * Added active category option. Custom Printer, Custom ViewCat ([ce3fc6f](https://github.com/swayambhu-innovations/Vrajera/commit/ce3fc6f))
@@ -41,6 +41,7 @@
 * Bug fixes ([4b8dbcd](https://github.com/swayambhu-innovations/Vrajera/commit/4b8dbcd))
 * Bugs resolved ([c64691a](https://github.com/swayambhu-innovations/Vrajera/commit/c64691a))
 * Builder config change ([7c6b92a](https://github.com/swayambhu-innovations/Vrajera/commit/7c6b92a))
+* bump version to 1.0.40 for virajpos and 1.0.41 for vrajera ([0b6de45](https://github.com/swayambhu-innovations/Vrajera/commit/0b6de45))
 * Changed bill counter to custom server based ([c2fd022](https://github.com/swayambhu-innovations/Vrajera/commit/c2fd022))
 * Changed bill wise reports to landscape mode. ([4c2f6ec](https://github.com/swayambhu-innovations/Vrajera/commit/4c2f6ec))
 * Changed gitignore for umd files ([274c5b3](https://github.com/swayambhu-innovations/Vrajera/commit/274c5b3))
@@ -231,6 +232,7 @@
 * Secret manager configured ([762053f](https://github.com/swayambhu-innovations/Vrajera/commit/762053f))
 * Some base fixes. ([619b467](https://github.com/swayambhu-innovations/Vrajera/commit/619b467))
 * Speed configs in electron files. ([dc2a63f](https://github.com/swayambhu-innovations/Vrajera/commit/dc2a63f))
+* Switched to transactional queries. ([ee143a9](https://github.com/swayambhu-innovations/Vrajera/commit/ee143a9))
 * Table update fixed. ([a42f8c6](https://github.com/swayambhu-innovations/Vrajera/commit/a42f8c6))
 * Test ([9894c20](https://github.com/swayambhu-innovations/Vrajera/commit/9894c20))
 * Testing the edit menu duplicate bug. ([3241d23](https://github.com/swayambhu-innovations/Vrajera/commit/3241d23))

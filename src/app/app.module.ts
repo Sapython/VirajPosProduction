@@ -87,7 +87,6 @@ import { PrinterService } from './core/services/printing/printer/printer.service
 import { UpdaterService } from './core/services/updater/updater.service';
 import { provideMessaging,getMessaging } from '@angular/fire/messaging';
 import { LockedComponent } from './shared/locked/locked.component';
-
 var FirebaseAppInstance:FirebaseApp|undefined;
 
 // AoT requires an exported function for factories
@@ -214,8 +213,31 @@ export const dbConfig: DBConfig = {
     LoadingModule,
     BillerModule,
     BrowserAnimationsModule,
+  ],
+  providers: [
+    PrinterService,
+    ScreenTrackingService,
+    UserTrackingService,
+    AlertsAndNotificationsService,
+    ElectronService,
+    AuthService,
+    CustomerService,
+    MenuManagementService,
+    AnalyticsService,
+    BillService,
+    CategoryService,
+    FileStorageService,
+    HistoryService,
+    MenuManagementService,
+    ProductsService,
+    ReportsService,
+    SearchService,
+    SettingsService,
+    SystemService,
+    TableService,
+    UpdaterService,
     provideFirebaseApp(() => {
-      FirebaseAppInstance = initializeApp(environment.firebase);
+      FirebaseAppInstance = initializeApp(environment.firebase as any);
       return FirebaseAppInstance;
     }),
     provideAnalytics(() => getAnalytics()),
@@ -246,29 +268,6 @@ export const dbConfig: DBConfig = {
       return getPerformance();
     }),
     provideMessaging(() => getMessaging()),
-  ],
-  providers: [
-    PrinterService,
-    ScreenTrackingService,
-    UserTrackingService,
-    AlertsAndNotificationsService,
-    ElectronService,
-    AuthService,
-    CustomerService,
-    MenuManagementService,
-    AnalyticsService,
-    BillService,
-    CategoryService,
-    FileStorageService,
-    HistoryService,
-    MenuManagementService,
-    ProductsService,
-    ReportsService,
-    SearchService,
-    SettingsService,
-    SystemService,
-    TableService,
-    UpdaterService
   ],
   bootstrap: [AppComponent],
 })

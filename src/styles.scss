@@ -251,6 +251,8 @@ $Vrajera-theme: mat.define-light-theme(
   --Vrajera-shadow-light: 4px 1px 16px rgba(22, 22, 22, 0.1);
   --Vrajera-shadow-medium: 0px 4px 8px rgba(0, 0, 0, 0.25);
   --Vrajera-shadow-heavy: 0px 8px 16px rgba(0, 0, 0, 0.25);
+  --mat-standard-button-toggle-selected-state-background-color: var(--Vrajera-primary);
+  --mat-standard-button-toggle-selected-state-text-color: white;
 }
 
 html,

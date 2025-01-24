@@ -42,7 +42,6 @@ import { CustomerService } from '../customer/customer.service';
 import { Functions, httpsCallable } from '@angular/fire/functions';
 import { Router } from '@angular/router';
 import { PaymentMethod } from '../../../types/payment.structure';
-import * as LogRocket from 'logrocket';
 import { BillerCounter } from '../../../pages/biller/settings/sections/counters/counters.component';
 import { LockedComponent } from '../../../shared/locked/locked.component';
 
@@ -875,13 +874,6 @@ export class OnboardingService {
       if (res) {
         this.dataProvider.paymentMethods = res as PaymentMethod[];
       }
-    });
-    // console.log("Loaded everything");
-    LogRocket.identify(this.dataProvider.currentUser.username, {
-      name: this.dataProvider.currentUser.username,
-      email: this.dataProvider.currentUser.email,
-      business:business.hotelName,
-      address:business.address,
     });
   }
 

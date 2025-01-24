@@ -24,6 +24,7 @@
         "build": {
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
+            "outputHashing":"none",
             "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -64,7 +65,7 @@
             },
             "production": {
               "optimization": true,
-              "outputHashing": "all",
+              "outputHashing": "none",
               "sourceMap": false,
               "namedChunks": false,
               "aot": true,
@@ -96,7 +97,7 @@
             },
             "web-production": {
               "optimization": true,
-              "outputHashing": "all",
+              "outputHashing": "none",
               "sourceMap": false,
               "namedChunks": false,
               "aot": true,
@@ -188,6 +189,7 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
+            "outputHashing":"none",
             "lintFilePatterns": [
               "e2e/**/*.ts"
             ]

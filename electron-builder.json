@@ -17,7 +17,8 @@
   "win": {
     "icon": "dist/assets/icons",
     "target": ["nsis"],
-    "publish": ["github"]
+    "publish": ["github"],
+    "signAndEditExecutable":false
   },
   "portable": {
     "splashImage": "dist/assets/icons/electron.bmp"

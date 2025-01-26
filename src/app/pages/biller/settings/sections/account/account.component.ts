@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { DataProvider } from '../../../../../core/services/provider/data-provider.service';
-import { Functions, httpsCallable } from '@angular/fire/functions';
+import { Functions, httpsCallableFromURL } from '@angular/fire/functions';
 import { Dialog } from '@angular/cdk/dialog';
 import { CheckPasswordComponent } from '../../check-password/check-password.component';
 import { SettingsService } from '../../../../../core/services/database/settings/settings.service';
@@ -18,7 +18,7 @@ import { UpdateComponent } from './update/update.component';
   styleUrls: ['./account.component.scss'],
 })
 export class AccountComponent {
-  checkUsernameFunction = httpsCallable(this.functions, 'userNameAvailable');
+  checkUsernameFunction = httpsCallableFromURL(this.functions, 'https://usernameavailable-3mazqb66kq-el.a.run.app');
   constructor(
     public dataProvider: DataProvider,
     private functions: Functions,

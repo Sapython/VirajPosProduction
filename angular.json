@@ -40,7 +40,7 @@
             ],
             "scripts": [],
             "customWebpackConfig": {
-              "path": "./angular.webpack.js",
+              "path": "./webpack.config.js",
               "replaceDuplicatePlugins": true
             },
             "serviceWorker": true,

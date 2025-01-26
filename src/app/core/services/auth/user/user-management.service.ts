@@ -4,11 +4,8 @@ import {
   getDoc,
   doc,
   Firestore,
-  getDocs,
-  collection,
-  updateDoc,
 } from '@angular/fire/firestore';
-import { Functions, httpsCallable } from '@angular/fire/functions';
+import { Functions, httpsCallableFromURL } from '@angular/fire/functions';
 import { Router } from '@angular/router';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { firstValueFrom } from 'rxjs';
@@ -18,29 +15,28 @@ import { Dialog } from '@angular/cdk/dialog';
 import { ElectronService } from '../../electron/electron.service';
 import { dbConfig } from '../../../../app.module';
 import { RequiresPrivilegeComponent } from '../../../../shared/requires-privilege/requires-privilege.component';
-import { Member } from '../../../../types/user.structure';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserManagementService {
-  resetPasswordFunction = httpsCallable(this.functions, 'resetPassword');
-  resetPasswordMailFunction = httpsCallable(
+  resetPasswordFunction = httpsCallableFromURL(this.functions, 'https://resetpassword-3mazqb66kq-el.a.run.app');
+  resetPasswordMailFunction = httpsCallableFromURL(
     this.functions,
-    'resetPasswordMail',
+    'https://resetpasswordmail-3mazqb66kq-el.a.run.app',
   );
-  resetPasswordWithOtpFunction = httpsCallable(
+  resetPasswordWithOtpFunction = httpsCallableFromURL(
     this.functions,
-    'verifyResetPasswordOtp',
+    'https://verifyresetpasswordotp-3mazqb66kq-el.a.run.app',
   );
-  addExistingUserFunction = httpsCallable(this.functions, 'addExistingUser');
-  verifyOtpExistingUserFunction = httpsCallable(
+  addExistingUserFunction = httpsCallableFromURL(this.functions, 'https://addexistinguser-3mazqb66kq-el.a.run.app');
+  verifyOtpExistingUserFunction = httpsCallableFromURL(
     this.functions,
-    'verifyOtpExistingUser',
+    'https://verifyotpexistinguser-3mazqb66kq-el.a.run.app',
   );
-  authenticateActionFunction = httpsCallable(
+  authenticateActionFunction = httpsCallableFromURL(
     this.functions,
-    'authenticateAction',
+    'https://authenticateaction-3mazqb66kq-el.a.run.app',
   );
   constructor(
     private firestore: Firestore,

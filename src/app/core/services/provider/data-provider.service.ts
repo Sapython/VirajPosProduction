@@ -21,7 +21,7 @@ import { ModeConfig } from '../../constructors/menu/menu';
 import { Product } from '../../../types/product.structure';
 import { Menu } from '../../../types/menu.structure';
 import { Table } from '../../constructors/table/Table';
-import { Functions, httpsCallable } from '@angular/fire/functions';
+import { Functions, httpsCallableFromURL } from '@angular/fire/functions';
 import { updateRequest } from '../../../types/loader.structure';
 import { Timestamp } from '@angular/fire/firestore';
 import { optionalPromptParam } from '../../../types/prompt.strcuture';
@@ -111,7 +111,7 @@ export class DataProvider {
     });
   }
 
-  private passwordCheck = httpsCallable(this.functions, 'checkPassword');
+  private passwordCheck = httpsCallableFromURL(this.functions, 'https://checkpassword-3mazqb66kq-el.a.run.app');
 
   // smart vars
   public chatInnerHtml: Node | undefined;

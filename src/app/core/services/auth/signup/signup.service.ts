@@ -15,7 +15,7 @@ import {
   getDoc,
   Firestore,
 } from '@angular/fire/firestore';
-import { Functions, httpsCallable } from '@angular/fire/functions';
+import { Functions, httpsCallableFromURL } from '@angular/fire/functions';
 import {
   BusinessRecord,
   UserBusiness,
@@ -31,13 +31,13 @@ var debug = true;
   providedIn: 'root',
 })
 export class SignupService {
-  // updateUserFactors = httpsCallable(
+  // updateUserFactors = httpsCallableFromURL(
   //   this.functions,
   //   'updateUser'
   // );
-  signUpWithUserAndPasswordFunction = httpsCallable(
+  signUpWithUserAndPasswordFunction = httpsCallableFromURL(
     this.functions,
-    'signUpWithUserAndPassword',
+    'https://signupwithuserandpassword-3mazqb66kq-el.a.run.app',
   );
 
   constructor(

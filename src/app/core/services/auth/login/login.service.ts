@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Functions, httpsCallable } from '@angular/fire/functions';
+import { Functions, httpsCallableFromURL } from '@angular/fire/functions';
 import {
   Auth,
   signInWithCustomToken,
@@ -11,9 +11,9 @@ import { ElectronService } from '../../electron/electron.service';
   providedIn: 'root',
 })
 export class LoginService {
-  signInWithUserAndPasswordFunction = httpsCallable(
+  signInWithUserAndPasswordFunction = httpsCallableFromURL(
     this.functions,
-    'signInWithUserAndPassword',
+    'https://signinwithuserandpassword-3mazqb66kq-el.a.run.app',
   );
   constructor(
     private functions: Functions,

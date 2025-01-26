@@ -1,5 +1,5 @@
 import { Timestamp } from 'firebase-admin/firestore';
-import { AnalyticsData } from '.';
+import { AnalyticsData } from './index';
 // import { Storage } from 'firebase-admin/lib/storage/storage';
 
 export async function generateAnalytics(firestore: any,storage:any, businessDoc: any, fetchDate:Date) {

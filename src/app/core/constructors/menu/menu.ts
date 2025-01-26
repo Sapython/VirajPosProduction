@@ -376,6 +376,12 @@ export class ModeConfig {
         } else if(cat.id == 'newDishes'){
           cat.productOrders = cat.products.sort((a, b) => {
             if (a.price && b.price) {
+              console.log("createdDate",b.createdDate);
+              if (b.createdDate==undefined) return -1;
+              if (b.createdDate?.toDate == undefined) {
+                // b.createdDate has seconds and nanoseconds convert it to date
+                b.createdDate = new Timestamp(b.createdDate.seconds,b.createdDate.nanoseconds);
+              }
               return b.createdDate?.toDate().getTime() - a.createdDate?.toDate().getTime();
             } else {
               return 0;

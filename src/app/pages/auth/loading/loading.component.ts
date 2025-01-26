@@ -17,7 +17,7 @@ import {
   zoomInOnEnterAnimation,
   zoomOutOnLeaveAnimation,
 } from 'angular-animations';
-import { httpsCallable } from 'firebase/functions';
+import { httpsCallableFromURL } from 'firebase/functions';
 import { Functions } from '@angular/fire/functions';
 import { Product } from '../../../types/product.structure';
 import { DataProvider } from '../../../core/services/provider/data-provider.service';
@@ -68,14 +68,14 @@ export class LoadingComponent implements OnInit, OnDestroy {
     ]),
   });
 
-  checkUsernameFunction = httpsCallable(this.functions, 'userNameAvailable');
-  signUpWithUserAndPassword = httpsCallable(
+  checkUsernameFunction = httpsCallableFromURL(this.functions, 'https://usernameavailable-3mazqb66kq-el.a.run.app');
+  signUpWithUserAndPassword = httpsCallableFromURL(
     this.functions,
-    'signUpWithUserAndPassword',
+    'https://signupwithuserandpassword-3mazqb66kq-el.a.run.app',
   );
-  signInWithUserAndPassword = httpsCallable(
+  signInWithUserAndPassword = httpsCallableFromURL(
     this.functions,
-    'signInWithUserAndPassword',
+    'https://signinwithuserandpassword-3mazqb66kq-el.a.run.app',
   );
   type: string[] = ['veg', 'non-veg'];
   tags: { color: string; name: string; contrast: string }[] = [

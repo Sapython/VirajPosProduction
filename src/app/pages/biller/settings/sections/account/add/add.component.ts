@@ -1,6 +1,6 @@
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { Component, OnDestroy } from '@angular/core';
-import { Functions, httpsCallable } from '@angular/fire/functions';
+import { Functions, httpsCallableFromURL } from '@angular/fire/functions';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription, debounceTime } from 'rxjs';
 import { AlertsAndNotificationsService } from '../../../../../../core/services/alerts-and-notification/alerts-and-notifications.service';
@@ -22,7 +22,7 @@ export class AddComponent implements OnDestroy {
   previousUsername: string | undefined;
   authOtpVerificationId: string | undefined;
   maskedEmailInvitee: string | undefined;
-  checkUsernameFunction = httpsCallable(this.functions, 'userNameAvailable');
+  checkUsernameFunction = httpsCallableFromURL(this.functions, 'https://usernameavailable-3mazqb66kq-el.a.run.app');
   loginForm: FormGroup = new FormGroup({
     username: new FormControl('', [Validators.required]),
     accessType: new FormControl('', [Validators.required]),

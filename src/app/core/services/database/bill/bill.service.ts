@@ -26,7 +26,7 @@ import { Bill } from '../../../constructors/bill';
 import { BillActivity } from '../../../../types/activity.structure';
 import { Subject } from 'rxjs';
 import { PaymentMethod } from '../../../../types/payment.structure';
-import { Functions, httpsCallable } from '@angular/fire/functions';
+import { Functions } from '@angular/fire/functions';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
@@ -35,14 +35,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class BillService {
   updateHistory: any[ ] = [ ];
   recalculateBill:Subject<void> = new Subject<void>();
-  getOrderAndKotNumberFunction = httpsCallable(this.functions,'getOrderAndKotNumber');
-  getKotTokenNumberFunction = httpsCallable(this.functions,'getKotTokenNumber');
-  getOrderNumberFunction = httpsCallable(this.functions,'getOrderNumber');
-  getOrderKotTakeawayTokenNumberFunction = httpsCallable(this.functions,'getOrderKotTakeawayTokenNumber');
-  getOrderKotOnlineTokenNumberFunction = httpsCallable(this.functions,'getOrderKotOnlineTokenNumber');
-  getPaymentMethodBillNumberFunction = httpsCallable(this.functions,'getPaymentMethodBillNumber');
-  getNcBillNumberFunction = httpsCallable(this.functions,'getNcBillNumber');
-  getNormalBillNumberFunction = httpsCallable(this.functions,'getNormalBillNumber');
+  // getOrderAndKotNumberFunction = httpsCallable(this.functions,'getOrderAndKotNumber');
+  // getKotTokenNumberFunction = httpsCallable(this.functions,'getKotTokenNumber');
+  // getOrderNumberFunction = httpsCallable(this.functions,'getOrderNumber');
+  // getOrderKotTakeawayTokenNumberFunction = httpsCallable(this.functions,'getOrderKotTakeawayTokenNumber');
+  // getOrderKotOnlineTokenNumberFunction = httpsCallable(this.functions,'getOrderKotOnlineTokenNumber');
+  // getPaymentMethodBillNumberFunction = httpsCallable(this.functions,'getPaymentMethodBillNumber');
+  // getNcBillNumberFunction = httpsCallable(this.functions,'getNcBillNumber');
+  // getNormalBillNumberFunction = httpsCallable(this.functions,'getNormalBillNumber');
   constructor(
     private firestore: Firestore,
     private functions:Functions,

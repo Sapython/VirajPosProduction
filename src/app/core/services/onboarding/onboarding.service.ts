@@ -39,7 +39,7 @@ import { AnalyticsService } from '../database/analytics/analytics.service';
 import { TableService } from '../database/table/table.service';
 import { BillService } from '../database/bill/bill.service';
 import { CustomerService } from '../customer/customer.service';
-import { Functions, httpsCallable } from '@angular/fire/functions';
+import { Functions, httpsCallableFromURL } from '@angular/fire/functions';
 import { Router } from '@angular/router';
 import { PaymentMethod } from '../../../types/payment.structure';
 import { BillerCounter } from '../../../pages/biller/settings/sections/counters/counters.component';
@@ -90,9 +90,9 @@ export class OnboardingService {
   };
 
   businessCounters: BillerCounter[] = [];
-  private checkIfAccessTokenIsValidFunction = httpsCallable(
+  private checkIfAccessTokenIsValidFunction = httpsCallableFromURL(
     this.functions,
-    'checkIfAccessTokenIsValid',
+    'https://checkifaccesstokenisvalid-3mazqb66kq-el.a.run.app',
   );
   constructor(
     private dataProvider: DataProvider,

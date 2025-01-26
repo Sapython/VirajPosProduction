@@ -2,33 +2,28 @@ import {
   app,
   BrowserWindow,
   Notification,
-  contextBridge,
   screen,
   ipcMain,
-  Menu,
-  dialog,
 } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as child_process from 'child_process';
-import * as Store from 'electron-store';
-import { autoUpdater, NsisUpdater } from 'electron-updater';
+import Store from 'electron-store';
+import pkg from 'electron-updater';
+import {homedir} from 'os';
+import debug from 'electron-debug';
+const { autoUpdater } = pkg;
 const store = new Store();
 let win: BrowserWindow = null;
 const args = process.argv.slice(1),
   serve = args.some((val) => val === '--serve');
-autoUpdater.logger = require('electron-log');
 autoUpdater.autoDownload = true;
 autoUpdater.autoInstallOnAppQuit = true;
-// const updater = new NsisUpdater({
-//   provider:'github',
-//   owner:'swayambhu-innovations',
-//   repo:'Packages',
-// })
-var globalReloadInterval: any;
+
+let globalReloadInterval: any;
 
 function run_script(command, args, event, callback) {
-  var child = child_process.spawn(command, args, {
+  let child = child_process.spawn(command, args, {
     shell: true,
   });
   // You can also use a variable to save the output for when the script closes later
@@ -45,7 +40,6 @@ function run_script(command, args, event, callback) {
   child.stdout.on('data', (data) => {
     //Here is the output
     data = data.toString();
-    //  console.log(data);
     event.sender.send('printDataComplete', {
       stage: 'stderr',
       data,
@@ -60,7 +54,6 @@ function run_script(command, args, event, callback) {
     // win.webContents.send('mainprocess-response', data);
     //Here is the output from the command
     data = data.toString();
-    //  console.log(data);
     event.sender.send('printDataComplete', {
       stage: 'stdout',
       data,
@@ -84,7 +77,7 @@ function run_script(command, args, event, callback) {
 
 function printData(event, data, printer) {
   //  console.log('Will Print: ', data, printer);
-  var home = require('os').homedir();
+  const home = homedir();
   var dataPath = home + '/Documents/somefolderwhichexists/';
   if (!fs.existsSync(dataPath)) {
     fs.mkdirSync(dataPath, { recursive: true });
@@ -257,9 +250,7 @@ function createWindow(): BrowserWindow {
     }
   });
   if (serve) {
-    const debug = require('electron-debug');
     debug();
-    require('electron-reloader')(module);
     win.loadURL('http://localhost:4200');
     // autoUpdater.addListener("")
     // autoUpdater.checkForUpdatesAndNotify();
@@ -302,33 +293,7 @@ function createWindow(): BrowserWindow {
     });
   }
   autoUpdater.checkForUpdates();
-  // if (serve) {
-  //   const debug = require('electron-debug');
-  //   debug();
-
-  //   require('electron-reloader')(module);
-  //   win.loadURL('http://localhost:4200');
-  //   // autoUpdater.addListener("")
-  //   autoUpdater.checkForUpdatesAndNotify();
-  // } else {
-  //   // Path when running electron executable
-  //   let pathIndex = './index.html';
-
-  //   if (fs.existsSync(path.join(__dirname, '../dist/index.html'))) {
-  //     // Path when running electron in local folder
-  //     pathIndex = '../dist/index.html';
-  //   }
-
-  //   const url = new URL(path.join('file:', __dirname, pathIndex));
-  //   win.loadURL(url.href);
-  // win.webContents.on("did-fail-load", () => {
-  // //  console.log("did-fail-load");
-  //   const url = new URL(path.join('file:', __dirname, pathIndex));
-  //   win.loadURL(url.href);
-  //   // REDIRECT TO FIRST WEBPAGE AGAIN
-  // });
-  // }
-
+ 
   // Emitted when the window is closed.
   return win;
 }

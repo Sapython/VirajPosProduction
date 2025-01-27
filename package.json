@@ -1,13 +1,13 @@
 {
   "name": "virajpos",
-  "version": "1.0.41",
+  "version": "1.0.66",
   "description": "Vrajera POS system.",
   "homepage": "https://virajworld.in/",
   "author": {
     "name": "Shreeva",
     "email": "create@shreeva.com"
   },
-  "repository": "github:swayambhu-innovations/Vrajera",
+  "repository": "github:Sapython/Vrajera",
   "main": "app/main.js",
   "private": true,
   "scripts": {

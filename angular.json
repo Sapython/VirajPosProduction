@@ -24,7 +24,6 @@
         "build": {
           "builder": "@angular-builders/custom-webpack:browser",
           "options": {
-            "outputHashing":"none",
             "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -40,7 +39,7 @@
             ],
             "scripts": [],
             "customWebpackConfig": {
-              "path": "./webpack.config.js",
+              "path": "./angular.webpack.js",
               "replaceDuplicatePlugins": true
             },
             "serviceWorker": true,
@@ -65,8 +64,8 @@
             },
             "production": {
               "optimization": true,
-              "outputHashing": "none",
-              "sourceMap": false,
+              "outputHashing": "all",
+              "sourceMap": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -97,8 +96,8 @@
             },
             "web-production": {
               "optimization": true,
-              "outputHashing": "none",
-              "sourceMap": false,
+              "outputHashing": "all",
+              "sourceMap": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -189,7 +188,6 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "outputHashing":"none",
             "lintFilePatterns": [
               "e2e/**/*.ts"
             ]

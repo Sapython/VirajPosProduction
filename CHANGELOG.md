@@ -1,5 +1,7 @@
-## <small>1.0.66 (2025-01-27)</small>
+## <small>1.0.86 (2025-01-27)</small>
 
+* chore: update Angular dependencies to version 17 and related packages in package.json ([8b26f33](https://github.com/Sapython/Vrajera/commit/8b26f33))
+* chore: update package versions and adjust TypeScript configuration for compatibility ([aa6bebd](https://github.com/Sapython/Vrajera/commit/aa6bebd))
 * Access level was wrong ([382351d](https://github.com/Sapython/Vrajera/commit/382351d))
 * Added active category option. Custom Printer, Custom ViewCat ([ce3fc6f](https://github.com/Sapython/Vrajera/commit/ce3fc6f))
 * Added bill entry escape handler ([e738e62](https://github.com/Sapython/Vrajera/commit/e738e62))
@@ -199,6 +201,7 @@
 * Migrated functions ([76673eb](https://github.com/Sapython/Vrajera/commit/76673eb))
 * Migrated to mumbai server ([9dab678](https://github.com/Sapython/Vrajera/commit/9dab678))
 * Mode switcher changed ([cea7050](https://github.com/Sapython/Vrajera/commit/cea7050))
+* Moved to commonjs and esm mix. ([1aaf0be](https://github.com/Sapython/Vrajera/commit/1aaf0be))
 * Onboarding and image of combo issue resolved. ([3cd90e7](https://github.com/Sapython/Vrajera/commit/3cd90e7))
 * Patched the menu reload issue. ([760a524](https://github.com/Sapython/Vrajera/commit/760a524))
 * Pos completed ([28c8127](https://github.com/Sapython/Vrajera/commit/28c8127))
@@ -326,7 +329,6 @@
 * refactor: remove LogRocket integration and update output hashing settings in configuration files ([5aceb18](https://github.com/Sapython/Vrajera/commit/5aceb18))
 * refactor: simplify guard classes and update Angular dependencies to version 16 ([36d51d5](https://github.com/Sapython/Vrajera/commit/36d51d5))
 * refactor: streamline provider declarations in AppModule and enhance button toggle styles ([40b2a41](https://github.com/Sapython/Vrajera/commit/40b2a41))
-* chore: update Angular dependencies to version 17 and related packages in package.json ([8b26f33](https://github.com/Sapython/Vrajera/commit/8b26f33))
 
 
 

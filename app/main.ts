@@ -2,27 +2,33 @@ import {
   app,
   BrowserWindow,
   Notification,
+  contextBridge,
   screen,
   ipcMain,
+  Menu,
+  dialog,
 } from 'electron';
-// import {fileURLToPath} from 'url';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as child_process from 'child_process';
 import * as Store from 'electron-store';
-import {autoUpdater} from 'electron-updater';
-import {homedir} from 'os';
+import { autoUpdater, NsisUpdater } from 'electron-updater';
 const store = new Store();
-let win: BrowserWindow|null = null;
+let win: BrowserWindow = null;
 const args = process.argv.slice(1),
   serve = args.some((val) => val === '--serve');
+autoUpdater.logger = require('electron-log');
 autoUpdater.autoDownload = true;
 autoUpdater.autoInstallOnAppQuit = true;
+// const updater = new NsisUpdater({
+//   provider:'github',
+//   owner:'swayambhu-innovations',
+//   repo:'Packages',
+// })
+var globalReloadInterval: any;
 
-let globalReloadInterval: any;
-
-function run_script(command:any, args:any, event:any, callback:any) {
-  let child = child_process.spawn(command, args, {
+function run_script(command, args, event, callback) {
+  var child = child_process.spawn(command, args, {
     shell: true,
   });
   // You can also use a variable to save the output for when the script closes later
@@ -39,6 +45,7 @@ function run_script(command:any, args:any, event:any, callback:any) {
   child.stdout.on('data', (data) => {
     //Here is the output
     data = data.toString();
+    //  console.log(data);
     event.sender.send('printDataComplete', {
       stage: 'stderr',
       data,
@@ -50,9 +57,10 @@ function run_script(command:any, args:any, event:any, callback:any) {
   child.stderr.setEncoding('utf8');
   child.stderr.on('data', (data) => {
     // Return some data to the renderer process with the mainprocess-response ID
-    // win!.webContents.send('mainprocess-response', data);
+    // win.webContents.send('mainprocess-response', data);
     //Here is the output from the command
     data = data.toString();
+    //  console.log(data);
     event.sender.send('printDataComplete', {
       stage: 'stdout',
       data,
@@ -74,9 +82,9 @@ function run_script(command:any, args:any, event:any, callback:any) {
   if (typeof callback === 'function') callback();
 }
 
-function printData(event:any, data:any, printer:any) {
+function printData(event, data, printer) {
   //  console.log('Will Print: ', data, printer);
-  const home = homedir();
+  var home = require('os').homedir();
   var dataPath = home + '/Documents/somefolderwhichexists/';
   if (!fs.existsSync(dataPath)) {
     fs.mkdirSync(dataPath, { recursive: true });
@@ -91,16 +99,14 @@ function printData(event:any, data:any, printer:any) {
       'RawPrint.exe',
       ['"' + printer + '"', '"' + dataPath + 'printableData.txt' + '"'],
       event,
-      function (test:any) {
-         console.log('Output: ',test);
+      function (test) {
+        console.log('Output: ', test);
       },
     );
   });
 }
 
 function createWindow(): BrowserWindow {
-  // const __filename = fileURLToPath(import.meta.url);
-  // const __dirname = path.dirname(__filename);
   const size = screen.getPrimaryDisplay().workAreaSize;
 
   // Create the browser window.
@@ -109,17 +115,13 @@ function createWindow(): BrowserWindow {
     y: 0,
     width: size.width,
     height: size.height,
-    fullscreen: true,
     webPreferences: {
       nodeIntegration: true,
-      allowRunningInsecureContent: false,
+      allowRunningInsecureContent: serve,
       contextIsolation: false, // false if you want to run e2e test with Spectron
-      preload: path.join(__dirname, 'preload.js'),
     },
     autoHideMenuBar: true,
   });
-  
-  import(path.join(__dirname, 'preload.js'));
   // set title to current version
   win.title = 'Vrajera POS ' + app.getVersion();
   win.on('closed', () => {
@@ -130,25 +132,32 @@ function createWindow(): BrowserWindow {
   });
 
   ipcMain.on('getPrinters', async (event, arg) => {
-    let res = win!.webContents.getPrintersAsync();
+    let res = win.webContents.getPrintersAsync();
+    //  console.log("Main printers", res);
     event.returnValue = await res;
   });
   ipcMain.handle('printData', async (event, arg) => {
+    //  console.log("GOT", arg, arg.data, arg.printer);
     return printData(event, arg.data, arg.printer);
   });
   ipcMain.on('saveAuth', async (event, arg) => {
     try {
+      //  console.log("GOT", arg, );
       store.set('token', arg);
       event.returnValue = true;
+      //  console.log("Succes saveAuth");
     } catch (error) {
       event.returnValue = false;
+      //  console.log("Save auth",error);
     }
   });
   ipcMain.on('getAuth', async (event, arg) => {
     try {
       event.returnValue = store.get('token');
+      //  console.log("Success getAuth", event.returnValue);
     } catch (error) {
       event.returnValue = false;
+      //  console.log("Get auth",error);
     }
   });
 
@@ -159,6 +168,7 @@ function createWindow(): BrowserWindow {
       event.returnValue = false;
     }
   });
+  // contextBridge.exposeInIsolatedWorld(1004,"electron", {autoUpdater:autoUpdater});
 
   autoUpdater.on('checking-for-update', () => {
     const NOTIFICATION_TITLE = 'Checking for updates.';
@@ -170,7 +180,7 @@ function createWindow(): BrowserWindow {
       body: NOTIFICATION_BODY,
     }).show();
     setTimeout(() => {
-      win!.webContents.send('updateAvailable', {
+      win.webContents.send('updateAvailable', {
         stage: 'checking-for-update',
         currentVersion: app.getVersion(),
         channel: autoUpdater.channel,
@@ -187,7 +197,7 @@ function createWindow(): BrowserWindow {
       body: NOTIFICATION_BODY,
     }).show();
     if (win) {
-      win!.webContents.send('updateAvailable', {
+      win.webContents.send('updateAvailable', {
         stage: 'update-available',
         currentVersion: app.getVersion(),
         info,
@@ -196,7 +206,7 @@ function createWindow(): BrowserWindow {
   });
   autoUpdater.on('update-not-available', (info) => {
     if (win) {
-      win!.webContents.send('updateAvailable', {
+      win.webContents.send('updateAvailable', {
         stage: 'update-not-available',
         currentVersion: app.getVersion(),
         info,
@@ -205,7 +215,7 @@ function createWindow(): BrowserWindow {
   });
   autoUpdater.on('download-progress', (progressObj) => {
     if (win) {
-      win!.webContents.send('updateAvailable', {
+      win.webContents.send('updateAvailable', {
         stage: 'download-progress',
         currentVersion: app.getVersion(),
         progressObj,
@@ -222,7 +232,7 @@ function createWindow(): BrowserWindow {
       body: NOTIFICATION_BODY,
     }).show();
     if (win) {
-      win!.webContents.send('updateAvailable', {
+      win.webContents.send('updateAvailable', {
         stage: 'update-downloaded',
         currentVersion: app.getVersion(),
         info,
@@ -247,7 +257,12 @@ function createWindow(): BrowserWindow {
     }
   });
   if (serve) {
-    win!.loadURL('http://localhost:4200');
+    const debug = require('electron-debug');
+    debug();
+    require('electron-reloader')(module);
+    win.loadURL('http://localhost:4200');
+    // autoUpdater.addListener("")
+    // autoUpdater.checkForUpdatesAndNotify();
   } else {
     let pathIndex = './index.html';
     if (fs.existsSync(path.join(__dirname, '../dist/index.html'))) {
@@ -255,55 +270,85 @@ function createWindow(): BrowserWindow {
       pathIndex = '../dist/index.html';
     }
     const url = new URL(path.join('file:', __dirname, pathIndex));
-    win!.loadURL(url.href);
-    win!.webContents.on('did-fail-load', () => {
+    win.loadURL(url.href);
+    win.webContents.on('did-fail-load', () => {
+      //  console.log("did-fail-load");
       const url = new URL(path.join('file:', __dirname, pathIndex));
-      win!.loadURL(url.href);
+      win.loadURL(url.href);
       // REDIRECT TO FIRST WEBPAGE AGAIN
     });
     setTimeout(() => {
-      win!.reload();
+      win.reload();
     }, 500);
     globalReloadInterval = setInterval(() => {
       // dialog.showErrorBox('Title', 'Running')
       // check if the body element has anything in it
       if (win) {
-        win!.webContents
+        win.webContents
           .executeJavaScript(`document.body.innerHTML`)
           .then((result) => {
+            // console.log(result);
             if (!result) {
               // alert("Result is null")
-              win!.webContents.executeJavaScript(`window.location.reload()`);
+              win.webContents.executeJavaScript(`window.location.reload()`);
             }
           });
       }
     }, 500);
-    win!.webContents.on('did-fail-load', () => {
+    win.webContents.on('did-fail-load', () => {
+      // alert("Failed to load webpage.");
       const url = new URL(path.join('file:', __dirname, pathIndex));
-      win!.loadURL(url.href);
+      win.loadURL(url.href);
     });
   }
   autoUpdater.checkForUpdates();
- 
+  // if (serve) {
+  //   const debug = require('electron-debug');
+  //   debug();
+
+  //   require('electron-reloader')(module);
+  //   win.loadURL('http://localhost:4200');
+  //   // autoUpdater.addListener("")
+  //   autoUpdater.checkForUpdatesAndNotify();
+  // } else {
+  //   // Path when running electron executable
+  //   let pathIndex = './index.html';
+
+  //   if (fs.existsSync(path.join(__dirname, '../dist/index.html'))) {
+  //     // Path when running electron in local folder
+  //     pathIndex = '../dist/index.html';
+  //   }
+
+  //   const url = new URL(path.join('file:', __dirname, pathIndex));
+  //   win.loadURL(url.href);
+  // win.webContents.on("did-fail-load", () => {
+  // //  console.log("did-fail-load");
+  //   const url = new URL(path.join('file:', __dirname, pathIndex));
+  //   win.loadURL(url.href);
+  //   // REDIRECT TO FIRST WEBPAGE AGAIN
+  // });
+  // }
+
   // Emitted when the window is closed.
   return win;
 }
 
 try {
-  // custom IPC triggers 
-  ipcMain.on("getPrinters", async (event, arg) => {
-    let res = win!.webContents.getPrintersAsync();
+  // custom IPC triggers
+  ipcMain.on('getPrinters', async (event, arg) => {
+    let res = win.webContents.getPrintersAsync();
+    // console.log("Main printers", res);
     event.returnValue = await res;
   });
-  ipcMain.on("printData", async (event, arg) => {
-    printData(event, arg.data, arg.printer);
+  ipcMain.on('printData', async (event, arg) => {
+    // console.log("GOT", arg, arg.data, arg.printer);
+    let res = printData(event, arg.data, arg.printer);
   });
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
   // Added 400 ms to fix the black background issue while using transparent window. More detais at https://github.com/electron/electron/issues/15947
   // Menu.setApplicationMenu(null)
-  // app.whenReady().then(createWindow)
   app.on('ready', () => setTimeout(createWindow, 400));
 
   // Quit when all windows are closed.

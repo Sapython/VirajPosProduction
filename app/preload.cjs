@@ -17,3 +17,5 @@ function printData(data, printer) {
 contextBridge.exposeInMainWorld("printing", {
   printData,
 });
+contextBridge.exposeInMainWorld("process",process);
+contextBridge.exposeInMainWorld("require",require);

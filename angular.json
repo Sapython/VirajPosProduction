@@ -63,7 +63,7 @@
               ]
             },
             "production": {
-              "optimization": true,
+              "optimization": false,
               "outputHashing": "all",
               "sourceMap": true,
               "namedChunks": false,
@@ -95,7 +95,7 @@
               ]
             },
             "web-production": {
-              "optimization": true,
+              "optimization": false,
               "outputHashing": "all",
               "sourceMap": true,
               "namedChunks": false,

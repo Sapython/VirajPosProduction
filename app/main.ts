@@ -118,7 +118,7 @@ function createWindow(): BrowserWindow {
     webPreferences: {
       nodeIntegration: true,
       allowRunningInsecureContent: serve,
-      contextIsolation: false, // false if you want to run e2e test with Spectron
+      contextIsolation: true, // false if you want to run e2e test with Spectron
     },
     autoHideMenuBar: true,
   });
@@ -328,7 +328,6 @@ function createWindow(): BrowserWindow {
   //   // REDIRECT TO FIRST WEBPAGE AGAIN
   // });
   // }
-
   // Emitted when the window is closed.
   return win;
 }

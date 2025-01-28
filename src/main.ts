@@ -8,8 +8,10 @@ if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic()
+setTimeout(()=>{
+  platformBrowserDynamic()
   .bootstrapModule(AppModule, {
     preserveWhitespaces: false,
   })
   .catch((err) => console.error(err));
+},100)

@@ -59,7 +59,7 @@
     "@types/hammerjs": "2.0.41",
     "angular-animations": "0.11.0",
     "chart.js": "4.3.0",
-    "firebase": "10.14.1",
+    "firebase": "11.2.0",
     "fuse.js": "6.6.2",
     "hammerjs": "2.0.8",
     "jspdf": "2.5.1",
